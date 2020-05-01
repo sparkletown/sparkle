@@ -16,36 +16,45 @@ export default function Map() {
 	}
 
 	return (
-		<div>
-			<svg
-				style={{ top: 0, left: 0 }}
-				viewBox={"0 0 100 " + MAP_HEIGHT_PERCENT}>
+		<div className="card">
+	        <div className="card-header">
+	            <h2 className="mx-auto">The Bodyssey: Your Map to the Party</h2>
+            </div>
+            <div className="card-body">
+                This is a clickable map to help you navigate the party.
+                <br/>
+	            Remember at all times, the party is real. Act accordingly.
+            </div>
+            <div>
+				<svg
+					viewBox={"0 0 100 " + MAP_HEIGHT_PERCENT}>
 
-				<image
-					href={MAP_URL}
-					alt={MAP_ALT}
-					title={MAP_ALT}
-					style={{ width: '100%' }}>
-					<title>{MAP_ALT}</title>
-				</image>
+					<image
+						href={MAP_URL}
+						alt={MAP_ALT}
+						title={MAP_ALT}
+						style={{ width: '100%' }}>
+						<title>{MAP_ALT}</title>
+					</image>
 
-				{rooms.filter(isRoomValid).map(room => {
-					const color = room.open ? '#3333ff33' : '#ff333333';
-					return <a
-						href={room.url}
-						target="_blank"
-						rel="noopener noreferrer"
-						key={room.id}>
-						<path
-							d={room.path}
-							alt={room.title + " - " + room.subtitle}
-							title={room.title + " - " + room.subtitle}
-							style={{ fill: color }}>
-							<title>{room.title}</title>
-						</path>
-					</a>;
-				})}
-			</svg>
+					{rooms.filter(isRoomValid).map(room => {
+						const color = room.open ? '#3333ff33' : '#ff333333';
+						return <a
+							href={room.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							key={room.id}>
+							<path
+								d={room.path}
+								alt={room.title + " - " + room.subtitle}
+								title={room.title + " - " + room.subtitle}
+								style={{ fill: color }}>
+								<title>{room.title}</title>
+							</path>
+						</a>;
+					})}
+				</svg>
+			</div>
 		</div>
 	);
 }
