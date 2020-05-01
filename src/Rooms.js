@@ -11,15 +11,22 @@ export default function Rooms() {
 	}
 
 	return (
-		<div className="accordion">
+		<div>
 			{rooms.map(room =>
 				<div className="card" key={room.id}>
-					<div className="card-header" id={room.id}>
-						<h2 className="mb-0">
-							<button className="btn btn-link" type="button" data={{ toggle: "collapse", target: "#" + room.id}}>
-								{room.title}{room.subtitle.length > 0 && " - " + room.subtitle}
-							</button>
-						</h2>
+					<div className="card-header">
+						<a className="stretched-link"
+							href={room.url}
+							target="_blank"
+							rel="noopener noreferrer">
+							{room.title}
+							{room.subtitle.length > 0 && " - " + room.subtitle}
+							{room.open ?
+								<span className="badge badge-success ml-2">OPEN</span>
+							:
+								<span className="badge badge-danger ml-2">CLOSED</span>
+							}
+						</a>
 					</div>
 					<div className="card-body">
 						Lineup:

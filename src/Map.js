@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 
 export default function Map() {
-	useFirestoreConnect(['config', 'map']);
-	const { configArr, mapRegions } = useSelector(state => ({
+	useFirestoreConnect(['config', 'rooms']);
+	const { configArr, rooms } = useSelector(state => ({
 		configArr: state.firestore.ordered.config,
-		mapRegions: state.firestore.ordered.map
+		rooms: state.firestore.ordered.rooms
 	}));
-	if (configArr === undefined || mapRegions === undefined) {
+	if (configArr === undefined || rooms === undefined) {
 		return "Loading map...";
 	}
 	const config = configArr.reduce((obj, c) => (
@@ -29,18 +29,19 @@ export default function Map() {
 					<title>{config['map_alt']}</title>
 				</image>
 
-				{mapRegions.filter(r => r.enabled).map(region => {
+				{rooms.map(room => {
+					const color = room.open ? '#3333ff33' : '#ff333333';
 					return <a
-						href={region.url}
+						href={room.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						key={region.id}>
+						key={room.id}>
 						<path
-							d={region.path}
-							alt={region.alt}
-							title={region.alt}
-							style={{ fill: "#3333ff33" }}>
-							<title>{region.alt}</title>
+							d={room.path}
+							alt={room.title + " - " + room.subtitle}
+							title={room.title + " - " + room.subtitle}
+							style={{ fill: color }}>
+							<title>{room.alt}</title>
 						</path>
 					</a>;
 				})}
