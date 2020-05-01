@@ -20,8 +20,8 @@ export default function Announcements() {
 	}
 
 	return (
-		<div class="card">
-			<div class="card-header">
+		<div className="card">
+			<div className="card-header">
 				<h2>Announcements</h2>
 			</div>
 			<ul className="list-group">
