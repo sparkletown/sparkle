@@ -3,7 +3,8 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "hosting": {
+  "hosting": [{
+    "target": "co-reality-map",
     "public": "build",
     "ignore": [
       "firebase.json",
@@ -16,5 +17,20 @@
         "destination": "/index.html"
       }
     ]
-  }
+  },
+  {
+    "target": "bodyssey",
+    "public": "build",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }]
 }

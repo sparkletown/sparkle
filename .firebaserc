@@ -1,5 +1,17 @@
 {
   "projects": {
     "default": "co-reality-map"
+  },
+  "targets": {
+    "co-reality-map": {
+      "hosting": {
+        "co-reality-map": [
+          "co-reality-map"
+        ],
+        "bodyssey": [
+          "bodyssey"
+        ]
+      }
+    }
   }
 }
