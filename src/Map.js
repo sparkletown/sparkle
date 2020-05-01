@@ -1,32 +1,32 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
-import { isConfigValid, isRoomValid } from './validation';
+import { isRoomValid } from './validation';
+import {
+	MAP_HEIGHT_PERCENT,
+	MAP_URL,
+	MAP_ALT
+} from './config';
 
 export default function Map() {
-	useFirestoreConnect(['config', 'rooms']);
-	const { configArr, rooms } = useSelector(state => ({
-		configArr: state.firestore.ordered.config,
-		rooms: state.firestore.ordered.rooms
-	}));
-	if (configArr === undefined || rooms === undefined) {
+	useFirestoreConnect('rooms');
+	const rooms = useSelector(state => state.firestore.ordered.rooms);
+	if (rooms === undefined) {
 		return "Loading map...";
 	}
-	let config = {};
-	configArr.filter(isConfigValid).forEach(v => config[v['name']] = v['value']);
 
 	return (
 		<div>
 			<svg
 				style={{ top: 0, left: 0 }}
-				viewBox={"0 0 100 " + config['map_height_percent']}>
+				viewBox={"0 0 100 " + MAP_HEIGHT_PERCENT}>
 
 				<image
-					href={config['map_url']}
-					alt={config['map_alt']}
-					title={config['map_alt']}
+					href={MAP_URL}
+					alt={MAP_ALT}
+					title={MAP_ALT}
 					style={{ width: '100%' }}>
-					<title>{config['map_alt']}</title>
+					<title>{MAP_ALT}</title>
 				</image>
 
 				{rooms.filter(isRoomValid).map(room => {

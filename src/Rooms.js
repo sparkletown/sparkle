@@ -1,26 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
-import { isConfigValid, isRoomValid } from './validation';
+import { isRoomValid } from './validation';
+import { SCHEDULE_URL } from './config';
 
 export default function Rooms() {
-	useFirestoreConnect(['config', 'rooms']);
-	const { configArr, rooms } = useSelector(state => ({
-		configArr: state.firestore.ordered.config,
-		rooms: state.firestore.ordered.rooms
-	}));
-	if (configArr === undefined || rooms === undefined) {
+	useFirestoreConnect('rooms');
+	const rooms = useSelector(state => state.firestore.ordered.rooms);
+	if (rooms === undefined) {
 		return "Loading rooms & schedule...";
 	}
-	let config = {};
-	configArr.filter(isConfigValid).forEach(v => config[v['name']] = v['value']);
 
 	return (
 		<div className="card">
 			<div className="card-header">
 				<h2>
 					<a className="stretched-link"
-						href={config['schedule_url']}
+						href={SCHEDULE_URL}
 						target="_blank"
 						rel="noopener noreferrer">
 						Rooms & Schedule

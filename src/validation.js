@@ -7,12 +7,6 @@ export function isAnnouncementValid(announcement) {
 		announcement.text !== undefined;
 }
 
-export function isConfigValid(config) {
-	return config !== undefined &&
-		config['name'] !== undefined &&
-		config['value'] !== undefined;
-}
-
 export function isRoomValid(room) {
 	return room !== undefined &&
 		room.id !== undefined &&
