@@ -30,10 +30,12 @@ export default function Map() {
 					viewBox={"0 0 100 " + MAP_HEIGHT_PERCENT}>
 
 					<image
+						ref={i => i.setAttribute('xlink:href', MAP_URL)}
 						href={MAP_URL}
 						alt={MAP_ALT}
 						title={MAP_ALT}
 						style={{ width: '100%' }}>
+						<title>{MAP_ALT}</title>
 					</image>
 
 					{rooms.filter(isRoomValid).map(room => {
