@@ -34,7 +34,6 @@ export default function Map() {
 						alt={MAP_ALT}
 						title={MAP_ALT}
 						style={{ width: '100%' }}>
-						<title>{MAP_ALT}</title>
 					</image>
 
 					{rooms.filter(isRoomValid).map(room => {
