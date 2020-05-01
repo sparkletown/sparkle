@@ -6,7 +6,7 @@ import Announcements from './Announcements';
 export default function App() {
   return (
     <div className="container">
-      <h2>The Bodyssey: Map to the Party</h2>
+      <h2>The Bodyssey: Your Map to the Party</h2>
       <p>This is a clickable map to help you navigate the party.</p>
       <p>Remember at all times, the party is real. Act accordingly.</p>
       <div className="row mb-3">
