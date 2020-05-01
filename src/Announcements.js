@@ -13,7 +13,7 @@ export default function Announcements() {
 	return (
 		<div>
 			<ul className="list-group">
-				{announcements.map(announcement =>
+				{announcements.concat().sort((a, b) => b.ts_utc - a.ts_utc).map(announcement =>
 					<li className="list-group-item" key={announcement.id}>
 						<b>{announcement.announcer}</b>: {formatUtcSeconds(announcement.ts_utc)}
 						<br/>
