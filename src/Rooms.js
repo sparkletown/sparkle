@@ -31,13 +31,13 @@ export default function Rooms() {
 							target="_blank"
 							rel="noopener noreferrer">
 							{room.title}
-							{room.subtitle.length > 0 && " - " + room.subtitle}
 							{room.open ?
-								<span className="badge badge-success ml-2">OPEN</span>
+								<span className="badge badge-success mx-2">OPEN</span>
 							:
-								<span className="badge badge-danger ml-2">CLOSED</span>
+								<span className="badge badge-danger mx-2">CLOSED</span>
 							}
 						</a>
+						<span>{room.subtitle.length > 0 && " - " + room.subtitle}</span>
 					</li>
 				)}
 			</ul>
