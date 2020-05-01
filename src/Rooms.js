@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
-import { isConfigValid, isRoomValid } from './utils';
+import { isConfigValid, isRoomValid } from './validation';
 
 export default function Rooms() {
 	useFirestoreConnect(['config', 'rooms']);
