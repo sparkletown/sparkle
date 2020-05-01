@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
+import { isConfigValid, isRoomValid } from './utils';
 
 export default function Map() {
 	useFirestoreConnect(['config', 'rooms']);
@@ -12,7 +13,7 @@ export default function Map() {
 		return "Loading map...";
 	}
 	let config = {};
-	configArr.forEach(v => config[v['name']] = v['value']);
+	configArr.filter(isConfigValid).forEach(v => config[v['name']] = v['value']);
 
 	return (
 		<div>
@@ -28,7 +29,7 @@ export default function Map() {
 					<title>{config['map_alt']}</title>
 				</image>
 
-				{rooms.map(room => {
+				{rooms.filter(isRoomValid).map(room => {
 					const color = room.open ? '#3333ff33' : '#ff333333';
 					return <a
 						href={room.url}

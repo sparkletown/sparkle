@@ -16,11 +16,9 @@ export default function App() {
       </div>
       <div className="row mb-3">
         <div className="col-md-6">
-          <h2>Announcements</h2>
           <Announcements />
         </div>
         <div className="col-md-6">
-          <h2>Rooms & Lineup</h2>
           <Rooms />
         </div>
       </div>

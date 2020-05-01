@@ -1,20 +1,35 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
-import { formatUtcSeconds } from './utils';
+import { isConfigValid, isRoomValid } from './utils';
 
 export default function Rooms() {
-	useFirestoreConnect('rooms');
-	const rooms = useSelector(state => state.firestore.ordered.rooms);
-	if (rooms === undefined ) {
-		return "Loading rooms...";
+	useFirestoreConnect(['config', 'rooms']);
+	const { configArr, rooms } = useSelector(state => ({
+		configArr: state.firestore.ordered.config,
+		rooms: state.firestore.ordered.rooms
+	}));
+	if (configArr === undefined || rooms === undefined) {
+		return "Loading rooms & schedule...";
 	}
+	let config = {};
+	configArr.filter(isConfigValid).forEach(v => config[v['name']] = v['value']);
 
 	return (
-		<div>
-			{rooms.map(room =>
-				<div className="card" key={room.id}>
-					<div className="card-header">
+		<div className="card">
+			<div className="card-header">
+				<h2>
+					<a className="stretched-link"
+						href={config['schedule_url']}
+						target="_blank"
+						rel="noopener noreferrer">
+						Rooms & Schedule
+					</a>
+				</h2>
+			</div>
+			<ul className="list-group">
+				{rooms.filter(isRoomValid).map(room =>
+					<li className="list-group-item" key={room.id}>
 						<a className="stretched-link"
 							href={room.url}
 							target="_blank"
@@ -27,21 +42,9 @@ export default function Rooms() {
 								<span className="badge badge-danger ml-2">CLOSED</span>
 							}
 						</a>
-					</div>
-					<div className="card-body">
-						Lineup:
-						<ul>
-							{room.lineup.map((item, index) =>
-								<li key={"room_" + index}>
-									<b>{item.title}</b>
-									<br/>
-									{formatUtcSeconds(item.start_utc.seconds)} - {formatUtcSeconds(item.start_utc.seconds + (item.duration_minutes*60))}
-								</li>
-							)}
-						</ul>
-					</div>
-				</div>
-			)}
+					</li>
+				)}
+			</ul>
 		</div>
 	);
 }
