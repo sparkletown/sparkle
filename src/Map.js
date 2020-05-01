@@ -40,7 +40,7 @@ export default function Map() {
 							alt={room.title + " - " + room.subtitle}
 							title={room.title + " - " + room.subtitle}
 							style={{ fill: color }}>
-							<title>{room.alt}</title>
+							<title>{room.title}</title>
 						</path>
 					</a>;
 				})}
