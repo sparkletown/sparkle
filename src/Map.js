@@ -11,15 +11,14 @@ export default function Map() {
 	if (configArr === undefined || rooms === undefined) {
 		return "Loading map...";
 	}
-	const config = configArr.reduce((obj, c) => (
-		{...obj, [c['name']]: c['value']}
-	));
+	let config = {};
+	configArr.forEach(v => config[v['name']] = v['value']);
 
 	return (
 		<div>
 			<svg
 				style={{ top: 0, left: 0 }}
-				viewBox="0 0 100 100">
+				viewBox={"0 0 100 " + config['map_height_percent']}>
 
 				<image
 					href={config['map_url']}
