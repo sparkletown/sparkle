@@ -46,7 +46,7 @@ export default function Map() {
 					viewBox={MAP_VIEWBOX}>
 
 					<image
-						ref={i => i.setAttribute('xlink:href', MAP_URL)}
+						ref={i => i !== null && i.setAttribute('xlink:href', MAP_URL)}
 						href={MAP_URL}
 						alt={MAP_ALT}
 						title={MAP_ALT}
@@ -60,7 +60,10 @@ export default function Map() {
 						{MAP_ALT}
 					</object>
 
-					{rooms.filter(isRoomValid).map(room => {
+					{rooms
+						.filter(isRoomValid)
+						.filter(r => r.on_map)
+						.map(room => {
 						const color = room.open ? '#3333ff33' : '#ff333333';
 						return <a
 							href={room.url}
@@ -72,7 +75,7 @@ export default function Map() {
 								alt={room.title + " - " + room.subtitle}
 								title={room.title + " - " + room.subtitle}
 								style={{ fill: color }}>
-								<title>{room.title}</title>
+								<title>{room.title} - {room.subtitle}</title>
 							</path>
 						</a>;
 					})}

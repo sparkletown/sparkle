@@ -16,12 +16,18 @@ export default function Rooms() {
 				<h2>Room List</h2>
 			</div>
 			<ul className="list-group">
-				{rooms.filter(isRoomValid).map(room =>
+				{rooms
+					.filter(isRoomValid)
+					.filter(r => r.on_list)
+					.concat()
+					.sort((a, b) => a.order - b.order)
+					.map(room =>
 					<li className="list-group-item" key={room.id}>
 						<a className="stretched-link"
 							href={room.url}
 							target="_blank"
-							rel="noopener noreferrer">
+							rel="noopener noreferrer"
+							title={room.title + " - " + room.subtitle}>
 							{room.title}
 							{room.open ?
 								<span className="badge badge-success mx-2">OPEN</span>
@@ -29,7 +35,7 @@ export default function Rooms() {
 								<span className="badge badge-danger mx-2">CLOSED</span>
 							}
 						</a>
-						<span>{room.subtitle.length > 0 && " - " + room.subtitle}</span>
+						<span>- {room.subtitle}</span>
 					</li>
 				)}
 			</ul>
