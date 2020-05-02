@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { isRoomValid } from './validation';
 import {
-	MAP_HEIGHT_PERCENT,
+	MAP_VIEWBOX,
 	MAP_URL,
 	MAP_ALT,
 	SCHEDULE_URL
@@ -43,7 +43,7 @@ export default function Map() {
             </div>
             <div>
 				<svg
-					viewBox={"0 0 100 " + MAP_HEIGHT_PERCENT}>
+					viewBox={MAP_VIEWBOX}>
 
 					<image
 						ref={i => i.setAttribute('xlink:href', MAP_URL)}
