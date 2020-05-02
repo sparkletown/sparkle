@@ -21,7 +21,7 @@ export default function Map() {
 	        <div className="card-header">
 	            <h2 className="text-center">The Bodyssey: Your Map to the Party</h2>
             </div>
-            <div className="card-body mx-auto">
+            <div className="card-body text-center">
                 This is a clickable map to help you navigate the party.
                 <br/>
 	            Remember at all times, the party is real. Act accordingly.
@@ -41,25 +41,8 @@ export default function Map() {
 					List of Rooms
 				</a>
             </div>
-            <div>
-				<svg
-					viewBox={MAP_VIEWBOX}>
-
-					<image
-						ref={i => i !== null && i.setAttribute('xlink:href', MAP_URL)}
-						href={MAP_URL}
-						alt={MAP_ALT}
-						title={MAP_ALT}
-						style={{ width: '100%' }}>
-						<title>{MAP_ALT}</title>
-					</image>
-
-					<object
-						style={{ position: 'fixed', width: 0, height: 0 }}
-						data={MAP_URL}>
-						{MAP_ALT}
-					</object>
-
+            <div className="position-relative">
+				<svg className="position-absolute" viewBox={MAP_VIEWBOX}>
 					{rooms
 						.filter(isRoomValid)
 						.filter(r => r.on_map)
@@ -80,6 +63,10 @@ export default function Map() {
 						</a>;
 					})}
 				</svg>
+				<img className="img-fluid"
+					src={MAP_URL}
+					title={MAP_ALT}
+					alt={MAP_ALT}/>
 			</div>
 		</div>
 	);
