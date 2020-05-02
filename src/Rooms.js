@@ -32,7 +32,7 @@ export default function Rooms() {
 							{room.open ?
 								<span className="badge badge-success mx-2">OPEN</span>
 							:
-								<span className="badge badge-danger mx-2">CLOSED</span>
+								<span className="badge badge-dark mx-2">CLOSED</span>
 							}
 						</a>
 						<span>- {room.subtitle}</span>
