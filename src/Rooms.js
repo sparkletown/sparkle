@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useFirestoreConnect } from 'react-redux-firebase';
 import { isRoomValid } from './validation';
-import { SCHEDULE_URL } from './config';
 
 export default function Rooms() {
 	useFirestoreConnect('rooms');
@@ -12,16 +11,9 @@ export default function Rooms() {
 	}
 
 	return (
-		<div className="card">
+		<div className="card" id="rooms">
 			<div className="card-header">
-				<h2>
-					<a className="stretched-link"
-						href={SCHEDULE_URL}
-						target="_blank"
-						rel="noopener noreferrer">
-						Rooms & Schedule
-					</a>
-				</h2>
+				<h2>Room List</h2>
 			</div>
 			<ul className="list-group">
 				{rooms.filter(isRoomValid).map(room =>

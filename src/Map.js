@@ -5,7 +5,8 @@ import { isRoomValid } from './validation';
 import {
 	MAP_HEIGHT_PERCENT,
 	MAP_URL,
-	MAP_ALT
+	MAP_ALT,
+	SCHEDULE_URL
 } from './config';
 
 export default function Map() {
@@ -16,14 +17,29 @@ export default function Map() {
 	}
 
 	return (
-		<div className="card">
+		<div className="card" id="map">
 	        <div className="card-header">
-	            <h2 className="mx-auto">The Bodyssey: Your Map to the Party</h2>
+	            <h2 className="text-center">The Bodyssey: Your Map to the Party</h2>
             </div>
-            <div className="card-body">
+            <div className="card-body mx-auto">
                 This is a clickable map to help you navigate the party.
                 <br/>
 	            Remember at all times, the party is real. Act accordingly.
+	            <br/>
+	            <a type="button" className="btn btn-primary mr-3 mt-3"
+					href="#rooms">
+					Room List
+				</a>
+	            <a type="button" className="btn btn-primary mr-3 mt-3"
+					href={SCHEDULE_URL}
+					target="_blank"
+					rel="noopener noreferrer">
+					Schedule of Events
+				</a>
+				<a type="button" className="btn btn-primary mr-3 mt-3"
+					href="#announcements">
+					Announcements
+				</a>
             </div>
             <div>
 				<svg
@@ -37,6 +53,12 @@ export default function Map() {
 						style={{ width: '100%' }}>
 						<title>{MAP_ALT}</title>
 					</image>
+
+					<object
+						style={{ position: 'fixed', width: 0, height: 0 }}
+						data={MAP_URL}>
+						{MAP_ALT}
+					</object>
 
 					{rooms.filter(isRoomValid).map(room => {
 						const color = room.open ? '#3333ff33' : '#ff333333';

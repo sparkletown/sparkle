@@ -12,7 +12,7 @@ export default function Announcements() {
 	}
 
 	return (
-		<div className="card">
+		<div className="card" id="announcements">
 			<div className="card-header">
 				<h2>Announcements</h2>
 			</div>
