@@ -27,10 +27,6 @@ export default function Map() {
 	            Remember at all times, the party is real. Act accordingly.
 	            <br/>
 	            <a type="button" className="btn btn-primary mr-3 mt-3"
-					href="#rooms">
-					Room List
-				</a>
-	            <a type="button" className="btn btn-primary mr-3 mt-3"
 					href={SCHEDULE_URL}
 					target="_blank"
 					rel="noopener noreferrer">
@@ -39,6 +35,10 @@ export default function Map() {
 				<a type="button" className="btn btn-primary mr-3 mt-3"
 					href="#announcements">
 					Announcements
+				</a>
+	            <a type="button" className="btn btn-primary mr-3 mt-3"
+					href="#rooms">
+					List of Rooms
 				</a>
             </div>
             <div>

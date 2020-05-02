@@ -13,10 +13,10 @@ export default function App() {
       </div>
       <div className="row mt-3">
         <div className="col-md-6">
-          <Rooms />
+          <Announcements />
         </div>
         <div className="col-md-6">
-          <Announcements />
+          <Rooms />
         </div>
       </div>
     </div>
