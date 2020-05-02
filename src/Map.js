@@ -55,8 +55,6 @@ export default function Map() {
 							key={room.id}>
 							<path
 								d={room.path}
-								alt={room.title + " - " + room.subtitle}
-								title={room.title + " - " + room.subtitle}
 								style={{ fill: color }}>
 								<title>{room.title} - {room.subtitle}</title>
 							</path>
