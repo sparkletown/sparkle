@@ -24,3 +24,6 @@ yarn-error.log*
 
 # Firebase cache
 .firebase/
+
+# Secrets
+src/secrets.js
