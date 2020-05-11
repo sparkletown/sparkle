@@ -8,7 +8,7 @@ import Rooms from './Rooms';
 import Announcements from './Announcements';
 
 export default function App() {
-  useFirestoreConnect('rooms', 'announcements');
+  useFirestoreConnect(['rooms', 'announcements']);
   const { rooms, announcements } = useSelector(state => ({
     rooms: state.firestore.ordered.rooms,
     announcements: state.firestore.ordered.announcements,
