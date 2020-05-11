@@ -1,6 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
 import { isRoomValid } from './validation';
 import {
 	MAP_VIEWBOX,
@@ -9,10 +7,8 @@ import {
 	SCHEDULE_URL
 } from './config';
 
-export default function Map() {
-	useFirestoreConnect('rooms');
-	const rooms = useSelector(state => state.firestore.ordered.rooms);
-	if (rooms === undefined) {
+export default function Map(props) {
+	if (props.rooms === undefined) {
 		return "Loading map...";
 	}
 
@@ -43,7 +39,7 @@ export default function Map() {
             </div>
             <div className="position-relative">
 				<svg className="position-absolute" viewBox={MAP_VIEWBOX}>
-					{rooms
+					{props.rooms
 						.filter(isRoomValid)
 						.filter(r => r.on_map)
 						.map(room => {

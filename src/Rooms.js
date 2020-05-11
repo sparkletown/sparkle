@@ -1,12 +1,8 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
 import { isRoomValid } from './validation';
 
-export default function Rooms() {
-	useFirestoreConnect('rooms');
-	const rooms = useSelector(state => state.firestore.ordered.rooms);
-	if (rooms === undefined) {
+export default function Rooms(props) {
+	if (props.rooms === undefined) {
 		return "Loading rooms & schedule...";
 	}
 
@@ -16,7 +12,7 @@ export default function Rooms() {
 				<h2>Room List</h2>
 			</div>
 			<ul className="list-group">
-				{rooms
+				{props.rooms
 					.filter(isRoomValid)
 					.filter(r => r.on_list)
 					.concat()
