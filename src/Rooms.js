@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { isRoomValid } from './validation';
 
 export default function Rooms(props) {

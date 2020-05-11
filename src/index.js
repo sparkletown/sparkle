@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { createStore, combineReducers, compose } from 'redux';
+import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { reduxFirestore, firestoreReducer, createFirestoreInstance } from 'redux-firestore';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
@@ -13,6 +13,7 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import App from './App';
+import trackingMiddleware from './middleware/tracking';
 import { API_KEY, APP_ID, MEASUREMENT_ID } from './secrets';
 import * as serviceWorker from './serviceWorker';
 
@@ -30,21 +31,27 @@ const rrfConfig = {
 }
 
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+const analytics = firebase.analytics();
 
 const createStoreWithFirebase = compose(
 	reduxFirestore(firebase, rfConfig),
 )(createStore);
 
 const rootReducer = combineReducers({
-	firestore: firestoreReducer,
+  firestore: firestoreReducer
 })
 
 const initialState = {};
 const store = createStoreWithFirebase(
-	rootReducer,
-	initialState,
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+  rootReducer,
+  initialState,
+  compose(
+    applyMiddleware(
+      trackingMiddleware(analytics)
+    ),
+    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  )
+);
 
 const rrfProps = {
   firebase,
