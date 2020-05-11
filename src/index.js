@@ -1,6 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
 import { reduxFirestore, firestoreReducer, createFirestoreInstance } from 'redux-firestore';
@@ -63,7 +64,9 @@ const rrfProps = {
 render(
   <Provider store={store}>
   	<ReactReduxFirebaseProvider {...rrfProps}>
-    	<App />
+      <Router>
+        <Route path="/" component={App} />
+      </Router>
 	</ReactReduxFirebaseProvider>
   </Provider>,
   document.getElementById('root')
