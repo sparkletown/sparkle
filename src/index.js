@@ -8,6 +8,7 @@ import { reduxFirestore, firestoreReducer, createFirestoreInstance } from 'redux
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/analytics';
+import 'firebase/auth';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 
 import 'bootstrap';
@@ -33,6 +34,7 @@ const rrfConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
+firebase.auth();
 
 const createStoreWithFirebase = compose(
 	reduxFirestore(firebase, rfConfig),
