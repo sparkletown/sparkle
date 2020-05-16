@@ -13,7 +13,7 @@
     ]
   },
   {
-    "target": "bodyssey",
+    "target": "treeoflife",
     "public": "build",
     "ignore": [
       "firebase.json",

@@ -12,7 +12,7 @@ import 'firebase/auth';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
 
 import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './scss/custom.scss';
 
 import App from './App';
 import trackingMiddleware from './middleware/tracking';

@@ -18,15 +18,20 @@ export function isAnnouncementValid(announcement) {
 		announcement.text !== undefined;
 }
 
+export function isChatValid(chat) {
+	return chat !== undefined &&
+		chat.id !== undefined &&
+		chat.name !== undefined &&
+		chat.ts_utc !== undefined &&
+		validDate(chat.ts_utc) &&
+		chat.text !== undefined;
+}
+
 export function isRoomValid(room) {
 	return room !== undefined &&
-		room.id !== undefined &&
-		validBool(room.open) &&
-		validBool(room.on_map) &&
 		validBool(room.on_list) &&
-		typeof room.order === 'number' &&
+		validBool(room.on_map) &&
 		room.path !== undefined &&
 		room.url !== undefined &&
-		room.title !== undefined &&
-		room.subtitle !== undefined;
+		room.name !== undefined;
 }

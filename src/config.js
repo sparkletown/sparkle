@@ -1,4 +1,3 @@
-export const MAP_VIEWBOX = '0 0 3840 2160';
-export const MAP_URL = 'bodyssey.jpg';
-export const MAP_ALT = 'Clickable Map';
-export const SCHEDULE_URL = 'bodyssey_schedule.pdf';
+export const MAP_VIEWBOX = '0 0 2808 3901';
+export const MAP_URL = 'treeoflife.jpg';
+export const PARTY_START_UTC_SECONDS = 1589655600;
