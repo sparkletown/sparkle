@@ -9,7 +9,9 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/analytics';
 import 'firebase/auth';
+import 'firebase/functions';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
+import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 
 import 'bootstrap';
 import './scss/custom.scss';
@@ -36,6 +38,12 @@ firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 firebase.auth();
 
+if (window.location.hostname === "localhost") {
+  firebase.functions().useFunctionsEmulator('http://localhost:5000');
+} else {
+  firebase.functions();
+}
+
 const createStoreWithFirebase = compose(
 	reduxFirestore(firebase, rfConfig),
 )(createStore);
@@ -48,12 +56,10 @@ const initialState = {};
 const store = createStoreWithFirebase(
   rootReducer,
   initialState,
-  compose(
+  composeWithDevTools(
     applyMiddleware(
-      trackingMiddleware(analytics)
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-  )
+      trackingMiddleware(analytics),
+  ))
 );
 
 const rrfProps = {

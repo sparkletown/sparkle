@@ -12,23 +12,28 @@ export default function Chatbox(props) {
     .concat()
     .sort((a, b) => b.ts_utc - a.ts_utc);
 
+  return <div/>;
   return (
     <div className="card" id="chat">
       <div className="card-header">
-        Chat Box
+        Party Chat
       </div>
       <div className="card-body text-center">
         {chats.length === 0 &&
           "No chat messages yet"
         }
-        <form>
-          <div className="input-group">
-            <input type="text" className="form-control" placeholder="Message" />
-            <button className="btn btn-outline-success" type="small">
-              Send
-            </button>
-          </div>
-        </form>
+        {props.user.displayName && props.user.displayName.length > 0 ?
+          <form>
+            <div className="input-group">
+              <input type="text" className="form-control" placeholder="Message" />
+              <button className="btn btn-success" type="small">
+                Send
+              </button>
+            </div>
+          </form>
+        :
+          "Cannot chat while incognito (tap on top right to change your name)"
+        }
         <ul className="list-group text-left">
           {chats.map(chat =>
             <li className="list-group-item" key={chat.id}>

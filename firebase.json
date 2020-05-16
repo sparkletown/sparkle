@@ -14,6 +14,15 @@
       ]
     },
     {
+      "target": "bodyssey",
+      "public": "build",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
+    },
+    {
       "target": "treeoflife",
       "public": "build",
       "ignore": [

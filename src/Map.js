@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { roomSlug } from './utils';
 import { isRoomValid } from './validation';
 import {
 	MAP_VIEWBOX,
@@ -17,13 +19,12 @@ export default function Map(props) {
 					{props.rooms
 						.filter(isRoomValid)
 						.filter(r => r.on_map)
-						.map(room => {
+						.map((room, idx) => {
 						const color = '#ffffff33';
 						return <a
-							href={room.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							key={room.id}>
+							key={idx}
+							data-toggle="modal"
+							data-target={"#modal-" + roomSlug(room)}>							
 							<path
 								d={room.path}
 								style={{ fill: color }}>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useFirebase } from 'react-redux-firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserSlash } from '@fortawesome/free-solid-svg-icons';
 
@@ -11,22 +12,37 @@ const SECTIONS = [
  ];
 
 export default function Header(props) {
-  const [name, setName] = useState(props.name);
+  const firebase = useFirebase();
+
+  const [name, setName] = useState(props.user.displayName || '');
   const [section, setSection] = useState();
   const [editingName, setEditingName] = useState(false);
 
   function submitName(e) {
+    props.user.updateProfile({
+      displayName: name,
+    });
     setEditingName(false);
     e.preventDefault();
+  }
+
+  function nameChanged(e) {
+    setName(e.target.value);
   }
 
   function editName() {
     setEditingName(true)
   }
 
-  function cancelEditName() {
+  function cancelEditName(e) {
+    e.preventDefault();
     setEditingName(false)
-    setName(props.name)
+    setName(props.user.displayName)
+  }
+
+  function logout(e) {
+    e.preventDefault();
+    firebase.auth().signOut();
   }
 
   return (
@@ -51,19 +67,27 @@ export default function Header(props) {
                 <label htmlFor="name">Name Others See:</label>
                 <small >(delete to be invisible)</small>
               </div>
-              <input autoFocus className="form-control mr-sm-2" type="text" placeholder="Name" aria-label="Name" value={name} onChange={e => setName(e.value)} onBlur={cancelEditName}/>
-              <button className="btn btn-outline-success my-2 my-sm-0" type="small">
+              <input autoFocus className="form-control mr-sm-2" type="text" placeholder="Name" aria-label="Name" value={name} onChange={nameChanged}/>
+              <button className="btn btn-success my-2 my-sm-0" type="small">
                 Submit
+              </button>
+              <button className="btn btn-danger ml-2 my-2 my-sm-0" type="small" onClick={cancelEditName}>
+                X
               </button>
             </form>
           :
             <div className="text-light my-2 my-lg-0" onClick={editName}>
               <span className="mr-2" title="This is the name other guests see as you go into and out of rooms at the party.">
-                {props.name ? props.name + " (click to change)" : "(Incognito - click to change)"}
+                {name ? name + " (click to change)" : "(Incognito - click to change)"}
               </span>
-              <FontAwesomeIcon icon={props.name ? faUser : faUserSlash} />
+              <FontAwesomeIcon icon={name ? faUser : faUserSlash} />
             </div>
           }
+          <form className="text-light form-inline my-2 my-lg-0" onSubmit={logout}>
+            <button className="btn btn-danger ml-2 my-2 my-sm-0" type="small">
+              Log Out
+            </button>
+          </form>
         </div>
       </nav>
     </header>
