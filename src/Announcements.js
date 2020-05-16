@@ -2,8 +2,6 @@ import React from 'react';
 import { formatUtcSeconds } from './utils';
 import { isAnnouncementValid } from './validation';
 
-const ONE_HOUR_MILLIS = 1000 * 60 * 60;
-
 export default function Announcements(props) {
 	if (props.announcements === undefined ) {
 		return "Loading announcements...";

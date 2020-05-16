@@ -1,7 +1,7 @@
 import React, { useState, Fragment } from 'react';
 import { useFirebase } from 'react-redux-firebase';
 
-export default function EntranceExperience({ user }) {
+export default function EntranceExperience(props) {
   const firebase = useFirebase();
 
   const [invalidPassword, setInvalidPassword] = useState();
@@ -45,7 +45,7 @@ export default function EntranceExperience({ user }) {
   const nameSubmitted = (e) => {
     e.preventDefault();
 
-    user.updateProfile({
+    props.updateProfile({
       displayName: name,
     });
   }
@@ -62,7 +62,7 @@ export default function EntranceExperience({ user }) {
       <div className="container">
           <div className="row mt-3">
             <div className="col">
-              {!user ? 
+              {!props.user ? 
                 <Fragment>
                   <h2>Enter the Password</h2>
                   <p>

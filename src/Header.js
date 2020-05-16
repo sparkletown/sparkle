@@ -19,7 +19,7 @@ export default function Header(props) {
   const [editingName, setEditingName] = useState(false);
 
   function submitName(e) {
-    props.user.updateProfile({
+    props.updateProfile({
       displayName: name,
     });
     setEditingName(false);

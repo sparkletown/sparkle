@@ -28,13 +28,20 @@ export default function App() {
     announcements: state.firestore.ordered.announcements,
   }));
 
+  function updateProfile(values) {
+    user.updateProfile(values).then(() => {
+      console.log('setUser', user);
+      setUser({...user});
+    });
+  }
+
   if (!user) {
-    return <EntranceExperience />
+    return <EntranceExperience updateProfile={updateProfile} />
   }
 
   return (
     <Fragment>
-      <Header user={user} />
+      <Header user={user} updateProfile={updateProfile} />
       <div className="container-fluid">
         <div className="row">
           <div className="col">
@@ -43,7 +50,7 @@ export default function App() {
           </div>
           <div className="col-md-3 pl-0">
             <Announcements announcements={announcements} />
-            <Chatbox chats={chats} />
+            <Chatbox chats={chats} user={user} />
           </div>
         </div>
       </div>
