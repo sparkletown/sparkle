@@ -17,16 +17,13 @@ export default function Rooms(props) {
 		.concat()
 		.sort((a, b) => a.order - b.order);
 
-	function upcomingOrCurrent(event) {
+	function notEnded(event) {
 		const start = PARTY_START_UTC_SECONDS + (event.start_hour * 60 * 60);
 		const end = start + (event.duration_hours * ONE_HOUR_IN_SECONDS);
+		const now = new Date().getTime() / 1000;
 
-		const currentTimeSeconds = new Date().getTime() / 1000;
-		const oneHourFromNow = currentTimeSeconds + ONE_HOUR_IN_SECONDS;
-
-		const current = (currentTimeSeconds >= start && currentTimeSeconds <= end);
-		const upcoming = start >= currentTimeSeconds && start <= oneHourFromNow;
-		return current || upcoming;
+		const notEnded = end >= now;
+		return notEnded;
 	}
 
 	return (
@@ -43,25 +40,28 @@ export default function Rooms(props) {
 							title={room.title}>
 							{room.name}
 						</button>
-						{room.events && room.events.filter(upcomingOrCurrent).length > 0 &&
-							<ul>
-								{room.events.filter(upcomingOrCurrent).map((event, idx) =>
-									<li className="my-2" key={idx}>
-	                  <b>{formatHour(event.start_hour)}-{formatHour(event.start_hour + event.duration_hours)}: {event.name}</b>
-	                  <br/>
-	                  Hosted by <b>{event.host}</b>
-	                  <br/>
-	                  {event.text}
-	                  {event.interactivity &&
-	                    <Fragment>
-	                      <br/>
-	                      Interactivity: {event.interactivity}
-	                    </Fragment>
-	                  }
-	                </li>
-								)}
-							</ul>
-						}
+						<div className="ml-3">
+							{room.title}
+							{room.events && room.events.filter(notEnded).length > 0 &&
+								<ul>
+									{room.events.filter(notEnded).map((event, idx) =>
+										<li className="my-2" key={idx}>
+		                  <b>{formatHour(event.start_hour)}-{formatHour(event.start_hour + event.duration_hours)}: {event.name}</b>
+		                  <br/>
+		                  Hosted by <b>{event.host}</b>
+		                  <br/>
+		                  {event.text}
+		                  {event.interactivity &&
+		                    <Fragment>
+		                      <br/>
+		                      Interactivity: {event.interactivity}
+		                    </Fragment>
+		                  }
+		                </li>
+									)}
+								</ul>
+							}
+						</div>
 					</li>
 				)}
 			</ul>

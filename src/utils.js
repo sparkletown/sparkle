@@ -12,7 +12,7 @@ export function roomSlug(room) {
 }
 
 export function formatHour(hour) {
-  if (!hour) {
+  if (hour === null || hour === undefined) {
     return '(unknown)';
   }
   const utcSeconds = PARTY_START_UTC_SECONDS + (hour * 60 * 60);
