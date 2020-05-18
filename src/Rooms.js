@@ -1,10 +1,8 @@
 import React, { Fragment } from 'react';
 
-import { PARTY_START_UTC_SECONDS } from './config';
+import { PARTY_START_UTC_SECONDS, ONE_HOUR_IN_SECONDS } from './config';
 import { roomSlug, formatHour } from './utils';
 import { isRoomValid } from './validation';
-
-const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 export default function Rooms(props) {
 	if (props.rooms === undefined) {

@@ -5,15 +5,17 @@ import { useFirebase, useFirestoreConnect } from 'react-redux-firebase';
 
 import 'bootstrap';
 
-import Header from './Header';
-import EntranceExperience from './EntranceExperience';
-import Map from './Map';
-import Rooms from './Rooms';
 import Announcements from './Announcements';
 import Chatbox from './Chatbox';
+import EntranceExperience from './EntranceExperience';
+import Header from './Header';
+import LockedSite from './LockedSite';
+import Map from './Map';
+import Rooms from './Rooms';
 import RoomModals from './RoomModals';
 
 import { LINEUP } from './lineup';
+import { LOCK_SITE_AFTER_UTC_SECONDS } from './config';
 
 export default function App() {
   const firebase = useFirebase();
@@ -33,6 +35,11 @@ export default function App() {
       console.log('setUser', user);
       setUser({...user});
     });
+  }
+
+  const now = new Date().getTime() / 1000;
+  if (now >= LOCK_SITE_AFTER_UTC_SECONDS) {
+    return <LockedSite />
   }
 
   if (!user) {
