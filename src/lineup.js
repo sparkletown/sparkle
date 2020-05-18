@@ -39,11 +39,11 @@ const upside_down_room_events = [
   },
   {
     start_hour: 4.5,
-    duration_hours: 3.5,
-    host: 'Perhaps you!',
-    name: 'Unplanned fun',
-    text: 'Come join whoever is in the Bat Cave 🦇 for some unsanctioned, unplanned fun!',
-    interactivity: 'high',
+    duration_hours: 4,
+    host: 'Jonathan Cain',
+    name: 'Ambient synth music - LIVE!',
+    text: 'Live! ambient synthesizer music by Panumbra',
+    interactivity: 'low',
   },
 ];
 
@@ -351,7 +351,7 @@ const canopy_events = [
     start_hour: 7.75,
     duration_hours: 1,
     host: 'Leo Raderman & Natasha',
-    name: 'Sonic Shamanic Sound Bath',
+    name: 'The Sonic Shamanic: Sound Medicine (Sound Healing)',
     text: 'Lean back, relax, and feel the magic wash over you. Perfect soft landing & after party.',
     interactivity: 'low',
   },
@@ -471,7 +471,7 @@ export const LINEUP = {
     },
     {
       name: 'The Canopy',
-      title: 'The Canopy',
+      title: 'Climb up to the canopy for gazing into the great beyond. Join us for deep conversations about consciousness, the nature of reality, psychedelic experiences and amazing after-party sound medicine healing.',
       on_list: true,
       on_map: true,
       url: 'https://us02web.zoom.us/j/84339095111?pwd=dytid01RY2dCbTJ4S2lOeVB2THJzdz09',
