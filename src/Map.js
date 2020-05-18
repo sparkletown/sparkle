@@ -24,7 +24,7 @@ export default function Map(props) {
 						return <a
 							key={idx}
 							data-toggle="modal"
-							data-target={"#modal-" + roomSlug(room)}>							
+							data-target={"#modal-" + roomSlug(room)}>
 							<path
 								d={room.path}
 								style={{ fill: color }}>
