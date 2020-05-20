@@ -18,11 +18,11 @@ export default function Announcements(props) {
 				Announcements
 			</div>
 			{announcements.length === 0 &&
-				<div className="card-body text-center">
+				<div className="card-body text-center announcement-list">
 	        No announcements yet
 	      </div>
 			}
-			<ul className="list-group">
+			<ul className="list-group announcement-list">
 				{announcements.map(announcement =>
 					<li className="list-group-item" key={announcement.id}>
 						<b>{announcement.announcer}</b>: {formatUtcSeconds(announcement.ts_utc)}
