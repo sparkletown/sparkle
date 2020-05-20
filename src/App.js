@@ -29,6 +29,7 @@ export default function App(props) {
       clearInterval(interval);
     };
   }, []);
+
   firebase.auth().onAuthStateChanged(user => {
     setUser(user);
   });
