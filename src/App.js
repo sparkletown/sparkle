@@ -16,7 +16,7 @@ import Rooms from './Rooms';
 import RoomModals from './RoomModals';
 
 import { LINEUP } from './lineup';
-import { LOCK_SITE_AFTER_UTC_SECONDS } from './config';
+import { LOCK_SITE_AFTER_UTC_SECONDS, PARTY_START_UTC_SECONDS } from './config';
 
 export default function App(props) {
   const firebase = useFirebase();
@@ -30,8 +30,22 @@ export default function App(props) {
     };
   }, []);
 
+
+  function killLoginsFromBeforePartyStart(user) {
+    if (user) {
+      const partyHasStarted = time >= PARTY_START_UTC_SECONDS;
+      const lastSignInTimeSeconds = new Date(user.metadata.lastSignInTime) / 1000;
+      const signedInBeforePartyStart = lastSignInTimeSeconds < PARTY_START_UTC_SECONDS;
+
+      if (partyHasStarted && signedInBeforePartyStart) {
+        firebase.auth().signOut();
+      }
+    }
+  }
+
   firebase.auth().onAuthStateChanged(user => {
     setUser(user);
+    killLoginsFromBeforePartyStart(user);
   });
 
   useFirestoreConnect(['chats', 'announcements', 'users']);
