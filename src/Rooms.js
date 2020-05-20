@@ -18,9 +18,7 @@ export default function Rooms(props) {
 	function notEnded(event) {
 		const start = PARTY_START_UTC_SECONDS + (event.start_hour * 60 * 60);
 		const end = start + (event.duration_hours * ONE_HOUR_IN_SECONDS);
-		const now = new Date().getTime() / 1000;
-
-		const notEnded = end >= now;
+		const notEnded = end >= props.time;
 		return notEnded;
 	}
 
