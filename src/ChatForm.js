@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useFirestore } from 'react-redux-firebase';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 // One message per second
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
