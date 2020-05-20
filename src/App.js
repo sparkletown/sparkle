@@ -41,7 +41,6 @@ export default function App(props) {
 
   function updateProfile(values) {
     user.updateProfile(values).then(() => {
-      console.log('setUser', user);
       setUser({...user});
     });
   }
