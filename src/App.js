@@ -24,7 +24,7 @@ export default function App(props) {
   const [time, setTime] = useState(Date.now() / 1000);
 
   useEffect(() => {
-    const interval = setInterval(() => setTime(Date.now()), 1000);
+    const interval = setInterval(() => setTime(Date.now() / 1000), 1000);
     return () => {
       clearInterval(interval);
     };
