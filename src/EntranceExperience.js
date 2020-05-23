@@ -75,7 +75,8 @@ export default function EntranceExperience(props) {
                       <label htmlFor="password">
                         Password:
                       </label>
-                      <input onChange={passwordChanged}
+                      <input autoFocus
+                        onChange={passwordChanged}
                         className={"form-control" + (invalidPassword ? " is-invalid" : "")}
                         id="password"
                         placeholder="Password"/>
