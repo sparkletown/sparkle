@@ -1,7 +1,6 @@
 function validDate(date) {
 	return typeof date === 'object' &&
 		date.seconds > 0;
-
 }
 
 function validBool(bool) {

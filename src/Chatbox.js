@@ -5,6 +5,8 @@ import { isChatValid } from './validation';
 
 import ChatForm from './ChatForm';
 
+// Don't pull everything
+// REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 export default function Chatbox(props) {
