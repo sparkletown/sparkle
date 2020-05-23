@@ -13,7 +13,6 @@ import Header from './Header';
 import LockedSite from './LockedSite';
 import Map from './Map';
 import Rooms from './Rooms';
-import RoomModals from './RoomModals';
 
 import { LINEUP } from './lineup';
 import { LOCK_SITE_AFTER_UTC_SECONDS, PARTY_START_UTC_SECONDS } from './config';
@@ -23,6 +22,7 @@ export default function App(props) {
   const [user, setUser] = useState();
   const [time, setTime] = useState(Date.now() / 1000);
 
+  // REVISIT: this causes the map to re-render every second
   useEffect(() => {
     const interval = setInterval(() => setTime(Date.now() / 1000), 1000);
     return () => {
@@ -49,10 +49,26 @@ export default function App(props) {
   });
 
   useFirestoreConnect(['chats', 'announcements', 'users']);
-  const { chats, announcements } = useSelector(state => ({
+  const { chats, announcements, users } = useSelector(state => ({
     chats: state.firestore.ordered.chats,
     announcements: state.firestore.ordered.announcements,
+    users: state.firestore.ordered.users,
   }));
+
+  // Remove room presence etc. on disconnect
+  window.onbeforeunload = () => {
+    if (user) {
+      firebase.firestore()
+        .doc(`users/${user.uid}`)
+        .update({
+          room: null
+      });
+    }
+  }
+
+  // REVISIT: Can we put this on the server
+  const attendances = users ? users.reduce((acc, value) => (acc[value.room] = (acc[value.room] || 0) + 1, acc), {}) : [];
+  console.log('attendances', attendances);
 
   function updateProfile(values) {
     user.updateProfile(values).then(() => {
@@ -77,8 +93,7 @@ export default function App(props) {
       <div className="container-fluid">
         <div className="row">
           <div className="col">
-            <Map rooms={LINEUP.rooms} />
-            <Rooms rooms={LINEUP.rooms} time={time} />
+            <Map rooms={LINEUP.rooms} user={user} attendances={attendances} />
           </div>
           <div className="col-md-3 pl-0">
             <Announcements announcements={announcements} />
@@ -86,7 +101,6 @@ export default function App(props) {
           </div>
         </div>
       </div>
-      <RoomModals rooms={LINEUP.rooms} />
     </Fragment>
   );
 }

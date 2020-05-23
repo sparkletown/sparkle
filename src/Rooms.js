@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react';
 
 import { PARTY_START_UTC_SECONDS, ONE_HOUR_IN_SECONDS } from './config';
-import { roomSlug, formatHour } from './utils';
+import { formatHour } from './utils';
 import { isRoomValid } from './validation';
+
+import RoomAttendance from './RoomAttendance';
 
 export default function Rooms(props) {
 	if (props.rooms === undefined) {
@@ -31,10 +33,9 @@ export default function Rooms(props) {
 				{rooms.map((room, idx) =>
 					<li className="list-group-item" key={idx}>
 						<button className="btn btn-link stretched-link"
-							data-toggle="modal"
-							data-target={"#modal-" + roomSlug(room)}
 							title={room.title}>
 							{room.name}
+							<RoomAttendance count={10} />
 						</button>
 						<div className="ml-3">
 							{room.title}
