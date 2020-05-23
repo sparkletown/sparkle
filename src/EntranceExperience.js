@@ -6,9 +6,9 @@ export default function EntranceExperience(props) {
 
   const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();
-  const [success, setSuccess] = useState();
   const [password, setPassword] = useState();
   const [name, setName] = useState();
+  const [message, setMessage] = useState();
 
   const passwordChanged = (e) => {
     setPassword(e.target.value);
@@ -18,12 +18,13 @@ export default function EntranceExperience(props) {
 
   const passwordSubmitted = (e) => {
     e.preventDefault();
+    setMessage('Checking password...');
 
     const checkPassword = firebase.functions().httpsCallable('checkPassword');
     checkPassword({password: password})
       .then(() => {
         setInvalidPassword(false);
-        setSuccess(true)
+        setMessage('Password OK! Proceeding...');
 
         firebase.auth()
           .signInAnonymously()
@@ -33,6 +34,7 @@ export default function EntranceExperience(props) {
       })
       .catch(() => {
         setInvalidPassword(true)
+        setMessage(null);
       });
   }
 
@@ -93,8 +95,8 @@ export default function EntranceExperience(props) {
                     </div>
                     <button type="submit" className="btn btn-primary">Submit</button>
                     <div className="form-group">
-                      {success &&
-                        <small>Password OK! Proceeding...</small>
+                      {message &&
+                        <small>{message}</small>
                       }
                     </div>
                   </form>
