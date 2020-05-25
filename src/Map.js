@@ -62,6 +62,7 @@ export default function Map(props) {
 							const color = '#ffffff33';
 							return <a
 								key={idx}
+                href="/"
 								onClick={() => updateRoom(room)}>
 								<path
 									d={room.path}

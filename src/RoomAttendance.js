@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 
 export default function RoomAttendance(props) {
   const attendance = props.attendance || 0;
@@ -10,7 +10,7 @@ export default function RoomAttendance(props) {
   const title = attendance === 1 ? singularTitle : pluralTitle;
 
   return (
-    <a
+    <div
       className="position-absolute d-flex room-attendance"
       style={{left: props.room.attendance_x, top: props.room.attendance_y}}
       title={title}
@@ -21,6 +21,6 @@ export default function RoomAttendance(props) {
       <div className="count">
         {attendance}
       </div>
-    </a>
+    </div>
   );
 }
