@@ -62,7 +62,7 @@ export default function Map(props) {
 							const color = '#ffffff33';
 							return <a
 								key={idx}
-								onClick={() => updateRoom(room, idx)}>
+								onClick={() => updateRoom(room)}>
 								<path
 									d={room.path}
 									style={{ fill: color }}>
@@ -76,7 +76,7 @@ export default function Map(props) {
 						.filter(r => r.on_map)
 						.filter(r => r.attendance_x && r.attendance_y)
 						.map((room, idx) =>
-						<RoomAttendance x={room.attendance_x} y={room.attendance_y} count={props.attendances[room.name]} name={room.name} key={idx} />
+						<RoomAttendance room={room} attendance={props.attendances[room.name]}  onClick={() => updateRoom(room)} key={idx} />
 					)}
 					<img className="img-fluid"
 						src={MAP_URL}
