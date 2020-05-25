@@ -39,7 +39,6 @@ export default function Map(props) {
           .doc(doc)
           .set(update);
       });
-     console.log('upsertUserRoom', room);
   }
 
   function roomDeparted() {

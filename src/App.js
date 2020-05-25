@@ -68,7 +68,6 @@ export default function App(props) {
 
   // REVISIT: Can we put this on the server
   const attendances = users ? users.reduce((acc, value) => (acc[value.room] = (acc[value.room] || 0) + 1, acc), {}) : [];
-  console.log('attendances', attendances);
 
   function updateProfile(values) {
     user.updateProfile(values).then(() => {
