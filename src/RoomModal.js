@@ -1,30 +1,62 @@
-import React, { Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { Modal } from 'react-bootstrap';
 
+import { exitPreviewRoom, enterRoom, leaveRoom } from './actions';
 import { formatHour } from './utils';
 
-export default function RoomModal(props) {
-  if (!props.room) {
-    return <Fragment/>;
+export default function RoomModal({ show, onHide }) {
+  const dispatch = useDispatch();
+  const [inRoom, setInRoom] = useState();
+  const { room, user } = useSelector(state => ({
+    room: state.room,
+    user: state.user,
+  }));
+
+  useEffect(() => {
+    const previousonfocus = window.onfocus;
+    window.onfocus = () => {
+      if (inRoom) {
+        setInRoom(false);
+        dispatch(leaveRoom(user.uid));
+      }
+    }
+    return () => {
+      window.onfocus = previousonfocus;
+    }
+  });
+
+  if (!room || !user) {
+    return null;
+  }
+
+  function enter() {
+    setInRoom(true);
+    dispatch(enterRoom(room, user.uid));
+  }
+
+  const leave = () => {
+    dispatch(exitPreviewRoom(user.uid));
   }
 
   return (
-    <Modal show={props.show} onHide={props.roomDeparted}>
+    <Modal show={show} onHide={onHide} onExited={leave}>
       <Modal.Header closeButton>
         <Modal.Title>
-          Welcome to {props.room.name}!
+          Welcome to {room.name}!
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div>
-          {props.room.title}
-          <a type="button" className="btn btn-success float-right" href={props.room.url} target="_blank" rel="noopener noreferrer">Jump in!</a>
+          {room.title}
+          <a type="button" className="btn btn-success float-right" onClick={() => enter()} href={room.url} target="_blank" rel="noopener noreferrer">Jump in!</a>
         </div>
-        {props.room.events && props.room.events.length > 0 &&
+        {room.events && room.events.length > 0 &&
           <div>
             Lineup:
             <ul>
-              {props.room.events.map((event, idx) =>
+              {room.events.map((event, idx) =>
                 <li className="my-2" key={idx}>
                   <b>{formatHour(event.start_hour)}-{formatHour(event.start_hour + event.duration_hours)}: {event.name}</b>
                   <br/>
@@ -44,7 +76,7 @@ export default function RoomModal(props) {
         }
       </Modal.Body>
       <Modal.Footer>
-        <a type="button" className="btn btn-success" href={props.room.url} target="_blank" rel="noopener noreferrer">Jump in!</a>
+        <a type="button" className="btn btn-success" onClick={() => enter()} href={room.url} target="_blank" rel="noopener noreferrer">Jump in!</a>
       </Modal.Footer>
     </Modal>
   );

@@ -1,6 +1,5 @@
 import React, { useState, Fragment } from 'react';
-
-import { useFirestore } from 'react-redux-firebase';
+import { useDispatch } from 'react-redux';
 
 import { isRoomValid } from './validation';
 import {
@@ -8,43 +7,19 @@ import {
 	MAP_URL
 } from './config';
 
+import { previewRoom } from './actions';
+
 import RoomModal from './RoomModal';
 import RoomAttendance from './RoomAttendance';
 
 export default function Map(props) {
-  const firestore = useFirestore();
-
-	const [room, setRoom] = useState();
+  const dispatch = useDispatch();
 	const [showModal, setShowModal] = useState();
 
-	function updateRoom(room) {
-		setRoom(room);
+	function preview(room) {
+		dispatch(previewRoom(room));
 		setShowModal(true);
-		upsertUserRoom(room.name);
 	}
-
-  function upsertUserRoom(room) {
-  	// Don't update if user is incognito
-  	if (!props.user.displayName) {
-  		return;
-  	}
-
-    const doc = `users/${props.user.uid}`;
-    const update = {room: room};
-    firestore
-      .doc(doc)
-      .update(update)
-      .catch(e => {
-        firestore
-          .doc(doc)
-          .set(update);
-      });
-  }
-
-  function roomDeparted() {
-    upsertUserRoom(null);
-    setShowModal(false);
-  }
 
 	if (props.rooms === undefined) {
 		return "Loading map...";
@@ -62,8 +37,8 @@ export default function Map(props) {
 							const color = '#ffffff33';
 							return <a
 								key={idx}
-                href="/"
-								onClick={() => updateRoom(room)}>
+								onClick={(e) => {e.preventDefault(); preview(room)}}
+                href="/">
 								<path
 									d={room.path}
 									style={{ fill: color }}>
@@ -77,7 +52,7 @@ export default function Map(props) {
 						.filter(r => r.on_map)
 						.filter(r => r.attendance_x && r.attendance_y)
 						.map((room, idx) =>
-						<RoomAttendance room={room} attendance={props.attendances[room.name]}  onClick={() => updateRoom(room)} key={idx} />
+						<RoomAttendance room={room} attendance={props.attendances[room.name]} key={idx} onClick={() => preview(room)} />
 					)}
 					<img className="img-fluid"
 						src={MAP_URL}
@@ -90,7 +65,7 @@ export default function Map(props) {
 	        Remember at all times, the party is real. Act accordingly.
 	      </div>
 			</div>
-			<RoomModal show={showModal} room={room} roomDeparted={roomDeparted} />
+			<RoomModal show={showModal} onHide={() => setShowModal(false)} />
 		</Fragment>
 	);
 }

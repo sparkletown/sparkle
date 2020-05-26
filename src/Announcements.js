@@ -1,13 +1,21 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
+
 import { formatUtcSeconds } from './utils';
 import { isAnnouncementValid } from './validation';
 
 export default function Announcements(props) {
-	if (props.announcements === undefined ) {
+	useFirestoreConnect('announcements');
+	let { announcements } = useSelector(state => ({
+		announcements: state.firestore.ordered.announcements,
+	}));
+
+	if (announcements === undefined ) {
 		return "Loading announcements...";
 	}
 
-	const announcements = props.announcements
+	announcements = announcements
 		.filter(isAnnouncementValid)
 		.concat()
 		.sort((a, b) => b.ts_utc - a.ts_utc);

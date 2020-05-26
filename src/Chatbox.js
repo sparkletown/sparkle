@@ -1,4 +1,6 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
 
 import { formatUtcSeconds } from './utils';
 import { isChatValid } from './validation';
@@ -9,13 +11,17 @@ import ChatForm from './ChatForm';
 // REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
-export default function Chatbox(props) {
+export default function Chatbox() {
+  useFirestoreConnect('chats');
+  let { chats } = useSelector(state => ({
+    chats: state.firestore.ordered.chats,
+  }));
 
-  if (props.chats === undefined ) {
+  if (chats === undefined ) {
     return "Loading chat...";
   }
 
-  const chats = props.chats
+  chats = chats
     .filter(isChatValid)
     .concat()
     .sort((a, b) => b.ts_utc - a.ts_utc)
@@ -27,7 +33,7 @@ export default function Chatbox(props) {
         Party Chat
       </div>
       <div className="card-body text-center">
-        <ChatForm user={props.user} />
+        <ChatForm />
         {chats.length === 0 &&
           "No chat messages yet"
         }

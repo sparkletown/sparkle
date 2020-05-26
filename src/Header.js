@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useFirebase } from 'react-redux-firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserSlash } from '@fortawesome/free-solid-svg-icons';
+
+import { updateProfile } from './actions';
 
 const BRAND_ID = 'nav';
 const SECTIONS = [
@@ -13,15 +16,19 @@ const SECTIONS = [
 
 export default function Header(props) {
   const firebase = useFirebase();
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => ({
+    user: state.user,
+  }));
 
-  const [name, setName] = useState(props.user.displayName || '');
+  const [name, setName] = useState(user.displayName || '');
   const [section, setSection] = useState();
   const [editingName, setEditingName] = useState(false);
 
   function submitName(e) {
-    props.updateProfile({
+    dispatch(updateProfile(user, {
       displayName: name,
-    });
+    }));
     setEditingName(false);
     e.preventDefault();
   }

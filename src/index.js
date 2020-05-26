@@ -3,8 +3,9 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import { reduxFirestore, firestoreReducer, createFirestoreInstance } from 'redux-firestore';
+import { createStore, compose, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { reduxFirestore, createFirestoreInstance } from 'redux-firestore';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/analytics';
@@ -17,6 +18,7 @@ import 'bootstrap';
 import './scss/custom.scss';
 
 import App from './App';
+import rootReducer from './reducers/';
 import trackingMiddleware from './middleware/tracking';
 import { API_KEY, APP_ID, MEASUREMENT_ID } from './secrets';
 import * as serviceWorker from './serviceWorker';
@@ -48,16 +50,13 @@ const createStoreWithFirebase = compose(
 	reduxFirestore(firebase, rfConfig),
 )(createStore);
 
-const rootReducer = combineReducers({
-  firestore: firestoreReducer
-})
-
 const initialState = {};
 const store = createStoreWithFirebase(
   rootReducer,
   initialState,
   composeWithDevTools(
     applyMiddleware(
+      thunkMiddleware,
       trackingMiddleware(analytics),
   ))
 );

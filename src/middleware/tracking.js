@@ -6,7 +6,6 @@ export default function trackingMiddleware(analytics) {
     } else {
       analytics.logEvent('event', action);
     }
-
     return next(action);
   }
 };

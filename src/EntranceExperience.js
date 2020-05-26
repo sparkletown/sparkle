@@ -10,13 +10,13 @@ export default function EntranceExperience(props) {
   const [name, setName] = useState();
   const [message, setMessage] = useState();
 
-  const passwordChanged = (e) => {
+  function passwordChanged(e) {
     setPassword(e.target.value);
     setInvalidPassword(false);
     setError(false);    
   }
 
-  const passwordSubmitted = (e) => {
+  function passwordSubmitted(e) {
     e.preventDefault();
     setMessage('Checking password...');
 
@@ -38,13 +38,13 @@ export default function EntranceExperience(props) {
       });
   }
 
-  const nameChanged = (e) => {
+  function nameChanged(e) {
     setName(e.target.value);
     setInvalidPassword(false);
     setError(false);
   }
 
-  const nameSubmitted = (e) => {
+  function nameSubmitted(e) {
     e.preventDefault();
 
     props.updateProfile({
