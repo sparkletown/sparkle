@@ -18,12 +18,18 @@ export default function RoomModal({ show, onHide }) {
     const previousonfocus = window.onfocus;
     window.onfocus = () => {
       if (inRoom) {
-        setInRoom(false);
         dispatch(leaveRoom(user.uid));
+      }
+    }
+    const previousonblur = window.onblur;
+    window.onblur = () => {
+      if (inRoom) {
+        dispatch(enterRoom(room, user.uid));
       }
     }
     return () => {
       window.onfocus = previousonfocus;
+      window.onblur = previousonblur;
     }
   });
 
