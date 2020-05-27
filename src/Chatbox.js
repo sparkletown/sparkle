@@ -32,12 +32,14 @@ export default function Chatbox() {
       <div className="card-header">
         Party Chat
       </div>
-      <div className="card-body text-center">
+      <div className="card-body">
         <ChatForm />
         {chats.length === 0 &&
-          "No chat messages yet"
+          <div className="card-body text-center chat-list">
+            No chat messages yet
+          </div>
         }
-        <ul className="list-group text-left">
+        <ul className="list-group chat-list">
           {chats.map(chat =>
             <li className="list-group-item" key={chat.id}>
               <b>{chat.name}</b>: {chat.text}
