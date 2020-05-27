@@ -49,7 +49,7 @@ export default function App(props) {
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {
-      
+
       dispatch(setUser(user));
       killLoginsFromBeforePartyStart(user);
     });
@@ -81,12 +81,11 @@ export default function App(props) {
   return (
     <Fragment>
       <Header />
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col">
             <Map rooms={LINEUP.rooms} attendances={attendances} />
-          </div>
-          <div className="col-md-3 pl-0">
+            <Rooms rooms={LINEUP.rooms} attendances={attendances} />
             <Announcements />
             <Chatbox />
           </div>

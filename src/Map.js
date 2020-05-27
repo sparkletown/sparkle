@@ -6,7 +6,6 @@ import {
 	MAP_VIEWBOX,
 	MAP_URL
 } from './config';
-
 import { previewRoom } from './actions';
 
 import RoomModal from './RoomModal';
@@ -22,7 +21,7 @@ export default function Map(props) {
 	}
 
 	if (props.rooms === undefined) {
-		return "Loading map...";
+		return 'Loading map...';
 	}
 
 	return (
@@ -52,7 +51,7 @@ export default function Map(props) {
 						.filter(r => r.on_map)
 						.filter(r => r.attendance_x && r.attendance_y)
 						.map((room, idx) =>
-						<RoomAttendance room={room} attendance={props.attendances[room.name]} key={idx} onClick={() => preview(room)} />
+						<RoomAttendance room={room} positioned={true} attendance={props.attendances[room.name]} key={idx} onClick={() => preview(room)} />
 					)}
 					<img className="img-fluid"
 						src={MAP_URL}

@@ -12,7 +12,7 @@ export default function Announcements(props) {
 	}));
 
 	if (announcements === undefined ) {
-		return "Loading announcements...";
+		return 'Loading announcements...';
 	}
 
 	announcements = announcements

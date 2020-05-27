@@ -18,7 +18,7 @@ export default function Chatbox() {
   }));
 
   if (chats === undefined ) {
-    return "Loading chat...";
+    return 'Loading chat...';
   }
 
   chats = chats

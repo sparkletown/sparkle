@@ -43,8 +43,8 @@ export default function Header(props) {
 
   function cancelEditName(e) {
     e.preventDefault();
-    setEditingName(false)
-    setName(props.user.displayName)
+    setEditingName(false);
+    setName(user.displayName)
   }
 
   function logout(e) {
