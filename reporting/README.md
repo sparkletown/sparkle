@@ -10,9 +10,9 @@ The `makegraphs.py` script will create `analytics.pdf` based on Usage Reports fr
 To use the script for your party:
 
 1. Obtain the **Usage Reports** for all meetings during your party:
-  - As a **non admin user** (zoom doesn't let admin users access these reports for #reasons)
   - Go to Reports
-  - Go to Usage
+  - If not admin, go to "Usage"
+  - If admin, go to "Active Host"
   - Select the date range of your event
   - Download all the CSVs for your meeting
   - (NOTE: there may be more than one. This is because if the room empties out, the meeting ends. It starts again when someone else comes back in, causing multiple reports to be generated.)
