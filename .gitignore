@@ -22,6 +22,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+**/__pycache__
+
 # Firebase cache
 .firebase/
 
@@ -30,3 +32,7 @@ firebase-debug.log
 
 # Secrets
 src/secrets.js
+
+# Reports
+reporting/env
+reporting/*.pdf
