@@ -22,7 +22,26 @@ logging.basicConfig(level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
 
-PARTY_START = datetime(2020,4,18,12,0,0,0)
+PARTY_START = datetime(2020,5,2,12,0,0,0)
+PARTY_END = PARTY_START + timedelta(hours=16)
+
+meeting_id_renames = {
+	'81259280306': 'Shrinking Station',
+	'82383634053': 'Tip of the Tongue',
+	'89072177227': 'Heart of the Party',
+	'85105150305': 'All Ears',
+	'84119671594': 'Court-X',
+	'85485729711': 'Third Eye',
+	'85030810493': 'The Voice Box',
+	'83776728154': 'InDigest-Inn',
+	'88193100121': 'Womb For Improvement',
+	'87127042202': 'Funk in the Trunk',
+	'86578482268': 'The Clitoris',
+	'86901109362': 'Try Your Hand',
+	'81896872245': 'The Bladder',
+	'89718158675': 'Funny Bones'
+}
+
 room_renames = {
 	'Welcome to the Tree of Life 1': 'Rabbit Hole - Entrance Experience',
 	'Welcome to the Tree of Life 2': 'The Roots',
@@ -38,7 +57,9 @@ room_renames = {
 	'Welcome to the Tree of Life 12': 'Lost Soul Chamber'
 }
 
-def room_name(room):
+def room_name(room, meeting_id):
+	if meeting_id in meeting_id_renames:
+		return meeting_id_renames[meeting_id]
 	if room in room_renames:
 		return room_renames[room]
 	return room
@@ -96,8 +117,8 @@ room_offsets = {
 }
 
 
-def record_visit(user, room, join_time, leave_time):
-	actual_room = room_name(room)
+def record_visit(user, room, meeting_id, join_time, leave_time):
+	actual_room = room_name(room, meeting_id)
 	log.debug("record_visit: Room {0}; User: {1}; Entered: {2}; Left: {3}".format(actual_room, user, join_time, leave_time))
 
 	if actual_room in room_offsets:
@@ -113,9 +134,17 @@ def record_visit(user, room, join_time, leave_time):
 		log.debug("### Discarding visit, it ends before the party started")
 		return
 
+	if join_time > PARTY_END:
+		log.debug("### Discarding visit, it starts after the party ended")
+		return
+
 	if join_time < PARTY_START:
 		log.debug("@@@ Bumping visit start time {0} to party start {1}".format(join_time, PARTY_START))
 		join_time = PARTY_START
+
+	if leave_time > PARTY_END:
+		log.debug("@@@ Bumping visit end time {0} to party end {1}".format(leave_time, PARTY_END))
+		leave_time = PARTY_END
 
 	visit = TimeRange(join_time, leave_time)
 	all_visits.append({'room': actual_room, 'user': user, 'visit': visit})
@@ -156,6 +185,8 @@ def process_admin_report(f):
 	header_values = csvfile.readline().split(',')
 	room = header_values[0]
 	log.debug("Got room name: {0}".format(room))
+	meeting_id = header_values[1]
+	log.debug("Got meeting ID: {0}".format(meeting_id))
 	meeting_start_time_str = header_values[8] + header_values[9]
 	meeting_start_date = datetime.strptime(meeting_start_time_str, '"%b %d %Y %I:%M %p"').date()
 	meeting_start_datetime = datetime(year=meeting_start_date.year, month=meeting_start_date.month, day=meeting_start_date.day)
@@ -179,7 +210,7 @@ def process_admin_report(f):
 		leave_time_parsed = datetime.strptime(leave_time_str, '%I:%M %p')
 		leave_time = meeting_start_datetime + timedelta(hours=leave_time_parsed.hour, minutes=leave_time_parsed.minute, seconds=leave_time_parsed.second)
 
-		record_visit(user, room, join_time, leave_time)
+		record_visit(user, room, meeting_id, join_time, leave_time)
 
 
 def process_user_report(csfile):
@@ -187,6 +218,8 @@ def process_user_report(csfile):
 	# Ignore header row
 	csvfile.readline()
 	header_values = csvfile.readline().split(',')
+	meeting_id = header_values[0]
+	log.debug("Got meeting ID: {0}".format(meeting_id))
 	room = header_values[1]
 	log.debug("Got room topic: {0}".format(room))
 
@@ -207,7 +240,7 @@ def process_user_report(csfile):
 		join_time = datetime.strptime(join_time_str, '%m/%d/%Y %I:%M:%S %p')
 		leave_time = datetime.strptime(leave_time_str, '%m/%d/%Y %I:%M:%S %p')
 
-		record_visit(user, room, join_time, leave_time)
+		record_visit(user, room, meeting_id, join_time, leave_time)
 
 
 def generate_moves(visits_by_user):
@@ -305,7 +338,7 @@ def generate_attendances(rooms, all_joins, all_leaves, joins, leaves):
 	leave_index = 0
 	total_joins = 0
 	total_leaves = 0
-	log.debug("All joins/leaves: first join: {0}, last join: {1}, first leave: {2}, last leave: {3}".format(all_joins[0], all_joins[len(joins[room])-1], all_leaves[0], all_leaves[len(leaves[room])-1]))
+	log.debug("All joins/leaves: first join: {0}, last join: {1}, first leave: {2}, last leave: {3}".format(all_joins[0], all_joins[len(all_joins)-1], all_leaves[0], all_leaves[len(all_leaves)-1]))
 	for i in x:
 		if join_index < len(all_joins) and i >= all_joins[join_index]:
 			tally += 1
@@ -374,7 +407,7 @@ for user in visits_by_user:
 for room in first_visit_rooms:
 	log.debug("Users whose first visit was to {0} ({1}): {2}".format(room, len(first_visit_rooms[room]), ','.join(first_visit_rooms[room])))
 for room in last_visit_rooms:
-	log.debug("Users whose last visit was to {0}: {1}".format(room, len(last_visit_rooms[room]), ','.join(last_visit_rooms[room])))
+	log.debug("Users whose last visit was to {0} ({1}): {2}".format(room, len(last_visit_rooms[room]), ','.join(last_visit_rooms[room])))
 
 x, y_rooms, y_all = generate_attendances(rooms, all_joins, all_leaves, room_joins, room_leaves)
 
