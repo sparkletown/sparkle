@@ -66,10 +66,7 @@ class Config():
 		'Second Half of Party': TimeRange(START + timedelta(hours=4), START + timedelta(hours=8)),
 		'Afterparty Hour 8-12': TimeRange(START + timedelta(hours=8), START + timedelta(hours=12))
 	}
-
-
-class ZoomReportParser():	
-	meeting_id_renames = {
+	MEETING_ID_RENAMES = {
 		'81259280306': 'Shrinking Station',
 		'82383634053': 'Tip of the Tongue',
 		'89072177227': 'Heart of the Party',
@@ -85,8 +82,7 @@ class ZoomReportParser():
 		'81896872245': 'The Bladder',
 		'89718158675': 'Funny Bones'
 	}
-
-	room_renames = {
+	ROOM_RENAMES = {
 		'Welcome to the Tree of Life 1': 'Rabbit Hole - Entrance Experience',
 		'Welcome to the Tree of Life 2': 'The Roots',
 		'Welcome to the Tree of Life 3': 'Upside Down Room - The Bat Cave',
@@ -100,20 +96,13 @@ class ZoomReportParser():
 		'Welcome to the Tree of Life 11': 'Sunset Room',
 		'Welcome to the Tree of Life 12': 'Lost Soul Chamber'
 	}
-
-	room_timezone_offsets = {
+	ROOM_TIMEZONE_OFFSETS = {
 		'Moon Rock Room- Live performers and deep space hitchhikers': timedelta(hours=-1),
 		'Midnight Reception': timedelta(hours=-1)
 	}
 
-	@classmethod
-	def real_room_name(cls, room, meeting_id):
-		if meeting_id in cls.meeting_id_renames:
-			return cls.meeting_id_renames[meeting_id]
-		if room in cls.room_renames:
-			return cls.room_renames[room]
-		return room
 
+class ZoomReportParser():
 	def __init__(self, filenames):
 		self._all_visits = []
 		self._visits_by_user = {}
@@ -151,14 +140,22 @@ class ZoomReportParser():
 		for user in self._visits_by_user:
 			self._visits_by_user[user].sort(key=lambda user_visit: user_visit['visit'].start)
 
+	@staticmethod
+	def real_room_name(room, meeting_id):
+		if meeting_id in Config.MEETING_ID_RENAMES:
+			return Config.MEETING_ID_RENAMES[meeting_id]
+		if room in Config.ROOM_RENAMES:
+			return Config.ROOM_RENAMES[room]
+		return room
+
 	def record_visit(self, user, room, meeting_id, join_time, leave_time):
 		room = self.real_room_name(room, meeting_id)
 		log.debug("record_visit: Room {}; User: {}; Entered: {}; Left: {}".format(room, user, join_time, leave_time))
 
-		if room in self.room_timezone_offsets:
+		if room in Config.ROOM_TIMEZONE_OFFSETS:
 			log.debug("Room {} has an offset of {}; correcting join and leave times".format(room, room_offsets[room]))
-			join_time = join_time + room_timezone_offsets[room]
-			leave_time = leave_time + room_timezone_offsets[room]
+			join_time = join_time + Config.ROOM_TIMEZONE_OFFSETS[room]
+			leave_time = leave_time + Config.ROOM_TIMEZONE_OFFSETS[room]
 
 		if leave_time < join_time:
 			log.debug("Error: leave time is before join time")
