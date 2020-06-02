@@ -1,5 +1,5 @@
-import { combineReducers } from 'redux';
-import { firestoreReducer } from 'redux-firestore';
+import { combineReducers } from "redux";
+import { firestoreReducer } from "redux-firestore";
 
 import {
   PREVIEW_ROOM,
@@ -8,8 +8,7 @@ import {
   TIMER_STOPPED,
   TIMER_TICK,
   SET_USER,
-
-} from '../actions';
+} from "../actions";
 
 function room(state = null, action) {
   switch (action.type) {
@@ -22,7 +21,7 @@ function room(state = null, action) {
   }
 }
 
-function timer(state = {time: null}, action) {
+function timer(state = { time: null }, action) {
   switch (action.type) {
     case TIMER_STARTED:
       return {
@@ -33,7 +32,7 @@ function timer(state = {time: null}, action) {
       return {
         interval: state.interval,
         time: action.time,
-      }
+      };
     case TIMER_STOPPED:
     default:
       return state;

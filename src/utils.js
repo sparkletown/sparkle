@@ -1,14 +1,14 @@
-import { format } from 'date-fns';
-import { PARTY_START_UTC_SECONDS } from './config';
+import { format } from "date-fns";
+import { PARTY_START_UTC_SECONDS } from "./config";
 
 export function formatHour(hour) {
   if (hour === null || hour === undefined) {
-    return '(unknown)';
+    return "(unknown)";
   }
-  const utcSeconds = PARTY_START_UTC_SECONDS + (hour * 60 * 60);
+  const utcSeconds = PARTY_START_UTC_SECONDS + hour * 60 * 60;
   return formatUtcSeconds(utcSeconds);
 }
 
 export function formatUtcSeconds(utcSec) {
-	return format(new Date(utcSec * 1000), "p")
+  return format(new Date(utcSec * 1000), "p");
 }

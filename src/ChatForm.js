@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useFirestore } from 'react-redux-firebase';
-import firebase from 'firebase/app';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFirestore } from "react-redux-firebase";
+import firebase from "firebase/app";
 
-import { sendChat } from './actions';
+import { sendChat } from "./actions";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
@@ -11,11 +11,11 @@ const TIME_BETWEEN_SENDS_MILLIS = 2000;
 export default function ChatForm() {
   const firestore = useFirestore();
   const dispatch = useDispatch();
-  const { user } = useSelector(state => ({
+  const { user } = useSelector((state) => ({
     user: state.user,
   }));
 
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [longEnoughSinceLastSend, setLongEnoughSinceLastSend] = useState(true);
 
   if (!user) {
@@ -29,7 +29,7 @@ export default function ChatForm() {
   function chatSubmitted(e) {
     e.preventDefault();
     dispatch(sendChat(user.displayName, text));
-    setText('');
+    setText("");
     setLongEnoughSinceLastSend(false);
     window.setTimeout(() => {
       setLongEnoughSinceLastSend(true);
@@ -39,20 +39,30 @@ export default function ChatForm() {
   function allowSend() {
     return longEnoughSinceLastSend && text.length > 0;
   }
-  
+
   if (user.displayName && user.displayName.length) {
     return (
       <form onSubmit={chatSubmitted}>
         <div className="input-group">
-          <input type="text" className="form-control" placeholder="Message" value={text} onChange={textChanged} />
-          <button className="btn btn-success" type="small" disabled={!allowSend()}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Message"
+            value={text}
+            onChange={textChanged}
+          />
+          <button
+            className="btn btn-success"
+            type="small"
+            disabled={!allowSend()}
+          >
             Send
           </button>
         </div>
       </form>
     );
   }
-  
+
   return (
     <div>
       Cannot chat while incognito - tap on top right to change your name.

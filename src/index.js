@@ -1,82 +1,80 @@
-import React from 'react';
-import { render } from 'react-dom';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import React from "react";
+import { render } from "react-dom";
+import { Provider } from "react-redux";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-import { createStore, compose, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import { reduxFirestore, createFirestoreInstance } from 'redux-firestore';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import 'firebase/analytics';
-import 'firebase/auth';
-import 'firebase/functions';
-import { ReactReduxFirebaseProvider } from 'react-redux-firebase'
-import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
+import { createStore, compose, applyMiddleware } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { reduxFirestore, createFirestoreInstance } from "redux-firestore";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/functions";
+import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
-import 'bootstrap';
-import './scss/custom.scss';
+import "bootstrap";
+import "./scss/custom.scss";
 
-import App from './App';
-import rootReducer from './reducers/';
-import trackingMiddleware from './middleware/tracking';
-import { API_KEY, APP_ID, MEASUREMENT_ID } from './secrets';
-import * as serviceWorker from './serviceWorker';
+import App from "./App";
+import rootReducer from "./reducers/";
+import trackingMiddleware from "./middleware/tracking";
+import { API_KEY, APP_ID, MEASUREMENT_ID } from "./secrets";
+import * as serviceWorker from "./serviceWorker";
 
 const firebaseConfig = {
   apiKey: API_KEY,
   appId: APP_ID,
   measurementId: MEASUREMENT_ID,
-  projectId: 'co-reality-map'
+  projectId: "co-reality-map",
 };
 const rfConfig = {}; // optional redux-firestore Config Options
 
 const rrfConfig = {
-  userProfile: 'users',
-  useFirestoreForProfile: true
-}
+  userProfile: "users",
+  useFirestoreForProfile: true,
+};
 
 firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 firebase.auth();
 
 if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator('http://localhost:5000');
+  firebase.functions().useFunctionsEmulator("http://localhost:5000");
 } else {
   firebase.functions();
 }
 
-const createStoreWithFirebase = compose(
-	reduxFirestore(firebase, rfConfig),
-)(createStore);
+const createStoreWithFirebase = compose(reduxFirestore(firebase, rfConfig))(
+  createStore
+);
 
 const initialState = {};
 const store = createStoreWithFirebase(
   rootReducer,
   initialState,
   composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      trackingMiddleware(analytics),
-  ))
+    applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
+  )
 );
 
 const rrfProps = {
   firebase,
   config: rrfConfig,
   dispatch: store.dispatch,
-  createFirestoreInstance
-}
+  createFirestoreInstance,
+};
 
 render(
   <Provider store={store}>
-  	<ReactReduxFirebaseProvider {...rrfProps}>
+    <ReactReduxFirebaseProvider {...rrfProps}>
       <Router>
         <Route path="/" component={App} />
       </Router>
-	</ReactReduxFirebaseProvider>
+    </ReactReduxFirebaseProvider>
   </Provider>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
 // If you want your app to work offline and load faster, you can change

@@ -6,7 +6,8 @@ body {
   padding-top: 84px;
 }
 
-.announcement-list, .chat-list {
+.announcement-list,
+.chat-list {
   height: 400px;
   overflow: auto;
 }
@@ -21,12 +22,12 @@ body {
 
   .icon {
     border-radius: 10px 0 0 10px;
-    padding: $spacer * 0.25 $spacer * .75;
-    background: theme-color('primary');
+    padding: $spacer * 0.25 $spacer * 0.75;
+    background: theme-color("primary");
   }
   .count {
     border-radius: 0 10px 10px 0;
-    padding: $spacer * 0.25 $spacer * .75;
+    padding: $spacer * 0.25 $spacer * 0.75;
     background: $white;
     color: $black;
   }

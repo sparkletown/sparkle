@@ -1,24 +1,24 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { useFirestoreConnect } from 'react-redux-firebase';
+import React from "react";
+import { useSelector } from "react-redux";
+import { useFirestoreConnect } from "react-redux-firebase";
 
-import { formatUtcSeconds } from './utils';
-import { isChatValid } from './validation';
+import { formatUtcSeconds } from "./utils";
+import { isChatValid } from "./validation";
 
-import ChatForm from './ChatForm';
+import ChatForm from "./ChatForm";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 export default function Chatbox() {
-  useFirestoreConnect('chats');
-  let { chats } = useSelector(state => ({
+  useFirestoreConnect("chats");
+  let { chats } = useSelector((state) => ({
     chats: state.firestore.ordered.chats,
   }));
 
-  if (chats === undefined ) {
-    return 'Loading chat...';
+  if (chats === undefined) {
+    return "Loading chat...";
   }
 
   chats = chats
@@ -29,24 +29,22 @@ export default function Chatbox() {
 
   return (
     <div className="card" id="chat">
-      <div className="card-header">
-        Party Chat
-      </div>
+      <div className="card-header">Party Chat</div>
       <div className="card-body">
         <ChatForm />
-        {chats.length === 0 &&
+        {chats.length === 0 && (
           <div className="card-body text-center chat-list">
             No chat messages yet
           </div>
-        }
+        )}
         <ul className="list-group chat-list">
-          {chats.map(chat =>
+          {chats.map((chat) => (
             <li className="list-group-item" key={chat.id}>
               <b>{chat.name}</b>: {chat.text}
-              <br/>
+              <br />
               <small>{formatUtcSeconds(chat.ts_utc)}</small>
             </li>
-          )}
+          ))}
         </ul>
       </div>
     </div>
