@@ -1,6 +1,7 @@
 @import "node_modules/bootswatch/dist/darkly/variables";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
+@import "./constants.scss";
 
 body {
   padding-top: 50px;
@@ -42,7 +43,21 @@ body {
   flex-grow: 1;
 }
 
-.title-font {
+a {
+  color: $white;
+  text-decoration: underline;
+
+  &:hover {
+    color: $secondary-color;
+  }
+}
+
+h4 {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.title {
   font-style: italic;
   font-weight: 700;
 }

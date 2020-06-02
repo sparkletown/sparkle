@@ -1,10 +1,12 @@
+@import "../../../scss/constants.scss";
+
 .navbar-container {
   background: black;
 }
 
 .navbar {
   display: flex;
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid $light-grey;
   height: 50px;
   padding: 0 15px;
 }

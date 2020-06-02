@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import NavBar from "../../molecules/NavBar";
+import InformationCard from "../../molecules/InformationCard";
+import "./EntranceExperience.scss";
 
 const EntranceExperience = (props) => {
   const firebase = useFirebase();
@@ -58,6 +60,67 @@ const EntranceExperience = (props) => {
     <>
       <NavBar />
       <div className="container">
+        <div className="row mt-3">
+          <div className="col">
+            <h1 className="title">The Tree of Life Party</h1>
+            <div className="subtitle-container">
+              <img
+                className="collective-icon"
+                src="collective-icon.png"
+                alt="Co-Reality collective"
+                width="20"
+                height="20"
+              />
+              <div>
+                Hosted by{" "}
+                <a href="https://co-reality.co/">Co-Reality collective</a>{" "}
+                <br />
+                <div className="secondary-color">Party begins in</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col-xl-7">
+            <img
+              src="treeoflife.jpg"
+              className="map-image"
+              alt="Tree of Life Party"
+            />
+          </div>
+          <div className="col-xl-5">
+            <InformationCard title="About this party">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              Vestibulum auctor dolor malesuada est molestie lobortis. Curabitur
+              enim nunc, vulputate vel felis eget, semper rutrum nisl. Quisque
+              ultrices justo eros, vel commodo felis dictum ut. Donec in
+              consectetur ante. Praesent dignissim purus cursus mollis
+              tristique. Suspendisse potenti. Nulla ut pharetra purus. Ut
+              feugiat non ligula eget vehicula. Pellentesque auctor magna nulla,
+              et dapibus mauris finibus non. Quisque cursus lectus placerat
+              metus pellentesque efficitur.
+            </InformationCard>
+            <InformationCard title="About the host">
+              <p>
+                In massa justo, consequat sed ante at, pharetra scelerisque
+                metus. Donec orci elit, rutrum et lacinia dictum, viverra id
+                nunc. Pellentesque habitant morbi tristique senectus et netus et
+                malesuada fames ac turpis egestas. In ut nisl nisl. Etiam vitae
+                quam quis libero luctus porta nec non sem. Aenean a magna eu
+                mauris consequat malesuada. Morbi eget turpis vel erat molestie
+                volutpat.
+              </p>
+              <img
+                className="collective-icon"
+                src="collective-icon.png"
+                alt="Co-Reality collective"
+                width="20"
+                height="20"
+              />
+              <a href="https://co-reality.co/">Co-Reality collective</a>
+            </InformationCard>
+          </div>
+        </div>
         <div className="row mt-3">
           <div className="col">
             {!props.user ? (
