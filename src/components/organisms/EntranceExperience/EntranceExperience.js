@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import NavBar from "../../molecules/NavBar";
-import InformationCard from "../../molecules/InformationCard";
+import NavBar from "components/molecules/NavBar";
+import InformationCard from "components/molecules/InformationCard";
 import "./EntranceExperience.scss";
 
 const EntranceExperience = (props) => {
