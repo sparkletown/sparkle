@@ -3,7 +3,11 @@
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 
 body {
-  padding-top: 84px;
+  padding-top: 50px;
+  background: black;
+  display: flex;
+  justify-content: center;
+  font-family: "Rubik", sans-serif;
 }
 
 .announcement-list,
@@ -31,4 +35,14 @@ body {
     background: $white;
     color: $black;
   }
+}
+
+#root {
+  display: flex;
+  flex-grow: 1;
+}
+
+.title-font {
+  font-style: italic;
+  font-weight: 700;
 }

@@ -8,7 +8,7 @@ import { startTimer, stopTimer, setUser, leaveRoom } from "./actions";
 
 import Announcements from "./Announcements";
 import Chatbox from "./Chatbox";
-import EntranceExperience from "./EntranceExperience";
+import EntranceExperience from "./components/organisms/EntranceExperience";
 import Header from "./Header";
 import LockedSite from "./LockedSite";
 import Map from "./Map";

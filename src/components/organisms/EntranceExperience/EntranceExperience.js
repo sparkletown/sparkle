@@ -1,7 +1,8 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
+import NavBar from "../../molecules/NavBar";
 
-export default function EntranceExperience(props) {
+const EntranceExperience = (props) => {
   const firebase = useFirebase();
 
   const [invalidPassword, setInvalidPassword] = useState();
@@ -54,19 +55,13 @@ export default function EntranceExperience(props) {
   }
 
   return (
-    <Fragment>
-      <header>
-        <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-          <span className="navbar-brand">
-            Roots to Rapture: Party in the Tree of Life
-          </span>
-        </nav>
-      </header>
+    <>
+      <NavBar />
       <div className="container">
         <div className="row mt-3">
           <div className="col">
             {!props.user ? (
-              <Fragment>
+              <>
                 <h2>Enter the Password</h2>
                 <p>
                   By now, you should have received an email with the password.{" "}
@@ -133,9 +128,9 @@ export default function EntranceExperience(props) {
                     {message && <small>{message}</small>}
                   </div>
                 </form>
-              </Fragment>
+              </>
             ) : (
-              <Fragment>
+              <>
                 <h2>Enter Your Name</h2>
                 <p>What will you be known as during the party?</p>
                 <form onSubmit={nameSubmitted}>
@@ -152,11 +147,13 @@ export default function EntranceExperience(props) {
                     Submit
                   </button>
                 </form>
-              </Fragment>
+              </>
             )}
           </div>
         </div>
       </div>
-    </Fragment>
+    </>
   );
-}
+};
+
+export default EntranceExperience;
