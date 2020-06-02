@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useFirestore } from "react-redux-firebase";
-import firebase from "firebase/app";
 
 import { sendChat } from "./actions";
 
@@ -9,7 +7,6 @@ import { sendChat } from "./actions";
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
 
 export default function ChatForm() {
-  const firestore = useFirestore();
   const dispatch = useDispatch();
   const { user } = useSelector((state) => ({
     user: state.user,

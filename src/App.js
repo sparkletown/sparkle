@@ -42,18 +42,22 @@ export default function App(props) {
     }
   }
 
+  // REVISIT: properly wrap dependencies in useRef per https://github.com/facebook/create-react-app/issues/6880
   useEffect(() => {
-    // dispatch(startTimer());
+    dispatch(startTimer());
     return () => {
       dispatch(stopTimer(timerInterval));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // REVISIT: properly wrap dependencies in useRef per https://github.com/facebook/create-react-app/issues/6880
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       dispatch(setUser(user));
       killLoginsFromBeforePartyStart(user);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
