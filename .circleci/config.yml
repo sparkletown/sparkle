@@ -12,7 +12,7 @@ jobs:
             - run: npm install
             - run: npm run init
             - run: npm run build
-            - run: npm test
+            - run: npm test --passWithNoTests
 workflows:
     build-and-test:
       jobs:
