@@ -38,6 +38,7 @@
     "start": "react-scripts start",
     "init": "node scripts/init.js",
     "build": "react-scripts build",
+    "lint": "prettier --write \"{src,scripts,functions}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy"
