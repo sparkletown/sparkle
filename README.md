@@ -1,3 +1,21 @@
+# co-reality-map: Co-reality Collective Party Map App
+
+A clickable party map to help you navigate Co-reality Collective parties.
+
+## Getting started
+
+```
+git clone ...
+cd co-reality-map
+npm i
+npm run init # Initialize secrets files with default values
+npm test
+npm start
+npm run build
+```
+
+## Create React App Documentation
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts

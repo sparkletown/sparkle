@@ -1,5 +1,5 @@
-const functions = require('firebase-functions');
-const { PASSWORD } = require('./secrets');
+const functions = require("firebase-functions");
+const { PASSWORD } = require("./secrets");
 
 // Case-insensitive first character for iDevices
 function lowercaseFirstChar(password) {
@@ -7,13 +7,16 @@ function lowercaseFirstChar(password) {
 }
 
 exports.checkPassword = functions.https.onCall((data, context) => {
-  if (data.password === undefined ||
-      (
-        data.password.length > 0 &&
-        lowercaseFirstChar(data.password) !== lowercaseFirstChar(PASSWORD)
-      )) {
-    throw new functions.https.HttpsError('unauthenticated', 'Password incorrect');
+  if (
+    data.password === undefined ||
+    (data.password.length > 0 &&
+      lowercaseFirstChar(data.password) !== lowercaseFirstChar(PASSWORD))
+  ) {
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "Password incorrect"
+    );
   } else {
-    return 'OK';
+    return "OK";
   }
 });
