@@ -62,7 +62,7 @@ const EntranceExperience = (props) => {
       <div className="container">
         <div className="row mt-3">
           <div className="col">
-            <h1 className="title">The Tree of Life Party</h1>
+            <h1 className="title">The Boat Party</h1>
             <div className="subtitle-container">
               <img
                 className="collective-icon"
@@ -83,32 +83,33 @@ const EntranceExperience = (props) => {
         <div className="row mt-3">
           <div className="col-xl-7">
             <img
-              src="treeoflife.jpg"
+              src="boatparty.jpeg"
               className="map-image"
-              alt="Tree of Life Party"
+              alt="The boat party"
             />
           </div>
           <div className="col-xl-5">
             <InformationCard title="About this party">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Vestibulum auctor dolor malesuada est molestie lobortis. Curabitur
-              enim nunc, vulputate vel felis eget, semper rutrum nisl. Quisque
-              ultrices justo eros, vel commodo felis dictum ut. Donec in
-              consectetur ante. Praesent dignissim purus cursus mollis
-              tristique. Suspendisse potenti. Nulla ut pharetra purus. Ut
-              feugiat non ligula eget vehicula. Pellentesque auctor magna nulla,
-              et dapibus mauris finibus non. Quisque cursus lectus placerat
-              metus pellentesque efficitur.
+              Are you feeling lost on the mainland? Aching for freedom, novel
+              connection, and the chance to let your freak flag fly? Your wish
+              is our command. Come travel the high seas with the Co-Reality
+              Collective on our fifth esoteric adventure: The Boat Party -- A
+              Voyage of Discovery. Join hundreds of fellow explorers on this
+              journey of self-discovery; explore the deepest vessels of yourself
+              that have been yearning to break free; and tackle the riddle on a
+              collective quest for the ultimate treasure chest. Meet us at the
+              Dock of the Bay, pack your sunscreen and say -- “Bon Voyage!” to
+              the old you!
             </InformationCard>
             <InformationCard title="About the host">
               <p>
-                In massa justo, consequat sed ante at, pharetra scelerisque
-                metus. Donec orci elit, rutrum et lacinia dictum, viverra id
-                nunc. Pellentesque habitant morbi tristique senectus et netus et
-                malesuada fames ac turpis egestas. In ut nisl nisl. Etiam vitae
-                quam quis libero luctus porta nec non sem. Aenean a magna eu
-                mauris consequat malesuada. Morbi eget turpis vel erat molestie
-                volutpat.
+                The Co-Reality Collective organises some of the realest parties
+                online. A decentralised international oragnisation of fifty
+                artists, party philosophers, performers, and peripatetic
+                citizens, Co-Reality seek to bring people together in
+                thought-provoking online spaces and to explore the limits of
+                what is possible in this new medium of experience. Their four
+                online parties have been praised from Norway to Bangkok.
               </p>
               <img
                 className="collective-icon"
