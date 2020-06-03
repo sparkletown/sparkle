@@ -5,13 +5,12 @@ import InformationCard from "components/molecules/InformationCard";
 import { getTimeBeforeParty } from "utils/time";
 import "./EntranceExperience.scss";
 
-const EntranceExperience = (props) => {
+const EntranceExperience = () => {
   const firebase = useFirebase();
 
   const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();
   const [password, setPassword] = useState();
-  const [name, setName] = useState();
   const [message, setMessage] = useState();
 
   function passwordChanged(e) {
@@ -43,20 +42,6 @@ const EntranceExperience = (props) => {
       });
   }
 
-  function nameChanged(e) {
-    setName(e.target.value);
-    setInvalidPassword(false);
-    setError(false);
-  }
-
-  function nameSubmitted(e) {
-    e.preventDefault();
-
-    props.updateProfile({
-      displayName: name,
-    });
-  }
-
   return (
     <>
       <NavBar />
@@ -76,12 +61,40 @@ const EntranceExperience = (props) => {
                 Hosted by{" "}
                 <a href="https://co-reality.co/">Co-Reality collective</a>{" "}
                 <br />
-                <div className="secondary-color">
+                <div className="primary">
                   Party begins in {getTimeBeforeParty()}
                 </div>
               </div>
             </div>
           </div>
+          <form
+            className="col-5 secret-password-form"
+            onSubmit={passwordSubmitted}
+          >
+            <p class="small-text">
+              Got an invite? Join in with the secret password
+            </p>
+            <input
+              className={
+                "secret-password-input " +
+                (invalidPassword ? " is-invalid" : "")
+              }
+              required
+              placeholder="password"
+              autoFocus
+              onChange={passwordChanged}
+              id="password"
+            />
+            <input
+              className="btn btn-primary btn-block btn-centered"
+              type="submit"
+              value="Join the party"
+            />
+            <div className="form-group">
+              {message && <small>{message}</small>}
+              {error && <small class="error-message">An error occured</small>}
+            </div>
+          </form>
         </div>
         <div className="row mt-3">
           <div className="col-xl-7">
@@ -123,99 +136,6 @@ const EntranceExperience = (props) => {
               />
               <a href="https://co-reality.co/">Co-Reality collective</a>
             </InformationCard>
-          </div>
-        </div>
-        <div className="row mt-3">
-          <div className="col">
-            {!props.user ? (
-              <>
-                <h2>Enter the Password</h2>
-                <p>
-                  By now, you should have received an email with the password.{" "}
-                  <a
-                    href="https://co-reality.co/help"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Need help?
-                  </a>
-                </p>
-                <form onSubmit={passwordSubmitted}>
-                  <div className="form-group">
-                    <label htmlFor="password">Password:</label>
-                    <input
-                      autoFocus
-                      onChange={passwordChanged}
-                      className={
-                        "form-control" + (invalidPassword ? " is-invalid" : "")
-                      }
-                      id="password"
-                      placeholder="Password"
-                    />
-                    {invalidPassword && (
-                      <div className="invalid-feedback">
-                        Incorrect password.{" "}
-                        <a
-                          href="https://co-reality.co/help"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Need help?
-                        </a>
-                      </div>
-                    )}
-                    {error && (
-                      <div className="invalid-feedback">
-                        Error occurred: {error}. Try again or{" "}
-                        <a
-                          href="https://co-reality.co/help"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Ask for help
-                        </a>
-                        .
-                      </div>
-                    )}
-                    <small id="emailHelp" className="form-text text-muted">
-                      Please enter the password from your email.{" "}
-                      <a
-                        href="https://co-reality.co/help"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Click here for help.
-                      </a>
-                    </small>
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                  <div className="form-group">
-                    {message && <small>{message}</small>}
-                  </div>
-                </form>
-              </>
-            ) : (
-              <>
-                <h2>Enter Your Name</h2>
-                <p>What will you be known as during the party?</p>
-                <form onSubmit={nameSubmitted}>
-                  <div className="form-group">
-                    <label htmlFor="name">Your Name:</label>
-                    <input
-                      onChange={nameChanged}
-                      className="form-control"
-                      id="name"
-                      placeholder="Your Name"
-                    />
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Submit
-                  </button>
-                </form>
-              </>
-            )}
           </div>
         </div>
       </div>
