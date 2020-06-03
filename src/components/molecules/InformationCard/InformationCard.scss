@@ -1,0 +1,17 @@
+@import "scss/constants.scss";
+
+.information-card-container {
+  border-radius: 30px;
+  background: $dark-grey;
+  padding: 20px;
+
+  &:not(:last-child) {
+    margin-bottom: 20px;
+  }
+}
+
+.information-card-text {
+  color: $concrete;
+  font-size: 12px;
+  margin-bottom: 0px;
+}

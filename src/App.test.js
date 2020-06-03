@@ -13,7 +13,7 @@ import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 
 import "bootstrap";
-import "./scss/custom.scss";
+import "./scss/global.scss";
 
 import App from "./App";
 import rootReducer from "./reducers/";
