@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { createStore, compose, applyMiddleware } from "redux";
 import thunkMiddleware from "redux-thunk";
@@ -18,6 +18,8 @@ import "bootstrap";
 import "./scss/custom.scss";
 
 import App from "./App";
+import Register from "./pages/Account/Register";
+
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
 import { API_KEY, APP_ID, MEASUREMENT_ID } from "./secrets";
@@ -70,7 +72,10 @@ render(
   <Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}>
       <Router>
-        <Route path="/" component={App} />
+        <Switch>
+          <Route path="/account/register" component={Register} />
+          <Route path="/" component={App} />
+        </Switch>
       </Router>
     </ReactReduxFirebaseProvider>
   </Provider>,
