@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import NavBar from "components/molecules/NavBar";
 import InformationCard from "components/molecules/InformationCard";
+import { getTimeBeforeParty } from "utils/time";
 import "./EntranceExperience.scss";
 
 const EntranceExperience = (props) => {
@@ -75,7 +76,9 @@ const EntranceExperience = (props) => {
                 Hosted by{" "}
                 <a href="https://co-reality.co/">Co-Reality collective</a>{" "}
                 <br />
-                <div className="secondary-color">Party begins in</div>
+                <div className="secondary-color">
+                  Party begins in {getTimeBeforeParty()}
+                </div>
               </div>
             </div>
           </div>
