@@ -31,7 +31,7 @@ const Register = () => {
               ref={register({ required: true })}
             />
             {errors.username && errors.username.type === "required" && (
-              <span className="input-info">Email is required</span>
+              <span className="input-error">Email is required</span>
             )}
           </div>
           <div className="input-group">
@@ -42,17 +42,23 @@ const Register = () => {
               placeholder="Password"
               ref={register({
                 required: true,
-                minLength: 8,
-                pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/,
+                // minLength: 8,
+                pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/,
               })}
             />
-            <span className="input-info">
+            <span
+              className={`input-${
+                errors.password && errors.password.type === "pattern"
+                  ? "error"
+                  : "info"
+              }`}
+            >
               Password must contain letters and numbers
             </span>
             {errors.password && errors.password.type === "required" && (
-              <span className="input-info">Password is required</span>
+              <span className="input-error">Password is required</span>
             )}
-            {errors.password && errors.password.type === "minLength" && (
+            {/* {errors.password && errors.password.type === "minLength" && (
               <span className="input-info">
                 Password must be at least 8 characters long
               </span>
@@ -61,7 +67,7 @@ const Register = () => {
               <span className="input-info">
                 Password must include letters and numbers
               </span>
-            )}
+            )} */}
           </div>
           <input
             className="btn btn-primary btn-block btn-centered"

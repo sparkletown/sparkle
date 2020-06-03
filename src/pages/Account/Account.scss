@@ -168,6 +168,8 @@ textarea {
 }
 
 .input-group {
+  display: flex;
+  flex-direction: column;
   margin-bottom: 0.8rem;
   input.input-block {
     margin-bottom: 0.3rem;
@@ -175,6 +177,11 @@ textarea {
   .input-info {
     font-size: 0.8em;
     opacity: 0.8;
+  }
+  .input-error {
+    font-size: 0.8em;
+    opacity: 0.8;
+    color: red;
   }
 }
 
