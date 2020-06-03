@@ -1,7 +1,7 @@
 export const MAP_VIEWBOX = "0 0 2808 3901";
 export const MAP_URL = "treeoflife.jpg";
 
-export const PARTY_START_UTC_SECONDS = 1589655600;
+export const PARTY_START_UTC_SECONDS = 1591466400;
 export const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 const PARTY_DURATION_HOURS = 8;
