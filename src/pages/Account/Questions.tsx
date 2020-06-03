@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 import "./Account.scss";
 
@@ -10,6 +11,7 @@ interface QuestionsFormData {
 }
 
 const Questions = () => {
+  const history = useHistory();
   const { register, handleSubmit, errors, formState } = useForm<
     QuestionsFormData
   >({
@@ -17,7 +19,7 @@ const Questions = () => {
   });
   const onSubmit = async (data: QuestionsFormData) => {
     await alert("TODO: save questions in Firebase");
-    console.log(data);
+    history.push("/account/code-of-conduct");
   };
 
   return (
