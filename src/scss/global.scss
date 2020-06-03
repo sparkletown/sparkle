@@ -1,9 +1,14 @@
 @import "node_modules/bootswatch/dist/darkly/variables";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
+@import "./constants.scss";
 
 body {
-  padding-top: 84px;
+  padding-top: 50px;
+  background: black;
+  display: flex;
+  justify-content: center;
+  font-family: "Rubik", sans-serif;
 }
 
 .announcement-list,
@@ -31,4 +36,28 @@ body {
     background: $white;
     color: $black;
   }
+}
+
+#root {
+  display: flex;
+  flex-grow: 1;
+}
+
+a {
+  color: $white;
+  text-decoration: underline;
+
+  &:hover {
+    color: $secondary-color;
+  }
+}
+
+h4 {
+  font-weight: bold;
+  font-size: 17px;
+}
+
+.title {
+  font-style: italic;
+  font-weight: 700;
 }
