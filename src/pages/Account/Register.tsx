@@ -1,36 +1,41 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 import "./Account.scss";
 
 interface RegisterFormData {
-  username: string;
+  email: string;
   password: string;
 }
 
 const Register = () => {
+  const history = useHistory();
   const { register, handleSubmit, errors, formState } = useForm<
     RegisterFormData
   >({
     mode: "onBlur",
   });
-  const onSubmit = (data: RegisterFormData) => console.log(data);
+  const onSubmit = async (data: RegisterFormData) => {
+    await alert("TODO: save account in Firebase");
+    history.push("/account/profile");
+  };
 
   return (
     <div className="page-container">
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
-        <h2>First, create your account</h2>
-        <p>This will give you access to all sorts of events in Sparkle Town</p>
+        <h2>Well done! Now create your party profile</h2>
+        <p>Don't fret, you'll be able to edit it at any time later</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
-              name="username"
+              name="email"
               className="input-block input-centered"
-              placeholder="Your Email"
+              placeholder="Your email"
               ref={register({ required: true })}
             />
-            {errors.username && errors.username.type === "required" && (
+            {errors.email && errors.email.type === "required" && (
               <span className="input-error">Email is required</span>
             )}
           </div>
@@ -61,11 +66,6 @@ const Register = () => {
             {/* {errors.password && errors.password.type === "minLength" && (
               <span className="input-info">
                 Password must be at least 8 characters long
-              </span>
-            )}
-            {errors.password && errors.password.type === "pattern" && (
-              <span className="input-info">
-                Password must include letters and numbers
               </span>
             )} */}
           </div>

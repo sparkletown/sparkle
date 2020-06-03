@@ -19,6 +19,7 @@ import "./scss/custom.scss";
 
 import App from "./App";
 import Register from "./pages/Account/Register";
+import Profile from "./pages/Account/Profile";
 
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
@@ -74,6 +75,7 @@ render(
       <Router>
         <Switch>
           <Route path="/account/register" component={Register} />
+          <Route path="/account/profile" component={Profile} />
           <Route path="/" component={App} />
         </Switch>
       </Router>
