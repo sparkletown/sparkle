@@ -14,6 +14,23 @@ npm start
 npm run build
 ```
 
+## Deploying
+
+tl;dr:
+```
+npm i -g firebase-tools # only need this once
+firebase login # only need this once
+npm run build && firebase deploy
+```
+
+You can do a faster deploy by deploying just hosting:
+```
+npm run build && firebase deploy --only hosting
+```
+
+**NOTE:** You may get a warning about deleting the function `checkAdminPassword`; this is a function from [co-reality-admin](https://github.com/co-reality/co-reality-admin) and will be folded into this repo in future. In the meantime please don't delete this function.
+
+
 ## Create React App Documentation
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
