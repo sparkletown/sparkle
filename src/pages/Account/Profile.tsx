@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 import "./Account.scss";
 
@@ -8,6 +9,7 @@ interface ProfileFormData {
 }
 
 const Profile = () => {
+  const history = useHistory();
   const { register, handleSubmit, errors, formState } = useForm<
     ProfileFormData
   >({
@@ -15,7 +17,7 @@ const Profile = () => {
   });
   const onSubmit = async (data: ProfileFormData) => {
     await alert("TODO: save profile in Firebase");
-    console.log(data);
+    history.push("/account/questions");
   };
 
   return (
