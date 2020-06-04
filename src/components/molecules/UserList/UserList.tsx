@@ -15,13 +15,13 @@ interface PropsType {
 
 const UserList: React.FunctionComponent<PropsType> = ({ users }) => (
   <div className="userlist-container">
-    <div className="row header">
+    <div className="row header no-margin">
       <p>
         <span className="bold">{users.length}</span> people partying
       </p>
       <p className="clickabke-text">See all</p>
     </div>
-    <div className="row">
+    <div className="row no-margin">
       {users.slice(0, 49).map((user) => (
         <img
           key={user.id}
