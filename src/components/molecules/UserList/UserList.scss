@@ -1,0 +1,29 @@
+@import "scss/constants";
+
+.bold {
+  font-weight: 700;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-icon {
+  border-radius: 50%;
+  width: 21px;
+  margin: 1px;
+}
+
+.userlist-container {
+  margin-top: 15px;
+}
+
+.clickabke-text {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: $primary;
+  }
+}
