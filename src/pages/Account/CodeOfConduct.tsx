@@ -1,0 +1,88 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+
+import "./Account.scss";
+
+interface CodeOfConductFormData {
+  seekFun: string;
+  addFun: string;
+  wearCostume: string;
+  respectParty: string;
+  partyReal: string;
+}
+
+const QUESTIONS: { id: keyof CodeOfConductFormData; label: string }[] = [
+  {
+    id: "seekFun",
+    label: "I will seek out the fun",
+  },
+  {
+    id: "addFun",
+    label: "I will add to the fun",
+  },
+  {
+    id: "wearCostume",
+    label: "I will wear a costume where possible",
+  },
+  {
+    id: "respectParty",
+    label: "I’ll respect my fellow party-goers’ feelings and boundaries",
+  },
+  {
+    id: "partyReal",
+    label: "I understand those parties are real",
+  },
+];
+
+const CodeOfConduct = () => {
+  const { register, handleSubmit, errors, formState, watch } = useForm<
+    CodeOfConductFormData
+  >({
+    mode: "onBlur",
+  });
+  const onSubmit = async (data: CodeOfConductFormData) => {
+    await alert("TODO: save CodeOfConduct in Firebase");
+    console.log(data);
+  };
+
+  return (
+    <div className="page-container">
+      <div className="coreality-logo-sparkles"></div>
+      <div className="login-container">
+        <h2>Final step: agree to our code of conduct</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="form">
+          {QUESTIONS.map((q) => (
+            <div className="input-group" key={q.id}>
+              <label
+                htmlFor={q.id}
+                className={`checkbox ${watch(q.id) && "checkbox-checked"}`}
+              >
+                {q.label}
+              </label>
+              <input
+                type="checkbox"
+                name={q.id}
+                id={q.id}
+                ref={register({
+                  required: true,
+                })}
+              />
+              {errors[q.id]?.type === "required" && (
+                <span className="input-error">Required</span>
+              )}
+            </div>
+          ))}
+
+          <input
+            className="btn btn-primary btn-block btn-centered"
+            type="submit"
+            value="Start Partying"
+            disabled={!formState.isValid}
+          />
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default CodeOfConduct;

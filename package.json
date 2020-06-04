@@ -24,6 +24,7 @@
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^5.7.2",
     "react-redux": "^7.2.0",
     "react-redux-firebase": "^3.3.1",
     "react-router-dom": "^5.1.2",
@@ -31,8 +32,7 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-firestore": "^0.13.0",
-    "redux-thunk": "^2.3.0",
-    "typescript": "^3.8.3"
+    "redux-thunk": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -67,5 +67,13 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "devDependencies": {
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.0.9",
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-router-dom": "^5.1.5",
+    "typescript": "^3.9.3"
   }
 }
