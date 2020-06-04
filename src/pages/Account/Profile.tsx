@@ -1,22 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
-interface ProfileFormData {
-  username: string;
+export interface ProfileFormData {
+  partyName: string;
 }
 
 const Profile = () => {
   const history = useHistory();
+  const { user } = useSelector((state: any) => ({
+    user: state.user,
+  }));
   const { register, handleSubmit, errors, formState } = useForm<
     ProfileFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: ProfileFormData) => {
-    await alert("TODO: save profile in Firebase");
+    await updateUserProfile(user.uid, data);
     history.push("/account/questions");
   };
 
@@ -29,9 +33,9 @@ const Profile = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
-              name="username"
+              name="partyName"
               className="input-block input-centered"
-              placeholder="Your Username"
+              placeholder="Your party name"
               ref={register({
                 required: true,
                 maxLength: 16,
@@ -40,12 +44,12 @@ const Profile = () => {
             <span className="input-info">
               This is your public party name (max 16 characters)
             </span>
-            {errors.username && errors.username.type === "required" && (
-              <span className="input-error">Username is required</span>
+            {errors.partyName && errors.partyName.type === "required" && (
+              <span className="input-error">Party name is required</span>
             )}
-            {errors.username && errors.username.type === "maxLength" && (
+            {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Username is less than 16 characters
+                Party name is less than 16 characters
               </span>
             )}
           </div>

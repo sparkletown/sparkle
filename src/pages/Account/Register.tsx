@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import firebase from "firebase/app";
 
 import "./Account.scss";
 
@@ -9,16 +10,28 @@ interface RegisterFormData {
   password: string;
 }
 
+const signUp = ({ email, password }: RegisterFormData) => {
+  return firebase.auth().createUserWithEmailAndPassword(email, password);
+};
+
+// const signIn = ({email, password}: RegisterFormData) => {
+//   return firebase.auth().signInWithEmailAndPassword(email, password);
+// }
+
 const Register = () => {
   const history = useHistory();
-  const { register, handleSubmit, errors, formState } = useForm<
+  const { register, handleSubmit, errors, formState, setError } = useForm<
     RegisterFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: RegisterFormData) => {
-    await alert("TODO: save account in Firebase");
-    history.push("/account/profile");
+    try {
+      await signUp(data);
+      history.push("/account/profile");
+    } catch (error) {
+      setError("email", "firebase", error.message);
+    }
   };
 
   return (
@@ -37,6 +50,9 @@ const Register = () => {
             />
             {errors.email && errors.email.type === "required" && (
               <span className="input-error">Email is required</span>
+            )}
+            {errors.email && errors.email.type === "firebase" && (
+              <span className="input-error">{errors.email.message}</span>
             )}
           </div>
           <div className="input-group">

@@ -1,10 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
-interface QuestionsFormData {
+export interface QuestionsFormData {
   islandCompanion: string;
   gratefulFor: string;
   likeAboutParties: string;
@@ -12,13 +13,16 @@ interface QuestionsFormData {
 
 const Questions = () => {
   const history = useHistory();
+  const { user } = useSelector((state: any) => ({
+    user: state.user,
+  }));
   const { register, handleSubmit, errors, formState } = useForm<
     QuestionsFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: QuestionsFormData) => {
-    await alert("TODO: save questions in Firebase");
+    await updateUserProfile(user.uid, data);
     history.push("/account/code-of-conduct");
   };
 
