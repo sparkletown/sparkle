@@ -541,6 +541,7 @@ export const LINEUP = {
       title: "Sunset Room - Sunrises and Sunsets from all over the world",
       on_list: true,
       on_map: true,
+      button_text: "TEST TEST TEST",
       attendance_x: "21%",
       attendance_y: "19%",
       url:
