@@ -6,6 +6,8 @@ import { Modal } from "react-bootstrap";
 import { exitPreviewRoom, enterRoom, leaveRoom } from "./actions";
 import { formatHour } from "utils/time";
 
+const DEFAULT_BUTTON_TEXT = "Jump in!";
+
 export default function RoomModal({ show, onHide }) {
   const dispatch = useDispatch();
   const [inRoom, setInRoom] = useState();
@@ -62,7 +64,7 @@ export default function RoomModal({ show, onHide }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Jump in!
+            {room.button_text || DEFAULT_BUTTON_TEXT}
           </a>
         </div>
         {room.events && room.events.length > 0 && (
@@ -101,7 +103,7 @@ export default function RoomModal({ show, onHide }) {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Jump in!
+          {room.button_text || DEFAULT_BUTTON_TEXT}
         </a>
       </Modal.Footer>
     </Modal>
