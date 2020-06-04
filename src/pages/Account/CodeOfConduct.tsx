@@ -1,9 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-
+import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
-interface CodeOfConductFormData {
+export interface CodeOfConductFormData {
   seekFun: string;
   addFun: string;
   wearCostume: string;
@@ -35,14 +37,18 @@ const QUESTIONS: { id: keyof CodeOfConductFormData; label: string }[] = [
 ];
 
 const CodeOfConduct = () => {
+  const history = useHistory();
+  const { user } = useSelector((state: any) => ({
+    user: state.user,
+  }));
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
     mode: "onBlur",
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
-    await alert("TODO: save CodeOfConduct in Firebase");
-    console.log(data);
+    await updateUserProfile(user.uid, data);
+    history.push("/");
   };
 
   return (

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
+import { useHistory } from "react-router-dom";
 import NavBar from "components/molecules/NavBar";
 import InformationCard from "components/molecules/InformationCard";
 import { getTimeBeforeParty } from "utils/time";
@@ -7,6 +8,8 @@ import "./EntranceExperience.scss";
 
 const EntranceExperience = () => {
   const firebase = useFirebase();
+
+  const history = useHistory();
 
   const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();
@@ -32,6 +35,7 @@ const EntranceExperience = () => {
         firebase
           .auth()
           .signInAnonymously()
+          .then(() => history.push("/account/register"))
           .catch((error) => {
             setError(true);
           });

@@ -39,6 +39,7 @@ function timer(state = { time: null }, action) {
   }
 }
 
+// TODO: find a better name
 function user(state = null, action) {
   switch (action.type) {
     case SET_USER:
@@ -47,6 +48,16 @@ function user(state = null, action) {
       return state;
   }
 }
+
+// // TODO: load this from firebase on login
+// function userProfile(state = null, action) {
+//   switch (action.type) {
+//     case SET_USER:
+//       return action.user;
+//     default:
+//       return state;
+//   }
+// }
 
 const rootReducer = combineReducers({
   firestore: firestoreReducer,

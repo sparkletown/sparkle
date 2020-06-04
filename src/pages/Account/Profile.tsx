@@ -1,22 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-
+import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
-interface ProfileFormData {
+export interface ProfileFormData {
   username: string;
 }
 
 const Profile = () => {
   const history = useHistory();
+  const { user } = useSelector((state: any) => ({
+    user: state.user,
+  }));
   const { register, handleSubmit, errors, formState } = useForm<
     ProfileFormData
   >({
     mode: "onBlur",
   });
   const onSubmit = async (data: ProfileFormData) => {
-    await alert("TODO: save profile in Firebase");
+    await updateUserProfile(user.uid, data);
     history.push("/account/questions");
   };
 
