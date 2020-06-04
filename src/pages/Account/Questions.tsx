@@ -19,7 +19,7 @@ const Questions = () => {
   const { register, handleSubmit, errors, formState } = useForm<
     QuestionsFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: QuestionsFormData) => {
     await updateUserProfile(user.uid, data);

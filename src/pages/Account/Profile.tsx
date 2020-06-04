@@ -17,7 +17,7 @@ const Profile = () => {
   const { register, handleSubmit, errors, formState } = useForm<
     ProfileFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: ProfileFormData) => {
     await updateUserProfile(user.uid, data);

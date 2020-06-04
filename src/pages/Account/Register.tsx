@@ -23,7 +23,7 @@ const Register = () => {
   const { register, handleSubmit, errors, formState, setError } = useForm<
     RegisterFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: RegisterFormData) => {
     try {

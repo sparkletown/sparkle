@@ -44,7 +44,7 @@ const CodeOfConduct = () => {
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
-    mode: "onBlur",
+    mode: "onChange",
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
