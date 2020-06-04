@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import "bootstrap";
@@ -6,16 +6,10 @@ import qs from "qs";
 
 import { startTimer, stopTimer, setUser, leaveRoom } from "./actions";
 
-import Announcements from "./Announcements";
-import Chatbox from "./Chatbox";
 import EntranceExperience from "pages/EntranceExperience";
-import Header from "./Header";
 import LockedSite from "./LockedSite";
-import Map from "./Map";
-import Rooms from "./Rooms";
-
-import { LINEUP } from "./lineup";
 import { LOCK_SITE_AFTER_UTC_SECONDS, PARTY_START_UTC_SECONDS } from "./config";
+import LoggedInPartyPage from "pages/LoggedInPartyPage";
 
 export default function App(props) {
   const firebase = useFirebase();
@@ -87,19 +81,5 @@ export default function App(props) {
     return <EntranceExperience />;
   }
 
-  return (
-    <Fragment>
-      <Header />
-      <div className="container">
-        <div className="row">
-          <div className="col">
-            <Map rooms={LINEUP.rooms} attendances={attendances} />
-            <Rooms rooms={LINEUP.rooms} attendances={attendances} />
-            <Announcements />
-            <Chatbox />
-          </div>
-        </div>
-      </div>
-    </Fragment>
-  );
+  return <LoggedInPartyPage users={users} attendances={attendances} />;
 }

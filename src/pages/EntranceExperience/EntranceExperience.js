@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import NavBar from "components/molecules/NavBar";
 import InformationCard from "components/molecules/InformationCard";
-import { getTimeBeforeParty } from "utils/time";
 import "./EntranceExperience.scss";
+import PartyTitle from "components/molecules/PartyTitle";
 
 const EntranceExperience = () => {
   const firebase = useFirebase();
@@ -47,26 +47,7 @@ const EntranceExperience = () => {
       <NavBar />
       <div className="container">
         <div className="row mt-3">
-          <div className="col">
-            <h1 className="title">The Boat Party</h1>
-            <div className="subtitle-container">
-              <img
-                className="collective-icon"
-                src="collective-icon.png"
-                alt="Co-Reality collective"
-                width="20"
-                height="20"
-              />
-              <div>
-                Hosted by{" "}
-                <a href="https://co-reality.co/">Co-Reality collective</a>{" "}
-                <br />
-                <div className="primary">
-                  Party begins in {getTimeBeforeParty()}
-                </div>
-              </div>
-            </div>
-          </div>
+          <PartyTitle withCountDown />
           <form
             className="col-5 secret-password-form"
             onSubmit={passwordSubmitted}

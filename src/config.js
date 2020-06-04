@@ -1,5 +1,5 @@
-export const MAP_VIEWBOX = "0 0 2808 3901";
-export const MAP_URL = "treeoflife.jpg";
+export const MAP_VIEWBOX = "0 0 1547 863";
+export const MAP_URL = "boatparty.jpeg";
 
 export const PARTY_START_UTC_SECONDS = 1591466400;
 export const ONE_HOUR_IN_SECONDS = 60 * 60;
