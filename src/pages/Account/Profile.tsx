@@ -6,7 +6,7 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
 export interface ProfileFormData {
-  username: string;
+  partyName: string;
 }
 
 const Profile = () => {
@@ -33,9 +33,9 @@ const Profile = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
-              name="username"
+              name="partyName"
               className="input-block input-centered"
-              placeholder="Your Username"
+              placeholder="Your party name"
               ref={register({
                 required: true,
                 maxLength: 16,
@@ -44,12 +44,12 @@ const Profile = () => {
             <span className="input-info">
               This is your public party name (max 16 characters)
             </span>
-            {errors.username && errors.username.type === "required" && (
-              <span className="input-error">Username is required</span>
+            {errors.partyName && errors.partyName.type === "required" && (
+              <span className="input-error">Party name is required</span>
             )}
-            {errors.username && errors.username.type === "maxLength" && (
+            {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Username is less than 16 characters
+                Party name is less than 16 characters
               </span>
             )}
           </div>
