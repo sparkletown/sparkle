@@ -2,7 +2,7 @@ import React, { useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 
 import { PARTY_START_UTC_SECONDS, ONE_HOUR_IN_SECONDS } from "./config";
-import { formatHour } from "./utils";
+import { formatHour } from "utils/time";
 import { isRoomValid } from "./validation";
 import { previewRoom } from "./actions";
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Modal } from "react-bootstrap";
 
 import { exitPreviewRoom, enterRoom, leaveRoom } from "./actions";
-import { formatHour } from "./utils";
+import { formatHour } from "utils/time";
 
 export default function RoomModal({ show, onHide }) {
   const dispatch = useDispatch();

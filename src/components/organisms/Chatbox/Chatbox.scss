@@ -1,0 +1,51 @@
+@import "scss/constants";
+
+.chatbox-container {
+  padding: 10px;
+  border-radius: 22px;
+  background: $dark;
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  margin-top: 15px;
+  height: 500px;
+}
+
+.chatbox-title {
+  font-weight: 700;
+}
+
+.message-container {
+  overflow: scroll;
+  margin-bottom: 10px;
+}
+
+.side-title-icon {
+  margin-right: 10px;
+}
+
+.chat-input {
+  text-align: left;
+  background: $black;
+  padding: 10px 15px;
+
+  &:hover {
+    box-shadow: none;
+  }
+  &:focus {
+    box-shadow: none;
+  }
+}
+
+.chat-form {
+  display: flex;
+  align-items: baseline;
+}
+
+.high-z-index {
+  z-index: 1;
+}
+
+.submit-icon {
+  margin-left: -40px;
+}

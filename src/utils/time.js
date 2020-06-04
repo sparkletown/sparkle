@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { PARTY_START_UTC_SECONDS } from "config";
 
 const ONE_MINUTE_IN_SECONDS = 60;
@@ -26,3 +27,15 @@ export const getTimeBeforeParty = () => {
   }
   return `${numberOfMinutes}mins`;
 };
+
+export function formatHour(hour) {
+  if (hour === null || hour === undefined) {
+    return "(unknown)";
+  }
+  const utcSeconds = PARTY_START_UTC_SECONDS + hour * 60 * 60;
+  return formatUtcSeconds(utcSeconds);
+}
+
+export function formatUtcSeconds(utcSec) {
+  return format(new Date(utcSec * 1000), "p");
+}

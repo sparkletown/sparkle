@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 
-import { formatUtcSeconds } from "./utils";
+import { formatUtcSeconds } from "utils/time";
 import { isAnnouncementValid } from "./validation";
 
 export default function Announcements(props) {
