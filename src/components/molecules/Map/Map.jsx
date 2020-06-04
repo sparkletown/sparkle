@@ -1,12 +1,14 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { isRoomValid } from "./validation";
-import { MAP_VIEWBOX, MAP_URL } from "./config";
-import { previewRoom } from "./actions";
+import { isRoomValid } from "validation";
+import { MAP_VIEWBOX, MAP_URL } from "config";
+import { previewRoom } from "actions";
 
-import RoomModal from "./RoomModal";
-import RoomAttendance from "./RoomAttendance";
+import RoomModal from "RoomModal";
+import RoomAttendance from "RoomAttendance";
+
+import "./Map.scss";
 
 export default function Map(props) {
   const dispatch = useDispatch();
@@ -22,8 +24,8 @@ export default function Map(props) {
   }
 
   return (
-    <Fragment>
-      <div id="map">
+    <>
+      <div id="map" className="map-container">
         <div className="position-relative">
           <svg className="position-absolute" viewBox={MAP_VIEWBOX}>
             {props.rooms
@@ -61,19 +63,14 @@ export default function Map(props) {
               />
             ))}
           <img
-            className="img-fluid"
+            className="img-fluid map-image"
             src={MAP_URL}
             title="Clickable Map"
             alt="Clickable Map"
           />
         </div>
-        <div className="card-body text-center">
-          This is a clickable map to help you navigate the party.
-          <br />
-          Remember at all times, the party is real. Act accordingly.
-        </div>
       </div>
       <RoomModal show={showModal} onHide={() => setShowModal(false)} />
-    </Fragment>
+    </>
   );
 }
