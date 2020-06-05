@@ -26,7 +26,7 @@ import Login from "./pages/Account/Login";
 
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
-import { API_KEY, APP_ID, MEASUREMENT_ID } from "./secrets";
+import { API_KEY, APP_ID, MEASUREMENT_ID, BUCKET_URL } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
 
 const firebaseConfig = {
@@ -34,6 +34,7 @@ const firebaseConfig = {
   appId: APP_ID,
   measurementId: MEASUREMENT_ID,
   projectId: "co-reality-map",
+  storageBucket: BUCKET_URL,
 };
 const rfConfig = {}; // optional redux-firestore Config Options
 

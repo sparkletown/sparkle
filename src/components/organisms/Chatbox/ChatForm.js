@@ -43,7 +43,7 @@ export default function ChatForm({ currentUser }) {
           onChange={textChanged}
         />
         <button
-          className="high-z-index"
+          className="chat-submit-button"
           onClick={chatSubmitted}
           disabled={!allowSend()}
         >
