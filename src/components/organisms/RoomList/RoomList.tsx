@@ -1,7 +1,8 @@
 import React from "react";
 import "./RoomList.scss";
 
-import RoomCard, { Room } from "components/molecules/RoomCard";
+import { Room } from "types/Room";
+import RoomCard from "components/molecules/RoomCard";
 
 interface PropsType {
   rooms: Room[];
@@ -19,9 +20,9 @@ const RoomList: React.FunctionComponent<PropsType> = ({
     <div className="rooms-container">
       {rooms.map((room) => (
         <RoomCard
-          key={room.name}
+          key={room.title}
           room={room}
-          attendance={attendances[room.name]}
+          attendance={attendances[room.title]}
         />
       ))}
     </div>

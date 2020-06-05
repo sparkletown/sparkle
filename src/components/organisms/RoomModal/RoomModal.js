@@ -3,17 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Modal } from "react-bootstrap";
 
-import { exitPreviewRoom, enterRoom, leaveRoom } from "./actions";
+import { exitPreviewRoom, enterRoom, leaveRoom } from "actions";
 import { formatHour } from "utils/time";
+import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
+import UserList from "components/molecules/UserList";
 
-const DEFAULT_BUTTON_TEXT = "Jump in!";
+import "./RoomModal.scss";
 
 export default function RoomModal({ show, onHide }) {
   const dispatch = useDispatch();
   const [inRoom, setInRoom] = useState();
-  const { room, user } = useSelector((state) => ({
+  const { room, user, users } = useSelector((state) => ({
     room: state.room,
     user: state.user,
+    users: state.firestore.ordered.users,
   }));
 
   useEffect(() => {
@@ -50,23 +53,21 @@ export default function RoomModal({ show, onHide }) {
 
   return (
     <Modal show={show} onHide={onHide} onExited={leave}>
-      <Modal.Header closeButton>
-        <Modal.Title>Welcome to {room.name}!</Modal.Title>
-      </Modal.Header>
       <Modal.Body>
-        <div>
-          {room.title}
-          <a
-            type="button"
-            className="btn btn-success float-right"
-            onClick={() => enter()}
-            href={room.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {room.button_text || DEFAULT_BUTTON_TEXT}
-          </a>
+        <div className="room-description">
+          <div className="title-container">
+            <h2 className="room-modal-title">{room.title}</h2>
+            <div className="room-modal-subtitle">{room.subtitle}</div>
+            <img
+              src={`room-images/${room.image}`}
+              className="room-modal-image"
+              alt={room.title}
+            />
+          </div>
+          <RoomModalOngoingEvent room={room} enterRoom={enter} />
         </div>
+        <UserList users={users} />
+
         {room.events && room.events.length > 0 && (
           <div>
             Lineup:
@@ -94,18 +95,6 @@ export default function RoomModal({ show, onHide }) {
           </div>
         )}
       </Modal.Body>
-      <Modal.Footer>
-        <a
-          type="button"
-          className="btn btn-success"
-          onClick={() => enter()}
-          href={room.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {room.button_text || DEFAULT_BUTTON_TEXT}
-        </a>
-      </Modal.Footer>
     </Modal>
   );
 }

@@ -6,7 +6,7 @@ import { formatHour } from "utils/time";
 import { isRoomValid } from "./validation";
 import { previewRoom } from "./actions";
 
-import RoomModal from "./RoomModal";
+import RoomModal from "components/organisms/RoomModal";
 import RoomAttendance from "./RoomAttendance";
 
 export default function Rooms(props) {
@@ -52,11 +52,11 @@ export default function Rooms(props) {
                   className="btn btn-link stretched-link"
                   title={room.title}
                 >
-                  {room.name}
+                  {room.title}
                 </button>
                 <RoomAttendance
                   room={room}
-                  attendance={props.attendances[room.name]}
+                  attendance={props.attendances[room.title]}
                 />
               </div>
               <div className="ml-3">

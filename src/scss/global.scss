@@ -240,3 +240,18 @@ h4 {
 .primary {
   color: $primary;
 }
+
+.modal-backdrop {
+  background: $dark;
+}
+
+.modal-backdrop.show {
+  opacity: 0.8;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 22px;
+  background: $black;
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+}

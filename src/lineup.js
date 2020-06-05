@@ -407,8 +407,8 @@ const sunset_room_events = [
 export const LINEUP = {
   rooms: [
     {
-      name: "The Docks",
       title: "The Docks",
+      subtitle: "Shining a light of ignorance",
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",
@@ -419,8 +419,8 @@ export const LINEUP = {
       events: docks_event,
     },
     {
-      name: "Lighthouse",
       title: "Lighthouse",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -430,8 +430,8 @@ export const LINEUP = {
         "M 625.0278034091177 3516.4500923136166 C 625.02783203125 3479.538233734821 619.8412478461694 3436.5873777738925 625.02783203125 3399.56982421875 C 635.1832473385055 3327.088858597404 757.1947647155353 3272.4410586690633 809.5714111328125 3242.56201171875 C 868.934920432852 3208.6972035868926 924.3635930787267 3160.501856799863 994.6497192382812 3149.822265625 C 1176.7840750943847 3122.147949714849 1315.0595485072909 3193.2969878411773 1343.4993896484375 3383.26220703125 C 1350.2834890767363 3428.5769093359504 1353.1647049286803 3493.5201459627474 1345.4510498046875 3539.173828125 C 1335.3817497662267 3598.769521238423 1314.1468443738459 3678.0126078878607 1268.5911865234375 3723.156005859375 C 1203.7614077784922 3787.3991018958436 1012.0357435465648 3756.305908203125 927.7883911132812 3756.305908203125 C 840.2719683768435 3756.305908203125 719.2224814293378 3769.443733870744 653.0983276367188 3703.319580078125 C 576.0480291220396 3626.269281563446 622.0336303710938 3576.75855820217 622.0336303710938 3501.906982421875",
     },
     {
-      name: "Lifeboat",
       title: "Lifeboat",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -442,8 +442,8 @@ export const LINEUP = {
       events: roots_events,
     },
     {
-      name: "Upside Down Room - The Bat Cave 🦇",
       title: "Upside Down Room - The Bat Cave 🦇",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -454,8 +454,8 @@ export const LINEUP = {
       events: upside_down_room_events,
     },
     {
-      name: "Funk in the Trunk",
       title: "Funk in the Trunk",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -466,8 +466,8 @@ export const LINEUP = {
       events: funk_in_the_trunk_events,
     },
     {
-      name: "Heart Room 💚",
       title: "Heart Room 💚",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -478,8 +478,8 @@ export const LINEUP = {
       events: heart_room_events,
     },
     {
-      name: "The Mood Swing",
       title: "The Mood Swing",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -490,8 +490,8 @@ export const LINEUP = {
       events: mood_swing_events,
     },
     {
-      name: "The Treehouse",
       title: "The Treehouse",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -502,8 +502,8 @@ export const LINEUP = {
       events: treehouse_events,
     },
     {
-      name: "The Beehive 🔥🐝🐝🐝",
       title: "The Beehive 🔥🐝🐝🐝",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -514,9 +514,9 @@ export const LINEUP = {
       events: beehive_events,
     },
     {
-      name: "The Canopy",
-      title:
-        "Climb up to the canopy for gazing into the great beyond. Join us for deep conversations about consciousness, the nature of reality, psychedelic experiences and amazing after-party sound medicine healing.",
+      title: "The Canopy",
+      subtitle: "Shining a light of ignorance",
+      description: "",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -527,8 +527,9 @@ export const LINEUP = {
       events: canopy_events,
     },
     {
-      name: "The Compost Heap (Toilets Here)",
-      title: "Compost Heap (Toilets Here)",
+      title: "The Compost Heap (Toilets Here)",
+      subtitle: "Shining a light of ignorance",
+      description: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -539,8 +540,8 @@ export const LINEUP = {
       events: compost_heap_events,
     },
     {
-      name: "Sunset Room",
-      title: "Sunset Room - Sunrises and Sunsets from all over the world",
+      title: "Sunset Room",
+      subtitle: "Shining a light of ignorance",
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
@@ -554,8 +555,8 @@ export const LINEUP = {
       events: sunset_room_events,
     },
     {
-      name: "Letterbox",
       title: "Letterbox",
+      subtitle: "Shining a light of ignorance",
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",
@@ -564,8 +565,8 @@ export const LINEUP = {
         "M 1168.6986170498312 2393.147733604849 C 1159.2449973838782 2354.839881408881 1160.837246576575 2314.8028075328125 1153.75439453125 2276.695068359375 C 1148.8415991670297 2250.262845413852 1132.241333308931 2171.4292815131535 1147.63232421875 2145.271728515625 C 1165.835460986953 2114.3348305910245 1296.8258988333089 2129.663397421762 1325.3321533203125 2143.6943359375 C 1340.410538858404 2151.1160019616354 1340.5356264728364 2217.217836700831 1344.5269775390625 2232.69140625 C 1382.2467096110465 2378.92231601152 1279.461632303044 2391.0625 1167.3084716796875 2391.0625",
     },
     {
-      name: "Apple of my Eye 👁",
       title: "Apple of my Eye 👁",
+      subtitle: "Shining a light of ignorance",
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",

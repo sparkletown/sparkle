@@ -2,26 +2,7 @@ import React from "react";
 import "./RoomCard.scss";
 import RoomAttendance from "RoomAttendance";
 import { formatHour } from "utils/time";
-
-interface Event {
-  start_hour: number;
-  duration_hours: number;
-  host: string;
-  name: string;
-  text: string;
-  interactivity: string;
-}
-
-export interface Room {
-  name: string;
-  title: string;
-  on_list: boolean;
-  on_map: boolean;
-  image: string;
-  url: string;
-  path: string;
-  events?: Event[];
-}
+import { Room } from "types/Room";
 
 interface PropsType {
   room: Room;
@@ -35,9 +16,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({ room, attendance }) => {
       <img
         src={`room-images/${room.image}`}
         className="room-img"
-        alt={room.name}
+        alt={room.title}
       />
-      <h4 className="room-title">{room.name}</h4>
+      <h4 className="room-title">{room.title}</h4>
       <RoomAttendance room={room} attendance={attendance} />
       {room.events && (
         <div className="artist-playing">
