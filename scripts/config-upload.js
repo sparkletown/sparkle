@@ -31,14 +31,16 @@ var apiKey = argv[0];
 var config = argv[1];
 var path = argv[2];
 var doc = require(path);
-console.log("Loaded document:", doc);
-
 var validateResult = validate(doc, schema);
-console.log("Validation result:", validateResult);
-
 if (!validateResult.valid) {
-  console.error("Invalid document, skipping upload");
+  console.error(
+    "Invalid document, skipping upload. Validation result:",
+    validateResult
+  );
 } else {
+  console.log(
+    `Validation succeeded, log in to upload ${path} to config document ID "${config}".`
+  );
   read({ prompt: "Username:" }, function (err, username) {
     if (err) {
       console.error("Error obtaining username:", err);
