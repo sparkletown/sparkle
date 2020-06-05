@@ -65,6 +65,12 @@ $login-max-width: 540px;
   }
 }
 
+.secondary-action {
+  margin-top: 2rem;
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+
 @media (max-width: $login-max-width) {
   .login-container {
     border-radius: 0;

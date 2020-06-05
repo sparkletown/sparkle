@@ -22,6 +22,7 @@ import Register from "./pages/Account/Register";
 import Profile from "./pages/Account/Profile";
 import Questions from "./pages/Account/Questions";
 import CodeOfConduct from "./pages/Account/CodeOfConduct";
+import Login from "./pages/Account/Login";
 
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
@@ -80,6 +81,7 @@ render(
           <Route path="/account/profile" component={Profile} />
           <Route path="/account/questions" component={Questions} />
           <Route path="/account/code-of-conduct" component={CodeOfConduct} />
+          <Route path="/login" component={Login} />
           <Route path="/" component={App} />
         </Switch>
       </Router>
