@@ -3,10 +3,14 @@ import { getTimeBeforeParty } from "../../../utils/time";
 import "./PartyTitle.scss";
 
 interface PropsType {
+  startUtcSeconds: number;
   withCountDown: boolean;
 }
 
-const PartyTitle: React.FunctionComponent<PropsType> = ({ withCountDown }) => (
+const PartyTitle: React.FunctionComponent<PropsType> = ({
+  startUtcSeconds,
+  withCountDown,
+}) => (
   <div className="col">
     <h1 className="title">The Boat Party</h1>
     <div className="subtitle-container">
@@ -20,7 +24,9 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({ withCountDown }) => (
       <div>
         Hosted by <a href="https://co-reality.co/">Co-Reality collective</a>{" "}
         {withCountDown && (
-          <div className="primary">Party begins in {getTimeBeforeParty()}</div>
+          <div className="primary">
+            Party begins in {getTimeBeforeParty(startUtcSeconds)}
+          </div>
         )}
       </div>
     </div>

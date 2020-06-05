@@ -1,11 +1,1 @@
-export const MAP_VIEWBOX = "0 0 1547 863";
-export const MAP_URL = "boatparty.jpeg";
-
-export const PARTY_START_UTC_SECONDS = 1591466400;
-export const ONE_HOUR_IN_SECONDS = 60 * 60;
-
-const PARTY_DURATION_HOURS = 8;
-const PARTY_END_UTC_SECONDS =
-  PARTY_START_UTC_SECONDS + PARTY_DURATION_HOURS * ONE_HOUR_IN_SECONDS;
-export const LOCK_SITE_AFTER_UTC_SECONDS =
-  PARTY_END_UTC_SECONDS + 2 * ONE_HOUR_IN_SECONDS;
+export const PARTY_NAME = "co-reality-5";

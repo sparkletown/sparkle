@@ -4,17 +4,16 @@ import UserList from "components/molecules/UserList";
 import NavBar from "components/molecules/NavBar";
 import PartyTitle from "components/molecules/PartyTitle";
 import "./LoggedInPartyPage.scss";
-import { LINEUP } from "lineup";
 import Chatbox from "components/organisms/Chatbox";
 
-const LoggedInPartyPage = ({ users, attendances }) => (
+const LoggedInPartyPage = ({ config, users, attendances }) => (
   <>
     <NavBar />
     <div className="container">
       <div className="row">
         <div className="col small-right-margin">
           <PartyTitle />
-          <Map rooms={LINEUP.rooms} attendances={attendances} />
+          <Map config={config} attendances={attendances} />
         </div>
         <div className="col-3">
           <div className="row">{users && <UserList users={users} />}</div>

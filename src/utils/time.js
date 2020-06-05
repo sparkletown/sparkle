@@ -1,12 +1,11 @@
 import { format } from "date-fns";
-import { PARTY_START_UTC_SECONDS } from "config";
 
 const ONE_MINUTE_IN_SECONDS = 60;
 const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
-export const getTimeBeforeParty = () => {
-  const secondsBeforeParty = PARTY_START_UTC_SECONDS - Date.now() / 1000;
+export const getTimeBeforeParty = (startUtcSeconds) => {
+  const secondsBeforeParty = startUtcSeconds - Date.now() / 1000;
   if (secondsBeforeParty > ONE_DAY_IN_SECONDS) {
     const numberOfCompleteDaysBeforeParty = Math.floor(
       secondsBeforeParty / ONE_DAY_IN_SECONDS
@@ -28,14 +27,14 @@ export const getTimeBeforeParty = () => {
   return `${numberOfMinutes}mins`;
 };
 
-export function formatHour(hour) {
+export function formatHour(hour, startUtcSeconds) {
   if (hour === null || hour === undefined) {
     return "(unknown)";
   }
-  const utcSeconds = PARTY_START_UTC_SECONDS + hour * 60 * 60;
+  const utcSeconds = startUtcSeconds + hour * ONE_HOUR_IN_SECONDS;
   return formatUtcSeconds(utcSeconds);
 }
 
-export function formatUtcSeconds(utcSec) {
-  return format(new Date(utcSec * 1000), "p");
+export function formatUtcSeconds(utcSeconds) {
+  return format(new Date(utcSeconds * 1000), "p");
 }

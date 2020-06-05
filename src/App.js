@@ -8,14 +8,24 @@ import { startTimer, stopTimer, setUser, leaveRoom } from "./actions";
 
 import EntranceExperience from "pages/EntranceExperience";
 import LockedSite from "./LockedSite";
-import { LOCK_SITE_AFTER_UTC_SECONDS, PARTY_START_UTC_SECONDS } from "./config";
+import { PARTY_NAME } from "./config";
 import LoggedInPartyPage from "pages/LoggedInPartyPage";
+
+const ONE_HOUR_IN_SECONDS = 60 * 60;
+
+function isAfterEvent(time, startUtcSeconds, durationHours) {
+  const endUtcSeconds = startUtcSeconds + durationHours * ONE_HOUR_IN_SECONDS;
+  const lockSiteAfterUtcSeconds = endUtcSeconds + 2 * ONE_HOUR_IN_SECONDS;
+  return time >= lockSiteAfterUtcSeconds;
+}
 
 export default function App(props) {
   const firebase = useFirebase();
   const dispatch = useDispatch();
-  useFirestoreConnect("users");
-  const { user, users, time, timerInterval } = useSelector((state) => ({
+  useFirestoreConnect({ collection: "config", doc: PARTY_NAME }, "users");
+  const { config, user, users, time, timerInterval } = useSelector((state) => ({
+    config:
+      state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
     users: state.firestore.ordered.users,
     time: state.timer.time,
@@ -24,11 +34,11 @@ export default function App(props) {
 
   function killLoginsFromBeforePartyStart(user) {
     if (user) {
-      const partyHasStarted = time >= PARTY_START_UTC_SECONDS;
+      const partyHasStarted = time >= config.start_utc_seconds;
       const lastSignInTimeSeconds =
         new Date(user.metadata.lastSignInTime) / 1000;
       const signedInBeforePartyStart =
-        lastSignInTimeSeconds < PARTY_START_UTC_SECONDS;
+        lastSignInTimeSeconds < config.start_utc_seconds;
 
       if (partyHasStarted && signedInBeforePartyStart) {
         firebase.auth().signOut();
@@ -73,7 +83,14 @@ export default function App(props) {
   const search = qs.parse(props.location.search, { ignoreQueryPrefix: true });
   const unlock = search.unlock !== undefined;
 
-  if (!unlock && time >= LOCK_SITE_AFTER_UTC_SECONDS) {
+  if (!config) {
+    return "Loading...";
+  }
+
+  if (
+    !unlock &&
+    isAfterEvent(time, config.start_utc_seconds, config.duration_hours)
+  ) {
     return <LockedSite />;
   }
 
@@ -81,5 +98,11 @@ export default function App(props) {
     return <EntranceExperience />;
   }
 
-  return <LoggedInPartyPage users={users} attendances={attendances} />;
+  return (
+    <LoggedInPartyPage
+      config={config}
+      users={users}
+      attendances={attendances}
+    />
+  );
 }

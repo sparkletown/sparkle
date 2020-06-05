@@ -6,7 +6,7 @@ import { Modal } from "react-bootstrap";
 import { exitPreviewRoom, enterRoom, leaveRoom } from "./actions";
 import { formatHour } from "utils/time";
 
-export default function RoomModal({ show, onHide }) {
+export default function RoomModal({ startUtcSeconds, show, onHide }) {
   const dispatch = useDispatch();
   const [inRoom, setInRoom] = useState();
   const { room, user } = useSelector((state) => ({
@@ -72,9 +72,12 @@ export default function RoomModal({ show, onHide }) {
               {room.events.map((event, idx) => (
                 <li className="my-2" key={idx}>
                   <b>
-                    {formatHour(event.start_hour)}-
-                    {formatHour(event.start_hour + event.duration_hours)}:{" "}
-                    {event.name}
+                    {formatHour(event.start_hour, startUtcSeconds)}-
+                    {formatHour(
+                      event.start_hour + event.duration_hours,
+                      startUtcSeconds
+                    )}
+                    : {event.name}
                   </b>
                   <br />
                   Hosted by <b>{event.host}</b>
