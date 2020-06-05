@@ -22,10 +22,10 @@ export default function RoomAttendance({
 
   return (
     <div className={className} style={style} title={title} onClick={onClick}>
-      <div className="icon">
+      <div className="count">
+        <span className="attendance-number">{attendance}</span>
         <FontAwesomeIcon icon={faUser} />
       </div>
-      <div className="count">{attendance}</div>
     </div>
   );
 }

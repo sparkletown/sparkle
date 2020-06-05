@@ -197,10 +197,13 @@ textarea {
     background: theme-color("primary");
   }
   .count {
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px;
     padding: $spacer * 0.25 $spacer * 0.75;
-    background: $white;
-    color: $black;
+    background: $black;
+    color: $white;
+  }
+  .attendance-number {
+    margin-right: 10px;
   }
 }
 
