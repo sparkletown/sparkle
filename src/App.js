@@ -33,7 +33,7 @@ export default function App(props) {
   }));
 
   function killLoginsFromBeforePartyStart(user) {
-    if (user) {
+    if (user && config) {
       const partyHasStarted = time >= config.start_utc_seconds;
       const lastSignInTimeSeconds =
         new Date(user.metadata.lastSignInTime) / 1000;
