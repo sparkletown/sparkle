@@ -115,6 +115,9 @@ class ZoomReportParser():
 		self._visit_durations = {}
 		self.parse(filenames)
 
+		# Generate x for every second in the data
+		self.x = [Config.START + timedelta(seconds=x) for x in range(0, (Config.END - Config.START).seconds)]
+
 	def parse(self, filenames):
 		for f in filenames:
 			with open(f) as csvfile:
@@ -153,7 +156,7 @@ class ZoomReportParser():
 		log.debug("record_visit: Room {}; User: {}; Entered: {}; Left: {}".format(room, user, join_time, leave_time))
 
 		if room in Config.ROOM_TIMEZONE_OFFSETS:
-			log.debug("Room {} has an offset of {}; correcting join and leave times".format(room, room_offsets[room]))
+			log.debug("Room {} has an offset of {}; correcting join and leave times".format(room, Config.ROOM_TIMEZONE_OFFSETS[room]))
 			join_time = join_time + Config.ROOM_TIMEZONE_OFFSETS[room]
 			leave_time = leave_time + Config.ROOM_TIMEZONE_OFFSETS[room]
 
@@ -326,6 +329,9 @@ class ZoomReportParser():
 		moves = {}
 		moves[ENTERED] = {}
 
+		enters_by_room = {}
+		exits_by_room = {}
+
 		for user in self._visits_by_user:
 			for i in range(len(self._visits_by_user[user])+1):
 				if i == 0:
@@ -347,6 +353,20 @@ class ZoomReportParser():
 				else:
 					to_room = EXITED
 
+				if from_room == ENTERED:
+					visit = self._visits_by_user[user][i]
+					room = visit['room']
+					if room not in enters_by_room:
+						enters_by_room[room] = []
+					enters_by_room[room].append(visit['visit'].start)
+
+				if to_room == EXITED:
+					visit = self._visits_by_user[user][i-1]
+					room = visit['room']
+					if room not in exits_by_room:
+						exits_by_room[room] = []
+					exits_by_room[room].append(visit['visit'].end)
+
 				if from_room not in moves:
 					moves[from_room] = {}
 				if to_room not in moves[from_room]:
@@ -359,12 +379,32 @@ class ZoomReportParser():
 			for to_room in moves[from_room].keys():
 				moves_list.append((from_room + ' ', to_room, moves[from_room][to_room]))
 
-		return moves_list
+		enters = []
+		exits = []
+		for room in self._rooms:
+			if not room in enters_by_room:
+				enters_by_room[room] = []
+			enters_by_room[room].sort()
+			if not room in exits_by_room:
+				exits_by_room[room] = []
+			exits_by_room[room].sort()
+			room_enters = []
+			room_exits = []
+			enter_count = 0
+			exit_count = 0
+			for i in self.x:
+				if enter_count < len(enters_by_room[room]) and i >= enters_by_room[room][enter_count]:
+					enter_count += 1
+				if exit_count < len(exits_by_room[room]) and i >= exits_by_room[room][exit_count]:
+					exit_count += 1
+				room_enters.append(enter_count)
+				room_exits.append(exit_count)
+			enters.append(room_enters)
+			exits.append(room_exits)
+
+		return moves_list, enters, exits
 
 	def attendances(self):
-		# Generate x for every second in the data
-		x = [Config.START + timedelta(seconds=x) for x in range(0, (Config.END - Config.START).seconds)]
-		
 		y_rooms = []
 		for room in self._rooms:
 			y = []
@@ -374,7 +414,7 @@ class ZoomReportParser():
 			total_joins = 0
 			total_leaves = 0
 			log.debug("Room {0}: first join: {1}, last join: {2}, first leave: {3}, last leave: {4}".format(room, self._room_joins[room][0], self._room_joins[room][len(self._room_joins[room])-1], self._room_leaves[room][0], self._room_leaves[room][len(self._room_leaves[room])-1]))
-			for i in x:
+			for i in self.x:
 				if join_index < len(self._room_joins[room]) and i >= self._room_joins[room][join_index]:
 					tally += 1
 					join_index += 1
@@ -394,7 +434,7 @@ class ZoomReportParser():
 		total_joins = 0
 		total_leaves = 0
 		log.debug("All joins/leaves: first join: {0}, last join: {1}, first leave: {2}, last leave: {3}".format(self._all_joins[0], self._all_joins[len(self._all_joins)-1], self._all_leaves[0], self._all_leaves[len(self._all_leaves)-1]))
-		for i in x:
+		for i in self.x:
 			if join_index < len(self._all_joins) and i >= self._all_joins[join_index]:
 				tally += 1
 				join_index += 1
@@ -406,10 +446,14 @@ class ZoomReportParser():
 			y_all.append(tally)
 		log.debug("Recorded {0} joins and {1} leaves for all rooms".format(total_joins, total_leaves))
 
-		return x, y_rooms, y_all
+		return self.x, y_rooms, y_all
 
 
 class PdfGenerator():
+	hours = mdates.HourLocator()
+	ten_minutes = mdates.MinuteLocator(byminute=range(0, 60, 10))
+	hours_fmt = mdates.DateFormatter('%H:00')
+
 	def __init__(self, filename):
 		self.filename = filename
 
@@ -420,16 +464,13 @@ class PdfGenerator():
 
 	def attendances(self, x, y_rooms, y_all, rooms):
 		log.info("Generating attendances...")
-		hours = mdates.HourLocator()
-		ten_minutes = mdates.MinuteLocator(byminute=range(0, 60, 10))
-		hours_fmt = mdates.DateFormatter('%H:00')
 
 		fig, ax = plt.subplots()
 		ax.stackplot(x, y_rooms, labels=rooms)
 		ax.legend(loc='upper left', prop={'size': 4})
-		ax.xaxis.set_major_locator(hours)
-		ax.xaxis.set_major_formatter(hours_fmt)
-		ax.xaxis.set_minor_locator(ten_minutes)
+		ax.xaxis.set_major_locator(PdfGenerator.hours)
+		ax.xaxis.set_major_formatter(PdfGenerator.hours_fmt)
+		ax.xaxis.set_minor_locator(PdfGenerator.ten_minutes)
 		ax.set_xlabel('Time (PT)')
 		ax.set_ylabel('Attendance (Stacked)')
 		ax.grid(True)
@@ -438,9 +479,9 @@ class PdfGenerator():
 
 		fig, ax = plt.subplots()
 		ax.plot(x, y_all)
-		ax.xaxis.set_major_locator(hours)
-		ax.xaxis.set_major_formatter(hours_fmt)
-		ax.xaxis.set_minor_locator(ten_minutes)
+		ax.xaxis.set_major_locator(PdfGenerator.hours)
+		ax.xaxis.set_major_formatter(PdfGenerator.hours_fmt)
+		ax.xaxis.set_minor_locator(PdfGenerator.ten_minutes)
 		ax.set_xlabel('Time (PT)')
 		ax.set_ylabel('Attendance (All)')
 		ax.grid(True)
@@ -450,9 +491,9 @@ class PdfGenerator():
 		for i in range(len(rooms)):
 			fig, ax = plt.subplots()
 			ax.plot(x, y_rooms[i])
-			ax.xaxis.set_major_locator(hours)
-			ax.xaxis.set_major_formatter(hours_fmt)
-			ax.xaxis.set_minor_locator(ten_minutes)
+			ax.xaxis.set_major_locator(PdfGenerator.hours)
+			ax.xaxis.set_major_formatter(PdfGenerator.hours_fmt)
+			ax.xaxis.set_minor_locator(PdfGenerator.ten_minutes)
 			ax.set_xlabel('Time (PT)')
 			ax.set_ylabel("Attendance ({0})".format(rooms[i]))
 			ax.grid(True)
@@ -496,6 +537,36 @@ class PdfGenerator():
 		self.pdf.savefig(fig)
 		return self
 
+	def enters(self, x, ys, rooms):
+		log.info("Generating entrances...")
+		fig, ax = plt.subplots()
+		ax.stackplot(x, ys, labels=rooms)
+		ax.legend(loc='upper left', prop={'size': 4})
+		ax.xaxis.set_major_locator(PdfGenerator.hours)
+		ax.xaxis.set_major_formatter(PdfGenerator.hours_fmt)
+		ax.xaxis.set_minor_locator(PdfGenerator.ten_minutes)
+		ax.set_xlabel('Time (PT)')
+		ax.set_ylabel('Users Seen For First Time (Stacked, Cumulative)')
+		ax.grid(True)
+		fig.autofmt_xdate()
+		self.pdf.savefig(fig)
+		return self
+
+	def exits(self, x, ys, rooms):
+		log.info("Generating exits...")
+		fig, ax = plt.subplots()
+		ax.stackplot(x, ys, labels=rooms)
+		ax.legend(loc='upper left', prop={'size': 4})
+		ax.xaxis.set_major_locator(PdfGenerator.hours)
+		ax.xaxis.set_major_formatter(PdfGenerator.hours_fmt)
+		ax.xaxis.set_minor_locator(PdfGenerator.ten_minutes)
+		ax.set_xlabel('Time (PT)')
+		ax.set_ylabel('Users Seen For Last Time (Stacked, Cumulative)')
+		ax.grid(True)
+		fig.autofmt_xdate()
+		self.pdf.savefig(fig)
+		return self
+
 	def finish(self):
 		log.info("Saving...")
 		self.pdf.close()
@@ -506,7 +577,7 @@ def main():
 	rooms = parser.rooms()
 	x, y_rooms, y_all = parser.attendances()
 	all_visit_durations, visit_durations = parser.visit_durations()
-	moves = parser.moves()
+	moves, enters, exits = parser.moves()
 
 	generator = PdfGenerator('analytics.pdf')
 	generator \
@@ -514,6 +585,8 @@ def main():
 		.attendances(x, y_rooms, y_all, rooms) \
 		.visit_durations(all_visit_durations, visit_durations, rooms) \
 		.moves(moves) \
+		.enters(x, enters, rooms) \
+		.exits(x, exits, rooms) \
 		.finish()
 
 if __name__ == "__main__":
