@@ -412,6 +412,8 @@ export const LINEUP = {
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/82251109039?pwd=cTNweWQyZVU1dGNlNFowOEloYVVjUT09",
       path:
@@ -424,6 +426,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/89864208695?pwd=TThzMkl5Rk84NEFiRW93MGs0eUdlUT09",
       path:
@@ -435,6 +439,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/88672357751?pwd=bjlySGMwVlhod3ZDMEZnWFdXc0VNZz09",
       path:
@@ -447,6 +453,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/81019504786?pwd=Ulhtd1JTM2syVHJkOTVJRkh1cUZ1Zz09",
       path:
@@ -459,6 +467,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/88068069004?pwd=UFZMMjJzWXliZ1owL3pBM1dsMGNGQT09",
       path:
@@ -471,6 +481,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/82550216130?pwd=OUtuQWxxM01BVWM5cjNzSDVpbUp1QT09",
       path:
@@ -483,6 +495,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/81353086776?pwd=a2p0UXZNMVZHVDA3OUVJM1pKS0hXdz09",
       path:
@@ -495,6 +509,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/83985212358?pwd=VS8zS0N6UjhhZlZrNjVhUXhLUWFxUT09",
       path:
@@ -507,6 +523,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/87381955525?pwd=d0VBQ0FBazRDR0NOanFyN09hVm5YUT09",
       path:
@@ -520,6 +538,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/84339095111?pwd=dytid01RY2dCbTJ4S2lOeVB2THJzdz09",
       path:
@@ -533,6 +553,8 @@ export const LINEUP = {
       on_list: true,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/81835132191?pwd=RWpOOWM3cGpXNURDQzJNd0EyV2hMUT09",
       path:
@@ -548,6 +570,8 @@ export const LINEUP = {
       button_text: "TEST TEST TEST",
       attendance_x: "21%",
       attendance_y: "19%",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url:
         "https://us02web.zoom.us/j/83141633570?pwd=bk1sWWJrSlFlVHRKUyt3R0pLMk5EZz09",
       path:
@@ -560,6 +584,8 @@ export const LINEUP = {
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url: "https://www.youtube.com/watch?v=VDndE432GpU",
       path:
         "M 1168.6986170498312 2393.147733604849 C 1159.2449973838782 2354.839881408881 1160.837246576575 2314.8028075328125 1153.75439453125 2276.695068359375 C 1148.8415991670297 2250.262845413852 1132.241333308931 2171.4292815131535 1147.63232421875 2145.271728515625 C 1165.835460986953 2114.3348305910245 1296.8258988333089 2129.663397421762 1325.3321533203125 2143.6943359375 C 1340.410538858404 2151.1160019616354 1340.5356264728364 2217.217836700831 1344.5269775390625 2232.69140625 C 1382.2467096110465 2378.92231601152 1279.461632303044 2391.0625 1167.3084716796875 2391.0625",
@@ -570,6 +596,8 @@ export const LINEUP = {
       on_list: false,
       on_map: true,
       image: "room-pic.jpg",
+      aboutThisRoom:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum fermentum metus ac elit viverra, in placerat purus laoreet. Nulla eu placerat sem, et faucibus quam. Praesent rutrum finibus mauris id pharetra. Integer nec tellus condimentum, iaculis felis id, vulputate massa. Pellentesque non tristique arcu, vitae viverra magna. Vestibulum porta sem a orci volutpat, sit amet iaculis metus lacinia. Praesent scelerisque, ipsum ac dignissim volutpat, ex mauris sollicitudin sapien, in venenatis nunc nibh ac nulla.",
       url: "https://www.youtube.com/watch?v=jVhcEh-lOGk",
       path:
         "M 2511.690302705446 1567.1527086683425 C 2511.690185546875 1634.7958506743905 2535.7605830495436 1689.8731637285407 2608.14599609375 1707.6923828125 C 2635.573129010213 1714.4441587536671 2671.803327009319 1722.3368073494803 2686.850341796875 1691.7857666015625 C 2718.5310634761267 1627.4621095432396 2734.915807957848 1404.907017177149 2603.253662109375 1438.8837890625 C 2569.5085062339854 1447.5920738623943 2480.936565102747 1555.914592446497 2518.42724609375 1593.4052734375",

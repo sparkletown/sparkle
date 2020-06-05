@@ -1,12 +1,14 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Modal } from "react-bootstrap";
 
 import { exitPreviewRoom, enterRoom, leaveRoom } from "actions";
-import { formatHour } from "utils/time";
+import { getCurrentEvent } from "utils/time";
+
 import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
+import ScheduleItem from "components/molecules/ScheduleItem";
 
 import "./RoomModal.scss";
 
@@ -18,6 +20,9 @@ export default function RoomModal({ show, onHide }) {
     user: state.user,
     users: state.firestore.ordered.users,
   }));
+
+  const usersToDisplay =
+    users?.filter((user) => user.room === room?.title) ?? [];
 
   useEffect(() => {
     const previousonfocus = window.onfocus;
@@ -51,6 +56,8 @@ export default function RoomModal({ show, onHide }) {
     dispatch(exitPreviewRoom(user.uid));
   };
 
+  const currentEvent = room.events && getCurrentEvent(room);
+
   return (
     <Modal show={show} onHide={onHide} onExited={leave}>
       <Modal.Body>
@@ -66,32 +73,24 @@ export default function RoomModal({ show, onHide }) {
           </div>
           <RoomModalOngoingEvent room={room} enterRoom={enter} />
         </div>
-        <UserList users={users} />
-
+        <UserList users={usersToDisplay} limit={20} />
+        {room.aboutThisRoom && (
+          <div className="about-this-room">{room.aboutThisRoom}</div>
+        )}
         {room.events && room.events.length > 0 && (
-          <div>
-            Lineup:
-            <ul>
-              {room.events.map((event, idx) => (
-                <li className="my-2" key={idx}>
-                  <b>
-                    {formatHour(event.start_hour)}-
-                    {formatHour(event.start_hour + event.duration_hours)}:{" "}
-                    {event.name}
-                  </b>
-                  <br />
-                  Hosted by <b>{event.host}</b>
-                  <br />
-                  {event.text}
-                  {event.interactivity && (
-                    <Fragment>
-                      <br />
-                      Interactivity: {event.interactivity}
-                    </Fragment>
-                  )}
-                </li>
-              ))}
-            </ul>
+          <div className="schedule-container">
+            <div className="schedule-title">Room Schedule</div>
+            {room.events.map((event, idx) => (
+              <ScheduleItem
+                key={idx}
+                event={event}
+                isCurrentEvent={
+                  currentEvent && event.name === currentEvent.name
+                }
+                enterRoom={enter}
+                roomUrl={room.url}
+              />
+            ))}
           </div>
         )}
       </Modal.Body>

@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .room-modal-title {
   font-weight: 700;
   font-style: italic;
@@ -15,4 +17,19 @@
 .room-modal-image {
   border-radius: 22px;
   width: 250px;
+}
+
+.schedule-container {
+  margin-top: 20px;
+}
+
+.schedule-title {
+  font-weight: 700;
+}
+
+.about-this-room {
+  margin-top: 20px;
+  background: $dark;
+  padding: 10px 20px;
+  border-radius: 22px;
 }

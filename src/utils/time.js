@@ -39,3 +39,15 @@ export function formatHour(hour) {
 export function formatUtcSeconds(utcSec) {
   return format(new Date(utcSec * 1000), "p");
 }
+
+export const getCurrentEvent = (room) => {
+  const currentTimeInSeconds = new Date() / 1000;
+  for (const event of room.events) {
+    if (
+      formatHour(event.start_hour) < currentTimeInSeconds &&
+      formatHour(event.start_hour + event.duration_hours) > currentTimeInSeconds
+    ) {
+      return event;
+    }
+  }
+};

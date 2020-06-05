@@ -1,0 +1,34 @@
+@import "scss/constants.scss";
+
+.shedule-item-container {
+  display: flex;
+  padding: 10px 16px;
+  margin-top: 10px;
+  margin: 10px -16px 0px -16px;
+  &:hover {
+    background: $dark;
+  }
+
+  .time-section {
+    border-right: 1px solid $concrete;
+    width: 110px;
+    margin-right: 10px;
+  }
+
+  .event-description {
+    color: $concrete;
+  }
+
+  .primary {
+    color: $primary;
+  }
+
+  .event-section {
+    display: flex;
+  }
+
+  .entry-room-button {
+    display: flex;
+    align-items: center;
+  }
+}

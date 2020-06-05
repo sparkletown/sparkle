@@ -1,4 +1,4 @@
-interface Event {
+export interface Event {
   start_hour: number;
   duration_hours: number;
   host: string;

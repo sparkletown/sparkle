@@ -11,11 +11,15 @@ interface User {
 
 interface PropsType {
   users: User[];
+  limit?: number;
 }
 
-const UserList: React.FunctionComponent<PropsType> = ({ users }) => {
+const UserList: React.FunctionComponent<PropsType> = ({
+  users,
+  limit = 49,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const usersToDisplay = isExpanded ? users : users.slice(0, 49);
+  const usersToDisplay = isExpanded ? users : users.slice(0, limit);
 
   return (
     <div className="userlist-container">
