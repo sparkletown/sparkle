@@ -28,8 +28,8 @@ const Profile = () => {
     <div className="page-container">
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
-        <h2>First, create your account</h2>
-        <p>This will give you access to all sorts of events in Sparkle Town</p>
+        <h2>Well done! Now create your party profile</h2>
+        <p>Don't fret, you'll be able to edit it at any time later</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
