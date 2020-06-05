@@ -5,7 +5,7 @@ import { isRoomValid } from "validation";
 import { MAP_VIEWBOX, MAP_URL } from "config";
 import { previewRoom } from "actions";
 
-import RoomModal from "RoomModal";
+import RoomModal from "components/organisms/RoomModal";
 import RoomAttendance from "RoomAttendance";
 
 import "./Map.scss";
@@ -57,7 +57,7 @@ export default function Map(props) {
               <RoomAttendance
                 room={room}
                 positioned={true}
-                attendance={props.attendances[room.name]}
+                attendance={props.attendances[room.title]}
                 key={idx}
                 onClick={() => preview(room)}
               />

@@ -27,7 +27,8 @@ h1,
 h2,
 h3,
 h4,
-h5 {
+h5,
+h6 {
   font-weight: 700;
   margin-bottom: 0.5rem;
   line-height: 1.2;
@@ -197,10 +198,13 @@ textarea {
     background: theme-color("primary");
   }
   .count {
-    border-radius: 0 10px 10px 0;
+    border-radius: 10px;
     padding: $spacer * 0.25 $spacer * 0.75;
-    background: $white;
-    color: $black;
+    background: $black;
+    color: $white;
+  }
+  .attendance-number {
+    margin-right: 10px;
   }
 }
 
@@ -236,4 +240,19 @@ h4 {
 
 .primary {
   color: $primary;
+}
+
+.modal-backdrop {
+  background: $dark;
+}
+
+.modal-backdrop.show {
+  opacity: 0.8;
+}
+
+.modal-content {
+  border: none;
+  border-radius: 22px;
+  background: $black;
+  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
 }

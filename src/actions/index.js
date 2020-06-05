@@ -10,7 +10,7 @@ export const SET_USER = "SET_USER";
 function sendRoom(room, uid) {
   const firestore = firebase.firestore();
   const doc = `users/${uid}`;
-  const update = { room: room ? room.name : null };
+  const update = { room: room ? room.title : null };
   firestore
     .doc(doc)
     .update(update)
