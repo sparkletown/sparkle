@@ -28,11 +28,18 @@ config = argv[0];
 path = argv[1];
 
 var doc = require(path);
-validate(doc, schema);
+console.log("Loaded document:", doc);
 
-const firebaseConfig = {
-  projectId: "co-reality-map",
-};
-firebase.initializeApp(firebaseConfig);
-const firestore = firebase.firestore();
-firestore.doc(`config/${config}`).set(doc);
+var validateResult = validate(doc, schema);
+console.log("Validation result:", validateResult);
+
+if (!validateResult.valid) {
+  console.error("Invalid document, skipping upload");
+} else {
+  const firebaseConfig = {
+    projectId: "co-reality-map",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const firestore = firebase.firestore();
+  firestore.doc(`config/${config}`).set(doc);
+}
