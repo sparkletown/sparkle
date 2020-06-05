@@ -39,7 +39,7 @@ if (!validateResult.valid) {
   );
 } else {
   console.log(
-    `Validation succeeded, log in to upload ${path} to config document ID "${config}".`
+    `Validation succeeded, log in to upload event config from ${path} to config document ID "${config}".`
   );
   read({ prompt: "Username:" }, function (err, username) {
     if (err) {
