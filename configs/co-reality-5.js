@@ -302,6 +302,7 @@ const treehouse_events = [
     name: "Secret Afterparty",
     text:
       "Ask and you shall receive.. those who wish to keep partying are welcome at the official afterparty.",
+    interactivity: "high",
   },
 ];
 
@@ -328,6 +329,7 @@ const beehive_events = [
   {
     start_hour: 5,
     duration_hours: 3,
+    host: "Maz/Iona/DJ Joe 🐝🐝",
     ...beehive_common,
   },
 ];
@@ -404,7 +406,11 @@ const sunset_room_events = [
   },
 ];
 
-export const LINEUP = {
+module.exports = {
+  start_utc_seconds: 1591466400,
+  duration_hours: 8,
+  map_url: "boatparty.jpeg",
+  map_viewbox: "0 0 1547 863",
   rooms: [
     {
       name: "Party Starts Here",

@@ -55,7 +55,7 @@
     },
     "duration_hours": {
       "$id": "#/properties/duration_hours",
-      "type": "integer",
+      "type": "number",
       "title": "The duration_hours schema",
       "description": "Duration of the event in hours.",
       "default": 0,
@@ -140,17 +140,7 @@
                 ]
               }
             ],
-            "required": [
-              "name",
-              "title",
-              "on_list",
-              "on_map",
-              "attendance_x",
-              "attendance_y",
-              "url",
-              "path",
-              "events"
-            ],
+            "required": ["name", "title", "on_list", "on_map", "url", "path"],
             "additionalProperties": true,
             "properties": {
               "name": {
@@ -278,7 +268,7 @@
                       "properties": {
                         "start_hour": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/start_hour",
-                          "type": "integer",
+                          "type": "number",
                           "title": "The start_hour schema",
                           "description": "The hour after the overall event starts that this event starts.",
                           "default": 0,
@@ -286,7 +276,7 @@
                         },
                         "duration_hours": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/duration_hours",
-                          "type": "integer",
+                          "type": "number",
                           "title": "The duration_hours schema",
                           "description": "Event duration in hours.",
                           "default": 0,
