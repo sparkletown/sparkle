@@ -7,6 +7,7 @@ interface User {
   islandCompanion?: string;
   likeAboutParties?: string;
   partyName?: string;
+  pictureUrl?: string;
 }
 
 interface PropsType {
@@ -31,14 +32,23 @@ const UserList: React.FunctionComponent<PropsType> = ({ users }) => {
         </p>
       </div>
       <div className="row no-margin">
-        {usersToDisplay.map((user) => (
-          <img
-            key={user.id}
-            className="profile-icon"
-            src="anonymous-profile-icon.jpeg"
-            alt={`${user.partyName} profile`}
-          />
-        ))}
+        {usersToDisplay.map((user) =>
+          user.pictureUrl ? (
+            <img
+              key={user.id}
+              className="profile-icon"
+              src={user.pictureUrl}
+              alt={`${user.partyName} profile`}
+            />
+          ) : (
+            <img
+              key={user.id}
+              className="profile-icon"
+              src="anonymous-profile-icon.jpeg"
+              alt={`${user.partyName} profile`}
+            />
+          )
+        )}
       </div>
     </div>
   );
