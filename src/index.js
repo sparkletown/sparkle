@@ -22,10 +22,11 @@ import Register from "./pages/Account/Register";
 import Profile from "./pages/Account/Profile";
 import Questions from "./pages/Account/Questions";
 import CodeOfConduct from "./pages/Account/CodeOfConduct";
+import Login from "./pages/Account/Login";
 
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
-import { API_KEY, APP_ID, MEASUREMENT_ID } from "./secrets";
+import { API_KEY, APP_ID, MEASUREMENT_ID, BUCKET_URL } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
 
 const firebaseConfig = {
@@ -33,6 +34,7 @@ const firebaseConfig = {
   appId: APP_ID,
   measurementId: MEASUREMENT_ID,
   projectId: "co-reality-map",
+  storageBucket: BUCKET_URL,
 };
 const rfConfig = {}; // optional redux-firestore Config Options
 
@@ -80,6 +82,7 @@ render(
           <Route path="/account/profile" component={Profile} />
           <Route path="/account/questions" component={Questions} />
           <Route path="/account/code-of-conduct" component={CodeOfConduct} />
+          <Route path="/login" component={Login} />
           <Route path="/" component={App} />
         </Switch>
       </Router>

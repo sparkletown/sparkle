@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { isRoomValid } from "validation";
 import { previewRoom } from "actions";
 
-import RoomModal from "RoomModal";
+import RoomModal from "components/organisms/RoomModal";
 import RoomAttendance from "RoomAttendance";
 
 import "./Map.scss";

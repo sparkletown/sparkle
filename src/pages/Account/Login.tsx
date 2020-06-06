@@ -5,30 +5,26 @@ import firebase from "firebase/app";
 
 import "./Account.scss";
 
-interface RegisterFormData {
+interface LoginFormData {
   email: string;
   password: string;
 }
 
-const signUp = ({ email, password }: RegisterFormData) => {
-  return firebase.auth().createUserWithEmailAndPassword(email, password);
+const signIn = ({ email, password }: LoginFormData) => {
+  return firebase.auth().signInWithEmailAndPassword(email, password);
 };
 
-// const signIn = ({email, password}: RegisterFormData) => {
-//   return firebase.auth().signInWithEmailAndPassword(email, password);
-// }
-
-const Register = () => {
+const Login = () => {
   const history = useHistory();
   const { register, handleSubmit, errors, formState, setError } = useForm<
-    RegisterFormData
+    LoginFormData
   >({
     mode: "onChange",
   });
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     try {
-      await signUp(data);
-      history.push("/account/profile");
+      await signIn(data);
+      history.push("/");
     } catch (error) {
       setError("email", "firebase", error.message);
     }
@@ -38,8 +34,7 @@ const Register = () => {
     <div className="page-container">
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
-        <h2>First, create your account</h2>
-        <p>This will give you access to all sorts of events in Sparkle Town</p>
+        <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input
@@ -63,43 +58,27 @@ const Register = () => {
               placeholder="Password"
               ref={register({
                 required: true,
-                // minLength: 8,
-                pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/,
               })}
             />
-            <span
-              className={`input-${
-                errors.password && errors.password.type === "pattern"
-                  ? "error"
-                  : "info"
-              }`}
-            >
-              Password must contain letters and numbers
-            </span>
             {errors.password && errors.password.type === "required" && (
               <span className="input-error">Password is required</span>
             )}
-            {/* {errors.password && errors.password.type === "minLength" && (
-              <span className="input-info">
-                Password must be at least 8 characters long
-              </span>
-            )} */}
           </div>
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Create account"
+            value="Log in"
             disabled={!formState.isValid}
           />
         </form>
         <div className="secondary-action">
-          Already have an account?
+          Don't have an account yet?
           <br />
-          <Link to="/login">Login</Link>
+          <Link to="/account/register">Register instead!</Link>
         </div>
       </div>
     </div>
   );
 };
 
-export default Register;
+export default Login;
