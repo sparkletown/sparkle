@@ -59,3 +59,11 @@ export const getCurrentEvent = (room, startUtcSeconds) => {
     }
   }
 };
+
+export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
+  const currentTimeInSeconds = new Date() / 1000;
+  return (
+    currentTimeInSeconds >
+    startUtcSeconds + hostedDurationHours * ONE_HOUR_IN_SECONDS
+  );
+}

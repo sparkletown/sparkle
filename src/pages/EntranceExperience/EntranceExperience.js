@@ -6,6 +6,8 @@ import InformationCard from "components/molecules/InformationCard";
 import "./EntranceExperience.scss";
 import PartyTitle from "components/molecules/PartyTitle";
 
+import { entranceUnhosted } from "utils/time";
+
 const EntranceExperience = ({ config }) => {
   const firebase = useFirebase();
 
@@ -89,6 +91,26 @@ const EntranceExperience = ({ config }) => {
             </div>
           </form>
         </div>
+        {entranceUnhosted(
+          config.start_utc_seconds,
+          config.entrance_hosted_hours
+        ) && (
+          <div className="row">
+            <div class="col">
+              <div class="starting-indication">
+                Welcome. We recommend watching the following video to get
+                started.
+              </div>
+              <div className="embed-responsive embed-responsive-16by9 video-embed mt-2">
+                <iframe
+                  className="embed-responsive-item"
+                  src={config.unhosted_entry_video_url}
+                  allowFullScreen
+                />
+              </div>
+            </div>
+          </div>
+        )}
         <div className="row mt-3">
           <div className="col-xl-7">
             <img

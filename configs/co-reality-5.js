@@ -1,6 +1,8 @@
 module.exports = {
   start_utc_seconds: 1591470000,
   duration_hours: 8,
+  entrance_hosted_hours: 2,
+  unhosted_entry_video_url: "https://www.youtube.com/embed/U4GsKONeHnM",
   map_url: "maps/boat-party.jpg",
   map_viewbox: "0 0 1858 1045",
   rooms: [
