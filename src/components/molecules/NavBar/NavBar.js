@@ -1,7 +1,5 @@
 import React from "react";
 import "./NavBar.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { useFirebase } from "react-redux-firebase";
 
 const NavBar = ({ isUserLoggedIn }) => {
@@ -17,11 +15,9 @@ const NavBar = ({ isUserLoggedIn }) => {
         <div className="container">
           <span className="navbar-brand title">Co-Reality</span>
           {isUserLoggedIn && (
-            <FontAwesomeIcon
-              icon={faUserSlash}
-              className="logout-icon"
-              onClick={logout}
-            />
+            <span onClick={logout} className="logout-span">
+              Log out
+            </span>
           )}
         </div>
       </nav>
