@@ -24,10 +24,15 @@ export const getTimeBeforeParty = (startUtcSeconds) => {
   const numberOfMinutes = Math.floor(
     (secondsBeforeParty % ONE_HOUR_IN_SECONDS) / ONE_MINUTE_IN_SECONDS
   );
-  if (numberOfCompleteHours >= 1) {
-    return `${numberOfCompleteHours}hrs`;
+  if (numberOfCompleteHours >= 4) {
+    return `${numberOfCompleteHours} hours`;
   }
-  return `${numberOfMinutes}mins`;
+  if (numberOfCompleteHours >= 1) {
+    return `${numberOfCompleteHours} ${
+      numberOfCompleteHours > 1 ? "hours" : "hour"
+    } and ${numberOfMinutes} minutes`;
+  }
+  return `${numberOfMinutes} minutes`;
 };
 
 export function formatHour(hour, startUtcSeconds) {
