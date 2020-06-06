@@ -9,7 +9,7 @@ import RoomList from "components/organisms/RoomList";
 
 const LoggedInPartyPage = ({ config, users, attendances }) => (
   <>
-    <NavBar />
+    <NavBar isUserLoggedIn />
     <div className="container">
       <div className="row">
         <div className="col small-right-margin">
