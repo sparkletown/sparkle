@@ -56,7 +56,7 @@ export default function Map({ config, attendances }) {
               <RoomAttendance
                 room={room}
                 positioned={true}
-                attendance={attendances[room.name]}
+                attendance={attendances[room.title]}
                 key={idx}
                 onClick={() => preview(room)}
               />
