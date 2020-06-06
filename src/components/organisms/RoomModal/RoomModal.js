@@ -12,7 +12,7 @@ import ScheduleItem from "components/molecules/ScheduleItem";
 
 import "./RoomModal.scss";
 
-export default function RoomModal({ show, onHide }) {
+export default function RoomModal({ startUtcSeconds, show, onHide }) {
   const dispatch = useDispatch();
   const [inRoom, setInRoom] = useState();
   const { room, user, users } = useSelector((state) => ({
@@ -56,7 +56,7 @@ export default function RoomModal({ show, onHide }) {
     dispatch(exitPreviewRoom(user.uid));
   };
 
-  const currentEvent = room.events && getCurrentEvent(room);
+  const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
 
   return (
     <Modal show={show} onHide={onHide} onExited={leave}>
@@ -83,6 +83,7 @@ export default function RoomModal({ show, onHide }) {
             {room.events.map((event, idx) => (
               <ScheduleItem
                 key={idx}
+                startUtcSeconds={startUtcSeconds}
                 event={event}
                 isCurrentEvent={
                   currentEvent && event.name === currentEvent.name

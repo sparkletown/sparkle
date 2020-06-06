@@ -4,6 +4,7 @@ import { formatHour } from "utils/time";
 import "./ScheduleItem.scss";
 
 interface PropsType {
+  startUtcSeconds: number;
   event: Event;
   isCurrentEvent: boolean;
   enterRoom: () => void;
@@ -11,6 +12,7 @@ interface PropsType {
 }
 
 const ScheduleItem: React.FunctionComponent<PropsType> = ({
+  startUtcSeconds,
   event,
   isCurrentEvent,
   enterRoom,
@@ -19,9 +21,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   <div className="shedule-item-container">
     <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
       <div>
-        <b>{formatHour(event.start_hour)}</b>
+        <b>{formatHour(event.start_hour, startUtcSeconds)}</b>
       </div>
-      <div>{formatHour(event.start_hour + event.duration_hours)}</div>
+      <div>
+        {formatHour(event.start_hour + event.duration_hours, startUtcSeconds)}
+      </div>
     </div>
     <div className="event-section">
       <div>

@@ -5,11 +5,13 @@ import { Room } from "types/Room";
 import RoomCard from "components/molecules/RoomCard";
 
 interface PropsType {
+  startUtcSeconds: number;
   rooms: Room[];
   attendances: any;
 }
 
 const RoomList: React.FunctionComponent<PropsType> = ({
+  startUtcSeconds,
   rooms,
   attendances,
 }) => (
@@ -21,6 +23,7 @@ const RoomList: React.FunctionComponent<PropsType> = ({
       {rooms.map((room) => (
         <RoomCard
           key={room.title}
+          startUtcSeconds={startUtcSeconds}
           room={room}
           attendance={attendances[room.title]}
         />

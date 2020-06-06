@@ -9,12 +9,17 @@ import { useDispatch } from "react-redux";
 import { previewRoom } from "actions";
 
 interface PropsType {
+  startUtcSeconds: number;
   room: Room;
   attendance: any;
 }
 
-const RoomCard: React.FunctionComponent<PropsType> = ({ room, attendance }) => {
-  const currentEvent = room.events && getCurrentEvent(room);
+const RoomCard: React.FunctionComponent<PropsType> = ({
+  startUtcSeconds,
+  room,
+  attendance,
+}) => {
+  const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
   const eventToDisplay =
     room.events && (currentEvent ? currentEvent : room.events[0]);
   const [showModal, setShowModal] = useState(false);
@@ -50,12 +55,18 @@ const RoomCard: React.FunctionComponent<PropsType> = ({ room, attendance }) => {
               </div>
             )}
             <div>
-              <small>{formatHour(eventToDisplay.start_hour)}</small>
+              <small>
+                {formatHour(eventToDisplay.start_hour, startUtcSeconds)}
+              </small>
             </div>
           </div>
         )}
       </div>
-      <RoomModal show={showModal} onHide={() => setShowModal(false)} />
+      <RoomModal
+        startUtcSeconds={startUtcSeconds}
+        show={showModal}
+        onHide={() => setShowModal(false)}
+      />
     </>
   );
 };

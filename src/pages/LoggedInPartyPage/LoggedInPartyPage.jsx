@@ -15,7 +15,11 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
         <div className="col small-right-margin">
           <PartyTitle />
           <Map config={config} attendances={attendances} />
-          <RoomList rooms={config.rooms} attendances={attendances} />
+          <RoomList
+            startUtcSeconds={config.start_utc_seconds}
+            rooms={config.rooms}
+            attendances={attendances}
+          />
         </div>
         <div className="col-3">
           <div className="row">{users && <UserList users={users} />}</div>
