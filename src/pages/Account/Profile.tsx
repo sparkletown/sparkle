@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -18,6 +18,8 @@ const Profile = () => {
   const { user } = useSelector((state: any) => ({
     user: state.user,
   }));
+
+  const [isPictureUploading, setIsPictureUploading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -34,6 +36,13 @@ const Profile = () => {
     history.push("/account/questions");
   };
 
+  const uploadPicture = async (profilePictureRef: any, file: File) => {
+    setIsPictureUploading(true);
+    const uploadedProfilePicture = await profilePictureRef.put(file);
+    setIsPictureUploading(false);
+    return uploadedProfilePicture;
+  };
+
   const handleFileChange = async (e: any) => {
     const file = e.target.files[0];
     const storageRef = firebase.storage().ref();
@@ -41,7 +50,7 @@ const Profile = () => {
     const profilePictureRef = storageRef.child(
       `/users/${user.uid}/${file.name}`
     );
-    const uploadedProfilePicture = await profilePictureRef.put(file);
+    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
     const pictureUrl = await uploadedProfilePicture.ref.getDownloadURL();
     setValue("pictureUrl", pictureUrl, true);
   };
@@ -112,6 +121,7 @@ const Profile = () => {
               {errors.pictureUrl && errors.pictureUrl.type === "required" && (
                 <span className="input-error">Profile picture is required</span>
               )}
+              {isPictureUploading && <small>Picture uploading...</small>}
               <small>
                 This will be your public party avatar appearing on the party map
               </small>
