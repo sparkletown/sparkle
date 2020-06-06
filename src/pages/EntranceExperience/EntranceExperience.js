@@ -80,6 +80,9 @@ const EntranceExperience = ({ config }) => {
             />
             <div className="form-group">
               {message && <small>{message}</small>}
+              {invalidPassword && (
+                <small className="error-message">Wrong password!</small>
+              )}
               {error && (
                 <small className="error-message">An error occured</small>
               )}
