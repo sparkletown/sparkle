@@ -419,14 +419,14 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 5,
-          duration_hours: 0.08333,
+          duration_hours: 0.08334,
           host: "Cory Catt",
           name: "Hammock",
           text: "Flowing with the Energy of Life.",
           interactivity: "low",
         },
         {
-          start_hour: 5.08333,
+          start_hour: 5.08334,
           duration_hours: 0.08333,
           host: "Rae Lamamo",
           name: "DJ - Sacred Soundscape Artist",
@@ -481,7 +481,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 5.71666,
-          duration_hours: 0.08333,
+          duration_hours: 0.08334,
           host: "Cory Catt",
           name: "Lyra",
           text: "Deep Dive into Movement",
@@ -489,7 +489,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 5.8,
-          duration_hours: 0.06666,
+          duration_hours: 0.06667,
           host: "Hanjo",
           name: "Pole",
           text:
@@ -497,8 +497,8 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 5.86666,
-          duration_hours: 0.01166,
+          start_hour: 5.86667,
+          duration_hours: 0.11666,
           host: "Mermaid Nathiqua",
           name: "Mermaid Storytelling",
           text:
@@ -533,7 +533,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 6.41666,
-          duration_hours: 0.18333,
+          duration_hours: 0.18334,
           host: "Komorebi",
           name: "Enchantment",
           text: "Words are Magic",
@@ -549,22 +549,22 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 6.8,
-          duration_hours: 0.06666,
+          duration_hours: 0.06667,
           host: "Cory Catt",
           name: "Pole",
           text: "Deeper Dive into Movement",
           interactivity: "low",
         },
         {
-          start_hour: 6.86666,
-          duration_hours: 0.06666,
+          start_hour: 6.86667,
+          duration_hours: 0.06667,
           host: "Claire",
           name: "Pole",
           text: "Movement as Medicine",
           interactivity: "low",
         },
         {
-          start_hour: 6.93333,
+          start_hour: 6.93334,
           duration_hours: 0.06666,
           host: "Mermaid Asherah",
           name: "Aquatic Performance",
@@ -583,7 +583,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 7.08333,
-          duration_hours: 0.01166,
+          duration_hours: 0.11667,
           host: "Azula Flow",
           name: "Fire Performance",
           text:
@@ -591,7 +591,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.095,
+          start_hour: 7.2,
           duration_hours: 0.1,
           host: "Petite Luna Circus",
           name: "When Water Falls in Love",
@@ -600,7 +600,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.195,
+          start_hour: 7.3,
           duration_hours: 0.08333,
           host: "Ashtronaut",
           name: "Dragon Staff",
@@ -608,7 +608,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.27833,
+          start_hour: 7.38333,
           duration_hours: 0.06666,
           host: "Claire",
           name: "Exotic Art",
@@ -616,7 +616,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.36166,
+          start_hour: 7.44999,
           duration_hours: 0.06666,
           host: "Cory Catt",
           name: "Exotic Art",
