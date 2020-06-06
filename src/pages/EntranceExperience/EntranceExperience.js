@@ -6,7 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 import "./EntranceExperience.scss";
 import PartyTitle from "components/molecules/PartyTitle";
 
-const EntranceExperience = () => {
+const EntranceExperience = (config) => {
   const firebase = useFirebase();
 
   const history = useHistory();
@@ -86,7 +86,7 @@ const EntranceExperience = () => {
         <div className="row mt-3">
           <div className="col-xl-7">
             <img
-              src="boatparty.jpeg"
+              src={config.map_url}
               className="map-image"
               alt="The boat party"
             />

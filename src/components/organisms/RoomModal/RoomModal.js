@@ -74,9 +74,7 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
           <RoomModalOngoingEvent room={room} enterRoom={enter} />
         </div>
         <UserList users={usersToDisplay} limit={20} />
-        {room.aboutThisRoom && (
-          <div className="about-this-room">{room.aboutThisRoom}</div>
-        )}
+        {room.about && <div className="about-this-room">{room.about}</div>}
         {room.events && room.events.length > 0 && (
           <div className="schedule-container">
             <div className="schedule-title">Room Schedule</div>
