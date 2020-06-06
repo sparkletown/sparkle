@@ -58,7 +58,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
           ))}
         </div>
       </div>
-
       <UserProfileModal
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}

@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
+import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { formatUtcSeconds } from "utils/time";
 import { isChatValid } from "validation";
 
 import ChatForm from "./ChatForm";
@@ -17,6 +17,8 @@ const Chatbox = () => {
   let { chats } = useSelector((state) => ({
     chats: state.firestore.ordered.chats,
   }));
+
+  const [selectedUserProfile, setSelectedUserProfile] = useState();
 
   const { users, currentUserUID } = useSelector((state) => ({
     users: state.firestore.data.users,
@@ -34,29 +36,47 @@ const Chatbox = () => {
     .slice(0, RECENT_MESSAGE_COUNT);
 
   return (
-    <div className="chatbox-container">
-      <div className="chatbox-title">
-        <img
-          src="sparkle-icon.png"
-          className="side-title-icon"
-          alt="sparkle icon"
-          width="20"
-        />
-        Party Chat
+    <>
+      <div className="chatbox-container">
+        <div className="chatbox-title">
+          <img
+            src="sparkle-icon.png"
+            className="side-title-icon"
+            alt="sparkle icon"
+            width="20"
+          />
+          Party Chat
+        </div>
+        {users && (
+          <ChatForm
+            currentUser={users[currentUserUID]}
+            currentUserUID={currentUserUID}
+          />
+        )}
+        <div className="message-container">
+          <ul>
+            {chats.map((chat) => (
+              <li key={chat.id} className="chat-message">
+                {chat.userId && (
+                  <img
+                    src={users[chat.userId].pictureUrl}
+                    className="avatar-picture"
+                    alt={chat.name}
+                    onClick={() => setSelectedUserProfile(users[chat.userId])}
+                  />
+                )}
+                <b>{chat.name}</b>: {chat.text}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
-      {users && <ChatForm currentUser={users[currentUserUID]} />}
-      <div className="message-container">
-        <ul>
-          {chats.map((chat) => (
-            <li key={chat.id}>
-              <b>{chat.name}</b>: {chat.text}
-              <br />
-              <small>{formatUtcSeconds(chat.ts_utc)}</small>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
+      <UserProfileModal
+        show={selectedUserProfile !== undefined}
+        onHide={() => setSelectedUserProfile(undefined)}
+        userProfile={selectedUserProfile}
+      />
+    </>
   );
 };
 

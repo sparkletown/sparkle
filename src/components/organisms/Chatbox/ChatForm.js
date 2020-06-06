@@ -6,7 +6,7 @@ import { sendChat } from "../../../actions";
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
 
-export default function ChatForm({ currentUser }) {
+export default function ChatForm({ currentUser, currentUserUID }) {
   const dispatch = useDispatch();
 
   const [text, setText] = useState("");
@@ -19,7 +19,7 @@ export default function ChatForm({ currentUser }) {
   function chatSubmitted(e) {
     e.preventDefault();
     if (text.length > 0) {
-      dispatch(sendChat(currentUser.partyName, text));
+      dispatch(sendChat(currentUser.partyName, currentUserUID, text));
       setText("");
       setLongEnoughSinceLastSend(false);
       window.setTimeout(() => {
