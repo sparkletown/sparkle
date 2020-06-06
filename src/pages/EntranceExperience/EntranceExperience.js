@@ -51,7 +51,10 @@ const EntranceExperience = (config) => {
       <NavBar />
       <div className="container">
         <div className="row mt-3">
-          <PartyTitle withCountDown />
+          <PartyTitle
+            startUtcSeconds={config.start_utc_seconds}
+            withCountDown
+          />
           <form
             className="col-5 secret-password-form"
             onSubmit={passwordSubmitted}

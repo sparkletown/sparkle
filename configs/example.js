@@ -5,8 +5,8 @@ const config = {
   "map_viewbox": "0 0 1547 863",
   "rooms": [
     {
-      "name": "Sunset Room",
-      "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+      "title": "Sunset Room",
+      "subtitle": "Sunset Room - Sunrises and Sunsets from all over the world",
       "on_list": true,
       "on_map": true,
       "button_text": "Check out the sunrise",

@@ -13,7 +13,7 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
     <div className="container">
       <div className="row">
         <div className="col small-right-margin">
-          <PartyTitle />
+          <PartyTitle startUtcSeconds={config.start_utc_seconds} />
           <Map config={config} attendances={attendances} />
           <RoomList
             startUtcSeconds={config.start_utc_seconds}

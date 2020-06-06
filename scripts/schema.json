@@ -13,8 +13,8 @@
       "map_viewbox": "0 0 1547 863",
       "rooms": [
         {
-          "name": "Sunset Room",
-          "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+          "title": "Sunset Room",
+          "subtitle": "Sunset Room - Sunrises and Sunsets from all over the world",
           "about": "About this room",
           "image": "image.jpg",
           "on_list": true,
@@ -88,8 +88,8 @@
       "examples": [
         [
           {
-            "name": "Sunset Room",
-            "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+            "title": "Sunset Room",
+            "subtitle": "Sunset Room - Sunrises and Sunsets from all over the world",
             "about": "About this room",
             "image": "image.jpg",
             "on_list": true,
@@ -123,8 +123,8 @@
             "default": {},
             "examples": [
               {
-                "name": "Sunset Room",
-                "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+                "title": "Sunset Room",
+                "subtitle": "Sunset Room - Sunrises and Sunsets from all over the world",
                 "about": "About this room",
                 "image": "image.jpg",
                 "on_list": true,
@@ -147,8 +147,8 @@
               }
             ],
             "required": [
-              "name",
               "title",
+              "subtitle",
               "about",
               "image",
               "on_list",
@@ -162,18 +162,18 @@
             "additionalProperties": true,
             "properties": {
               "name": {
-                "$id": "#/properties/rooms/items/anyOf/0/properties/name",
+                "$id": "#/properties/rooms/items/anyOf/0/properties/title",
                 "type": "string",
-                "title": "The name schema",
-                "description": "Name of the room.",
+                "title": "The title schema",
+                "description": "Title of the room.",
                 "default": "",
                 "examples": ["Sunset Room"]
               },
               "title": {
-                "$id": "#/properties/rooms/items/anyOf/0/properties/title",
+                "$id": "#/properties/rooms/items/anyOf/0/properties/subtitle",
                 "type": "string",
-                "title": "The title schema",
-                "description": "Title of the room, a subtitle to appear next to the room name.",
+                "title": "The subtitle schema",
+                "description": "A subtitle to appear next to the room name.",
                 "default": "",
                 "examples": [
                   "Sunset Room - Sunrises and Sunsets from all over the world"
