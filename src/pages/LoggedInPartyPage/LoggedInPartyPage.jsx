@@ -6,6 +6,7 @@ import PartyTitle from "components/molecules/PartyTitle";
 import "./LoggedInPartyPage.scss";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "components/organisms/RoomList";
+import CountDown from "components/molecules/CountDown";
 
 const LoggedInPartyPage = ({ config, users, attendances }) => (
   <>
@@ -19,8 +20,11 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
           <UserList users={users} imageSize={50} />
         </div>
       )}
-      <div className="col starting-indication">
-        This is the clickable party map. Begin at the Dock of the Bay.
+      <div className="col">
+        <div className="starting-indication">
+          This is the clickable party map. Begin at the Dock of the Bay.
+        </div>
+        <CountDown startUtcSeconds={config.start_utc_seconds} />
       </div>
       <div className="row">
         <Map config={config} attendances={attendances} />
