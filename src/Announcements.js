@@ -11,7 +11,7 @@ export default function Announcements(props) {
     announcements: state.firestore.ordered.announcements,
   }));
 
-  if (announcements === undefined) {
+  if (!announcements) {
     return "Loading announcements...";
   }
 

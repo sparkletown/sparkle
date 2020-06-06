@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 import { isRoomValid } from "validation";
-import { MAP_VIEWBOX, MAP_URL } from "config";
 import { previewRoom } from "actions";
 
 import RoomModal from "components/organisms/RoomModal";
@@ -10,7 +9,7 @@ import RoomAttendance from "RoomAttendance";
 
 import "./Map.scss";
 
-export default function Map(props) {
+export default function Map({ config, attendances }) {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState();
 
@@ -19,7 +18,7 @@ export default function Map(props) {
     setShowModal(true);
   }
 
-  if (props.rooms === undefined) {
+  if (!config) {
     return "Loading map...";
   }
 
@@ -27,8 +26,8 @@ export default function Map(props) {
     <>
       <div id="map" className="map-container">
         <div className="position-relative">
-          <svg className="position-absolute" viewBox={MAP_VIEWBOX}>
-            {props.rooms
+          <svg className="position-absolute" viewBox={config.map_viewbox}>
+            {config.rooms
               .filter(isRoomValid)
               .filter((r) => r.on_map)
               .map((room, idx) => {
@@ -49,7 +48,7 @@ export default function Map(props) {
                 );
               })}
           </svg>
-          {props.rooms
+          {config.rooms
             .filter(isRoomValid)
             .filter((r) => r.on_map)
             .filter((r) => r.attendance_x && r.attendance_y)
@@ -57,20 +56,24 @@ export default function Map(props) {
               <RoomAttendance
                 room={room}
                 positioned={true}
-                attendance={props.attendances[room.title]}
+                attendance={attendances[room.name]}
                 key={idx}
                 onClick={() => preview(room)}
               />
             ))}
           <img
             className="img-fluid map-image"
-            src={MAP_URL}
+            src={config.map_url}
             title="Clickable Map"
             alt="Clickable Map"
           />
         </div>
       </div>
-      <RoomModal show={showModal} onHide={() => setShowModal(false)} />
+      <RoomModal
+        startUtcSeconds={config.start_utc_seconds}
+        show={showModal}
+        onHide={() => setShowModal(false)}
+      />
     </>
   );
 }

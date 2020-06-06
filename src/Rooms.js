@@ -1,13 +1,14 @@
 import React, { useState, Fragment } from "react";
 import { useDispatch } from "react-redux";
 
-import { PARTY_START_UTC_SECONDS, ONE_HOUR_IN_SECONDS } from "./config";
 import { formatHour } from "utils/time";
 import { isRoomValid } from "./validation";
 import { previewRoom } from "./actions";
 
 import RoomModal from "components/organisms/RoomModal";
 import RoomAttendance from "./RoomAttendance";
+
+const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 export default function Rooms(props) {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ export default function Rooms(props) {
     setShowModal(true);
   }
 
-  if (props.rooms === undefined) {
+  if (!rooms) {
     return "Loading experiences & schedule...";
   }
 
@@ -30,7 +31,7 @@ export default function Rooms(props) {
 
   function notEnded(event) {
     const start =
-      PARTY_START_UTC_SECONDS + event.start_hour * ONE_HOUR_IN_SECONDS;
+      props.startUtcSeconds + event.start_hour * ONE_HOUR_IN_SECONDS;
     const end = start + event.duration_hours * ONE_HOUR_IN_SECONDS;
     const notEnded = end >= props.time;
     return notEnded;
@@ -66,9 +67,12 @@ export default function Rooms(props) {
                     {room.events.filter(notEnded).map((event, idx) => (
                       <li className="my-2" key={idx}>
                         <b>
-                          {formatHour(event.start_hour)}-
-                          {formatHour(event.start_hour + event.duration_hours)}:{" "}
-                          {event.name}
+                          {formatHour(event.start_hour, props.startUtcSeconds)}-
+                          {formatHour(
+                            event.start_hour + event.duration_hours,
+                            props.startUtcSeconds
+                          )}
+                          : {event.name}
                         </b>
                         <br />
                         Hosted by <b>{event.host}</b>
@@ -89,7 +93,11 @@ export default function Rooms(props) {
           ))}
         </ul>
       </div>
-      <RoomModal show={showModal} onHide={() => setShowModal(false)} />
+      <RoomModal
+        startUtcSeconds={props.startUtcSeconds}
+        show={showModal}
+        onHide={() => setShowModal(false)}
+      />
     </Fragment>
   );
 }

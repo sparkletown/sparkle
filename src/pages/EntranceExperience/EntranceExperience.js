@@ -56,7 +56,7 @@ const EntranceExperience = () => {
             className="col-5 secret-password-form"
             onSubmit={passwordSubmitted}
           >
-            <p class="small-text">
+            <p className="small-text">
               Got an invite? Join in with the secret password
             </p>
             <input
@@ -77,7 +77,9 @@ const EntranceExperience = () => {
             />
             <div className="form-group">
               {message && <small>{message}</small>}
-              {error && <small class="error-message">An error occured</small>}
+              {error && (
+                <small className="error-message">An error occured</small>
+              )}
             </div>
           </form>
         </div>

@@ -1,0 +1,332 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "Config Root Schema",
+  "description": "Co-reality Collective Party Config Schema. Made with https://jsonschema.net/.",
+  "default": {},
+  "examples": [
+    {
+      "start_utc_seconds": 1591466400,
+      "duration_hours": 8,
+      "map_url": "https://google.com/",
+      "map_viewbox": "0 0 1547 863",
+      "rooms": [
+        {
+          "name": "Sunset Room",
+          "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+          "on_list": true,
+          "on_map": true,
+          "button_text": "Check out the sunrise",
+          "attendance_x": "21%",
+          "attendance_y": "19%",
+          "url": "https://google.com/",
+          "path": "M 84.58129496777747 147.3325613260158 C 74.37528653770637 177.3215997944872 51.751955765448486 204.2653458393395 37.567359924316406 232.52430725097656 C 21.192730462538776 265.1463168783794 24.953193122592097 321.9732437262433 40.4060173034668 352.8791198730469 C 47.36255981605471 366.7923074423528 75.84674504551731 372.86779216505875 89.43155670166016 366.0052490234375 C 100.97631241213233 360.17326650296076 104.7848193072451 346.87261013732825 115.01148986816406 339.1500549316406 C 140.89211748138842 319.60659019300437 169.99554990855057 289.1874329921948 202.18817138671875 281.13897705078125 C 221.4959437831372 276.3118536813844 272.9068084252108 264.17747603415893 280.9182434082031 242.1768035888672 C 292.6222187463639 210.0358290606722 260.3458251915703 202.59543345565748 237.9968719482422 193.8502655029297 C 201.1375083110179 179.42715932302738 170.7808344295013 163.46764827655855 130.93359375 156.7876434326172 C 128.07334364161693 156.3081501414114 80.12588500976562 144.94355095295097 80.12588500976562 155.3789825439453",
+          "events": [
+            {
+              "start_hour": 0,
+              "duration_hours": 8,
+              "host": "Michael & Chris",
+              "name": "Real-life sunrise & sunset",
+              "text": "Come share with us your sunrises and sunsets from all over the world.",
+              "interactivity": "low"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "required": [
+    "start_utc_seconds",
+    "duration_hours",
+    "map_url",
+    "map_viewbox",
+    "rooms"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "start_utc_seconds": {
+      "$id": "#/properties/start_utc_seconds",
+      "type": "integer",
+      "title": "The start_utc_seconds schema",
+      "description": "UTC seconds past epoch when the event starts.",
+      "default": 0,
+      "examples": [1591466400]
+    },
+    "duration_hours": {
+      "$id": "#/properties/duration_hours",
+      "type": "number",
+      "title": "The duration_hours schema",
+      "description": "Duration of the event in hours.",
+      "default": 0,
+      "examples": [8]
+    },
+    "map_url": {
+      "$id": "#/properties/map_url",
+      "type": "string",
+      "title": "The map_url schema",
+      "description": "URL for the event map.",
+      "default": "",
+      "examples": ["https://google.com/"]
+    },
+    "map_viewbox": {
+      "$id": "#/properties/map_viewbox",
+      "type": "string",
+      "title": "The map_viewbox schema",
+      "description": "SVG viewbox for the event map's SVG overlay with clickable regions. Must be 0 0 (map image width) (map image height).",
+      "default": "",
+      "examples": ["0 0 1547 863"]
+    },
+    "rooms": {
+      "$id": "#/properties/rooms",
+      "type": "array",
+      "title": "The rooms schema",
+      "description": "The list of rooms in the event.",
+      "default": [],
+      "examples": [
+        [
+          {
+            "name": "Sunset Room",
+            "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+            "on_list": true,
+            "on_map": true,
+            "button_text": "Check out the sunrise",
+            "attendance_x": "21%",
+            "attendance_y": "19%",
+            "url": "https://google.com/",
+            "path": "M 84.58129496777747 147.3325613260158 C 74.37528653770637 177.3215997944872 51.751955765448486 204.2653458393395 37.567359924316406 232.52430725097656 C 21.192730462538776 265.1463168783794 24.953193122592097 321.9732437262433 40.4060173034668 352.8791198730469 C 47.36255981605471 366.7923074423528 75.84674504551731 372.86779216505875 89.43155670166016 366.0052490234375 C 100.97631241213233 360.17326650296076 104.7848193072451 346.87261013732825 115.01148986816406 339.1500549316406 C 140.89211748138842 319.60659019300437 169.99554990855057 289.1874329921948 202.18817138671875 281.13897705078125 C 221.4959437831372 276.3118536813844 272.9068084252108 264.17747603415893 280.9182434082031 242.1768035888672 C 292.6222187463639 210.0358290606722 260.3458251915703 202.59543345565748 237.9968719482422 193.8502655029297 C 201.1375083110179 179.42715932302738 170.7808344295013 163.46764827655855 130.93359375 156.7876434326172 C 128.07334364161693 156.3081501414114 80.12588500976562 144.94355095295097 80.12588500976562 155.3789825439453",
+            "events": [
+              {
+                "start_hour": 0,
+                "duration_hours": 8,
+                "host": "Michael & Chris",
+                "name": "Real-life sunrise & sunset",
+                "text": "Come share with us your sunrises and sunsets from all over the world.",
+                "interactivity": "low"
+              }
+            ]
+          }
+        ]
+      ],
+      "additionalItems": true,
+      "items": {
+        "anyOf": [
+          {
+            "$id": "#/properties/rooms/items/anyOf/0",
+            "type": "object",
+            "title": "The first anyOf schema",
+            "description": "A room in the event.",
+            "default": {},
+            "examples": [
+              {
+                "name": "Sunset Room",
+                "title": "Sunset Room - Sunrises and Sunsets from all over the world",
+                "on_list": true,
+                "on_map": true,
+                "button_text": "Check out the sunrise",
+                "attendance_x": "21%",
+                "attendance_y": "19%",
+                "url": "https://google.com/",
+                "path": "M 84.58129496777747 147.3325613260158 C 74.37528653770637 177.3215997944872 51.751955765448486 204.2653458393395 37.567359924316406 232.52430725097656 C 21.192730462538776 265.1463168783794 24.953193122592097 321.9732437262433 40.4060173034668 352.8791198730469 C 47.36255981605471 366.7923074423528 75.84674504551731 372.86779216505875 89.43155670166016 366.0052490234375 C 100.97631241213233 360.17326650296076 104.7848193072451 346.87261013732825 115.01148986816406 339.1500549316406 C 140.89211748138842 319.60659019300437 169.99554990855057 289.1874329921948 202.18817138671875 281.13897705078125 C 221.4959437831372 276.3118536813844 272.9068084252108 264.17747603415893 280.9182434082031 242.1768035888672 C 292.6222187463639 210.0358290606722 260.3458251915703 202.59543345565748 237.9968719482422 193.8502655029297 C 201.1375083110179 179.42715932302738 170.7808344295013 163.46764827655855 130.93359375 156.7876434326172 C 128.07334364161693 156.3081501414114 80.12588500976562 144.94355095295097 80.12588500976562 155.3789825439453",
+                "events": [
+                  {
+                    "start_hour": 0,
+                    "duration_hours": 8,
+                    "host": "Michael & Chris",
+                    "name": "Real-life sunrise & sunset",
+                    "text": "Come share with us your sunrises and sunsets from all over the world.",
+                    "interactivity": "low"
+                  }
+                ]
+              }
+            ],
+            "required": ["name", "title", "on_list", "on_map", "url", "path"],
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/name",
+                "type": "string",
+                "title": "The name schema",
+                "description": "Name of the room.",
+                "default": "",
+                "examples": ["Sunset Room"]
+              },
+              "title": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/title",
+                "type": "string",
+                "title": "The title schema",
+                "description": "Title of the room, a subtitle to appear next to the room name.",
+                "default": "",
+                "examples": [
+                  "Sunset Room - Sunrises and Sunsets from all over the world"
+                ]
+              },
+              "on_list": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/on_list",
+                "type": "boolean",
+                "title": "The on_list schema",
+                "description": "Whether the room appears in the room list on the website.",
+                "default": false,
+                "examples": [true]
+              },
+              "on_map": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/on_map",
+                "type": "boolean",
+                "title": "The on_map schema",
+                "description": "Whether the room appears on the map on the website.",
+                "default": false,
+                "examples": [true]
+              },
+              "button_text": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/button_text",
+                "type": "string",
+                "title": "The button_text schema",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": ["Check out the sunrise"]
+              },
+              "attendance_x": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/attendance_x",
+                "type": "string",
+                "title": "The attendance_x schema",
+                "description": "The X percentage along the map to show the attendance indicator.",
+                "default": "",
+                "examples": ["21%"]
+              },
+              "attendance_y": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/attendance_y",
+                "type": "string",
+                "title": "The attendance_y schema",
+                "description": "The X percentage along the map to show the attendance indicator.",
+                "default": "",
+                "examples": ["19%"]
+              },
+              "url": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/url",
+                "type": "string",
+                "title": "The url schema",
+                "description": "URL for the room.",
+                "default": "",
+                "examples": ["https://google.com/"]
+              },
+              "path": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/path",
+                "type": "string",
+                "title": "The path schema",
+                "description": "SVG path for the room's clickable region on the map.",
+                "default": "",
+                "examples": [
+                  "M 84.58129496777747 147.3325613260158 C 74.37528653770637 177.3215997944872 51.751955765448486 204.2653458393395 37.567359924316406 232.52430725097656 C 21.192730462538776 265.1463168783794 24.953193122592097 321.9732437262433 40.4060173034668 352.8791198730469 C 47.36255981605471 366.7923074423528 75.84674504551731 372.86779216505875 89.43155670166016 366.0052490234375 C 100.97631241213233 360.17326650296076 104.7848193072451 346.87261013732825 115.01148986816406 339.1500549316406 C 140.89211748138842 319.60659019300437 169.99554990855057 289.1874329921948 202.18817138671875 281.13897705078125 C 221.4959437831372 276.3118536813844 272.9068084252108 264.17747603415893 280.9182434082031 242.1768035888672 C 292.6222187463639 210.0358290606722 260.3458251915703 202.59543345565748 237.9968719482422 193.8502655029297 C 201.1375083110179 179.42715932302738 170.7808344295013 163.46764827655855 130.93359375 156.7876434326172 C 128.07334364161693 156.3081501414114 80.12588500976562 144.94355095295097 80.12588500976562 155.3789825439453"
+                ]
+              },
+              "events": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/events",
+                "type": "array",
+                "title": "The events schema",
+                "description": "List of events in the room during the overall event.",
+                "default": [],
+                "examples": [
+                  [
+                    {
+                      "start_hour": 0,
+                      "duration_hours": 8,
+                      "host": "Michael & Chris",
+                      "name": "Real-life sunrise & sunset",
+                      "text": "Come share with us your sunrises and sunsets from all over the world.",
+                      "interactivity": "low"
+                    }
+                  ]
+                ],
+                "additionalItems": true,
+                "items": {
+                  "anyOf": [
+                    {
+                      "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0",
+                      "type": "object",
+                      "title": "The first anyOf schema",
+                      "description": "The list of events in the room during the overall event.",
+                      "default": {},
+                      "examples": [
+                        {
+                          "start_hour": 0,
+                          "duration_hours": 8,
+                          "host": "Michael & Chris",
+                          "name": "Real-life sunrise & sunset",
+                          "text": "Come share with us your sunrises and sunsets from all over the world.",
+                          "interactivity": "low"
+                        }
+                      ],
+                      "required": [
+                        "start_hour",
+                        "duration_hours",
+                        "host",
+                        "name",
+                        "text",
+                        "interactivity"
+                      ],
+                      "additionalProperties": true,
+                      "properties": {
+                        "start_hour": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/start_hour",
+                          "type": "number",
+                          "title": "The start_hour schema",
+                          "description": "The hour after the overall event starts that this event starts.",
+                          "default": 0,
+                          "examples": [0]
+                        },
+                        "duration_hours": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/duration_hours",
+                          "type": "number",
+                          "title": "The duration_hours schema",
+                          "description": "Event duration in hours.",
+                          "default": 0,
+                          "examples": [8]
+                        },
+                        "host": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/host",
+                          "type": "string",
+                          "title": "The host schema",
+                          "description": "Name(s) of the event's host(s).",
+                          "default": "",
+                          "examples": ["Michael & Chris"]
+                        },
+                        "name": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/name",
+                          "type": "string",
+                          "title": "The name schema",
+                          "description": "Event name.",
+                          "default": "",
+                          "examples": ["Real-life sunrise & sunset"]
+                        },
+                        "text": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/text",
+                          "type": "string",
+                          "title": "The text schema",
+                          "description": "Detailed description of the event.",
+                          "default": "",
+                          "examples": [
+                            "Come share with us your sunrises and sunsets from all over the world."
+                          ]
+                        },
+                        "interactivity": {
+                          "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/interactivity",
+                          "type": "string",
+                          "title": "The interactivity schema",
+                          "description": "Interactivity level (low, medium, high), to help give guests an idea what to expect from the event.",
+                          "default": "",
+                          "examples": ["low"]
+                        }
+                      }
+                    }
+                  ],
+                  "$id": "#/properties/rooms/items/anyOf/0/properties/events/items"
+                }
+              }
+            }
+          }
+        ],
+        "$id": "#/properties/rooms/items"
+      }
+    }
+  }
+}

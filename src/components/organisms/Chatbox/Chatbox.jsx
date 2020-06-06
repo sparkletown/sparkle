@@ -23,7 +23,7 @@ const Chatbox = () => {
     currentUserUID: state.user.uid,
   }));
 
-  if (chats === undefined) {
+  if (!chats) {
     return "Loading chat...";
   }
 
