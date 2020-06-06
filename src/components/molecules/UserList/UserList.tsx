@@ -51,6 +51,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
               key={user.id}
               className="profile-icon"
               src={user.pictureUrl || "anonymous-profile-icon.jpeg"}
+              title={user.partyName}
               alt={`${user.partyName} profile`}
               width={imageSize}
               height={imageSize}
