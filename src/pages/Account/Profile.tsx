@@ -53,7 +53,10 @@ const Profile = () => {
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
         <h2>Well done! Now create your party profile</h2>
-        <p>Don't fret, you'll be able to edit it at any time later</p>
+        <p>
+          Choose your party bio carefully, we don’t have edit functionality
+          yet! 
+        </p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input

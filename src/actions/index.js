@@ -19,13 +19,14 @@ function sendRoom(room, uid) {
     });
 }
 
-export function sendChat(name, text) {
+export function sendChat(name, userId, text) {
   return (dispatch) => {
     const firestore = firebase.firestore();
     firestore.collection("chats").add({
       ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
       name,
       text,
+      userId,
     });
   };
 }
