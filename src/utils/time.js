@@ -6,6 +6,9 @@ const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
 export const getTimeBeforeParty = (startUtcSeconds) => {
   const secondsBeforeParty = startUtcSeconds - Date.now() / 1000;
+  if (secondsBeforeParty < 0) {
+    return 0;
+  }
   if (secondsBeforeParty > ONE_DAY_IN_SECONDS) {
     const numberOfCompleteDaysBeforeParty = Math.floor(
       secondsBeforeParty / ONE_DAY_IN_SECONDS
