@@ -21,7 +21,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
 }) => {
   const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
   const eventToDisplay =
-    room.events && (currentEvent ? currentEvent : room.events[0]);
+    room.events &&
+    room.events.length > 0 &&
+    (currentEvent ? currentEvent : room.events[0]);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const preview = (room: Room) => {

@@ -71,7 +71,11 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
               alt={room.title}
             />
           </div>
-          <RoomModalOngoingEvent room={room} enterRoom={enter} />
+          <RoomModalOngoingEvent
+            room={room}
+            enterRoom={enter}
+            startUtcSeconds={startUtcSeconds}
+          />
         </div>
         <UserList users={usersToDisplay} limit={20} />
         {room.about && <div className="about-this-room">{room.about}</div>}
