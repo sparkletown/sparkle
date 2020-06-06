@@ -95,7 +95,7 @@ export default function App(props) {
   }
 
   if (!user) {
-    return <EntranceExperience />;
+    return <EntranceExperience config={config} />;
   }
 
   return (
