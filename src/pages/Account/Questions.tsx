@@ -31,7 +31,7 @@ const Questions = () => {
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
         <h2>Now complete your profile by answering 3 short questions</h2>
-        <p>This will helpyour fellow party-goers break the ice</p>
+        <p>This will help your fellow party-goers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <textarea

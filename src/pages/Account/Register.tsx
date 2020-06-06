@@ -39,7 +39,7 @@ const Register = () => {
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
         <h2>First, create your account</h2>
-        <p>This will give you access to all sorts of events in Sparkle Town</p>
+        <p>This will give you access to all sorts of wonderful experiences</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <input

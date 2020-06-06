@@ -48,7 +48,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           <div className="profile-extras">
             <p className="light question">Dream desert island companion:</p>
             <h6>{userProfile.islandCompanion || "Hermann Melville"}</h6>
-            <p className="light question">Greateful for:</p>
+            <p className="light question">Grateful for:</p>
             <h6>{userProfile.gratefulFor || "My consciousness"}</h6>
             <p className="light question">I like parties because of:</p>
             <h6>{userProfile.likeAboutParties || "Because they're joyful"}</h6>
