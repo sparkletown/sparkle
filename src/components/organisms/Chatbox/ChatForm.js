@@ -37,7 +37,7 @@ export default function ChatForm({ currentUser }) {
       <div className="chat-form">
         <input
           type="text"
-          className="input-block chat-input"
+          className="chat-input"
           placeholder="Message"
           value={text}
           onChange={textChanged}

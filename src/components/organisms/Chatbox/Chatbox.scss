@@ -7,17 +7,17 @@
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  margin-top: 30px;
-  height: 600px;
+  height: 100%;
 }
 
 .chatbox-title {
   font-weight: 700;
+  margin-bottom: 5px;
 }
 
 .message-container {
   overflow: scroll;
-  margin-bottom: 10px;
+  margin: 10px 10px;
 }
 
 .side-title-icon {
@@ -40,6 +40,7 @@
 .chat-form {
   display: flex;
   align-items: baseline;
+  margin: 0px 7px;
 }
 
 .chat-submit-button {
