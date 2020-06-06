@@ -1,5 +1,5 @@
 module.exports = {
-  start_utc_seconds: 1591466400,
+  start_utc_seconds: 1591470000,
   duration_hours: 8,
   map_url: "maps/boat-party.jpg",
   map_viewbox: "0 0 1858 1045",

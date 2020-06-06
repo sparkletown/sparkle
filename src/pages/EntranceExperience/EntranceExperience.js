@@ -6,7 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 import "./EntranceExperience.scss";
 import PartyTitle from "components/molecules/PartyTitle";
 
-const EntranceExperience = (config) => {
+const EntranceExperience = ({ config }) => {
   const firebase = useFirebase();
 
   const history = useHistory();
