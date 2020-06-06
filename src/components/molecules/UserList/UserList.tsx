@@ -21,7 +21,7 @@ interface PropsType {
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
   limit = 60,
-  imageSize = 21,
+  imageSize = 40,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();

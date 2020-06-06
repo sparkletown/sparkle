@@ -77,7 +77,7 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
             startUtcSeconds={startUtcSeconds}
           />
         </div>
-        <UserList users={usersToDisplay} limit={20} />
+        <UserList users={usersToDisplay} limit={11} />
         {room.about && <div className="about-this-room">{room.about}</div>}
         {room.events && room.events.length > 0 && (
           <div className="schedule-container">
