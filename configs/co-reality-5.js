@@ -438,86 +438,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
         },
         {
           start_hour: 5,
-          duration_hours: 0.08334,
-          host: "Cory Catt",
-          name: "Hammock",
-          text: "Flowing with the Energy of Life.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.08334,
-          duration_hours: 0.08333,
-          host: "Rae Lamamo",
-          name: "DJ - Sacred Soundscape Artist",
-          text:
-            "Casting the tone for the following two performances. Rae Lamamo music is heart centred, spiritually infused, genre bending organic and electric.  A fusion of sounds from the African tribes to the latino shores.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.16667,
-          duration_hours: 0.08333,
-          host: "Elvee Elements",
-          name: "Mermaid + Aerials",
-          text:
-            "A Mermaid with a love for Aerials and Flow Arts... creating a visual experience to enchant you from your livingroom to an underwater fantasy world.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.25,
-          duration_hours: 0.1,
-          host: "Leila Magnolia",
-          name: "Multidimensional Arist",
-          text:
-            "A creative media & performance artists. Inspired by sound & color... Her piece will incorporate apparatus manipulation, as well as digital visuals projected live!",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.35,
-          duration_hours: 0.2,
-          host: "Oracle Jesselyn",
-          name: "Oracle",
-          text:
-            "Oracle Jesselynn is a Business & Legacy Life Coach, BreathPlay Facilitator, and Psychic. She has an unparalleled passion for life and exploring far beyond the confines of infinite possibility, fueled with boundless energy from sources mysterious and unknown and amazing talent oozing from every pore. Jesselynn is tirelessly dedicated to her craft, driven by a desire to touch the human spirit and inspire change and growth in herself & others. Discovery is always just around the corner with Jesselynn, as someone new is bound to discover her contagious smile with every passing day.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.55,
-          duration_hours: 0.08333,
-          host: "Azula Flow",
-          name: "Silk Fans + Hoop",
-          text:
-            "Azula is a trained artist who’s roots are in dance. Her skills have sprouted into prop manipulation, fire dancing, and many other forms of expression. You are sure to be captivated by her movements as she tells a story through her enchanting flow.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.63333,
-          duration_hours: 0.08333,
-          host: "Claire",
-          name: "Lyra",
-          text:
-            "Movement is healing for me and has allowed me to become a better person and meet some of the most talented, genuine people in the world. I am so grateful for every chance to perform and share my passion.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.71666,
-          duration_hours: 0.08334,
-          host: "Cory Catt",
-          name: "Lyra",
-          text: "Deep Dive into Movement",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.8,
-          duration_hours: 0.06667,
-          host: "Hanjo",
-          name: "Pole",
-          text:
-            "Hanjo is a pole dancer and fusion belly dancer based in London, UK. Creating dance routines at home is what has kept her (vaguely) sane during lockdown.",
-          interactivity: "low",
-        },
-        {
-          start_hour: 5.86667,
-          duration_hours: 0.11666,
+          duration_hours: 0.13333,
           host: "Mermaid Nathiqua",
           name: "Mermaid Storytelling",
           text:
@@ -525,25 +446,104 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 5.98333,
-          duration_hours: 0.25,
-          host: "The Sacred",
-          name: "Aquatic Performance",
+          start_hour: 5.13333,
+          duration_hours: 0.26667,
+          host: "Rae Lamamo",
+          name: "DJ - Sacred Soundscape Artist",
           text:
-            "This here and now, globally and individually has invited us to dive deep inside our relationship with the self and with the world, this is a prayer to deeply apreciate the Sacred: Life in all forms and go out of the cocoon rebirth to help create the New Earth.",
+            "Casting the tone for the following two performances. Rae Lamamo music is heart centred, spiritually infused, genre bending organic and electric.  A fusion of sounds from the African tribes to the latino shores.",
           interactivity: "low",
         },
         {
-          start_hour: 6.23333,
+          start_hour: 5.4,
           duration_hours: 0.1,
+          host: "Elvee Elements",
+          name: "Mermaid + Aerials",
+          text:
+            "A Mermaid with a love for Aerials and Flow Arts... creating a visual experience to enchant you from your livingroom to an underwater fantasy world.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 5.5,
+          duration_hours: 0.18333,
+          host: "Leila Magnolia",
+          name: "Multidimensional Arist",
+          text:
+            "A creative media & performance artists. Inspired by sound & color... Her piece will incorporate apparatus manipulation, as well as digital visuals projected live!",
+          interactivity: "low",
+        },
+        {
+          start_hour: 5.68333,
+          duration_hours: 0.25,
+          host: "Oracle Jesselyn",
+          name: "Oracle",
+          text:
+            "Oracle Jesselynn is a Business & Legacy Life Coach, BreathPlay Facilitator, and Psychic. She has an unparalleled passion for life and exploring far beyond the confines of infinite possibility, fueled with boundless energy from sources mysterious and unknown and amazing talent oozing from every pore. Jesselynn is tirelessly dedicated to her craft, driven by a desire to touch the human spirit and inspire change and growth in herself & others. Discovery is always just around the corner with Jesselynn, as someone new is bound to discover her contagious smile with every passing day.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 5.93333,
+          duration_hours: 0.11667,
+          host: "Azula Flow",
+          name: "Silk Fans + Hoop",
+          text:
+            "Azula is a trained artist who’s roots are in dance. Her skills have sprouted into prop manipulation, fire dancing, and many other forms of expression. You are sure to be captivated by her movements as she tells a story through her enchanting flow.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.05,
+          duration_hours: 0.11667,
+          host: "Cory Catt",
+          name: "Hammock",
+          text: "Flowing with the Energy of Life",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.16667,
+          duration_hours: 0.1,
+          host: "Claire",
+          name: "Lyra",
+          text:
+            "Movement is healing for me and has allowed me to become a better person and meet some of the most talented, genuine people in the world. I am so grateful for every chance to perform and share my passion.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.26667,
+          duration_hours: 0.1,
+          host: "Hanjo",
+          name: "Pole",
+          text:
+            "Hanjo is a pole dancer and fusion belly dancer based in London, UK. Creating dance routines at home is what has kept her (vaguely) sane during lockdown.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.36667,
+          duration_hours: 0.13333,
+          host: "Cory Catt",
+          name: "Lyra",
+          text: "Deep Dive into Movement",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.5,
+          duration_hours: 0.3,
+          host: "The Wispers of the Mermaid",
+          name: "Aquatic Performance",
+          text:
+            "This very present moment, globally and individually, has invited us to dive deep inside ourselves to reflect on our relationship with the self and with the world. This is a prayer and an oration to profoundly appreciate, honor,  and protect life in all forms. The Sacred Spirit of the water,  through it’s beautiful guardians, the mermaids, are here to remind us to chose love instead of fear. Journey out of the cocoon to softly rebirth  a New Earth,  a New Humanity,  where  love for all life prevails.",
+          interactivity: "low",
+        },
+        {
+          start_hour: 6.8,
+          duration_hours: 0.13333,
           host: "Komorebi",
           name: "Lyra",
           text: "In the words of Maya Angelou, “Still I Rise”.",
           interactivity: "low",
         },
         {
-          start_hour: 6.33333,
-          duration_hours: 0.08333,
+          start_hour: 6.93333,
+          duration_hours: 0.11667,
           host: "Maggie Mystica + Soular Sandy",
           name: "Double Hoop + Fire Staff",
           text:
@@ -551,40 +551,40 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 6.41666,
-          duration_hours: 0.18334,
+          start_hour: 7.05,
+          duration_hours: 0.2,
           host: "Komorebi",
           name: "Enchantment",
           text: "Words are Magic",
           interactivity: "low",
         },
         {
-          start_hour: 6.6,
-          duration_hours: 0.2,
+          start_hour: 7.25,
+          duration_hours: 0.23333,
           host: "Harmony + Diego",
           name: "Soundscape from the ocean floor",
           text: "Sound Journey from the Bottom of the Ocean",
           interactivity: "low",
         },
         {
-          start_hour: 6.8,
-          duration_hours: 0.06667,
+          start_hour: 7.48333,
+          duration_hours: 0.1,
           host: "Cory Catt",
           name: "Pole",
           text: "Deeper Dive into Movement",
           interactivity: "low",
         },
         {
-          start_hour: 6.86667,
-          duration_hours: 0.06667,
+          start_hour: 7.58333,
+          duration_hours: 0.1,
           host: "Claire",
           name: "Pole",
           text: "Movement as Medicine",
           interactivity: "low",
         },
         {
-          start_hour: 6.93334,
-          duration_hours: 0.06666,
+          start_hour: 7.68333,
+          duration_hours: 0.1,
           host: "Mermaid Asherah",
           name: "Aquatic Performance",
           text:
@@ -592,8 +592,8 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.0,
-          duration_hours: 0.08333,
+          start_hour: 7.78333,
+          duration_hours: 0.11667,
           host: "Ashtronaut",
           name: "Fire Performance",
           text:
@@ -601,8 +601,8 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.08333,
-          duration_hours: 0.11667,
+          start_hour: 7.9,
+          duration_hours: 0.13333,
           host: "Azula Flow",
           name: "Fire Performance",
           text:
@@ -610,8 +610,8 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.2,
-          duration_hours: 0.1,
+          start_hour: 8.03333,
+          duration_hours: 0.11667,
           host: "Petite Luna Circus",
           name: "When Water Falls in Love",
           text:
@@ -619,7 +619,7 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.3,
+          start_hour: 8.15,
           duration_hours: 0.08333,
           host: "Ashtronaut",
           name: "Dragon Staff",
@@ -627,16 +627,16 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           interactivity: "low",
         },
         {
-          start_hour: 7.38333,
-          duration_hours: 0.06666,
+          start_hour: 8.23333,
+          duration_hours: 0.08334,
           host: "Claire",
           name: "Exotic Art",
           text: "When body meets breath and beds with space.",
           interactivity: "low",
         },
         {
-          start_hour: 7.44999,
-          duration_hours: 0.06666,
+          start_hour: 8.31667,
+          duration_hours: 0.08333,
           host: "Cory Catt",
           name: "Exotic Art",
           text: "Deepest Dive into Movement",
@@ -788,6 +788,15 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           name: "Deep sharing and collective art creation",
           text:
             "Join us as we engage in sharing of our deepest feelings, while Bobcat, your host, works to create a piece of art from the combination of everything we express.",
+          interactivity: "high",
+        },
+        {
+          start_hour: 4.5,
+          duration_hours: 1.5,
+          host: "Karin and Ben",
+          name: "Collective Sharing and Dancing",
+          text:
+            "Join Karin and Ben as we collectively share our grief and dance it all out for the hope of a better future.",
           interactivity: "high",
         },
       ],
