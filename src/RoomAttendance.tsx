@@ -30,10 +30,8 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className={className} style={style} title={title} onClick={onClick}>
-      <div className="count">
-        <span className="attendance-number">{attendance}</span>
-        <FontAwesomeIcon icon={faUser} />
-      </div>
+      <span className="attendance-number">{attendance}</span>
+      <FontAwesomeIcon icon={faUser} />
     </div>
   );
 };

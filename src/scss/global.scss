@@ -186,10 +186,16 @@ textarea {
 
 .room-attendance {
   cursor: pointer;
+  border-radius: 10px;
+  padding: $spacer * 0.25 $spacer * 0.75;
+  background: $black;
+  color: $white;
 
   &.positioned {
     position: absolute;
     opacity: 50%;
+    background: $white;
+    color: $black;
   }
 
   .icon {
@@ -197,12 +203,7 @@ textarea {
     padding: $spacer * 0.25 $spacer * 0.75;
     background: theme-color("primary");
   }
-  .count {
-    border-radius: 10px;
-    padding: $spacer * 0.25 $spacer * 0.75;
-    background: $black;
-    color: $white;
-  }
+
   .attendance-number {
     margin-right: 10px;
   }
