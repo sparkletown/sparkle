@@ -11,15 +11,16 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
   <>
     <NavBar isUserLoggedIn />
     <div className="container">
-      <div className="row">
-        <div className="col small-right-margin">
-          <PartyTitle startUtcSeconds={config.start_utc_seconds} />
+      <div className="small-right-margin">
+        <PartyTitle startUtcSeconds={config.start_utc_seconds} />
+      </div>
+      {users && (
+        <div className="col">
+          <UserList users={users} imageSize={50} />
         </div>
-        {users && (
-          <div className="col">
-            <UserList users={users} />
-          </div>
-        )}
+      )}
+      <div className="col starting-indication">
+        This is the clickable party map. Begin at the Dock of the Bay.
       </div>
       <div className="row">
         <Map config={config} attendances={attendances} />
@@ -32,10 +33,8 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
             attendances={attendances}
           />
         </div>
-        <div className="col-3">
-          <div className="row">
-            <Chatbox />
-          </div>
+        <div className="col-5 chat-wrapper">
+          <Chatbox />
         </div>
       </div>
     </div>

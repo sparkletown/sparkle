@@ -15,11 +15,13 @@ interface User {
 interface PropsType {
   users: User[];
   limit?: number;
+  imageSize?: number;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
-  limit = 49,
+  limit = 60,
+  imageSize = 21,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -33,12 +35,14 @@ const UserList: React.FunctionComponent<PropsType> = ({
           <p>
             <span className="bold">{users.length}</span> people partying
           </p>
-          <p
-            className="clickabke-text"
-            onClick={() => setIsExpanded(!isExpanded)}
-          >
-            See {isExpanded ? "less" : "all"}
-          </p>
+          {users.length > limit && (
+            <p
+              className="clickabke-text"
+              onClick={() => setIsExpanded(!isExpanded)}
+            >
+              See {isExpanded ? "less" : "all"}
+            </p>
+          )}
         </div>
         <div className="row no-margin">
           {usersToDisplay.map((user) => (
@@ -48,6 +52,8 @@ const UserList: React.FunctionComponent<PropsType> = ({
               className="profile-icon"
               src={user.pictureUrl || "anonymous-profile-icon.jpeg"}
               alt={`${user.partyName} profile`}
+              width={imageSize}
+              height={imageSize}
             />
           ))}
         </div>

@@ -44,6 +44,7 @@ const Chatbox = () => {
         />
         Party Chat
       </div>
+      {users && <ChatForm currentUser={users[currentUserUID]} />}
       <div className="message-container">
         <ul>
           {chats.map((chat) => (
@@ -55,7 +56,6 @@ const Chatbox = () => {
           ))}
         </ul>
       </div>
-      {users && <ChatForm currentUser={users[currentUserUID]} />}
     </div>
   );
 };
