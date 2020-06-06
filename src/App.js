@@ -22,7 +22,7 @@ function isAfterEvent(time, startUtcSeconds, durationHours) {
 export default function App(props) {
   const firebase = useFirebase();
   const dispatch = useDispatch();
-  useFirestoreConnect({ collection: "config", doc: PARTY_NAME }, "users");
+  useFirestoreConnect([{ collection: "config", doc: PARTY_NAME }, "users"]);
   const { config, user, users, time, timerInterval } = useSelector((state) => ({
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
