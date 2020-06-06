@@ -14,7 +14,7 @@ function passwordsMatch(submittedPassword, actualPassword) {
 }
 
 exports.checkPassword = functions.https.onCall((data, context) => {
-  if (data && data.password && !passwordsMatch(data.password, PASSWORD)) {
+  if (data && data.password && passwordsMatch(data.password, PASSWORD)) {
     return "OK";
   }
 
@@ -22,7 +22,7 @@ exports.checkPassword = functions.https.onCall((data, context) => {
 });
 
 exports.checkAdminPassword = functions.https.onCall((data, context) => {
-  if (data && data.password && !passwordsMatch(data.password, ADMIN_PASSWORD)) {
+  if (data && data.password && passwordsMatch(data.password, ADMIN_PASSWORD)) {
     return "OK";
   }
 
