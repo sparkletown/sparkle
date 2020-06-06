@@ -13,7 +13,7 @@ module.exports = {
       on_list: true,
       on_map: true,
       attendance_x: "5%",
-      attendance_y: "5%",
+      attendance_y: "8%",
       url:
         "https://us02web.zoom.us/j/87285203012?pwd=ZWh1QlRHdmoxSlpveTNPeFBGSHZ6Zz09",
       path:
@@ -38,8 +38,8 @@ module.exports = {
       image: "friendship.jpg",
       on_list: true,
       on_map: true,
-      attendance_x: "10%",
-      attendance_y: "10%",
+      attendance_x: "17%",
+      attendance_y: "38%",
       url:
         "https://us02web.zoom.us/j/88176903504?pwd=dFE5aFBxVzRDays2UXI2NnAwZjhJdz09",
       path:
@@ -64,8 +64,8 @@ module.exports = {
       image: "funk-on-a-junk.jpg",
       on_list: true,
       on_map: true,
-      attendance_x: "10%",
-      attendance_y: "10%",
+      attendance_x: "35%",
+      attendance_y: "0%",
       url:
         "https://us02web.zoom.us/j/88263466153?pwd=clBqVW5vdEdHcTZaeVFOeGVyVDlKdz09",
       path:
@@ -156,8 +156,8 @@ module.exports = {
       image: "heart-of-the-sea.jpg",
       on_list: true,
       on_map: true,
-      attendance_x: "10%",
-      attendance_y: "10%",
+      attendance_x: "48%",
+      attendance_y: "17%",
       url:
         "https://us02web.zoom.us/j/84380498839?pwd=VTF0bFI2cU5WNXloaHlQZlhORzlYdz09",
       path:
@@ -195,8 +195,8 @@ Website: www.antheaelea.com",
       image: "yellow-submarine.jpg",
       on_list: true,
       on_map: true,
-      attendance_x: "10%",
-      attendance_y: "10%",
+      attendance_x: "45%",
+      attendance_y: "93%",
       url:
         "https://us02web.zoom.us/j/85645157949?pwd=Q1VFYnUxU0xNNk1UeUZ1VTA4TzBSZz09",
       path:
