@@ -31,6 +31,18 @@ npm run build && firebase deploy --only hosting
 **NOTE:** You may get a warning about deleting the function `checkAdminPassword`; this is a function from [co-reality-admin](https://github.com/co-reality/co-reality-admin) and will be folded into this repo in future. In the meantime please don't delete this function.
 
 
+## Uploading config for an event
+
+`src/config.js` has the ID of the Firestore document containing the party configuration. For example, if it's "co-reality-5", the Firestore document with the party config is IDed by `config/co-reality-5`.
+
+To upload a new config, use `scripts/upload.sh`:
+
+```
+$ scripts/upload.sh co-reality-5
+```
+This will upload the JSON object exported from `configs/co-reality-5.js` to the Firestore document `config/co-reality-5`.
+
+
 ## Create React App Documentation
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
