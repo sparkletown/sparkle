@@ -45,7 +45,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Join the room
+            {room.button_text || "Join the room"}
           </a>
         </>
       )}

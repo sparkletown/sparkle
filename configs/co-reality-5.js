@@ -140,7 +140,7 @@ module.exports = {
         {
           start_hour: 1,
           duration_hours: 0.75,
-          host: "Sam & Zara",
+          host: "Sven Guttime & Marina McLeisure",
           name: "Welcome Aboard, meet the Cruise Dream Team",
           text:
             "We'll check your tickets then help you settle in. Our OCD cleaner will be cleansing your auras and showing you your luxurious cabins. We'll also be running through the very important safety procedures on the ship, and formal welcome to all aboard the Tropicana Fantasea.",
@@ -148,18 +148,18 @@ module.exports = {
         },
         {
           start_hour: 1.75,
-          duration_hours: 1,
-          host: "Iona",
+          duration_hours: 0.75,
+          host: "Stacey Lorrafun",
           name: "Pool partaaaaaay!!",
           text:
             "Fun and games galore at the Tropicana Fantasea pool party. Synchronised swimming, salsa dancing, disco fitness. Come get your daily exercise with aqua aerobics, synchronised swimming lessons and salsa dance classes. We'll be doing group dances round the pool with our enthusiastic crew members.",
           interactivity: "high",
         },
         {
-          start_hour: 2.75,
-          duration_hours: 0.75,
-          host: "Captain Superwow (Tom Lincoln) and the Chef (Rosy Pendlebury)",
-          name: "Pool partaaaaaay!!",
+          start_hour: 2.5,
+          duration_hours: 1,
+          host: "Captain SuperWow and the Chef Thierry Misu",
+          name: "Captain's Table Seafood Buffet & Variety Show",
           text:
             "Time for the all inclusive buffet with our on board Chef! Be amazed and entertained at the Spectacular Tropicana Fantasea Variety show featuring magic, cabaret, impersonators and the best performers on the high seas. Sign up if you want to showcase your talents! Also don't miss the casino and blackjack.",
           interactivity: "high",
@@ -167,10 +167,27 @@ module.exports = {
         {
           start_hour: 3.5,
           duration_hours: 0.5,
-          host: "King of More",
+          host: "Doletta the Cleaner",
           name: "Miss. Fantasea competition",
           text:
             "Who will be crowned Miss.Tropicana Fanta Sea? Sign up to take part in this fabulous contest!",
+          interactivity: "high",
+        },
+        {
+          start_hour: 4.5,
+          duration_hours: 0.5,
+          host: "Stacey Lorrafun",
+          name: "Cheesy Disco",
+          text:
+            "Come enjoy some cheesy disco on the Tropicana Fanta Sea with your host Stacey Lorrafun!",
+          interactivity: "high",
+        },
+        {
+          start_hour: 5,
+          duration_hours: 3,
+          host: "Alza",
+          name: "Cheesy to Sleazy Disco",
+          text: "Let's get nautical!",
           interactivity: "high",
         },
       ],
@@ -192,7 +209,7 @@ module.exports = {
       events: [
         {
           start_hour: 1,
-          duration_hours: 1,
+          duration_hours: 2,
           host: "Shelly & Ria",
           name: "Sensasion Playshop",
           text: "Tantra and discussions and lots of play.",
@@ -800,12 +817,14 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
     },
     {
       title: "Vulcano",
-      subtitle: "It's Hot Like Lava",
-      about: "",
+      subtitle: "Donate to the Artists and Campaign Zero",
+      about:
+        "We are gravely concerned about the state of the World and recent events in the US.  We are appalled by the injustices perpetrated and recognise that many of us are profoundly privileged.  Across the systems of society, some are afforded incredible advantages due to their place of birth, skin colour, gender or creed; yet others are oppressed, exploited and disadvantaged.  We acknowledge these issues and injustices, their complexities and horrors.  We commit to playing our part, with open hearts, in fostering a fairer and kinder World. Our real parties have already brought people together from diverse races and far away places.  Many guests have shared that during dark times, they found our events to be healing, inspiring and enlivening. Our charity proceeds for this event will go to Campaign Zero, an organization working to end police violence in America by advocating for policy solutions informed by data and human rights principles.",
       image: "vulcano.jpg",
+      button_text: "Donate via PayPal",
       on_list: false,
       on_map: true,
-      url: "https://www.youtube.com/watch?v=IjGHwGkFIFw",
+      url: "https://paypal.me/corealitycollective",
       path:
         "M 1294.359 696.229 C 1345.138 702.999 1398.154 698.061 1452.255 698.061 C 1477.292 698.061 1504.604 693.011 1528.58 701.003 C 1542.731 705.72 1567.95 698.697 1574.444 692.091 C 1575.23 691.29 1581.05 680.96 1578.47 678.379 C 1575.083 674.992 1575.213 669.78 1571.703 666.271 C 1568.405 662.972 1560.361 664.368 1556.924 660.929 C 1548.522 652.524 1532.776 652.81 1524.159 644.19 C 1519.845 639.875 1518.057 632.568 1513.475 627.986 C 1511.115 625.626 1512.316 620.238 1509.913 617.836 C 1503.922 611.847 1496.028 604.488 1492.284 597.002 C 1490.417 593.267 1491.162 588.345 1489.257 584.537 C 1487.654 581.331 1491.311 572.523 1488.723 569.935 C 1486.67 567.882 1488.897 561.74 1486.764 559.607 C 1485.498 558.34 1484.563 549.44 1485.693 547.142 C 1490.247 537.877 1490.891 528.142 1497.771 521.144 C 1502.768 516.062 1496.38 501.191 1501.623 495.858 C 1506.492 490.906 1502.756 477.076 1507.749 471.997 C 1512.412 467.254 1507.552 453.501 1512.126 448.848 C 1514.841 446.086 1510.816 436.112 1513.701 433.178 C 1514.858 432.001 1514.968 420.423 1514.223 418.932 C 1511.191 412.864 1514.181 401.086 1509.593 396.496 C 1506.148 393.048 1503.587 389.954 1500.156 386.524 C 1495.588 381.957 1483.852 383.396 1479.678 379.223 C 1477.214 376.759 1467.54 381.508 1465.076 379.045 C 1462.552 376.521 1438.797 377.731 1436.585 379.905 C 1432.03 384.382 1422.397 383.175 1417.71 387.782 C 1411.911 393.481 1406.364 396.486 1400.793 401.961 C 1391.731 410.868 1389.497 420.846 1383.342 432.945 C 1379.304 440.884 1375.507 459.897 1375.507 469.356 C 1375.507 471.536 1373.073 479.713 1375.145 481.785 C 1376.569 483.209 1375.773 487.139 1377.421 488.787 C 1381.629 492.995 1385.004 499.346 1389.149 503.491 C 1390.063 504.405 1387.303 509.346 1386.834 509.811 C 1384.367 512.258 1379.649 522.057 1381.67 526.1 C 1383.177 529.114 1387.512 534.742 1389.898 537.128 C 1394.659 541.889 1395.782 554.797 1399.875 560.938 C 1401.588 563.507 1407.666 570.465 1405.477 574.767 C 1401.257 583.063 1394.266 587.623 1383.552 589.957 C 1378.021 591.162 1370.112 594.304 1365.946 598.399 C 1361.502 602.767 1346.751 612.862 1343.337 614.54 C 1339.759 616.299 1335.336 621.356 1332.475 624.168 C 1325.466 631.056 1313.763 638.183 1306.833 644.999 C 1300.319 651.405 1295.094 661.437 1288.67 667.756 C 1285.425 670.947 1281.374 689.953 1284.909 693.488 C 1287.631 696.21 1294.347 700.145 1294.347 697.134",
       events: [
@@ -813,8 +832,9 @@ Come with an open-mind, the persons you encounter may become your Cupid. Laugh a
           start_hour: 0.0,
           duration_hours: 8.0,
           host: "Co-reality Collective",
-          name: "Bonus Track",
-          text: "You found a secret!",
+          name: "Donations Open",
+          text:
+            "Please consider leaving a donation to Campaign Zero. For more information head to https://www.joincampaignzero.org/.",
           interactivity: "low",
         },
       ],
