@@ -17,6 +17,7 @@ src_secrets = `
 export const API_KEY = "API_KEY";
 export const APP_ID = "APP_ID";
 export const MEASUREMENT_ID = "MEASUREMENT_ID";
+export const BUCKET_URL = "BUCKET_URL";
 `;
 write(src_secrets_path, src_secrets);
 
