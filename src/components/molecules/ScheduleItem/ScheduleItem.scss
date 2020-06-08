@@ -25,10 +25,13 @@
 
   .event-section {
     display: flex;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .entry-room-button {
     display: flex;
     align-items: center;
+    margin-left: 10px;
   }
 }

@@ -47,17 +47,25 @@ export function formatUtcSeconds(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "p");
 }
 
+const getEventStartingTimeInSeconds = (event, startUtcSeconds) => {
+  return event.start_hour * ONE_HOUR_IN_SECONDS + startUtcSeconds;
+};
+
+const getEventEndingTimeInSeconds = (event, startUtcSeconds) => {
+  return (
+    (event.start_hour + event.duration_hours) * ONE_HOUR_IN_SECONDS +
+    startUtcSeconds
+  );
+};
+
 export const getCurrentEvent = (room, startUtcSeconds) => {
   const currentTimeInSeconds = new Date() / 1000;
-  for (const event of room.events) {
-    if (
-      formatHour(event.start_hour, startUtcSeconds) < currentTimeInSeconds &&
-      formatHour(event.start_hour + event.duration_hours, startUtcSeconds) >
-        currentTimeInSeconds
-    ) {
-      return event;
-    }
-  }
+  return room.events.find(
+    (event) =>
+      getEventStartingTimeInSeconds(event, startUtcSeconds) <
+        currentTimeInSeconds &&
+      getEventEndingTimeInSeconds(event, startUtcSeconds) > currentTimeInSeconds
+  );
 };
 
 export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
