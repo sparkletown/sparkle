@@ -103,6 +103,7 @@ const EntranceExperience = ({ config }) => {
               </div>
               <div className="embed-responsive embed-responsive-16by9 video-embed mt-2">
                 <iframe
+                  title="Party presentation"
                   className="embed-responsive-item"
                   src={config.unhosted_entry_video_url}
                   allowFullScreen

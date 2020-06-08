@@ -48,28 +48,32 @@ const Chatbox = () => {
           Party Chat
         </div>
         {users && (
-          <ChatForm
-            currentUser={users[currentUserUID]}
-            currentUserUID={currentUserUID}
-          />
+          <>
+            <ChatForm
+              currentUser={users[currentUserUID]}
+              currentUserUID={currentUserUID}
+            />
+            <div className="message-container">
+              <ul>
+                {chats.map((chat) => (
+                  <li key={chat.id} className="chat-message">
+                    {chat.userId && users[chat.userId] && (
+                      <img
+                        src={users[chat.userId].pictureUrl}
+                        className="avatar-picture"
+                        alt={chat.name}
+                        onClick={() =>
+                          setSelectedUserProfile(users[chat.userId])
+                        }
+                      />
+                    )}
+                    <b>{chat.name}</b>: {chat.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
         )}
-        <div className="message-container">
-          <ul>
-            {chats.map((chat) => (
-              <li key={chat.id} className="chat-message">
-                {chat.userId && (
-                  <img
-                    src={users[chat.userId].pictureUrl}
-                    className="avatar-picture"
-                    alt={chat.name}
-                    onClick={() => setSelectedUserProfile(users[chat.userId])}
-                  />
-                )}
-                <b>{chat.name}</b>: {chat.text}
-              </li>
-            ))}
-          </ul>
-        </div>
       </div>
       <UserProfileModal
         show={selectedUserProfile !== undefined}
