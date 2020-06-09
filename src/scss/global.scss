@@ -184,6 +184,13 @@ textarea {
   overflow: auto;
 }
 
+.profile-icon {
+  border-radius: 50%;
+  margin: 1px;
+  cursor: pointer;
+  object-fit: contain;
+}
+
 .room-attendance {
   cursor: pointer;
   border-radius: 10px;

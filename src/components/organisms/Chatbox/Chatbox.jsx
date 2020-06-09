@@ -60,7 +60,7 @@ const Chatbox = () => {
                     {chat.userId && users[chat.userId] && (
                       <img
                         src={users[chat.userId].pictureUrl}
-                        className="avatar-picture"
+                        className="profile-icon avatar-picture"
                         alt={chat.name}
                         onClick={() =>
                           setSelectedUserProfile(users[chat.userId])
