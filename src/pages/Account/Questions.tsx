@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
+import { profileQuestions } from "./constants";
 import "./Account.scss";
+import { QuestionType } from "types/Question";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -16,9 +18,7 @@ const Questions = () => {
   const { user } = useSelector((state: any) => ({
     user: state.user,
   }));
-  const { register, handleSubmit, errors, formState } = useForm<
-    QuestionsFormData
-  >({
+  const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
   const onSubmit = async (data: QuestionsFormData) => {
@@ -33,47 +33,18 @@ const Questions = () => {
         <h2>Now complete your profile by answering 3 short questions</h2>
         <p>This will help your fellow party-goers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          <div className="input-group">
-            <textarea
-              className="input-block input-centered"
-              name="islandCompanion"
-              placeholder="Who's your dream desert island companion?"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.islandCompanion &&
-              errors.islandCompanion.type === "required" && (
-                <span className="input-error">Required</span>
-              )}
-          </div>
-          <div className="input-group">
-            <textarea
-              className="input-block input-centered"
-              name="gratefulFor"
-              placeholder="What do you feel greateful for?"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.gratefulFor && errors.gratefulFor.type === "required" && (
-              <span className="input-error">Required</span>
-            )}
-          </div>
-          <div className="input-group">
-            <textarea
-              className="input-block input-centered"
-              name="likeAboutParties"
-              placeholder="What do you like about parties?"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.likeAboutParties &&
-              errors.likeAboutParties.type === "required" && (
-                <span className="input-error">Required</span>
-              )}
-          </div>
+          {profileQuestions.map((question: QuestionType) => (
+            <div className="input-group">
+              <textarea
+                className="input-block input-centered"
+                name={question.name}
+                placeholder={question.text}
+                ref={register({
+                  required: true,
+                })}
+              />
+            </div>
+          ))}
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"

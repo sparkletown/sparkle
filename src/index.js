@@ -13,6 +13,7 @@ import "firebase/auth";
 import "firebase/functions";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import WithLoadedUsers from "components/organisms/WithLoadedUsers";
 
 import "bootstrap";
 import "scss/global.scss";
@@ -28,6 +29,7 @@ import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
 import { API_KEY, APP_ID, MEASUREMENT_ID, BUCKET_URL } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
+import EditProfilePage from "pages/EditProfilePage";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -83,7 +85,12 @@ render(
           <Route path="/account/questions" component={Questions} />
           <Route path="/account/code-of-conduct" component={CodeOfConduct} />
           <Route path="/login" component={Login} />
-          <Route path="/" component={App} />
+          <WithLoadedUsers>
+            <Switch>
+              <Route path="/account/edit" component={EditProfilePage} />
+              <Route path="/" component={App} />
+            </Switch>
+          </WithLoadedUsers>
         </Switch>
       </Router>
     </ReactReduxFirebaseProvider>

@@ -90,19 +90,11 @@ const Profile = () => {
             )}
             <div className="profile-picture-upload-form">
               <div className="profile-picture-preview-container">
-                {pictureUrl ? (
-                  <img
-                    src={pictureUrl}
-                    className="profile-picture-preview"
-                    alt="your profile"
-                  />
-                ) : (
-                  <img
-                    src="/default-profile-pic.png"
-                    className="profile-picture-preview"
-                    alt="default profile"
-                  />
-                )}
+                <img
+                  src={pictureUrl || "/default-profile-pic.png"}
+                  className="profile-icon profile-picture-preview"
+                  alt="your profile"
+                />
               </div>
 
               <input

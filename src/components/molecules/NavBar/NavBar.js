@@ -1,23 +1,33 @@
 import React from "react";
 import "./NavBar.scss";
-import { useFirebase } from "react-redux-firebase";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
-const NavBar = ({ isUserLoggedIn }) => {
-  const firebase = useFirebase();
-
-  const logout = (event) => {
-    firebase.auth().signOut();
-  };
+const NavBar = () => {
+  const { user, users } = useSelector((state) => ({
+    user: state.user,
+    users: state.firestore.data.users,
+  }));
 
   return (
     <header>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
         <div className="container">
-          <span className="navbar-brand title">Co-Reality</span>
-          {isUserLoggedIn && (
-            <span onClick={logout} className="logout-span">
-              Log out
-            </span>
+          <Link to="/">
+            <span className="navbar-brand title">Co-Reality</span>
+          </Link>
+          {user && users && users[user.uid] && (
+            <div>
+              <Link to="/account/edit">
+                <img
+                  src={users[user.uid].pictureUrl}
+                  className="profile-icon"
+                  alt="avatar"
+                  width="40"
+                  height="40"
+                />
+              </Link>
+            </div>
           )}
         </div>
       </nav>
