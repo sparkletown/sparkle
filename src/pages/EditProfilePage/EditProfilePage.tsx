@@ -81,10 +81,12 @@ const EditProfilePage = () => {
           </div>
         </div>
       </div>
-      <EditProfileModal
-        show={showEditProfileModal}
-        onHide={() => setShowEditProfileModal(false)}
-      />
+      {showEditProfileModal && (
+        <EditProfileModal
+          show={showEditProfileModal}
+          onHide={() => setShowEditProfileModal(false)}
+        />
+      )}
       {showChangePasswordModal && (
         <ChangePasswordModal
           show={showChangePasswordModal}

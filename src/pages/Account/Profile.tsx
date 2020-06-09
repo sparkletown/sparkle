@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "firebase/storage";
 import "./Account.scss";
-import { useFirebase } from "react-redux-firebase";
+import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 
 export interface ProfileFormData {
   partyName: string;
@@ -14,12 +14,10 @@ export interface ProfileFormData {
 
 const Profile = () => {
   const history = useHistory();
-  const firebase = useFirebase();
   const { user } = useSelector((state: any) => ({
     user: state.user,
   }));
 
-  const [isPictureUploading, setIsPictureUploading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -34,25 +32,6 @@ const Profile = () => {
   const onSubmit = async (data: ProfileFormData) => {
     await updateUserProfile(user.uid, data);
     history.push("/account/questions");
-  };
-
-  const uploadPicture = async (profilePictureRef: any, file: File) => {
-    setIsPictureUploading(true);
-    const uploadedProfilePicture = await profilePictureRef.put(file);
-    setIsPictureUploading(false);
-    return uploadedProfilePicture;
-  };
-
-  const handleFileChange = async (e: any) => {
-    const file = e.target.files[0];
-    const storageRef = firebase.storage().ref();
-    // TODO: add rule to forbid other users to edit a user's image
-    const profilePictureRef = storageRef.child(
-      `/users/${user.uid}/${file.name}`
-    );
-    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
-    const pictureUrl = await uploadedProfilePicture.ref.getDownloadURL();
-    setValue("pictureUrl", pictureUrl, true);
   };
 
   const pictureUrl = watch("pictureUrl");
@@ -88,44 +67,13 @@ const Profile = () => {
                 Party name is less than 16 characters
               </span>
             )}
-            <div className="profile-picture-upload-form">
-              <div className="profile-picture-preview-container">
-                <img
-                  src={pictureUrl || "/default-profile-pic.png"}
-                  className="profile-icon profile-picture-preview"
-                  alt="your profile"
-                />
-              </div>
-
-              <input
-                type="file"
-                id="profile-picture-input"
-                name="profilePicture"
-                onChange={handleFileChange}
-                className="profile-picture-input"
-              />
-              <label
-                htmlFor="profile-picture-input"
-                className="profile-picture-button"
-              >
-                Upload a profile pic
-              </label>
-              {errors.pictureUrl && errors.pictureUrl.type === "required" && (
-                <span className="input-error">Profile picture is required</span>
-              )}
-              {isPictureUploading && <small>Picture uploading...</small>}
-              <small>
-                This will be your public party avatar appearing on the party map
-              </small>
-              <input
-                type="hidden"
-                name="pictureUrl"
-                className="profile-picture-input"
-                ref={register({
-                  required: true,
-                })}
-              />
-            </div>
+            <ProfilePictureInput
+              setValue={setValue}
+              user={user}
+              errors={errors}
+              pictureUrl={pictureUrl}
+              register={register}
+            />
           </div>
           <input
             className="btn btn-primary btn-block btn-centered"
