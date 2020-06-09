@@ -6,7 +6,11 @@ import { QuestionsFormData } from "./Questions";
 
 const updateUserProfile = (
   userId: string,
-  profileData: CodeOfConductFormData | ProfileFormData | QuestionsFormData
+  profileData:
+    | CodeOfConductFormData
+    | ProfileFormData
+    | QuestionsFormData
+    | (ProfileFormData & QuestionsFormData)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;

@@ -78,7 +78,9 @@ const EditProfilePage = () => {
           </div>
         </div>
       </div>
-      <EditProfileModal show={showModal} onHide={() => setShowModal(false)} />
+      {showModal && (
+        <EditProfileModal show={showModal} onHide={() => setShowModal(false)} />
+      )}
     </>
   ) : (
     <></>
