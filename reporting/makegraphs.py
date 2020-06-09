@@ -94,7 +94,20 @@ class Config():
 		'Welcome to the Tree of Life 9': 'The Canopy',
 		'Welcome to the Tree of Life 10': 'The Compost Heap (Toilets Here)',
 		'Welcome to the Tree of Life 11': 'Sunset Room',
-		'Welcome to the Tree of Life 12': 'Lost Soul Chamber'
+		'Welcome to the Tree of Life 12': 'Lost Soul Chamber',
+		'Late May Party 1': 'The Dock of the Bay',
+		'Late May Party 2': 'Friend Ship',
+		'Late May Party 3': 'Funk on a Junk',
+		'Late May Party 4': 'Tropicana Fanta Sea',
+		'Late May Party 5': 'Heart of the Sea',
+		'Late May Party 6': 'Yellow Submarine',
+		'Late May Party 7': 'Boaty McBoatface',
+		'Late May Party 8': 'The Lifeboat',
+		'Late May Party 9': 'Sirens\' Call',
+		'Late May Party 10': 'Lighthouse',
+		'Late May Party 11': 'Castaway Raft',
+		'Late May Party 12': 'The Ark',
+		'Late May Party 13': 'Great Barrier Grief',
 	}
 	ROOM_TIMEZONE_OFFSETS = {
 		'Moon Rock Room- Live performers and deep space hitchhikers': timedelta(hours=-1),
@@ -323,6 +336,28 @@ class ZoomReportParser():
 	def visit_durations(self):
 		return self._all_visit_durations, self._visit_durations
 
+	def stay_durations(self):
+		stay_durations = []
+		for user in self._visits_by_user:
+			visits = self._visits_by_user[user]
+			if len(visits) == 1:
+				stay_durations.append(visits[0]['visit'].total_minutes())
+			if len(visits) > 2:
+				user_stay_duration = TimeRange(visits[0]['visit'].start, visits[len(visits)-1]['visit'].end).total_minutes()
+				stay_durations.append(user_stay_duration)
+		return stay_durations
+
+	def rooms_visited(self):
+		room_counts = []
+		for user in self._visits_by_user:
+			visits = self._visits_by_user[user]
+			if len(visits) > 0:
+				rooms = {}
+				for visit in visits:
+					rooms[visit['room']] = True
+				room_counts.append(len(rooms))
+		return room_counts
+
 	def moves(self):
 		ENTERED = '(entered)'
 		EXITED = '(exited)'
@@ -501,6 +536,30 @@ class PdfGenerator():
 			self.pdf.savefig(fig)
 		return self
 
+	def stay_durations(self, user_stay_durations):
+		log.info("Generating stay durations...")
+		longest_stay = int(max(user_stay_durations))
+		fig, ax = plt.subplots()
+		ax.hist(user_stay_durations, bins=int(longest_stay/5)+1)
+		ax.set_xlabel("Duration (minutes)")
+		plt.xlim(left=0)
+		ax.set_ylabel("Quantity")
+		plt.title("Stay Durations (First to Last Sighting)")
+		self.pdf.savefig(fig)
+		return self
+
+	def rooms_visited(self, rooms_visited, rooms):
+		log.info("Generating rooms visited...")
+		number_of_rooms = len(rooms)
+		fig, ax = plt.subplots()
+		ax.hist(rooms_visited, bins=number_of_rooms)
+		ax.set_xlabel("Rooms Visited During Stay")
+		plt.xlim(left=1)
+		ax.set_ylabel("Quantity of Users")
+		plt.title("How Many Rooms Users Visited")
+		self.pdf.savefig(fig)
+		return self
+
 	def visit_durations(self, all_visit_durations, visit_durations, rooms):
 		log.info("Generating visit durations...")
 		longest_visit = int(max(all_visit_durations))
@@ -576,6 +635,8 @@ def main():
 	parser = ZoomReportParser(sys.argv[1:])
 	rooms = parser.rooms()
 	x, y_rooms, y_all = parser.attendances()
+	stay_durations = parser.stay_durations()
+	rooms_visited = parser.rooms_visited()
 	all_visit_durations, visit_durations = parser.visit_durations()
 	moves, enters, exits = parser.moves()
 
@@ -583,6 +644,8 @@ def main():
 	generator \
 		.start() \
 		.attendances(x, y_rooms, y_all, rooms) \
+		.stay_durations(stay_durations) \
+		.rooms_visited(rooms_visited, rooms) \
 		.visit_durations(all_visit_durations, visit_durations, rooms) \
 		.moves(moves) \
 		.enters(x, enters, rooms) \
