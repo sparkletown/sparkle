@@ -1,0 +1,12 @@
+{
+  "name": "reporting",
+  "description": "Tool to fetch zoom reports",
+  "scripts": {
+    "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+  },
+  "dependencies": {
+    "prettier": "^2.0.5",
+    "puppeteer": "^3.3.0"
+  },
+  "private": true
+}

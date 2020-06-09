@@ -10,12 +10,14 @@ The `makegraphs.py` script will create `analytics.pdf` based on Usage Reports fr
 To use the script for your party:
 
 1. Obtain the **Usage Reports** for all meetings during your party:
-  - Go to Reports
-  - If not admin, go to "Usage"
-  - If admin, go to "Active Host"
-  - Select the date range of your event
-  - Download all the CSVs for your meeting
-  - (NOTE: there may be more than one. This is because if the room empties out, the meeting ends. It starts again when someone else comes back in, causing multiple reports to be generated.)
+
+- Go to Reports
+- If not admin, go to "Usage"
+- If admin, go to "Active Host"
+- Select the date range of your event
+- Download all the CSVs for your meeting
+- (NOTE: there may be more than one. This is because if the room empties out, the meeting ends. It starts again when someone else comes back in, causing multiple reports to be generated.)
+
 2. Modify the party start date at the top of the code
 3. Run the script, passing in the paths to all the CSVs as command-line arguments
 4. Open the "analytics.pdf" file to view the results.
