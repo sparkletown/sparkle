@@ -24,28 +24,26 @@ const ChangePasswordModal: React.FunctionComponent<PropsType> = ({
   const { register, handleSubmit, errors, formState, watch } = useForm<
     ChangePasswordData
   >({
-    mode: "onChange",
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
   });
 
-  const [incorrectCurrentPassword, setIncorrectCurrentPassword] = useState(
-    false
-  );
-
   const onSubmit = async (data: ChangePasswordData) => {
+    if (!user) return;
+    user.updatePassword(data.confirmNewPassword);
+    onHide();
+  };
+
+  const verifyCurrentPassword = async (value: string) => {
+    if (!user?.email) return;
     try {
-      user &&
-        user.email &&
-        (await firebase
-          .auth()
-          .signInWithEmailAndPassword(user.email, currentPassword));
-      user && user.updatePassword(data.confirmNewPassword);
-      onHide();
+      await firebase.auth().signInWithEmailAndPassword(user.email, value);
+      return;
     } catch {
-      setIncorrectCurrentPassword(true);
+      return "Incorrect password";
     }
   };
 
-  const currentPassword = watch("currentPassword");
   const newPassword = watch("newPassword");
 
   return (
@@ -60,15 +58,17 @@ const ChangePasswordModal: React.FunctionComponent<PropsType> = ({
             placeholder="Current password"
             ref={register({
               required: true,
+              validate: async (value) => await verifyCurrentPassword(value),
             })}
           />
           {errors.currentPassword &&
             errors.currentPassword.type === "required" && (
               <div className="input-error">Current password is required</div>
             )}
-          {incorrectCurrentPassword && (
-            <div className="input-error">Incorrect password</div>
-          )}
+          {errors.currentPassword &&
+            errors.currentPassword.type === "validate" && (
+              <div className="input-error">Invalid password</div>
+            )}
           <input
             name="newPassword"
             type="password"
@@ -106,7 +106,6 @@ const ChangePasswordModal: React.FunctionComponent<PropsType> = ({
             className="btn btn-primary btn-block btn-centered"
             type="submit"
             value="Save changes"
-            disabled={!formState.isValid}
           />
         </form>
       </Modal.Body>
