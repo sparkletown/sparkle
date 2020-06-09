@@ -17,17 +17,15 @@ export default function LockedSite() {
       <div className="container">
         <div className="row mt-3">
           <div className="col">
-            <h2>Thanks For Attending the Tree of Life!</h2>
+            <h2>Thanks For Attending the Party!</h2>
             <p>
               <a href="https://co-reality.co/">(Homepage)</a>
             </p>
-            <p>Dear tree-climbing reveller,</p>
+            <p>Dear partygoer,</p>
             <p>
-              Thank you for coming to our Tree of Life party on Saturday 16th
-              May. We hope you enjoyed your journey through the Rabbit Hole and
-              your ascent from Roots to Rapture. Most of all we thank you for
-              bringing your beautiful self - your presence helped co-create this
-              experience for everyone.
+              Thank you for coming to the party. we hope you enjoyed yourself.
+              Most of all we thank you for bringing your beautiful self - your
+              presence helped co-create this experience for everyone.
             </p>
             <p>We have a favour to ask:</p>
             <p>We'd love your feedback about your experience:</p>
@@ -59,7 +57,7 @@ export default function LockedSite() {
               As you know, all proceeds for this party go to artists-in-need or
               charities. If you'd like to donate to them, we welcome this too{" "}
               <a
-                href="https://www.eventbrite.co.uk/e/roots-to-rapture-artist-and-charity-donations-tickets-105823599234"
+                href="https://paypal.com/corealitycollective"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -73,10 +71,9 @@ export default function LockedSite() {
               The Co-Reality Collective Team{" "}
               <span role="img" aria-label="Heart">
                 ❤️
-              </span>{" "}
-              and woodland flora and fauna.
+              </span>
             </p>
-            <p>PS: The forest misses you.</p>
+            <p>PS: We can't wait to see you again.</p>
           </div>
         </div>
       </div>

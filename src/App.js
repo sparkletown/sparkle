@@ -15,7 +15,7 @@ const ONE_HOUR_IN_SECONDS = 60 * 60;
 
 function isAfterEvent(time, startUtcSeconds, durationHours) {
   const endUtcSeconds = startUtcSeconds + durationHours * ONE_HOUR_IN_SECONDS;
-  const lockSiteAfterUtcSeconds = endUtcSeconds + 2 * ONE_HOUR_IN_SECONDS;
+  const lockSiteAfterUtcSeconds = endUtcSeconds + 12 * ONE_HOUR_IN_SECONDS;
   return time >= lockSiteAfterUtcSeconds;
 }
 
