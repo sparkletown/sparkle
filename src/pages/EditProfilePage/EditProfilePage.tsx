@@ -7,6 +7,7 @@ import { QuestionType } from "types/Question";
 import EditProfileModal from "components/organisms/EditProfileModal";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import ChangePasswordModal from "components/organisms/ChangePasswordModal";
 
 const EditProfilePage = () => {
   const history = useHistory();
@@ -15,7 +16,8 @@ const EditProfilePage = () => {
     user: state.user,
     users: state.firestore.data.users,
   }));
-  const [showModal, setShowModal] = useState(false);
+  const [showEditProfileModal, setShowEditProfileModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
   const logout = () => {
     firebase.auth().signOut();
@@ -51,13 +53,14 @@ const EditProfilePage = () => {
             <input
               className="btn button btn-primary"
               value="Edit profile"
-              onClick={() => setShowModal(true)}
+              onClick={() => setShowEditProfileModal(true)}
               type="button"
             />
             <input
               className="btn button"
               value="Change password"
               type="button"
+              onClick={() => setShowChangePasswordModal(true)}
             />
             <input
               className="btn button"
@@ -78,7 +81,16 @@ const EditProfilePage = () => {
           </div>
         </div>
       </div>
-      <EditProfileModal show={showModal} onHide={() => setShowModal(false)} />
+      <EditProfileModal
+        show={showEditProfileModal}
+        onHide={() => setShowEditProfileModal(false)}
+      />
+      {showChangePasswordModal && (
+        <ChangePasswordModal
+          show={showChangePasswordModal}
+          onHide={() => setShowChangePasswordModal(false)}
+        />
+      )}
     </>
   ) : (
     <></>
