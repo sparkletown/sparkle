@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import "./ChangePasswordModal.scss";
@@ -21,12 +21,12 @@ const ChangePasswordModal: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
   const user = firebase.auth().currentUser;
-  const { register, handleSubmit, errors, formState, watch } = useForm<
-    ChangePasswordData
-  >({
-    mode: "onSubmit",
-    reValidateMode: "onSubmit",
-  });
+  const { register, handleSubmit, errors, watch } = useForm<ChangePasswordData>(
+    {
+      mode: "onSubmit",
+      reValidateMode: "onSubmit",
+    }
+  );
 
   const onSubmit = async (data: ChangePasswordData) => {
     if (!user) return;
