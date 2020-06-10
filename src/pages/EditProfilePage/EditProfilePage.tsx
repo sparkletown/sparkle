@@ -21,7 +21,7 @@ const EditProfilePage = () => {
 
   const logout = () => {
     firebase.auth().signOut();
-    history.push("/kansassmittys");
+    history.push("/");
   };
 
   return user && users ? (
