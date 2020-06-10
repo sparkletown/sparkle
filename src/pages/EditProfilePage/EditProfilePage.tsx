@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import NavBar from "components/molecules/NavBar";
 import { useSelector } from "react-redux";
 import { profileQuestions } from "pages/Account/constants";
 import "./EditProfilePage.scss";
@@ -8,6 +7,7 @@ import EditProfileModal from "components/organisms/EditProfileModal";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import ChangePasswordModal from "components/organisms/ChangePasswordModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const EditProfilePage = () => {
   const history = useHistory();
@@ -25,8 +25,7 @@ const EditProfilePage = () => {
   };
 
   return user && users ? (
-    <>
-      <NavBar />
+    <WithNavigationBar>
       <div className="container edit-profile-page-container">
         <div className="row">
           <div className="col">
@@ -93,7 +92,7 @@ const EditProfilePage = () => {
           onHide={() => setShowChangePasswordModal(false)}
         />
       )}
-    </>
+    </WithNavigationBar>
   ) : (
     <></>
   );

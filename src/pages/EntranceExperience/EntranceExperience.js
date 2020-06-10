@@ -6,10 +6,10 @@ import PartyTitle from "components/molecules/PartyTitle";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
 import { entranceUnhosted } from "utils/time";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const EntranceExperience = ({ config }) => (
-  <>
-    <NavBar />
+  <WithNavigationBar>
     <div className="container">
       <div className="row mt-3">
         <PartyTitle startUtcSeconds={config.start_utc_seconds} withCountDown />
@@ -80,7 +80,7 @@ const EntranceExperience = ({ config }) => (
         </div>
       </div>
     </div>
-  </>
+  </WithNavigationBar>
 );
 
 export default EntranceExperience;
