@@ -17,6 +17,7 @@
 
   .information-card {
     height: 100%;
+    max-width: 350px;
 
     &:not(:last-child) {
       margin-right: 20px;
