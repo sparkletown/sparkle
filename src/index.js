@@ -78,7 +78,7 @@ const rrfProps = {
 render(
   <Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}>
-      <Router>
+      <Router basename="/kansassmittys">
         <Switch>
           <Route path="/account/register" component={Register} />
           <Route path="/account/profile" component={Profile} />
