@@ -1,6 +1,8 @@
 const functions = require("firebase-functions");
 const { PASSWORD, ADMIN_PASSWORD } = require("./secrets");
 
+const video = require("./video");
+
 // Case-insensitive first character for iDevices
 function lowercaseFirstChar(password) {
   return password.charAt(0).toLowerCase() + password.substring(1);
@@ -28,3 +30,5 @@ exports.checkAdminPassword = functions.https.onCall((data, context) => {
 
   throw new functions.https.HttpsError("unauthenticated", "Password incorrect");
 });
+
+exports.video = video;

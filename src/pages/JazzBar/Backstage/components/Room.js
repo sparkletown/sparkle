@@ -24,9 +24,6 @@ const Room = ({ roomName, token }) => {
       room.on("participantConnected", participantConnected);
       room.on("participantDisconnected", participantDisconnected);
       room.participants.forEach(participantConnected);
-      [1, 2, 3, 4, 5, 6, 7, 8].forEach(() =>
-        participantConnected(room.localParticipant)
-      );
     });
 
     return () => {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useFirebase } from "react-redux-firebase";
 
 import Room from "./components/Room";
 import "./Backstage.scss";
@@ -12,24 +13,19 @@ const Backstage = () => {
     users: state.firestore.data.users,
   }));
   const [token, setToken] = useState<string>();
-
-  const handleLogout = () => alert("Logout");
+  const firebase = useFirebase();
 
   useEffect(() => {
     (async () => {
       if (!user || !users) return;
 
-      const data = await fetch("/video/token", {
-        method: "POST",
-        body: JSON.stringify({
-          identity: users[user.uid]?.partyName ?? "M",
-          room: ROOM_NAME,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }).then((res) => res.json());
-      setToken(data.token);
+      // @ts-ignore
+      const getToken = firebase.functions().httpsCallable("video-getToken");
+      const response = await getToken({
+        identity: users[user.uid]?.partyName ?? "M",
+        room: ROOM_NAME,
+      });
+      setToken(response.data.token);
     })();
   }, [user, users]);
 
