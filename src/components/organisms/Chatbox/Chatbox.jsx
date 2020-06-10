@@ -45,7 +45,7 @@ const Chatbox = () => {
             alt="sparkle icon"
             width="20"
           />
-          Party Chat
+          Chat
         </div>
         {users && (
           <>
@@ -54,23 +54,19 @@ const Chatbox = () => {
               currentUserUID={currentUserUID}
             />
             <div className="message-container">
-              <ul>
-                {chats.map((chat) => (
-                  <li key={chat.id} className="chat-message">
-                    {chat.userId && users[chat.userId] && (
-                      <img
-                        src={users[chat.userId].pictureUrl}
-                        className="profile-icon avatar-picture"
-                        alt={chat.name}
-                        onClick={() =>
-                          setSelectedUserProfile(users[chat.userId])
-                        }
-                      />
-                    )}
-                    <b>{chat.name}</b>: {chat.text}
-                  </li>
-                ))}
-              </ul>
+              {chats.map((chat) => (
+                <div key={chat.id} className="chat-message">
+                  {chat.userId && users[chat.userId] && (
+                    <img
+                      src={users[chat.userId].pictureUrl}
+                      className="profile-icon avatar-picture"
+                      alt={chat.name}
+                      onClick={() => setSelectedUserProfile(users[chat.userId])}
+                    />
+                  )}
+                  <b>{chat.name}</b>: {chat.text}
+                </div>
+              ))}
             </div>
           </>
         )}

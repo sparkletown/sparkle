@@ -2,6 +2,8 @@
 
 .navbar-container {
   background: $black;
+  display: flex;
+  justify-content: space-between;
 
   .logout-span {
     cursor: pointer;

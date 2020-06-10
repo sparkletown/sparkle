@@ -6,7 +6,7 @@ interface PropsType {
 }
 
 const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
-  const [selectedTab, setSelectedTab] = useState("band");
+  const [selectedTab, setSelectedTab] = useState("jazz");
 
   return (
     <JazzBarSkeletonPage
@@ -14,15 +14,23 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
     >
-      {selectedTab === "band" && (
-        <div className="col fake-component">Band Component</div>
-      )}
-      {selectedTab === "bar" && (
-        <div className="col fake-component">Bar Component</div>
-      )}
-      {selectedTab === "backstage" && (
-        <div className="col fake-component">Backstage Component</div>
-      )}
+      <div className="col content-column">
+        <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
+          <iframe
+            width="100%"
+            height="100%"
+            className={`col youtube-video ${
+              selectedTab === "smoking" ? "reduced" : ""
+            }`}
+            src="https://www.youtube.com/embed/x0RV0kgdqJU"
+            frameBorder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          ></iframe>
+          {selectedTab === "smoking" && (
+            <div className="col new-participant">+</div>
+          )}
+        </div>
+      </div>
     </JazzBarSkeletonPage>
   );
 };

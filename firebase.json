@@ -7,6 +7,10 @@
     {
       "target": "co-reality-map",
       "public": "build",
+      "rewrites": [ {
+        "source": "**",
+        "destination": "/index.html"
+      }],
       "ignore": [
         "firebase.json",
         "**/.*",

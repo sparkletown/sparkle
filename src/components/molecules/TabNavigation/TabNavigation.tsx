@@ -13,27 +13,27 @@ const TabNavigation: React.FunctionComponent<PropsType> = ({
   <div className="row tab-navigation-container">
     <div
       className={`col tab-item ${
-        selectedTab === "band" ? "selected-tab-item" : ""
+        selectedTab === "jazz" ? "selected-tab-item" : ""
       }`}
-      onClick={() => setSelectedTab("band")}
+      onClick={() => setSelectedTab("jazz")}
     >
-      Band
+      Jazz
     </div>
     <div
       className={`col tab-item ${
-        selectedTab === "bar" ? "selected-tab-item" : ""
+        selectedTab === "cocktail" ? "selected-tab-item" : ""
       }`}
-      onClick={() => setSelectedTab("bar")}
+      onClick={() => setSelectedTab("cocktail")}
     >
-      Bar
+      Cocktail
     </div>
     <div
       className={`col tab-item ${
-        selectedTab === "backstage" ? "selected-tab-item" : ""
+        selectedTab === "smoking" ? "selected-tab-item" : ""
       }`}
-      onClick={() => setSelectedTab("backstage")}
+      onClick={() => setSelectedTab("smoking")}
     >
-      Backstage
+      Smoking
     </div>
   </div>
 );

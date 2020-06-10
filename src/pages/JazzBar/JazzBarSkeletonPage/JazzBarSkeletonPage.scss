@@ -1,14 +1,85 @@
 @import "scss/constants.scss";
 
 .jazz-bar-skeleton-page-container {
+  display: flex;
+  padding: 30px;
+  height: calc(100vh - 50px);
+
   .band-logo {
     max-width: 100%;
     max-height: 100%;
-    margin-top: 30px;
-    margin-bottom: 30px;
+
+    &.expanded {
+      width: 200px;
+    }
   }
 
   .user-list {
     margin-bottom: 20px;
+  }
+
+  .left-column {
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    background: $dark;
+    border-radius: 22px;
+    cursor: pointer;
+    overflow: scroll;
+  }
+
+  .left-column.expanded {
+    width: 500px;
+  }
+
+  .right-column {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    width: 320px;
+  }
+
+  .content {
+    width: 100%;
+    margin: 0 10px;
+  }
+
+  .youtube-video {
+    transition: all 0.1s linear;
+  }
+
+  .reduced {
+    width: 560px;
+    height: 315px;
+  }
+
+  .right-column-content {
+    overflow-y: scroll;
+  }
+
+  .content-column {
+    height: 100%;
+  }
+
+  .content-column > .row {
+    height: 100%;
+  }
+
+  .row.reduced {
+    height: fit-content;
+    width: 100%;
+  }
+
+  .new-participant {
+    background: $dark;
+    display: flex;
+    cursor: pointer;
+    border-radius: 22px;
+    align-items: center;
+    justify-content: center;
+    font-size: 100px;
+    color: $black;
   }
 }

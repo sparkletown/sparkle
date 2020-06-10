@@ -4,10 +4,6 @@
   border-radius: 30px;
   background: $dark-grey;
   padding: 20px;
-
-  &:not(:last-child) {
-    margin-bottom: 20px;
-  }
 }
 
 .information-card-text {
