@@ -6,6 +6,7 @@ import "./LoggedInPartyPage.scss";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "components/organisms/RoomList";
 import CountDown from "components/molecules/CountDown";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const LoggedInPartyPage = ({ config, users, attendances }) => (
   <WithNavigationBar>
