@@ -7,6 +7,11 @@
     {
       "target": "co-reality-map",
       "public": "build",
+      "redirects": [ {
+        "source": "/",
+        "destination": "/kansassmittys",
+        "type": 301
+      }],
       "ignore": [
         "firebase.json",
         "**/.*",
