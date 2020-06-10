@@ -66,7 +66,7 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
             <h2 className="room-modal-title">{room.title}</h2>
             <div className="room-modal-subtitle">{room.subtitle}</div>
             <img
-              src={`room-images/${room.image}`}
+              src={`/room-images/${room.image}`}
               className="room-modal-image"
               alt={room.title}
             />

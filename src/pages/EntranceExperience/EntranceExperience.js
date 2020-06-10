@@ -70,7 +70,7 @@ const EntranceExperience = ({ config }) => (
             </p>
             <img
               className="collective-icon"
-              src="collective-icon.png"
+              src="/collective-icon.png"
               alt="Co-Reality collective"
               width="20"
               height="20"

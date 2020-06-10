@@ -17,7 +17,7 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
       <div className="subtitle-container">
         <img
           className="collective-icon"
-          src="collective-icon.png"
+          src="/collective-icon.png"
           alt="Co-Reality collective"
           width="20"
           height="20"
