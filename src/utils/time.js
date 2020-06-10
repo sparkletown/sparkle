@@ -68,6 +68,10 @@ export const getCurrentEvent = (room, startUtcSeconds) => {
   );
 };
 
+export const eventHappeningNow = (room) => {
+  return !!getCurrentEvent(room);
+};
+
 export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
   const currentTimeInSeconds = new Date() / 1000;
   return (
