@@ -26,7 +26,7 @@ const Chatbox = () => {
   }));
 
   if (!chats) {
-    return "Loading chat...";
+    return <>Loading chat...</>;
   }
 
   chats = chats
