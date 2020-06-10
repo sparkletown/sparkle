@@ -26,7 +26,7 @@ const Chatbox = () => {
   }));
 
   if (!chats) {
-    return "Loading chat...";
+    return <>Loading chat...</>;
   }
 
   chats = chats
@@ -40,7 +40,7 @@ const Chatbox = () => {
       <div className="chatbox-container">
         <div className="chatbox-title">
           <img
-            src="sparkle-icon.png"
+            src="/sparkle-icon.png"
             className="side-title-icon"
             alt="sparkle icon"
             width="20"

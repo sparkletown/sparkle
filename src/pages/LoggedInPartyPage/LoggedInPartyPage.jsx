@@ -1,16 +1,15 @@
 import React from "react";
 import Map from "components/molecules/Map";
 import UserList from "components/molecules/UserList";
-import NavBar from "components/molecules/NavBar";
 import PartyTitle from "components/molecules/PartyTitle";
 import "./LoggedInPartyPage.scss";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "components/organisms/RoomList";
 import CountDown from "components/molecules/CountDown";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const LoggedInPartyPage = ({ config, users, attendances }) => (
-  <>
-    <NavBar isUserLoggedIn />
+  <WithNavigationBar>
     <div className="container">
       <div className="small-right-margin">
         <PartyTitle startUtcSeconds={config.start_utc_seconds} />
@@ -42,7 +41,7 @@ const LoggedInPartyPage = ({ config, users, attendances }) => (
         </div>
       </div>
     </div>
-  </>
+  </WithNavigationBar>
 );
 
 export default LoggedInPartyPage;

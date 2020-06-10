@@ -25,7 +25,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
         <>
           <div className="title-container">
             <img
-              src="sparkle-icon.png"
+              src="/sparkle-icon.png"
               className="sparkle-icon"
               alt="sparkle-icon"
             />

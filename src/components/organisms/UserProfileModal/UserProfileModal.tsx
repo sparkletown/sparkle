@@ -35,7 +35,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             <div className="profile-pic">
               <img
                 src={userProfile.pictureUrl || "/default-profile-pic.png"}
-                alt=""
+                alt="profile"
               />
             </div>
             <div className="profile-text">

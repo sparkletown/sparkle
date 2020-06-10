@@ -48,7 +48,7 @@ export default function ChatForm({ currentUser, currentUserUID }) {
           disabled={!allowSend()}
         >
           <img
-            src="sparkle-icon.png"
+            src="/sparkle-icon.png"
             className="submit-icon"
             alt="sparkle icon"
             width="20"

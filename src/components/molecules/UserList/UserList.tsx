@@ -50,7 +50,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
               onClick={() => setSelectedUserProfile(user)}
               key={user.id}
               className="profile-icon"
-              src={user.pictureUrl || "anonymous-profile-icon.jpeg"}
+              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
               title={user.partyName}
               alt={`${user.partyName} profile`}
               width={imageSize}

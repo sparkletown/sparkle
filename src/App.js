@@ -8,7 +8,7 @@ import { startTimer, stopTimer, leaveRoom } from "./actions";
 import EntranceExperience from "pages/JazzBar/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
-import LoggedInPartyPage from "pages/LoggedInPartyPage";
+import LoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -47,12 +47,12 @@ export default function App(props) {
     };
   }, [dispatch, user]);
 
-  const attendances = users
-    ? users.reduce((acc, value) => {
-        acc[value.room] = (acc[value.room] || 0) + 1;
-        return acc;
-      }, {})
-    : [];
+  // const attendances = users
+  //   ? users.reduce((acc, value) => {
+  //       acc[value.room] = (acc[value.room] || 0) + 1;
+  //       return acc;
+  //     }, {})
+  //   : [];
 
   const search = qs.parse(props.location.search, { ignoreQueryPrefix: true });
   const unlock = search.unlock !== undefined;
@@ -72,11 +72,5 @@ export default function App(props) {
     return <EntranceExperience />;
   }
 
-  return (
-    <LoggedInPartyPage
-      config={config}
-      users={users}
-      attendances={attendances}
-    />
-  );
+  return <LoggedInPartyPage users={users} />;
 }
