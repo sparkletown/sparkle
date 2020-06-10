@@ -34,7 +34,8 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-firestore": "^0.13.0",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "twilio-video": "^2.5.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -45,6 +46,7 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy"
   },
+  "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -77,6 +79,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
+    "@types/twilio-video": "^2.0.12",
     "typescript": "^3.9.3"
   }
 }
