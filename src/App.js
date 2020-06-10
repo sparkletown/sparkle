@@ -5,7 +5,7 @@ import qs from "qs";
 
 import { startTimer, stopTimer, leaveRoom } from "./actions";
 
-import EntranceExperience from "pages/EntranceExperience";
+import EntranceExperience from "pages/JazzBar/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
 import LoggedInPartyPage from "pages/LoggedInPartyPage";
@@ -69,7 +69,7 @@ export default function App(props) {
   }
 
   if (!user) {
-    return <EntranceExperience config={config} />;
+    return <EntranceExperience />;
   }
 
   return (
