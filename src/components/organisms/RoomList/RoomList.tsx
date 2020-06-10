@@ -3,6 +3,7 @@ import "./RoomList.scss";
 
 import { Room } from "types/Room";
 import RoomCard from "components/molecules/RoomCard";
+import { eventHappeningNow } from "utils/time";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -15,7 +16,7 @@ const RoomList: React.FunctionComponent<PropsType> = ({
   rooms,
   attendances,
 }) => {
-  rooms = rooms.filter((room) => room.on_list);
+  rooms = rooms.filter((room) => room.on_list && eventHappeningNow(room));
 
   return (
     <>
