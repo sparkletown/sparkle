@@ -9,9 +9,7 @@ export default function LockedSite() {
     <Fragment>
       <header>
         <nav className="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-          <span className="navbar-brand">
-            Roots to Rapture: Party in the Tree of Life
-          </span>
+          <span className="navbar-brand">Co-Reality Collective</span>
         </nav>
       </header>
       <div className="container">
