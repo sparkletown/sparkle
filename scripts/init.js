@@ -20,11 +20,3 @@ export const MEASUREMENT_ID = "MEASUREMENT_ID";
 export const BUCKET_URL = "BUCKET_URL";
 `;
 write(src_secrets_path, src_secrets);
-
-functions_secrets_path = "./functions/secrets.js";
-functions_secrets = `
-// This will be the secret password to enter when using local function emulation at localhost:3000 (using firebase serve --only functions)
-exports.PASSWORD = "password";
-exports.ADMIN_PASSWORD = "admin";
-`;
-write(functions_secrets_path, functions_secrets);
