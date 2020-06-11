@@ -28,7 +28,7 @@
     background: $dark;
     border-radius: 22px;
     cursor: pointer;
-    overflow: scroll;
+    overflow: auto;
   }
 
   .left-column.expanded {
@@ -69,18 +69,23 @@
   }
 
   .row.reduced {
-    height: fit-content;
+    height: 100%;
     width: 100%;
   }
 
-  .new-participant {
-    background: $dark;
+  .participant {
     display: flex;
-    cursor: pointer;
+    background: $dark;
+    padding: 10px;
     border-radius: 22px;
-    align-items: center;
-    justify-content: center;
-    font-size: 100px;
-    color: $black;
+    flex: 0 0 24%;
+  }
+
+  video {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 6px;
   }
 }
