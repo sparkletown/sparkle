@@ -12,24 +12,22 @@ const NavBar = () => {
   return (
     <header>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
-        <div className="container">
-          <Link to="/">
-            <span className="navbar-brand title">Co-Reality</span>
-          </Link>
-          {user && users && users[user.uid] && (
-            <div>
-              <Link to="/account/edit">
-                <img
-                  src={users[user.uid].pictureUrl}
-                  className="profile-icon"
-                  alt="avatar"
-                  width="40"
-                  height="40"
-                />
-              </Link>
-            </div>
-          )}
-        </div>
+        <Link to="/">
+          <span className="navbar-brand title">Co-Reality</span>
+        </Link>
+        {user && users && users[user.uid] && (
+          <div>
+            <Link to="/account/edit">
+              <img
+                src={users[user.uid].pictureUrl}
+                className="profile-icon"
+                alt="avatar"
+                width="40"
+                height="40"
+              />
+            </Link>
+          </div>
+        )}
       </nav>
     </header>
   );

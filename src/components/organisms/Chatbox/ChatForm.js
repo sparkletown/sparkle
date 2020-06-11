@@ -42,7 +42,7 @@ export default function ChatForm({ currentUser, currentUserUID }) {
           value={text}
           onChange={textChanged}
         />
-        <button
+        <div
           className="chat-submit-button"
           onClick={chatSubmitted}
           disabled={!allowSend()}
@@ -53,7 +53,7 @@ export default function ChatForm({ currentUser, currentUserUID }) {
             alt="sparkle icon"
             width="20"
           />
-        </button>
+        </div>
       </div>
     </form>
   );
