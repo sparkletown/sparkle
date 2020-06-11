@@ -31,6 +31,7 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             ></iframe>
           )}
+          {selectedTab === "cocktail" && <Cocktail />}
           {selectedTab === "smoking" && <Backstage />}
         </div>
       </div>
