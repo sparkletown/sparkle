@@ -17,6 +17,7 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
       <div className="col content-column">
         <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
           <iframe
+            title="Jazz video"
             width="100%"
             height="100%"
             className={`col youtube-video ${
