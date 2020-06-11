@@ -3,6 +3,7 @@ import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 import Backstage from "../Backstage";
+import Cocktail from "../Cocktail";
 
 interface PropsType {
   users: any;

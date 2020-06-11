@@ -1,12 +1,33 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
-import Participant from "./Participant";
 
-const Room = ({ roomName, token }) => {
+const useTwilioRoom = (roomName) => {
+  const { user, users } = useSelector((state) => ({
+    user: state.user,
+    users: state.firestore.data.users,
+  }));
+  const [token, setToken] = useState();
+  const firebase = useFirebase();
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
   useEffect(() => {
+    (async () => {
+      if (!user || !users) return;
+
+      const getToken = firebase.functions().httpsCallable("video-getToken");
+      const response = await getToken({
+        identity: user.uid,
+        room: roomName,
+      });
+      setToken(response.data.token);
+    })();
+  }, [user, users]);
+
+  useEffect(() => {
+    if (!token) return;
     const participantConnected = (participant) => {
       setParticipants((prevParticipants) => [...prevParticipants, participant]);
     };
@@ -24,7 +45,7 @@ const Room = ({ roomName, token }) => {
       room.on("participantConnected", participantConnected);
       room.on("participantDisconnected", participantDisconnected);
       room.participants.forEach(participantConnected);
-      // [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16].forEach(() => participantConnected(room.localParticipant))
+      // [1,2,3,4,5,6,7,8,9,10,11,12,13].forEach(() => participantConnected(room.localParticipant))
     });
 
     return () => {
@@ -43,21 +64,7 @@ const Room = ({ roomName, token }) => {
       });
     };
   }, [roomName, token]);
-
-  return (
-    <>
-      {participants.length > 0 ? (
-        participants.map((participant, index) => (
-          <Participant
-            key={`${participant.sid}-${index}`}
-            participant={participant}
-          />
-        ))
-      ) : (
-        <>No one in here yet.</>
-      )}
-    </>
-  );
+  return { participants };
 };
 
-export default Room;
+export default useTwilioRoom;

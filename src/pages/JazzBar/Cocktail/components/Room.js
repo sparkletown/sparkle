@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Video from "twilio-video";
-import Participant from "./Participant";
+import Participant from "../../components/Participant";
 
 const Room = ({ roomName, token }) => {
   const [room, setRoom] = useState(null);
