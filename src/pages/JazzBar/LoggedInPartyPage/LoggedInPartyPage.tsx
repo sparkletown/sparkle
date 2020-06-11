@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
+import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 interface PropsType {
   users: any;
@@ -7,6 +8,7 @@ interface PropsType {
 
 const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
   const [selectedTab, setSelectedTab] = useState("jazz");
+  useProfileInformationCheck();
 
   return (
     <JazzBarSkeletonPage
@@ -17,6 +19,7 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
       <div className="col content-column">
         <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
           <iframe
+            title="Jazz video"
             width="100%"
             height="100%"
             className={`col youtube-video ${

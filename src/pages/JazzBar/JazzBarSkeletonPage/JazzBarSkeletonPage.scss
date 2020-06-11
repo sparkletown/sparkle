@@ -19,6 +19,7 @@
   }
 
   .left-column {
+    transition: all 0.1s linear;
     width: 70px;
     display: flex;
     flex-direction: column;

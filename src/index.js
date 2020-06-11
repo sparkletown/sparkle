@@ -1,7 +1,6 @@
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { createStore, compose, applyMiddleware } from "redux";
 import thunkMiddleware from "redux-thunk";
@@ -13,23 +12,16 @@ import "firebase/auth";
 import "firebase/functions";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
-import WithLoadedUsers from "components/organisms/WithLoadedUsers";
 
 import "bootstrap";
 import "scss/global.scss";
 
-import App from "./App";
-import Register from "./pages/Account/Register";
-import Profile from "./pages/Account/Profile";
-import Questions from "./pages/Account/Questions";
-import CodeOfConduct from "./pages/Account/CodeOfConduct";
-import Login from "./pages/Account/Login";
+import AppRouter from "components/organisms/AppRouter";
 
 import rootReducer from "./reducers/";
 import trackingMiddleware from "./middleware/tracking";
 import { API_KEY, APP_ID, MEASUREMENT_ID, BUCKET_URL } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
-import EditProfilePage from "pages/EditProfilePage";
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -78,21 +70,7 @@ const rrfProps = {
 render(
   <Provider store={store}>
     <ReactReduxFirebaseProvider {...rrfProps}>
-      <Router basename="/kansassmittys">
-        <Switch>
-          <Route path="/account/register" component={Register} />
-          <Route path="/account/profile" component={Profile} />
-          <Route path="/account/questions" component={Questions} />
-          <Route path="/account/code-of-conduct" component={CodeOfConduct} />
-          <Route path="/login" component={Login} />
-          <WithLoadedUsers>
-            <Switch>
-              <Route path="/account/edit" component={EditProfilePage} />
-              <Route path="/" component={App} />
-            </Switch>
-          </WithLoadedUsers>
-        </Switch>
-      </Router>
+      <AppRouter />
     </ReactReduxFirebaseProvider>
   </Provider>,
   document.getElementById("root")
