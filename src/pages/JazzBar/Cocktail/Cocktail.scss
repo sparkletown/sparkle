@@ -1,0 +1,13 @@
+.cocktail {
+  width: 100%;
+
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+  }
+  .barman {
+    grid-column: 2 / 4;
+    grid-row: 1 / 3;
+  }
+}
