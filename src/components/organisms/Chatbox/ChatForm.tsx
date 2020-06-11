@@ -1,25 +1,50 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { sendChat } from "../../../actions";
+import { sendChat, sendPrivateChat } from "../../../actions";
+import { User } from "../UserProfileModal/UserProfileModal";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
 
-export default function ChatForm({ currentUser, currentUserUID }) {
+interface PropsType {
+  currentUser: User;
+  currentUserUID?: string;
+  discussionPartner?: User;
+}
+
+const ChatForm: React.FunctionComponent<PropsType> = ({
+  currentUser,
+  currentUserUID,
+  discussionPartner,
+}) => {
   const dispatch = useDispatch();
 
   const [text, setText] = useState("");
   const [longEnoughSinceLastSend, setLongEnoughSinceLastSend] = useState(true);
 
-  function textChanged(e) {
+  function textChanged(e: React.ChangeEvent<HTMLInputElement>) {
     setText(e.target.value);
   }
 
-  function chatSubmitted(e) {
+  function chatSubmitted(
+    e:
+      | React.FormEvent<HTMLFormElement>
+      | React.ChangeEvent<HTMLElement>
+      | React.MouseEvent<HTMLElement, MouseEvent>
+  ) {
     e.preventDefault();
     if (text.length > 0) {
-      dispatch(sendChat(currentUser.partyName, currentUserUID, text));
+      discussionPartner
+        ? dispatch(
+            sendPrivateChat(
+              currentUser.partyName,
+              currentUserUID,
+              discussionPartner.id,
+              text
+            )
+          )
+        : dispatch(sendChat(currentUser.partyName, currentUserUID, text));
       setText("");
       setLongEnoughSinceLastSend(false);
       window.setTimeout(() => {
@@ -42,7 +67,7 @@ export default function ChatForm({ currentUser, currentUserUID }) {
           value={text}
           onChange={textChanged}
         />
-        <div
+        <button
           className="chat-submit-button"
           onClick={chatSubmitted}
           disabled={!allowSend()}
@@ -53,8 +78,10 @@ export default function ChatForm({ currentUser, currentUserUID }) {
             alt="sparkle icon"
             width="20"
           />
-        </div>
+        </button>
       </div>
     </form>
   );
-}
+};
+
+export default ChatForm;
