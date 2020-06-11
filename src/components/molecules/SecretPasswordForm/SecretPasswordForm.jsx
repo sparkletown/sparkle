@@ -3,6 +3,8 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import "./SecretPasswordForm.scss";
 
+import { PARTY_NAME } from "config";
+
 const SecretPasswordForm = () => {
   const firebase = useFirebase();
 
@@ -24,7 +26,7 @@ const SecretPasswordForm = () => {
     setMessage("Checking password...");
 
     const checkPassword = firebase.functions().httpsCallable("checkPassword");
-    checkPassword({ password: password })
+    checkPassword({ config: PARTY_NAME, password: password })
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");

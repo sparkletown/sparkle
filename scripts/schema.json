@@ -13,6 +13,8 @@
       "unhosted_entry_video_url": "https://google.com/",
       "map_url": "https://google.com/",
       "map_viewbox": "0 0 1547 863",
+      "password": "ahoy",
+      "admin_password": "tsunami",
       "rooms": [
         {
           "title": "Sunset Room",
@@ -47,6 +49,8 @@
     "unhosted_entry_video_url",
     "map_url",
     "map_viewbox",
+    "password",
+    "admin_password",
     "rooms"
   ],
   "additionalProperties": true,
@@ -98,6 +102,22 @@
       "description": "SVG viewbox for the event map's SVG overlay with clickable regions. Must be 0 0 (map image width) (map image height).",
       "default": "",
       "examples": ["0 0 1547 863"]
+    },
+    "password": {
+      "$id": "#/properties/password",
+      "type": "string",
+      "title": "The password schema",
+      "description": "Password for access to this event.",
+      "default": "",
+      "examples": ["ahoy"]
+    },
+    "admin_password": {
+      "$id": "#/properties/admin_password",
+      "type": "string",
+      "title": "The admin_password schema",
+      "description": "Password for access to the admin site for this event.",
+      "default": "",
+      "examples": ["tsunami"]
     },
     "rooms": {
       "$id": "#/properties/rooms",

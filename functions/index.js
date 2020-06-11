@@ -1,5 +1,11 @@
+const firebase = require("firebase");
+require("firebase/firestore");
 const functions = require("firebase-functions");
-const { PASSWORD, ADMIN_PASSWORD } = require("./secrets");
+
+const firebaseConfig = {
+  projectId: "co-reality-map",
+};
+firebase.initializeApp(firebaseConfig);
 
 // Case-insensitive first character for iDevices
 function lowercaseFirstChar(password) {
@@ -13,18 +19,46 @@ function passwordsMatch(submittedPassword, actualPassword) {
   );
 }
 
-exports.checkPassword = functions.https.onCall((data, context) => {
-  if (data && data.password && passwordsMatch(data.password, PASSWORD)) {
-    return "OK";
-  }
-
-  throw new functions.https.HttpsError("unauthenticated", "Password incorrect");
+exports.checkPassword = functions.https.onCall(async (data, context) => {
+  await firebase
+    .firestore()
+    .doc(`config/${data.config}`)
+    .get()
+    .then((doc) => {
+      if (
+        doc &&
+        doc.exists &&
+        doc.data() &&
+        doc.data().password &&
+        passwordsMatch(data.password, doc.data().password)
+      ) {
+        return "OK";
+      }
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Password incorrect"
+      );
+    });
 });
 
-exports.checkAdminPassword = functions.https.onCall((data, context) => {
-  if (data && data.password && passwordsMatch(data.password, ADMIN_PASSWORD)) {
-    return "OK";
-  }
-
-  throw new functions.https.HttpsError("unauthenticated", "Password incorrect");
+exports.checkAdminPassword = functions.https.onCall(async (data, context) => {
+  await firebase
+    .firestore()
+    .doc(`config/${data.config}`)
+    .get()
+    .then((doc) => {
+      if (
+        doc &&
+        doc.exists &&
+        doc.data() &&
+        doc.data().admin_password &&
+        passwordsMatch(data.password, doc.data().admin_password)
+      ) {
+        return "OK";
+      }
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Password incorrect"
+      );
+    });
 });

@@ -5,6 +5,8 @@ module.exports = {
   unhosted_entry_video_url: "https://www.youtube.com/embed/U4GsKONeHnM",
   map_url: "maps/boat-party.jpg",
   map_viewbox: "0 0 1858 1045",
+  password: "ahoy",
+  admin_password: "tsunami",
   rooms: [
     {
       title: "The Dock of the Bay",
