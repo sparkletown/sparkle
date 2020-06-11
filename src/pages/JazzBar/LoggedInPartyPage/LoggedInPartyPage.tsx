@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
+import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 interface PropsType {
   users: any;
@@ -7,6 +8,7 @@ interface PropsType {
 
 const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
   const [selectedTab, setSelectedTab] = useState("jazz");
+  useProfileInformationCheck();
 
   return (
     <JazzBarSkeletonPage

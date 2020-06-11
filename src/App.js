@@ -72,5 +72,9 @@ export default function App(props) {
     return <EntranceExperience />;
   }
 
-  return <LoggedInPartyPage users={users} />;
+  if (users) {
+    return <LoggedInPartyPage users={users} />;
+  }
+
+  return "Loading...";
 }
