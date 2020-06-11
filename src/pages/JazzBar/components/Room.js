@@ -27,7 +27,7 @@ const Room = ({ roomName }) => {
       });
       setToken(response.data.token);
     })();
-  }, [user, users]);
+  }, [firebase, user, users, roomName]);
 
   useEffect(() => {
     if (!token) return;
@@ -58,21 +58,17 @@ const Room = ({ roomName }) => {
     });
 
     return () => {
-      setRoom((currentRoom) => {
-        if (currentRoom && currentRoom.localParticipant.state === "connected") {
-          currentRoom.localParticipant.tracks.forEach(function (
-            trackPublication
-          ) {
-            trackPublication.track.stop();
-          });
-          currentRoom.disconnect();
-          return null;
-        } else {
-          return currentRoom;
-        }
-      });
+      if (room && room.localParticipant.state === "connected") {
+        room.localParticipant.tracks.forEach(function (trackPublication) {
+          trackPublication.track.stop();
+        });
+        room.disconnect();
+        return null;
+      } else {
+        return room;
+      }
     };
-  }, [roomName, token, users]);
+  }, [roomName, room, token, users]);
 
   if (!token) {
     return <></>;

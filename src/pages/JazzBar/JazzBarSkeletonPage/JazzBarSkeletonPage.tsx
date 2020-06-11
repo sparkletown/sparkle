@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import UserList from "components/molecules/UserList";
+import TablesUserList from "components/molecules/TablesUserList";
 import TabNavigation from "components/molecules/TabNavigation";
 import "./JazzBarSkeletonPage.scss";
 import InformationCard from "components/molecules/InformationCard";
@@ -66,7 +67,11 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             <div className="right-column-content">
               {users && (
                 <div className="user-list">
-                  <UserList users={users} limit={28} />
+                  {selectedTab === "jazz" ? (
+                    <TablesUserList users={users} limit={28} />
+                  ) : (
+                    <UserList users={users} limit={28} />
+                  )}
                 </div>
               )}
               <Chatbox />
