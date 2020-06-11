@@ -9,8 +9,7 @@ service cloud.firestore {
         allow write, read: if request.auth.uid != null;
     }
     match /chatsv2/{chatId} {
-    		allow write: if request.auth.uid != null && request.resource.data.senderId == request.auth.uid;
-        allow read: if request.auth.uid != null && (resource.data.recipientId == null || resource.data.recipientId == request.auth.uid || resource.data.senderId == request.auth.uid);
+        allow write, read: if request.auth.uid != null;
     }
     match /chats/{chatId} {
     		allow write, read: if request.auth.uid != null;
