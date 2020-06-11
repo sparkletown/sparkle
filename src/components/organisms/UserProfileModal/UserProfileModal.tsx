@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
+import { useSelector } from "react-redux";
 
 export interface User {
   id: string;
@@ -24,6 +25,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   onHide,
   userProfile,
 }) => {
+  const { user } = useSelector((state: any) => ({
+    user: state.user,
+  }));
+
   if (!userProfile) {
     return <></>;
   }
@@ -57,9 +62,11 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
-          <div className="private-chat-container">
-            <Chatbox discussionPartner={userProfile} />
-          </div>
+          {userProfile.id !== user.uid && (
+            <div className="private-chat-container">
+              <Chatbox discussionPartner={userProfile} />
+            </div>
+          )}
         </div>
       </Modal.Body>
     </Modal>
