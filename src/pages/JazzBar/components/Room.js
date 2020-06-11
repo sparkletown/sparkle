@@ -1,19 +1,47 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import Participant from "./Participant";
 
-const Room = ({ roomName, token }) => {
+const Room = ({ roomName }) => {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
+  const { user, users } = useSelector((state) => ({
+    user: state.user,
+    users: state.firestore.data.users,
+  }));
+  const [token, setToken] = useState();
+  const firebase = useFirebase();
+
   useEffect(() => {
+    (async () => {
+      if (!user || !users) return;
+
+      // @ts-ignore
+      const getToken = firebase.functions().httpsCallable("video-getToken");
+      const response = await getToken({
+        identity: user.uid,
+        room: roomName,
+      });
+      setToken(response.data.token);
+    })();
+  }, [user, users]);
+
+  useEffect(() => {
+    if (!token) return;
+
     const participantConnected = (participant) => {
-      setParticipants((prevParticipants) => [...prevParticipants, participant]);
+      setParticipants((prevParticipants) => [
+        ...prevParticipants,
+        { participant, profileData: users[participant.identity] },
+      ]);
     };
 
     const participantDisconnected = (participant) => {
       setParticipants((prevParticipants) =>
-        prevParticipants.filter((p) => p !== participant)
+        prevParticipants.filter((p) => p.participant !== participant)
       );
     };
 
@@ -44,14 +72,18 @@ const Room = ({ roomName, token }) => {
         }
       });
     };
-  }, [roomName, token]);
+  }, [roomName, token, users]);
+
+  if (!token) {
+    return <></>;
+  }
 
   return (
     <>
       {participants.length > 0 ? (
         participants.map((participant, index) => (
           <Participant
-            key={`${participant.sid}-${index}`}
+            key={`${participant.participant.sid}-${index}`}
             participant={participant}
             index={index}
           />

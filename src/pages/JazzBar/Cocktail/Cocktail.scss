@@ -1,4 +1,5 @@
-.cocktail {
+.cocktail,
+.backstage {
   width: 100%;
 
   .wrapper {
@@ -6,6 +7,15 @@
     grid-template-columns: repeat(4, 1fr);
     grid-gap: 10px;
   }
+  .profile-icon {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 188%;
+  }
+}
+
+.cocktail {
   .barman {
     grid-column: 2 / 4;
     grid-row: 1 / 3;

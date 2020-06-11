@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import UserProfileModal from "components/organisms/UserProfileModal";
 
 const Participant = ({ participant, index }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
+  const [showProfile, setShowProfile] = useState(false);
 
   const videoRef = useRef();
   const audioRef = useRef();
@@ -13,8 +15,8 @@ const Participant = ({ participant, index }) => {
       .filter((track) => track !== null);
 
   useEffect(() => {
-    setVideoTracks(trackpubsToTracks(participant.videoTracks));
-    setAudioTracks(trackpubsToTracks(participant.audioTracks));
+    setVideoTracks(trackpubsToTracks(participant.participant.videoTracks));
+    setAudioTracks(trackpubsToTracks(participant.participant.audioTracks));
 
     const trackSubscribed = (track) => {
       if (track.kind === "video") {
@@ -32,15 +34,15 @@ const Participant = ({ participant, index }) => {
       }
     };
 
-    participant.on("trackSubscribed", trackSubscribed);
-    participant.on("trackUnsubscribed", trackUnsubscribed);
+    participant.participant.on("trackSubscribed", trackSubscribed);
+    participant.participant.on("trackUnsubscribed", trackUnsubscribed);
 
     return () => {
       setVideoTracks([]);
       setAudioTracks([]);
-      participant.removeAllListeners();
+      participant.participant.removeAllListeners();
     };
-  }, [participant]);
+  }, [participant.participant]);
 
   useEffect(() => {
     const videoTrack = videoTracks[0];
@@ -66,6 +68,25 @@ const Participant = ({ participant, index }) => {
     <div className={`col participant ${index === 0 && "barman"}`}>
       <video ref={videoRef} autoPlay={true} />
       <audio ref={audioRef} autoPlay={true} />
+      <img
+        onClick={() => setShowProfile(true)}
+        key={participant.sid}
+        className="profile-icon"
+        src={
+          participant.profileData.pictureUrl || "/anonymous-profile-icon.jpeg"
+        }
+        title={participant.profileData.partyName}
+        alt={`${participant.profileData.partyName} profile`}
+        width={40}
+        height={40}
+      />
+      {showProfile && (
+        <UserProfileModal
+          show
+          onHide={() => setShowProfile(false)}
+          userProfile={participant.profileData}
+        />
+      )}
     </div>
   );
 };
