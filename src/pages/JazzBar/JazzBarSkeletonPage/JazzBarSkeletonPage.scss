@@ -1,6 +1,10 @@
 @import "scss/constants.scss";
 
 .jazz-bar-skeleton-page-container {
+  max-width: 100%;
+  padding-left: 50px;
+  padding-right: 50px;
+
   .band-logo {
     max-width: 100%;
     max-height: 100%;
