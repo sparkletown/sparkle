@@ -28,7 +28,7 @@
     background: $dark;
     border-radius: 22px;
     cursor: pointer;
-    overflow: scroll;
+    overflow: auto;
   }
 
   .left-column.expanded {
@@ -69,7 +69,7 @@
   }
 
   .row.reduced {
-    height: fit-content;
+    height: 100%;
     width: 100%;
   }
 
