@@ -45,18 +45,21 @@ const UserList: React.FunctionComponent<PropsType> = ({
           )}
         </div>
         <div className="row no-margin">
-          {usersToDisplay.map((user) => (
-            <img
-              onClick={() => setSelectedUserProfile(user)}
-              key={user.id}
-              className="profile-icon"
-              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-              title={user.partyName}
-              alt={`${user.partyName} profile`}
-              width={imageSize}
-              height={imageSize}
-            />
-          ))}
+          {usersToDisplay.map(
+            (user) =>
+              user && (
+                <img
+                  onClick={() => setSelectedUserProfile(user)}
+                  key={user.id}
+                  className="profile-icon"
+                  src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+                  title={user.partyName}
+                  alt={`${user.partyName} profile`}
+                  width={imageSize}
+                  height={imageSize}
+                />
+              )
+          )}
         </div>
       </div>
       <UserProfileModal
