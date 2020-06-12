@@ -1,14 +1,7 @@
 import { combineReducers } from "redux";
 import { firestoreReducer } from "redux-firestore";
 
-import {
-  PREVIEW_ROOM,
-  EXIT_PREVIEW_ROOM,
-  TIMER_STARTED,
-  TIMER_STOPPED,
-  TIMER_TICK,
-  SET_USER,
-} from "../actions";
+import { PREVIEW_ROOM, EXIT_PREVIEW_ROOM, SET_USER } from "../actions";
 
 function room(state = null, action) {
   switch (action.type) {
@@ -16,24 +9,6 @@ function room(state = null, action) {
       return action.room;
     case EXIT_PREVIEW_ROOM:
       return null;
-    default:
-      return state;
-  }
-}
-
-function timer(state = { time: null }, action) {
-  switch (action.type) {
-    case TIMER_STARTED:
-      return {
-        interval: action.interval,
-        time: state.time,
-      };
-    case TIMER_TICK:
-      return {
-        interval: state.interval,
-        time: action.time,
-      };
-    case TIMER_STOPPED:
     default:
       return state;
   }
@@ -62,7 +37,6 @@ function user(state = null, action) {
 const rootReducer = combineReducers({
   firestore: firestoreReducer,
   room,
-  timer,
   user,
 });
 
