@@ -81,7 +81,7 @@ const Room = ({ roomName, setUserList }) => {
     if (!room) return;
 
     setUserList([
-      ...participants.map((p) => p.profileData),
+      ...participants.map((p) => users[p.identity]),
       users[room.localParticipant.identity],
     ]);
   }, [participants, setUserList, users, room]);
@@ -103,18 +103,17 @@ const Room = ({ roomName, setUserList }) => {
       ) : (
         ""
       )}
-      {participants.length > 0 ? (
-        participants.map((participant, index) => (
-          <Participant
-            key={`${participant.participant.sid}-${index}`}
-            participant={{
-              participant,
-              profileData: users[room.participant.identity],
-            }}
-          />
-        ))
-      ) : (
-        <>No one in here yet.</>
+      {participants.map(
+        (participant, index) =>
+          participant && (
+            <Participant
+              key={`${participant.sid}-${index}`}
+              participant={{
+                participant,
+                profileData: users[participant.identity],
+              }}
+            />
+          )
       )}
     </>
   );
