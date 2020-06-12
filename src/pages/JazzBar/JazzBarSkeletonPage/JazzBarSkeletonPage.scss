@@ -39,13 +39,14 @@
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    width: 320px;
+    width: 485px;
     height: 100%;
   }
 
   .content {
     width: 100%;
     margin: 0 10px;
+    overflow-y: auto;
   }
 
   .youtube-video {
