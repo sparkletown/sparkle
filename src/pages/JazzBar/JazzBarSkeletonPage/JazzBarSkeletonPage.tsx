@@ -66,7 +66,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             <div className="right-column-content">
               {users && (
                 <div className="user-list">
-                  <UserList users={users} limit={28} />
+                  <UserList users={users} limit={24} />
                 </div>
               )}
               <Chatbox />
