@@ -3,7 +3,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 const isBarman = (uid) => uid === "0eQgusXEyDf0fE2x1TGufLdy2iJ3"; // Ed is the barman
 
-const Participant = ({ participant, index }) => {
+const Participant = ({ participant, children }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
@@ -93,6 +93,7 @@ const Participant = ({ participant, index }) => {
           userProfile={participant.profileData}
         />
       )}
+      {children}
     </div>
   );
 };
