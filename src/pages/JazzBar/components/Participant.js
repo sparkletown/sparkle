@@ -67,9 +67,7 @@ const Participant = ({ participant, children }) => {
   }, [audioTracks]);
 
   const bartender =
-    participant.experiences &&
-    participant.experiences[EXPERIENCE_NAME] &&
-    participant.experiences[EXPERIENCE_NAME].bartender;
+    participant?.profileData?.data?.[EXPERIENCE_NAME]?.bartender;
 
   return (
     <div className={`col participant ${bartender && "bartender"}`}>
