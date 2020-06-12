@@ -18,7 +18,7 @@ const Room = ({ roomName, setUserList }) => {
 
   useEffect(() => {
     (async () => {
-      if (!user || !users) return;
+      if (!user) return;
 
       // @ts-ignore
       const getToken = firebase.functions().httpsCallable("video-getToken");
@@ -28,22 +28,28 @@ const Room = ({ roomName, setUserList }) => {
       });
       setToken(response.data.token);
     })();
-  }, [user, users, firebase, roomName]);
+  }, [user, firebase, roomName]);
 
   useEffect(() => {
     if (!token) return;
 
     const participantConnected = (participant) => {
       setParticipants((prevParticipants) => [
-        ...prevParticipants,
-        { participant, profileData: users[participant.identity] },
+        // Hopefully prevents duplicate users in the participant list
+        ...prevParticipants.filter((p) => p.identity === participant.identity),
+        participant,
       ]);
     };
 
     const participantDisconnected = (participant) => {
-      setParticipants((prevParticipants) =>
-        prevParticipants.filter((p) => p.participant !== participant)
-      );
+      setParticipants((prevParticipants) => {
+        if (!prevParticipants.find((p) => p === participant)) {
+          // Remove when root issue foudn and fixed
+          console.error("Could not find disconnnected participant:");
+          console.error(participant);
+        }
+        return prevParticipants.filter((p) => p !== participant);
+      });
     };
 
     Video.connect(token, {
@@ -69,7 +75,7 @@ const Room = ({ roomName, setUserList }) => {
         return room;
       }
     };
-  }, [roomName, room, token, users]);
+  }, [roomName, token]);
 
   useEffect(() => {
     if (!room) return;
@@ -101,8 +107,10 @@ const Room = ({ roomName, setUserList }) => {
         participants.map((participant, index) => (
           <Participant
             key={`${participant.participant.sid}-${index}`}
-            participant={participant}
-            index={index}
+            participant={{
+              participant,
+              profileData: users[room.participant.identity],
+            }}
           />
         ))
       ) : (
