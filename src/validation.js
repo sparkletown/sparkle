@@ -21,10 +21,10 @@ export function isChatValid(chat) {
   return (
     chat !== undefined &&
     chat.id !== undefined &&
-    chat.senderName !== undefined &&
     chat.ts_utc !== undefined &&
     validDate(chat.ts_utc) &&
-    chat.text !== undefined
+    chat.text !== undefined &&
+    chat.from !== undefined
   );
 }
 

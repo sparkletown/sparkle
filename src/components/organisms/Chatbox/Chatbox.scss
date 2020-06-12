@@ -60,3 +60,34 @@
   height: 20px;
   margin-right: 10px;
 }
+
+.dropdown-container {
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 10px;
+
+  .recipient-label {
+    margin-right: 10px;
+  }
+
+  .dropdown-toggle {
+    background: $black;
+    color: $white;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    border-radius: 22px;
+  }
+
+  .show {
+    border-radius: 22px;
+  }
+
+  .dropdown-item {
+    text-decoration: none;
+    &:hover {
+      background: $red;
+      color: $black;
+    }
+  }
+}
