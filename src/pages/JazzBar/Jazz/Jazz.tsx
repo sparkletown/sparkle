@@ -2,10 +2,15 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import Room from "../components/Room";
+import { User } from "components/organisms/UserProfileModal/UserProfileModal";
 
 import { EXPERIENCE_NAME } from "config";
 
-const Jazz: React.FunctionComponent = () => {
+interface PropsType {
+  setUserList: (userList: User[]) => void;
+}
+
+const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user, users } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
@@ -30,7 +35,7 @@ const Jazz: React.FunctionComponent = () => {
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       ></iframe>
-      {roomName && <Room roomName={roomName} />}
+      {roomName && <Room roomName={roomName} setUserList={setUserList} />}
     </>
   );
 };

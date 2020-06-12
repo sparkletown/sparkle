@@ -25,7 +25,7 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
     >
       <div className="col content-column">
         <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
-          {selectedTab === "jazz" && <Jazz />}
+          {selectedTab === "jazz" && <Jazz setUserList={setUserList} />}
           {selectedTab === "cocktail" && <Cocktail setUserList={setUserList} />}
           {selectedTab === "smoking" && <Backstage setUserList={setUserList} />}
         </div>
