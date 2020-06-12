@@ -27,7 +27,7 @@ const Room = ({ roomName, setUserList }) => {
       });
       setToken(response.data.token);
     })();
-  }, [user, users]);
+  }, [user, users, firebase, roomName]);
 
   useEffect(() => {
     if (!token) return;
