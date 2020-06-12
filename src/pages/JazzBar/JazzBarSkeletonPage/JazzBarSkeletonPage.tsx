@@ -68,9 +68,9 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               {users && (
                 <div className="user-list">
                   {selectedTab === "jazz" ? (
-                    <TablesUserList users={users} limit={28} />
+                    <TablesUserList users={users} limit={24} />
                   ) : (
-                    <UserList users={users} limit={28} />
+                    <UserList users={users} limit={24} />
                   )}
                 </div>
               )}

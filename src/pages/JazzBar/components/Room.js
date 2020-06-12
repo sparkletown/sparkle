@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
+import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 
 const Room = ({ roomName, setUserList }) => {
@@ -27,7 +28,7 @@ const Room = ({ roomName, setUserList }) => {
       });
       setToken(response.data.token);
     })();
-  }, [firebase, user, users, roomName]);
+  }, [user, users, firebase, roomName]);
 
   useEffect(() => {
     if (!token) return;
@@ -85,6 +86,17 @@ const Room = ({ roomName, setUserList }) => {
 
   return (
     <>
+      {room ? (
+        <LocalParticipant
+          key={room.localParticipant.sid}
+          participant={{
+            participant: room.localParticipant,
+            profileData: users[room.localParticipant.identity],
+          }}
+        />
+      ) : (
+        ""
+      )}
       {participants.length > 0 ? (
         participants.map((participant, index) => (
           <Participant

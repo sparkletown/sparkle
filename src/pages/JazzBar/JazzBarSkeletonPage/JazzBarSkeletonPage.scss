@@ -39,13 +39,14 @@
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    width: 320px;
+    width: 485px;
     height: 100%;
   }
 
   .content {
     width: 100%;
     margin: 0 10px;
+    overflow-y: auto;
   }
 
   .youtube-video {
@@ -88,5 +89,15 @@
     display: block;
     margin: 0 auto;
     border-radius: 6px;
+  }
+
+  .mute-container {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 }

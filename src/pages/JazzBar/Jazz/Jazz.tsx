@@ -31,7 +31,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         width="100%"
         height="100%"
         className={"col youtube-video"}
-        src="https://www.youtube.com/embed/x0RV0kgdqJU"
+        src="https://www.youtube.com/embed/UZQQJUw3R5g"
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       ></iframe>
