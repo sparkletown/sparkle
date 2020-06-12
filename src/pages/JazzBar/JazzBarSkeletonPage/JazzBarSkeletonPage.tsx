@@ -69,7 +69,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                   <UserList users={users} limit={24} />
                 </div>
               )}
-              <Chatbox />
+              <Chatbox selectedTab={selectedTab} />
             </div>
           </div>
         </div>
