@@ -1,0 +1,30 @@
+@import "scss/constants.scss";
+
+.xs-size {
+  font-size: 10px;
+}
+
+.sender-information {
+  margin-bottom: 5px;
+}
+
+.message-buble {
+  padding: 10px;
+  border-radius: 10px;
+  width: 80%;
+  color: $black;
+
+  &.right-side {
+    margin-left: auto;
+  }
+
+  &.global {
+    background: $white;
+  }
+  &.private {
+    background: $primary;
+  }
+  &.room {
+    background: $pink;
+  }
+}

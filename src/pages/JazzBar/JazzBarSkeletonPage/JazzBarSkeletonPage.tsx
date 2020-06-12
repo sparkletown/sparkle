@@ -74,7 +74,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                   )}
                 </div>
               )}
-              <Chatbox />
+              <Chatbox selectedTab={selectedTab} />
             </div>
           </div>
         </div>

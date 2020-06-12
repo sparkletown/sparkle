@@ -1,22 +1,31 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
-import { sendChat, sendPrivateChat } from "../../../actions";
+import {
+  sendGlobalChat,
+  sendPrivateChat,
+  sendRoomChat,
+  sendTableChat,
+} from "actions";
 import { User } from "../UserProfileModal/UserProfileModal";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
 
 interface PropsType {
-  currentUser: User;
   currentUserUID?: string;
   discussionPartner?: User;
+  type: string;
+  room?: string;
+  table?: string;
 }
 
 const ChatForm: React.FunctionComponent<PropsType> = ({
-  currentUser,
   currentUserUID,
   discussionPartner,
+  room,
+  type,
+  table,
 }) => {
   const dispatch = useDispatch();
 
@@ -27,6 +36,28 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     setText(e.target.value);
   }
 
+  const sendMessage = (
+    type: string,
+    currentUserUID: string | undefined,
+    discussionPartner: User | undefined,
+    text: string
+  ) => {
+    switch (type) {
+      case "private":
+        return dispatch(
+          sendPrivateChat(currentUserUID, discussionPartner?.id, text)
+        );
+      case "global":
+        return dispatch(sendGlobalChat(currentUserUID, text));
+      case "room":
+        return dispatch(sendRoomChat(currentUserUID, room, text));
+      case "table":
+        return dispatch(sendTableChat(currentUserUID, table, text));
+      default:
+        return;
+    }
+  };
+
   function chatSubmitted(
     e:
       | React.FormEvent<HTMLFormElement>
@@ -35,16 +66,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
   ) {
     e.preventDefault();
     if (text.length > 0) {
-      discussionPartner
-        ? dispatch(
-            sendPrivateChat(
-              currentUser.partyName,
-              currentUserUID,
-              discussionPartner.id,
-              text
-            )
-          )
-        : dispatch(sendChat(currentUser.partyName, currentUserUID, text));
+      sendMessage(type, currentUserUID, discussionPartner, text);
       setText("");
       setLongEnoughSinceLastSend(false);
       window.setTimeout(() => {

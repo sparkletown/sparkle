@@ -16,27 +16,68 @@ function sendRoom(room, uid) {
     });
 }
 
-export function sendChat(senderName, senderId, text) {
+export function sendGlobalChat(from, text) {
   return (dispatch) => {
     const firestore = firebase.firestore();
-    firestore.collection("chatsv2").add({
+    firestore.collection("chatsv3").add({
+      type: "global",
       ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
-      senderName,
       text,
-      senderId,
+      from,
     });
   };
 }
 
-export function sendPrivateChat(senderName, senderId, recipientId, text) {
+export const sendRoomChat = (from, to, text) => {
   return (dispatch) => {
     const firestore = firebase.firestore();
-    firestore.collection("chatsv2").add({
+    firestore.collection("chatsv3").add({
+      type: "room",
       ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
-      senderName,
       text,
-      senderId,
-      recipientId,
+      from,
+      to,
+    });
+  };
+};
+
+export function sendPrivateChat(from, to, text) {
+  return (dispatch) => {
+    const firestore = firebase.firestore();
+    firestore
+      .collection("privatechats")
+      .doc(from)
+      .collection("chats")
+      .add({
+        type: "private",
+        ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+        text,
+        from,
+        to,
+      });
+    firestore
+      .collection("privatechats")
+      .doc(to)
+      .collection("chats")
+      .add({
+        type: "private",
+        ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+        text,
+        from,
+        to,
+      });
+  };
+}
+
+export function sendTableChat(from, to, text) {
+  return (dispatch) => {
+    const firestore = firebase.firestore();
+    firestore.collection("chatsv3").add({
+      type: "table",
+      ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+      text,
+      from,
+      to,
     });
   };
 }
