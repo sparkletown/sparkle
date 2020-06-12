@@ -21,7 +21,7 @@ export function isChatValid(chat) {
   return (
     chat !== undefined &&
     chat.id !== undefined &&
-    chat.name !== undefined &&
+    chat.senderName !== undefined &&
     chat.ts_utc !== undefined &&
     validDate(chat.ts_utc) &&
     chat.text !== undefined

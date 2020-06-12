@@ -19,14 +19,27 @@ function sendRoom(room, uid) {
     });
 }
 
-export function sendChat(name, userId, text) {
+export function sendChat(senderName, senderId, text) {
   return (dispatch) => {
     const firestore = firebase.firestore();
-    firestore.collection("chats").add({
+    firestore.collection("chatsv2").add({
       ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
-      name,
+      senderName,
       text,
-      userId,
+      senderId,
+    });
+  };
+}
+
+export function sendPrivateChat(senderName, senderId, recipientId, text) {
+  return (dispatch) => {
+    const firestore = firebase.firestore();
+    firestore.collection("chatsv2").add({
+      ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+      senderName,
+      text,
+      senderId,
+      recipientId,
     });
   };
 }

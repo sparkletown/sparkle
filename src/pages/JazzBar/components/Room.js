@@ -4,7 +4,7 @@ import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import Participant from "./Participant";
 
-const Room = ({ roomName }) => {
+const Room = ({ roomName, setUserList }) => {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
@@ -69,6 +69,15 @@ const Room = ({ roomName }) => {
       }
     };
   }, [roomName, room, token, users]);
+
+  useEffect(() => {
+    if (!room) return;
+
+    setUserList([
+      ...participants.map((p) => p.profileData),
+      users[room.localParticipant.identity],
+    ]);
+  }, [participants, setUserList, users, room]);
 
   if (!token) {
     return <></>;
