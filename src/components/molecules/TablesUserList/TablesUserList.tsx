@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
+import { Modal } from "react-bootstrap";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
@@ -54,6 +55,10 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [showLockedMessage, setShowLockedMessage] = useState(false);
+  const [showJoinMessage, setShowJoinMessage] = useState(false);
+  const [table, setTable] = useState("");
+  const [videoRoom, setVideoRoom] = useState("");
 
   useFirestoreConnect({ collection: "experiences", doc: EXPERIENCE_NAME });
   const { user, users, experience } = useSelector((state: any) => ({
@@ -114,7 +119,22 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     firestoreUpdate(doc, update);
   };
 
-  const takeSeat = (table: string, videoRoom: string) => {
+  const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {
+    if (locked) {
+      setShowLockedMessage(true);
+    } else {
+      setTable(table);
+      setVideoRoom(videoRoom);
+      setShowJoinMessage(true);
+    }
+  };
+
+  const onAcceptJoinMessage = () => {
+    setShowJoinMessage(false);
+    takeSeat();
+  };
+
+  const takeSeat = () => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
       EXPERIENCE_NAME
@@ -160,6 +180,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         </div>
         {tables.map((tableName: string, i: number) => {
           const atCurrentTable = atTable(tableName, usersAtTables);
+          const locked = tableLocked(tableName, usersAtTables);
           const people =
             usersAtTables[tableName].length - (atCurrentTable ? 1 : 0);
           const plural = people !== 1;
@@ -192,13 +213,10 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                   ) : (
                     <button
                       type="button"
-                      className={
-                        "btn " +
-                        (tableLocked(tableName, usersAtTables)
-                          ? "disabled"
-                          : "")
+                      className={"btn " + (locked ? "disabled" : "")}
+                      onClick={() =>
+                        onJoinClicked(tableName, locked, nameOfVideoRoom(i))
                       }
-                      onClick={() => takeSeat(tableName, nameOfVideoRoom(i))}
                     >
                       Join
                     </button>
@@ -224,13 +242,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     <label className="switch">
                       <input
                         type="checkbox"
-                        checked={!tableLocked(tableName, usersAtTables)}
-                        onChange={() =>
-                          onLockedChanged(
-                            tableName,
-                            !tableLocked(tableName, usersAtTables)
-                          )
-                        }
+                        checked={!locked}
+                        onChange={() => onLockedChanged(tableName, !locked)}
                       />
                       <span className="slider" />
                     </label>
@@ -274,6 +287,39 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         onHide={() => setSelectedUserProfile(undefined)}
         userProfile={selectedUserProfile}
       />
+      <Modal show={showLockedMessage}>
+        <Modal.Body>
+          <div className="modal-container modal-container_message">
+            <p>Can't join this table because it's been locked.</p>
+            <p>Perhaps ask in the chat?</p>
+            <button
+              type="button"
+              className="btn btn-block btn-centered"
+              onClick={() => setShowLockedMessage(false)}
+            >
+              Return to the Jazz
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      <Modal show={showJoinMessage}>
+        <Modal.Body>
+          <div className="modal-container modal-container_message">
+            <p>
+              To avoid feedback from the music, we strongly recommend wearing
+              headphones.
+            </p>
+            <p>You can also mute your microphone.</p>
+            <button
+              type="button"
+              className="btn btn-block btn-centered"
+              onClick={() => onAcceptJoinMessage()}
+            >
+              I am Wearing Headphones
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

@@ -22,33 +22,6 @@
   }
 }
 
-// Consider moving this elsewhere
-button.btn {
-  font-weight: 700;
-  text-decoration: none;
-  color: rgba(0, 0, 0, 0.7);
-  display: inline-block;
-  font-weight: 700;
-  text-decoration: none;
-  border-radius: 22px;
-  text-align: center;
-  font-size: 1em;
-
-  background-color: $red;
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-  color: $black;
-  transform: translateY(0);
-
-  &:hover {
-    transform: translateY(-1px);
-    background-color: rgba($red, 0.4);
-  }
-  &.disabled {
-    color: rgba($white, 0.2);
-    background-color: rgba($primary, 0.2);
-  }
-}
-
 .no-margin {
   margin: 0;
 }
@@ -135,4 +108,8 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
+}
+
+.modal-container_message {
+  text-align: center;
 }
