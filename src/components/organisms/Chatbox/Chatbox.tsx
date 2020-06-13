@@ -87,12 +87,12 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
             {!isPrivate && (
               <div className="dropdown-container">
                 <label className="recipient-label" htmlFor="type-of-message">
-                  to:
+                  To:
                 </label>
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-basic">
-                    {chatboxMessageType === "global" ? "everbody" : ""}
-                    {chatboxMessageType === "room" ? "this room" : ""}
+                    {chatboxMessageType === "global" ? "Everbody" : ""}
+                    {chatboxMessageType === "room" ? "This Room" : ""}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
