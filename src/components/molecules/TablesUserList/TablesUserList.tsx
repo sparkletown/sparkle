@@ -127,7 +127,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const leaveSeat = () => {
     const doc = `users/${user.uid}`;
-    const existingData = users?.[user.uid]?.data?.[EXPERIENCE_NAME];
+    const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
+      EXPERIENCE_NAME
+    ];
     const update = {
       data: {
         [EXPERIENCE_NAME]: { ...existingData, table: null, videoRoom: null },
