@@ -293,7 +293,10 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         onHide={() => setSelectedUserProfile(undefined)}
         userProfile={selectedUserProfile}
       />
-      <Modal show={showLockedMessage}>
+      <Modal
+        show={showLockedMessage}
+        onHide={() => setShowLockedMessage(false)}
+      >
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>Can't join this table because it's been locked.</p>
@@ -308,7 +311,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
           </div>
         </Modal.Body>
       </Modal>
-      <Modal show={showJoinMessage}>
+      <Modal show={showJoinMessage} onHide={() => setShowJoinMessage(false)}>
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>
@@ -321,12 +324,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               className="btn btn-block btn-centered"
               onClick={() => onAcceptJoinMessage()}
             >
-              I am Wearing Headphones
+              OK
             </button>
           </div>
         </Modal.Body>
       </Modal>
-      <Modal show={showLeaveMessage}>
+      <Modal show={showLeaveMessage} onHide={() => setShowLeaveMessage(false)}>
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>Are you sure you want to leave the table?</p>
