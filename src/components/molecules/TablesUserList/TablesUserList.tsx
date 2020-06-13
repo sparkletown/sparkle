@@ -12,9 +12,9 @@ import { EXPERIENCE_NAME } from "config";
 
 interface User {
   id: string;
-  gratefulFor?: string;
-  islandCompanion?: string;
-  likeAboutParties?: string;
+  drinkOfChoice?: string;
+  favouriteRecord?: string;
+  doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
   data: { [key: string]: any };

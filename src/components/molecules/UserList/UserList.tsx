@@ -5,9 +5,9 @@ import "./UserList.scss";
 
 interface User {
   id: string;
-  gratefulFor?: string;
-  islandCompanion?: string;
-  likeAboutParties?: string;
+  drinkOfChoice?: string;
+  favouriteRecord?: string;
+  doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
 }
