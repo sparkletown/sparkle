@@ -38,7 +38,7 @@ const Room = ({ roomName, setUserList }) => {
     const participantConnected = (participant) => {
       setParticipants((prevParticipants) => [
         // Hopefully prevents duplicate users in the participant list
-        ...prevParticipants.filter((p) => p.identity === participant.identity),
+        ...prevParticipants.filter((p) => p.identity !== participant.identity),
         participant,
       ]);
     };
@@ -67,17 +67,21 @@ const Room = ({ roomName, setUserList }) => {
     });
 
     return () => {
-      if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
-          trackPublication.track.stop();
-        });
-        room.disconnect();
-        return null;
-      } else {
-        return room;
-      }
+      setRoom((currentRoom) => {
+        if (currentRoom && currentRoom.localParticipant.state === "connected") {
+          currentRoom.localParticipant.tracks.forEach(function (
+            trackPublication
+          ) {
+            trackPublication.track.stop();
+          });
+          currentRoom.disconnect();
+          return null;
+        } else {
+          return currentRoom;
+        }
+      });
     };
-  }, [roomName, token]);
+  }, [roomName, setRoom, token]);
 
   useEffect(() => {
     if (!room) return;
