@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Participant = ({ participant, children }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   const videoRef = useRef();
   const audioRef = useRef();
@@ -64,6 +67,20 @@ const Participant = ({ participant, children }) => {
     }
   }, [audioTracks]);
 
+  useEffect(() => {
+    if (muted) {
+      const audioTrack = audioTracks[0];
+      if (audioTrack) {
+        audioTrack.detach();
+      }
+    } else {
+      const audioTrack = audioTracks[0];
+      if (audioTrack) {
+        audioTrack.attach(videoRef.current);
+      }
+    }
+  }, [participant, muted]);
+
   return (
     <div
       className={`col participant ${participant.bartender ? "bartender" : ""}`}
@@ -90,6 +107,15 @@ const Participant = ({ participant, children }) => {
         />
       )}
       {children}
+      <div className="mute-other-container">
+        <div onClick={() => setMuted(!muted)}>
+          <FontAwesomeIcon
+            size="lg"
+            icon={muted ? faVolumeMute : faVolumeUp}
+            color={muted ? "red" : undefined}
+          />
+        </div>
+      </div>
     </div>
   );
 };
