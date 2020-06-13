@@ -142,7 +142,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   }
 
   const usersToDisplay = isExpanded
-    ? unseatedUsers
+    ? unseatedUsers.slice(0, 25)
     : unseatedUsers.slice(0, limit);
 
   const tableLocked = (
@@ -220,13 +220,19 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtOtherTables.push(...usersAtTables[table]);
   }
 
+  const displayUsers = [];
+  for (const table of tables) {
+    displayUsers.push(...usersAtTables[table]);
+  }
+  displayUsers.push(...usersToDisplay);
+
   return (
     <>
       <div className="userlist-container">
         <div className="row header no-margin">
           <p>
-            <span className="bold">{users.length}</span>{" "}
-            {users.length !== 1 ? "people" : "person"} listening to jazz
+            <span className="bold">{displayUsers.length}</span>{" "}
+            {displayUsers.length !== 1 ? "people" : "person"} listening to jazz
           </p>
         </div>
         {seatedAtTableName !== "" ? (
@@ -352,9 +358,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         )}
         <div className="row header no-margin">
           <p>
-            <span className="bold">{unseatedUsers.length}</span> standing
+            <span className="bold">{usersToDisplay.length}</span> standing
           </p>
-          {unseatedUsers.length > limit && (
+          {usersToDisplay.length > limit && (
             <p
               className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}
