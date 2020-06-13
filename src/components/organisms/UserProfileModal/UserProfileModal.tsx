@@ -25,12 +25,27 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   onHide,
   userProfile,
 }) => {
-  const { user } = useSelector((state: any) => ({
+  const { user, usersordered } = useSelector((state: any) => ({
     user: state.user,
+    usersordered: state.firestore.ordered.users,
   }));
 
   if (!userProfile) {
     return <></>;
+  }
+
+  // @TODO: Need to figure out why it's sometimes not set
+  // state.firestore.data.users vs state.firestore.ordered.users
+  let fullUserProfile;
+  if (!userProfile.id) {
+    fullUserProfile = {
+      ...userProfile,
+      id: usersordered.find(
+        (u: User) => u.pictureUrl === userProfile.pictureUrl
+      )?.id,
+    };
+  } else {
+    fullUserProfile = userProfile;
   }
 
   return (
@@ -69,9 +84,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
-          {userProfile.id !== user.uid && (
+          {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox isPrivate discussionPartner={userProfile} />
+              <Chatbox isPrivate discussionPartner={fullUserProfile} />
             </div>
           )}
         </div>
