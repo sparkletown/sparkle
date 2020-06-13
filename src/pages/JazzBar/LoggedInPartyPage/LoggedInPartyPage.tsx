@@ -18,6 +18,7 @@ const LoggedInPartyPage: React.FunctionComponent = () => {
       userList={userList}
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
+      setUserList={setUserList}
     >
       <div className="col content-column">
         <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>

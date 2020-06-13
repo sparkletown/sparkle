@@ -7,9 +7,9 @@ import { useSelector } from "react-redux";
 
 export interface User {
   id: string;
-  gratefulFor?: string;
-  islandCompanion?: string;
-  likeAboutParties?: string;
+  drinkOfChoice?: string;
+  favouriteRecord?: string;
+  doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
 }
@@ -52,13 +52,20 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             </div>
             <div className="profile-extras">
-              <p className="light question">Dream desert island companion:</p>
-              <h6>{userProfile.islandCompanion || "Hermann Melville"}</h6>
-              <p className="light question">Grateful for:</p>
-              <h6>{userProfile.gratefulFor || "My consciousness"}</h6>
-              <p className="light question">I like parties because of:</p>
+              <p className="light question">What's your drink of choice?</p>
               <h6>
-                {userProfile.likeAboutParties || "Because they're joyful"}
+                {userProfile.drinkOfChoice ||
+                  "I haven't edited my profile to tell you yet"}
+              </h6>
+              <p className="light question">What's your favourite record?</p>
+              <h6>
+                {userProfile.favouriteRecord ||
+                  "I haven't edited my profile to tell you yet"}
+              </h6>
+              <p className="light question">Do you dance?</p>
+              <h6>
+                {userProfile.doYouDance ||
+                  "I haven't edited my profile to tell you yet"}
               </h6>
             </div>
           </div>

@@ -32,31 +32,28 @@
     border-radius: 22px;
     margin: 10px 0;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
 
-    .row {
-      padding-left: 10px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        margin: 0;
+      }
     }
   }
 
-  .row {
-    .header,
-    .footer {
-      align-items: center;
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
+  .profiles {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-      .locked-text {
-        color: $red;
-      }
-    }
-
-    .profiles {
-      margin: 10px 0;
-    }
-
-    .footer p {
-      margin-bottom: 0;
+    button {
+      padding: 0;
     }
   }
 }

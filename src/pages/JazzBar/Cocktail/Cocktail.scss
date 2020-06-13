@@ -1,13 +1,11 @@
 .cocktail,
-.backstage {
+.backstage,
+.at-table {
   width: 100%;
   height: 100%;
 
   .wrapper {
     height: 100%;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 25% 25% 25% 25%;
     grid-gap: 10px;
     margin: 0 25px;
   }
@@ -23,5 +21,25 @@
   .bartender {
     grid-column: 2 / 4;
     grid-row: 1 / 3;
+  }
+}
+
+.cocktail,
+.backstage {
+  .wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 25% 25% 25% 25%;
+  }
+}
+
+.at-table {
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+
+    .participant {
+      flex: 0 0 50%;
+    }
   }
 }

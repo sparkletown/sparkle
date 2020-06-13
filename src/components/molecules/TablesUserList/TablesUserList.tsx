@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
+import Room from "pages/JazzBar/components/Room";
 
 import "./TablesUserList.scss";
 
 import { EXPERIENCE_NAME } from "config";
 
 const ONE_DAY_AGO = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-console.log("found hours ago", ONE_DAY_AGO);
+
+// https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
+const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
+  const cb = useRef();
+
+  cb.current = handler;
+
+  useEffect(() => {
+    // @ts-ignore
+    const handler = () => cb.current();
+
+    window.addEventListener("beforeunload", handler);
+
+    return () => {
+      if (callOnCleanup) handler();
+
+      window.removeEventListener("beforeunload", handler);
+    };
+  }, [cb]);
+};
 
 interface User {
   id: string;
-  gratefulFor?: string;
-  islandCompanion?: string;
-  likeAboutParties?: string;
+  drinkOfChoice?: string;
+  favouriteRecord?: string;
+  doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
   data: { [key: string]: any };
@@ -26,13 +46,14 @@ interface User {
 interface PropsType {
   limit?: number;
   imageSize?: number;
+  setUserList: any;
 }
 
 const TABLES = 8;
 const TABLE_CAPACITY = 7;
 
 const nameOfTable = (i: number) => {
-  return `Table ${i + 1}`;
+  return `${i + 1}`;
 };
 
 const nameOfVideoRoom = (i: number) => {
@@ -55,7 +76,8 @@ const tableNames = () => {
 
 const TablesUserList: React.FunctionComponent<PropsType> = ({
   limit = 60,
-  imageSize = 40,
+  imageSize = 35,
+  setUserList,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -86,6 +108,26 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       state.firestore.data.experiences[EXPERIENCE_NAME],
   }));
 
+  useWindowUnloadEffect(() => leaveSeat(), true);
+
+  // const userData = users?.find((u: any) => u.id === user.uid)?.data?.[
+  //   EXPERIENCE_NAME
+  // ];
+  const leaveSeat = useCallback(() => {
+    const doc = `users/${user.uid}`;
+    // const existingData = userData;
+    const update = {
+      data: {
+        [EXPERIENCE_NAME]: {
+          // ...existingData,
+          table: null,
+          videoRoom: null,
+        },
+      },
+    };
+    firestoreUpdate(doc, update);
+  }, [user]);
+
   if (!users) {
     return <>"Loading...";</>;
   }
@@ -109,7 +151,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         seatedAtTableName = u.data[EXPERIENCE_NAME].table;
       }
     } else {
-      unseatedUsers.push(user);
+      unseatedUsers.push(u);
     }
   }
 
@@ -207,17 +249,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
           <>
             <div className="row no-margin at-table">
               <div className="header">
-                <p>
-                  You're with{" "}
-                  <span className="bold">
-                    {usersAtTables[seatedAtTableName].length - 1}
-                  </span>{" "}
-                  other
-                  {usersAtTables[seatedAtTableName].length - 1 === 1
-                    ? ""
-                    : "s"}{" "}
-                  at {seatedAtTableName}
-                </p>
+                <p>Table {seatedAtTableName}</p>
                 <button
                   type="button"
                   title={"Leave " + seatedAtTableName}
@@ -227,21 +259,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                   Leave
                 </button>
               </div>
-              <div className="profiles">
-                {usersAtTables[seatedAtTableName].map((user: User) => (
-                  <img
-                    onClick={() => setSelectedUserProfile(user)}
-                    key={user.id}
-                    className="profile-icon"
-                    src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                    title={user.partyName}
-                    alt={`${user.partyName} profile`}
-                    width={imageSize}
-                    height={imageSize}
-                  />
-                ))}
-              </div>
-              <div className="footer">
+              <div className="actions">
                 {tableLocked(seatedAtTableName, usersAtTables) ? (
                   <p className="locked-text">Table is locked</p>
                 ) : (
@@ -261,6 +279,15 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                   <span className="slider" />
                 </label>
               </div>
+              <div className="row">
+                <div className="wrapper">
+                  <Room
+                    roomName={seatedAtTableName}
+                    setUserList={setUserList}
+                  />
+                </div>
+              </div>
+              <div className="footer"></div>
             </div>
             <div className="header">
               <p>
@@ -292,10 +319,26 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               const people = usersAtTables[tableName].length;
               return (
                 <>
-                  <div className="header">
-                    <p>
-                      <span className="bold">{people}</span> at {tableName}
-                    </p>
+                  <div className="profiles">
+                    <span>{tableName}</span>
+                    <span>
+                      {usersAtTables[tableName].map((user: User) => (
+                        <img
+                          onClick={() => setSelectedUserProfile(user)}
+                          key={user.id}
+                          className="profile-icon"
+                          src={
+                            user.pictureUrl || "/anonymous-profile-icon.jpeg"
+                          }
+                          title={user.partyName}
+                          alt={`${user.partyName} profile`}
+                          width={imageSize}
+                          height={imageSize}
+                        />
+                      ))}
+                      {usersAtTables[tableName].length === 0 &&
+                        "No one is at this table"}
+                    </span>
                     {people >= TABLE_CAPACITY ? (
                       <button
                         type="button"
@@ -317,20 +360,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                         Join
                       </button>
                     )}
-                  </div>
-                  <div className="profiles">
-                    {usersAtTables[tableName].map((user: User) => (
-                      <img
-                        onClick={() => setSelectedUserProfile(user)}
-                        key={user.id}
-                        className="profile-icon"
-                        src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                        title={user.partyName}
-                        alt={`${user.partyName} profile`}
-                        width={imageSize}
-                        height={imageSize}
-                      />
-                    ))}
                   </div>
                 </>
               );
