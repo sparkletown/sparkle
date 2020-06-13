@@ -215,19 +215,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     firestoreUpdate(doc, update);
   };
 
-  const leaveSeat = () => {
-    const doc = `users/${user.uid}`;
-    const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
-      EXPERIENCE_NAME
-    ];
-    const update = {
-      data: {
-        [EXPERIENCE_NAME]: { ...existingData, table: null, videoRoom: null },
-      },
-    };
-    firestoreUpdate(doc, update);
-  };
-
   const usersAtOtherTables = [];
   for (const table of tables) {
     if (table === seatedAtTableName) {
