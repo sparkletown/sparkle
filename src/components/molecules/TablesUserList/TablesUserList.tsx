@@ -116,7 +116,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
     const doc = `experiences/${EXPERIENCE_NAME}`;
-    const update = { tables: { [tableName]: { locked } } };
+    const update = {
+      tables: { ...experience?.tables, [tableName]: { locked } },
+    };
     firestoreUpdate(doc, update);
   };
 
