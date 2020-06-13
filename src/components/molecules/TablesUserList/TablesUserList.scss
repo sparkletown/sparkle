@@ -32,31 +32,28 @@
     border-radius: 22px;
     margin: 10px 0;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
 
-    .row {
-      padding-left: 10px;
-    }
-  }
-
-  .row {
-    .header,
-    .footer {
-      align-items: center;
-      width: 100%;
+    .header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
 
-      .locked-text {
-        color: $red;
+      p {
+        margin: 0;
       }
     }
 
     .profiles {
       margin: 10px 0;
-    }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    .footer p {
-      margin-bottom: 0;
+      button {
+        padding: 0;
+      }
     }
   }
 }

@@ -1,11 +1,6 @@
 import React from "react";
-import { useSelector } from "react-redux";
 
-import Room from "../components/Room";
 import { User } from "components/organisms/UserProfileModal/UserProfileModal";
-
-import { EXPERIENCE_NAME } from "config";
-
 import "./Jazz.scss";
 
 interface PropsType {
@@ -13,17 +8,8 @@ interface PropsType {
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const { user, users } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.data.users,
-  }));
-
-  const roomName =
-    user && users?.[user.uid]?.data?.[EXPERIENCE_NAME]?.videoRoom;
-  const atTable = !!roomName;
-
   return (
-    <div className={"col jazz-container " + (atTable ? "at-table" : "")}>
+    <div className={"col jazz-container"}>
       <iframe
         title="main event"
         width="100%"
@@ -33,11 +19,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       />
-      {atTable && (
-        <div className="table">
-          <Room roomName={roomName} setUserList={setUserList} />
-        </div>
-      )}
     </div>
   );
 };

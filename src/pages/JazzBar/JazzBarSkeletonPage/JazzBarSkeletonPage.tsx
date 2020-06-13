@@ -12,6 +12,7 @@ interface PropsType {
   selectedTab: string;
   children: React.ReactNode;
   setSelectedTab: (value: string) => void;
+  setUserList: any;
 }
 
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
@@ -19,6 +20,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   selectedTab,
   children,
   setSelectedTab,
+  setUserList,
 }) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
@@ -76,7 +78,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               {userList && (
                 <div className="user-list">
                   {selectedTab === "jazz" ? (
-                    <TablesUserList limit={24} />
+                    <TablesUserList limit={24} setUserList={setUserList} />
                   ) : (
                     <UserList users={userList} activity={activity} limit={24} />
                   )}
