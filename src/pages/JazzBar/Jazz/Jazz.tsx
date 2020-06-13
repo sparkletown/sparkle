@@ -15,7 +15,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         width="100%"
         height="100%"
         className={"youtube-video"}
-        src="https://www.youtube.com/embed/_j1MVoZY-pU"
+        src="https://www.youtube.com/embed/_j1MVoZY-pU?autoplay=1"
         frameBorder="0"
         allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
       />
