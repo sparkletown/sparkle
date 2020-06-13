@@ -22,6 +22,14 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
+  let activity = "";
+  if (selectedTab === "cocktail") {
+    activity = "at the bar";
+  }
+  if (selectedTab === "smoking") {
+    activity = "in the smoking area";
+  }
+
   return (
     <div className="full-page-container">
       <WithNavigationBar>
@@ -70,7 +78,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                   {selectedTab === "jazz" ? (
                     <TablesUserList limit={24} />
                   ) : (
-                    <UserList users={userList} limit={24} />
+                    <UserList users={userList} activity={activity} limit={24} />
                   )}
                 </div>
               )}

@@ -209,7 +209,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     {usersAtTables[seatedAtTableName].length - 1}
                   </span>{" "}
                   other
-                  {usersAtTables[seatedAtTableName].length - 1 == 1
+                  {usersAtTables[seatedAtTableName].length - 1 === 1
                     ? ""
                     : "s"}{" "}
                   at {seatedAtTableName}

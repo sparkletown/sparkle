@@ -16,12 +16,14 @@ interface PropsType {
   users: User[];
   limit?: number;
   imageSize?: number;
+  activity: string;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
   limit = 60,
   imageSize = 40,
+  activity = "partying",
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -33,7 +35,8 @@ const UserList: React.FunctionComponent<PropsType> = ({
       <div className="userlist-container">
         <div className="row header no-margin">
           <p>
-            <span className="bold">{users.length}</span> people partying
+            <span className="bold">{users.length}</span>{" "}
+            {users.length === 1 ? "person" : "people"} {activity}
           </p>
           {users.length > limit && (
             <p
