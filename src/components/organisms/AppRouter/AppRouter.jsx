@@ -25,13 +25,12 @@ const AppRouter = () => {
   useEffect(() => {
     const killLoginsFromBeforePartyStart = (user) => {
       if (user && config) {
-        const partyHasStarted = new Date() / 1000 >= config.start_utc_seconds;
         const lastSignInTimeSeconds =
           new Date(user.metadata.lastSignInTime) / 1000;
         const signedInBeforePartyStart =
-          lastSignInTimeSeconds < config.start_utc_seconds;
+          lastSignInTimeSeconds < config.start_utc_seconds - 2 * 60 * 60;
 
-        if (partyHasStarted && signedInBeforePartyStart) {
+        if (signedInBeforePartyStart) {
           firebase.auth().signOut();
         }
       }
