@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
@@ -10,6 +10,26 @@ import Room from "pages/JazzBar/components/Room";
 import "./TablesUserList.scss";
 
 import { EXPERIENCE_NAME } from "config";
+
+// https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
+const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
+  const cb = useRef();
+
+  cb.current = handler;
+
+  useEffect(() => {
+    // @ts-ignore
+    const handler = () => cb.current();
+
+    window.addEventListener("beforeunload", handler);
+
+    return () => {
+      if (callOnCleanup) handler();
+
+      window.removeEventListener("beforeunload", handler);
+    };
+  }, [cb]);
+};
 
 interface User {
   id: string;
@@ -73,6 +93,26 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       state.firestore.data.experiences &&
       state.firestore.data.experiences[EXPERIENCE_NAME],
   }));
+
+  useWindowUnloadEffect(() => leaveSeat(), true);
+
+  // const userData = users?.find((u: any) => u.id === user.uid)?.data?.[
+  //   EXPERIENCE_NAME
+  // ];
+  const leaveSeat = useCallback(() => {
+    const doc = `users/${user.uid}`;
+    // const existingData = userData;
+    const update = {
+      data: {
+        [EXPERIENCE_NAME]: {
+          // ...existingData,
+          table: null,
+          videoRoom: null,
+        },
+      },
+    };
+    firestoreUpdate(doc, update);
+  }, [user]);
 
   if (!users) {
     return <>"Loading...";</>;
@@ -157,19 +197,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     ];
     const update = {
       data: { [EXPERIENCE_NAME]: { ...existingData, table, videoRoom } },
-    };
-    firestoreUpdate(doc, update);
-  };
-
-  const leaveSeat = () => {
-    const doc = `users/${user.uid}`;
-    const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
-      EXPERIENCE_NAME
-    ];
-    const update = {
-      data: {
-        [EXPERIENCE_NAME]: { ...existingData, table: null, videoRoom: null },
-      },
     };
     firestoreUpdate(doc, update);
   };
