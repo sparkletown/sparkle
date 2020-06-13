@@ -57,13 +57,20 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                   1920s Kansas where the likes of Mary Lou Williams gave us new
                   ways of hearing.
                 </InformationCard>
-                <InformationCard title="About tonight’s gig:">
-                  Tonight, the Kansas Smitty’s House Band are playing from their
-                  new album, Things Happened Here. Drawing influence from over
-                  one hundred years of jazz history, from Django Reinhardt to
-                  Ahmad Jamal, and the vivid musical landscapes of Debussy and
-                  even Brian Eno, Kansas Smitty’s new album combines journeying
-                  into the jazz sublime with every flavour of cinematic texture.
+                <InformationCard
+                  title="About tonight's show"
+                  className="col information-card"
+                >
+                  <p>Performing tonight at Kansas Smitty's:</p>
+                  <ul>
+                    <li>Giacomo Smith - alto/clarinet</li>
+                    <li>Alec harper - Tenor</li>
+                    <li>Dave Archer - Guitar</li>
+                    <li>Joe Webb - Piano</li>
+                    <li>Ferg Ireland - Double Bass</li>
+                    <li>Will Cleasby - Drums</li>
+                  </ul>
+                  <p>Broadcasting live from their East London home.</p>
                 </InformationCard>
               </>
             )}
