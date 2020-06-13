@@ -54,15 +54,13 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         className="profile-picture-input"
       />
       <label htmlFor="profile-picture-input" className="profile-picture-button">
-        Update your profile pic
+        Upload your profile pic
       </label>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
-      <small>
-        This will be your public party avatar appearing on the party map
-      </small>
+      <small>This will be your public avatar appearing in the jazz bar</small>
       <input
         type="hidden"
         name="pictureUrl"

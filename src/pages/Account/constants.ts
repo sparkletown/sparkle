@@ -1,14 +1,14 @@
 export const profileQuestions = [
   {
-    name: "islandCompanion",
-    text: "Who's your dream desert island companion?",
+    name: "drinkOfChoice",
+    text: "What's your drink of choice?",
   },
   {
-    name: "gratefulFor",
-    text: "What do you feel greateful for?",
+    name: "favouriteRecord",
+    text: "What's your favourite record?",
   },
   {
-    name: "likeAboutParties",
-    text: "What do you like about parties?",
+    name: "doYouDance",
+    text: "Do you dance?",
   },
 ];
