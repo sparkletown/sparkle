@@ -20,11 +20,10 @@ function isAfterEvent(startUtcSeconds, durationHours) {
 
 export default function App(props) {
   const dispatch = useDispatch();
-  const { config, user, users } = useSelector((state) => ({
+  const { config, user } = useSelector((state) => ({
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
-    users: state.firestore.ordered.users,
   }));
 
   useEffect(() => {
@@ -35,13 +34,6 @@ export default function App(props) {
       }
     };
   }, [dispatch, user]);
-
-  // const attendances = users
-  //   ? users.reduce((acc, value) => {
-  //       acc[value.room] = (acc[value.room] || 0) + 1;
-  //       return acc;
-  //     }, {})
-  //   : [];
 
   const search = qs.parse(props.location.search, { ignoreQueryPrefix: true });
   const unlock = search.unlock !== undefined;
@@ -61,9 +53,5 @@ export default function App(props) {
     return <EntranceExperience />;
   }
 
-  if (users) {
-    return <LoggedInPartyPage users={users} />;
-  }
-
-  return "Loading...";
+  return <LoggedInPartyPage />;
 }

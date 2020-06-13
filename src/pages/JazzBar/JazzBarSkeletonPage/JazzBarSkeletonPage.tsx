@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import UserList from "components/molecules/UserList";
+import TablesUserList from "components/molecules/TablesUserList";
 import TabNavigation from "components/molecules/TabNavigation";
 import "./JazzBarSkeletonPage.scss";
 import InformationCard from "components/molecules/InformationCard";
 import Chatbox from "components/organisms/Chatbox";
 
 interface PropsType {
-  users: any;
+  userList: any;
   selectedTab: string;
   children: React.ReactNode;
   setSelectedTab: (value: string) => void;
 }
 
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
-  users,
+  userList,
   selectedTab,
   children,
   setSelectedTab,
@@ -64,9 +65,13 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               setSelectedTab={setSelectedTab}
             />
             <div className="right-column-content">
-              {users && (
+              {userList && (
                 <div className="user-list">
-                  <UserList users={users} limit={24} />
+                  {selectedTab === "jazz" ? (
+                    <TablesUserList limit={24} />
+                  ) : (
+                    <UserList users={userList} limit={24} />
+                  )}
                 </div>
               )}
               <Chatbox selectedTab={selectedTab} />

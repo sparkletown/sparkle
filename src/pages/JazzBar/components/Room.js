@@ -5,6 +5,8 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 
+import { EXPERIENCE_NAME } from "config";
+
 const Room = ({ roomName, setUserList }) => {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
@@ -65,19 +67,15 @@ const Room = ({ roomName, setUserList }) => {
     });
 
     return () => {
-      setRoom((currentRoom) => {
-        if (currentRoom && currentRoom.localParticipant.state === "connected") {
-          currentRoom.localParticipant.tracks.forEach(function (
-            trackPublication
-          ) {
-            trackPublication.track.stop();
-          });
-          currentRoom.disconnect();
-          return null;
-        } else {
-          return currentRoom;
-        }
-      });
+      if (room && room.localParticipant.state === "connected") {
+        room.localParticipant.tracks.forEach(function (trackPublication) {
+          trackPublication.track.stop();
+        });
+        room.disconnect();
+        return null;
+      } else {
+        return room;
+      }
     };
   }, [roomName, token]);
 
@@ -94,33 +92,56 @@ const Room = ({ roomName, setUserList }) => {
     return <></>;
   }
 
-  return (
-    <>
-      {room ? (
-        <LocalParticipant
-          key={room.localParticipant.sid}
-          participant={{
-            participant: room.localParticipant,
-            profileData: users[room.localParticipant.identity],
-          }}
-        />
-      ) : (
-        ""
-      )}
-      {participants.map(
-        (participant, index) =>
-          participant && (
-            <Participant
-              key={`${participant.sid}-${index}`}
-              participant={{
-                participant,
-                profileData: users[participant.identity],
-              }}
-            />
-          )
-      )}
-    </>
-  );
+  // Ordering of participants:
+  // 1. Me
+  // 2. Bartender, if found (only one allowed)
+  // 3. Rest of the participants, in order
+
+  // Only allow the first bartender to appear as bartender
+  let hasBartender = false;
+  const meIsBartender =
+    users[room?.localParticipant?.identity]?.data?.[EXPERIENCE_NAME]?.bartender;
+
+  const meComponent = room ? (
+    <LocalParticipant
+      key={room.localParticipant.sid}
+      participant={{
+        participant: room.localParticipant,
+        profileData: users[room.localParticipant.identity],
+        bartender: meIsBartender,
+      }}
+    />
+  ) : null;
+
+  if (meIsBartender) {
+    hasBartender = true;
+  }
+
+  const othersComponents = participants.map((participant, index) => {
+    if (!participant) {
+      return null;
+    }
+
+    const bartender =
+      !hasBartender &&
+      users[participant.identity]?.data?.[EXPERIENCE_NAME]?.bartender;
+    if (bartender) {
+      hasBartender = true;
+    }
+
+    return (
+      <Participant
+        key={`${participant.sid}-${index}`}
+        participant={{
+          participant,
+          profileData: users[participant.identity],
+          bartender,
+        }}
+      />
+    );
+  });
+
+  return <>{[meComponent, ...othersComponents]}</>;
 };
 
 export default Room;

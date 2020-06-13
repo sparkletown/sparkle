@@ -37,7 +37,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
           </p>
           {users.length > limit && (
             <p
-              className="clickabke-text"
+              className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}
             >
               See {isExpanded ? "less" : "all"}

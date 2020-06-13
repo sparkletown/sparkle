@@ -2,15 +2,12 @@ import React, { useState } from "react";
 import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
+import Jazz from "../Jazz";
 import Backstage from "../Backstage";
 import Cocktail from "../Cocktail";
 import { User } from "components/organisms/UserProfileModal/UserProfileModal";
 
-interface PropsType {
-  users: any;
-}
-
-const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
+const LoggedInPartyPage: React.FunctionComponent = () => {
   const [selectedTab, setSelectedTab] = useState("jazz");
   useProfileInformationCheck();
 
@@ -18,23 +15,13 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
 
   return (
     <JazzBarSkeletonPage
-      users={selectedTab === "jazz" ? users : userList}
+      userList={userList}
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
     >
       <div className="col content-column">
         <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
-          {selectedTab === "jazz" && (
-            <iframe
-              title="main event"
-              width="100%"
-              height="100%"
-              className={"col youtube-video"}
-              src="https://www.youtube.com/embed/UZQQJUw3R5g"
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            ></iframe>
-          )}
+          {selectedTab === "jazz" && <Jazz setUserList={setUserList} />}
           {selectedTab === "cocktail" && <Cocktail setUserList={setUserList} />}
           {selectedTab === "smoking" && <Backstage setUserList={setUserList} />}
         </div>
