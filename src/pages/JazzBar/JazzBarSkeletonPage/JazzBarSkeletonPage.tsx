@@ -8,14 +8,14 @@ import InformationCard from "components/molecules/InformationCard";
 import Chatbox from "components/organisms/Chatbox";
 
 interface PropsType {
-  users: any;
+  userList: any;
   selectedTab: string;
   children: React.ReactNode;
   setSelectedTab: (value: string) => void;
 }
 
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
-  users,
+  userList,
   selectedTab,
   children,
   setSelectedTab,
@@ -65,12 +65,12 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               setSelectedTab={setSelectedTab}
             />
             <div className="right-column-content">
-              {users && (
+              {userList && (
                 <div className="user-list">
                   {selectedTab === "jazz" ? (
-                    <TablesUserList users={users} limit={24} />
+                    <TablesUserList limit={24} />
                   ) : (
-                    <UserList users={users} limit={24} />
+                    <UserList users={userList} limit={24} />
                   )}
                 </div>
               )}

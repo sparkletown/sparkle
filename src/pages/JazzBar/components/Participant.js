@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { EXPERIENCE_NAME } from "config";
-
 const Participant = ({ participant, children }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
@@ -66,11 +64,10 @@ const Participant = ({ participant, children }) => {
     }
   }, [audioTracks]);
 
-  const bartender =
-    participant?.profileData?.data?.[EXPERIENCE_NAME]?.bartender;
-
   return (
-    <div className={`col participant ${bartender && "bartender"}`}>
+    <div
+      className={`col participant ${participant.bartender ? "bartender" : ""}`}
+    >
       <video ref={videoRef} autoPlay={true} />
       <audio ref={audioRef} autoPlay={true} />
       <img

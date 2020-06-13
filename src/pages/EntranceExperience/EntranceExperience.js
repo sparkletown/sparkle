@@ -23,7 +23,7 @@ const EntranceExperience = ({ config }) => (
       ) && (
         <div className="row">
           <div class="col">
-            <div class="starting-indication">
+            <div className="starting-indication">
               Welcome. We recommend watching the following video to get started.
             </div>
             <div className="embed-responsive embed-responsive-16by9 video-embed mt-2">

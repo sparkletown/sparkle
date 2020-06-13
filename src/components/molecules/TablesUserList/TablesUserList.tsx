@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -19,7 +20,6 @@ interface User {
 }
 
 interface PropsType {
-  users: User[];
   limit?: number;
   imageSize?: number;
 }
@@ -49,27 +49,24 @@ const tableNames = () => {
 };
 
 const TablesUserList: React.FunctionComponent<PropsType> = ({
-  users,
   limit = 60,
   imageSize = 40,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
-  const { user, experience } = useSelector((state: any) => ({
+  useFirestoreConnect({ collection: "experiences", doc: EXPERIENCE_NAME });
+  const { user, users, experience } = useSelector((state: any) => ({
     user: state.user,
+    users: state.firestore.ordered.users,
     experience:
       state.firestore.data.experiences &&
       state.firestore.data.experiences[EXPERIENCE_NAME],
   }));
 
-  // Leave seat when component is mounted/unmounted.
-  // useEffect(() => {
-  //   leaveSeat();
-  //   // return () => {
-  //   //   leaveSeat();
-  //   // };
-  // });
+  if (!users) {
+    return <>"Loading...";</>;
+  }
 
   const tables = tableNames();
   const usersAtTables: { [key: string]: any } = {};
@@ -119,16 +116,22 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const takeSeat = (table: string, videoRoom: string) => {
     const doc = `users/${user.uid}`;
+    const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
+      EXPERIENCE_NAME
+    ];
     const update = {
-      data: { [EXPERIENCE_NAME]: { table, videoRoom } },
+      data: { [EXPERIENCE_NAME]: { ...existingData, table, videoRoom } },
     };
     firestoreUpdate(doc, update);
   };
 
   const leaveSeat = () => {
     const doc = `users/${user.uid}`;
+    const existingData = users?.[user.uid]?.data?.[EXPERIENCE_NAME];
     const update = {
-      data: { [EXPERIENCE_NAME]: { table: null, videoRoom: null } },
+      data: {
+        [EXPERIENCE_NAME]: { ...existingData, table: null, videoRoom: null },
+      },
     };
     firestoreUpdate(doc, update);
   };
@@ -159,71 +162,79 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             usersAtTables[tableName].length - (atCurrentTable ? 1 : 0);
           const plural = people !== 1;
 
-          const tablePre = atCurrentTable ? "You're seated with" : "";
-          const tablePost = `${atCurrentTable ? "other" : ""} ${
-            plural ? "people" : "person"
+          const tablePre = atCurrentTable ? "You're with" : "";
+          const tablePost = `${
+            atCurrentTable ? "other" + (plural ? "s" : "") : ""
           } at ${tableName}`;
 
           return (
             <>
-              <div className="row header no-margin">
-                <p>
-                  {tablePre} <span className="bold">{people}</span> {tablePost}
-                </p>
-                {atCurrentTable ? (
-                  <button
-                    type="button"
-                    className={"btn btn-red"}
-                    onClick={() => leaveSeat()}
-                  >
-                    Leave
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className={
-                      "btn " + tableLocked(tableName, usersAtTables)
-                        ? "btn-disabled"
-                        : "btn-red"
-                    }
-                    onClick={() => takeSeat(tableName, nameOfVideoRoom(i))}
-                  >
-                    Join
-                  </button>
+              <div
+                className={
+                  "row no-margin " + (atCurrentTable ? "at-table" : "")
+                }
+              >
+                <div className="header">
+                  <p>
+                    {tablePre} <span className="bold">{people}</span>{" "}
+                    {tablePost}
+                  </p>
+                  {atCurrentTable ? (
+                    <button
+                      type="button"
+                      className="btn"
+                      onClick={() => leaveSeat()}
+                    >
+                      Leave
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className={
+                        "btn " +
+                        (tableLocked(tableName, usersAtTables)
+                          ? "disabled"
+                          : "")
+                      }
+                      onClick={() => takeSeat(tableName, nameOfVideoRoom(i))}
+                    >
+                      Join
+                    </button>
+                  )}
+                </div>
+                <div className="profiles">
+                  {usersAtTables[tableName].map((user: User) => (
+                    <img
+                      onClick={() => setSelectedUserProfile(user)}
+                      key={user.id}
+                      className="profile-icon"
+                      src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+                      title={user.partyName}
+                      alt={`${user.partyName} profile`}
+                      width={imageSize}
+                      height={imageSize}
+                    />
+                  ))}
+                </div>
+                {atCurrentTable && (
+                  <div className="footer">
+                    <p>Allow Others To Join</p>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={!tableLocked(tableName, usersAtTables)}
+                        onChange={() =>
+                          onLockedChanged(
+                            tableName,
+                            !tableLocked(tableName, usersAtTables)
+                          )
+                        }
+                      />
+                      <span className="slider" />
+                    </label>
+                  </div>
                 )}
               </div>
-              <div className="row no-margin">
-                {usersAtTables[tableName].map((user: User) => (
-                  <img
-                    onClick={() => setSelectedUserProfile(user)}
-                    key={user.id}
-                    className="profile-icon"
-                    src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                    title={user.partyName}
-                    alt={`${user.partyName} profile`}
-                    width={imageSize}
-                    height={imageSize}
-                  />
-                ))}
-              </div>
-              {atCurrentTable && (
-                <div className="row no-margin">
-                  <p>Allow Others To Join</p>
-                  <label className="switch">
-                    <input
-                      type="checkbox"
-                      checked={!tableLocked(tableName, usersAtTables)}
-                      onChange={() =>
-                        onLockedChanged(
-                          tableName,
-                          !tableLocked(tableName, usersAtTables)
-                        )
-                      }
-                    />
-                    <span className="slider" />
-                  </label>
-                </div>
-              )}
             </>
           );
         })}

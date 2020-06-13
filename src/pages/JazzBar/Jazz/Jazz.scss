@@ -1,0 +1,11 @@
+.jazz-container.at-table {
+  display: flex;
+
+  .table {
+    width: 25%;
+  }
+
+  .participant {
+    display: block; // hack
+  }
+}

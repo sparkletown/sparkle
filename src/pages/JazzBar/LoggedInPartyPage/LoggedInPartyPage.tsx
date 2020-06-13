@@ -7,11 +7,7 @@ import Backstage from "../Backstage";
 import Cocktail from "../Cocktail";
 import { User } from "components/organisms/UserProfileModal/UserProfileModal";
 
-interface PropsType {
-  users: any;
-}
-
-const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
+const LoggedInPartyPage: React.FunctionComponent = () => {
   const [selectedTab, setSelectedTab] = useState("jazz");
   useProfileInformationCheck();
 
@@ -19,7 +15,7 @@ const LoggedInPartyPage: React.FunctionComponent<PropsType> = ({ users }) => {
 
   return (
     <JazzBarSkeletonPage
-      users={selectedTab === "jazz" ? users : userList}
+      userList={userList}
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
     >
