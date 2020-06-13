@@ -44,16 +44,16 @@
         margin: 0;
       }
     }
+  }
 
-    .profiles {
-      margin: 10px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+  .profiles {
+    margin: 10px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-      button {
-        padding: 0;
-      }
+    button {
+      padding: 0;
     }
   }
 }
