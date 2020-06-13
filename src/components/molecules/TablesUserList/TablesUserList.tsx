@@ -25,7 +25,8 @@ interface PropsType {
   imageSize?: number;
 }
 
-const TABLES = 10;
+const TABLES = 8;
+const TABLE_CAPACITY = 7;
 
 const nameOfTable = (i: number) => {
   return `Table ${i + 1}`;
@@ -181,6 +182,14 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return false;
   };
 
+  const usersAtOtherTables = [];
+  for (const table of tables) {
+    if (table === seatedAtTableName) {
+      continue;
+    }
+    usersAtOtherTables.push(...usersAtTables[table]);
+  }
+
   return (
     <>
       <div className="userlist-container">
@@ -200,11 +209,14 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     {usersAtTables[seatedAtTableName].length - 1}
                   </span>{" "}
                   other
-                  {usersAtTables[seatedAtTableName].length - 1 == 1 ? "" : "s"}{" "}
+                  {usersAtTables[seatedAtTableName].length - 1 == 1
+                    ? ""
+                    : "s"}{" "}
                   at {seatedAtTableName}
                 </p>
                 <button
                   type="button"
+                  title={"Leave " + seatedAtTableName}
                   className="btn"
                   onClick={() => setShowLeaveMessage(true)}
                 >
@@ -226,7 +238,11 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 ))}
               </div>
               <div className="footer">
-                <p>Allow Others To Join</p>
+                {tableLocked(seatedAtTableName, usersAtTables) ? (
+                  <p className="locked-text">Table is locked</p>
+                ) : (
+                  <p className="unlocked-text">Others can join this table</p>
+                )}
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -242,6 +258,28 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 </label>
               </div>
             </div>
+            <div className="header">
+              <p>
+                <span className="bold">{usersAtOtherTables.length}</span>{" "}
+                {usersAtOtherTables.length === 1
+                  ? "person at another table"
+                  : "people at other tables"}
+              </p>
+            </div>
+            <div className="profiles">
+              {usersAtOtherTables.map((user: User) => (
+                <img
+                  onClick={() => setSelectedUserProfile(user)}
+                  key={user.id}
+                  className="profile-icon"
+                  src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+                  title={user.partyName}
+                  alt={`${user.partyName} profile`}
+                  width={imageSize}
+                  height={imageSize}
+                />
+              ))}
+            </div>
           </>
         ) : (
           <>
@@ -252,17 +290,29 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 <>
                   <div className="header">
                     <p>
-                      <span className="bold">{people}</span> as {tableName}
+                      <span className="bold">{people}</span> at {tableName}
                     </p>
-                    <button
-                      type="button"
-                      className={"btn " + (locked ? "disabled" : "")}
-                      onClick={() =>
-                        onJoinClicked(tableName, locked, nameOfVideoRoom(i))
-                      }
-                    >
-                      Join
-                    </button>
+                    {people >= TABLE_CAPACITY ? (
+                      <button
+                        type="button"
+                        title={tableName + " is full"}
+                        className={"btn disabled"}
+                        disabled
+                      >
+                        Full
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        title={"Join " + tableName}
+                        className={"btn " + (locked ? "disabled" : "")}
+                        onClick={() =>
+                          onJoinClicked(tableName, locked, nameOfVideoRoom(i))
+                        }
+                      >
+                        Join
+                      </button>
+                    )}
                   </div>
                   <div className="profiles">
                     {usersAtTables[tableName].map((user: User) => (
@@ -285,8 +335,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         )}
         <div className="row header no-margin">
           <p>
-            <span className="bold">{unseatedUsers.length}</span> standing at the
-            back
+            <span className="bold">{unseatedUsers.length}</span> standing
           </p>
           {unseatedUsers.length > limit && (
             <p
@@ -339,8 +388,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>
-              To avoid feedback from the music, we strongly recommend wearing
-              headphones.
+              To avoid feedback from the music, we recommend wearing headphones.
             </p>
             <p>You can also adjust the volume on the live stream.</p>
             <button
