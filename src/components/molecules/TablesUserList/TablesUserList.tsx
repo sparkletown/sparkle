@@ -215,6 +215,17 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     firestoreUpdate(doc, update);
   };
 
+  const atTable = (table: string, usersAtTables: { [key: string]: User[] }) => {
+    if (usersAtTables && usersAtTables[table]) {
+      for (const userAtTable of usersAtTables[table]) {
+        if (userAtTable.id === user.uid) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   const usersAtOtherTables = [];
   for (const table of tables) {
     if (table === seatedAtTableName) {

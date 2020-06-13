@@ -16,7 +16,7 @@ const signIn = ({ email, password }: LoginFormData) => {
     .signInWithEmailAndPassword(email, password)
     .then((credential) => {
       const firestore = firebase.firestore();
-      const doc = `users/${credential.user.uid}`;
+      const doc = `users/${credential?.user?.uid}`;
       const update = {
         lastLoginUtc: firebase.firestore.Timestamp.fromDate(new Date()),
       };
