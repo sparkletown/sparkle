@@ -24,7 +24,11 @@ export default function App(props) {
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
-    users: state.firestore.ordered.users,
+    users:
+      state.firestore.ordered.users &&
+      state.firestore.ordered.users.filter(
+        (user) => user.lastLoginUtc > new Date("2020-06-06")
+      ), //  option1: change this to the number of users who are logged in
   }));
 
   useEffect(() => {
