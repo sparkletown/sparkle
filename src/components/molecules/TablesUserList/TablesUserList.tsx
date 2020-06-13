@@ -74,20 +74,24 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return <>"Loading...";</>;
   }
 
+  let seatedAtTableName = "";
   const tables = tableNames();
   const usersAtTables: { [key: string]: any } = {};
   for (const tableName of tables) {
     usersAtTables[tableName] = [];
   }
   const unseatedUsers = [];
-  for (const user of users) {
+  for (const u of users) {
     if (
-      user.data &&
-      user.data[EXPERIENCE_NAME] &&
-      user.data[EXPERIENCE_NAME].table &&
-      tables.includes(user.data[EXPERIENCE_NAME].table)
+      u.data &&
+      u.data[EXPERIENCE_NAME] &&
+      u.data[EXPERIENCE_NAME].table &&
+      tables.includes(u.data[EXPERIENCE_NAME].table)
     ) {
-      usersAtTables[user.data[EXPERIENCE_NAME].table].push(user);
+      usersAtTables[u.data[EXPERIENCE_NAME].table].push(u);
+      if (u.id === user.uid) {
+        seatedAtTableName = u.data[EXPERIENCE_NAME].table;
+      }
     } else {
       unseatedUsers.push(user);
     }
@@ -186,39 +190,70 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             {users.length !== 1 ? "people" : "person"} listening to jazz
           </p>
         </div>
-        {tables.map((tableName: string, i: number) => {
-          const atCurrentTable = atTable(tableName, usersAtTables);
-          const locked = tableLocked(tableName, usersAtTables);
-          const people =
-            usersAtTables[tableName].length - (atCurrentTable ? 1 : 0);
-          const plural = people !== 1;
-
-          const tablePre = atCurrentTable ? "You're with" : "";
-          const tablePost = `${
-            atCurrentTable ? "other" + (plural ? "s" : "") : ""
-          } at ${tableName}`;
-
-          return (
-            <>
-              <div
-                className={
-                  "row no-margin " + (atCurrentTable ? "at-table" : "")
-                }
-              >
-                <div className="header">
-                  <p>
-                    {tablePre} <span className="bold">{people}</span>{" "}
-                    {tablePost}
-                  </p>
-                  {atCurrentTable ? (
-                    <button
-                      type="button"
-                      className="btn"
-                      onClick={() => setShowLeaveMessage(true)}
-                    >
-                      Leave
-                    </button>
-                  ) : (
+        {seatedAtTableName !== "" ? (
+          <>
+            <div className="row no-margin at-table">
+              <div className="header">
+                <p>
+                  You're with{" "}
+                  <span className="bold">
+                    {usersAtTables[seatedAtTableName].length - 1}
+                  </span>{" "}
+                  other
+                  {usersAtTables[seatedAtTableName].length - 1 == 1 ? "" : "s"}{" "}
+                  at {seatedAtTableName}
+                </p>
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => setShowLeaveMessage(true)}
+                >
+                  Leave
+                </button>
+              </div>
+              <div className="profiles">
+                {usersAtTables[seatedAtTableName].map((user: User) => (
+                  <img
+                    onClick={() => setSelectedUserProfile(user)}
+                    key={user.id}
+                    className="profile-icon"
+                    src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+                    title={user.partyName}
+                    alt={`${user.partyName} profile`}
+                    width={imageSize}
+                    height={imageSize}
+                  />
+                ))}
+              </div>
+              <div className="footer">
+                <p>Allow Others To Join</p>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={!tableLocked(seatedAtTableName, usersAtTables)}
+                    onChange={() =>
+                      onLockedChanged(
+                        seatedAtTableName,
+                        !tableLocked(seatedAtTableName, usersAtTables)
+                      )
+                    }
+                  />
+                  <span className="slider" />
+                </label>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {tables.map((tableName: string, i: number) => {
+              const locked = tableLocked(tableName, usersAtTables);
+              const people = usersAtTables[tableName].length;
+              return (
+                <>
+                  <div className="header">
+                    <p>
+                      <span className="bold">{people}</span> as {tableName}
+                    </p>
                     <button
                       type="button"
                       className={"btn " + (locked ? "disabled" : "")}
@@ -228,39 +263,26 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     >
                       Join
                     </button>
-                  )}
-                </div>
-                <div className="profiles">
-                  {usersAtTables[tableName].map((user: User) => (
-                    <img
-                      onClick={() => setSelectedUserProfile(user)}
-                      key={user.id}
-                      className="profile-icon"
-                      src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                      title={user.partyName}
-                      alt={`${user.partyName} profile`}
-                      width={imageSize}
-                      height={imageSize}
-                    />
-                  ))}
-                </div>
-                {atCurrentTable && (
-                  <div className="footer">
-                    <p>Allow Others To Join</p>
-                    <label className="switch">
-                      <input
-                        type="checkbox"
-                        checked={!locked}
-                        onChange={() => onLockedChanged(tableName, !locked)}
-                      />
-                      <span className="slider" />
-                    </label>
                   </div>
-                )}
-              </div>
-            </>
-          );
-        })}
+                  <div className="profiles">
+                    {usersAtTables[tableName].map((user: User) => (
+                      <img
+                        onClick={() => setSelectedUserProfile(user)}
+                        key={user.id}
+                        className="profile-icon"
+                        src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+                        title={user.partyName}
+                        alt={`${user.partyName} profile`}
+                        width={imageSize}
+                        height={imageSize}
+                      />
+                    ))}
+                  </div>
+                </>
+              );
+            })}
+          </>
+        )}
         <div className="row header no-margin">
           <p>
             <span className="bold">{unseatedUsers.length}</span> standing at the
