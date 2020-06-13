@@ -10,6 +10,9 @@ import "./TablesUserList.scss";
 
 import { EXPERIENCE_NAME } from "config";
 
+const ONE_DAY_AGO = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+console.log("found hours ago", ONE_DAY_AGO);
+
 interface User {
   id: string;
   gratefulFor?: string;
@@ -62,7 +65,19 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
-  useFirestoreConnect({ collection: "experiences", doc: EXPERIENCE_NAME });
+  useFirestoreConnect([
+    { collection: "experiences", doc: EXPERIENCE_NAME },
+    {
+      collection: "users",
+      where: [
+        [
+          "lastLoginUtc",
+          ">",
+          firebase.firestore.Timestamp.fromDate(ONE_DAY_AGO),
+        ],
+      ],
+    },
+  ]);
   const { user, users, experience } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.ordered.users,
@@ -169,17 +184,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       },
     };
     firestoreUpdate(doc, update);
-  };
-
-  const atTable = (table: string, usersAtTables: { [key: string]: User[] }) => {
-    if (usersAtTables && usersAtTables[table]) {
-      for (const userAtTable of usersAtTables[table]) {
-        if (userAtTable.id === user.uid) {
-          return true;
-        }
-      }
-    }
-    return false;
   };
 
   const usersAtOtherTables = [];

@@ -11,7 +11,28 @@ interface LoginFormData {
 }
 
 const signIn = ({ email, password }: LoginFormData) => {
-  return firebase.auth().signInWithEmailAndPassword(email, password);
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((credential) => {
+      const firestore = firebase.firestore();
+      const doc = `users/${credential?.user?.uid}`;
+      // const update = { lastLoginUtc: firebase.firestore.Timestamp.fromDate(new Date()) };
+      const update = { lastLoginUtc: "abc" };
+      console.log("update", doc, update);
+      firestore
+        .doc(doc)
+        .update(update)
+        .catch((e) => {
+          console.log("uh oh", e);
+          firestore
+            .doc(doc)
+            .set(update)
+            .catch((e) => {
+              console.log("double uh oh", e);
+            });
+        });
+    });
 };
 
 const Login = () => {
