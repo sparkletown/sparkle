@@ -94,7 +94,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         seatedAtTableName = u.data[EXPERIENCE_NAME].table;
       }
     } else {
-      unseatedUsers.push(user);
+      unseatedUsers.push(u);
     }
   }
 
