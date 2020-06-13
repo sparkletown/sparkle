@@ -57,6 +57,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
   const [showJoinMessage, setShowJoinMessage] = useState(false);
+  const [showLeaveMessage, setShowLeaveMessage] = useState(false);
   const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
@@ -134,6 +135,11 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     takeSeat();
   };
 
+  const onAcceptLeaveMessage = () => {
+    setShowLeaveMessage(false);
+    leaveSeat();
+  };
+
   const takeSeat = () => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
@@ -206,7 +212,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     <button
                       type="button"
                       className="btn"
-                      onClick={() => leaveSeat()}
+                      onClick={() => setShowLeaveMessage(true)}
                     >
                       Leave
                     </button>
@@ -309,13 +315,27 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               To avoid feedback from the music, we strongly recommend wearing
               headphones.
             </p>
-            <p>You can also mute your microphone.</p>
+            <p>You can also adjust the volume on the live stream.</p>
             <button
               type="button"
               className="btn btn-block btn-centered"
               onClick={() => onAcceptJoinMessage()}
             >
               I am Wearing Headphones
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+      <Modal show={showLeaveMessage}>
+        <Modal.Body>
+          <div className="modal-container modal-container_message">
+            <p>Are you sure you want to leave the table?</p>
+            <button
+              type="button"
+              className="btn btn-block btn-centered"
+              onClick={() => onAcceptLeaveMessage()}
+            >
+              Leave the Table
             </button>
           </div>
         </Modal.Body>
