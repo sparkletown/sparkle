@@ -34,7 +34,7 @@ const Questions = () => {
         <p>This will help your fellow party-goers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {profileQuestions.map((question: QuestionType) => (
-            <div className="input-group">
+            <div key={question.name} className="input-group">
               <textarea
                 className="input-block input-centered"
                 name={question.name}
