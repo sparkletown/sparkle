@@ -10,7 +10,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const EntranceExperience = ({ config }) => (
   <WithNavigationBar>
-    <div className="container">
+    <div className="container entrance-experience-container">
       <div className="row mt-3">
         <PartyTitle startUtcSeconds={config.start_utc_seconds} withCountDown />
         <div className="col-5">
@@ -38,15 +38,18 @@ const EntranceExperience = ({ config }) => (
         </div>
       )}
       <div className="row mt-3">
-        <div className="col-xl-7">
+        <div className="col-xl-8">
           <img
             src={config.map_url}
             className="map-image"
-            alt="The boat party"
+            alt={config.party_name}
           />
         </div>
-        <div className="col-xl-5">
-          <InformationCard title="About this party">
+        <div className="col-xl-4">
+          <InformationCard
+            title="About this party"
+            className="information-card"
+          >
             Are you feeling lost on the mainland? Aching for freedom, novel
             connection, and the chance to let your freak flag fly? Your wish is
             our command. Come travel the high seas with the Co-Reality
@@ -58,7 +61,7 @@ const EntranceExperience = ({ config }) => (
             Dock of the Bay, pack your sunscreen and say -- “Bon Voyage!” to the
             old you!
           </InformationCard>
-          <InformationCard title="About the host">
+          <InformationCard title="About the host" className="information-card">
             <p>
               The Co-Reality Collective organises some of the realest parties
               online. A decentralised international oragnisation of fifty

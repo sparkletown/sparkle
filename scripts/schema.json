@@ -22,6 +22,7 @@
           "about": "About this room",
           "image": "image.jpg",
           "on_list": true,
+          "template": "jazzBar",
           "on_map": true,
           "button_text": "Check out the sunrise",
           "attendance_x": "21%",
@@ -46,11 +47,10 @@
     "start_utc_seconds",
     "duration_hours",
     "entrance_hosted_hours",
+    "party_name",
     "unhosted_entry_video_url",
     "map_url",
     "map_viewbox",
-    "password",
-    "admin_password",
     "rooms"
   ],
   "additionalProperties": true,
@@ -78,6 +78,14 @@
       "description": "Duration the entrance is hosted in hours.",
       "default": 0.0,
       "examples": [2.0]
+    },
+    "party_name": {
+      "$id": "#/properties/party_name",
+      "type": "string",
+      "title": "The name of the next party",
+      "description": "Name of the Co-Reality event",
+      "default": "",
+      "examples": ["The Boat Party"]
     },
     "unhosted_entry_video_url": {
       "$id": "#/properties/unhosted_entry_video_url",
@@ -195,6 +203,7 @@
               "on_map",
               "url",
               "path",
+              "template",
               "events"
             ],
             "additionalProperties": true,
@@ -240,6 +249,14 @@
                 "description": "Whether the room appears in the room list on the website.",
                 "default": false,
                 "examples": [true]
+              },
+              "template": {
+                "$id": "#/properties/rooms/items/anyOf/0/properties/template",
+                "type": "string",
+                "title": "Style template",
+                "description": "Page template used to display the room",
+                "default": "",
+                "examples": ["jazzbar"]
               },
               "on_map": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/on_map",

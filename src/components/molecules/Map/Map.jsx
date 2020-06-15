@@ -1,22 +1,12 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-
+import React from "react";
 import { isRoomValid } from "validation";
-import { previewRoom } from "actions";
-
-import RoomModal from "components/organisms/RoomModal";
 import RoomAttendance from "RoomAttendance";
 
 import "./Map.scss";
+import { useHistory } from "react-router-dom";
 
 export default function Map({ config, attendances }) {
-  const dispatch = useDispatch();
-  const [showModal, setShowModal] = useState();
-
-  function preview(room) {
-    dispatch(previewRoom(room));
-    setShowModal(true);
-  }
+  const history = useHistory();
 
   if (!config) {
     return "Loading map...";
@@ -33,14 +23,7 @@ export default function Map({ config, attendances }) {
               .map((room, idx) => {
                 const color = "#ffffff33";
                 return (
-                  <a
-                    key={idx}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      preview(room);
-                    }}
-                    href="/"
-                  >
+                  <a key={idx} href={room.url}>
                     <path d={room.path} style={{ fill: color }}>
                       <title>{room.title}</title>
                     </path>
@@ -58,7 +41,7 @@ export default function Map({ config, attendances }) {
                 positioned={true}
                 attendance={attendances[room.title]}
                 key={idx}
-                onClick={() => preview(room)}
+                onClick={() => history.push(room.url)}
               />
             ))}
           <img
@@ -69,11 +52,6 @@ export default function Map({ config, attendances }) {
           />
         </div>
       </div>
-      <RoomModal
-        startUtcSeconds={config.start_utc_seconds}
-        show={showModal}
-        onHide={() => setShowModal(false)}
-      />
     </>
   );
 }

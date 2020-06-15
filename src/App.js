@@ -5,10 +5,10 @@ import qs from "qs";
 
 import { leaveRoom } from "./actions";
 
-import EntranceExperience from "pages/JazzBar/EntranceExperience";
+import EntranceExperience from "pages/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
-import LoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
+import LoggedInRouter from "components/organisms/LoggedInRouter";
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -24,6 +24,7 @@ export default function App(props) {
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
+    users: state.firestore.ordered.users,
   }));
 
   useEffect(() => {
@@ -50,8 +51,8 @@ export default function App(props) {
   }
 
   if (!user) {
-    return <EntranceExperience />;
+    return <EntranceExperience config={config} />;
   }
 
-  return <LoggedInPartyPage />;
+  return <LoggedInRouter />;
 }
