@@ -79,7 +79,7 @@ const Participant = ({ participant, children }) => {
         audioTrack.attach(videoRef.current);
       }
     }
-  }, [participant, muted]);
+  }, [participant, muted, audioTracks]);
 
   return (
     <div

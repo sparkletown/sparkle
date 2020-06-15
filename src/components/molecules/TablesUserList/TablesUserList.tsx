@@ -28,7 +28,7 @@ const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
 
       window.removeEventListener("beforeunload", handler);
     };
-  }, [cb]);
+  }, [cb, callOnCleanup]);
 };
 
 interface User {
@@ -199,17 +199,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       data: { [EXPERIENCE_NAME]: { ...existingData, table, videoRoom } },
     };
     firestoreUpdate(doc, update);
-  };
-
-  const atTable = (table: string, usersAtTables: { [key: string]: User[] }) => {
-    if (usersAtTables && usersAtTables[table]) {
-      for (const userAtTable of usersAtTables[table]) {
-        if (userAtTable.id === user.uid) {
-          return true;
-        }
-      }
-    }
-    return false;
   };
 
   const usersAtOtherTables = [];
