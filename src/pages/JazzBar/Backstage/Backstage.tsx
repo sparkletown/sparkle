@@ -1,6 +1,6 @@
 import React from "react";
 
-import Room from "../components/Room";
+import Room from "components/organisms/Room";
 import { User } from "components/organisms/UserProfileModal/UserProfileModal";
 
 const ROOM_NAME = "jazz-backstage";
