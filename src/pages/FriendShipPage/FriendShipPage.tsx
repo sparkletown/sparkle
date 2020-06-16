@@ -32,7 +32,7 @@ const FriendShipPage = () => (
               setUserList={() => null}
             />
           </div>
-          <Chatbox />
+          <Chatbox room="friendship" />
         </div>
       </div>
     </div>

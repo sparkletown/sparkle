@@ -18,16 +18,18 @@ const RECENT_MESSAGE_COUNT = 200;
 interface PropsType {
   isPrivate?: boolean;
   discussionPartner?: User;
-  selectedTab?: string;
+  room?: string;
 }
 
 const Chatbox: React.FunctionComponent<PropsType> = ({
   isPrivate,
   discussionPartner,
-  selectedTab,
+  room,
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState();
-  const [chatboxMessageType, setChatboxMessageType] = useState("global");
+  const [chatboxMessageType, setChatboxMessageType] = useState(
+    room ? "room" : "global"
+  );
 
   useFirestoreConnect("chatsv3");
   const { users, currentUserUID, chats, user, privateChats } = useSelector(
@@ -56,6 +58,11 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     listOfChats &&
     listOfChats
       .filter(isChatValid)
+      .filter((chat: any) =>
+        room
+          ? chat.type === "global" || (chat.type === "room" && chat.to === room)
+          : true
+      )
       .concat()
       .sort((a: any, b: any) => b.ts_utc - a.ts_utc)
       .slice(0, RECENT_MESSAGE_COUNT);
@@ -91,7 +98,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                 </label>
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-basic">
-                    {chatboxMessageType === "global" ? "Everbody" : ""}
+                    {chatboxMessageType === "global" ? "Everybody" : ""}
                     {chatboxMessageType === "room" ? "This Room" : ""}
                   </Dropdown.Toggle>
 
@@ -115,7 +122,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
               type={isPrivate ? "private" : chatboxMessageType}
               discussionPartner={discussionPartner}
               currentUserUID={currentUserUID}
-              room={selectedTab}
+              room={room}
             />
             <div className="message-container">
               {chatsToDisplay &&
