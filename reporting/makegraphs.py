@@ -312,6 +312,8 @@ class ZoomReportParser():
 					if room in self._visit_durations[segment]:
 						log.debug("Room: {0}, Average: {1}".format(room, sum(self._visit_durations[segment][room])/len(self._visit_durations[segment][room])))
 
+		log.debug("Average visit duration: {0}".format(sum(self._all_visit_durations)/len(self._all_visit_durations)))
+
 		first_visit_rooms = {}
 		last_visit_rooms = {}
 		for user in self._visits_by_user:
