@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import "./SecretPasswordForm.scss";
 
-import { EXPERIENCE_NAME } from "config";
+import { PARTY_NAME } from "config";
 
 const SecretPasswordForm = () => {
   const firebase = useFirebase();
@@ -23,7 +23,7 @@ const SecretPasswordForm = () => {
     setMessage("Checking password...");
 
     const checkPassword = firebase.functions().httpsCallable("checkPassword");
-    checkPassword({ config: EXPERIENCE_NAME, password: password })
+    checkPassword({ config: PARTY_NAME, password: password })
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");

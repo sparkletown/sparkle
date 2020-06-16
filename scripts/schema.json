@@ -46,6 +46,7 @@
   "required": [
     "start_utc_seconds",
     "duration_hours",
+    "password",
     "entrance_hosted_hours",
     "party_name",
     "unhosted_entry_video_url",
@@ -203,7 +204,6 @@
               "on_map",
               "url",
               "path",
-              "template",
               "events"
             ],
             "additionalProperties": true,

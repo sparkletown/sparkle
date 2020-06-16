@@ -5,11 +5,9 @@ import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
-import Room from "pages/JazzBar/components/Room";
+import Room from "components/organisms/Room";
 
 import "./TablesUserList.scss";
-
-import { EXPERIENCE_NAME } from "config";
 
 // https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
 const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
@@ -28,7 +26,7 @@ const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
 
       window.removeEventListener("beforeunload", handler);
     };
-  }, [cb]);
+  }, [cb, callOnCleanup]);
 };
 
 interface User {
@@ -45,6 +43,7 @@ interface PropsType {
   limit?: number;
   imageSize?: number;
   setUserList: any;
+  experienceName: string;
 }
 
 const TABLES = 8;
@@ -76,6 +75,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   limit = 60,
   imageSize = 35,
   setUserList,
+  experienceName,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -85,13 +85,13 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
-  useFirestoreConnect({ collection: "experiences", doc: EXPERIENCE_NAME });
+  useFirestoreConnect({ collection: "experiences", doc: experienceName });
   const { user, users, experience } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.ordered.users,
     experience:
       state.firestore.data.experiences &&
-      state.firestore.data.experiences[EXPERIENCE_NAME],
+      state.firestore.data.experiences[experienceName],
   }));
 
   useWindowUnloadEffect(() => leaveSeat(), true);
@@ -104,7 +104,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     // const existingData = userData;
     const update = {
       data: {
-        [EXPERIENCE_NAME]: {
+        [experienceName]: {
           // ...existingData,
           table: null,
           videoRoom: null,
@@ -112,7 +112,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       },
     };
     firestoreUpdate(doc, update);
-  }, [user]);
+  }, [user, experienceName]);
 
   if (!users) {
     return <>"Loading...";</>;
@@ -128,13 +128,13 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   for (const u of users) {
     if (
       u.data &&
-      u.data[EXPERIENCE_NAME] &&
-      u.data[EXPERIENCE_NAME].table &&
-      tables.includes(u.data[EXPERIENCE_NAME].table)
+      u.data[experienceName] &&
+      u.data[experienceName].table &&
+      tables.includes(u.data[experienceName].table)
     ) {
-      usersAtTables[u.data[EXPERIENCE_NAME].table].push(u);
+      usersAtTables[u.data[experienceName].table].push(u);
       if (u.id === user.uid) {
-        seatedAtTableName = u.data[EXPERIENCE_NAME].table;
+        seatedAtTableName = u.data[experienceName].table;
       }
     } else {
       unseatedUsers.push(u);
@@ -163,7 +163,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${EXPERIENCE_NAME}`;
+    const doc = `experiences/${experienceName}`;
     const update = {
       tables: { ...experience?.tables, [tableName]: { locked } },
     };
@@ -193,23 +193,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const takeSeat = () => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
-      EXPERIENCE_NAME
+      experienceName
     ];
     const update = {
-      data: { [EXPERIENCE_NAME]: { ...existingData, table, videoRoom } },
+      data: { [experienceName]: { ...existingData, table, videoRoom } },
     };
     firestoreUpdate(doc, update);
-  };
-
-  const atTable = (table: string, usersAtTables: { [key: string]: User[] }) => {
-    if (usersAtTables && usersAtTables[table]) {
-      for (const userAtTable of usersAtTables[table]) {
-        if (userAtTable.id === user.uid) {
-          return true;
-        }
-      }
-    }
-    return false;
   };
 
   const usersAtOtherTables = [];

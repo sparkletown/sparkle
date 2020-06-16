@@ -1,5 +1,4 @@
 import React from "react";
-import NavBar from "components/molecules/NavBar";
 import InformationCard from "components/molecules/InformationCard";
 import "./EntranceExperience.scss";
 import PartyTitle from "components/molecules/PartyTitle";
