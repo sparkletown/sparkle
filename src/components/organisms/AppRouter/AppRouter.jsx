@@ -11,6 +11,7 @@ import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { setUser } from "actions";
 import { PARTY_NAME } from "config";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Room from "pages/RoomPage";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -53,7 +54,8 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/account/edit" component={EditProfilePage} />
-        <Route path="/" component={App} />
+        <Route path="/" exact component={App} />
+        <Route path="/:roomName" component={Room} />
       </Switch>
     </Router>
   );
