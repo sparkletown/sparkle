@@ -16,19 +16,20 @@ import ChatMessage from "components/molecules/ChatMessage";
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
-  isPrivate?: boolean;
+  isInProfileModal?: boolean;
   discussionPartner?: User;
   room?: string;
 }
 
 const Chatbox: React.FunctionComponent<PropsType> = ({
-  isPrivate,
+  isInProfileModal,
   discussionPartner,
   room,
 }) => {
-  const [hasUserSelectedRecipient, setHasUserSelectedRecipient] = useState(
+  const [isRecipientChangeBlocked, setIsRecipientChangeBlocked] = useState(
     false
   );
+  const [privateRecipient, setPrivateRecipient] = useState<User>();
   const [selectedUserProfile, setSelectedUserProfile] = useState();
   const [chatboxMessageType, setChatboxMessageType] = useState(
     room ? "room" : "global"
@@ -55,7 +56,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const listOfChats =
     chats &&
     privateChats &&
-    (isPrivate ? privateChats : privateChats.concat(chats));
+    (isInProfileModal ? privateChats : privateChats.concat(chats));
 
   let chatsToDisplay =
     listOfChats &&
@@ -72,7 +73,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       .sort((a: any, b: any) => b.ts_utc - a.ts_utc)
       .slice(0, RECENT_MESSAGE_COUNT);
 
-  if (isPrivate && discussionPartner) {
+  if (isInProfileModal && discussionPartner) {
     chatsToDisplay =
       chatsToDisplay &&
       chatsToDisplay.filter(
@@ -82,29 +83,35 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       );
   }
 
-  let privateRecipient;
-  const lastChat = chatsToDisplay && chatsToDisplay[0];
-  if (
-    !isPrivate &&
-    !hasUserSelectedRecipient &&
-    lastChat &&
-    lastChat.type === "private"
-  ) {
-    if (lastChat?.to === user.uid) {
-      privateRecipient = { ...users[lastChat?.from], id: lastChat?.from };
-    } else {
-      privateRecipient = { ...users[lastChat?.to], id: lastChat?.to };
-    }
-  }
+  const changeChatboxMessageType = (type: string) => {
+    setIsRecipientChangeBlocked(true);
+    setChatboxMessageType(type);
+    setPrivateRecipient(undefined);
+  };
 
   useEffect(() => {
-    setHasUserSelectedRecipient(false);
-  }, [lastChat]);
-
-  const changeChatboxMessageType = (type: string) => {
-    setHasUserSelectedRecipient(true);
-    setChatboxMessageType(type);
-  };
+    if (!isRecipientChangeBlocked) {
+      const lastChat = chatsToDisplay && chatsToDisplay[0];
+      setPrivateRecipient(undefined);
+      if (!isInProfileModal && lastChat && lastChat.type === "private") {
+        if (lastChat?.to === user.uid) {
+          setPrivateRecipient({ ...users[lastChat?.from], id: lastChat?.from });
+        } else {
+          setPrivateRecipient({ ...users[lastChat?.to], id: lastChat?.to });
+        }
+      }
+    }
+    // chatsToDisplay is computed with chats and privateChats, it does not need to be a dependency
+    // eslint-disable-next-line
+  }, [
+    setPrivateRecipient,
+    chats,
+    privateChats,
+    isInProfileModal,
+    isRecipientChangeBlocked,
+    user.uid,
+    users,
+  ]);
 
   return (
     <>
@@ -120,7 +127,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         </div>
         {users && (
           <>
-            {!isPrivate && (
+            {!isInProfileModal && (
               <div className="dropdown-container">
                 <label className="recipient-label" htmlFor="type-of-message">
                   To:
@@ -165,11 +172,14 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
 
             <ChatForm
               type={
-                isPrivate || privateRecipient ? "private" : chatboxMessageType
+                isInProfileModal || privateRecipient
+                  ? "private"
+                  : chatboxMessageType
               }
               discussionPartner={privateRecipient || discussionPartner}
               currentUserUID={currentUserUID}
               room={room}
+              setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />
             <div className="message-container">
               {chatsToDisplay &&
@@ -179,7 +189,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     user={user}
                     users={users}
                     setSelectedUserProfile={setSelectedUserProfile}
-                    isOnProfileModal={!!isPrivate}
+                    isInProfileModal={!!isInProfileModal}
                     chat={chat}
                   />
                 ))}

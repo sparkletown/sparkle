@@ -18,6 +18,7 @@ interface PropsType {
   type: string;
   room?: string;
   table?: string;
+  setIsRecipientChangeBlocked: (value: boolean) => void;
 }
 
 const ChatForm: React.FunctionComponent<PropsType> = ({
@@ -26,6 +27,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
   room,
   type,
   table,
+  setIsRecipientChangeBlocked,
 }) => {
   const dispatch = useDispatch();
 
@@ -69,6 +71,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
       sendMessage(type, currentUserUID, discussionPartner, text);
       setText("");
       setLongEnoughSinceLastSend(false);
+      setIsRecipientChangeBlocked(false);
       window.setTimeout(() => {
         setLongEnoughSinceLastSend(true);
       }, TIME_BETWEEN_SENDS_MILLIS);
@@ -88,6 +91,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           placeholder="Message"
           value={text}
           onChange={textChanged}
+          onFocus={() => setIsRecipientChangeBlocked(true)}
         />
         <button
           className="chat-submit-button"

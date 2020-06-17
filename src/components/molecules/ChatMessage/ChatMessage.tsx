@@ -12,7 +12,7 @@ interface ChatMessageType {
 interface PropsType {
   chat: ChatMessageType;
   users: any;
-  isOnProfileModal: boolean;
+  isInProfileModal: boolean;
   setSelectedUserProfile: (value: React.SetStateAction<undefined>) => void;
   user: any;
 }
@@ -21,7 +21,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
   chat,
   users,
   user,
-  isOnProfileModal,
+  isInProfileModal,
   setSelectedUserProfile,
 }) => {
   const getRecipient = () => {
@@ -53,7 +53,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
             className="profile-icon avatar-picture"
             alt={chat.to}
             onClick={() => {
-              !isOnProfileModal &&
+              !isInProfileModal &&
                 setSelectedUserProfile({
                   ...users[chat.from],
                   id: chat.from,
