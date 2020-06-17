@@ -10,6 +10,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { PARTY_NAME } from "config";
 import { useSelector } from "react-redux";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
+import { wasLessThanThreeHoursAgo } from "utils/time";
 
 const LoggedInPartyPage = () => {
   const { config, users } = useSelector((state) => ({
@@ -22,7 +23,12 @@ const LoggedInPartyPage = () => {
 
   const attendances = users
     ? users.reduce((acc, value) => {
-        acc[value.room] = (acc[value.room] || 0) + 1;
+        if (
+          value.room_entrance_ts_utc &&
+          wasLessThanThreeHoursAgo(value.room_entrance_ts_utc.seconds)
+        ) {
+          acc[value.room] = (acc[value.room] || 0) + 1;
+        }
         return acc;
       }, {})
     : [];

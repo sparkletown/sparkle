@@ -79,3 +79,8 @@ export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
     startUtcSeconds + hostedDurationHours * ONE_HOUR_IN_SECONDS
   );
 }
+
+export const wasLessThanThreeHoursAgo = (timestamp) => {
+  const currentTimeInSeconds = new Date() / 1000;
+  return timestamp - currentTimeInSeconds < 3 * ONE_HOUR_IN_SECONDS;
+};
