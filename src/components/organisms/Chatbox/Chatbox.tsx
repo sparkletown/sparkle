@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -16,18 +16,24 @@ import ChatMessage from "components/molecules/ChatMessage";
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
-  isPrivate?: boolean;
+  isInProfileModal?: boolean;
   discussionPartner?: User;
-  selectedTab?: string;
+  room?: string;
 }
 
 const Chatbox: React.FunctionComponent<PropsType> = ({
-  isPrivate,
+  isInProfileModal,
   discussionPartner,
-  selectedTab,
+  room,
 }) => {
+  const [isRecipientChangeBlocked, setIsRecipientChangeBlocked] = useState(
+    false
+  );
+  const [privateRecipient, setPrivateRecipient] = useState<User>();
   const [selectedUserProfile, setSelectedUserProfile] = useState();
-  const [chatboxMessageType, setChatboxMessageType] = useState("global");
+  const [chatboxMessageType, setChatboxMessageType] = useState(
+    room ? "room" : "global"
+  );
 
   useFirestoreConnect("chatsv3");
   const { users, currentUserUID, chats, user, privateChats } = useSelector(
@@ -50,25 +56,62 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const listOfChats =
     chats &&
     privateChats &&
-    (isPrivate ? privateChats : privateChats.concat(chats));
+    (isInProfileModal ? privateChats : privateChats.concat(chats));
 
   let chatsToDisplay =
     listOfChats &&
     listOfChats
       .filter(isChatValid)
+      .filter((chat: any) =>
+        room
+          ? chat.type === "global" ||
+            chat.type === "private" ||
+            (chat.type === "room" && chat.to === room)
+          : true
+      )
       .concat()
       .sort((a: any, b: any) => b.ts_utc - a.ts_utc)
       .slice(0, RECENT_MESSAGE_COUNT);
 
-  if (isPrivate && discussionPartner) {
+  if (isInProfileModal && discussionPartner) {
     chatsToDisplay =
       chatsToDisplay &&
       chatsToDisplay.filter(
         (chat: any) =>
-          (chat.from === discussionPartner.id && chat.to === user.uid) ||
-          (chat.to === discussionPartner.id && chat.from === user.uid)
+          (chat.from === discussionPartner?.id && chat.to === user.uid) ||
+          (chat.to === discussionPartner?.id && chat.from === user.uid)
       );
   }
+
+  const changeChatboxMessageType = (type: string) => {
+    setIsRecipientChangeBlocked(true);
+    setChatboxMessageType(type);
+    setPrivateRecipient(undefined);
+  };
+
+  useEffect(() => {
+    if (!isRecipientChangeBlocked) {
+      const lastChat = chatsToDisplay && chatsToDisplay[0];
+      setPrivateRecipient(undefined);
+      if (!isInProfileModal && lastChat && lastChat.type === "private") {
+        if (lastChat?.to === user.uid) {
+          setPrivateRecipient({ ...users[lastChat?.from], id: lastChat?.from });
+        } else {
+          setPrivateRecipient({ ...users[lastChat?.to], id: lastChat?.to });
+        }
+      }
+    }
+    // chatsToDisplay is computed with chats and privateChats, it does not need to be a dependency
+    // eslint-disable-next-line
+  }, [
+    setPrivateRecipient,
+    chats,
+    privateChats,
+    isInProfileModal,
+    isRecipientChangeBlocked,
+    user.uid,
+    users,
+  ]);
 
   return (
     <>
@@ -84,38 +127,59 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         </div>
         {users && (
           <>
-            {!isPrivate && (
+            {!isInProfileModal && (
               <div className="dropdown-container">
                 <label className="recipient-label" htmlFor="type-of-message">
                   To:
                 </label>
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-basic">
-                    {chatboxMessageType === "global" ? "Everbody" : ""}
-                    {chatboxMessageType === "room" ? "This Room" : ""}
+                    {privateRecipient ? (
+                      <>
+                        <img
+                          src={privateRecipient.pictureUrl}
+                          className="picture-logo"
+                          alt={privateRecipient.partyName}
+                          width="20"
+                          height="20"
+                        />
+                        {privateRecipient.partyName}
+                      </>
+                    ) : (
+                      <>
+                        {chatboxMessageType === "global" ? "Everybody" : ""}
+                        {chatboxMessageType === "room" ? "This Room" : ""}
+                      </>
+                    )}
                   </Dropdown.Toggle>
-
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => setChatboxMessageType("global")}
+                      onClick={() => changeChatboxMessageType("global")}
                     >
                       everybody
                     </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => setChatboxMessageType("room")}
-                    >
-                      this room
-                    </Dropdown.Item>
+                    {room && (
+                      <Dropdown.Item
+                        onClick={() => changeChatboxMessageType("room")}
+                      >
+                        this room
+                      </Dropdown.Item>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
             )}
 
             <ChatForm
-              type={isPrivate ? "private" : chatboxMessageType}
-              discussionPartner={discussionPartner}
+              type={
+                isInProfileModal || privateRecipient
+                  ? "private"
+                  : chatboxMessageType
+              }
+              discussionPartner={privateRecipient || discussionPartner}
               currentUserUID={currentUserUID}
-              room={selectedTab}
+              room={room}
+              setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />
             <div className="message-container">
               {chatsToDisplay &&
@@ -125,7 +189,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     user={user}
                     users={users}
                     setSelectedUserProfile={setSelectedUserProfile}
-                    isOnProfileModal={!!isPrivate}
+                    isInProfileModal={!!isInProfileModal}
                     chat={chat}
                   />
                 ))}

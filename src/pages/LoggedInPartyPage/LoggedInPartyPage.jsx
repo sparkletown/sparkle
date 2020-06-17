@@ -9,6 +9,7 @@ import CountDown from "components/molecules/CountDown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { PARTY_NAME } from "config";
 import { useSelector } from "react-redux";
+import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 const LoggedInPartyPage = () => {
   const { config, users } = useSelector((state) => ({
@@ -16,6 +17,8 @@ const LoggedInPartyPage = () => {
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     users: state.firestore.ordered.users,
   }));
+
+  useProfileInformationCheck();
 
   const attendances = users
     ? users.reduce((acc, value) => {

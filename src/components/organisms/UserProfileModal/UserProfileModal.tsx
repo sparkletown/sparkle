@@ -86,7 +86,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           </div>
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox isPrivate discussionPartner={fullUserProfile} />
+              <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
             </div>
           )}
         </div>

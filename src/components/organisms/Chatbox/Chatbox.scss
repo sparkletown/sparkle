@@ -8,6 +8,11 @@
   flex-direction: column;
   height: 100%;
   overflow-y: scroll;
+
+  .picture-logo {
+    margin-right: 10px;
+    border-radius: 50%;
+  }
 }
 
 .chatbox-title {
