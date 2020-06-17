@@ -16,6 +16,7 @@
     "firebase": "^7.14.2",
     "husky": "^4.2.5",
     "jquery": "^3.4.1",
+    "json-schema-to-typescript": "^9.1.0",
     "jsonschema": "^1.2.6",
     "lint-staged": "^10.2.7",
     "node-sass": "^4.14.1",
@@ -44,7 +45,8 @@
     "lint": "prettier --write \"{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && firebase deploy",
+    "buildtypes": "json2ts ./scripts/schema.json > ./src/types/RemoteTypes.d.ts"
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {

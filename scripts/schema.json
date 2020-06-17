@@ -59,7 +59,6 @@
     "start_utc_seconds": {
       "$id": "#/properties/start_utc_seconds",
       "type": "integer",
-      "title": "The start_utc_seconds schema",
       "description": "UTC seconds past epoch when the event starts.",
       "default": 0,
       "examples": [1591466400]
@@ -67,7 +66,6 @@
     "duration_hours": {
       "$id": "#/properties/duration_hours",
       "type": "number",
-      "title": "The duration_hours schema",
       "description": "Duration of the event in hours.",
       "default": 0.0,
       "examples": [8.0]
@@ -75,7 +73,6 @@
     "entrance_hosted_hours": {
       "$id": "#/properties/entrance_hosted_hours",
       "type": "number",
-      "title": "The entrance_hosted_hours schema",
       "description": "Duration the entrance is hosted in hours.",
       "default": 0.0,
       "examples": [2.0]
@@ -83,7 +80,6 @@
     "party_name": {
       "$id": "#/properties/party_name",
       "type": "string",
-      "title": "The name of the next party",
       "description": "Name of the Co-Reality event",
       "default": "",
       "examples": ["The Boat Party"]
@@ -91,7 +87,6 @@
     "unhosted_entry_video_url": {
       "$id": "#/properties/unhosted_entry_video_url",
       "type": "string",
-      "title": "The unhosted_entry_video_url schema",
       "description": "URL to the video to show when the entrance is unhosted.",
       "default": "",
       "examples": ["https://google.com/"]
@@ -99,7 +94,6 @@
     "map_url": {
       "$id": "#/properties/map_url",
       "type": "string",
-      "title": "The map_url schema",
       "description": "URL for the event map.",
       "default": "",
       "examples": ["https://google.com/"]
@@ -107,7 +101,6 @@
     "map_viewbox": {
       "$id": "#/properties/map_viewbox",
       "type": "string",
-      "title": "The map_viewbox schema",
       "description": "SVG viewbox for the event map's SVG overlay with clickable regions. Must be 0 0 (map image width) (map image height).",
       "default": "",
       "examples": ["0 0 1547 863"]
@@ -115,7 +108,6 @@
     "password": {
       "$id": "#/properties/password",
       "type": "string",
-      "title": "The password schema",
       "description": "Password for access to this event.",
       "default": "",
       "examples": ["ahoy"]
@@ -123,7 +115,6 @@
     "admin_password": {
       "$id": "#/properties/admin_password",
       "type": "string",
-      "title": "The admin_password schema",
       "description": "Password for access to the admin site for this event.",
       "default": "",
       "examples": ["tsunami"]
@@ -131,7 +122,6 @@
     "rooms": {
       "$id": "#/properties/rooms",
       "type": "array",
-      "title": "The rooms schema",
       "description": "The list of rooms in the event.",
       "default": [],
       "examples": [
@@ -167,7 +157,7 @@
           {
             "$id": "#/properties/rooms/items/anyOf/0",
             "type": "object",
-            "title": "The first anyOf schema",
+            "title": "RemoteRoom",
             "description": "A room in the event.",
             "default": {},
             "examples": [
@@ -211,7 +201,6 @@
               "name": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/title",
                 "type": "string",
-                "title": "The title schema",
                 "description": "Title of the room.",
                 "default": "",
                 "examples": ["Sunset Room"]
@@ -219,7 +208,6 @@
               "title": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/subtitle",
                 "type": "string",
-                "title": "The subtitle schema",
                 "description": "A subtitle to appear next to the room name.",
                 "default": "",
                 "examples": [
@@ -229,7 +217,6 @@
               "about": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/about",
                 "type": "string",
-                "title": "The about schema",
                 "description": "An explanation about the purpose of this instance.",
                 "default": "",
                 "examples": ["About this room"]
@@ -237,7 +224,6 @@
               "image": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/image",
                 "type": "string",
-                "title": "The image schema",
                 "description": "An explanation about the purpose of this instance.",
                 "default": "",
                 "examples": ["image.jpg"]
@@ -245,7 +231,6 @@
               "on_list": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/on_list",
                 "type": "boolean",
-                "title": "The on_list schema",
                 "description": "Whether the room appears in the room list on the website.",
                 "default": false,
                 "examples": [true]
@@ -253,7 +238,6 @@
               "template": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/template",
                 "type": "string",
-                "title": "Style template",
                 "description": "Page template used to display the room",
                 "default": "",
                 "examples": ["jazzbar"]
@@ -261,7 +245,6 @@
               "on_map": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/on_map",
                 "type": "boolean",
-                "title": "The on_map schema",
                 "description": "Whether the room appears on the map on the website.",
                 "default": false,
                 "examples": [true]
@@ -269,7 +252,6 @@
               "button_text": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/button_text",
                 "type": "string",
-                "title": "The button_text schema",
                 "description": "An explanation about the purpose of this instance.",
                 "default": "",
                 "examples": ["Check out the sunrise"]
@@ -277,7 +259,6 @@
               "attendance_x": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/attendance_x",
                 "type": "string",
-                "title": "The attendance_x schema",
                 "description": "The X percentage along the map to show the attendance indicator.",
                 "default": "",
                 "examples": ["21%"]
@@ -285,7 +266,6 @@
               "attendance_y": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/attendance_y",
                 "type": "string",
-                "title": "The attendance_y schema",
                 "description": "The X percentage along the map to show the attendance indicator.",
                 "default": "",
                 "examples": ["19%"]
@@ -293,7 +273,6 @@
               "url": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/url",
                 "type": "string",
-                "title": "The url schema",
                 "description": "URL for the room.",
                 "default": "",
                 "examples": ["https://google.com/"]
@@ -301,7 +280,6 @@
               "path": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/path",
                 "type": "string",
-                "title": "The path schema",
                 "description": "SVG path for the room's clickable region on the map.",
                 "default": "",
                 "examples": [
@@ -311,7 +289,7 @@
               "events": {
                 "$id": "#/properties/rooms/items/anyOf/0/properties/events",
                 "type": "array",
-                "title": "The events schema",
+                "title": "RemoteEvent",
                 "description": "List of events in the room during the overall event.",
                 "default": [],
                 "examples": [
@@ -332,7 +310,6 @@
                     {
                       "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0",
                       "type": "object",
-                      "title": "The first anyOf schema",
                       "description": "The list of events in the room during the overall event.",
                       "default": {},
                       "examples": [
@@ -358,7 +335,6 @@
                         "start_hour": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/start_hour",
                           "type": "number",
-                          "title": "The start_hour schema",
                           "description": "The hour after the overall event starts that this event starts.",
                           "default": 0.0,
                           "examples": [0.0]
@@ -366,7 +342,6 @@
                         "duration_hours": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/duration_hours",
                           "type": "number",
-                          "title": "The duration_hours schema",
                           "description": "Event duration in hours.",
                           "default": 0.0,
                           "examples": [8.0]
@@ -374,7 +349,6 @@
                         "host": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/host",
                           "type": "string",
-                          "title": "The host schema",
                           "description": "Name(s) of the event's host(s).",
                           "default": "",
                           "examples": ["Michael & Chris"]
@@ -382,7 +356,6 @@
                         "name": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/name",
                           "type": "string",
-                          "title": "The name schema",
                           "description": "Event name.",
                           "default": "",
                           "examples": ["Real-life sunrise & sunset"]
@@ -390,7 +363,6 @@
                         "text": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/text",
                           "type": "string",
-                          "title": "The text schema",
                           "description": "Detailed description of the event.",
                           "default": "",
                           "examples": [
@@ -400,7 +372,6 @@
                         "interactivity": {
                           "$id": "#/properties/rooms/items/anyOf/0/properties/events/items/anyOf/0/properties/interactivity",
                           "type": "string",
-                          "title": "The interactivity schema",
                           "description": "Interactivity level (low, medium, high), to help give guests an idea what to expect from the event.",
                           "default": "",
                           "examples": ["low"]
