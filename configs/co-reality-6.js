@@ -2,7 +2,7 @@ module.exports = {
   start_utc_seconds: 1592683200,
   duration_hours: 8,
   entrance_hosted_hours: 2,
-  party_name: "Island Party",
+  party_name: "The Island Party",
   unhosted_entry_video_url: "https://www.youtube.com/embed/U4GsKONeHnM",
   map_url: "/maps/island-party.jpg",
   map_viewbox: "0 0 3000 2000",
