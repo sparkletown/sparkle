@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -26,6 +26,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   discussionPartner,
   room,
 }) => {
+  const [hasUserSelectedRecipient, setHasUserSelectedRecipient] = useState(
+    false
+  );
   const [selectedUserProfile, setSelectedUserProfile] = useState();
   const [chatboxMessageType, setChatboxMessageType] = useState(
     room ? "room" : "global"
@@ -60,7 +63,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       .filter(isChatValid)
       .filter((chat: any) =>
         room
-          ? chat.type === "global" || (chat.type === "room" && chat.to === room)
+          ? chat.type === "global" ||
+            chat.type === "private" ||
+            (chat.type === "room" && chat.to === room)
           : true
       )
       .concat()
@@ -72,10 +77,34 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       chatsToDisplay &&
       chatsToDisplay.filter(
         (chat: any) =>
-          (chat.from === discussionPartner.id && chat.to === user.uid) ||
-          (chat.to === discussionPartner.id && chat.from === user.uid)
+          (chat.from === discussionPartner?.id && chat.to === user.uid) ||
+          (chat.to === discussionPartner?.id && chat.from === user.uid)
       );
   }
+
+  let privateRecipient;
+  const lastChat = chatsToDisplay && chatsToDisplay[0];
+  if (
+    !isPrivate &&
+    !hasUserSelectedRecipient &&
+    lastChat &&
+    lastChat.type === "private"
+  ) {
+    if (lastChat?.to === user.uid) {
+      privateRecipient = { ...users[lastChat?.from], id: lastChat?.from };
+    } else {
+      privateRecipient = { ...users[lastChat?.to], id: lastChat?.to };
+    }
+  }
+
+  useEffect(() => {
+    setHasUserSelectedRecipient(false);
+  }, [lastChat]);
+
+  const changeChatboxMessageType = (type: string) => {
+    setHasUserSelectedRecipient(true);
+    setChatboxMessageType(type);
+  };
 
   return (
     <>
@@ -98,29 +127,47 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                 </label>
                 <Dropdown>
                   <Dropdown.Toggle id="dropdown-basic">
-                    {chatboxMessageType === "global" ? "Everybody" : ""}
-                    {chatboxMessageType === "room" ? "This Room" : ""}
+                    {privateRecipient ? (
+                      <>
+                        <img
+                          src={privateRecipient.pictureUrl}
+                          className="picture-logo"
+                          alt={privateRecipient.partyName}
+                          width="20"
+                          height="20"
+                        />
+                        {privateRecipient.partyName}
+                      </>
+                    ) : (
+                      <>
+                        {chatboxMessageType === "global" ? "Everybody" : ""}
+                        {chatboxMessageType === "room" ? "This Room" : ""}
+                      </>
+                    )}
                   </Dropdown.Toggle>
-
                   <Dropdown.Menu>
                     <Dropdown.Item
-                      onClick={() => setChatboxMessageType("global")}
+                      onClick={() => changeChatboxMessageType("global")}
                     >
                       everybody
                     </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => setChatboxMessageType("room")}
-                    >
-                      this room
-                    </Dropdown.Item>
+                    {room && (
+                      <Dropdown.Item
+                        onClick={() => changeChatboxMessageType("room")}
+                      >
+                        this room
+                      </Dropdown.Item>
+                    )}
                   </Dropdown.Menu>
                 </Dropdown>
               </div>
             )}
 
             <ChatForm
-              type={isPrivate ? "private" : chatboxMessageType}
-              discussionPartner={discussionPartner}
+              type={
+                isPrivate || privateRecipient ? "private" : chatboxMessageType
+              }
+              discussionPartner={privateRecipient || discussionPartner}
               currentUserUID={currentUserUID}
               room={room}
             />
