@@ -33,6 +33,8 @@ const Room = ({ roomName, setUserList }) => {
   useEffect(() => {
     if (!token) return;
 
+    let localRoom;
+
     const participantConnected = (participant) => {
       setParticipants((prevParticipants) => [
         // Hopefully prevents duplicate users in the participant list
@@ -56,6 +58,7 @@ const Room = ({ roomName, setUserList }) => {
       name: roomName,
     }).then((room) => {
       setRoom(room);
+      localRoom = room;
       room.on("participantConnected", participantConnected);
       room.on("participantDisconnected", participantDisconnected);
       room.participants.forEach(participantConnected);
@@ -65,19 +68,15 @@ const Room = ({ roomName, setUserList }) => {
     });
 
     return () => {
-      setRoom((currentRoom) => {
-        if (currentRoom && currentRoom.localParticipant.state === "connected") {
-          currentRoom.localParticipant.tracks.forEach(function (
-            trackPublication
-          ) {
-            trackPublication.track.stop();
-          });
-          currentRoom.disconnect();
-          return null;
-        } else {
-          return currentRoom;
-        }
-      });
+      if (localRoom && localRoom.localParticipant.state === "connected") {
+        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
+          trackPublication.track.stop();
+        });
+        localRoom.disconnect();
+        return null;
+      } else {
+        return localRoom;
+      }
     };
   }, [roomName, setRoom, token]);
 
