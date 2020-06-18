@@ -11,7 +11,7 @@ const Room = ({ roomName, setUserList }) => {
 
   const { user, users } = useSelector((state) => ({
     user: state.user,
-    users: state.firestore.data.users,
+    users: state.firestore.data.partygoers,
   }));
   const [token, setToken] = useState();
   const firebase = useFirebase();

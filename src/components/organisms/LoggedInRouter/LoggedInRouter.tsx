@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 
 import JazzBarLoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
 import LoggedInPartyPage from "pages/LoggedInPartyPage";
 import FriendShipPage from "pages/FriendShipPage";
 import Room from "pages/RoomPage";
-import { PARTY_NAME } from "config";
+import { getHoursAgoInSeconds } from "utils/time";
 
 const LoggedInRouter = () => {
-  const { config } = useSelector((state: any) => ({
-    config:
-      state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
-  }));
+  const [userLastSeenLimit, setUserLastSeenLimit] = useState(
+    getHoursAgoInSeconds(3)
+  );
+  useEffect(() => {
+    const id = setInterval(() => {
+      setUserLastSeenLimit(getHoursAgoInSeconds(3));
+    }, 5 * 60 * 1000);
+
+    return () => clearInterval(id);
+  }, [setUserLastSeenLimit]);
+
   useFirestoreConnect([
     {
       collection: "users",
-      where: ["lastSeenAt", ">", config.start_utc_seconds],
+      where: [["lastSeenAt", ">", userLastSeenLimit]],
       storeAs: "partygoers",
     },
   ]);

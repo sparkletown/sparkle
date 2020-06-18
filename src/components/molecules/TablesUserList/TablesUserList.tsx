@@ -37,6 +37,7 @@ interface User {
   partyName?: string;
   pictureUrl?: string;
   data: { [key: string]: any };
+  lastSeenIn: string;
 }
 
 interface PropsType {
@@ -88,7 +89,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   useFirestoreConnect({ collection: "experiences", doc: experienceName });
   const { user, users, experience } = useSelector((state: any) => ({
     user: state.user,
-    users: state.firestore.ordered.users,
+    users: state.firestore.ordered.partygoers,
     experience:
       state.firestore.data.experiences &&
       state.firestore.data.experiences[experienceName],
@@ -125,7 +126,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtTables[tableName] = [];
   }
   const unseatedUsers = [];
-  for (const u of users) {
+  for (const u of users.filter((u: User) => u.lastSeenIn === experienceName)) {
     if (
       u.data &&
       u.data[experienceName] &&

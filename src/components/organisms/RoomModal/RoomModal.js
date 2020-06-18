@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Modal } from "react-bootstrap";
 
-import { exitPreviewRoom, enterRoom, leaveRoom } from "actions";
+import { exitPreviewRoom } from "actions";
 import { getCurrentEvent } from "utils/time";
 
 import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/molecules/ScheduleItem";
+import { enterRoom, leaveRoom } from "utils/useLocationUpdateEffect";
 
 import "./RoomModal.scss";
 
@@ -18,7 +19,7 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
   const { room, user, users } = useSelector((state) => ({
     room: state.room,
     user: state.user,
-    users: state.firestore.ordered.users,
+    users: state.firestore.ordered.partygoers,
   }));
 
   const usersToDisplay =
@@ -28,13 +29,13 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
     const previousonfocus = window.onfocus;
     window.onfocus = () => {
       if (inRoom) {
-        dispatch(leaveRoom(user.uid));
+        leaveRoom(user.uid);
       }
     };
     const previousonblur = window.onblur;
     window.onblur = () => {
       if (inRoom) {
-        dispatch(enterRoom(room, user.uid));
+        enterRoom(user, room.title);
       }
     };
     return () => {
@@ -49,11 +50,11 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
 
   function enter() {
     setInRoom(true);
-    dispatch(enterRoom(room, user.uid));
+    enterRoom(user, room.title);
   }
 
   const leave = () => {
-    dispatch(exitPreviewRoom(user.uid));
+    dispatch(exitPreviewRoom(user));
   };
 
   const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);

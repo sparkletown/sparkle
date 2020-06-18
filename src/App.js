@@ -3,12 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import "bootstrap";
 import qs from "qs";
 
-import { leaveRoom } from "./actions";
-
 import EntranceExperience from "pages/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
 import LoggedInRouter from "components/organisms/LoggedInRouter";
+import { leaveRoom } from "utils/useLocationUpdateEffect";
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -30,7 +29,7 @@ export default function App(props) {
     // Remove room presence etc. on disconnect
     window.onbeforeunload = () => {
       if (user) {
-        dispatch(leaveRoom(user.uid));
+        leaveRoom(user);
       }
     };
   }, [dispatch, user]);

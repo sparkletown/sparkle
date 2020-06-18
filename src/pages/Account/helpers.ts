@@ -4,13 +4,19 @@ import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 import { QuestionsFormData } from "./Questions";
 
+type LocationUpdateData = {
+  lastSeenAt: number;
+  lastSeenIn: string | null;
+  room: string | null; // legacy
+};
+
 const updateUserProfile = (
   userId: string,
   profileData:
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
-    | (ProfileFormData & QuestionsFormData)
+    | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
