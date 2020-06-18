@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, FormControl } from "react-bootstrap";
+import { debounce } from "lodash";
 
 import { isChatValid } from "validation";
 
@@ -36,15 +37,21 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   useFirestoreConnect("chatsv3");
-  const { users, currentUserUID, chats, user, privateChats } = useSelector(
-    (state: any) => ({
-      users: state.firestore.data.users,
-      currentUserUID: state.user.uid,
-      chats: state.firestore.ordered.chatsv3,
-      privateChats: state.firestore.ordered.privatechats,
-      user: state.user,
-    })
-  );
+  const {
+    users,
+    userArray,
+    currentUserUID,
+    chats,
+    user,
+    privateChats,
+  } = useSelector((state: any) => ({
+    users: state.firestore.data.users,
+    userArray: state.firestore.ordered.users,
+    currentUserUID: state.user.uid,
+    chats: state.firestore.ordered.chatsv3,
+    privateChats: state.firestore.ordered.privatechats,
+    user: state.user,
+  }));
 
   useFirestoreConnect({
     collection: "privatechats",
@@ -52,6 +59,10 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     subcollections: [{ collection: "chats" }],
     storeAs: "privatechats",
   });
+
+  const [searchValue, setSearchValue] = useState<string>("");
+  const debouncedSearch = debounce((v) => setSearchValue(v), 500);
+  const searchRef = useRef<HTMLInputElement>(null);
 
   const listOfChats =
     chats &&
@@ -132,7 +143,16 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                 <label className="recipient-label" htmlFor="type-of-message">
                   To:
                 </label>
-                <Dropdown>
+                <Dropdown
+                  onToggle={(isOpen: boolean) => {
+                    if (!isOpen) {
+                      setSearchValue("");
+                      if (searchRef?.current) {
+                        searchRef.current.value = "";
+                      }
+                    }
+                  }}
+                >
                   <Dropdown.Toggle id="dropdown-basic">
                     {privateRecipient ? (
                       <>
@@ -164,6 +184,40 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                       >
                         this room
                       </Dropdown.Item>
+                    )}
+                    <FormControl
+                      autoFocus
+                      className="mx-3 my-2 w-auto"
+                      placeholder="Search a party-goer..."
+                      onChange={(e) => {
+                        debouncedSearch(e.target.value);
+                      }}
+                      ref={searchRef}
+                    />
+                    {searchValue && (
+                      <ul className="list-unstyled">
+                        {userArray
+                          .filter((u: any) =>
+                            u.partyName
+                              ?.toLowerCase()
+                              .includes(searchValue.toLowerCase())
+                          )
+                          .map((u: any) => (
+                            <Dropdown.Item
+                              onClick={() => setPrivateRecipient(u)}
+                              key={u.id}
+                            >
+                              <img
+                                src={u.pictureUrl}
+                                className="picture-logo"
+                                alt={u.partyName}
+                                width="20"
+                                height="20"
+                              />
+                              {u.partyName}
+                            </Dropdown.Item>
+                          ))}
+                      </ul>
                     )}
                   </Dropdown.Menu>
                 </Dropdown>
