@@ -11,6 +11,7 @@ import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { setUser } from "actions";
 import { PARTY_NAME } from "config";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { updateUserProfile } from "pages/Account/helpers";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -33,6 +34,9 @@ const AppRouter = () => {
 
         if (partyHasStarted && signedInBeforePartyStart) {
           firebase.auth().signOut();
+        } else {
+          // also do this on room change
+          updateUserProfile(user.uid, { lastSeenAt: new Date() / 1000 });
         }
       }
     };
@@ -42,7 +46,7 @@ const AppRouter = () => {
       killLoginsFromBeforePartyStart(user);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [config]);
 
   return (
     <Router basename="/">

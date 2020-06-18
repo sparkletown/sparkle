@@ -24,7 +24,6 @@ export default function App(props) {
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
-    users: state.firestore.ordered.users,
   }));
 
   useEffect(() => {

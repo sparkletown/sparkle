@@ -12,16 +12,16 @@ import { useSelector } from "react-redux";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 const LoggedInPartyPage = () => {
-  const { config, users } = useSelector((state) => ({
+  const { config, partygoers } = useSelector((state) => ({
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
-    users: state.firestore.ordered.users,
+    partygoers: state.firestore.ordered.partygoers,
   }));
 
   useProfileInformationCheck();
 
-  const attendances = users
-    ? users.reduce((acc, value) => {
+  const attendances = partygoers
+    ? partygoers.reduce((acc, value) => {
         acc[value.room] = (acc[value.room] || 0) + 1;
         return acc;
       }, {})
@@ -33,9 +33,9 @@ const LoggedInPartyPage = () => {
         <div className="small-right-margin">
           <PartyTitle startUtcSeconds={config.start_utc_seconds} />
         </div>
-        {users && (
+        {partygoers && (
           <div className="col">
-            <UserList users={users} imageSize={50} />
+            <UserList users={partygoers} imageSize={50} />
           </div>
         )}
         <div className="col">
