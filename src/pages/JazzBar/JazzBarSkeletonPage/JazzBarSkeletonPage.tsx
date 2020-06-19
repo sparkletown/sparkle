@@ -48,7 +48,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     users &&
     users.filter(
       (user: User) =>
-        user.data?.["kansassmittys"] && !user.data["kansassmittys"].table
+        user.data?.["Jazz Mountain"] && !user.data["Jazz Mountain"].table
     );
 
   return (
@@ -104,7 +104,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                     </div>
                     <div className="table-container">
                       <TablesUserList
-                        experienceName="kansassmittys"
+                        experienceName="Jazz Mountain"
                         seatedAtTable={seatedAtTable}
                         setSeatedAtTable={setSeatedAtTable}
                         TableComponent={JazzbarTableComponent}
@@ -121,7 +121,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                             <UserList
                               users={users.filter(
                                 (user: User) =>
-                                  user.data?.["kansassmittys"]?.table !==
+                                  user.data?.["Jazz Mountain"]?.table !==
                                   seatedAtTable
                               )}
                               activity="on other tables"

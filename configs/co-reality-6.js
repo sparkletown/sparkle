@@ -35,7 +35,7 @@ module.exports = {
       title: "Jazztastic Park",
       subtitle: "Dinosaurs and all that Jazz",
       about: "Live the experience of an online Jazz bar",
-      url: "/kansassmittys-preview",
+      url: "/kansassmittys",
       external_url: "/kansassmittys",
       on_map: true,
       on_list: true,
