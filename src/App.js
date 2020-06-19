@@ -12,8 +12,8 @@ import LoggedInRouter from "components/organisms/LoggedInRouter";
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
-function isAfterEvent(startUtcSeconds, durationHours) {
-  const endUtcSeconds = startUtcSeconds + durationHours * ONE_HOUR_IN_SECONDS;
+function isAfterEvent(startUtcSeconds, durationMinutes) {
+  const endUtcSeconds = startUtcSeconds + durationMinutes * 60;
   const lockSiteAfterUtcSeconds = endUtcSeconds + 12 * ONE_HOUR_IN_SECONDS;
   return new Date() / 1000 >= lockSiteAfterUtcSeconds;
 }
@@ -45,7 +45,7 @@ export default function App(props) {
 
   if (
     !unlock &&
-    isAfterEvent(config.start_utc_seconds, config.duration_hours)
+    isAfterEvent(config.start_utc_seconds, config.duration_minutes)
   ) {
     return <LockedSite />;
   }

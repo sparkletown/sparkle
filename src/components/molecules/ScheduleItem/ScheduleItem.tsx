@@ -24,7 +24,10 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
         <b>{formatHour(event.start_hour, startUtcSeconds)}</b>
       </div>
       <div>
-        {formatHour(event.start_hour + event.duration_hours, startUtcSeconds)}
+        {formatHour(
+          event.start_hour + event.duration_hours / 60,
+          startUtcSeconds
+        )}
       </div>
     </div>
     <div className="event-section">

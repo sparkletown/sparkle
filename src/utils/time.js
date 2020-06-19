@@ -53,7 +53,7 @@ const getEventStartingTimeInSeconds = (event, startUtcSeconds) => {
 
 const getEventEndingTimeInSeconds = (event, startUtcSeconds) => {
   return (
-    (event.start_hour + event.duration_hours) * ONE_HOUR_IN_SECONDS +
+    (event.start_hour + event.duration_minutes / 60) * ONE_HOUR_IN_SECONDS +
     startUtcSeconds
   );
 };
