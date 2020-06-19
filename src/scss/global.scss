@@ -308,6 +308,11 @@ h4 {
     height: 315px;
   }
 
+  .table-container {
+    background: $dark;
+    border-radius: 22px;
+    padding: 10px;
+  }
   .content-column {
     height: 100%;
   }
@@ -362,7 +367,10 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
   }
+}
 
+.full-page-container.experience-container,
+.friendship-container {
   .content {
     width: 100%;
     height: 100%;
@@ -379,7 +387,6 @@ h4 {
       width: 100%;
     }
   }
-
   .participant {
     display: flex;
     background: $dark;
@@ -420,5 +427,17 @@ h4 {
     display: block;
     margin: 0 auto;
     border-radius: 6px;
+  }
+}
+
+.table-container {
+  .wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+
+    .participant {
+      flex: 0 0 50%;
+    }
   }
 }

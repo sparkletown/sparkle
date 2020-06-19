@@ -1,0 +1,106 @@
+@import "scss/constants";
+
+.friendship-container {
+  background: $yellow;
+  color: $black;
+
+  .title {
+    font-size: 15px;
+    padding: 30px;
+  }
+
+  .content {
+    display: block;
+
+    .wrapper {
+      color: $white;
+    }
+  }
+
+  .participant {
+    min-height: 100px;
+  }
+
+  .table-item {
+    background: $dark;
+    border-radius: 22px;
+    min-height: 30px;
+    color: $white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    flex-wrap: wrap;
+    padding: 20px;
+    position: relative;
+  }
+
+  .table-occupancy-information {
+    position: absolute;
+    top: 5px;
+    font-size: 10px;
+    right: 10px;
+  }
+
+  .red-text {
+    color: $red;
+  }
+
+  .table-title {
+    font-size: 20px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .chatbox-container {
+    color: white;
+    max-height: 100vh;
+    margin-bottom: 30px;
+    margin-left: 20px;
+  }
+  .bar-container {
+    .bartender {
+      grid-column: 2 / 4;
+      grid-row: 1 / 3;
+    }
+  }
+
+  .list-of-tables {
+    display: grid;
+    grid-template-columns: repeat(10, 10%);
+    grid-template-rows: repeat(10, 10%);
+  }
+
+  .add-participant-button {
+    min-width: 35px;
+    min-height: 35px;
+    display: flex;
+    background: $black;
+    color: $concrete;
+    font-size: 25px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3px;
+  }
+
+  .table-subtitle {
+    color: $dark;
+    margin-bottom: 10px;
+  }
+
+  .join-text,
+  .add-participant-button {
+    cursor: pointer;
+  }
+
+  .table-participant-picture {
+    background: $black;
+  }
+
+  .at-table {
+    padding: 10px;
+    background: $dark;
+    color: $white;
+    border-radius: 22px;
+  }
+}

@@ -16,7 +16,8 @@ interface PropsType {
   users: User[];
   limit?: number;
   imageSize?: number;
-  activity: string;
+  activity?: string;
+  disableSeeAll?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -24,6 +25,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   limit = 60,
   imageSize = 40,
   activity = "partying",
+  disableSeeAll,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -38,7 +40,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
             <span className="bold">{users.length}</span>{" "}
             {users.length === 1 ? "person" : "people"} {activity}
           </p>
-          {users.length > limit && (
+          {!disableSeeAll && users.length > limit && (
             <p
               className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}
