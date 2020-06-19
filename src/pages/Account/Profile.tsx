@@ -40,14 +40,14 @@ const Profile = () => {
     <div className="page-container">
       <div className="coreality-logo-sparkles"></div>
       <div className="login-container">
-        <h2>Well done! Now create your Smitty's profile</h2>
+        <h2>Well done! Now create your profile</h2>
         <p>The jazz is nigh!</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your jazz name"
+              placeholder="Your party name"
               ref={register({
                 required: true,
                 maxLength: 16,

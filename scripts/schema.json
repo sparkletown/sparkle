@@ -15,6 +15,20 @@
       "map_viewbox": "0 0 1547 863",
       "password": "ahoy",
       "admin_password": "tsunami",
+      "profile_questions": [
+        {
+          "name": "islandCompanion",
+          "text": "Who's your dream desert island companion?"
+        },
+        {
+          "name": "gratefulFor",
+          "text": "What do you feel greateful for?"
+        },
+        {
+          "name": "likeAboutParties",
+          "text": "What do you like about parties?"
+        }
+      ],
       "rooms": [
         {
           "title": "Sunset Room",
@@ -53,7 +67,8 @@
     "unhosted_entry_video_url",
     "map_url",
     "map_viewbox",
-    "rooms"
+    "rooms",
+    "profile_questions"
   ],
   "additionalProperties": true,
   "properties": {
@@ -128,6 +143,27 @@
       "description": "Password for access to the admin site for this event.",
       "default": "",
       "examples": ["tsunami"]
+    },
+    "profile_questions": {
+      "$id": "#/properties/profile_questions",
+      "type": "array",
+      "title": "the profile questions",
+      "description": "informartions users will give",
+      "default": [],
+      "examples": [
+        {
+          "name": "islandCompanion",
+          "text": "Who's your dream desert island companion?"
+        },
+        {
+          "name": "gratefulFor",
+          "text": "What do you feel greateful for?"
+        },
+        {
+          "name": "likeAboutParties",
+          "text": "What do you like about parties?"
+        }
+      ]
     },
     "rooms": {
       "$id": "#/properties/rooms",

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import { profileQuestions } from "pages/Account/constants";
 import "./EditProfilePage.scss";
 import { QuestionType } from "types/Question";
 import EditProfileModal from "components/organisms/EditProfileModal";
@@ -8,13 +7,16 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import ChangePasswordModal from "components/organisms/ChangePasswordModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { PARTY_NAME } from "config";
 
 const EditProfilePage = () => {
   const history = useHistory();
   const firebase = useFirebase();
-  const { user, users } = useSelector((state: any) => ({
+  const { user, users, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
+    profileQuestions:
+      state.firestore.data.config?.[PARTY_NAME].profile_questions,
   }));
   const [showEditProfileModal, setShowEditProfileModal] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
@@ -71,12 +73,13 @@ const EditProfilePage = () => {
         </div>
         <div className="row">
           <div className="col">
-            {profileQuestions.map((question: QuestionType) => (
-              <div className="question-section">
-                <div className="question">{question.text}</div>
-                <div className="answer">{users[user.uid][question.name]}</div>
-              </div>
-            ))}
+            {profileQuestions &&
+              profileQuestions.map((question: QuestionType) => (
+                <div className="question-section">
+                  <div className="question">{question.text}</div>
+                  <div className="answer">{users[user.uid][question.name]}</div>
+                </div>
+              ))}
           </div>
         </div>
       </div>
