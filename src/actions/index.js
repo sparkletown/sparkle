@@ -1,20 +1,10 @@
 import firebase from "firebase/app";
 
+import { leaveRoom } from "utils/useLocationUpdateEffect";
+
 export const PREVIEW_ROOM = "PREVIEW_ROOM";
 export const EXIT_PREVIEW_ROOM = "EXIT_PREVIEW_ROOM";
 export const SET_USER = "SET_USER";
-
-function sendRoom(room, uid) {
-  const firestore = firebase.firestore();
-  const doc = `users/${uid}`;
-  const update = { room: room ? room.title : null };
-  firestore
-    .doc(doc)
-    .update(update)
-    .catch((e) => {
-      firestore.doc(doc).set(update);
-    });
-}
 
 export function sendGlobalChat(from, text) {
   return (dispatch) => {
@@ -86,22 +76,10 @@ export function previewRoom(room) {
   return { type: PREVIEW_ROOM, room };
 }
 
-export function exitPreviewRoom(uid) {
+export function exitPreviewRoom(user) {
   return (dispatch) => {
     dispatch({ type: EXIT_PREVIEW_ROOM });
-    dispatch(leaveRoom(uid));
-  };
-}
-
-export function enterRoom(room, uid) {
-  return (dispatch) => {
-    sendRoom(room, uid);
-  };
-}
-
-export function leaveRoom(uid) {
-  return (dispatch) => {
-    sendRoom(null, uid);
+    leaveRoom(user);
   };
 }
 

@@ -1,9 +1,8 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { useParams } from "react-router-dom";
 
-import { enterRoom } from "actions";
 import { getCurrentEvent } from "utils/time";
 
 import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
@@ -11,15 +10,15 @@ import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/molecules/ScheduleItem";
 import { PARTY_NAME } from "config";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { enterRoom } from "utils/useLocationUpdateEffect";
 
 export default function RoomPage() {
-  const dispatch = useDispatch();
   let { roomName } = useParams();
 
   const { config, user, users } = useSelector((state: any) => ({
     config: state.firestore.data.config?.[PARTY_NAME],
     user: state.user,
-    users: state.firestore.ordered.users,
+    users: state.firestore.ordered.partygoers,
   }));
 
   if (!config || !user) {
@@ -36,7 +35,7 @@ export default function RoomPage() {
     users?.filter((user: any) => user.room === room?.title) ?? [];
 
   function enter() {
-    dispatch(enterRoom(room, user.uid));
+    enterRoom(user, room.title);
   }
 
   const currentEvent =

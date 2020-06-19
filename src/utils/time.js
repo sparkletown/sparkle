@@ -79,3 +79,7 @@ export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
     startUtcSeconds + hostedDurationHours * ONE_HOUR_IN_SECONDS
   );
 }
+
+export function getHoursAgoInSeconds(hours) {
+  return new Date().getTime() / 1000 - hours * 60 * 60;
+}

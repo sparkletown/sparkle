@@ -70,7 +70,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               <div className="user-list">
                 {selectedTab === "jazz" ? (
                   <TablesUserList
-                    experienceName="kansassmittys"
+                    experienceName="Jazz Mountain"
                     limit={24}
                     setUserList={setUserList}
                   />

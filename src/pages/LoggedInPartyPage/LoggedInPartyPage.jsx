@@ -10,19 +10,22 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { PARTY_NAME } from "config";
 import { useSelector } from "react-redux";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 const LoggedInPartyPage = () => {
-  const { config, users } = useSelector((state) => ({
+  const { config, partygoers, user } = useSelector((state) => ({
+    user: state.user,
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
-    users: state.firestore.ordered.users,
+    partygoers: state.firestore.ordered.partygoers,
   }));
 
   useProfileInformationCheck();
+  useUpdateLocationEffect(user, "Map");
 
-  const attendances = users
-    ? users.reduce((acc, value) => {
-        acc[value.room] = (acc[value.room] || 0) + 1;
+  const attendances = partygoers
+    ? partygoers.reduce((acc, value) => {
+        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
         return acc;
       }, {})
     : [];
@@ -33,9 +36,9 @@ const LoggedInPartyPage = () => {
         <div className="small-right-margin">
           <PartyTitle startUtcSeconds={config.start_utc_seconds} />
         </div>
-        {users && (
+        {partygoers && (
           <div className="col">
-            <UserList users={users} imageSize={50} />
+            <UserList users={partygoers} imageSize={50} />
           </div>
         )}
         <div className="col">
