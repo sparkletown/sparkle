@@ -18,6 +18,20 @@ module.exports = {
   map_url: "/maps/island-festival.jpg",
   map_viewbox: "0 0 3000 2000",
   password: "treasure",
+  profile_questions: [
+    {
+      name: "islandCompanion",
+      text: "Who's your dream desert island companion?",
+    },
+    {
+      name: "gratefulFor",
+      text: "What do you feel greateful for?",
+    },
+    {
+      name: "likeAboutParties",
+      text: "What do you like about parties?",
+    },
+  ],
   rooms: [
     {
       title: "Into the Partypelago",
@@ -35,7 +49,7 @@ module.exports = {
       title: "Jazztastic Park",
       subtitle: "Dinosaurs and all that Jazz",
       about: "Live the experience of an online Jazz bar",
-      url: "/kansassmittys-preview",
+      url: "/kansassmittys",
       external_url: "/kansassmittys",
       on_map: true,
       on_list: true,

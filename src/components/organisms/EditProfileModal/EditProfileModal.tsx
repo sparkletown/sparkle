@@ -6,9 +6,9 @@ import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
-import { profileQuestions } from "pages/Account/constants";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { PARTY_NAME } from "config";
 
 interface PropsType {
   show: boolean;
@@ -19,9 +19,11 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
 }) => {
-  const { user, users } = useSelector((state: any) => ({
+  const { user, users, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
+    profileQuestions:
+      state.firestore.data.config?.[PARTY_NAME].profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     await updateUserProfile(user.uid, data);
@@ -31,10 +33,11 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
     partyName: users[user.uid].partyName,
     pictureUrl: users[user.uid].pictureUrl,
   };
-  profileQuestions.map(
-    (question: QuestionType) =>
-      (defaultValues[question.name] = users[user.uid][question.name])
-  );
+  profileQuestions &&
+    profileQuestions.map(
+      (question: QuestionType) =>
+        (defaultValues[question.name] = users[user.uid][question.name])
+    );
 
   const {
     register,
@@ -87,20 +90,21 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
               register={register}
             />
           </div>
-          {profileQuestions.map((question: QuestionType) => (
-            <>
-              <div className="question">{question.text}</div>
-              <div className="input-group">
-                <textarea
-                  className="input-block input-centered"
-                  name={question.name}
-                  ref={register({
-                    required: true,
-                  })}
-                />
-              </div>
-            </>
-          ))}
+          {profileQuestions &&
+            profileQuestions.map((question: QuestionType) => (
+              <>
+                <div className="question">{question.text}</div>
+                <div className="input-group">
+                  <textarea
+                    className="input-block input-centered"
+                    name={question.name}
+                    ref={register({
+                      required: true,
+                    })}
+                  />
+                </div>
+              </>
+            ))}
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"

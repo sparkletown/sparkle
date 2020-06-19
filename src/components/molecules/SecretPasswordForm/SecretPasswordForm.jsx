@@ -62,7 +62,7 @@ const SecretPasswordForm = () => {
       <input
         className="btn btn-primary btn-block btn-centered"
         type="submit"
-        value="Enter the bar"
+        value="Start partying!"
       />
       <div className="form-group">
         {message && <small>{message}</small>}

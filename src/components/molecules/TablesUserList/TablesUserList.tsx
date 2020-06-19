@@ -111,7 +111,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   }, [user, experienceName, setSeatedAtTable]);
 
   if (!users) {
-    return <>"Loading...";</>;
+    return <>Loading...</>;
   }
 
   let seatedAtTableName = "";

@@ -6,28 +6,33 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
 export interface CodeOfConductFormData {
-  contributeToExperience: string;
-  realBar: string;
-  greatNight: string;
-  willingToImprovise: string;
+  seekFun: string;
+  addFun: string;
+  wearCostume: string;
+  respectParty: string;
+  partyReal: string;
 }
 
 const QUESTIONS: { id: keyof CodeOfConductFormData; label: string }[] = [
   {
-    id: "contributeToExperience",
-    label: "I agree to contribute to the experience.",
+    id: "seekFun",
+    label: "I will seek out the fun",
   },
   {
-    id: "realBar",
-    label: "I understand this is a real bar.",
+    id: "addFun",
+    label: "I will add to the fun",
   },
   {
-    id: "greatNight",
-    label: "I will have a great night out.",
+    id: "wearCostume",
+    label: "I will wear a costume where possible",
   },
   {
-    id: "willingToImprovise",
-    label: "I realise this is jazz and i'm willing to improvise.",
+    id: "respectParty",
+    label: "I’ll respect my fellow party-goers’ feelings and boundaries",
+  },
+  {
+    id: "partyReal",
+    label: "I understand those parties are real",
   },
 ];
 
