@@ -270,7 +270,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               className="btn btn-block btn-centered"
               onClick={() => setShowLockedMessage(false)}
             >
-              Return to the Jazz
+              Back
             </button>
           </div>
         </Modal.Body>
