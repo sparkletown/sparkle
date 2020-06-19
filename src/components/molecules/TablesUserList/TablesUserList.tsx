@@ -125,7 +125,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: { [key: string]: any } = {};
   for (const table of tables) {
-    usersAtTables[table.title] = [];
+    usersAtTables[table.reference || table.title || ""] = [];
   }
   const unseatedUsers = [];
   for (const u of users.filter((u: User) => u.lastSeenIn === experienceName)) {
@@ -134,7 +134,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       u.data[experienceName] &&
       u.data[experienceName].table &&
       tables
-        .map((table: Table) => table.title)
+        .map((table: Table) => table.reference || table.title)
         .includes(u.data[experienceName].table)
     ) {
       usersAtTables[u.data[experienceName].table].push(u);
@@ -205,7 +205,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     if (table.title === seatedAtTableName) {
       continue;
     }
-    usersAtOtherTables.push(...usersAtTables[table.title]);
+    usersAtOtherTables.push(
+      ...usersAtTables[table.reference || table.title || ""]
+    );
   }
 
   return (

@@ -1,11 +1,12 @@
 import { User } from "types/User";
 
 export interface Table {
-  title: string;
+  title?: string;
   subtitle?: string;
   capacity?: number;
   columns?: string;
   rows?: string;
+  reference?: string;
 }
 
 export interface TableComponentPropsType {

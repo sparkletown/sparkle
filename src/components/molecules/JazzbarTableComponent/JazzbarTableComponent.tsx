@@ -15,9 +15,11 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
   nameOfVideoRoom,
   imageSize = 35,
 }) => {
-  const locked = tableLocked(table.title, usersAtTables);
+  const locked = tableLocked(table.title || "", usersAtTables);
   const people =
-    usersAtTables[table.title] && usersAtTables[table.title].length;
+    table.title &&
+    usersAtTables[table.title] &&
+    usersAtTables[table.title].length;
   return (
     <>
       <div className="profiles">
@@ -42,7 +44,8 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
                 height={imageSize}
               />
             ))}
-          {usersAtTables[table.title] &&
+          {table.title &&
+            usersAtTables[table.title] &&
             usersAtTables[table.title].length === 0 &&
             "No one is at this table"}
         </span>
@@ -60,7 +63,9 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
             type="button"
             title={"Join " + table.title}
             className={"btn " + (locked ? "disabled" : "")}
-            onClick={() => onJoinClicked(table.title, locked, nameOfVideoRoom)}
+            onClick={() =>
+              onJoinClicked(table.title || "", locked, nameOfVideoRoom)
+            }
           >
             Join
           </button>

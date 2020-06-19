@@ -21,6 +21,11 @@
     min-height: 100px;
   }
 
+  .table-item-container {
+    padding: 5px;
+    height: 100%;
+  }
+
   .table-item {
     background: $dark;
     border-radius: 22px;
@@ -28,21 +33,24 @@
     color: $white;
     display: flex;
     justify-content: space-around;
-    padding: 10px;
     flex-wrap: wrap;
-    padding: 20px;
+    padding: 20px 10% 10px 10%;
+
     position: relative;
   }
 
   .table-occupancy-information {
     position: absolute;
     top: 5px;
-    font-size: 10px;
-    right: 10px;
+    font-size: 13px;
   }
 
   .red-text {
     color: $red;
+  }
+
+  .green-text {
+    color: $green;
   }
 
   .table-title {
@@ -67,15 +75,15 @@
   .list-of-tables {
     display: grid;
     grid-template-columns: repeat(10, 10%);
-    grid-template-rows: repeat(10, 10%);
+    grid-template-rows: repeat(9, 80px);
+    margin-top: 82px;
   }
 
   .add-participant-button {
-    min-width: 35px;
-    min-height: 35px;
+    width: 35px;
+    height: 35px;
     display: flex;
-    background: $black;
-    color: $concrete;
+    background: $concrete;
     font-size: 25px;
     border-radius: 50%;
     justify-content: center;
@@ -85,7 +93,7 @@
 
   .table-subtitle {
     color: $dark;
-    margin-bottom: 10px;
+    white-space: nowrap;
   }
 
   .join-text,
@@ -102,5 +110,16 @@
     background: $dark;
     color: $white;
     border-radius: 22px;
+  }
+
+  .title-container {
+    color: $black;
+    text-align: center;
+    position: absolute;
+    top: -79px;
+    height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
   }
 }
