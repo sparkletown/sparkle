@@ -11,9 +11,8 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   setSelectedUserProfile,
   table,
   tableLocked,
-  usersAtTables,
 }) => {
-  const locked = tableLocked(table.reference, usersAtTables);
+  const locked = tableLocked(table.reference);
   const usersSeatedAtTable = users.filter(
     (u: User) => u.data?.[experienceName]?.table === table.reference
   );

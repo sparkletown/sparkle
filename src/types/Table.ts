@@ -11,11 +11,7 @@ export interface Table {
 
 export interface TableComponentPropsType {
   table: Table;
-  usersAtTables: { [key: string]: any };
-  tableLocked: (
-    table: string,
-    usersAtTables: { [key: string]: User[] }
-  ) => boolean;
+  tableLocked: (table: string) => boolean;
   experienceName: string;
   users: User[];
   setSelectedUserProfile: (user: User) => void;

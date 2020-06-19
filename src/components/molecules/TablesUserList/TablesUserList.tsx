@@ -136,21 +136,17 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     }
   }
 
-  const tableLocked = (
-    table: string,
-    usersAtTables: { [key: string]: User[] }
-  ) => {
+  const tableLocked = (table: string) => {
     // Empty tables are never locked
-    if (usersAtTables[table] && !usersAtTables[table].length) {
+    if (
+      users &&
+      users.filter((user: User) => user.data?.[experienceName]?.table === table)
+        .length === 0
+    ) {
       return false;
     }
     // Locked state is in the experience record
-    return (
-      experience &&
-      experience.tables &&
-      experience.tables[table] &&
-      experience.tables[table].locked
-    );
+    return experience?.tables?.[table]?.locked;
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
@@ -219,7 +215,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 </button>
               </div>
               <div className="actions">
-                {tableLocked(seatedAtTable, usersAtTables) ? (
+                {tableLocked(seatedAtTable) ? (
                   <p className="locked-text">Table is locked</p>
                 ) : (
                   <p className="unlocked-text">Others can join this table</p>
@@ -227,11 +223,11 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 <label className="switch">
                   <input
                     type="checkbox"
-                    checked={!tableLocked(seatedAtTable, usersAtTables)}
+                    checked={!tableLocked(seatedAtTable)}
                     onChange={() =>
                       onLockedChanged(
                         seatedAtTable,
-                        !tableLocked(seatedAtTable, usersAtTables)
+                        !tableLocked(seatedAtTable)
                       )
                     }
                   />
@@ -249,7 +245,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 table={table}
                 tableLocked={tableLocked}
                 setSelectedUserProfile={setSelectedUserProfile}
-                usersAtTables={usersAtTables}
                 onJoinClicked={onJoinClicked}
                 nameOfVideoRoom={nameOfVideoRoom(i)}
               />
