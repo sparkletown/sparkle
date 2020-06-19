@@ -19,7 +19,5 @@ export interface Room {
   attendance_x?: number;
   attendance_y?: number;
   button_text?: string;
-  data?: {
-    external_url: string;
-  };
+  external_url: string;
 }
