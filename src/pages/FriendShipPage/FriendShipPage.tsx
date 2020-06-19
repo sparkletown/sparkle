@@ -25,13 +25,7 @@ const FriendShipPage = () => {
             <h3>Pick one of our spaces to start making friends!</h3>
           </div>
           <div className="row content">
-            {seatedAtTable ? (
-              <>
-                <div className="col wrapper">
-                  <Room roomName={seatedAtTable} setUserList={() => null} />
-                </div>
-              </>
-            ) : (
+            {!seatedAtTable && (
               <div className="col bar-container">
                 <div className="wrapper">
                   <Room roomName="friendship" setUserList={() => null} />
@@ -40,7 +34,7 @@ const FriendShipPage = () => {
             )}
           </div>
           <div className="row">
-            <div className="col table-container">
+            <div className={`col ${seatedAtTable ? "table-container" : ""}`}>
               <TablesUserList
                 experienceName="friendship"
                 setSeatedAtTable={setSeatedAtTable}
@@ -48,6 +42,13 @@ const FriendShipPage = () => {
                 TableComponent={FriendShipTableComponent}
                 customTables={FRIENDSHIP_CUSTOM_TABLES}
               />
+              {seatedAtTable && (
+                <>
+                  <div className="col wrapper">
+                    <Room roomName={seatedAtTable} setUserList={() => null} />
+                  </div>
+                </>
+              )}
             </div>
             <div className="col-5">
               <Chatbox room="friendship" />

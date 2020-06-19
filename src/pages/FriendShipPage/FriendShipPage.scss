@@ -13,15 +13,12 @@
   .content {
     display: block;
 
-    .wrapper {
-      color: $white;
-      margin-bottom: 30px;
-    }
-
     .bar-container {
       .wrapper {
         min-height: 600px;
-        grid-template-rows: none;
+        grid-template-rows: repeat(4, 1fr);
+        margin-bottom: 30px;
+        grid-template-columns: repeat(8, 1fr);
       }
     }
   }
@@ -40,7 +37,6 @@
     justify-content: space-around;
     flex-wrap: wrap;
     padding: 20px 10% 10px 10%;
-
     position: relative;
   }
 
@@ -126,5 +122,14 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+  }
+
+  .wrapper {
+    color: $white;
+  }
+
+  .table-container {
+    background: $dark;
+    border-radius: 22px;
   }
 }
