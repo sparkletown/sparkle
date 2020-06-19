@@ -13,16 +13,9 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   tableLocked,
   usersAtTables,
 }) => {
-  const locked = tableLocked(
-    table.reference || table.title || "",
-    usersAtTables
-  );
+  const locked = tableLocked(table.reference, usersAtTables);
   const usersSeatedAtTable = users.filter(
-    (u: User) =>
-      u.data &&
-      u.data[experienceName] &&
-      (u.data[experienceName].table === table.reference ||
-        u.data[experienceName].table === table.title)
+    (u: User) => u.data?.[experienceName]?.table === table.reference
   );
   const full = table.capacity && table.capacity === usersSeatedAtTable.length;
   return (
@@ -54,11 +47,7 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
                 <div
                   className="join-text"
                   onClick={() =>
-                    onJoinClicked(
-                      table.reference || table.title || "",
-                      locked,
-                      nameOfVideoRoom
-                    )
+                    onJoinClicked(table.reference, locked, nameOfVideoRoom)
                   }
                 >
                   open
@@ -82,11 +71,7 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
                 (e, i) => (
                   <span
                     onClick={() =>
-                      onJoinClicked(
-                        table.reference || table.title || "",
-                        locked,
-                        nameOfVideoRoom
-                      )
+                      onJoinClicked(table.reference, locked, nameOfVideoRoom)
                     }
                     className="add-participant-button"
                   >

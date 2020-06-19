@@ -7,6 +7,7 @@ export const FRIENDSHIP_CUSTOM_TABLES: Table[] = [
     capacity: 8,
     columns: "1/4",
     rows: "1/3",
+    reference: "Rowdy group natter",
   },
   {
     title: "Silliness salon",
@@ -14,12 +15,14 @@ export const FRIENDSHIP_CUSTOM_TABLES: Table[] = [
     capacity: 6,
     columns: "8/10",
     rows: "1/3",
+    reference: "Silliness salon",
   },
   {
     title: "New Friends Pods",
     capacity: 4,
     columns: "1/3",
     rows: "5/6",
+    reference: "New Friends Pods",
   },
   {
     title: "Philosophy Benches",
@@ -46,6 +49,7 @@ export const FRIENDSHIP_CUSTOM_TABLES: Table[] = [
     capacity: 4,
     columns: "1/3",
     rows: "3/4",
+    reference: "Fighting Cage",
   },
   {
     title: "Solo Cage",
@@ -53,12 +57,14 @@ export const FRIENDSHIP_CUSTOM_TABLES: Table[] = [
     capacity: 1,
     columns: "5",
     rows: "2",
+    reference: "Solo Cage",
   },
   {
     title: "Silent Bar",
     capacity: 6,
     columns: "5/7",
     rows: "4/6",
+    reference: "Silent Bar",
   },
   {
     title: "Friendship Benches",

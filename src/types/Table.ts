@@ -6,7 +6,7 @@ export interface Table {
   capacity?: number;
   columns?: string;
   rows?: string;
-  reference?: string;
+  reference: string;
 }
 
 export interface TableComponentPropsType {

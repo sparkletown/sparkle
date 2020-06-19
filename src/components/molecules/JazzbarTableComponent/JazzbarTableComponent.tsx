@@ -15,44 +15,33 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
   nameOfVideoRoom,
   imageSize = 35,
 }) => {
-  const locked = tableLocked(table.title || "", usersAtTables);
-  const people =
-    table.title &&
-    usersAtTables[table.title] &&
-    usersAtTables[table.title].length;
+  const locked = tableLocked(table.reference || "", usersAtTables);
+  const people = users.filter(
+    (u: User) => u.data?.[experienceName]?.table === table.reference
+  );
   return (
     <>
       <div className="profiles">
         <span>{table.title}</span>
         <span>
-          {users
-            .filter(
-              (u: User) =>
-                u.data &&
-                u.data[experienceName] &&
-                u.data[experienceName].table === table.title
-            )
-            .map((user: User) => (
-              <img
-                onClick={() => setSelectedUserProfile(user)}
-                key={user.id}
-                className="profile-icon"
-                src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                title={user.partyName}
-                alt={`${user.partyName} profile`}
-                width={imageSize}
-                height={imageSize}
-              />
-            ))}
-          {table.title &&
-            usersAtTables[table.title] &&
-            usersAtTables[table.title].length === 0 &&
-            "No one is at this table"}
+          {people.map((user: User) => (
+            <img
+              onClick={() => setSelectedUserProfile(user)}
+              key={user.id}
+              className="profile-icon"
+              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+              title={user.partyName}
+              alt={`${user.partyName} profile`}
+              width={imageSize}
+              height={imageSize}
+            />
+          ))}
+          {people.length === 0 && "No one is at this table"}
         </span>
-        {people >= tableCapacity ? (
+        {people.length >= tableCapacity ? (
           <button
             type="button"
-            title={table.title + " is full"}
+            title={table.reference + " is full"}
             className={"btn disabled"}
             disabled
           >
@@ -61,10 +50,10 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
         ) : (
           <button
             type="button"
-            title={"Join " + table.title}
+            title={"Join " + table.reference}
             className={"btn " + (locked ? "disabled" : "")}
             onClick={() =>
-              onJoinClicked(table.title || "", locked, nameOfVideoRoom)
+              onJoinClicked(table.reference, locked, nameOfVideoRoom)
             }
           >
             Join
