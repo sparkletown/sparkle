@@ -101,6 +101,7 @@ const Room = ({ roomName, setUserList }) => {
   // Only allow the first bartender to appear as bartender
   let hasBartender = false;
   const meIsBartender =
+    users &&
     users[room?.localParticipant?.identity]?.data?.[roomName]?.bartender;
 
   const meComponent = room ? (
