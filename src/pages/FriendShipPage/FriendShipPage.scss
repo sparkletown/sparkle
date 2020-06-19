@@ -3,6 +3,7 @@
 .friendship-container {
   background: $yellow;
   color: $black;
+  padding: 30px;
 
   .title {
     font-size: 15px;
@@ -14,7 +15,14 @@
 
     .wrapper {
       color: $white;
-      height: 400px;
+      margin-bottom: 30px;
+    }
+
+    .bar-container {
+      .wrapper {
+        min-height: 600px;
+        grid-template-rows: none;
+      }
     }
   }
 

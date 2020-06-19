@@ -92,7 +92,7 @@ const Participant = ({ participant, children }) => {
         key={participant.sid}
         className="profile-icon"
         src={
-          participant.profileData.pictureUrl || "/anonymous-profile-icon.jpeg"
+          participant.profileData?.pictureUrl || "/anonymous-profile-icon.jpeg"
         }
         title={participant.profileData.partyName}
         alt={`${participant.profileData.partyName} profile`}
