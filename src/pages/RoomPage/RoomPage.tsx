@@ -75,7 +75,7 @@ export default function RoomPage() {
                   currentEvent && event.name === currentEvent.name
                 }
                 enterRoom={enter}
-                roomUrl={room.data.external_url}
+                roomUrl={room.external_url}
               />
             ))}
           </div>
