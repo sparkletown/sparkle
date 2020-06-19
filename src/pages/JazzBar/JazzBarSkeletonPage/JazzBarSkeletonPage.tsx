@@ -10,6 +10,7 @@ import Room from "components/organisms/Room";
 import { useSelector } from "react-redux";
 import { User } from "types/User";
 import JazzbarTableComponent from "components/molecules/JazzbarTableComponent";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 interface PropsType {
   userList: any;
@@ -27,6 +28,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   setUserList,
 }) => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
+
   let activity = "";
   if (selectedTab === "cocktail") {
     activity = "at the bar";
@@ -35,9 +37,19 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     activity = "in the smoking area";
   }
 
-  const { users } = useSelector((state: any) => ({
-    users: state.firestore.ordered.users,
+  const { users, user } = useSelector((state: any) => ({
+    users: state.firestore.ordered.partygoers,
+    user: state.user,
   }));
+
+  useUpdateLocationEffect(user, "Jazz Mountain");
+
+  const usersSeated =
+    users &&
+    users.filter(
+      (user: User) =>
+        user.data?.["Jazz Mountain"] && !user.data["Jazz Mountain"].table
+    );
 
   return (
     <WithNavigationBar>
@@ -82,21 +94,9 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                     <div className="row header no-margin">
                       <p>
                         <span className="bold">
-                          {users &&
-                            users.filter(
-                              (user: User) =>
-                                user.data &&
-                                user.data["kansassmittys"] &&
-                                !user.data["kansassmittys"].table
-                            ).length}
+                          {users && usersSeated.length}
                         </span>{" "}
-                        {users &&
-                        users.filter(
-                          (user: User) =>
-                            user.data &&
-                            user.data["kansassmittys"] &&
-                            !user.data["kansassmittys"].table
-                        ).length !== 1
+                        {users && usersSeated.length !== 1
                           ? "people"
                           : "person"}{" "}
                         listening to jazz
@@ -104,7 +104,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                     </div>
                     <div className="table-container">
                       <TablesUserList
-                        experienceName="kansassmittys"
+                        experienceName="Jazz Mountain"
                         seatedAtTable={seatedAtTable}
                         setSeatedAtTable={setSeatedAtTable}
                         TableComponent={JazzbarTableComponent}
@@ -121,11 +121,8 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                             <UserList
                               users={users.filter(
                                 (user: User) =>
-                                  user.data &&
-                                  user.data["kansassmittys"] &&
-                                  user.data["kansassmittys"].table &&
-                                  user.data["kansassmittys"].table !==
-                                    seatedAtTable
+                                  user.data?.["Jazz Mountain"]?.table !==
+                                  seatedAtTable
                               )}
                               activity="on other tables"
                               disableSeeAll
@@ -138,14 +135,18 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                 ) : (
                   <UserList users={userList} activity={activity} limit={24} />
                 )}
-                <div className="row no-margin">
-                  <UserList
-                    users={users ? users : []}
-                    limit={22}
-                    activity="standing"
-                    disableSeeAll
-                  />
-                </div>
+                {users && (
+                  <div className="row no-margin">
+                    <UserList
+                      users={users.filter(
+                        (user: User) => user.lastSeenIn === "Jazz Mountain"
+                      )}
+                      limit={22}
+                      activity="standing"
+                      disableSeeAll
+                    />
+                  </div>
+                )}
               </div>
             )}
             <Chatbox room={selectedTab} />
