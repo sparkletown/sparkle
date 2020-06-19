@@ -22,7 +22,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
   return (
     <>
       <div className="profiles">
-        <span>{table.title}</span>
+        <span>{table.reference}</span>
         <span>
           {people.map((user: User) => (
             <img
