@@ -32,14 +32,3 @@
     grid-template-rows: 25% 25% 25% 25%;
   }
 }
-
-.at-table {
-  .wrapper {
-    display: flex;
-    flex-wrap: wrap;
-
-    .participant {
-      flex: 0 0 50%;
-    }
-  }
-}

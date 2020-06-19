@@ -13,7 +13,7 @@ module.exports = {
   start_utc_seconds: 1592679600,
   duration_hours: 8,
   entrance_hosted_hours: 2,
-  party_name: "Island Festival",
+  party_name: "The Island Festival",
   unhosted_entry_video_url: "https://www.youtube.com/embed/U4GsKONeHnM",
   map_url: "/maps/island-festival.jpg",
   map_viewbox: "0 0 3000 2000",
