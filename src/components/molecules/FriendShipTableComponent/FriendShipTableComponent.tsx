@@ -16,72 +16,84 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   const usersSeatedAtTable = users.filter(
     (u: User) => u.data?.[experienceName]?.table === table.reference
   );
-  const full = table.capacity && table.capacity === usersSeatedAtTable.length;
+  const numberOfSeatsLeft =
+    table.capacity && table.capacity - usersSeatedAtTable.length;
+  const full = numberOfSeatsLeft === 0;
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "column",
+        alignItems: "center",
+        margin: "30px",
+      }}
+    >
+      <div className="table-title-container">
+        {table.title && <div className="table-title">{table.title}</div>}
+        {table.subtitle && (
+          <div className="table-subtitle">{table.subtitle}</div>
+        )}
+      </div>
       <div
+        className="table-item"
         style={{
-          gridColumn: table.columns,
-          gridRow: table.rows,
+          height: `${table.rows && table.rows * 50 + 65}px`,
+          width: `${table.columns && (table.columns + 1) * 50}px`,
         }}
       >
-        <div className="table-item-container">
-          <div className="table-item">
-            <div className="title-container">
-              {table.title && <div className="table-title">{table.title}</div>}
-              {table.subtitle && (
-                <div className="table-subtitle">{table.subtitle}</div>
-              )}
-            </div>
+        <div
+          className={`table-occupancy-information ${
+            locked || full ? "red-text" : "green-text"
+          }`}
+        >
+          {locked ? (
+            "locked"
+          ) : full ? (
+            "full"
+          ) : (
             <div
-              className={`table-occupancy-information ${
-                locked || full ? "red-text" : "green-text"
-              }`}
+              className="join-text"
+              onClick={() =>
+                onJoinClicked(table.reference, locked, nameOfVideoRoom)
+              }
             >
-              {locked ? (
-                "locked"
-              ) : full ? (
-                "full"
-              ) : (
-                <div
-                  className="join-text"
-                  onClick={() =>
-                    onJoinClicked(table.reference, locked, nameOfVideoRoom)
-                  }
-                >
-                  open
-                </div>
-              )}
+              open
             </div>
-            {usersSeatedAtTable.map((user: User) => (
-              <img
-                onClick={() => setSelectedUserProfile(user)}
-                key={user.id}
-                className="profile-icon table-participant-picture"
-                src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                title={user.partyName}
-                alt={`${user.partyName} profile`}
-                width={imageSize}
-                height={imageSize}
-              />
-            ))}
-            {table.capacity &&
-              [...Array(table.capacity - usersSeatedAtTable.length)].map(
-                (e, i) => (
-                  <span
-                    onClick={() =>
-                      onJoinClicked(table.reference, locked, nameOfVideoRoom)
-                    }
-                    className="add-participant-button"
-                  >
-                    +
-                  </span>
-                )
-              )}
-          </div>
+          )}
         </div>
+        {numberOfSeatsLeft && numberOfSeatsLeft > 0 && (
+          <div className="remaining-seats">
+            {numberOfSeatsLeft} {numberOfSeatsLeft === 1 ? "seat" : "seats"}{" "}
+            left
+          </div>
+        )}
+
+        {usersSeatedAtTable.map((user: User) => (
+          <img
+            onClick={() => setSelectedUserProfile(user)}
+            key={user.id}
+            className="profile-icon table-participant-picture"
+            src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+            title={user.partyName}
+            alt={`${user.partyName} profile`}
+            width={imageSize}
+            height={imageSize}
+          />
+        ))}
+        {table.capacity &&
+          [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
+            <span
+              onClick={() =>
+                onJoinClicked(table.reference, locked, nameOfVideoRoom)
+              }
+              className="add-participant-button"
+            >
+              +
+            </span>
+          ))}
       </div>
-    </>
+    </div>
   );
 };
 

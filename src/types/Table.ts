@@ -4,8 +4,8 @@ export interface Table {
   title?: string;
   subtitle?: string;
   capacity?: number;
-  columns?: string;
-  rows?: string;
+  columns?: number;
+  rows?: number;
   reference: string;
 }
 

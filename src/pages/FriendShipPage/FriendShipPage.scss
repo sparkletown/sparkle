@@ -14,9 +14,10 @@
     display: block;
 
     .bar-container {
+      background: $dark;
+      border-radius: 22px;
       .wrapper {
         min-height: 600px;
-        grid-template-rows: repeat(4, 1fr);
         margin-bottom: 30px;
         grid-template-columns: repeat(8, 1fr);
       }
@@ -36,13 +37,13 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding: 20px 10% 10px 10%;
+    padding: 40px 25px 10px 25px;
     position: relative;
   }
 
   .table-occupancy-information {
     position: absolute;
-    top: 5px;
+    top: 14px;
     font-size: 13px;
   }
 
@@ -57,7 +58,7 @@
   .table-title {
     font-size: 20px;
     font-weight: 700;
-    white-space: nowrap;
+    text-align: center;
   }
 
   .chatbox-container {
@@ -68,21 +69,21 @@
   }
   .bar-container {
     .bartender {
-      grid-column: 2 / 4;
+      grid-column: 4 / 6;
       grid-row: 1 / 3;
     }
   }
 
   .list-of-tables {
-    display: grid;
-    grid-template-columns: repeat(10, 10%);
-    grid-template-rows: repeat(9, 80px);
+    display: flex;
+    flex-wrap: wrap;
     margin-top: 82px;
+    justify-content: space-around;
   }
 
   .add-participant-button {
-    width: 35px;
-    height: 35px;
+    width: 50px;
+    height: 50px;
     display: flex;
     background: $concrete;
     font-size: 25px;
@@ -94,12 +95,18 @@
 
   .table-subtitle {
     color: $dark;
-    white-space: nowrap;
   }
 
   .join-text,
   .add-participant-button {
     cursor: pointer;
+  }
+
+  .remaining-seats {
+    top: 5px;
+    right: 7px;
+    position: absolute;
+    font-size: 10px;
   }
 
   .table-participant-picture {
@@ -111,17 +118,27 @@
     background: $dark;
     color: $white;
     border-radius: 22px;
+
+    .private-table-title {
+      font-size: 25px;
+      font-weight: 700;
+      font-style: italic;
+    }
+  }
+
+  .actions {
+    display: flex;
+  }
+
+  .lock-table-checbox-indication {
+    margin-left: 20px;
   }
 
   .title-container {
     color: $black;
     text-align: center;
-    position: absolute;
-    top: -79px;
-    height: 72px;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
   }
 
   .wrapper {
@@ -131,5 +148,16 @@
   .table-container {
     background: $dark;
     border-radius: 22px;
+    margin-bottom: 30px;
+  }
+
+  .table-title-container {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .centered-row {
+    display: flex;
+    justify-content: center;
   }
 }

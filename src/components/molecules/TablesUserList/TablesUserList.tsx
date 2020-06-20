@@ -42,7 +42,7 @@ const TABLES = 8;
 
 const createTable = (i: number) => {
   return {
-    reference: `${i + 1}`,
+    reference: `Table ${i + 1}`,
   };
 };
 
@@ -197,6 +197,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtOtherTables.push(...usersAtTables[table.reference]);
   }
 
+  const tableOfUser =
+    seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
+
   return (
     <>
       <div className="userlist-container">
@@ -204,7 +207,14 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
           <>
             <div className="row no-margin at-table">
               <div className="header">
-                <p>Table {seatedAtTable}</p>
+                <div className="table-title-container">
+                  <p className="private-table-title">{seatedAtTable}</p>
+                  {tableOfUser && tableOfUser.subtitle && (
+                    <p className="private-table-subtitle">
+                      {tableOfUser.subtitle}
+                    </p>
+                  )}
+                </div>
                 <button
                   type="button"
                   title={"Leave " + seatedAtTable}
@@ -215,11 +225,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 </button>
               </div>
               <div className="actions">
-                {tableLocked(seatedAtTable) ? (
-                  <p className="locked-text">Table is locked</p>
-                ) : (
-                  <p className="unlocked-text">Others can join this table</p>
-                )}
                 <label className="switch">
                   <input
                     type="checkbox"
@@ -233,6 +238,13 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                   />
                   <span className="slider" />
                 </label>
+                <div className="lock-table-checbox-indication">
+                  {tableLocked(seatedAtTable) ? (
+                    <p className="locked-text">Table is locked</p>
+                  ) : (
+                    <p className="unlocked-text">Others can join this table</p>
+                  )}
+                </div>
               </div>
             </div>
           </>
