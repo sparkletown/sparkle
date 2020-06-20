@@ -21,8 +21,11 @@ const FriendShipPage = () => {
       <WithNavigationBar>
         <div className="friendship-container">
           <div className="title">
-            <h1>Welcome to the friendship room!</h1>
-            <h3>Pick one of our spaces to start making friends!</h3>
+            <h1>Welcome to Isle of Friends!</h1>
+            <h3>
+              Chat in the entrance room, or scroll down to the spaces below to
+              make new connections
+            </h3>
           </div>
           <div className="content">
             {!seatedAtTable && (
@@ -57,8 +60,10 @@ const FriendShipPage = () => {
             </div>
           </div>
           {seatedAtTable && (
-            <div className="col-6">
-              <Chatbox room="friendship" />
+            <div className="centered-row">
+              <div className="col-6">
+                <Chatbox room="friendship" />
+              </div>
             </div>
           )}
         </div>

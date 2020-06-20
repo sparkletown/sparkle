@@ -14,9 +14,10 @@
     display: block;
 
     .bar-container {
+      background: $dark;
+      border-radius: 22px;
       .wrapper {
         min-height: 600px;
-        grid-template-rows: repeat(4, 1fr);
         margin-bottom: 30px;
         grid-template-columns: repeat(8, 1fr);
       }
@@ -152,9 +153,15 @@
   .table-container {
     background: $dark;
     border-radius: 22px;
+    margin-bottom: 30px;
   }
 
   .table-title-container {
     margin: 20px 0;
+  }
+
+  .centered-row {
+    display: flex;
+    justify-content: center;
   }
 }
