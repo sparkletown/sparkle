@@ -43,6 +43,34 @@ $ scripts/upload.sh co-reality-5
 This will upload the JSON object exported from `configs/co-reality-5.js` to the Firestore document `config/co-reality-5`.
 
 
+## Automatic upload of map changes
+
+You can use a quick shell script while editing the map, to speed up the process of seeing your changes on the map:
+
+* Edit `scripts/config-upload.js` to replace the code that prompts for username and password, with the username and password you would type:
+
+```
+read(username)
+read(password)
+```
+
+becomes:
+
+```
+//read(username)
+//read(password)
+const username = 'email@address.com`
+const password = 'password'
+```
+
+* Run the automatic upload script:
+
+```
+$ CONFIG=co-reality-6; fswatch -o configs/${CONFIG}.js| xargs -n1 -I{} ./scripts/upload.sh ${CONFIG}
+```
+
+* Be careful not to commit or push your script change, since it contains your password!
+
 ## Obtaining email addresses from firebase
 
 WARNING: Only email people with consent. Permission based marketing is the best way to grow your email list.
