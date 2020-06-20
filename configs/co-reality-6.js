@@ -1,11 +1,875 @@
-const events_todo = [
+const midnight_event = {
+  start_minute: 240,
+  duration_minutes: 45,
+  host: "Ben aka Bobcat and the Co-reality Collective",
+  name: "Midnight Ritual IN THE WORLDPOOL",
+  text:
+    "Room temporarily closed. Make your way to the Worldpool for the midnight ritual.",
+  interactivity: "high",
+};
+
+const jazztastic_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 120,
+    host: "Kansas Smitty's",
+    name: "Kansas Smitty's Live",
+    text: "Fizzing jazz live from East London's finest band",
+    interactivity: "low",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Sam Leak",
+    name: "Sam Leak Performs Live",
+    text:
+      "Contemporary jazz with a gospel-tinged, and folk-inspired, freedom and abandon.",
+    interactivity: "low",
+  },
+  midnight_event,
+  {
+    start_minute: 270,
+    duration_minutes: 90,
+    host: "Sam Leak",
+    name: "Sam Leak Performs Live",
+    text:
+      "Contemporary jazz with a gospel-tinged, and folk-inspired, freedom and abandon.",
+    interactivity: "low",
+  },
+];
+
+const krabi_events = [
   {
     start_minute: 0,
-    duration_minutes: 480,
-    host: "TODO",
-    name: "TODO",
-    text: "TODO",
-    interactivity: "TODO",
+    duration_minutes: 120,
+    host: "Anonemau5",
+    name: "Caves, Waves and Raves",
+    text: "",
+    interactivity: "low",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Behindthebeats & The Enchanting Catalysers",
+    name:
+      "Electro, EDM and Deep House - uplifting dance tunes accompanied with a live performance.",
+    text: "",
+    interactivity: "low",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Alicia",
+    name: "Melodic House",
+    text: "",
+    interactivity: "low",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 180,
+    host: "Sturge",
+    name: "Melodic Techno & Deep Electronica",
+    text: "",
+    interactivity: "low",
+  },
+];
+
+const love_lagoon_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 60,
+    host: "Jamie Finch",
+    name: "Let's Talk About Sex",
+    text: "A live discussion about fauxest and fan fiction.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Outer Lumen",
+    name: "Interactive Love College Party",
+    text:
+      "Dive in and make a splash while creating your own love collage. All supplies will wash up on shore.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Jana Kreisl",
+    name: "Live Love Drawings",
+    text:
+      "Get your stories illustrated live as we share our emotional love stories and wild fantasies.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Captain Cupid",
+    name: "Speed Soul(mate) Saerching",
+    text:
+      "Are you soul-searching or soulmate-searching? This isn't like any other speed dating experience you've had.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "Luna Veronica Mhystic & Outer Lumen",
+    name: "Solstice Astrology Report & Individual Tarot Readings",
+    text:
+      "Love is in the Cosmos, come hear what's written in the stars for you and your lover.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "Jujube",
+    name: "Naughty Narratives Happy Hour",
+    text:
+      "Journey of discovery involving that oft elusive phenomenon of orgasm. Spoiler alert: turns out, girls can come.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "Natilicious",
+    name: "Pillow Talk",
+    text: "Join right from bed and share some naughty/nice bedtime stories.",
+    interactivity: "high",
+  },
+];
+
+const worldpool_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Meena",
+    name: "Origami Island Flowers",
+    text: "Origami. Suitable for beginners.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Nils Von Heijne",
+    name: "How To Create A Sustainable Future",
+    text:
+      "Sharings from the emerging World of Wisdom movement from Founder Nils Von Heijne. How do we co-create a better and more sustainable future for ourselves and the world?",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Anthe Aelea",
+    name: "Solstice Ceremony",
+    text: "Dreaming up New Reality in the Quantum Field of Possibility",
+    interactivity: "high",
+  },
+  {
+    start_minute: 240,
+    duration_minutes: 45,
+    host: "Ben aka Bobcat and the Co-reality Collective",
+    name: "MIDNIGHT RITUAL",
+    text:
+      "Come to the Worldpool for safety from the turmoil in the partypelago as we take you through the midnight ritual.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 300,
+    duration_minutes: 30,
+    host: "Aguahara Teacher Alex Siebenstern",
+    name: "Aquatic Experience",
+    text:
+      "The water forces us to move and behave differently, so let's take advantage of it and create new forms of movement, dance, relating and art.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Nathiqua",
+    name: "Colors of the Sea",
+    text: "Imagining an Ocean of Possibility for Humanity's Future",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "Kelsey",
+    name: "Energy Workshop - Tools For Reimagining The Future",
+    text:
+      "Dipping toes into how energy works. Quantum Mchanics, Manifestations. The Power of Personal/Collective Intention.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "Shezza",
+    name: "Sexy Self Love during Turbulent Times Workshop",
+    text:
+      "How sexy self love is not only helpful, but key to our own awakening, and the unique gifts that we are here to offer the world.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 120,
+    host: "Co-reality Collective",
+    name: "Hot Tub Exodus",
+    text: "Turn your home bathtub into a hot tub and mingle.",
+    interactivity: "high",
+  },
+];
+
+const deserted_island_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 60,
+    host: "You",
+    name: "Uncharted Fun",
+    text: "Nothing is set to happen in here.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "You",
+    name: "Looking at Palm Trees",
+    text: "Did it move whilst I slept?",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "You",
+    name: "Drawing Faces on Inanimate Objects",
+    text: "Friend? Are you my friend now? Jeff?",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "You",
+    name: "Unsuccessful Raft Assembly",
+    text: "It got terribly damaged in the storm.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "You",
+    name: "Twiddling Thumbs",
+    text: "Surely there's an end to this hell.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "You",
+    name: "Attempts at Fishing",
+    text: "The world is your oyster? Is it? I'm hungry.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "You",
+    name: "Pretend Wedding",
+    text: "Really love you. It's not just the lack of choice.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 60,
+    host: "You",
+    name: "Singing in Utter Despair",
+    text: "Is that all there is?",
+    interactivity: "high",
+  },
+];
+
+const isle_of_friends_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 240,
+    host: "Captain Cooke aka Ed Cooke",
+    name: "Meet people, converse and indulge in merriment",
+    text:
+      "We present here for the first time an incredible new space for meeting new people, forging new connectinos, and sharing the magic of co-existence. It's good practice on entering an epic festival to make some new friends, comrades of the seas, to accompany you on your adventures. So come here throughout the night to chat in privacy and comfort to friends new and old.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "You",
+    name: "Get to know your new friends",
+    text:
+      "Time to go deep with your newly acquired friends and really begin to get to know them.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "You",
+    name: "Introduce your new friends to your old friends",
+    text:
+      "Perhaps a good moment to cross-pollinate your festival friendship circles.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "You",
+    name: "Indulge in some Deep and Meaningfuls",
+    text:
+      "We're now into the sublime depths of the party. A time for intimacy and connection. Or perhaps just drunken anecdotes.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 60,
+    host: "You",
+    name: "The Okay Hole",
+    text:
+      "We're now deep into the perigee of the partypelago. Time to co-explore the outer islands of consciousness in roving intellectual conversation with your new crew.",
+    interactivity: "high",
+  },
+];
+
+const futuristic_cat_pirates_events = [
+  midnight_event,
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "Be More Pirate",
+    name: "Q&A",
+    text: "Q&A with Be More Pirate.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "Futuristic Cat Pirates",
+    name: "Exotic Archetype Oracle Readings",
+    text: "Hop on board to find out more.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 60,
+    host: "Futuristic Cat Pirates",
+    name: "Pleasure Pirate Initiations",
+    text: "Hop on board to find out more.",
+    interactivity: "high",
+  },
+];
+
+const castaway_clowns_events = [
+  {
+    start_minute: 30,
+    duration_minutes: 30,
+    host: "Castaway Clowns",
+    name: "Clowntown",
+    text: "Drinking games, silly banter and good music!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Castaway Clowns",
+    name: "Clowntown",
+    text: "Lose your frown, have a clown!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Ralph Bogard",
+    name: "Ralph Bogard Presents The All Star Chat Show",
+    text: "Meet the hottest, most interesting guests in the Partypelago.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Paklaow",
+    name: "Paklaow Presents Humorous, Meditation to Lift Your Inner Magic",
+    text:
+      "A circus show where Paklaow will invent hilarious songs about people in the audience.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const mystic_eyeland_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Shelly",
+    name: "Sex Magic and Sensational Play",
+    text:
+      "A scrumptuous Playshop where we tap into our sexy energy and geel the MAGIC of sensational play.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "InFlo Collective",
+    name: "Cosmic Flo with InFlo Collective",
+    text: "A cosmic genre-bending dance exploration of space, time and rhythm.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Ben of the Green",
+    name: "StoryJam",
+    text: "Haunted tales of the mystics open mic style StoryJam.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 270,
+    duration_minutes: 105,
+    host: "DJ MPH and DJ Malarkey",
+    name: "Shipwreck Disco",
+    text:
+      "DJ MPG and DJ Malarkey bringing you the best Disco and House classics.",
+    interactivity: "low",
+  },
+  {
+    start_minute: 375,
+    duration_minutes: 75,
+    host: "DJ Rae",
+    name: "Sounds of the Sea",
+    text:
+      "Spiritually-infused soundscape of heart-centered tribal and electronic beats.",
+    interactivity: "low",
+  },
+];
+
+const great_barrier_grief_events = [
+  {
+    start_minute: 30,
+    duration_minutes: 90,
+    host: "Hannah V (Joyfest)",
+    name: "Opening Ceremony",
+    text:
+      "Arriving, intention settings, Finding our groove in a space designed to help you radiate your fullest expression. Music, movement, facilitation.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Samy & Sophie",
+    name: "Silent Square",
+    text: "Gather, meditate, reconnect in silence for Black Lives Matter.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Ceremonlist Cree",
+    name: "Corazón Y Canto (Heart & Song) Ceremony",
+    text:
+      "Ceremony as an everyday practice into our lives. An invitation into our heart space.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "Thomas & Franco",
+    name: "Trust Disco",
+    text:
+      "A healing trust circle, where whatever you wish to express will be heard, heeded and acknowledged through dance.",
+    interactivity: "high",
+  },
+];
+
+const xnn_research_bunker_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 30,
+    host: "Sofi",
+    name: "XNN Lab Life: Chorei",
+    text: "Warm up the workspace with dancing, stretches and more",
+    interactivity: "high",
+  },
+  {
+    start_minute: 30,
+    duration_minutes: 30,
+    host: "Sofi",
+    name: "XNN Lab Life: Plant Therapy with Moss Labs",
+    text: "Bring a plant, and align your mind to its care",
+    interactivity: "high",
+  },
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Megan",
+    name: "Super Nothing Amazing Channel",
+    text: "Interactive TV live directly to your sense organs",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Mark",
+    name: "OneCor Product Showcase",
+    text: "Display of our cutting edge lifestyle upgrades",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 60,
+    host: "Sofi",
+    name: "Dr Leon Manife-station with Adam John Williams",
+    text: "Remote therapy to increase neural capacity & joy.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Jade",
+    name: "Space Grandma's Tea Room",
+    text: "Bedtime stories from zir home planet. Bring a cup of tea",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "Sofi",
+    name: "XNN Cryogenics Chill out with Ping Interactive",
+    text: "You'll be frozzzzzzzzzzzen, music to sleep to.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "Nik",
+    name: "Oasis Time Travel Agency & Cyberdream 2036",
+    text: "Where will you go? When will you go?",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 60,
+    host: "Phil Mann",
+    name: "An Invitation to Magicktry! Remake",
+    text:
+      "Play through this sequel to the 9th best-selling Atari title of 1984.",
+    interactivity: "high",
+  },
+];
+
+survivor_island_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Karin",
+    name: "Island Scavenger Hunt and BINGO",
+    text: "Get your BINGO card & win a VIP ticket to our next party!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Jess",
+    name: "'Survivor' Competition Games",
+    text:
+      "Be a contestant on the hit TV show 'Survivor' w/lip sync battles, a pet beauty pageant, and scattergories.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 45,
+    host: "Stefano",
+    name: "Team Trivia",
+    text: "Work with your team to win it all with Island Trivia.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 225,
+    duration_minutes: 15,
+    host: "Jess",
+    name: "Celebratory Dance Party",
+    text: "Dance to funky tunes and celebrate your victory!",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "Courteney",
+    name: "Never Have I Ever & More Games",
+    text: "Connect w/other festival-goers & spill your dirty secrets.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 60,
+    host: "Tanner",
+    name: "Life's a Beach - Fun Times on the Joke Boat",
+    text:
+      "Practice your stand-up routine in this interactive island cruise themed game show.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 60,
+    host: "Outer Lumen & VJ",
+    name: "Outer Lumen DJ Dance Party",
+    text:
+      "Dance to audio-responsive visualizations & redeem your festival BINGO card!",
+    interactivity: "high",
+  },
+];
+
+const sirens_call_events = [
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 30,
+    host: "Mermaid Nathiqua",
+    name:
+      "Flowing through the Cosmos ACT I - Silks w Cory Catt; Addiction & Passion - Silks w Tabs; Dance in Circles - Azula Flow",
+    text: "Nothing is set to happen in here.",
+    interactivity: "low",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Courtney Wild Free",
+    name: "Mermaiding",
+    text:
+      "Lyrical Dance - Amanda; Only from the Heart Can You Touch the Sky - Lyra w Komorebi; Flowing Through the Cosmos ACT II - Lyra w Cory Catt; Expression o fDarkness & Duality - Whip + Hoop w Amanda",
+    interactivity: "low",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 30,
+    host: "Suzie Smith",
+    name: "Alice in Wonderland",
+    text:
+      "Levels of Enchantment - Belly Dance w Cupcake Much; Fire Performance - TRYDNT",
+    interactivity: "low",
+  },
+  {
+    start_minute: 390,
+    duration_minutes: 30,
+    host: "Elementals Tribe",
+    name: '"A Black Dream" Prayerformance',
+    text:
+      "Heavy Metal Belly Dance - Daleki Lizard; Hot Tub Exodus - Exotic w/ Cupcake Much; Magical Transformation - LED Hoop w Asherah",
+    interactivity: "low",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 30,
+    host: "Komorebi",
+    name: "Spoken Movement - Mixed Medium Production",
+    text:
+      "Flowing Through the Cosmos ACT III - Pole w Cory Catt; Aquatic Performance - Mermaid Asherah; I have a story to share - Prayerformance by Kelsey",
+    interactivity: "low",
+  },
+  {
+    start_minute: 450,
+    duration_minutes: 30,
+    host: "Gale Force",
+    name: "Enchantments | Pole | Burlesque",
+    text:
+      "Fire Performance - Azula Flow; Partner Acrobatics & Fire - Petite Luna Circus & Sol",
+    interactivity: "low",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 30,
+    host: "TBA",
+    name: "Closing Ceremony",
+    text: "",
+    interactivity: "high",
+  },
+  {
+    start_minute: 510,
+    duration_minutes: 30,
+    host: "Co-reality Collective",
+    name: "Cacao & Decompression",
+    text: "",
+    interactivity: "high",
+  },
+];
+
+const wars_subsurface_disco_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 15,
+    host: "Captain Seize",
+    name: "Welcome Aboard!",
+    text: "Captain Seize welcomes you to the submarine",
+    interactivity: "high",
+  },
+  {
+    start_minute: 15,
+    duration_minutes: 60,
+    host: "Red Star 05 AKA Sonic Joyrider",
+    name: "DJ Set",
+    text: "Rebel Retro Northern Soul & Uplifting Grooves",
+    interactivity: "low",
+  },
+  {
+    start_minute: 75,
+    duration_minutes: 45,
+    host: "Red Star 08 AKA General Midi",
+    name: "DJ Set",
+    text: "90s Hip Hop Slammers",
+    interactivity: "low",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 75,
+    host: "Red Star 06 AKA Rogue Leader",
+    name: "DJ Set",
+    text: "Molotov Cocktail of breaks, weird treats 'n' rebel beats",
+    interactivity: "low",
+  },
+  {
+    start_minute: 195,
+    duration_minutes: 45,
+    host: "Red Star 77 AKA Audio Kulture",
+    name: "DJ Set",
+    text: "Sub Sonar House and Future Funk",
+    interactivity: "low",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 90,
+    host: "Red Star 88 AKA Big Red Al",
+    name: "DJ Set",
+    text: "Rebel Disco Command Centre",
+    interactivity: "low",
+  },
+  {
+    start_minute: 390,
+    duration_minutes: 30,
+    host: "Captain Seize",
+    name: "Anchors Away",
+    text: "Captain Seize bids you au revoir",
+    interactivity: "high",
+  },
+];
+
+const tropicana_fantasea_island_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 30,
+    host: "Zara & Sam with guests",
+    name: "Welcome Reception Party",
+    text:
+      "Check into the beautiful Tropicana Fantasea Island Resort and meet the team.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 90,
+    duration_minutes: 30,
+    host: "Iona, Roxy, and Arkem",
+    name: "Fantasea Beach Club & Surfing Lessons",
+    text: "Hit the beach and ride a wave or visit our luxurious Spa",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 50,
+    host: "Multiple Hosts",
+    name: "Adventure Tour of the Island",
+    text: "Join the sight-seeing Tour, who knows what you might spot",
+    interactivity: "high",
+  },
+  {
+    start_minute: 170,
+    duration_minutes: 40,
+    host: "Multiple Hosts",
+    name: "Mermaid's Fertility Dance & Tropicana Fantasea Gift Shop",
+    text: "Enter the Mermaid's cave and find the object of your desire",
+    interactivity: "high",
+  },
+  {
+    start_minute: 210,
+    duration_minutes: 30,
+    host: "Multiple Hosts",
+    name: "The Volcano Ritual",
+    text:
+      "Gather and offer up your objects of desire to pelasure the island volcano",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 255,
+    duration_minutes: 45,
+    host: "DJ Muzz Khan",
+    name: "Lava Rave",
+    text: "The floor is lava so hot it burns",
+    interactivity: "high",
+  },
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "DJ Mattana",
+    name: "Lava Rave",
+    text: "The hottest party in town",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 120,
+    host: "Chemical Adam",
+    name: "Lava Rave",
+    text: "Smoldering till the early hours",
+    interactivity: "high",
+  },
+];
+
+const ddp_disco_barge_events = [
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 120,
+    host: "Gary Lachance",
+    name: "High Seas Dance Magic",
+    text: "Decentralised Dance Party",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 120,
+    host: "Admiral Fiesta",
+    name: "High Seas Dance Magic",
+    text: "Decentralised Dance Party",
+    interactivity: "high",
+  },
+];
+
+const sex_on_the_beesha_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 180,
+    host: "Beeshas",
+    name: "Beeshas Perigosas",
+    text:
+      "Served long and on the rocks, this is a special Pride edition of Beeshas House Party, where we shake our bundas to the sound of Brazilian funk, reggaeton, pop and much more.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 180,
+    host: "Beeshas",
+    name: "Beeshas Perigosas Continued",
+    text: "Served even longer, dance until you drop...",
+    interactivity: "high",
   },
 ];
 
@@ -43,7 +907,7 @@ module.exports = {
       path:
         "M 62.958 87.298 C 61.257 101.508 55.181 165.197 65.192 175.208 C 70.354 180.37 62.119 201.829 66.324 206.033 C 70.617 210.326 110.349 194.965 115.987 192.097 C 148.323 175.65 207.831 168.87 251.276 168.87 C 259.473 168.87 296.588 165.659 302.081 171.153 C 307.644 176.715 344.259 175.234 348.319 171.104 C 350.043 169.351 374.163 170.896 376.861 172.245 C 399.887 183.758 456.914 166.102 473.904 183.091 C 490.89 200.076 541.155 184.696 558.389 201.929 C 574.719 218.259 622.843 205.304 638.307 220.767 C 654.896 237.356 694.023 222.081 716.512 233.325 C 727.757 238.948 758.598 229.745 766.746 237.892 C 771.491 242.637 809.52 239.653 812.984 236.13 C 822.33 226.624 854.492 239.781 864.36 229.743 C 878.028 215.839 898.019 206.537 912.881 191.418 C 918.173 186.034 945.651 192.782 947.702 194.833 C 968.107 215.237 1070.406 244.86 1100.117 214.635 C 1106.341 208.303 1097.184 195.857 1097.184 187.924 C 1097.184 182.906 1108.569 165.728 1102.892 160.051 C 1084.709 141.868 1047.877 143.946 1029.146 125.21 C 1026.291 122.355 993.511 120.156 990.208 123.403 C 984.055 129.451 993.011 134.628 987.416 140.129 C 977.902 149.482 951.149 117.683 949.011 115.545 C 937.256 103.788 889.627 122.9 881.652 114.925 C 875.722 108.995 879.494 85.237 873.513 91.117 C 864.545 99.933 843.804 95.777 835.188 104.246 C 831.152 108.214 815.416 100.279 811.38 104.246 C 796.521 118.853 724.5 121.001 703.373 110.437 C 686.24 101.87 650.587 113.977 637.755 101.146 C 624.951 88.342 583.562 102.118 570.977 89.532 C 553.409 71.965 504.787 90.121 486.778 72.112 C 475.041 60.375 442.499 70.803 430.452 58.756 C 419.809 48.114 385.922 60.681 375.867 50.627 C 372.477 47.236 338.227 50.515 335.8 52.9 C 332.385 56.258 302.069 56.91 296.314 54.032 C 277.972 44.861 201.794 47.373 184.823 55.715 C 165.127 65.396 132.992 64.093 112.244 74.291 C 101.292 79.675 85.715 76.265 76.988 84.844 C 73.38 88.391 66.47 87.832 63.247 87.832",
       image: "",
-      events: events_todo,
+      events: [],
     },
     {
       title: "Live Music: Jazztastic Park",
@@ -59,7 +923,7 @@ module.exports = {
       attendance_x: "5%",
       attendance_y: "10%",
       image: "CRC_Island_JAZZ2.png",
-      events: events_todo,
+      events: jazztastic_events,
     },
     {
       title: "Fun & Games: Survivor Island",
@@ -76,7 +940,7 @@ module.exports = {
       attendance_x: "28%",
       attendance_y: "19%",
       image: "CRC_Island_SURVIVE.png",
-      events: events_todo,
+      events: survivor_island_events,
     },
     {
       title: "Live performances: Castaway Clowns",
@@ -92,7 +956,7 @@ module.exports = {
       attendance_x: "42%",
       attendance_y: "21%",
       image: "CRC_Island_CLOWNS.png",
-      events: events_todo,
+      events: castaway_clowns_events,
     },
     {
       title: "Dancing: Klub Krabi",
@@ -108,7 +972,7 @@ module.exports = {
       attendance_x: "60%",
       attendance_y: "10%",
       image: "CRC_Island_KRAB.png",
-      events: events_todo,
+      events: krabi_events,
     },
     {
       title: "Hidden: Pirate Ship",
@@ -121,7 +985,7 @@ module.exports = {
       path:
         "M 2146.382 604.508 C 2144.547 618.82 2144.064 637.354 2152.545 645.835 C 2154.01 647.3 2166.532 663.583 2163.566 666.499 C 2139.913 689.75 2131.334 753.842 2155.573 778.083 C 2171.785 794.296 2220.46 778.689 2243.739 778.689 C 2330.522 778.689 2421.169 804.759 2471.728 753.322 C 2495.52 729.117 2429.203 704.995 2426.862 697.97 C 2422.742 685.611 2476.277 653.959 2453.724 631.406 C 2443.311 620.993 2426.077 615.671 2416.589 606.182 C 2407.494 597.087 2387.148 617.273 2378.052 608.178 C 2355.913 586.038 2353.519 538.8 2331.809 517.091 C 2323.459 508.743 2307.664 506.959 2298.877 498.173 C 2261.852 461.149 2248.56 554.501 2242.123 560.829 C 2226.807 575.887 2210.742 540.519 2197.281 553.751 C 2193.67 557.301 2183.084 566.24 2179.063 568.216 C 2170.679 572.337 2162.323 585.359 2155.942 591.635 C 2151.917 595.593 2146.821 615.819 2146.821 610.873",
       image: "CRC_Island_PIRATE.png",
-      events: events_todo,
+      events: [],
     },
     {
       title: "Fun & Games: The Love Lagoon",
@@ -138,7 +1002,7 @@ module.exports = {
       attendance_x: "85%",
       attendance_y: "19%",
       image: "CRC_Island_LOVE.png",
-      events: events_todo,
+      events: love_lagoon_events,
     },
     {
       title: "Discussions & Q&A: The Worldpool",
@@ -155,7 +1019,7 @@ module.exports = {
       attendance_x: "46%",
       attendance_y: "40%",
       image: "CRC_Island_WORLD.png",
-      events: events_todo,
+      events: worldpool_events,
     },
     {
       title: "Dancing: Mystic EyeLand",
@@ -172,7 +1036,7 @@ module.exports = {
       attendance_x: "62%",
       attendance_y: "37%",
       image: "CRC_Island_MYSTIC.png",
-      events: events_todo,
+      events: mystic_eyeland_events,
     },
     {
       title: "Dancing: DDP Disco Barge",
@@ -188,7 +1052,7 @@ module.exports = {
       attendance_x: "80%",
       attendance_y: "38%",
       image: "CRC_Island_DDP.png",
-      events: events_todo,
+      events: ddp_disco_barge_events,
     },
     {
       title: "BYO Party: Deserted Island",
@@ -205,7 +1069,7 @@ module.exports = {
       attendance_x: "90%",
       attendance_y: "39%",
       image: "CRC_Island_DESERT.png",
-      events: events_todo,
+      events: deserted_island_events,
     },
     {
       title: "Welcome: The Bermuda Party Portal",
@@ -219,7 +1083,7 @@ module.exports = {
       path:
         "M 94.015 1203.415 C 91.21 1155.737 115.041 1123.042 129.168 1094.3 C 133.785 1084.907 75.946 1048.113 95.07 1028.661 C 105.351 1018.202 128.545 1025.283 139.484 1014.154 C 147.401 1006.101 137.384 978.783 145.35 970.679 C 149.139 966.825 157.116 968.087 161.272 963.859 C 167.253 957.775 154.323 942.768 161.243 935.728 C 165.13 931.775 206.978 925.215 213.2 931.437 C 236.242 954.479 275.135 964.041 300.353 989.26 C 308.224 997.131 321.573 965.117 323.818 962.833 C 332.863 953.633 418.743 943.024 432.759 950.032 C 454.094 960.699 413.172 970.164 418.18 975.172 C 430.179 987.171 444.31 997.949 455.891 1009.531 C 468.307 1021.947 395.011 1074.407 387.694 1081.6 C 382.51 1086.696 444.11 1091.087 447.193 1094.17 C 462.433 1109.41 438.59 1176.144 453.825 1191.379 C 455.247 1192.802 455.247 1224.34 453.825 1225.738 C 443.212 1236.17 372.744 1218.763 364.317 1210.336 C 359.983 1206.002 299.878 1209.993 296.972 1212.85 C 292.415 1217.329 263.366 1213.688 256.054 1213.688 C 215.891 1213.688 174.467 1210.278 135.858 1210.278 C 125.277 1210.278 92.941 1212.249 92.941 1203.732",
       image: "",
-      events: events_todo,
+      events: [],
     },
     {
       title: "Donate to the Artists",
@@ -231,7 +1095,7 @@ module.exports = {
       path:
         "M 418.626 1380.353 C 412.58 1335.014 428.65 1344.284 448.952 1323.632 C 454.564 1317.922 470.616 1332.326 470.636 1332.306 C 481.473 1321.284 486.396 1302.409 497.277 1291.341 C 501.592 1286.951 485.859 1242.975 497.789 1230.838 C 512.945 1215.42 538.802 1213.698 552.93 1199.327 C 556.444 1195.752 545.928 1171.753 552.278 1165.294 C 562.453 1154.943 563.579 1131.737 574.582 1120.547 C 587.461 1107.449 633.535 1088.075 653.885 1108.423 C 663.949 1118.487 609.908 1157.22 604.085 1162.944 C 601.782 1165.208 613.508 1202.724 615.857 1205.073 C 621.029 1210.245 611.726 1228.96 610.185 1230.475 C 607.991 1232.631 607.034 1242.225 607.034 1239.149 C 607.034 1230.751 631.361 1240.499 633.055 1242.193 C 643.977 1253.115 658.293 1300.255 632.485 1342.681 C 623.126 1358.067 603.291 1351.038 592.378 1361.767 C 592 1362.138 610.704 1368.941 612.204 1370.441 C 615.461 1373.697 641.074 1393.796 629.541 1405.136 C 604.631 1429.628 604.291 1454.407 569.668 1471.428 C 563.083 1474.665 543.902 1480.858 537.526 1474.483 C 534.32 1471.277 525.631 1437.316 531.843 1430.997 C 536.354 1426.408 547.545 1419.791 542.995 1415.241 C 538.851 1411.096 525.663 1413.665 521.567 1409.569 C 518.48 1406.481 520.841 1394.163 520.916 1391.292 C 521.178 1381.281 502.93 1391.976 493.36 1394.925 C 483.053 1398.101 461.305 1388.508 455.25 1385.481 C 450.864 1383.288 443.217 1404.201 436.818 1405.291 C 428.014 1406.79 418.588 1387.372 418.588 1380.88",
       image: "",
-      events: events_todo,
+      events: [],
     },
     {
       title: "Live Performances: Sirens' Call",
@@ -248,7 +1112,7 @@ module.exports = {
       attendance_x: "22%",
       attendance_y: "50%",
       image: "CRC_Island_SIREN.png",
-      events: events_todo,
+      events: sirens_call_events,
     },
     {
       title: "Discussions & Q&A: XNN Research Bunker",
@@ -265,7 +1129,7 @@ module.exports = {
       attendance_x: "1%",
       attendance_y: "66%",
       image: "CRC_Island_XNN.png",
-      events: events_todo,
+      events: xnn_research_bunker_events,
     },
     {
       title: "Discussions & Q&A: Futuristic Cat Pirate Ship",
@@ -281,7 +1145,7 @@ module.exports = {
       attendance_x: "24%",
       attendance_y: "74%",
       image: "CRC_Island_KITTIES.png",
-      events: events_todo,
+      events: futuristic_cat_pirates_events,
     },
     {
       title: "Make Friends at Isle of Friends",
@@ -297,7 +1161,7 @@ module.exports = {
       attendance_x: "44%",
       attendance_y: "65%",
       image: "CRC_Island_FRIENDS.png",
-      events: events_todo,
+      events: isle_of_friends_events,
     },
     {
       title: "Discussions & Q&A: Great Barrier Grief",
@@ -315,7 +1179,7 @@ module.exports = {
       attendance_x: "72%",
       attendance_y: "58%",
       image: "CRC_Island_BARRIER.png",
-      events: events_todo,
+      events: great_barrier_grief_events,
     },
     {
       title: "Dancing: W*A*R*S Subsurface Disco",
@@ -332,7 +1196,7 @@ module.exports = {
       attendance_x: "41%",
       attendance_y: "88%",
       image: "CRC_Island_SUB.png",
-      events: events_todo,
+      events: wars_subsurface_disco_events,
     },
     {
       title: "Fun & Games: Tropicana Fantasea Island Resort",
@@ -350,7 +1214,7 @@ module.exports = {
       attendance_x: "86%",
       attendance_y: "80%",
       image: "CRC_Island_TROPICA.png",
-      events: events_todo,
+      events: tropicana_fantasea_island_events,
     },
     {
       title: "Pride Dancing: Sex on the Beesha",
@@ -367,7 +1231,7 @@ module.exports = {
       attendance_x: "65%",
       attendance_y: "77.5%",
       image: "CRC_Island_BEESHA.png",
-      events: events_todo,
+      events: sex_on_the_beesha_events,
     },
     {
       title: "Message in a Bottle",
@@ -379,7 +1243,7 @@ module.exports = {
       path:
         "M 744.878 1549.806 C 755.992 1555.036 769.584 1557.189 783.795 1557.189 C 786.154 1557.189 796.623 1558.536 798.101 1557.032 C 800.735 1554.352 811.343 1559.363 814.252 1556.404 C 817.925 1552.666 820.983 1549.871 824.25 1546.546 C 826.905 1543.845 834.477 1545.845 837.325 1542.947 C 840.293 1539.928 842.47 1536.306 845.478 1533.246 C 846.484 1532.222 848.863 1526.182 847.008 1524.327 C 846.073 1523.392 840.735 1508.027 834.021 1514.626 C 832.135 1516.479 826.308 1515.285 824.476 1517.087 C 823.194 1518.347 821.678 1521.895 820.407 1520.625 C 811.932 1512.15 795.718 1509.999 785.514 1520.028 C 782.128 1523.356 775.303 1522.373 772.213 1525.412 C 765.798 1531.722 747.62 1524.358 741.388 1530.482 C 733.754 1537.986 739.858 1549.697 748.408 1549.697",
       image: "",
-      events: events_todo,
+      events: [],
     },
   ],
 };
