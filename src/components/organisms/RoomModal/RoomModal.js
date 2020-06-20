@@ -6,6 +6,7 @@ import { Modal } from "react-bootstrap";
 import { exitPreviewRoom } from "actions";
 import { getCurrentEvent } from "utils/time";
 
+import Chatbox from "components/organisms/Chatbox";
 import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/molecules/ScheduleItem";
@@ -97,6 +98,7 @@ export default function RoomModal({ startUtcSeconds, show, onHide }) {
             ))}
           </div>
         )}
+        <Chatbox room={room.title} />
       </Modal.Body>
     </Modal>
   );

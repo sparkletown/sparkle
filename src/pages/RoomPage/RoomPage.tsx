@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import { getCurrentEvent } from "utils/time";
 
+import Chatbox from "components/organisms/Chatbox";
 import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/molecules/ScheduleItem";
@@ -79,6 +80,7 @@ export default function RoomPage() {
             ))}
           </div>
         )}
+        <Chatbox room={room.title} />
       </div>
     </WithNavigationBar>
   );

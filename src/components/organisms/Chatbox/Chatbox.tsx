@@ -168,7 +168,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     ) : (
                       <>
                         {chatboxMessageType === "global" ? "Everybody" : ""}
-                        {chatboxMessageType === "room" ? "This Room" : ""}
+                        {chatboxMessageType === "room"
+                          ? `This Room: ${room}`
+                          : ""}
                       </>
                     )}
                   </Dropdown.Toggle>
@@ -176,13 +178,13 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     <Dropdown.Item
                       onClick={() => changeChatboxMessageType("global")}
                     >
-                      everybody
+                      Everybody
                     </Dropdown.Item>
                     {room && (
                       <Dropdown.Item
                         onClick={() => changeChatboxMessageType("room")}
                       >
-                        this room
+                        This Room: {room}
                       </Dropdown.Item>
                     )}
                     <FormControl

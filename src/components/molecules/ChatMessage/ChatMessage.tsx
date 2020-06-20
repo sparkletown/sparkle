@@ -27,7 +27,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
   const getRecipient = () => {
     switch (chat.type) {
       case "global":
-        return "everybody";
+        return "Everybody";
       case "private":
         return chat.to === user.uid
           ? "you"
