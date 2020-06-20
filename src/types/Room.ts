@@ -1,6 +1,6 @@
 export interface Event {
-  start_hour: number;
-  duration_hours: number;
+  start_minute: number;
+  duration_minutes: number;
   host: string;
   name: string;
   text: string;

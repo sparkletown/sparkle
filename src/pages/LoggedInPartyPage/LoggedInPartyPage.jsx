@@ -43,7 +43,7 @@ const LoggedInPartyPage = () => {
         )}
         <div className="col">
           <div className="starting-indication">
-            This is the clickable party map. Begin at the Dock of the Bay.
+            This is the clickable party map. Begin at the Bermuda Party Portal.
           </div>
           <CountDown startUtcSeconds={config.start_utc_seconds} />
         </div>

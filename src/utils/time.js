@@ -35,11 +35,11 @@ export const getTimeBeforeParty = (startUtcSeconds) => {
   return `${numberOfMinutes} minutes`;
 };
 
-export function formatHour(hour, startUtcSeconds) {
-  if (hour === null || hour === undefined) {
+export function formatMinute(minute, startUtcSeconds) {
+  if (minute === null || minute === undefined) {
     return "(unknown)";
   }
-  const utcSeconds = startUtcSeconds + hour * ONE_HOUR_IN_SECONDS;
+  const utcSeconds = startUtcSeconds + minute * ONE_MINUTE_IN_SECONDS;
   return formatUtcSeconds(utcSeconds);
 }
 
