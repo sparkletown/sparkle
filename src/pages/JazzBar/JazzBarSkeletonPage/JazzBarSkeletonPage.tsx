@@ -109,6 +109,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                         seatedAtTable={seatedAtTable}
                         setSeatedAtTable={setSeatedAtTable}
                         TableComponent={JazzbarTableComponent}
+                        joinMessage={true}
                       />
                       {seatedAtTable !== "" && (
                         <>

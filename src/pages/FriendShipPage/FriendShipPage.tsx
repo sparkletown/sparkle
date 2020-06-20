@@ -53,6 +53,7 @@ const FriendShipPage = () => {
                 seatedAtTable={seatedAtTable}
                 TableComponent={FriendShipTableComponent}
                 customTables={FRIENDSHIP_CUSTOM_TABLES}
+                joinMessage={false}
               />
               {seatedAtTable && (
                 <>
