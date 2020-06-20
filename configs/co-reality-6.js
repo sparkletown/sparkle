@@ -902,7 +902,7 @@ module.exports = {
     },
     {
       name: "likeAboutParties",
-      text: "What do you like about parties?",
+      text: "What do you like about festivals?",
     },
   ],
   rooms: [
