@@ -301,7 +301,7 @@ const isle_of_friends_events = [
   {
     start_minute: 0,
     duration_minutes: 240,
-    host: "Captain Cooke aka Ed Cooke",
+    host: "Captain Cooke",
     name: "Meet people, converse and indulge in merriment",
     text:
       "We present here for the first time an incredible new space for meeting new people, forging new connectinos, and sharing the magic of co-existence. It's good practice on entering an epic festival to make some new friends, comrades of the seas, to accompany you on your adventures. So come here throughout the night to chat in privacy and comfort to friends new and old.",
@@ -1157,7 +1157,7 @@ module.exports = {
       events: futuristic_cat_pirates_events,
     },
     {
-      title: "Make Friends at Isle of Friends",
+      title: "Isle of Friends",
       subtitle: "Welcome Reception - A place where people meet each other",
       about:
         "Meet your fellow party-goers, make friends, enjoy conversations in many private spaces of connection.",

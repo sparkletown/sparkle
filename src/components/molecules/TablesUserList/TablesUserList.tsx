@@ -168,6 +168,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const onAcceptJoinMessage = () => {
+    window.scrollTo(0, 0);
     setShowJoinMessage(false);
     takeSeat();
     setSeatedAtTable(table);
@@ -200,6 +201,13 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const tableOfUser =
     seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
 
+  const usersAtCurrentTable =
+    seatedAtTable &&
+    users &&
+    users.filter(
+      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
+    );
+
   return (
     <>
       <div className="userlist-container">
@@ -208,21 +216,33 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             <div className="row no-margin at-table">
               <div className="header">
                 <div className="table-title-container">
-                  <p className="private-table-title">{seatedAtTable}</p>
+                  <div className="private-table-title">{seatedAtTable}</div>
                   {tableOfUser && tableOfUser.subtitle && (
-                    <p className="private-table-subtitle">
+                    <div className="private-table-subtitle">
                       {tableOfUser.subtitle}
-                    </p>
+                    </div>
                   )}
                 </div>
-                <button
-                  type="button"
-                  title={"Leave " + seatedAtTable}
-                  className="btn"
-                  onClick={() => setShowLeaveMessage(true)}
-                >
-                  Leave
-                </button>
+                <div>
+                  {tableOfUser && tableOfUser.capacity && (
+                    <div>
+                      {usersAtCurrentTable &&
+                        `${
+                          tableOfUser.capacity - usersAtCurrentTable.length
+                        }`}{" "}
+                      seats left
+                    </div>
+                  )}
+
+                  <button
+                    type="button"
+                    title={"Leave " + seatedAtTable}
+                    className="btn"
+                    onClick={() => setShowLeaveMessage(true)}
+                  >
+                    Return to Isle of Friends
+                  </button>
+                </div>
               </div>
               <div className="actions">
                 <label className="switch">

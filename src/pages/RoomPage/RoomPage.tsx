@@ -12,6 +12,7 @@ import ScheduleItem from "components/molecules/ScheduleItem";
 import { PARTY_NAME } from "config";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { enterRoom } from "utils/useLocationUpdateEffect";
+import "./RoomPage.scss";
 
 export default function RoomPage() {
   let { roomName } = useParams();
@@ -63,24 +64,28 @@ export default function RoomPage() {
         </div>
         <UserList users={usersToDisplay} limit={11} activity={"in this room"} />
         {room.about && <div className="about-this-room">{room.about}</div>}
-        {room.events && room.events.length > 0 && (
-          <div className="schedule-container">
-            <div className="schedule-title">Room Schedule</div>
-            {room.events.map((event: any, idx: number) => (
-              <ScheduleItem
-                key={idx}
-                startUtcSeconds={config.start_utc_seconds}
-                event={event}
-                isCurrentEvent={
-                  currentEvent && event.name === currentEvent.name
-                }
-                enterRoom={enter}
-                roomUrl={room.external_url}
-              />
-            ))}
+        <div className="row">
+          {room.events && room.events.length > 0 && (
+            <div className="col schedule-container">
+              <div className="schedule-title">Room Schedule</div>
+              {room.events.map((event: any, idx: number) => (
+                <ScheduleItem
+                  key={idx}
+                  startUtcSeconds={config.start_utc_seconds}
+                  event={event}
+                  isCurrentEvent={
+                    currentEvent && event.name === currentEvent.name
+                  }
+                  enterRoom={enter}
+                  roomUrl={room.external_url}
+                />
+              ))}
+            </div>
+          )}
+          <div className="col-5 chatbox-container">
+            <Chatbox room={room.title} />
           </div>
-        )}
-        <Chatbox room={room.title} />
+        </div>
       </div>
     </WithNavigationBar>
   );
