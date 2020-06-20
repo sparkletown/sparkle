@@ -16,10 +16,22 @@
     .bar-container {
       background: $dark;
       border-radius: 22px;
+      color: $white;
+
+      .title {
+        font-size: 25px;
+        padding-bottom: 10px;
+      }
+
+      .subtitle {
+        font-size: 20px;
+        padding: 0 30px;
+        margin-bottom: 20px;
+      }
       .wrapper {
         min-height: 600px;
         margin-bottom: 30px;
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
     }
   }
@@ -69,7 +81,7 @@
   }
   .bar-container {
     .bartender {
-      grid-column: 4 / 6;
+      grid-column: 2 / 4;
       grid-row: 1 / 3;
     }
   }

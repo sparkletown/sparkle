@@ -31,6 +31,10 @@ const FriendShipPage = () => {
             {!seatedAtTable && (
               <div className="row">
                 <div className="col bar-container">
+                  <div className="title">Welcome reception</div>
+                  <div className="subtitle">
+                    Sip on Prosecco as you greet your fellow festival goers
+                  </div>
                   <div className="wrapper">
                     <Room roomName="friendship" setUserList={() => null} />
                   </div>
