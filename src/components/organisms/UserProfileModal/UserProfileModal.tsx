@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 
+import { PARTY_NAME } from "config";
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
 import { useSelector } from "react-redux";
@@ -25,9 +26,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   onHide,
   userProfile,
 }) => {
-  const { user, usersordered } = useSelector((state: any) => ({
+  const { user, usersordered, config } = useSelector((state: any) => ({
     user: state.user,
     usersordered: state.firestore.ordered.users,
+    config: state.firestore.data.config?.[PARTY_NAME],
   }));
 
   if (!userProfile) {
@@ -48,6 +50,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     fullUserProfile = userProfile;
   }
 
+  // REVISIT: remove the hack to cast to any below
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Body>
@@ -67,21 +70,15 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             </div>
             <div className="profile-extras">
-              <p className="light question">What's your drink of choice?</p>
-              <h6>
-                {userProfile.drinkOfChoice ||
-                  "I haven't edited my profile to tell you yet"}
-              </h6>
-              <p className="light question">What's your favourite record?</p>
-              <h6>
-                {userProfile.favouriteRecord ||
-                  "I haven't edited my profile to tell you yet"}
-              </h6>
-              <p className="light question">Do you dance?</p>
-              <h6>
-                {userProfile.doYouDance ||
-                  "I haven't edited my profile to tell you yet"}
-              </h6>
+              {config.profile_questions?.map((question: any) => (
+                <>
+                  <p className="light question">{question.text}</p>
+                  <h6>
+                    {(userProfile as any)?.[question.name] ||
+                      "I haven't edited my profile to tell you yet"}
+                  </h6>
+                </>
+              ))}
             </div>
           </div>
           {fullUserProfile.id !== user.uid && (
