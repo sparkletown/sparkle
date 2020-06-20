@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./RoomCard.scss";
 import RoomAttendance from "RoomAttendance";
-import { formatHour } from "utils/time";
+import { formatMinute } from "utils/time";
 import { Room } from "types/Room";
 import { getCurrentEvent } from "utils/time";
 import RoomModal from "components/organisms/RoomModal";
@@ -58,7 +58,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
             )}
             <div>
               <small>
-                {formatHour(eventToDisplay.start_hour, startUtcSeconds)}
+                {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
               </small>
             </div>
           </div>

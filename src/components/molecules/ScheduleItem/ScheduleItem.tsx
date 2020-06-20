@@ -1,6 +1,6 @@
 import React from "react";
 import { Event } from "types/Room";
-import { formatHour } from "utils/time";
+import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 
 interface PropsType {
@@ -21,11 +21,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   <div className="shedule-item-container">
     <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
       <div>
-        <b>{formatHour(event.start_hour, startUtcSeconds)}</b>
+        <b>{formatMinute(event.start_minute, startUtcSeconds)}</b>
       </div>
       <div>
-        {formatHour(
-          event.start_hour + event.duration_hours / 60,
+        {formatMinute(
+          event.start_minute + event.duration_minutes,
           startUtcSeconds
         )}
       </div>
