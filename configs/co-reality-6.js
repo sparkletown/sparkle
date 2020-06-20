@@ -114,11 +114,20 @@ const love_lagoon_events = [
   midnight_event,
   {
     start_minute: 300,
-    duration_minutes: 60,
-    host: "Luna Veronica Mhystic & Outer Lumen",
+    duration_minutes: 30,
+    host: "Luna Veronica Mystic & Outer Lumen",
     name: "Solstice Astrology Report & Individual Tarot Readings",
     text:
       "Love is in the Cosmos, come hear what's written in the stars for you and your lover.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Jesselynn Desmond",
+    name: "Lovers' Tarot and Individual Readings",
+    text:
+      "Love is in the Cosmos, come hear what's on the cards for you and your lover.",
     interactivity: "high",
   },
   {
