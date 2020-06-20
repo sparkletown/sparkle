@@ -7,7 +7,7 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   onJoinClicked,
   nameOfVideoRoom,
   experienceName,
-  imageSize = 35,
+  imageSize = 50,
   setSelectedUserProfile,
   table,
   tableLocked,
