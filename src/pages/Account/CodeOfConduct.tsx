@@ -70,7 +70,7 @@ const CodeOfConduct = () => {
                 className={`checkbox ${watch(q.id) && "checkbox-checked"}`}
               >
                 {q.link && (
-                  <a href={q.link} target="_blank">
+                  <a href={q.link} target="_blank" rel="noopener noreferrer">
                     {q.label}
                   </a>
                 )}
