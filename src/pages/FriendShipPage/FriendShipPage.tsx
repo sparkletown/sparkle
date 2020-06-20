@@ -24,11 +24,16 @@ const FriendShipPage = () => {
             <h1>Welcome to the friendship room!</h1>
             <h3>Pick one of our spaces to start making friends!</h3>
           </div>
-          <div className="row content">
+          <div className="content">
             {!seatedAtTable && (
-              <div className="col bar-container">
-                <div className="wrapper">
-                  <Room roomName="friendship" setUserList={() => null} />
+              <div className="row">
+                <div className="col bar-container">
+                  <div className="wrapper">
+                    <Room roomName="friendship" setUserList={() => null} />
+                  </div>
+                </div>
+                <div className="col-4">
+                  <Chatbox room="friendship" />
                 </div>
               </div>
             )}
@@ -50,10 +55,12 @@ const FriendShipPage = () => {
                 </>
               )}
             </div>
-            <div className="col-5">
+          </div>
+          {seatedAtTable && (
+            <div className="col-6">
               <Chatbox room="friendship" />
             </div>
-          </div>
+          )}
         </div>
       </WithNavigationBar>
     </div>
