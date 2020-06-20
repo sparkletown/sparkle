@@ -111,6 +111,20 @@
     background: $dark;
     color: $white;
     border-radius: 22px;
+
+    .private-table-title {
+      font-size: 25px;
+      font-weight: 700;
+      font-style: italic;
+    }
+  }
+
+  .actions {
+    display: flex;
+  }
+
+  .lock-table-checbox-indication {
+    margin-left: 20px;
   }
 
   .title-container {
@@ -131,5 +145,9 @@
   .table-container {
     background: $dark;
     border-radius: 22px;
+  }
+
+  .table-title-container {
+    margin: 20px 0;
   }
 }
