@@ -5,7 +5,6 @@ import { TableComponentPropsType } from "types/Table";
 const DEFAULT_TABLE_CAPACITY = 7;
 const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   table,
-  usersAtTables,
   tableLocked,
   experienceName,
   users,
@@ -15,7 +14,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
   nameOfVideoRoom,
   imageSize = 35,
 }) => {
-  const locked = tableLocked(table.reference || "", usersAtTables);
+  const locked = tableLocked(table.reference);
   const people = users.filter(
     (u: User) => u.data?.[experienceName]?.table === table.reference
   );

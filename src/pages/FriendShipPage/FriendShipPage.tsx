@@ -17,49 +17,46 @@ const FriendShipPage = () => {
   useUpdateLocationEffect(user, "Friend Ship");
 
   return (
-    <WithNavigationBar>
-      <div className="friendship-container">
-        <div className="container">
-          <div className="title row">
+    <div className="full-page-container">
+      <WithNavigationBar>
+        <div className="friendship-container">
+          <div className="title">
             <h1>Welcome to the friendship room!</h1>
             <h3>Pick one of our spaces to start making friends!</h3>
           </div>
-          <div className="row">
-            <div className="col content">
-              <div className="row">
-                {seatedAtTable ? (
-                  <>
-                    <div className="col wrapper">
-                      <Room roomName={seatedAtTable} setUserList={() => null} />
-                    </div>
-                  </>
-                ) : (
-                  <div className="col bar-container">
-                    <div className="wrapper">
-                      <Room roomName="friendship" setUserList={() => null} />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="row">
-                <div className="col table-container">
-                  <TablesUserList
-                    experienceName="friendship"
-                    setSeatedAtTable={setSeatedAtTable}
-                    seatedAtTable={seatedAtTable}
-                    TableComponent={FriendShipTableComponent}
-                    customTables={FRIENDSHIP_CUSTOM_TABLES}
-                  />
+          <div className="row content">
+            {!seatedAtTable && (
+              <div className="col bar-container">
+                <div className="wrapper">
+                  <Room roomName="friendship" setUserList={() => null} />
                 </div>
               </div>
+            )}
+          </div>
+          <div className="row">
+            <div className={`col ${seatedAtTable ? "table-container" : ""}`}>
+              <TablesUserList
+                experienceName="friendship"
+                setSeatedAtTable={setSeatedAtTable}
+                seatedAtTable={seatedAtTable}
+                TableComponent={FriendShipTableComponent}
+                customTables={FRIENDSHIP_CUSTOM_TABLES}
+              />
+              {seatedAtTable && (
+                <>
+                  <div className="col wrapper">
+                    <Room roomName={seatedAtTable} setUserList={() => null} />
+                  </div>
+                </>
+              )}
             </div>
             <div className="col-5">
               <Chatbox room="friendship" />
             </div>
           </div>
         </div>
-      </div>
-    </WithNavigationBar>
+      </WithNavigationBar>
+    </div>
   );
 };
 
