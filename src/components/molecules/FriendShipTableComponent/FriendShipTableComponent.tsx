@@ -16,7 +16,9 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   const usersSeatedAtTable = users.filter(
     (u: User) => u.data?.[experienceName]?.table === table.reference
   );
-  const full = table.capacity && table.capacity === usersSeatedAtTable.length;
+  const numberOfSeatsLeft =
+    table.capacity && table.capacity - usersSeatedAtTable.length;
+  const full = numberOfSeatsLeft === 0;
   return (
     <>
       <div
@@ -53,6 +55,13 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
                 </div>
               )}
             </div>
+            {numberOfSeatsLeft && numberOfSeatsLeft > 0 && (
+              <div className="remaining-seats">
+                {numberOfSeatsLeft} {numberOfSeatsLeft === 1 ? "seat" : "seats"}{" "}
+                left
+              </div>
+            )}
+
             {usersSeatedAtTable.map((user: User) => (
               <img
                 onClick={() => setSelectedUserProfile(user)}
