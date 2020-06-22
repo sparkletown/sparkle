@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { User } from "types/User";
 import JazzbarTableComponent from "components/molecules/JazzbarTableComponent";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import { PARTY_NAME } from "config";
 
 interface PropsType {
   userList: any;
@@ -37,18 +38,28 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     activity = "in the smoking area";
   }
 
-  const { users, user } = useSelector((state: any) => ({
+  const { users, user, experience } = useSelector((state: any) => ({
     users: state.firestore.ordered.partygoers,
     user: state.user,
+    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
   }));
 
-  useUpdateLocationEffect(user, "Jazz Mountain");
+  useUpdateLocationEffect(user, experience.associatedRoom);
 
   const usersSeated =
     users &&
     users.filter(
       (user: User) =>
-        user.data?.["Jazz Mountain"] && !user.data["Jazz Mountain"].table
+        user.data?.[experience.associatedRoom] &&
+        user.data[experience.associatedRoom].table
+    );
+
+  const usersStanding =
+    usersSeated &&
+    users.filter(
+      (user: User) =>
+        user.lastSeenIn === experience.associatedRoom &&
+        !usersSeated.includes(user)
     );
 
   return (
@@ -103,12 +114,14 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                       </p>
                     </div>
                     <div className="table-container">
-                      <TablesUserList
-                        experienceName="Jazz Mountain"
-                        seatedAtTable={seatedAtTable}
-                        setSeatedAtTable={setSeatedAtTable}
-                        TableComponent={JazzbarTableComponent}
-                      />
+                      {experience && (
+                        <TablesUserList
+                          experienceName={experience.associatedRoom}
+                          seatedAtTable={seatedAtTable}
+                          setSeatedAtTable={setSeatedAtTable}
+                          TableComponent={JazzbarTableComponent}
+                        />
+                      )}
                       {seatedAtTable !== "" && (
                         <>
                           <div className="wrapper">
@@ -118,15 +131,19 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                             />
                           </div>
                           <div className="header">
-                            <UserList
-                              users={users.filter(
-                                (user: User) =>
-                                  user.data?.["Jazz Mountain"]?.table !==
-                                  seatedAtTable
-                              )}
-                              activity="on other tables"
-                              disableSeeAll
-                            />
+                            {users && (
+                              <UserList
+                                users={users.filter(
+                                  (user: User) =>
+                                    user.data?.[experience.associatedRoom]
+                                      ?.table &&
+                                    user.data?.[experience.associatedRoom]
+                                      ?.table !== seatedAtTable
+                                )}
+                                activity="on other tables"
+                                disableSeeAll
+                              />
+                            )}
                           </div>
                         </>
                       )}
@@ -138,9 +155,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                 {users && (
                   <div className="row no-margin">
                     <UserList
-                      users={users.filter(
-                        (user: User) => user.lastSeenIn === "Jazz Mountain"
-                      )}
+                      users={usersStanding}
                       limit={22}
                       activity="standing"
                       disableSeeAll
