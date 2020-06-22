@@ -57,6 +57,7 @@ const FriendShipPage = () => {
                   seatedAtTable={seatedAtTable}
                   TableComponent={FriendShipTableComponent}
                   customTables={FRIENDSHIP_CUSTOM_TABLES}
+                  leaveText="Return to Isle of Friends"
                 />
               )}
               {seatedAtTable && (
