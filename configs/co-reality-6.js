@@ -905,6 +905,14 @@ module.exports = {
       text: "What do you like about festivals?",
     },
   ],
+  experiences: {
+    jazzbar: {
+      associatedRoom: "Jazz Mountain",
+    },
+    friendship: {
+      associatedRoom: "Isle of Friends",
+    },
+  },
   rooms: [
     {
       title: "Into the Partypelago",
