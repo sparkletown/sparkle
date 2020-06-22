@@ -1,6 +1,7 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
+import "./FriendShipTableComponent.scss";
 
 const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -20,15 +21,7 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
     table.capacity && table.capacity - usersSeatedAtTable.length;
   const full = numberOfSeatsLeft === 0;
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        flexDirection: "column",
-        alignItems: "center",
-        margin: "30px",
-      }}
-    >
+    <div className="friendship-table-container">
       <div className="table-title-container">
         {table.title && <div className="table-title">{table.title}</div>}
         {table.subtitle && (

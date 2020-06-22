@@ -1,12 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import "./RoomCard.scss";
 import RoomAttendance from "RoomAttendance";
 import { formatMinute } from "utils/time";
 import { Room } from "types/Room";
 import { getCurrentEvent } from "utils/time";
-import RoomModal from "components/organisms/RoomModal";
-import { useDispatch } from "react-redux";
-import { previewRoom } from "actions";
+import { useHistory } from "react-router-dom";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -24,16 +22,18 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     room.events &&
     room.events.length > 0 &&
     (currentEvent ? currentEvent : room.events[0]);
-  const [showModal, setShowModal] = useState(false);
-  const dispatch = useDispatch();
-  const preview = (room: Room) => {
-    dispatch(previewRoom(room));
-    setShowModal(true);
-  };
+
+  const history = useHistory();
 
   return (
     <>
-      <div className="room-card-container" onClick={() => preview(room)}>
+      <div
+        className="room-card-container"
+        onClick={() => {
+          window.scrollTo(0, 0);
+          history.push(room.url);
+        }}
+      >
         <img
           src={`room-images/${room.image}`}
           className="room-img"
@@ -64,11 +64,6 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
           </div>
         )}
       </div>
-      <RoomModal
-        startUtcSeconds={startUtcSeconds}
-        show={showModal}
-        onHide={() => setShowModal(false)}
-      />
     </>
   );
 };
