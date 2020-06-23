@@ -1,16 +1,7 @@
 import React, { useState } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
-
+import { User } from "types/User";
 import "./UserList.scss";
-
-interface User {
-  id: string;
-  drinkOfChoice?: string;
-  favouriteRecord?: string;
-  doYouDance?: string;
-  partyName?: string;
-  pictureUrl?: string;
-}
 
 interface PropsType {
   users: User[];
