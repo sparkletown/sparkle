@@ -7,7 +7,7 @@ import {
   sendRoomChat,
   sendTableChat,
 } from "actions";
-import { User } from "../UserProfileModal/UserProfileModal";
+import { User } from "types/User";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;

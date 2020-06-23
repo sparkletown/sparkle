@@ -10,7 +10,7 @@ const TabNavigation: React.FunctionComponent<PropsType> = ({
   selectedTab,
   setSelectedTab,
 }) => (
-  <div className="row tab-navigation-container">
+  <div className="tab-navigation-container">
     <div
       className={`col tab-item ${
         selectedTab === "jazz" ? "selected-tab-item" : ""
@@ -26,14 +26,6 @@ const TabNavigation: React.FunctionComponent<PropsType> = ({
       onClick={() => setSelectedTab("cocktail")}
     >
       Cocktail
-    </div>
-    <div
-      className={`col tab-item ${
-        selectedTab === "smoking" ? "selected-tab-item" : ""
-      }`}
-      onClick={() => setSelectedTab("smoking")}
-    >
-      Smoking
     </div>
   </div>
 );

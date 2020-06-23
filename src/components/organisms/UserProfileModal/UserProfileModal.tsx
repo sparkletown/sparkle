@@ -5,15 +5,7 @@ import { PARTY_NAME } from "config";
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
 import { useSelector } from "react-redux";
-
-export interface User {
-  id: string;
-  drinkOfChoice?: string;
-  favouriteRecord?: string;
-  doYouDance?: string;
-  partyName?: string;
-  pictureUrl?: string;
-}
+import { User } from "types/User";
 
 interface PropTypes {
   userProfile?: User;

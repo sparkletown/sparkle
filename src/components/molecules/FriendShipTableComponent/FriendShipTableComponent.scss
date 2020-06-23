@@ -1,7 +1,79 @@
-.friendship-table-container {
+@import "scss/constants.scss";
+
+.table-component-container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  margin: 30px;
+
+  .table-title-container {
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .table-subtitle {
+    color: $dark;
+  }
+
+  .table-item {
+    background: $dark;
+    border-radius: 22px;
+    min-height: 30px;
+    color: $white;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 40px 25px 10px 25px;
+    position: relative;
+  }
+
+  .table-occupancy-information {
+    position: absolute;
+    top: 14px;
+    font-size: 13px;
+  }
+
+  .red-text {
+    color: $red;
+  }
+
+  .green-text {
+    color: $green;
+  }
+
+  .table-participant-picture {
+    background: $black;
+  }
+
+  .join-text,
+  .add-participant-button {
+    cursor: pointer;
+  }
+
+  .remaining-seats {
+    top: 5px;
+    right: 7px;
+    position: absolute;
+    font-size: 10px;
+  }
+
+  .add-participant-button {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    background: $concrete;
+    font-size: 25px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3px;
+  }
 }

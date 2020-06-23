@@ -39,11 +39,14 @@ interface PropsType {
   leaveText?: string;
 }
 
-const TABLES = 8;
+const TABLES = 4;
 
 const createTable = (i: number) => {
   return {
     reference: `Table ${i + 1}`,
+    capacity: 8,
+    rows: 2,
+    columns: 4,
   };
 };
 
@@ -212,80 +215,75 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   return (
     <>
-      <div className="userlist-container">
-        {seatedAtTable !== "" ? (
-          <>
-            <div className="row no-margin at-table">
-              <div className="header">
-                <div className="table-title-container">
-                  <div className="private-table-title">{seatedAtTable}</div>
-                  {tableOfUser && tableOfUser.subtitle && (
-                    <div className="private-table-subtitle">
-                      {tableOfUser.subtitle}
-                    </div>
-                  )}
-                </div>
-                <div>
-                  {tableOfUser && tableOfUser.capacity && (
-                    <div>
-                      {usersAtCurrentTable &&
-                        `${
-                          tableOfUser.capacity - usersAtCurrentTable.length
-                        }`}{" "}
-                      seats left
-                    </div>
-                  )}
-
-                  <button
-                    type="button"
-                    title={"Leave " + seatedAtTable}
-                    className="btn"
-                    onClick={() => setShowLeaveMessage(true)}
-                  >
-                    {leaveText}
-                  </button>
-                </div>
+      {seatedAtTable !== "" ? (
+        <>
+          <div className="row no-margin at-table">
+            <div className="header">
+              <div className="table-title-container">
+                <div className="private-table-title">{seatedAtTable}</div>
+                {tableOfUser && tableOfUser.subtitle && (
+                  <div className="private-table-subtitle">
+                    {tableOfUser.subtitle}
+                  </div>
+                )}
               </div>
-              <div className="actions">
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={!tableLocked(seatedAtTable)}
-                    onChange={() =>
-                      onLockedChanged(
-                        seatedAtTable,
-                        !tableLocked(seatedAtTable)
-                      )
-                    }
-                  />
-                  <span className="slider" />
-                </label>
-                <div className="lock-table-checbox-indication">
-                  {tableLocked(seatedAtTable) ? (
-                    <p className="locked-text">Table is locked</p>
-                  ) : (
-                    <p className="unlocked-text">Others can join this table</p>
-                  )}
-                </div>
+              <div>
+                {tableOfUser && tableOfUser.capacity && (
+                  <div>
+                    {usersAtCurrentTable &&
+                      `${
+                        tableOfUser.capacity - usersAtCurrentTable.length
+                      }`}{" "}
+                    seats left
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  title={"Leave " + seatedAtTable}
+                  className="btn"
+                  onClick={() => setShowLeaveMessage(true)}
+                >
+                  {leaveText}
+                </button>
               </div>
             </div>
-          </>
-        ) : (
-          <div className="list-of-tables">
-            {tables.map((table: Table, i: number) => (
-              <TableComponent
-                experienceName={experienceName}
-                users={users}
-                table={table}
-                tableLocked={tableLocked}
-                setSelectedUserProfile={setSelectedUserProfile}
-                onJoinClicked={onJoinClicked}
-                nameOfVideoRoom={nameOfVideoRoom(i)}
-              />
-            ))}
+            <div className="actions">
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={!tableLocked(seatedAtTable)}
+                  onChange={() =>
+                    onLockedChanged(seatedAtTable, !tableLocked(seatedAtTable))
+                  }
+                />
+                <span className="slider" />
+              </label>
+              <div className="lock-table-checbox-indication">
+                {tableLocked(seatedAtTable) ? (
+                  <p className="locked-text">Table is locked</p>
+                ) : (
+                  <p className="unlocked-text">Others can join this table</p>
+                )}
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+        </>
+      ) : (
+        <>
+          {tables.map((table: Table, i: number) => (
+            <TableComponent
+              experienceName={experienceName}
+              users={users}
+              table={table}
+              tableLocked={tableLocked}
+              setSelectedUserProfile={setSelectedUserProfile}
+              onJoinClicked={onJoinClicked}
+              nameOfVideoRoom={nameOfVideoRoom(i)}
+            />
+          ))}
+        </>
+      )}
       <UserProfileModal
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}

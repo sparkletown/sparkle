@@ -5,6 +5,10 @@
   color: $black;
   padding: 30px;
 
+  .table-component-container {
+    margin: 30px;
+  }
+
   .title {
     font-size: 15px;
     padding: 30px;
@@ -41,38 +45,6 @@
     height: 100%;
   }
 
-  .table-item {
-    background: $dark;
-    border-radius: 22px;
-    min-height: 30px;
-    color: $white;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    padding: 40px 25px 10px 25px;
-    position: relative;
-  }
-
-  .table-occupancy-information {
-    position: absolute;
-    top: 14px;
-    font-size: 13px;
-  }
-
-  .red-text {
-    color: $red;
-  }
-
-  .green-text {
-    color: $green;
-  }
-
-  .table-title {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-  }
-
   .chatbox-container {
     color: white;
     max-height: 100vh;
@@ -91,38 +63,6 @@
     flex-wrap: wrap;
     margin-top: 82px;
     justify-content: space-around;
-  }
-
-  .add-participant-button {
-    width: 50px;
-    height: 50px;
-    display: flex;
-    background: $concrete;
-    font-size: 25px;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 3px;
-  }
-
-  .table-subtitle {
-    color: $dark;
-  }
-
-  .join-text,
-  .add-participant-button {
-    cursor: pointer;
-  }
-
-  .remaining-seats {
-    top: 5px;
-    right: 7px;
-    position: absolute;
-    font-size: 10px;
-  }
-
-  .table-participant-picture {
-    background: $black;
   }
 
   .at-table {
@@ -161,11 +101,6 @@
     background: $dark;
     border-radius: 22px;
     margin-bottom: 30px;
-  }
-
-  .table-title-container {
-    margin: 20px 0;
-    text-align: center;
   }
 
   .centered-row {

@@ -1,66 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import UserList from "components/molecules/UserList";
-import TablesUserList from "components/molecules/TablesUserList";
 import TabNavigation from "components/molecules/TabNavigation";
 import InformationCard from "components/molecules/InformationCard";
-import Chatbox from "components/organisms/Chatbox";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import Room from "components/organisms/Room";
 import { useSelector } from "react-redux";
-import { User } from "types/User";
-import JazzbarTableComponent from "components/molecules/JazzbarTableComponent";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { PARTY_NAME } from "config";
 
+import "./JazzBarSkeletonPage.scss";
+
 interface PropsType {
-  userList: any;
   selectedTab: string;
   children: React.ReactNode;
   setSelectedTab: (value: string) => void;
-  setUserList: any;
 }
 
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
-  userList,
   selectedTab,
   children,
   setSelectedTab,
-  setUserList,
 }) => {
-  const [seatedAtTable, setSeatedAtTable] = useState("");
-
-  let activity = "";
-  if (selectedTab === "cocktail") {
-    activity = "at the bar";
-  }
-  if (selectedTab === "smoking") {
-    activity = "in the smoking area";
-  }
-
-  const { users, user, experience } = useSelector((state: any) => ({
-    users: state.firestore.ordered.partygoers,
+  const { user, experience } = useSelector((state: any) => ({
     user: state.user,
     experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
   }));
 
   useUpdateLocationEffect(user, experience.associatedRoom);
-
-  const usersSeated =
-    users &&
-    users.filter(
-      (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table
-    );
-
-  const usersStanding =
-    usersSeated &&
-    users.filter(
-      (user: User) =>
-        user.lastSeenIn === experience.associatedRoom &&
-        !usersSeated.includes(user)
-    );
 
   return (
     <WithNavigationBar>
@@ -91,81 +56,14 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             <p>Broadcasting live from their East London home.</p>
           </InformationCard>
         </InformationLeftColumn>
-        <div className="content">{children}</div>
-        <div className="right-column">
-          <TabNavigation
-            selectedTab={selectedTab}
-            setSelectedTab={setSelectedTab}
-          />
-          <div className="right-column-content">
-            {userList && (
-              <div className="user-list">
-                {selectedTab === "jazz" ? (
-                  <>
-                    <div className="row header no-margin">
-                      <p>
-                        <span className="bold">
-                          {users && usersSeated.length}
-                        </span>{" "}
-                        {users && usersSeated.length !== 1
-                          ? "people"
-                          : "person"}{" "}
-                        listening to jazz
-                      </p>
-                    </div>
-                    <div className="table-container">
-                      {experience && (
-                        <TablesUserList
-                          experienceName={experience.associatedRoom}
-                          seatedAtTable={seatedAtTable}
-                          setSeatedAtTable={setSeatedAtTable}
-                          TableComponent={JazzbarTableComponent}
-                        />
-                      )}
-                      {seatedAtTable !== "" && (
-                        <>
-                          <div className="wrapper">
-                            <Room
-                              roomName={seatedAtTable}
-                              setUserList={setUserList}
-                            />
-                          </div>
-                          <div className="header">
-                            {users && (
-                              <UserList
-                                users={users.filter(
-                                  (user: User) =>
-                                    user.data?.[experience.associatedRoom]
-                                      ?.table &&
-                                    user.data?.[experience.associatedRoom]
-                                      ?.table !== seatedAtTable
-                                )}
-                                activity="on other tables"
-                                disableSeeAll
-                              />
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <UserList users={userList} activity={activity} limit={24} />
-                )}
-                {users && (
-                  <div className="row no-margin">
-                    <UserList
-                      users={usersStanding}
-                      limit={22}
-                      activity="standing"
-                      disableSeeAll
-                    />
-                  </div>
-                )}
-              </div>
-            )}
-            <Chatbox room={selectedTab} />
+        <div className="content-container">
+          <div className="right-hand-corner">
+            <TabNavigation
+              selectedTab={selectedTab}
+              setSelectedTab={setSelectedTab}
+            />
           </div>
+          {children}
         </div>
       </div>
     </WithNavigationBar>
