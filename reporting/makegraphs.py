@@ -58,7 +58,7 @@ class TimeRange(object):
 class Config():
 	# REVISIT: move to command-line args
 	# Party start/duration/end
-	START = datetime(2020,5,16,12,0,0,0)
+	START = datetime(2020,6,20,12,0,0,0)
 	END = START + timedelta(hours=12)
 	SEGMENTS = {
 		'Whole party': TimeRange(START, START + timedelta(hours=8)),
@@ -108,6 +108,18 @@ class Config():
 		'Late May Party 11': 'Castaway Raft',
 		'Late May Party 12': 'The Ark',
 		'Late May Party 13': 'Great Barrier Grief',
+		'Island Festival Mid-June 1': 'The Bermuda Party Portal',
+		'Island Festival Mid-June 2': 'W*A*R*S Subsurface Disco',
+		'Island Festival Mid-June 3': 'Klub Krabi',
+		'Island Festival Mid-June 4': 'Tropicana Fantasea Island Resort',
+		'Island Festival Mid-June 5': 'The Love Lagoon',
+		'Island Festival Mid-June 6': 'Survivor Island',
+		'Island Festival Mid-June 8': 'XNN Research Bunker',
+		'Island Festival Mid-June 9': 'Sirens\' Call / Castaway Clowns',
+		'Island Festival Mid-June 10': 'The Worldpool',
+		'Island Festival Mid-June 11': 'Mystic EyeLand',
+		'Island Festival Mid-June 12': 'Deserted Island',
+		'Island Festival Mid-June 13': 'Great Barrier Grief',
 	}
 	ROOM_TIMEZONE_OFFSETS = {
 		'Moon Rock Room- Live performers and deep space hitchhikers': timedelta(hours=-1),
