@@ -1,6 +1,8 @@
 .jazz-container {
   grid-column: 2/4;
   grid-row: 1/3;
+  min-height: 400px;
+  transition: all 0.1s linear;
 }
 
 .content.jazz-bar-grid {
@@ -17,5 +19,22 @@
     .participant {
       width: 100%;
     }
+  }
+  .full-screen-checkbox {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    align-items: baseline;
+    .switch {
+      margin-left: 30px;
+    }
+  }
+  .focus {
+    display: flex;
+    align-items: baseline;
+  }
+  .focus-option {
+    font-size: 20px;
+    margin-left: 30px;
   }
 }
