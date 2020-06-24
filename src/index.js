@@ -42,7 +42,7 @@ const analytics = firebase.analytics();
 firebase.auth();
 
 if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5001");
+  firebase.functions().useFunctionsEmulator("http://localhost:5000");
 } else {
   firebase.functions();
 }
