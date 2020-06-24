@@ -4,7 +4,7 @@ import "./Jazz.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import { useSelector } from "react-redux";
 import { PARTY_NAME } from "config";
-import FriendShipTableComponent from "components/molecules/FriendShipTableComponent";
+import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
@@ -50,7 +50,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
             experienceName={experience.associatedRoom}
-            TableComponent={FriendShipTableComponent}
+            TableComponent={TableComponent}
             joinMessage={false}
           />
         )}

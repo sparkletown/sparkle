@@ -1,9 +1,9 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
-import "./FriendShipTableComponent.scss";
+import "./TableComponent.scss";
 
-const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   nameOfVideoRoom,
@@ -90,4 +90,4 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   );
 };
 
-export default FriendShipTableComponent;
+export default TableComponent;

@@ -7,7 +7,7 @@ import TablesUserList from "components/molecules/TablesUserList";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import "./FriendShipPage.scss";
 import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
-import FriendShipTableComponent from "components/molecules/FriendShipTableComponent";
+import TableComponent from "components/molecules/TableComponent";
 import { PARTY_NAME } from "config";
 
 const FriendShipPage = () => {
@@ -55,7 +55,7 @@ const FriendShipPage = () => {
                   experienceName={experience.associatedRoom}
                   setSeatedAtTable={setSeatedAtTable}
                   seatedAtTable={seatedAtTable}
-                  TableComponent={FriendShipTableComponent}
+                  TableComponent={TableComponent}
                   customTables={FRIENDSHIP_CUSTOM_TABLES}
                   leaveText="Return to Isle of Friends"
                   joinMessage={false}
