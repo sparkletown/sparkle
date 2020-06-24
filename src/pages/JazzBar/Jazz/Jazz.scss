@@ -5,7 +5,7 @@
 
 .content.jazz-bar-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: 25% 25% 25% 12% 12%;
   margin-bottom: 30px;
 }
 
