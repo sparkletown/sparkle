@@ -1,4 +1,5 @@
 import React from "react";
+import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
 
 interface ChatMessageType {
@@ -7,6 +8,7 @@ interface ChatMessageType {
   text: string;
   to?: string;
   type: string;
+  ts_utc: { seconds: number; nanoseconds: number };
 }
 
 interface PropsType {
@@ -41,8 +43,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  const getSender = () =>
-    user.uid === chat.from ? "you" : users[chat.from].partyName;
+  const sender = user.uid === chat.from ? "you" : users[chat.from].partyName;
 
   return (
     <div className="chat-message">
@@ -62,15 +63,26 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
           />
         )}
         <span className="xs-size">
-          <b>{getSender()}</b> to <b>{getRecipient()}</b>
+          <b>{sender}</b> to <b>{getRecipient()}</b>
         </span>
       </div>
       <div
-        className={`message-buble ${chat.type} ${
-          getSender() === "you" ? "right-side" : ""
+        className={`chat-content-container ${
+          sender === "you" ? "right-side" : ""
         }`}
       >
-        {chat.text}
+        <div
+          className={`buble ${chat.type} ${
+            sender === "you" ? "right-side" : ""
+          }`}
+        >
+          {chat.text}
+        </div>
+        <div
+          className={`chat-timestamp ${sender === "you" ? "right-side" : ""}`}
+        >
+          {formatUtcSeconds(chat.ts_utc)}
+        </div>
       </div>
     </div>
   );

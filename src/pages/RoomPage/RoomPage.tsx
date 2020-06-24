@@ -50,17 +50,23 @@ export default function RoomPage() {
           <div className="title-container">
             <h2 className="room-modal-title">{room.title}</h2>
             <div className="room-modal-subtitle">{room.subtitle}</div>
-            <img
-              src={`/room-images/${room.image}`}
-              className="room-modal-image"
-              alt={room.title}
-            />
+            <div className="row ongoing-event-row">
+              <div className="col">
+                <img
+                  src={`/room-images/${room.image}`}
+                  className="room-page-image"
+                  alt={room.title}
+                />
+              </div>
+              <div className="col">
+                <RoomModalOngoingEvent
+                  room={room}
+                  enterRoom={enter}
+                  startUtcSeconds={config.start_utc_seconds}
+                />
+              </div>
+            </div>
           </div>
-          <RoomModalOngoingEvent
-            room={room}
-            enterRoom={enter}
-            startUtcSeconds={config.start_utc_seconds}
-          />
         </div>
         <UserList users={usersToDisplay} limit={11} activity={"in this room"} />
         {room.about && <div className="about-this-room">{room.about}</div>}

@@ -37,6 +37,7 @@ interface PropsType {
   customTables?: Table[];
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
+  leaveText?: string;
 }
 
 const TABLES = 8;
@@ -66,6 +67,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   customTables,
   TableComponent,
   joinMessage,
+  leaveText = "Back",
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
@@ -242,7 +244,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                     className="btn"
                     onClick={() => setShowLeaveMessage(true)}
                   >
-                    Return to Isle of Friends
+                    {leaveText}
                   </button>
                 </div>
               </div>

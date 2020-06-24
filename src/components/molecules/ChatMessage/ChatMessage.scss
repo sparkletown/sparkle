@@ -1,30 +1,45 @@
 @import "scss/constants.scss";
 
-.xs-size {
-  font-size: 10px;
-}
-
-.sender-information {
-  margin-bottom: 5px;
-}
-
-.message-buble {
-  padding: 10px;
-  border-radius: 10px;
-  width: 80%;
-  color: $black;
-
-  &.right-side {
-    margin-left: auto;
+.chat-message {
+  .xs-size,
+  .chat-timestamp {
+    font-size: 10px;
   }
 
-  &.global {
-    background: $white;
+  .sender-information {
+    margin-bottom: 5px;
   }
-  &.private {
-    background: $primary;
+
+  .chat-content-container {
+    width: 80%;
+
+    &.right-side {
+      margin-left: auto;
+    }
+
+    .chat-timestamp {
+      width: 100%;
+      margin-top: 2px;
+
+      &.right-side {
+        text-align: right;
+      }
+    }
   }
-  &.room {
-    background: $pink;
+
+  .buble {
+    padding: 10px;
+    border-radius: 10px;
+    color: $black;
+
+    &.global {
+      background: $white;
+    }
+    &.private {
+      background: $primary;
+    }
+    &.room {
+      background: $pink;
+    }
   }
 }

@@ -8,13 +8,16 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import "./FriendShipPage.scss";
 import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import FriendShipTableComponent from "components/molecules/FriendShipTableComponent";
+import { PARTY_NAME } from "config";
 
 const FriendShipPage = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const { user } = useSelector((state: any) => ({
+  const { user, experience } = useSelector((state: any) => ({
     user: state.user,
+    experience:
+      state.firestore.data.config?.[PARTY_NAME]?.experiences.friendship,
   }));
-  useUpdateLocationEffect(user, "Friend Ship");
+  useUpdateLocationEffect(user, experience.associatedRoom);
 
   return (
     <div className="full-page-container">
@@ -47,14 +50,17 @@ const FriendShipPage = () => {
           </div>
           <div className="row">
             <div className={`col ${seatedAtTable ? "table-container" : ""}`}>
-              <TablesUserList
-                experienceName="friendship"
-                setSeatedAtTable={setSeatedAtTable}
-                seatedAtTable={seatedAtTable}
-                TableComponent={FriendShipTableComponent}
-                customTables={FRIENDSHIP_CUSTOM_TABLES}
-                joinMessage={false}
-              />
+              {experience && (
+                <TablesUserList
+                  experienceName={experience.associatedRoom}
+                  setSeatedAtTable={setSeatedAtTable}
+                  seatedAtTable={seatedAtTable}
+                  TableComponent={FriendShipTableComponent}
+                  customTables={FRIENDSHIP_CUSTOM_TABLES}
+                  leaveText="Return to Isle of Friends"
+                  joinMessage={false}
+                />
+              )}
               {seatedAtTable && (
                 <>
                   <div className="col wrapper">
