@@ -7,4 +7,5 @@ export interface User {
   pictureUrl?: string;
   data: { [key: string]: any };
   lastSeenIn: string;
+  room?: string;
 }

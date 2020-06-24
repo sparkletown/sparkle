@@ -6,35 +6,36 @@ import InformationCard from "components/molecules/InformationCard";
 const EntranceExperience = () => (
   <div className="jazz-bar-entrance-experience-container">
     <img
-      src="/kansas-smittys-logo-red.png"
+      src="/room-images/CRC_Island_JAZZ2.png"
       alt="Kansas Smitty's"
       className="band-logo"
     />
     <SecretPasswordForm />
     <div className="party-information">
       <InformationCard title="About the venue" className="col information-card">
-        Kansas Smitty’s is East London’s most dynamic jazz venue. Located on
-        Broadway Market, it opens six nights a week for live jazz in an intimate
-        basement environment. Their seven-piece house band share the name. The
-        signature cocktail in this cult bar, the julep, is a bourbon-based
-        cocktail served in an ice-filled tin, and recalls the jazzy bars of
-        1920s Kansas where the likes of Mary Lou Williams gave us new ways of
-        hearing
+        Jazztastic Park is the Partypelago's most storied jazz venue. All
+        flavours of this classic improvisational medium can be heard in the
+        jungle-laden hills of this Northwesterly outcrop.
       </InformationCard>
       <InformationCard
         title="About tonight's show"
         className="col information-card"
       >
-        <p>Performing tonight at Kansas Smitty's:</p>
+        <p>Performing tonight at Jazztastic Park:</p>
         <ul>
-          <li>Giacomo Smith - alto/clarinet</li>
-          <li>Alec harper - Tenor</li>
-          <li>Dave Archer - Guitar</li>
-          <li>Joe Webb - Piano</li>
-          <li>Ferg Ireland - Double Bass</li>
-          <li>Will Cleasby - Drums</li>
+          <li>
+            Kansas Smitty's:
+            <ul>
+              <li>Giacomo Smith - alto/clarinet</li>
+              <li>Alec harper - Tenor</li>
+              <li>Dave Archer - Guitar</li>
+              <li>Joe Webb - Piano</li>
+              <li>Ferg Ireland - Double Bass</li>
+              <li>Will Cleasby - Drums</li>
+            </ul>
+          </li>
+          <li>Sam Leak</li>
         </ul>
-        <p>  Broadcasting live from their East London home.</p>
       </InformationCard>
     </div>
   </div>

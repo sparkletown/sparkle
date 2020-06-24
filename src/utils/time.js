@@ -48,12 +48,12 @@ export function formatUtcSeconds(utcSeconds) {
 }
 
 const getEventStartingTimeInSeconds = (event, startUtcSeconds) => {
-  return event.start_hour * ONE_HOUR_IN_SECONDS + startUtcSeconds;
+  return event.start_minute * ONE_MINUTE_IN_SECONDS + startUtcSeconds;
 };
 
 const getEventEndingTimeInSeconds = (event, startUtcSeconds) => {
   return (
-    (event.start_hour + event.duration_minutes / 60) * ONE_HOUR_IN_SECONDS +
+    (event.start_minute + event.duration_minutes) * ONE_MINUTE_IN_SECONDS +
     startUtcSeconds
   );
 };
@@ -68,8 +68,8 @@ export const getCurrentEvent = (room, startUtcSeconds) => {
   );
 };
 
-export const eventHappeningNow = (room) => {
-  return !!getCurrentEvent(room);
+export const eventHappeningNow = (room, startUtcSeconds) => {
+  return !!getCurrentEvent(room, startUtcSeconds);
 };
 
 export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {

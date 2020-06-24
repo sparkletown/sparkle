@@ -13,7 +13,11 @@ export interface CodeOfConductFormData {
   partyReal: string;
 }
 
-const QUESTIONS: { id: keyof CodeOfConductFormData; label: string }[] = [
+const QUESTIONS: {
+  id: keyof CodeOfConductFormData;
+  label: string;
+  link?: string;
+}[] = [
   {
     id: "seekFun",
     label: "I will seek out the fun",
@@ -28,7 +32,9 @@ const QUESTIONS: { id: keyof CodeOfConductFormData; label: string }[] = [
   },
   {
     id: "respectParty",
-    label: "I’ll respect my fellow party-goers’ feelings and boundaries",
+    label:
+      "I will respect my fellow party-goers’ feelings and boundaries by obeying the Consent Policy",
+    link: "https://co-reality.co/consent-policy/",
   },
   {
     id: "partyReal",
@@ -63,7 +69,12 @@ const CodeOfConduct = () => {
                 htmlFor={q.id}
                 className={`checkbox ${watch(q.id) && "checkbox-checked"}`}
               >
-                {q.label}
+                {q.link && (
+                  <a href={q.link} target="_blank" rel="noopener noreferrer">
+                    {q.label}
+                  </a>
+                )}
+                {!q.link && q.label}
               </label>
               <input
                 type="checkbox"

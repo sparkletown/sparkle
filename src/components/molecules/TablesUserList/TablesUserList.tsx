@@ -36,6 +36,7 @@ interface PropsType {
   seatedAtTable: string;
   customTables?: Table[];
   TableComponent: React.FC<TableComponentPropsType>;
+  joinMessage: boolean;
   leaveText?: string;
 }
 
@@ -68,6 +69,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   seatedAtTable,
   customTables,
   TableComponent,
+  joinMessage,
   leaveText = "Back",
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -168,7 +170,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     } else {
       setTable(table);
       setVideoRoom(videoRoom);
-      setShowJoinMessage(true);
+      joinMessage ? setShowJoinMessage(true) : onAcceptJoinMessage();
     }
   };
 

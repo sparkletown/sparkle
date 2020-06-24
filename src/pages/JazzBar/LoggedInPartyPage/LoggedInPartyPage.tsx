@@ -4,7 +4,6 @@ import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 import Jazz from "../Jazz";
-import Backstage from "../Backstage";
 import Cocktail from "../Cocktail";
 import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";

@@ -16,7 +16,9 @@ const RoomList: React.FunctionComponent<PropsType> = ({
   rooms,
   attendances,
 }) => {
-  rooms = rooms.filter((room) => room.on_list && eventHappeningNow(room));
+  rooms = rooms.filter(
+    (room) => room.on_list && eventHappeningNow(room, startUtcSeconds)
+  );
 
   return (
     <>

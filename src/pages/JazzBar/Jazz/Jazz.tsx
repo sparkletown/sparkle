@@ -51,6 +51,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             seatedAtTable={seatedAtTable}
             experienceName={experience.associatedRoom}
             TableComponent={FriendShipTableComponent}
+            joinMessage={false}
           />
         )}
         {seatedAtTable && (
@@ -66,7 +67,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             width="100%"
             height="100%"
             className={"youtube-video"}
-            src="https://www.youtube.com/embed/cG9B6EhagdQ?autoplay=1"
+            src="https://www.youtube.com/embed/b44P11vLiY8?autoplay=1"
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
           />
