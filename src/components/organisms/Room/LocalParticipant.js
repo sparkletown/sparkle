@@ -7,23 +7,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import Participant from "./Participant";
 
-const LocalParticipant = ({ participant }) => {
+const LocalParticipant = ({ participant, profileData, bartender }) => {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     if (muted) {
-      participant.participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach(function (audioTrack) {
         audioTrack.track.disable();
       });
     } else {
-      participant.participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach(function (audioTrack) {
         audioTrack.track.enable();
       });
     }
   }, [participant, muted]);
 
   return (
-    <Participant participant={participant}>
+    <Participant
+      participant={participant}
+      profileData={profileData}
+      bartender={bartender}
+    >
       <div className="mute-container">
         <div onClick={() => setMuted(!muted)}>
           <FontAwesomeIcon
