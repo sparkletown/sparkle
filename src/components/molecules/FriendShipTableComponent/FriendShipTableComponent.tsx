@@ -21,7 +21,7 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
     table.capacity && table.capacity - usersSeatedAtTable.length;
   const full = numberOfSeatsLeft === 0;
   return (
-    <div className="friendship-table-container">
+    <div className="table-component-container">
       <div className="table-title-container">
         {table.title && <div className="table-title">{table.title}</div>}
         {table.subtitle && (

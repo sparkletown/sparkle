@@ -4,9 +4,8 @@ import JazzBarSkeletonPage from "../JazzBarSkeletonPage";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
 import Jazz from "../Jazz";
-import Backstage from "../Backstage";
 import Cocktail from "../Cocktail";
-import { User } from "components/organisms/UserProfileModal/UserProfileModal";
+import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { PARTY_NAME } from "config";
 
@@ -25,18 +24,15 @@ const LoggedInPartyPage: React.FunctionComponent = () => {
 
   return (
     <JazzBarSkeletonPage
-      userList={userList}
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
-      setUserList={setUserList}
     >
-      <div className="col content-column">
-        <div className={`row ${selectedTab === "smoking" ? "reduced" : ""}`}>
-          {selectedTab === "jazz" && <Jazz setUserList={setUserList} />}
-          {selectedTab === "cocktail" && <Cocktail setUserList={setUserList} />}
-          {selectedTab === "smoking" && <Backstage setUserList={setUserList} />}
-        </div>
-      </div>
+      {selectedTab === "jazz" && (
+        <Jazz selectedTab={selectedTab} setUserList={setUserList} />
+      )}
+      {selectedTab === "cocktail" && (
+        <Cocktail userList={userList} setUserList={setUserList} />
+      )}
     </JazzBarSkeletonPage>
   );
 };

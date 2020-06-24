@@ -1,0 +1,41 @@
+.content-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  margin: 0 10px;
+
+  .right-hand-corner {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .flex-container {
+    display: flex;
+  }
+
+  .chat-container {
+    height: 400px;
+  }
+
+  .scrollable-area {
+    overflow: auto;
+    padding: 0 10px;
+  }
+
+  .user-interaction-container {
+    margin: 20px;
+  }
+  .userlist-container {
+    margin: 10px 0;
+  }
+  .table-item {
+    .profile-icon {
+      margin: 0;
+    }
+  }
+  .chatbox-wrapper {
+    display: flex;
+    height: 700px;
+    justify-content: center;
+  }
+}

@@ -9,7 +9,7 @@ import { isChatValid } from "validation";
 
 import ChatForm from "./ChatForm";
 import "./Chatbox.scss";
-import { User } from "../UserProfileModal/UserProfileModal";
+import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 
 // Don't pull everything
