@@ -107,11 +107,9 @@ const Room = ({ roomName, setUserList }) => {
   const meComponent = room ? (
     <LocalParticipant
       key={room.localParticipant.sid}
-      participant={{
-        participant: room.localParticipant,
-        profileData: users[room.localParticipant.identity],
-        bartender: meIsBartender,
-      }}
+      participant={room.localParticipant}
+      profileData={users[room.localParticipant.identity]}
+      bartender={meIsBartender}
     />
   ) : null;
 

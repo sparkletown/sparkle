@@ -3,7 +3,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Participant = ({ participant, children }) => {
+const Participant = ({ participant, profileData, bartender, children }) => {
   const [videoTracks, setVideoTracks] = useState([]);
   const [audioTracks, setAudioTracks] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
@@ -18,8 +18,8 @@ const Participant = ({ participant, children }) => {
       .filter((track) => track !== null);
 
   useEffect(() => {
-    setVideoTracks(trackpubsToTracks(participant.participant.videoTracks));
-    setAudioTracks(trackpubsToTracks(participant.participant.audioTracks));
+    setVideoTracks(trackpubsToTracks(participant.videoTracks));
+    setAudioTracks(trackpubsToTracks(participant.audioTracks));
 
     const trackSubscribed = (track) => {
       if (track.kind === "video") {
@@ -37,15 +37,15 @@ const Participant = ({ participant, children }) => {
       }
     };
 
-    participant.participant.on("trackSubscribed", trackSubscribed);
-    participant.participant.on("trackUnsubscribed", trackUnsubscribed);
+    participant.on("trackSubscribed", trackSubscribed);
+    participant.on("trackUnsubscribed", trackUnsubscribed);
 
     return () => {
       setVideoTracks([]);
       setAudioTracks([]);
-      participant.participant.removeAllListeners();
+      participant.removeAllListeners();
     };
-  }, [participant.participant]);
+  }, [participant]);
 
   useEffect(() => {
     const videoTrack = videoTracks[0];
@@ -76,26 +76,22 @@ const Participant = ({ participant, children }) => {
     } else {
       const audioTrack = audioTracks[0];
       if (audioTrack) {
-        audioTrack.attach(videoRef.current);
+        audioTrack.attach(audioRef.current);
       }
     }
   }, [participant, muted, audioTracks]);
 
   return (
-    <div
-      className={`col participant ${participant.bartender ? "bartender" : ""}`}
-    >
+    <div className={`col participant ${bartender ? "bartender" : ""}`}>
       <video ref={videoRef} autoPlay={true} />
       <audio ref={audioRef} autoPlay={true} />
       <img
         onClick={() => setShowProfile(true)}
         key={participant.sid}
         className="profile-icon"
-        src={
-          participant.profileData?.pictureUrl || "/anonymous-profile-icon.jpeg"
-        }
-        title={participant.profileData.partyName}
-        alt={`${participant.profileData.partyName} profile`}
+        src={profileData?.pictureUrl || "/anonymous-profile-icon.jpeg"}
+        title={profileData.partyName}
+        alt={`${profileData.partyName} profile`}
         width={40}
         height={40}
       />
@@ -103,7 +99,7 @@ const Participant = ({ participant, children }) => {
         <UserProfileModal
           show
           onHide={() => setShowProfile(false)}
-          userProfile={participant.profileData}
+          userProfile={profileData}
         />
       )}
       {children}
