@@ -13,6 +13,7 @@ export interface User {
   doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
+  room?: string;
 }
 
 interface PropTypes {
@@ -80,6 +81,12 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 </>
               ))}
             </div>
+            {userProfile.room && (
+              <div className="profile-location">
+                <p className="question">Suspected Location:</p>
+                <h6 className="location">{userProfile.room}</h6>
+              </div>
+            )}
           </div>
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">

@@ -10,6 +10,7 @@ interface User {
   doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
+  room?: string;
 }
 
 interface PropsType {
