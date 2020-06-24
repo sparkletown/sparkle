@@ -9,6 +9,7 @@ import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
+import { JAZZBAR_TABLES } from "./constants";
 
 interface PropsType {
   selectedTab: string;
@@ -52,6 +53,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             experienceName={experience.associatedRoom}
             TableComponent={TableComponent}
             joinMessage={false}
+            customTables={JAZZBAR_TABLES}
           />
         )}
         {seatedAtTable && (
