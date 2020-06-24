@@ -131,11 +131,9 @@ const Room = ({ roomName, setUserList }) => {
     return (
       <Participant
         key={`${participant.sid}-${index}`}
-        participant={{
-          participant,
-          profileData: users[participant.identity],
-          bartender,
-        }}
+        participant={participant}
+        profileData={users[participant.identity]}
+        bartender={bartender}
       />
     );
   });
