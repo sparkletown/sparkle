@@ -8,6 +8,7 @@ import Cocktail from "../Cocktail";
 import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { PARTY_NAME } from "config";
+import ExperienceContextProvider from "components/context/ExperienceContext";
 
 const LoggedInPartyPage: React.FunctionComponent = () => {
   const [selectedTab, setSelectedTab] = useState("jazz");
@@ -23,17 +24,19 @@ const LoggedInPartyPage: React.FunctionComponent = () => {
   useUpdateLocationEffect(user, experience.associatedRoom);
 
   return (
-    <JazzBarSkeletonPage
-      selectedTab={selectedTab}
-      setSelectedTab={setSelectedTab}
-    >
-      {selectedTab === "jazz" && (
-        <Jazz selectedTab={selectedTab} setUserList={setUserList} />
-      )}
-      {selectedTab === "cocktail" && (
-        <Cocktail userList={userList} setUserList={setUserList} />
-      )}
-    </JazzBarSkeletonPage>
+    <ExperienceContextProvider experienceName="kansassmittys">
+      <JazzBarSkeletonPage
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+      >
+        {selectedTab === "jazz" && (
+          <Jazz selectedTab={selectedTab} setUserList={setUserList} />
+        )}
+        {selectedTab === "cocktail" && (
+          <Cocktail userList={userList} setUserList={setUserList} />
+        )}
+      </JazzBarSkeletonPage>
+    </ExperienceContextProvider>
   );
 };
 

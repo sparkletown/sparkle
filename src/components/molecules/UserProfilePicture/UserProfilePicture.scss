@@ -1,0 +1,26 @@
+.profile-picture-container {
+  position: relative;
+
+  .heart {
+    fill: red;
+    position: absolute;
+    top: -25px;
+    right: -20px;
+    width: 50px;
+    animation: pulse 1s ease infinite;
+    animation: pulse 1s ease infinite;
+    z-index: 99999;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+}
