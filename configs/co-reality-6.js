@@ -58,13 +58,12 @@ const krabi_events = [
   },
   {
     start_minute: 180,
-    duration_minutes: 60,
+    duration_minutes: 120,
     host: "Alicia",
     name: "Melodic House",
     text: "",
     interactivity: "low",
   },
-  midnight_event,
   {
     start_minute: 300,
     duration_minutes: 180,
@@ -172,7 +171,8 @@ const worldpool_events = [
     duration_minutes: 60,
     host: "Anthe Aelea",
     name: "Solstice Ceremony",
-    text: "Dreaming up New Reality in the Quantum Field of Possibility",
+    text:
+      "A Solstice New Moon journey back into the magnetic black well, void and infinite source of life within. A heartwarming, meditative, mystical experience and space for sharing where we can reflect together on current global currents and will move out of mind and time to dream up a new reality of life. Enjoy wisdom transmissions touching on lucid states of being, conscious creation and and the cycles of life, death and rebirth. Supported by dreamlike water inspired music, breathwork, movement meditation and poetry.",
     interactivity: "high",
   },
   {
@@ -186,19 +186,11 @@ const worldpool_events = [
   },
   {
     start_minute: 300,
-    duration_minutes: 30,
+    duration_minutes: 60,
     host: "Aguahara Teacher Alex Siebenstern",
     name: "Aquatic Experience",
     text:
       "The water forces us to move and behave differently, so let's take advantage of it and create new forms of movement, dance, relating and art.",
-    interactivity: "high",
-  },
-  {
-    start_minute: 330,
-    duration_minutes: 30,
-    host: "Nathiqua",
-    name: "Colors of the Sea",
-    text: "Imagining an Ocean of Possibility for Humanity's Future",
     interactivity: "high",
   },
   {
@@ -293,6 +285,26 @@ const deserted_island_events = [
     host: "You",
     name: "Singing in Utter Despair",
     text: "Is that all there is?",
+    interactivity: "high",
+  },
+];
+
+const bermuda_party_portal_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 240,
+    host: "Thomas & Kev",
+    name: "Welcome to the party",
+    text: "Join Thomas and Kev on our welcome experience.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 285,
+    duration_minutes: 75,
+    host: "Thomas & Kev",
+    name: "Welcome to the party",
+    text: "Join Thomas and Kev on our welcome experience.",
     interactivity: "high",
   },
 ];
@@ -501,7 +513,7 @@ const xnn_research_bunker_events = [
   {
     start_minute: 0,
     duration_minutes: 30,
-    host: "Sofi",
+    host: "XNN Systems",
     name: "XNN Lab Life: Chorei",
     text: "Warm up the workspace with dancing, stretches and more",
     interactivity: "high",
@@ -509,7 +521,7 @@ const xnn_research_bunker_events = [
   {
     start_minute: 30,
     duration_minutes: 30,
-    host: "Sofi",
+    host: "Moss Labs",
     name: "XNN Lab Life: Plant Therapy with Moss Labs",
     text: "Bring a plant, and align your mind to its care",
     interactivity: "high",
@@ -517,7 +529,7 @@ const xnn_research_bunker_events = [
   {
     start_minute: 60,
     duration_minutes: 60,
-    host: "Megan",
+    host: "Super Nothing Inc.",
     name: "Super Nothing Amazing Channel",
     text: "Interactive TV live directly to your sense organs",
     interactivity: "high",
@@ -525,7 +537,7 @@ const xnn_research_bunker_events = [
   {
     start_minute: 120,
     duration_minutes: 60,
-    host: "Mark",
+    host: "onecor.ai",
     name: "OneCor Product Showcase",
     text: "Display of our cutting edge lifestyle upgrades",
     interactivity: "high",
@@ -533,7 +545,7 @@ const xnn_research_bunker_events = [
   {
     start_minute: 180,
     duration_minutes: 60,
-    host: "Sofi",
+    host: "Dr. Molly Leon",
     name: "Dr Leon Manife-station with Adam John Williams",
     text: "Remote therapy to increase neural capacity & joy.",
     interactivity: "high",
@@ -542,29 +554,29 @@ const xnn_research_bunker_events = [
   {
     start_minute: 330,
     duration_minutes: 30,
-    host: "Jade",
+    host: "Space Grandma",
     name: "Space Grandma's Tea Room",
     text: "Bedtime stories from zir home planet. Bring a cup of tea",
     interactivity: "high",
   },
   {
     start_minute: 360,
-    duration_minutes: 60,
-    host: "Sofi",
+    duration_minutes: 30,
+    host: "XNN Systems",
     name: "XNN Cryogenics Chill out with Ping Interactive",
     text: "You'll be frozzzzzzzzzzzen, music to sleep to.",
     interactivity: "high",
   },
   {
-    start_minute: 420,
-    duration_minutes: 60,
-    host: "Nik",
+    start_minute: 390,
+    duration_minutes: 30,
+    host: "OASIS",
     name: "Oasis Time Travel Agency & Cyberdream 2036",
     text: "Where will you go? When will you go?",
     interactivity: "high",
   },
   {
-    start_minute: 480,
+    start_minute: 420,
     duration_minutes: 60,
     host: "Phil Mann",
     name: "An Invitation to Magicktry! Remake",
@@ -643,9 +655,9 @@ const sirens_call_events = [
     start_minute: 300,
     duration_minutes: 30,
     host: "Mermaid Nathiqua",
-    name:
+    name: "Opening Ceremony",
+    text:
       "Flowing through the Cosmos ACT I - Silks w Cory Catt; Addiction & Passion - Silks w Tabs; Dance in Circles - Azula Flow",
-    text: "Nothing is set to happen in here.",
     interactivity: "low",
   },
   {
@@ -885,9 +897,9 @@ const sex_on_the_beesha_events = [
 module.exports = {
   start_utc_seconds: 1592679600,
   duration_hours: 8,
-  entrance_hosted_hours: 2,
+  entrance_hosted_hours: 0,
   party_name: "The Island Festival",
-  unhosted_entry_video_url: "https://www.youtube.com/embed/U4GsKONeHnM",
+  unhosted_entry_video_url: "https://www.youtube.com/embed/u_3a8wEHo7E",
   map_url: "/maps/island-festival.jpg",
   map_viewbox: "0 0 3000 2000",
   password: "treasure",
@@ -931,8 +943,8 @@ module.exports = {
       subtitle: "Dinosaurs and all that Jazz",
       about:
         "Live jazz shows from the marvellous Kansas Smitty's and mellifluous Sam Leak. Come enjoy at a table with your party friends.",
-      url: "/kansassmittys-preview",
-      external_url: "/kansassmittys",
+      url: "/jazztastic-park-preview",
+      external_url: "/jazztastic-park",
       on_map: true,
       on_list: true,
       path:
@@ -1093,14 +1105,18 @@ module.exports = {
       subtitle: "The party begins here - lose yourself to find yourself",
       about:
         "Bring your suitcase, your sunglasses and swimwear for we are going sail across the seas to a small cluster of Islands in uncharted waters. The forecast is for clear skies and serene seas...",
-      url:
+      url: "/bermuda-party-portal-preview",
+      external_url:
         "https://us02web.zoom.us/j/82345069993?pwd=a1JvU3RCeVdmaUM0Y0xvV2MxNldrUT09",
       on_map: true,
       on_list: true,
       path:
         "M 94.015 1203.415 C 91.21 1155.737 115.041 1123.042 129.168 1094.3 C 133.785 1084.907 75.946 1048.113 95.07 1028.661 C 105.351 1018.202 128.545 1025.283 139.484 1014.154 C 147.401 1006.101 137.384 978.783 145.35 970.679 C 149.139 966.825 157.116 968.087 161.272 963.859 C 167.253 957.775 154.323 942.768 161.243 935.728 C 165.13 931.775 206.978 925.215 213.2 931.437 C 236.242 954.479 275.135 964.041 300.353 989.26 C 308.224 997.131 321.573 965.117 323.818 962.833 C 332.863 953.633 418.743 943.024 432.759 950.032 C 454.094 960.699 413.172 970.164 418.18 975.172 C 430.179 987.171 444.31 997.949 455.891 1009.531 C 468.307 1021.947 395.011 1074.407 387.694 1081.6 C 382.51 1086.696 444.11 1091.087 447.193 1094.17 C 462.433 1109.41 438.59 1176.144 453.825 1191.379 C 455.247 1192.802 455.247 1224.34 453.825 1225.738 C 443.212 1236.17 372.744 1218.763 364.317 1210.336 C 359.983 1206.002 299.878 1209.993 296.972 1212.85 C 292.415 1217.329 263.366 1213.688 256.054 1213.688 C 215.891 1213.688 174.467 1210.278 135.858 1210.278 C 125.277 1210.278 92.941 1212.249 92.941 1203.732",
       image: "",
-      events: [],
+      attendance_x: "13%",
+      attendance_y: "44%",
+      image: "CRC_Island_PORTAL.png",
+      events: bermuda_party_portal_events,
     },
     {
       title: "Donate to the Artists",
@@ -1165,7 +1181,7 @@ module.exports = {
       events: futuristic_cat_pirates_events,
     },
     {
-      title: "Isle of Friends",
+      title: "Make Friends at Isle of Friends",
       subtitle: "Welcome Reception - A place where people meet each other",
       about:
         "Meet your fellow party-goers, make friends, enjoy conversations in many private spaces of connection.",

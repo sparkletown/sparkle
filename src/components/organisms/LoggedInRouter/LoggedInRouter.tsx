@@ -30,7 +30,7 @@ const LoggedInRouter = () => {
 
   return (
     <Switch>
-      <Route path="/kansassmittys" component={JazzBarLoggedInPartyPage} />
+      <Route path="/jazztastic-park" component={JazzBarLoggedInPartyPage} />
       <Route path="/friendship" component={FriendShipPage} />
       <Route path="/" exact component={LoggedInPartyPage} />
       <Route path="/:roomName" component={Room} />

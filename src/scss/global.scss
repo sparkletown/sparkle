@@ -379,7 +379,7 @@ h4 {
 
     .wrapper {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       grid-template-rows: 25% 25% 25% 25%;
       height: 100%;
       grid-gap: 10px;
@@ -437,7 +437,7 @@ h4 {
     margin-bottom: 10px;
 
     .participant {
-      flex: 0 0 50%;
+      flex: 0 0 33%;
     }
   }
 }
