@@ -1,9 +1,9 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
-import "./FriendShipTableComponent.scss";
+import "./TableComponent.scss";
 
-const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   nameOfVideoRoom,
@@ -21,18 +21,20 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
     table.capacity && table.capacity - usersSeatedAtTable.length;
   const full = numberOfSeatsLeft === 0;
   return (
-    <div className="table-component-container">
-      <div className="table-title-container">
-        {table.title && <div className="table-title">{table.title}</div>}
-        {table.subtitle && (
-          <div className="table-subtitle">{table.subtitle}</div>
-        )}
-      </div>
+    <div className={`table-component-container ${table.reference}`}>
+      {table.title && (
+        <div className="table-title-container">
+          <div className="table-title">{table.title}</div>
+          {table.subtitle && (
+            <div className="table-subtitle">{table.subtitle}</div>
+          )}
+        </div>
+      )}
       <div
         className="table-item"
         style={{
           height: `${table.rows && table.rows * 50 + 65}px`,
-          width: `${table.columns && (table.columns + 1) * 50}px`,
+          width: `${table.columns && (table.columns + 1) * 55}px`,
         }}
       >
         <div
@@ -90,4 +92,4 @@ const FriendShipTableComponent: React.FunctionComponent<TableComponentPropsType>
   );
 };
 
-export default FriendShipTableComponent;
+export default TableComponent;

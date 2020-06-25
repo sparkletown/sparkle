@@ -107,11 +107,9 @@ const Room = ({ roomName, setUserList }) => {
   const meComponent = room ? (
     <LocalParticipant
       key={room.localParticipant.sid}
-      participant={{
-        participant: room.localParticipant,
-        profileData: users[room.localParticipant.identity],
-        bartender: meIsBartender,
-      }}
+      participant={room.localParticipant}
+      profileData={users[room.localParticipant.identity]}
+      bartender={meIsBartender}
     />
   ) : null;
 
@@ -133,11 +131,9 @@ const Room = ({ roomName, setUserList }) => {
     return (
       <Participant
         key={`${participant.sid}-${index}`}
-        participant={{
-          participant,
-          profileData: users[participant.identity],
-          bartender,
-        }}
+        participant={participant}
+        profileData={users[participant.identity]}
+        bartender={bartender}
       />
     );
   });
