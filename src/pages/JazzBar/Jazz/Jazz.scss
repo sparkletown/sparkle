@@ -19,6 +19,13 @@
   justify-content: center;
 }
 
+.jazz-container {
+  min-height: 400px;
+  grid-column: 2/8;
+  grid-row: 1/4;
+  transition: all 0.1s linear;
+}
+
 .content.jazz-bar-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
