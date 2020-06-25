@@ -286,12 +286,13 @@ h4 {
 
 .modal-backdrop {
   background: $dark;
+  &.show {
+    opacity: 0.8;
+  }
+  &.chat-backdrop.show {
+    opacity: 0;
+  }
 }
-
-.modal-backdrop.show {
-  opacity: 0.8;
-}
-
 .modal-content {
   border: none;
   border-radius: 22px;
@@ -429,6 +430,7 @@ h4 {
 }
 
 .table-container {
+  min-height: 300px;
   .wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -448,5 +450,17 @@ h4 {
   }
   .participant {
     width: 50%;
+  }
+}
+
+.chat-modal {
+  width: 400px;
+  position: absolute;
+  right: 10px;
+  top: 110px;
+  .modal-body {
+    background: $dark;
+    border-radius: 22px;
+    height: calc(100vh - 220px);
   }
 }

@@ -1,3 +1,24 @@
+.container-in-grid {
+  grid-column: 2/8;
+  grid-row: 1/4;
+}
+
+.jazz-container {
+  transition: all 0.2s linear;
+}
+
+.jazz-bar-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container-in-row {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .jazz-container {
   min-height: 400px;
   grid-column: 2/8;
@@ -14,11 +35,15 @@
 .scrollable-area {
   .jazz-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    align-self: center;
     margin-left: 0px;
     .participant {
       width: 100%;
     }
+  }
+  .table-item {
+    margin-top: 10px;
   }
   .full-screen-checkbox {
     display: flex;
@@ -37,7 +62,24 @@
     font-size: 20px;
     margin-left: 30px;
   }
-  .table-item {
-    margin-top: 10px;
+
+  .centered-row {
+    justify-content: center;
+  }
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .video {
+    height: 100%;
+    transition: all 0.2s linear;
+    &.video-not-focused {
+      height: 300px;
+    }
+  }
+
+  .video-focused {
+    height: 500px;
   }
 }

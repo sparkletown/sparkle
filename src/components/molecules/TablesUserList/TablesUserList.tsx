@@ -75,7 +75,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
   const [showJoinMessage, setShowJoinMessage] = useState(false);
-  const [showLeaveMessage, setShowLeaveMessage] = useState(false);
   const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
@@ -181,11 +180,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     setSeatedAtTable(table);
   };
 
-  const onAcceptLeaveMessage = () => {
-    setShowLeaveMessage(false);
-    leaveSeat();
-  };
-
   const takeSeat = () => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
@@ -244,7 +238,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                   type="button"
                   title={"Leave " + seatedAtTable}
                   className="btn"
-                  onClick={() => setShowLeaveMessage(true)}
+                  onClick={leaveSeat}
                 >
                   {leaveText}
                 </button>
@@ -322,20 +316,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               onClick={() => onAcceptJoinMessage()}
             >
               OK
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-      <Modal show={showLeaveMessage} onHide={() => setShowLeaveMessage(false)}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>Are you sure you want to leave the table?</p>
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={() => onAcceptLeaveMessage()}
-            >
-              Leave the Table
             </button>
           </div>
         </Modal.Body>
