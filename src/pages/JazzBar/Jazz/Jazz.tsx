@@ -10,7 +10,10 @@ import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
-import { ExperienceContext } from "components/context/ExperienceContext";
+import {
+  ExperienceContext,
+  ReactionType,
+} from "components/context/ExperienceContext";
 
 interface PropsType {
   selectedTab: string;
@@ -47,10 +50,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         !usersSeated.includes(user)
     );
 
-  const reactionClicked = (user: FUser) => {
+  const reactionClicked = (user: FUser, reaction: ReactionType) => {
     experienceContext &&
       experienceContext.addReaction({
-        reaction: "heart",
+        reaction,
         created_at: new Date().getTime(),
         created_by: user.uid,
       });
@@ -97,9 +100,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
-            <button onClick={() => reactionClicked(user)}>
+          </div>
+          <div>
+            <button onClick={() => reactionClicked(user, ReactionType.heart)}>
               <span role="img" aria-label="heart-emoji">
                 ❤️
+              </span>
+            </button>
+            <button onClick={() => reactionClicked(user, ReactionType.clap)}>
+              <span role="img" aria-label="clap-emoji">
+                👏
               </span>
             </button>
           </div>

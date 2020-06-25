@@ -1,12 +1,15 @@
 .profile-picture-container {
   position: relative;
 
-  .heart {
-    fill: red;
+  .reaction {
     position: absolute;
     top: -25px;
     right: -20px;
     width: 50px;
+  }
+
+  .heart {
+    fill: red;
     animation: pulse 1s ease infinite;
     animation: pulse 1s ease infinite;
     z-index: 99999;
@@ -22,5 +25,9 @@
     100% {
       transform: scale(1);
     }
+  }
+
+  .clap {
+    font-size: 50px;
   }
 }

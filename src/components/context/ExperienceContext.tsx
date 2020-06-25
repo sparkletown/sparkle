@@ -6,8 +6,13 @@ type ExperienceContextType = {
   addReaction: (newReaction: Reaction) => void;
 };
 
+export enum ReactionType {
+  heart = "heart",
+  clap = "clap",
+}
+
 type Reaction = {
-  reaction: "heart";
+  reaction: ReactionType;
   created_at: number;
   created_by: string;
 };
