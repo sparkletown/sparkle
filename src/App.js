@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "bootstrap";
 import qs from "qs";
 
-import EntranceExperience from "pages/EntranceExperience";
+import EntranceExperience from "pages/JazzBar/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
 import LoggedInRouter from "components/organisms/LoggedInRouter";

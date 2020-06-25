@@ -74,7 +74,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
-  const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
@@ -169,15 +168,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     } else {
       setTable(table);
       setVideoRoom(videoRoom);
-      joinMessage ? setShowJoinMessage(true) : onAcceptJoinMessage();
+      takeSeat();
+      setSeatedAtTable(table);
     }
-  };
-
-  const onAcceptJoinMessage = () => {
-    window.scrollTo(0, 0);
-    setShowJoinMessage(false);
-    takeSeat();
-    setSeatedAtTable(table);
   };
 
   const takeSeat = () => {
@@ -299,23 +292,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               onClick={() => setShowLockedMessage(false)}
             >
               Back
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
-      <Modal show={showJoinMessage} onHide={() => setShowJoinMessage(false)}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>
-              To avoid feedback from the music, we recommend wearing headphones.
-            </p>
-            <p>You can also adjust the volume on the live stream.</p>
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={() => onAcceptJoinMessage()}
-            >
-              OK
             </button>
           </div>
         </Modal.Body>

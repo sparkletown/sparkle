@@ -905,16 +905,16 @@ module.exports = {
   password: "treasure",
   profile_questions: [
     {
-      name: "islandCompanion",
-      text: "Who's your dream desert island companion?",
+      name: "drinkOfChoice",
+      text: "What is your drink of choice?",
     },
     {
-      name: "gratefulFor",
-      text: "What do you feel grateful for?",
+      name: "favouriteRecord",
+      text: "What's your favourite record",
     },
     {
-      name: "likeAboutParties",
-      text: "What do you like about festivals?",
+      name: "doYouDance",
+      text: "Do you dance?",
     },
   ],
   experiences: {

@@ -6,7 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 const EntranceExperience = () => (
   <div className="jazz-bar-entrance-experience-container">
     <img
-      src="/room-images/CRC_Island_JAZZ2.png"
+      src="/kansas-smittys-logo-red.png"
       alt="Kansas Smitty's"
       className="band-logo"
     />
