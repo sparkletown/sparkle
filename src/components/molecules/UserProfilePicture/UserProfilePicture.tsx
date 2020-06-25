@@ -41,7 +41,12 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       />
       {experienceContext &&
         experienceContext.reactions.find((r) => r.created_by === user.id) && (
-          <Heart />
+          <>
+            <Heart />
+            <audio autoPlay loop>
+              <source src="/sounds/woo.mp3" />
+            </audio>
+          </>
         )}
     </div>
   );
