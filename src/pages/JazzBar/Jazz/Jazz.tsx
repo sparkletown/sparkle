@@ -24,7 +24,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
     experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
     users: state.firestore.ordered.partygoers,
   }));
-
+  const [isVideoFocused, setIsVideoFocused] = useState(true);
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   const usersSeated =
@@ -57,7 +57,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({
           />
         )}
         {seatedAtTable && (
-          <div className="col table-container">
+          <div
+            className={`${isVideoFocused ? "col-4" : "col-7"} table-container`}
+          >
             <div className="jazz-wrapper">
               <Room roomName={seatedAtTable} setUserList={setUserList} />
             </div>
@@ -75,6 +77,22 @@ const Jazz: React.FunctionComponent<PropsType> = ({
           />
         </div>
       </div>
+      {seatedAtTable && (
+        <div className="full-screen-checkbox">
+          <div className="focus">
+            Focus on:<div className="focus-option">friends</div>
+          </div>
+          <label className="switch">
+            <input
+              type="checkbox"
+              checked={isVideoFocused}
+              onChange={() => setIsVideoFocused(!isVideoFocused)}
+            />
+            <span className="slider" />
+          </label>
+          <div className="focus-option">Jazz</div>
+        </div>
+      )}
       <div className="user-interaction-container">
         {users && (
           <UserList users={usersStanding} limit={26} activity="standing" />
