@@ -6,9 +6,10 @@ import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { PARTY_NAME } from "config";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
 import ChatModal from "components/organisms/ChatModal";
+import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
   selectedTab: string;
@@ -68,20 +69,21 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               />
               <button
                 className="btn btn-primary chat-button"
-                onClick={() => setIsChatModalOpen(true)}
+                onClick={() => setIsChatModalOpen(!isChatModalOpen)}
               >
                 Chat
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className={`chevron ${isChatModalOpen ? "chat-open" : ""}`}
+                  size="sm"
+                />
               </button>
             </div>
             {children}
           </div>
         </div>
       </WithNavigationBar>
-      <ChatModal
-        show={isChatModalOpen}
-        onHide={() => setIsChatModalOpen(false)}
-        room={selectedTab}
-      />
+      <ChatModal show={isChatModalOpen} room={selectedTab} />
     </>
   );
 };
