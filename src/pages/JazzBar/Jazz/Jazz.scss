@@ -74,6 +74,8 @@
   .video {
     height: 100%;
     transition: all 0.2s linear;
+    margin-bottom: 20px;
+
     &.video-not-focused {
       height: 300px;
     }

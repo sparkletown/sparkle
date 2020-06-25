@@ -92,11 +92,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               title="main event"
               width="100%"
               height="100%"
-              className={"youtube-video"}
+              className="youtube-video"
               src="https://www.youtube.com/embed/b44P11vLiY8?autoplay=1"
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
+            <button onClick={() => reactionClicked(user)}>
+              <span role="img" aria-label="heart-emoji">
+                ❤️
+              </span>
+            </button>
           </div>
         </div>
         {seatedAtTable && (
@@ -128,24 +133,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         )}
-        <div className="col jazz-container">
-          <iframe
-            title="main event"
-            width="100%"
-            height="100%"
-            className={"youtube-video"}
-            src="https://www.youtube.com/embed/b44P11vLiY8?autoplay=1"
-            frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-          />
-          <button onClick={() => reactionClicked(user)}>
-            <span role="img" aria-label="heart-emoji">
-              ❤️
-            </span>
-          </button>
-        </div>
       </div>
-
       <div className="user-interaction-container">
         {users && (
           <UserList users={usersStanding} limit={26} activity="standing" />
