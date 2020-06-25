@@ -33,31 +33,40 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     <>
       <WithNavigationBar>
         <div className="full-page-container experience-container">
-          <InformationLeftColumn experienceLogoPath="/room-images/CRC_Island_JAZZ2.png">
+          <InformationLeftColumn experienceLogoPath="/kansas-smittys-logo-red.png">
             <InformationCard title="About the venue">
-              Jazztastic Park is the Partypelago's most storied jazz venue. All
-              flavours of this classic improvisational medium can be heard in
-              the jungle-laden hills of this Northwesterly outcrop.
-            </InformationCard>
-            <InformationCard
-              title="About tonight's show"
-              className="information-card"
-            >
-              <p>Performing tonight at Jazztastic Park:</p>
-              <ul>
-                <li>
-                  Kansas Smitty's:
-                  <ul>
-                    <li>Giacomo Smith - alto/clarinet</li>
-                    <li>Alec harper - Tenor</li>
-                    <li>Dave Archer - Guitar</li>
-                    <li>Joe Webb - Piano</li>
-                    <li>Ferg Ireland - Double Bass</li>
-                    <li>Will Cleasby - Drums</li>
-                  </ul>
-                </li>
-                <li>Sam Leak</li>
-              </ul>
+              <p>
+                Kansas Smitty’s.
+                <br /> It's a band and it's a bar.
+              </p>
+
+              <p>
+                Choose your table, invite your friends to join you and listen to
+                the sounds of our House band.
+              </p>
+
+              <p>
+                Performing tonight at Kansas Smitty's we have:
+                <ul>
+                  <li>Giacomo Smith - Alto & clarinet</li>
+                  <li>Alec Harper - Tenor Sax</li>
+                  <li>Joe Webb - Piano</li>
+                  <li>Will Sach - Double Bass</li>
+                  <li>Will cleasby - Drums</li>
+                </ul>
+              </p>
+              <p>
+                If you enjoy the music why not join the Patreon community. Our
+                Patreons get access to all sorts of additional musical content
+                and updates on all new shows, performances and events we run.
+                https://www.patreon.com/kansassmittys
+              </p>
+              <p>
+                Kansas Smitty's have just released their new album 'Things
+                Happened Here' available on all good streaming platforms and
+                vinyl /CD https://ever-records.lnk.to/ThingsHappenedHere
+              </p>
+              <p>We'll see you in the bar...</p>
             </InformationCard>
           </InformationLeftColumn>
           <div className="content-container">

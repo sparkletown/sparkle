@@ -3,9 +3,9 @@ import { Switch, Route } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 
 import JazzBarLoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
-import LoggedInPartyPage from "pages/LoggedInPartyPage";
-import FriendShipPage from "pages/FriendShipPage";
-import Room from "pages/RoomPage";
+// import LoggedInPartyPage from "pages/LoggedInPartyPage";
+// import FriendShipPage from "pages/FriendShipPage";
+// import Room from "pages/RoomPage";
 import { getHoursAgoInSeconds } from "utils/time";
 
 const LoggedInRouter = () => {
@@ -30,10 +30,10 @@ const LoggedInRouter = () => {
 
   return (
     <Switch>
-      <Route path="/jazztastic-park" component={JazzBarLoggedInPartyPage} />
-      <Route path="/friendship" component={FriendShipPage} />
+      <Route path="/" component={JazzBarLoggedInPartyPage} />
+      {/* <Route path="/friendship" component={FriendShipPage} />
       <Route path="/" exact component={LoggedInPartyPage} />
-      <Route path="/:roomName" component={Room} />
+      <Route path="/:roomName" component={Room} /> */}
     </Switch>
   );
 };

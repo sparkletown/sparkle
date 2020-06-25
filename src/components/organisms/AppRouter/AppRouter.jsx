@@ -45,7 +45,7 @@ const AppRouter = () => {
   }, [config]);
 
   return (
-    <Router basename="/">
+    <Router basename="/kansassmittys">
       <Switch>
         <Route path="/account/register" component={Register} />
         <Route path="/account/profile" component={Profile} />

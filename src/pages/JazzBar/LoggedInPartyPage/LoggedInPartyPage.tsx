@@ -18,7 +18,9 @@ const LoggedInPartyPage: React.FunctionComponent = () => {
 
   const { user, experience } = useSelector((state: any) => ({
     user: state.user,
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
+    experience:
+      state.firestore &&
+      state.firestore.data.config?.[PARTY_NAME]?.experiences?.jazzbar,
   }));
 
   useUpdateLocationEffect(user, experience.associatedRoom);
