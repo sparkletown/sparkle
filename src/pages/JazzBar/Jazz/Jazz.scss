@@ -1,13 +1,26 @@
-.jazz-container-in-grid {
+.container-in-grid {
   grid-column: 2/8;
   grid-row: 1/4;
 }
 
 .jazz-container {
-  min-height: 300px;
-  width: 100%;
+  transition: all 1s linear;
 }
 
+.jazz-bar-table {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.container-in-row {
+  width: 100%;
+  height: 270px;
+}
+
+.video-focused {
+  height: 500px;
+}
 .content.jazz-bar-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -17,7 +30,8 @@
 .scrollable-area {
   .jazz-wrapper {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    align-self: center;
     margin-left: 0px;
     .participant {
       width: 100%;
@@ -25,5 +39,31 @@
   }
   .table-item {
     margin-top: 10px;
+  }
+  .full-screen-checkbox {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    align-items: baseline;
+    .switch {
+      margin-left: 30px;
+    }
+  }
+  .focus {
+    display: flex;
+    align-items: baseline;
+  }
+  .focus-option {
+    font-size: 20px;
+    margin-left: 30px;
+  }
+
+  .centered-row {
+    justify-content: center;
+  }
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 }

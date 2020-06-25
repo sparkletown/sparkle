@@ -313,7 +313,9 @@ h4 {
   .table-container {
     background: $dark;
     border-radius: 22px;
+    transition: all 0.1s linear;
     padding: 10px;
+    margin-left: 20px;
   }
   .content-column {
     height: 100%;

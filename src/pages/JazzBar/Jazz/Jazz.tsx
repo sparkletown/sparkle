@@ -23,7 +23,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
     experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
     users: state.firestore.ordered.partygoers,
   }));
-
+  const [isVideoFocused, setIsVideoFocused] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   const usersSeated =
@@ -44,7 +44,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="scrollable-area">
-      <div className={`content ${!seatedAtTable ? "jazz-bar-grid" : "row"}`}>
+      <div
+        className={`content ${
+          !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
+        }`}
+      >
         {experience && (
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
@@ -55,7 +59,15 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             customTables={JAZZBAR_TABLES}
           />
         )}
-        <div className={`jazz-container${!seatedAtTable ? "-in-grid" : ""}`}>
+        <div
+          className={`jazz-container ${
+            !seatedAtTable
+              ? "container-in-grid"
+              : `container-in-row ${
+                  isVideoFocused ? "video-focused col-11" : "col-5"
+                }`
+          }`}
+        >
           <iframe
             title="main event"
             width="100%"
@@ -67,15 +79,40 @@ const Jazz: React.FunctionComponent<PropsType> = ({
           />
         </div>
         {seatedAtTable && (
-          <div className="row">
-            <div className="col table-container">
-              <div className="jazz-wrapper">
-                <Room roomName={seatedAtTable} setUserList={setUserList} />
+          <div
+            className={`${isVideoFocused ? "col-5" : "col-12"} table-container`}
+          >
+            <div className="jazz-wrapper">
+              <Room roomName={seatedAtTable} setUserList={setUserList} />
+            </div>
+            <div>
+              <div className="full-screen-checkbox">
+                <div className="focus">
+                  Focus on:<div className="focus-option">Jazz</div>
+                </div>
+                <label className="switch">
+                  <input
+                    type="checkbox"
+                    checked={!isVideoFocused}
+                    onChange={() => setIsVideoFocused(!isVideoFocused)}
+                  />
+                  <span className="slider" />
+                </label>
+                <div className="focus-option">Friends</div>
               </div>
+              {/* <TablesUserList
+                setSeatedAtTable={setSeatedAtTable}
+                seatedAtTable={seatedAtTable}
+                experienceName={experience.associatedRoom}
+                TableComponent={TableComponent}
+                joinMessage={false}
+                customTables={JAZZBAR_TABLES}
+              /> */}
             </div>
           </div>
         )}
       </div>
+
       <div className="user-interaction-container">
         {users && (
           <UserList users={usersStanding} limit={26} activity="standing" />
