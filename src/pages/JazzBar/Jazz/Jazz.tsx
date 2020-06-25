@@ -55,14 +55,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             customTables={JAZZBAR_TABLES}
           />
         )}
-        {seatedAtTable && (
-          <div className="col table-container">
-            <div className="jazz-wrapper">
-              <Room roomName={seatedAtTable} setUserList={setUserList} />
-            </div>
-          </div>
-        )}
-        <div className="col jazz-container">
+        <div className={`jazz-container${!seatedAtTable ? "-in-grid" : ""}`}>
           <iframe
             title="main event"
             width="100%"
@@ -73,6 +66,15 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
           />
         </div>
+        {seatedAtTable && (
+          <div className="row">
+            <div className="col table-container">
+              <div className="jazz-wrapper">
+                <Room roomName={seatedAtTable} setUserList={setUserList} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <div className="user-interaction-container">
         {users && (

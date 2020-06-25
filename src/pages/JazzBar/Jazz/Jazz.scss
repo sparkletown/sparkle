@@ -1,6 +1,11 @@
-.jazz-container {
+.jazz-container-in-grid {
   grid-column: 2/8;
   grid-row: 1/4;
+}
+
+.jazz-container {
+  min-height: 300px;
+  width: 100%;
 }
 
 .content.jazz-bar-grid {
