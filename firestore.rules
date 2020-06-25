@@ -15,7 +15,7 @@ service cloud.firestore {
       allow write: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
       allow read: if request.auth.uid != null && userId == request.auth.uid;
     }
-    match /experiences/{experienceId} {
+    match /experiences/{experienceId}/{restOfPath=**} {
       allow write, read: if request.auth.uid != null;
     }
   }

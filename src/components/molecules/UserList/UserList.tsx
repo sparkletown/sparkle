@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
+
 import "./UserList.scss";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 interface PropsType {
   users: User[];
@@ -10,6 +12,12 @@ interface PropsType {
   activity?: string;
   disableSeeAll?: boolean;
 }
+
+type Reaction = {
+  reaction: "heart";
+  created_at: number;
+  created_by: string;
+};
 
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
@@ -44,20 +52,16 @@ const UserList: React.FunctionComponent<PropsType> = ({
           {usersToDisplay.map(
             (user) =>
               user && (
-                <img
-                  onClick={() => setSelectedUserProfile(user)}
-                  key={user.id}
-                  className="profile-icon"
-                  src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-                  title={user.partyName}
-                  alt={`${user.partyName} profile`}
-                  width={imageSize}
-                  height={imageSize}
+                <UserProfilePicture
+                  user={user}
+                  setSelectedUserProfile={setSelectedUserProfile}
+                  imageSize={imageSize}
                 />
               )
           )}
         </div>
       </div>
+
       <UserProfileModal
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
