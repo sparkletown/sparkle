@@ -4,7 +4,7 @@
 }
 
 .jazz-container {
-  transition: all 1s linear;
+  transition: all 0.2s linear;
 }
 
 .jazz-bar-table {
@@ -15,12 +15,10 @@
 
 .container-in-row {
   width: 100%;
-  height: 270px;
+  display: flex;
+  justify-content: center;
 }
 
-.video-focused {
-  height: 500px;
-}
 .content.jazz-bar-grid {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
@@ -65,5 +63,16 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+  }
+  .video {
+    height: 100%;
+    transition: all 0.2s linear;
+    &.video-not-focused {
+      height: 300px;
+    }
+  }
+
+  .video-focused {
+    height: 500px;
   }
 }
