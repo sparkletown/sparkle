@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { User as FUser } from "firebase";
 
 import "./Jazz.scss";
 import TablesUserList from "components/molecules/TablesUserList";
@@ -10,6 +11,7 @@ import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
+import { ExperienceContext } from "components/context/ExperienceContext";
 
 interface PropsType {
   selectedTab: string;
@@ -20,11 +22,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({
   selectedTab,
   setUserList,
 }) => {
-  const { experience, users } = useSelector((state: any) => ({
+  const { experience, user, users } = useSelector((state: any) => ({
     experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
+    user: state.user,
     users: state.firestore.ordered.partygoers,
   }));
   const [isVideoFocused, setIsVideoFocused] = useState(true);
+  const experienceContext = useContext(ExperienceContext);
+
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   const usersSeated =
@@ -42,6 +47,15 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         user.lastSeenIn === experience.associatedRoom &&
         !usersSeated.includes(user)
     );
+
+  const reactionClicked = (user: FUser) => {
+    experienceContext &&
+      experienceContext.addReaction({
+        reaction: "heart",
+        created_at: new Date().getTime(),
+        created_by: user.uid,
+      });
+  };
 
   return (
     <div className="scrollable-area">
@@ -75,6 +89,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
           />
+          <button onClick={() => reactionClicked(user)}>
+            <span role="img" aria-label="heart-emoji">
+              ❤️
+            </span>
+          </button>
         </div>
       </div>
       {seatedAtTable && (
