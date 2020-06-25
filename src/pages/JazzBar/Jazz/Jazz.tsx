@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { PARTY_NAME } from "config";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
-import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
@@ -79,11 +78,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         {users && (
           <UserList users={usersStanding} limit={26} activity="standing" />
         )}
-        <div className="chatbox-wrapper">
-          <div className="col-5">
-            <Chatbox room={selectedTab} />
-          </div>
-        </div>
       </div>
     </div>
   );

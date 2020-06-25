@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .content-container {
   display: flex;
   flex-grow: 1;
@@ -6,7 +8,7 @@
 
   .right-hand-corner {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .flex-container {
@@ -37,5 +39,17 @@
     display: flex;
     height: 700px;
     justify-content: center;
+  }
+
+  .chat-button {
+    height: 50px;
+    border: none;
+    margin-left: 10px;
+    &:active,
+    &:focus {
+      // !important is used to overwrite some bootstrap css elements
+      background: $red !important;
+      color: $black;
+    }
   }
 }
