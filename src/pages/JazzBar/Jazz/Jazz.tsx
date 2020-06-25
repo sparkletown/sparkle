@@ -31,21 +31,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
-  const usersSeated =
+  const usersInJazzbar =
     users &&
-    users.filter(
-      (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table
-    );
-
-  const usersStanding =
-    usersSeated &&
-    users.filter(
-      (user: User) =>
-        user.lastSeenIn === experience.associatedRoom &&
-        !usersSeated.includes(user)
-    );
+    users.filter((user: User) => user.lastSeenIn === experience.associatedRoom);
 
   const reactionClicked = (user: FUser) => {
     experienceContext &&
@@ -136,7 +124,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({
       </div>
       <div className="user-interaction-container">
         {users && (
-          <UserList users={usersStanding} limit={26} activity="standing" />
+          <UserList
+            users={usersInJazzbar}
+            limit={26}
+            activity="in the jazz bar"
+          />
         )}
       </div>
     </div>
