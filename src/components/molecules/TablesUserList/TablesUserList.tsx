@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
@@ -11,24 +11,24 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 
 // https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
-const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
-  const cb = useRef();
+// const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
+//   const cb = useRef();
 
-  cb.current = handler;
+//   cb.current = handler;
 
-  useEffect(() => {
-    // @ts-ignore
-    const handler = () => cb.current();
+//   useEffect(() => {
+//     // @ts-ignore
+//     const handler = () => cb.current();
 
-    window.addEventListener("beforeunload", handler);
+//     window.addEventListener("beforeunload", handler);
 
-    return () => {
-      if (callOnCleanup) handler();
+//     return () => {
+//       if (callOnCleanup) handler();
 
-      window.removeEventListener("beforeunload", handler);
-    };
-  }, [cb, callOnCleanup]);
-};
+//       window.removeEventListener("beforeunload", handler);
+//     };
+//   }, [cb, callOnCleanup]);
+// };
 
 interface PropsType {
   experienceName: string;
@@ -74,7 +74,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
-  const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
   const nameOfVideoRoom = (i: number) => {
@@ -142,7 +141,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     if (locked) {
       setShowLockedMessage(true);
     } else {
-      setTable(table);
       setVideoRoom(videoRoom);
       takeSeat(table);
       setSeatedAtTable(table);

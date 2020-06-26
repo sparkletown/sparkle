@@ -95,7 +95,7 @@ const TableHeader = ({
     };
     await firestoreUpdate(doc, update);
     setSeatedAtTable("");
-  }, [user, experience, setSeatedAtTable]);
+  }, [user, setSeatedAtTable, experienceName]);
 
   return (
     <div className="row no-margin at-table table-header">
