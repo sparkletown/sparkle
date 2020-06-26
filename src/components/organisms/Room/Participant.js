@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 const Participant = ({ participant, profileData, bartender, children }) => {
   const [videoTracks, setVideoTracks] = useState([]);
@@ -85,16 +86,13 @@ const Participant = ({ participant, profileData, bartender, children }) => {
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
       <video ref={videoRef} autoPlay={true} />
       <audio ref={audioRef} autoPlay={true} />
-      <img
-        onClick={() => setShowProfile(true)}
-        key={participant.sid}
-        className="profile-icon"
-        src={profileData?.pictureUrl || "/anonymous-profile-icon.jpeg"}
-        title={profileData.partyName}
-        alt={`${profileData.partyName} profile`}
-        width={40}
-        height={40}
-      />
+      <div className="profile-icon">
+        <UserProfilePicture
+          user={{ ...profileData, id: participant.identity }}
+          setSelectedUserProfile={() => setShowProfile(true)}
+          imageSize={40}
+        />
+      </div>
       {showProfile && (
         <UserProfileModal
           show
