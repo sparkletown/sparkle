@@ -102,7 +102,7 @@ const TableHeader = ({
       <div className="header" style={{ marginRight: "60px" }}>
         <div className="table-title-container">
           <div className="private-table-title" style={{ fontSize: "20px" }}>
-            {seatedAtTable}
+            {tableOfUser?.title || seatedAtTable}
             {tableOfUser && tableOfUser.capacity && (
               <>
                 {" "}
