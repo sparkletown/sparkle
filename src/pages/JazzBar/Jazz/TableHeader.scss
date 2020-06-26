@@ -1,0 +1,29 @@
+.table-header {
+  .switch {
+    margin: 0 30px;
+  }
+
+  .action {
+    display: flex;
+  }
+}
+
+.table-footer {
+  .switch {
+    margin: 0 30px;
+  }
+  .actions {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+
+    .action {
+      display: flex;
+      align-items: baseline;
+
+      .focus {
+        margin-right: 30px;
+      }
+    }
+  }
+}

@@ -99,22 +99,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     }
   }, [user, setSeatedAtTable, usersById, experienceName]);
 
-  useWindowUnloadEffect(() => leaveSeat(), true);
-
-  const leaveSeat = useCallback(async () => {
-    const doc = `users/${user.uid}`;
-    const update = {
-      data: {
-        [experienceName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    await firestoreUpdate(doc, update);
-    setSeatedAtTable("");
-  }, [user, experienceName, setSeatedAtTable]);
-
   if (!users) {
     return <>Loading...</>;
   }
@@ -154,14 +138,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return experience?.tables?.[table]?.locked;
   };
 
-  const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${experienceName}`;
-    const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
-    };
-    firestoreUpdate(doc, update);
-  };
-
   const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {
     if (locked) {
       setShowLockedMessage(true);
@@ -192,21 +168,21 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtOtherTables.push(...usersAtTables[table.reference]);
   }
 
-  const tableOfUser =
-    seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
+  // const tableOfUser =
+  //   seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
 
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
-    );
+  // const usersAtCurrentTable =
+  //   seatedAtTable &&
+  //   users &&
+  //   users.filter(
+  //     (user: User) => user.data?.[experienceName]?.table === seatedAtTable
+  //   );
 
   return (
     <>
       {seatedAtTable !== "" ? (
         <>
-          <div className="row no-margin at-table">
+          {/* <div className="row no-margin at-table">
             <div className="header">
               <div className="table-title-container">
                 <div className="private-table-title">{seatedAtTable}</div>
@@ -256,7 +232,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </>
       ) : (
         <>
