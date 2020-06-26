@@ -26,17 +26,18 @@ interface PropsType {
 const TableHeader = ({
   seatedAtTable,
   setSeatedAtTable,
-  isVideoFocused,
-  setIsVideoFocused,
+  experienceName,
 }: any) => {
   const { experience, user, users } = useSelector((state: any) => ({
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
+    experience:
+      state.firestore.data.experiences &&
+      state.firestore.data.experiences[experienceName],
     user: state.user,
     users: state.firestore.ordered.partygoers,
   }));
   useFirestoreConnect({
     collection: "experiences",
-    doc: experience.associatedRoom,
+    doc: experienceName,
   });
   const tableOfUser =
     seatedAtTable &&
@@ -46,8 +47,7 @@ const TableHeader = ({
     seatedAtTable &&
     users &&
     users.filter(
-      (user: User) =>
-        user.data?.[experience.associatedRoom]?.table === seatedAtTable
+      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
     );
 
   const firestoreUpdate = (doc: string, update: any) => {
@@ -64,9 +64,8 @@ const TableHeader = ({
     // Empty tables are never locked
     if (
       users &&
-      users.filter(
-        (user: User) => user.data?.[experience.associatedRoom]?.table === table
-      ).length === 0
+      users.filter((user: User) => user.data?.[experienceName]?.table === table)
+        .length === 0
     ) {
       return false;
     }
@@ -75,7 +74,7 @@ const TableHeader = ({
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${experience.associatedRoom}`;
+    const doc = `experiences/${experienceName}`;
     const update = {
       tables: { ...experience?.tables, [tableName]: { locked } },
     };
@@ -88,7 +87,7 @@ const TableHeader = ({
     const doc = `users/${user.uid}`;
     const update = {
       data: {
-        [experience.associatedRoom]: {
+        [experienceName]: {
           table: null,
           videoRoom: null,
         },
@@ -107,13 +106,12 @@ const TableHeader = ({
             {tableOfUser && tableOfUser.capacity && (
               <>
                 {" "}
-                (
                 <span style={{ fontSize: "12px" }}>
+                  (
                   {usersAtCurrentTable &&
                     `${tableOfUser.capacity - usersAtCurrentTable.length}`}{" "}
-                  seats left
+                  seats left )
                 </span>
-                )
               </>
             )}
           </div>
@@ -290,8 +288,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               <TableHeader
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
-                isVideoFocused={isVideoFocused}
-                setIsVideoFocused={setIsVideoFocused}
+                experienceName={experience.associatedRoom}
               />
               <div className="jazz-wrapper">
                 <Room roomName={seatedAtTable} setUserList={setUserList} />

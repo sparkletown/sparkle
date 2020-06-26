@@ -144,12 +144,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     } else {
       setTable(table);
       setVideoRoom(videoRoom);
-      takeSeat();
+      takeSeat(table);
       setSeatedAtTable(table);
     }
   };
 
-  const takeSeat = () => {
+  const takeSeat = (table: string) => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
       experienceName
