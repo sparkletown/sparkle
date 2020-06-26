@@ -63,6 +63,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             left
           </div>
         )}
+        <div className="table-number">{table.reference}</div>
 
         {usersSeatedAtTable.map((user: User) => (
           <img
