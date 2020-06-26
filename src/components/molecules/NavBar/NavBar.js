@@ -13,7 +13,13 @@ const NavBar = () => {
     <header>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
         <Link to="/">
-          <span className="navbar-brand title">Co-Reality</span>
+          <span className="navbar-brand title">
+            <img
+              className="sparkle-icon"
+              src="/logo-sparkle.png"
+              alt="Sparkle collective"
+            />
+          </span>
         </Link>
         {user && users && users[user.uid] && (
           <div>

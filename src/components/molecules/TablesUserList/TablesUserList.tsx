@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
@@ -11,24 +11,24 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 
 // https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
-const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
-  const cb = useRef();
+// const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
+//   const cb = useRef();
 
-  cb.current = handler;
+//   cb.current = handler;
 
-  useEffect(() => {
-    // @ts-ignore
-    const handler = () => cb.current();
+//   useEffect(() => {
+//     // @ts-ignore
+//     const handler = () => cb.current();
 
-    window.addEventListener("beforeunload", handler);
+//     window.addEventListener("beforeunload", handler);
 
-    return () => {
-      if (callOnCleanup) handler();
+//     return () => {
+//       if (callOnCleanup) handler();
 
-      window.removeEventListener("beforeunload", handler);
-    };
-  }, [cb, callOnCleanup]);
-};
+//       window.removeEventListener("beforeunload", handler);
+//     };
+//   }, [cb, callOnCleanup]);
+// };
 
 interface PropsType {
   experienceName: string;
@@ -74,7 +74,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
-  const [table, setTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
   const nameOfVideoRoom = (i: number) => {
@@ -98,22 +97,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       setSeatedAtTable("");
     }
   }, [user, setSeatedAtTable, usersById, experienceName]);
-
-  useWindowUnloadEffect(() => leaveSeat(), true);
-
-  const leaveSeat = useCallback(async () => {
-    const doc = `users/${user.uid}`;
-    const update = {
-      data: {
-        [experienceName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    await firestoreUpdate(doc, update);
-    setSeatedAtTable("");
-  }, [user, experienceName, setSeatedAtTable]);
 
   if (!users) {
     return <>Loading...</>;
@@ -154,26 +137,17 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return experience?.tables?.[table]?.locked;
   };
 
-  const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${experienceName}`;
-    const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
-    };
-    firestoreUpdate(doc, update);
-  };
-
   const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {
     if (locked) {
       setShowLockedMessage(true);
     } else {
-      setTable(table);
       setVideoRoom(videoRoom);
-      takeSeat();
+      takeSeat(table);
       setSeatedAtTable(table);
     }
   };
 
-  const takeSeat = () => {
+  const takeSeat = (table: string) => {
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
       experienceName
@@ -192,21 +166,21 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtOtherTables.push(...usersAtTables[table.reference]);
   }
 
-  const tableOfUser =
-    seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
+  // const tableOfUser =
+  //   seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
 
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
-    );
+  // const usersAtCurrentTable =
+  //   seatedAtTable &&
+  //   users &&
+  //   users.filter(
+  //     (user: User) => user.data?.[experienceName]?.table === seatedAtTable
+  //   );
 
   return (
     <>
       {seatedAtTable !== "" ? (
         <>
-          <div className="row no-margin at-table">
+          {/* <div className="row no-margin at-table">
             <div className="header">
               <div className="table-title-container">
                 <div className="private-table-title">{seatedAtTable}</div>
@@ -256,7 +230,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </>
       ) : (
         <>

@@ -22,14 +22,14 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   const full = numberOfSeatsLeft === 0;
   return (
     <div className={`table-component-container ${table.reference}`}>
-      {table.title && (
+      {/* {table.title && (
         <div className="table-title-container">
           <div className="table-title">{table.title}</div>
           {table.subtitle && (
             <div className="table-subtitle">{table.subtitle}</div>
           )}
         </div>
-      )}
+      )} */}
       <div
         className="table-item"
         style={{
@@ -63,6 +63,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             left
           </div>
         )}
+        <div className="table-number">{table.title}</div>
 
         {usersSeatedAtTable.map((user: User) => (
           <img
