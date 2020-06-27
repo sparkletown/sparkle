@@ -213,6 +213,22 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         usersInJazzBar.includes(user) && !usersAtSameTable.includes(user)
     );
 
+  const usersSeated =
+    users &&
+    users.filter(
+      (user: User) =>
+        user.data?.[experience.associatedRoom] &&
+        user.data[experience.associatedRoom].table
+    );
+
+  const usersStanding =
+    usersSeated &&
+    users.filter(
+      (user: User) =>
+        user.lastSeenIn === experience.associatedRoom &&
+        !usersSeated.includes(user)
+    );
+
   const reactionClicked = (user: FUser, reaction: ReactionType) => {
     experienceContext &&
       experienceContext.addReaction({
@@ -321,6 +337,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({
           </div>
         )}
       </div>
+      {!seatedAtTable && (
+        <div className="user-interaction-container">
+          {usersStanding && (
+            <UserList users={usersStanding} limit={26} activity="standing" />
+          )}
+        </div>
+      )}
     </div>
   );
 };
