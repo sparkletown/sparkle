@@ -65,19 +65,23 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
         )}
         <div className="table-number">{table.title}</div>
 
-        {usersSeatedAtTable.map((user: User) => (
-          <img
-            onClick={() => setSelectedUserProfile(user)}
-            key={user.id}
-            className="profile-icon table-participant-picture"
-            src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
-            title={user.partyName}
-            alt={`${user.partyName} profile`}
-            width={imageSize}
-            height={imageSize}
-          />
-        ))}
-        {table.capacity &&
+        {usersSeatedAtTable &&
+          usersSeatedAtTable.length >= 0 &&
+          usersSeatedAtTable.map((user: User) => (
+            <img
+              onClick={() => setSelectedUserProfile(user)}
+              key={user.id}
+              className="profile-icon table-participant-picture"
+              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+              title={user.partyName}
+              alt={`${user.partyName} profile`}
+              width={imageSize}
+              height={imageSize}
+            />
+          ))}
+        {usersSeatedAtTable &&
+          usersSeatedAtTable.length >= 0 &&
+          table.capacity &&
           [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
               onClick={() =>
