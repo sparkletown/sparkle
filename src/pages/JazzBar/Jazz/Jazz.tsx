@@ -224,6 +224,19 @@ const Jazz: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="scrollable-area">
+      <div className="user-interaction-container">
+        {users && (
+          <UserList
+            users={
+              seatedAtTable
+                ? usersInJazzbarWithoutPeopleAtTable
+                : usersInJazzBar
+            }
+            limit={26}
+            activity="in the jazz bar"
+          />
+        )}
+      </div>
       <div
         className={`content ${
           !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
@@ -306,19 +319,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               />
             </div>
           </div>
-        )}
-      </div>
-      <div className="user-interaction-container">
-        {users && (
-          <UserList
-            users={
-              seatedAtTable
-                ? usersInJazzbarWithoutPeopleAtTable
-                : usersInJazzBar
-            }
-            limit={26}
-            activity="in the jazz bar"
-          />
         )}
       </div>
     </div>

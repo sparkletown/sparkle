@@ -113,11 +113,4 @@ export const JAZZBAR_TABLES: Table[] = [
     rows: 2,
     columns: 2,
   },
-  {
-    capacity: 4,
-    title: "Table 16",
-    reference: "jazzbar-table-16",
-    rows: 2,
-    columns: 2,
-  },
 ];
