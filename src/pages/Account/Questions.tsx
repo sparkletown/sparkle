@@ -30,10 +30,10 @@ const Questions = () => {
 
   return (
     <div className="page-container">
-      <div className="coreality-logo-sparkles"></div>
+      <div className="hero-logo sparkle"></div>
       <div className="login-container">
         <h2>Now complete your profile by answering 3 short questions</h2>
-        <p>This will help your fellow party-goers break the ice</p>
+        <p>This will help your fellow bar-goers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {profileQuestions &&
             profileQuestions.map((question: QuestionType) => (

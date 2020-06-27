@@ -2,10 +2,13 @@ import React, { useCallback, useContext, useState } from "react";
 import { User as FUser } from "firebase";
 import { useFirestoreConnect } from "react-redux-firebase";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { TOGGLE_MUTE_REACTIONS } from "actions";
 import "./Jazz.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PARTY_NAME } from "config";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
@@ -15,6 +18,7 @@ import { JAZZBAR_TABLES } from "./constants";
 import {
   ExperienceContext,
   ReactionType,
+  Reactions,
 } from "components/context/ExperienceContext";
 import firebase from "firebase/app";
 
@@ -100,6 +104,16 @@ const TableHeader = ({
   return (
     <div className="row no-margin at-table table-header">
       <div className="header" style={{ marginRight: "60px" }}>
+        <div className="action">
+          <button
+            type="button"
+            title={"Leave " + seatedAtTable}
+            className="btn"
+            onClick={leaveSeat}
+          >
+            Back
+          </button>
+        </div>
         <div className="table-title-container">
           <div className="private-table-title" style={{ fontSize: "20px" }}>
             {tableOfUser?.title || seatedAtTable}
@@ -138,16 +152,6 @@ const TableHeader = ({
             )}
           </div>
         </div>
-        <div style={{ position: "absolute", top: 0, right: 0 }}>
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="btn"
-            onClick={leaveSeat}
-          >
-            Back
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -179,11 +183,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({
   selectedTab,
   setUserList,
 }) => {
-  const { experience, user, users } = useSelector((state: any) => ({
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
-    user: state.user,
-    users: state.firestore.ordered.partygoers,
-  }));
+  const dispatch = useDispatch();
+  const { experience, user, users, muteReactions } = useSelector(
+    (state: any) => ({
+      experience:
+        state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
+      user: state.user,
+      users: state.firestore.ordered.partygoers,
+      muteReactions: state.muteReactions,
+    })
+  );
   const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
 
@@ -212,6 +221,22 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         usersInJazzBar.includes(user) && !usersAtSameTable.includes(user)
     );
 
+  const usersSeated =
+    users &&
+    users.filter(
+      (user: User) =>
+        user.data?.[experience.associatedRoom] &&
+        user.data[experience.associatedRoom].table
+    );
+
+  const usersStanding =
+    usersSeated &&
+    users.filter(
+      (user: User) =>
+        user.lastSeenIn === experience.associatedRoom &&
+        !usersSeated.includes(user)
+    );
+
   const reactionClicked = (user: FUser, reaction: ReactionType) => {
     experienceContext &&
       experienceContext.addReaction({
@@ -223,6 +248,19 @@ const Jazz: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="scrollable-area">
+      <div className="user-interaction-container">
+        {users && (
+          <UserList
+            users={
+              seatedAtTable
+                ? usersInJazzbarWithoutPeopleAtTable
+                : usersInJazzBar
+            }
+            limit={26}
+            activity="in the jazz bar"
+          />
+        )}
+      </div>
       <div
         className={`content ${
           !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
@@ -234,7 +272,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             seatedAtTable={seatedAtTable}
             experienceName={experience.associatedRoom}
             TableComponent={TableComponent}
-            joinMessage={false}
+            joinMessage={true}
             customTables={JAZZBAR_TABLES}
           />
         )}
@@ -260,22 +298,39 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               width="100%"
               height="100%"
               className="youtube-video"
-              src="https://www.youtube.com/embed/b44P11vLiY8?autoplay=1"
+              src="https://www.youtube.com/embed/dqZAA8ZIAVE?autoplay=1"
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
           </div>
-          <div>
-            <button onClick={() => reactionClicked(user, ReactionType.heart)}>
-              <span role="img" aria-label="heart-emoji">
-                ❤️
-              </span>
-            </button>
-            <button onClick={() => reactionClicked(user, ReactionType.clap)}>
-              <span role="img" aria-label="clap-emoji">
-                👏
-              </span>
-            </button>
+          <div
+            className={`reaction-bar ${
+              isVideoFocused ? "video-focused" : "video-not-focused"
+            }`}
+          >
+            {Reactions.map((reaction) => (
+              <div className="reaction-container">
+                <button
+                  className="reaction"
+                  onClick={() => reactionClicked(user, reaction.type)}
+                >
+                  <span role="img" aria-label={reaction.ariaLabel}>
+                    {reaction.text}
+                  </span>
+                </button>
+              </div>
+            ))}
+            <div
+              className="reaction-mute"
+              onClick={() => dispatch({ type: TOGGLE_MUTE_REACTIONS })}
+            >
+              <div className="reaction-mute-text">Reactions:</div>
+              <FontAwesomeIcon
+                size="lg"
+                icon={muteReactions ? faVolumeMute : faVolumeUp}
+                color={muteReactions ? "red" : undefined}
+              />
+            </div>
           </div>
         </div>
         {seatedAtTable && (
@@ -301,19 +356,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({
           </div>
         )}
       </div>
-      <div className="user-interaction-container">
-        {users && (
-          <UserList
-            users={
-              seatedAtTable
-                ? usersInJazzbarWithoutPeopleAtTable
-                : usersInJazzBar
-            }
-            limit={26}
-            activity="in the jazz bar"
-          />
-        )}
-      </div>
+      {!seatedAtTable && (
+        <div className="user-interaction-container">
+          {usersStanding && (
+            <UserList users={usersStanding} limit={26} activity="standing" />
+          )}
+        </div>
+      )}
     </div>
   );
 };

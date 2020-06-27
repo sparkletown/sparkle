@@ -43,12 +43,22 @@ $login-max-width: 540px;
   padding: 120px 0 80px;
 }
 
-.coreality-logo-sparkles {
-  margin: 0 auto 50px;
-  width: 270px;
-  height: 106px;
-  background-image: url("./img/coreality-logo-sparkles.png");
-  background-size: 270px 106px;
+.hero-logo {
+  &.coreality {
+    margin: 0 auto 50px;
+    background-image: url("./img/coreality-logo-sparkles.png");
+    width: 270px;
+    height: 106px;
+    background-size: 270px 106px;
+  }
+
+  &.sparkle {
+    margin: 0 auto;
+    background-image: url("/sparkle-logo.png");
+    width: 280px;
+    height: 280px;
+    background-size: 280px;
+  }
 }
 
 .login-container {

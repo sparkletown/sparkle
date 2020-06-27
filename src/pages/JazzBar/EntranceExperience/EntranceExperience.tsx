@@ -13,28 +13,34 @@ const EntranceExperience = () => (
     <SecretPasswordForm />
     <div className="party-information">
       <InformationCard title="About the venue" className="col information-card">
-        Jazztastic Park is the Partypelago's most storied jazz venue. All
-        flavours of this classic improvisational medium can be heard in the
-        jungle-laden hills of this Northwesterly outcrop.
+        Kansas Smitty’s is East London’s most dynamic jazz venue. Located on
+        Broadway Market, it opens six nights a week for live jazz in an intimate
+        basement environment. Their seven-piece house band share the name. The
+        signature cocktail in this cult bar, the julep, is a bourbon-based
+        cocktail served in an ice-filled tin, and recalls the jazzy bars of
+        1920s Kansas where the likes of Mary Lou Williams gave us new ways of
+        hearing
       </InformationCard>
       <InformationCard
         title="About tonight's show"
         className="col information-card"
       >
-        <p>Performing tonight at Jazztastic Park:</p>
+        <p>
+          Tonight, the Kansas Smitty’s House Band are playing from their new
+          album, Things Happened Here. Drawing influence from over one hundred
+          years of jazz history, from Django Reinhardt to Ahmad Jamal, and the
+          vivid musical landscapes of Debussy and even Brian Eno, Kansas
+          Smitty’s new album combines journeying into the jazz sublime with
+          every flavour of cinematic texture.
+        </p>
+        <p>Performing tonight at Kansas Smitty's:</p>
         <ul>
-          <li>
-            Kansas Smitty's:
-            <ul>
-              <li>Giacomo Smith - alto/clarinet</li>
-              <li>Alec harper - Tenor</li>
-              <li>Dave Archer - Guitar</li>
-              <li>Joe Webb - Piano</li>
-              <li>Ferg Ireland - Double Bass</li>
-              <li>Will Cleasby - Drums</li>
-            </ul>
-          </li>
-          <li>Sam Leak</li>
+          <li>Giacomo Smith - alto/clarinet</li>
+          <li>Alec harper - Tenor</li>
+          <li>Dave Archer - Guitar</li>
+          <li>Joe Webb - Piano</li>
+          <li>Ferg Ireland - Double Bass</li>
+          <li>Will Cleasby - Drums</li>
         </ul>
       </InformationCard>
     </div>
