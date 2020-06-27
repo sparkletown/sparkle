@@ -3,7 +3,6 @@ import { User } from "types/User";
 
 import {
   ExperienceContext,
-  ReactionType,
   Reactions,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
