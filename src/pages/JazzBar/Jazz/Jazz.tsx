@@ -15,6 +15,7 @@ import { JAZZBAR_TABLES } from "./constants";
 import {
   ExperienceContext,
   ReactionType,
+  Reactions,
 } from "components/context/ExperienceContext";
 import firebase from "firebase/app";
 
@@ -100,6 +101,16 @@ const TableHeader = ({
   return (
     <div className="row no-margin at-table table-header">
       <div className="header" style={{ marginRight: "60px" }}>
+        <div className="action">
+          <button
+            type="button"
+            title={"Leave " + seatedAtTable}
+            className="btn"
+            onClick={leaveSeat}
+          >
+            Back
+          </button>
+        </div>
         <div className="table-title-container">
           <div className="private-table-title" style={{ fontSize: "20px" }}>
             {tableOfUser?.title || seatedAtTable}
@@ -137,16 +148,6 @@ const TableHeader = ({
               <p className="unlocked-text">Others can join this table</p>
             )}
           </div>
-        </div>
-        <div style={{ position: "absolute", top: 0, right: 0 }}>
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="btn"
-            onClick={leaveSeat}
-          >
-            Back
-          </button>
         </div>
       </div>
     </div>
@@ -260,22 +261,28 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               width="100%"
               height="100%"
               className="youtube-video"
-              src="https://www.youtube.com/embed/b44P11vLiY8?autoplay=1"
+              src="https://www.youtube.com/embed/dqZAA8ZIAVE?autoplay=1"
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
           </div>
-          <div>
-            <button onClick={() => reactionClicked(user, ReactionType.heart)}>
-              <span role="img" aria-label="heart-emoji">
-                ❤️
-              </span>
-            </button>
-            <button onClick={() => reactionClicked(user, ReactionType.clap)}>
-              <span role="img" aria-label="clap-emoji">
-                👏
-              </span>
-            </button>
+          <div
+            className={`reaction-bar ${
+              isVideoFocused ? "video-focused" : "video-not-focused"
+            }`}
+          >
+            {Reactions.map((reaction) => (
+              <div className="reaction-container">
+                <button
+                  className="reaction"
+                  onClick={() => reactionClicked(user, reaction.type)}
+                >
+                  <span role="img" aria-label={reaction.ariaLabel}>
+                    {reaction.text}
+                  </span>
+                </button>
+              </div>
+            ))}
           </div>
         </div>
         {seatedAtTable && (

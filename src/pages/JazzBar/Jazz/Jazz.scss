@@ -1,6 +1,8 @@
+@import "scss/constants";
+
 .container-in-grid {
   grid-column: 2/8;
-  grid-row: 1/4;
+  grid-row: 1/5;
 }
 
 .jazz-container {
@@ -22,7 +24,7 @@
 .jazz-container {
   // min-height: 400px;
   grid-column: 2/8;
-  grid-row: 1/4;
+  grid-row: 1/5;
   transition: all 0.1s linear;
 }
 
@@ -74,7 +76,6 @@
   .video {
     height: 90%;
     transition: all 0.2s linear;
-    margin-bottom: 20px;
 
     &.video-not-focused {
       height: 300px;
@@ -83,5 +84,34 @@
 
   .video-focused {
     height: 500px;
+  }
+
+  .jazz-bar-table .reaction-bar {
+    flex-direction: column;
+    border-radius: 0 22px 22px 0;
+
+    &.video-not-focused {
+      height: 300px;
+    }
+    &.video-focused {
+      height: 500px;
+    }
+  }
+
+  .reaction-bar {
+    display: flex;
+    justify-content: center;
+    background: $dark;
+    padding: 0 16px;
+    border-radius: 0 0 22px 22px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
+
+  .reaction {
+    background: inherit;
+    border: none;
+    font-size: 44px;
+    padding: 2px 12px;
   }
 }

@@ -9,7 +9,48 @@ type ExperienceContextType = {
 export enum ReactionType {
   heart = "heart",
   clap = "clap",
+  laugh = "laugh",
+  thatsjazz = "thatsjazz",
+  boo = "boo",
 }
+
+export const Reactions = [
+  {
+    name: "heart",
+    text: "❤️",
+    type: ReactionType.heart,
+    ariaLabel: "heart-emoji",
+    audioPath: "/sounds/woo.mp3",
+  },
+  {
+    name: "clap",
+    text: "👏",
+    type: ReactionType.clap,
+    ariaLabel: "clap-emoji",
+    audioPath: "/sounds/clap.mp3",
+  },
+  {
+    name: "laugh",
+    text: "😂",
+    type: ReactionType.laugh,
+    ariaLabel: "laugh-emoji",
+    audioPath: "/sounds/laugh.mp3",
+  },
+  {
+    name: "thatsjazz",
+    text: "🎹",
+    type: ReactionType.thatsjazz,
+    ariaLabel: "piano-emoji",
+    audioPath: "/sounds/thatsjazz.mp3",
+  },
+  {
+    name: "boo",
+    text: "👻",
+    type: ReactionType.boo,
+    ariaLabel: "boo-emoji",
+    audioPath: "/sounds/boo.mp3",
+  },
+];
 
 type Reaction = {
   reaction: ReactionType;

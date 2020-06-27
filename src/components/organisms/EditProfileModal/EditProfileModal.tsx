@@ -68,18 +68,18 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your party name"
+              placeholder="Your jazz bar name"
               ref={register({
                 required: true,
                 maxLength: 16,
               })}
             />
             {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Party name is required</span>
+              <span className="input-error">Jazz bar name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Party name is less than 16 characters
+                Jazz bar name is less than 16 characters
               </span>
             )}
             <ProfilePictureInput

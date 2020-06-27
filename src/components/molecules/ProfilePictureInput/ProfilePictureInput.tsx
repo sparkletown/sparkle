@@ -60,7 +60,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
-      <small>This will be your public avatar appearing in the party</small>
+      <small>This will be your public avatar appearing in the bar</small>
       <input
         type="hidden"
         name="pictureUrl"

@@ -38,7 +38,7 @@ const Profile = () => {
 
   return (
     <div className="page-container">
-      <div className="coreality-logo-sparkles"></div>
+      <div className="hero-logo sparkle"></div>
       <div className="login-container">
         <h2>Well done! Now create your profile</h2>
         <p>The jazz is nigh!</p>
@@ -47,21 +47,21 @@ const Profile = () => {
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your party name"
+              placeholder="Your jazz bar name"
               ref={register({
                 required: true,
                 maxLength: 16,
               })}
             />
             <span className="input-info">
-              This is your public party name (max 16 characters)
+              This is your public jazz bar name (max 16 characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Party name is required</span>
+              <span className="input-error">Jazz bar name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Party name is less than 16 characters
+                Jazz bar name is less than 16 characters
               </span>
             )}
             <ProfilePictureInput

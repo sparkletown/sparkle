@@ -16,7 +16,7 @@ const NavBar = () => {
           <span className="navbar-brand title">
             <img
               className="sparkle-icon"
-              src="/logo-sparkle.png"
+              src="/sparkle-header.png"
               alt="Sparkle collective"
             />
           </span>

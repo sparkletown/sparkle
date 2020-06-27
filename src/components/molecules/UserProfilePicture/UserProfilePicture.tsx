@@ -4,6 +4,7 @@ import { User } from "types/User";
 import {
   ExperienceContext,
   ReactionType,
+  Reactions,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
 
@@ -42,30 +43,26 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         width={imageSize}
         height={imageSize}
       />
-      {experienceContext &&
-        experienceContext.reactions.find(
-          (r) => r.created_by === user.id && r.reaction === ReactionType.heart
-        ) && (
-          <>
-            <Heart />
-            <audio autoPlay loop>
-              <source src="/sounds/woo.mp3" />
-            </audio>
-          </>
-        )}
-      {experienceContext &&
-        experienceContext.reactions.find(
-          (r) => r.created_by === user.id && r.reaction === ReactionType.clap
-        ) && (
-          <>
-            <span className="reaction clap" role="img" aria-label="clap emoji">
-              👏
-            </span>
-            <audio autoPlay loop>
-              <source src="/sounds/clap.mp3" />
-            </audio>
-          </>
-        )}
+      {Reactions.map(
+        (reaction) =>
+          experienceContext &&
+          experienceContext.reactions.find(
+            (r) => r.created_by === user.id && r.reaction === reaction.type
+          ) && (
+            <>
+              <span
+                className={"reaction " + reaction.name}
+                role="img"
+                aria-label={reaction.ariaLabel}
+              >
+                reaction.text
+              </span>
+              <audio autoPlay loop>
+                <source src={reaction.audioPath} />
+              </audio>
+            </>
+          )
+      )}
     </div>
   );
 };

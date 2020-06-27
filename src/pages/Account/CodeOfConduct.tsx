@@ -6,11 +6,10 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 
 export interface CodeOfConductFormData {
-  seekFun: string;
-  addFun: string;
-  wearCostume: string;
-  respectParty: string;
-  partyReal: string;
+  contributeToExperience: string;
+  cheerBand: string;
+  greatNight: string;
+  willingToImprovise: string;
 }
 
 const QUESTIONS: {
@@ -19,26 +18,21 @@ const QUESTIONS: {
   link?: string;
 }[] = [
   {
-    id: "seekFun",
-    label: "I will seek out the fun",
+    id: "contributeToExperience",
+    label: "I agree to contribute to the experience.",
   },
   {
-    id: "addFun",
-    label: "I will add to the fun",
-  },
-  {
-    id: "wearCostume",
-    label: "I will wear a costume where possible",
-  },
-  {
-    id: "respectParty",
+    id: "cheerBand",
     label:
-      "I will respect my fellow party-goers’ feelings and boundaries by obeying the Consent Policy",
-    link: "https://co-reality.co/consent-policy/",
+      "I understand I can cheer the band live using the buttons under the video.",
   },
   {
-    id: "partyReal",
-    label: "I understand those parties are real",
+    id: "greatNight",
+    label: "I will have a great night out.",
+  },
+  {
+    id: "willingToImprovise",
+    label: "I realise this is jazz and i'm willing to improvise.",
   },
 ];
 
@@ -59,7 +53,7 @@ const CodeOfConduct = () => {
 
   return (
     <div className="page-container">
-      <div className="coreality-logo-sparkles"></div>
+      <div className="kansas-smittys-logo"></div>
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">

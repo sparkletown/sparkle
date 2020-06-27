@@ -32,7 +32,7 @@ const Login = () => {
 
   return (
     <div className="page-container">
-      <div className="coreality-logo-sparkles"></div>
+      <div className="hero-logo sparkle"></div>
       <div className="login-container">
         <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
