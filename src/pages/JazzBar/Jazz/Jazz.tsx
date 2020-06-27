@@ -2,10 +2,13 @@ import React, { useCallback, useContext, useState } from "react";
 import { User as FUser } from "firebase";
 import { useFirestoreConnect } from "react-redux-firebase";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { TOGGLE_MUTE_REACTIONS } from "actions";
 import "./Jazz.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PARTY_NAME } from "config";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
@@ -180,11 +183,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({
   selectedTab,
   setUserList,
 }) => {
-  const { experience, user, users } = useSelector((state: any) => ({
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
-    user: state.user,
-    users: state.firestore.ordered.partygoers,
-  }));
+  const dispatch = useDispatch();
+  const { experience, user, users, muteReactions } = useSelector(
+    (state: any) => ({
+      experience:
+        state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
+      user: state.user,
+      users: state.firestore.ordered.partygoers,
+      muteReactions: state.muteReactions,
+    })
+  );
   const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
 
@@ -312,6 +320,17 @@ const Jazz: React.FunctionComponent<PropsType> = ({
                 </button>
               </div>
             ))}
+            <div
+              className="reaction-mute"
+              onClick={() => dispatch({ type: TOGGLE_MUTE_REACTIONS })}
+            >
+              <div className="reaction-mute-text">Reactions:</div>
+              <FontAwesomeIcon
+                size="lg"
+                icon={muteReactions ? faVolumeMute : faVolumeUp}
+                color={muteReactions ? "red" : undefined}
+              />
+            </div>
           </div>
         </div>
         {seatedAtTable && (

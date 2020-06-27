@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { useSelector } from "react-redux";
 import { User } from "types/User";
 
 import {
@@ -19,6 +20,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   imageSize,
 }) => {
   const experienceContext = useContext(ExperienceContext);
+  const { muteReactions } = useSelector((state: any) => ({
+    muteReactions: state.muteReactions,
+  }));
 
   return (
     <div className="profile-picture-container">
@@ -46,9 +50,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
               >
                 {reaction.text}
               </span>
-              <audio autoPlay loop>
-                <source src={reaction.audioPath} />
-              </audio>
+              {!muteReactions && (
+                <audio autoPlay loop>
+                  <source src={reaction.audioPath} />
+                </audio>
+              )}
             </div>
           )
       )}
