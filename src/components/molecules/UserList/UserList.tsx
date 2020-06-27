@@ -26,7 +26,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   activity = "partying",
   disableSeeAll = true,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
   const usersToDisplay = isExpanded ? users : users.slice(0, limit);
