@@ -272,7 +272,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({
             seatedAtTable={seatedAtTable}
             experienceName={experience.associatedRoom}
             TableComponent={TableComponent}
-            joinMessage={false}
+            joinMessage={true}
             customTables={JAZZBAR_TABLES}
           />
         )}
