@@ -80,8 +80,8 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             />
           ))}
         {usersSeatedAtTable &&
-          usersSeatedAtTable.length >= 0 &&
           table.capacity &&
+          table.capacity - usersSeatedAtTable.length >= 0 &&
           [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
               onClick={() =>
