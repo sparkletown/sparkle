@@ -119,5 +119,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 10px;
+
+    .reaction-mute-text {
+      font-size: 14px;
+    }
   }
 }
