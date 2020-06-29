@@ -11,6 +11,7 @@ import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { setUser } from "actions";
 import { PARTY_NAME } from "config";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import SparleSpaceMarketingPage from "pages/SparleSpaceMarketingPage";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -47,6 +48,7 @@ const AppRouter = () => {
   return (
     <Router basename="/kansassmittys">
       <Switch>
+        <Route path="/SparkleVerse" component={SparleSpaceMarketingPage} />
         <Route path="/account/register" component={Register} />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
