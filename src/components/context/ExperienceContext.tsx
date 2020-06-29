@@ -12,6 +12,7 @@ export enum ReactionType {
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
+  messageToTheBand = "messageToTheBand",
 }
 
 export const Reactions = [
@@ -54,6 +55,7 @@ export const Reactions = [
 
 type Reaction = {
   reaction: ReactionType;
+  text?: string;
   created_at: number;
   created_by: string;
 };
