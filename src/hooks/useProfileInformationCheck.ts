@@ -12,6 +12,7 @@ const useProfileInformationCheck = () => {
 
   useEffect(() => {
     if (usersByUid && user && !usersByUid[user.uid]) {
+      console.log("no-profile");
       history.push("account/profile");
     }
   }, [usersByUid, history, user]);

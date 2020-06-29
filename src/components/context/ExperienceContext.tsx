@@ -53,7 +53,7 @@ export const Reactions = [
   },
 ];
 
-type Reaction = {
+export type Reaction = {
   reaction: ReactionType;
   text?: string;
   created_at: number;
