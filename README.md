@@ -1,6 +1,6 @@
-# co-reality-map: Co-reality Collective Party Map App
+# Sparkle: SparkleTown Platform
 
-A clickable party map to help you navigate Co-reality Collective parties.
+Codebase for SparkleTown, brought to you by Sparkle.
 
 ## Getting started
 
