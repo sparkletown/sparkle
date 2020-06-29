@@ -13,12 +13,6 @@ interface PropsType {
   disableSeeAll?: boolean;
 }
 
-type Reaction = {
-  reaction: "heart";
-  created_at: number;
-  created_by: string;
-};
-
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
   limit = 60,

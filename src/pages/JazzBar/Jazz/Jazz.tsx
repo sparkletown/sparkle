@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useState } from "react";
 import { User as FUser } from "firebase";
 import { useFirestoreConnect } from "react-redux-firebase";
+import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -23,8 +24,11 @@ import {
 import firebase from "firebase/app";
 
 interface PropsType {
-  selectedTab: string;
   setUserList: (value: User[]) => void;
+}
+
+interface ChatOutDataType {
+  messageToTheBand: string;
 }
 
 const TableHeader = ({
@@ -179,10 +183,7 @@ const TableFooter = ({ isVideoFocused, setIsVideoFocused }: any) => (
   </div>
 );
 
-const Jazz: React.FunctionComponent<PropsType> = ({
-  selectedTab,
-  setUserList,
-}) => {
+const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const dispatch = useDispatch();
   const { experience, user, users, muteReactions } = useSelector(
     (state: any) => ({
@@ -237,13 +238,37 @@ const Jazz: React.FunctionComponent<PropsType> = ({
         !usersSeated.includes(user)
     );
 
+  const createReaction = (type: ReactionType, user: FUser, text?: string) => {
+    const reactionBase = {
+      reaction: type,
+      created_at: new Date().getTime(),
+      created_by: user.uid,
+    };
+    if (text) {
+      return { ...reactionBase, text };
+    }
+    return reactionBase;
+  };
+
   const reactionClicked = (user: FUser, reaction: ReactionType) => {
     experienceContext &&
-      experienceContext.addReaction({
-        reaction,
-        created_at: new Date().getTime(),
-        created_by: user.uid,
-      });
+      experienceContext.addReaction(createReaction(reaction, user));
+  };
+
+  const { register, handleSubmit, setValue } = useForm<ChatOutDataType>({
+    mode: "onSubmit",
+  });
+
+  const onSubmit = async (data: ChatOutDataType) => {
+    experienceContext &&
+      experienceContext.addReaction(
+        createReaction(
+          ReactionType.messageToTheBand,
+          user,
+          data.messageToTheBand
+        )
+      );
+    setValue([{ messageToTheBand: "" }]);
   };
 
   return (
@@ -302,24 +327,64 @@ const Jazz: React.FunctionComponent<PropsType> = ({
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
+            {seatedAtTable && (
+              <div className="call-out-band-container-at-table">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="form-shout-out"
+                >
+                  <input
+                    name="messageToTheBand"
+                    placeholder="Shout out to the band"
+                    ref={register({ required: true })}
+                  />
+                  <input
+                    className="btn btn-primary btn-block btn-centered"
+                    type="submit"
+                    value="Send"
+                  />
+                </form>
+              </div>
+            )}
           </div>
           <div
             className={`reaction-bar ${
               isVideoFocused ? "video-focused" : "video-not-focused"
             }`}
           >
-            {Reactions.map((reaction) => (
-              <div className="reaction-container">
-                <button
-                  className="reaction"
-                  onClick={() => reactionClicked(user, reaction.type)}
+            {!seatedAtTable && (
+              <div className="call-out-band-container">
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className="form-shout-out"
                 >
-                  <span role="img" aria-label={reaction.ariaLabel}>
-                    {reaction.text}
-                  </span>
-                </button>
+                  <input
+                    name="messageToTheBand"
+                    placeholder="Shout out to the band"
+                    ref={register({ required: true })}
+                  />
+                  <input
+                    className="btn btn-primary btn-block btn-centered"
+                    type="submit"
+                    value="Send"
+                  />
+                </form>
               </div>
-            ))}
+            )}
+            <div className="emoji-container">
+              {Reactions.map((reaction) => (
+                <div className="reaction-container">
+                  <button
+                    className="reaction"
+                    onClick={() => reactionClicked(user, reaction.type)}
+                  >
+                    <span role="img" aria-label={reaction.ariaLabel}>
+                      {reaction.text}
+                    </span>
+                  </button>
+                </div>
+              ))}
+            </div>
             <div
               className="reaction-mute"
               onClick={() => dispatch({ type: TOGGLE_MUTE_REACTIONS })}

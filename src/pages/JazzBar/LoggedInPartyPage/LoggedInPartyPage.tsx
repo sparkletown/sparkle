@@ -31,9 +31,7 @@ const LoggedInPartyPage: React.FunctionComponent = () => {
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
       >
-        {selectedTab === "jazz" && (
-          <Jazz selectedTab={selectedTab} setUserList={setUserList} />
-        )}
+        {selectedTab === "jazz" && <Jazz setUserList={setUserList} />}
         {selectedTab === "cocktail" && (
           <Cocktail userList={userList} setUserList={setUserList} />
         )}
