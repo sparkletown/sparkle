@@ -6,59 +6,68 @@ type ExperienceContextType = {
   addReaction: (newReaction: Reaction) => void;
 };
 
-export enum ReactionType {
+export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
-  messageToTheBand = "messageToTheBand",
 }
+
+export type TextReactionType = "messageToTheBand";
+
+export type ReactionType = EmojiReactionType | TextReactionType;
 
 export const Reactions = [
   {
     name: "heart",
     text: "❤️",
-    type: ReactionType.heart,
+    type: EmojiReactionType.heart,
     ariaLabel: "heart-emoji",
     audioPath: "/sounds/woo.mp3",
   },
   {
     name: "clap",
     text: "👏",
-    type: ReactionType.clap,
+    type: EmojiReactionType.clap,
     ariaLabel: "clap-emoji",
     audioPath: "/sounds/clap.mp3",
   },
   {
     name: "laugh",
     text: "😂",
-    type: ReactionType.laugh,
+    type: EmojiReactionType.laugh,
     ariaLabel: "laugh-emoji",
     audioPath: "/sounds/laugh.mp3",
   },
   {
     name: "thatsjazz",
     text: "🎹",
-    type: ReactionType.thatsjazz,
+    type: EmojiReactionType.thatsjazz,
     ariaLabel: "piano-emoji",
     audioPath: "/sounds/thatsjazz.mp3",
   },
   {
     name: "boo",
     text: "👻",
-    type: ReactionType.boo,
+    type: EmojiReactionType.boo,
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",
   },
 ];
 
-type Reaction = {
-  reaction: ReactionType;
-  text?: string;
-  created_at: number;
-  created_by: string;
-};
+type Reaction =
+  | {
+      reaction: EmojiReactionType;
+      created_at: number;
+      created_by: string;
+    }
+  | {
+      reaction: TextReactionType;
+      text: string;
+      created_at: number;
+      created_by: string;
+    };
 
 export const ExperienceContext = React.createContext<
   ExperienceContextType | undefined
@@ -95,7 +104,7 @@ export default ({
   }, [firebase, setReactions, experienceName]);
 
   const addReaction = useCallback(
-    (newReaction) => {
+    (newReaction: Reaction) => {
       firebase
         .firestore()
         .collection(`experiences/${experienceName}/reactions`)

@@ -18,6 +18,7 @@ import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
 import {
   ExperienceContext,
+  EmojiReactionType,
   ReactionType,
   Reactions,
 } from "components/context/ExperienceContext";
@@ -238,7 +239,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         !usersSeated.includes(user)
     );
 
-  const createReaction = (type: ReactionType, user: FUser, text?: string) => {
+  const createReaction = (
+    type: EmojiReactionType,
+    user: FUser,
+    text?: string
+  ) => {
     const reactionBase = {
       reaction: type,
       created_at: new Date().getTime(),
@@ -250,9 +255,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     return reactionBase;
   };
 
-  const reactionClicked = (user: FUser, reaction: ReactionType) => {
+  const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
     experienceContext &&
-      experienceContext.addReaction(createReaction(reaction, user));
+      experienceContext.addReaction({
+        reaction,
+        created_at: new Date().getTime(),
+        created_by: user.uid,
+      });
   };
 
   const { register, handleSubmit, setValue } = useForm<ChatOutDataType>({
@@ -261,13 +270,12 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onSubmit = async (data: ChatOutDataType) => {
     experienceContext &&
-      experienceContext.addReaction(
-        createReaction(
-          ReactionType.messageToTheBand,
-          user,
-          data.messageToTheBand
-        )
-      );
+      experienceContext.addReaction({
+        reaction: "messageToTheBand",
+        created_at: new Date().getTime(),
+        created_by: user.uid,
+        text: data.messageToTheBand,
+      });
     setValue([{ messageToTheBand: "" }]);
   };
 
