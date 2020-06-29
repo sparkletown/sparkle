@@ -26,6 +26,27 @@
   grid-column: 2/8;
   grid-row: 1/5;
   transition: all 0.1s linear;
+
+  &.container-in-row {
+    margin-bottom: 75px;
+  }
+
+  .call-out-band-container-at-table {
+    background: $dark;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 0px 0px 22px 22px;
+  }
+
+  .form-shout-out {
+    display: flex;
+
+    input[type="submit"] {
+      margin-bottom: 0px;
+      margin-left: 10px;
+      width: 100px;
+    }
+  }
 }
 
 .content.jazz-bar-grid {
@@ -98,14 +119,27 @@
     }
   }
 
+  .jazz-bar-table .emoji-container {
+    flex-direction: column;
+  }
+
   .reaction-bar {
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     background: $dark;
     padding: 0 16px;
     border-radius: 0 0 22px 22px;
     height: 56px;
     margin-bottom: 20px;
+  }
+
+  .emoji-container {
+    display: flex;
+  }
+
+  .call-out-band-container {
+    display: flex;
+    align-items: center;
   }
 
   .reaction {
