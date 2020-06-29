@@ -19,7 +19,8 @@ import { JAZZBAR_TABLES } from "./constants";
 import {
   ExperienceContext,
   EmojiReactionType,
-  ReactionType,
+  TextReactionType,
+  Reaction,
   Reactions,
 } from "components/context/ExperienceContext";
 import firebase from "firebase/app";
@@ -239,29 +240,25 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         !usersSeated.includes(user)
     );
 
-  const createReaction = (
-    type: EmojiReactionType,
-    user: FUser,
-    text?: string
-  ) => {
-    const reactionBase = {
-      reaction: type,
+  function createReaction(
+    reaction: { reaction: EmojiReactionType },
+    user: FUser
+  ): Reaction;
+  function createReaction(
+    reaction: { reaction: TextReactionType; text: string },
+    user: FUser
+  ): Reaction;
+  function createReaction(reaction: any, user: FUser) {
+    return {
       created_at: new Date().getTime(),
       created_by: user.uid,
+      ...reaction,
     };
-    if (text) {
-      return { ...reactionBase, text };
-    }
-    return reactionBase;
-  };
+  }
 
   const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
     experienceContext &&
-      experienceContext.addReaction({
-        reaction,
-        created_at: new Date().getTime(),
-        created_by: user.uid,
-      });
+      experienceContext.addReaction(createReaction({ reaction }, user));
   };
 
   const { register, handleSubmit, setValue } = useForm<ChatOutDataType>({
@@ -270,12 +267,12 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onSubmit = async (data: ChatOutDataType) => {
     experienceContext &&
-      experienceContext.addReaction({
-        reaction: "messageToTheBand",
-        created_at: new Date().getTime(),
-        created_by: user.uid,
-        text: data.messageToTheBand,
-      });
+      experienceContext.addReaction(
+        createReaction(
+          { reaction: "messageToTheBand", text: data.messageToTheBand },
+          user
+        )
+      );
     setValue([{ messageToTheBand: "" }]);
   };
 

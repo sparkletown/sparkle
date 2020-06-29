@@ -56,7 +56,7 @@ export const Reactions = [
   },
 ];
 
-type Reaction =
+export type Reaction =
   | {
       reaction: EmojiReactionType;
       created_at: number;
