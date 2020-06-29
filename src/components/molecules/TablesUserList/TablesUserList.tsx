@@ -158,11 +158,15 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const takeSeat = (table: string) => {
     const doc = `users/${user.uid}`;
-    const existingData = users.find((u: any) => u.id === user.uid)?.data?.[
-      experienceName
-    ];
+    const existingData = users.find((u: any) => u.id === user.uid)?.data;
     const update = {
-      data: { [experienceName]: { ...existingData, table, videoRoom } },
+      data: {
+        ...existingData,
+        [experienceName]: {
+          table,
+          videoRoom,
+        },
+      },
     };
     firestoreUpdate(doc, update);
   };

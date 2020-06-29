@@ -89,8 +89,10 @@ const TableHeader = ({
 
   const leaveSeat = useCallback(async () => {
     const doc = `users/${user.uid}`;
+    const existingData = user.data;
     const update = {
       data: {
+        ...existingData,
         [experienceName]: {
           table: null,
           videoRoom: null,
