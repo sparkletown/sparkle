@@ -18,6 +18,14 @@ const SparkleSpaceMarketingPage = () => (
           online Burning Man. Build your performance, theme camp or art-car with
           our fabulous tools, and put it on our virtual Playa.
         </p>
+        <input
+          className="btn btn-primary btn-block btn-centered"
+          value="Register your interest"
+          onClick={() => {
+            window.location.href =
+              "https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform";
+          }}
+        />
       </div>
       <div className="detail-alt">
         <p>We believe online Burning Man can be as good as the real thing.</p>
