@@ -1,6 +1,27 @@
 import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+const INTRO_VIDEO = (
+  <iframe
+    title="SparkleVerse Presentation"
+    width="100%"
+    height="100%"
+    className="marketing-video"
+    src="https://www.youtube.com/embed/4Ku4E2MXp-k"
+    frameBorder="0"
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+  />
+);
+const CTA_BUTTON = (
+  <form action="https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform">
+    <input
+      type="submit"
+      className="btn btn-primary btn-block btn-centered"
+      value="Register your interest"
+    />
+  </form>
+);
+
 const SparkleSpaceMarketingPage = () => (
   <WithNavigationBar>
     <div className="full-page-container marketing-page">
@@ -18,22 +39,8 @@ const SparkleSpaceMarketingPage = () => (
           online Burning Man. Build your performance, theme camp or art-car with
           our fabulous tools, and put it on our virtual Playa.
         </p>
-        <iframe
-          title="SparkleVerse Presentation"
-          width="100%"
-          height="100%"
-          className="marketing-video"
-          src="https://www.youtube.com/embed/4Ku4E2MXp-k"
-          frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-        />
-        <form action="https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform">
-          <input
-            type="submit"
-            className="btn btn-primary btn-block btn-centered"
-            value="Register your interest"
-          />
-        </form>
+        {INTRO_VIDEO}
+        {CTA_BUTTON}
       </div>
       <div className="detail-alt">
         <p className="detail-hero-text">1. The Vision</p>
@@ -72,13 +79,7 @@ const SparkleSpaceMarketingPage = () => (
           <li>Mutant art cars.</li>
           <li>Art pieces.</li>
         </ul>
-        <form action="https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform">
-          <input
-            type="submit"
-            className="btn btn-primary btn-block btn-centered"
-            value="Register your interest"
-          />
-        </form>
+        {CTA_BUTTON}
       </div>
     </div>
   </WithNavigationBar>
