@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { ReactionType, Reaction } from "components/context/ExperienceContext";
+import {
+  Reaction,
+  MessageToTheBandReaction,
+  isMessageToTheBand,
+} from "components/context/ExperienceContext";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
@@ -18,22 +21,21 @@ const ReactionPage = () => {
       doc: "kansassmittys",
       subcollections: [{ collection: "reactions" }],
       storeAs: "reactions",
+      orderBy: ["created_at", "desc"],
     },
   ]);
 
   useConnectPartyGoers();
 
-  const { reactions, users, usersById } = useSelector((state: any) => ({
+  const { reactions, usersById, partyGoers } = useSelector((state: any) => ({
     reactions: state.firestore.ordered.reactions,
-    users: state.firestore.ordered.partygoers,
-    usersById: state.firestore.data.partygoers,
+    usersById: state.firestore.data.users,
+    partyGoers: state.firestore.ordered.partygoers,
   }));
 
-  const messagesToTheBand =
-    reactions &&
-    reactions
-      .filter((r: Reaction) => r.reaction === ReactionType.messageToTheBand)
-      .sort((a: Reaction, b: Reaction) => b.created_at - a.created_at);
+  const typedReaction = (reactions ? reactions : []) as Reaction[];
+
+  const messagesToTheBand = typedReaction.filter(isMessageToTheBand);
 
   return (
     <WithNavigationBar>
@@ -63,13 +65,18 @@ const ReactionPage = () => {
                     width={50}
                     height={50}
                   />
+                  {/* @ts-ignore */}
                   <div className="message-bubble">{message.text}</div>
                 </div>
               ))}
           </div>
-          {users && (
+          {partyGoers && (
             <div className="col-4">
-              <UserList users={users} isAudioEffectDisabled />
+              <UserList
+                users={partyGoers}
+                isAudioEffectDisabled
+                imageSize={50}
+              />
             </div>
           )}
         </div>

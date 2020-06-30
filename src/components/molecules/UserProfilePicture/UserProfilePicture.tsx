@@ -5,6 +5,8 @@ import { User } from "types/User";
 import {
   ExperienceContext,
   Reactions,
+  Reaction,
+  isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
 
@@ -25,6 +27,14 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const { muteReactions } = useSelector((state: any) => ({
     muteReactions: state.muteReactions,
   }));
+
+  const typedReaction = (experienceContext
+    ? experienceContext.reactions
+    : []) as Reaction[];
+
+  const messagesToBand = typedReaction
+    .filter(isMessageToTheBand)
+    .find((r) => r.created_by === user.id && r.reaction === "messageToTheBand");
 
   return (
     <div className="profile-picture-container">
@@ -59,6 +69,17 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
               )}
             </div>
           )
+      )}
+      {messagesToBand && (
+        <div className="reaction-container">
+          <span
+            className={"reaction messageToBand"}
+            role="img"
+            aria-label={"messageToTheBand"}
+          >
+            {messagesToBand.text}
+          </span>
+        </div>
       )}
     </div>
   );
