@@ -6,7 +6,7 @@ const SparkleSpaceMarketingPage = () => (
     <div className="full-page-container marketing-page">
       <div className="hero">
         <p className="hero-text">
-          Welcome to the SparkleVerse.{" "}
+          Welcome to the co-creation of The SparkleVerse!{" "}
           <span role="img" aria-label="sparkle emoji">
             ✨
           </span>
@@ -28,6 +28,7 @@ const SparkleSpaceMarketingPage = () => (
         />
       </div>
       <div className="detail-alt">
+        <p className="detail-hero-text">1. The Vision</p>
         <p>We believe online Burning Man can be as good as the real thing.</p>
         <ul>
           <li>Scarcity.</li>
@@ -39,6 +40,7 @@ const SparkleSpaceMarketingPage = () => (
         </ul>
       </div>
       <div className="detail">
+        <p className="detail-hero-text">2. The Map</p>
         <p>The SparkleVerse map is a 2D navigable map with:</p>
         <ul>
           <li>A singular identity.</li>
@@ -50,6 +52,7 @@ const SparkleSpaceMarketingPage = () => (
         </ul>
       </div>
       <div className="detail-alt">
+        <p className="detail-hero-text">3. The Venues</p>
         <p>
           Plugging into the map are venues. Anyone can add and customize a venue
           of which we have templates. These provide context, and social
@@ -61,6 +64,14 @@ const SparkleSpaceMarketingPage = () => (
           <li>Mutant art cars.</li>
           <li>Art pieces.</li>
         </ul>
+        <input
+          className="btn btn-primary btn-block btn-centered"
+          value="Register your interest"
+          onClick={() => {
+            window.location.href =
+              "https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform";
+          }}
+        />
       </div>
     </div>
   </WithNavigationBar>
