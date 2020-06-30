@@ -18,6 +18,15 @@ const SparkleSpaceMarketingPage = () => (
           online Burning Man. Build your performance, theme camp or art-car with
           our fabulous tools, and put it on our virtual Playa.
         </p>
+        <iframe
+          title="SparkleVerse Presentation"
+          width="100%"
+          height="100%"
+          className="marketing-video"
+          src="https://www.youtube.com/embed/4Ku4E2MXp-k"
+          frameBorder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+        />
         <form action="https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform">
           <input
             type="submit"
