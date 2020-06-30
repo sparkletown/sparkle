@@ -471,3 +471,68 @@ h4 {
     border: 2px solid $black;
   }
 }
+
+.marketing-page {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  padding: 40px;
+  height: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  font-size: 18px;
+
+  ul {
+    list-style-position: inside;
+  }
+
+  .detail,
+  .detail-alt {
+    padding: 40px;
+    text-align: left;
+    margin-bottom: 20px;
+
+    .centered-text {
+      text-align: center;
+      font-weight: 700;
+      font-size: 25px;
+    }
+
+    .btn-primary {
+      height: 50px;
+    }
+
+    iframe {
+      border-radius: 22px;
+      margin-bottom: 20px;
+    }
+
+    li {
+      margin-left: 30px;
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  .detail {
+    background: $dark;
+    width: 100%;
+    border-radius: 22px;
+  }
+
+  .hero-text {
+    font-size: 44px;
+    font-weight: 800;
+  }
+
+  .detail-hero-text {
+    font-size: 32px;
+    font-weight: 800;
+  }
+
+  .marketing-video {
+    height: 480px;
+  }
+}
