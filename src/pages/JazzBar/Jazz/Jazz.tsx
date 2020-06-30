@@ -273,6 +273,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
     experienceContext &&
       experienceContext.addReaction(createReaction({ reaction }, user));
+    setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
   const { register, handleSubmit, setValue } = useForm<ChatOutDataType>({

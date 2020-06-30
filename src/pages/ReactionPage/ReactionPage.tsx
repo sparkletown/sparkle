@@ -40,12 +40,12 @@ const ReactionPage = () => {
   return (
     <WithNavigationBar>
       <div className="full-page-container experience-container reaction-page-container">
-        <h1 className="title">Reactions to the live</h1>
+        <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
             {usersById &&
               messagesToTheBand &&
-              messagesToTheBand.map((message: MessageToTheBandReaction) => (
+              messagesToTheBand.map((message) => (
                 <div className="message">
                   <img
                     onClick={() =>

@@ -28,7 +28,6 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     muteReactions: state.muteReactions,
   }));
 
-<<<<<<< HEAD
   const typedReaction = (experienceContext
     ? experienceContext.reactions
     : []) as Reaction[];
@@ -36,13 +35,6 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const messagesToBand = typedReaction
     .filter(isMessageToTheBand)
     .find((r) => r.created_by === user.id && r.reaction === "messageToTheBand");
-=======
-  const messagesToBand =
-    experienceContext &&
-    experienceContext.reactions.find(
-      (r) => r.created_by === user.id && r.reaction === "messageToTheBand"
-    );
->>>>>>> a35883b... :sparkles: add animation when sending messages to the band
 
   return (
     <div className="profile-picture-container">

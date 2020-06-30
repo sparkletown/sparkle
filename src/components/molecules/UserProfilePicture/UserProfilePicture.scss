@@ -17,11 +17,14 @@
 
   .messageToBand {
     animation: pulse 3s ease infinite;
-    font-size: 5px;
-    top: -5px;
-    background: $primary;
+    font-size: 15px;
+    top: -15px;
+    right: none;
+    width: fit-content;
+    background: $white;
+    color: $black;
     border-radius: 22px;
-    padding: 5px;
+    padding: 10px;
   }
 
   .heart {
