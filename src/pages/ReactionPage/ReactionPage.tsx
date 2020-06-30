@@ -59,7 +59,7 @@ const ReactionPage = () => {
           </div>
           {users && (
             <div className="col-4">
-              <UserList users={users} />
+              <UserList users={users} isAudioEffectDisabled />
             </div>
           )}
         </div>

@@ -11,6 +11,7 @@ interface PropsType {
   imageSize?: number;
   activity?: string;
   disableSeeAll?: boolean;
+  isAudioEffectDisabled?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -19,6 +20,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   imageSize = 40,
   activity = "partying",
   disableSeeAll = true,
+  isAudioEffectDisabled,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
@@ -50,6 +52,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
                   user={user}
                   setSelectedUserProfile={setSelectedUserProfile}
                   imageSize={imageSize}
+                  isAudioEffectDisabled={isAudioEffectDisabled}
                 />
               )
           )}

@@ -12,12 +12,14 @@ type UserProfilePictureProp = {
   user: User;
   setSelectedUserProfile: (user: User) => void;
   imageSize: number;
+  isAudioEffectDisabled?: boolean;
 };
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   setSelectedUserProfile,
   imageSize,
+  isAudioEffectDisabled,
 }) => {
   const experienceContext = useContext(ExperienceContext);
   const { muteReactions } = useSelector((state: any) => ({
@@ -50,7 +52,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
               >
                 {reaction.text}
               </span>
-              {!muteReactions && (
+              {!muteReactions && !isAudioEffectDisabled && (
                 <audio autoPlay loop>
                   <source src={reaction.audioPath} />
                 </audio>
