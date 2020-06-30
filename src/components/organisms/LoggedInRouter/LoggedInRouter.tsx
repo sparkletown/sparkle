@@ -7,6 +7,8 @@ import JazzBarLoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
 // import FriendShipPage from "pages/FriendShipPage";
 // import Room from "pages/RoomPage";
 import { getHoursAgoInSeconds } from "utils/time";
+import ReactionPage from "pages/ReactionPage";
+import ExperienceContextProvider from "components/context/ExperienceContext";
 
 const LoggedInRouter = () => {
   const [userLastSeenLimit, setUserLastSeenLimit] = useState(
@@ -29,12 +31,15 @@ const LoggedInRouter = () => {
   ]);
 
   return (
-    <Switch>
-      <Route path="/" component={JazzBarLoggedInPartyPage} />
-      {/* <Route path="/friendship" component={FriendShipPage} />
-      <Route path="/" exact component={LoggedInPartyPage} />
-      <Route path="/:roomName" component={Room} /> */}
-    </Switch>
+    <ExperienceContextProvider experienceName="kansassmittys">
+      <Switch>
+        <Route path="/band" component={ReactionPage} />
+        <Route path="/" component={JazzBarLoggedInPartyPage} />
+        {/* <Route path="/friendship" component={FriendShipPage} />
+        <Route path="/" exact component={LoggedInPartyPage} />
+        <Route path="/:roomName" component={Room} /> */}
+      </Switch>
+    </ExperienceContextProvider>
   );
 };
 
