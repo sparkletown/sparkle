@@ -4,13 +4,15 @@ import "./WithNavigationBar.scss";
 
 interface PropsType {
   children: React.ReactNode;
+  redirectionUrl?: string;
 }
 
 const WithNavigationBar: React.FunctionComponent<PropsType> = ({
+  redirectionUrl,
   children,
 }) => (
   <>
-    <NavBar />
+    <NavBar redirectionUrl={redirectionUrl} />
     <div className="navbar-margin">{children}</div>
   </>
 );

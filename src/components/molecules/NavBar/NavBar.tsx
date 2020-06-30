@@ -3,8 +3,12 @@ import "./NavBar.scss";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-const NavBar = () => {
-  const { user, users } = useSelector((state) => ({
+interface PropsType {
+  redirectionUrl?: string;
+}
+
+const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
+  const { user, users } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
   }));
@@ -12,7 +16,7 @@ const NavBar = () => {
   return (
     <header>
       <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
-        <Link to="/">
+        <Link to={redirectionUrl || "/"}>
           <span className="navbar-brand title">
             <img
               className="sparkle-icon"
