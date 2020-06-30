@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .profile-picture-container {
   position: relative;
 
@@ -13,9 +15,20 @@
     animation: sway 2200ms 1200ms ease-in-out;
   }
 
+  .messageToBand {
+    animation: pulse 3s ease infinite;
+    font-size: 15px;
+    top: -15px;
+    right: none;
+    width: fit-content;
+    background: $white;
+    color: $black;
+    border-radius: 22px;
+    padding: 10px;
+  }
+
   .heart {
     fill: red;
-    animation: pulse 1s ease infinite;
     animation: pulse 1s ease infinite;
     z-index: 99999;
   }

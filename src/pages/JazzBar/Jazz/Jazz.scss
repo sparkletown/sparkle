@@ -151,6 +151,11 @@
     border: none;
     font-size: 44px;
     padding: 2px 12px;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      animation: pulse 0.5s ease 2;
+    }
   }
 
   .reaction-mute {
