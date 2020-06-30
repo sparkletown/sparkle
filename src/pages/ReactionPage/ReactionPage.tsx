@@ -23,9 +23,10 @@ const ReactionPage = () => {
 
   useConnectPartyGoers();
 
-  const { reactions, users } = useSelector((state: any) => ({
+  const { reactions, users, usersById } = useSelector((state: any) => ({
     reactions: state.firestore.ordered.reactions,
     users: state.firestore.ordered.partygoers,
+    usersById: state.firestore.data.partygoers,
   }));
 
   const messagesToTheBand =
@@ -40,18 +41,27 @@ const ReactionPage = () => {
         <h1 className="title">Reactions to the live</h1>
         <div className="row">
           <div className="col-8">
-            {users &&
+            {usersById &&
               messagesToTheBand &&
               messagesToTheBand.map((message: Reaction) => (
                 <div className="message">
-                  <UserProfilePicture
-                    user={users.find(
-                      (user: User) => user.id === message.created_by
-                    )}
-                    imageSize={50}
-                    setSelectedUserProfile={(userProfile) =>
-                      setSelectedUserProfile(userProfile)
+                  <img
+                    onClick={() =>
+                      setSelectedUserProfile({
+                        ...usersById[message.created_by],
+                        id: message.created_by,
+                      })
                     }
+                    key={`${message.created_by}-messaging-the-band`}
+                    className="profile-icon"
+                    src={
+                      usersById[message.created_by].pictureUrl ||
+                      "/anonymous-profile-icon.jpeg"
+                    }
+                    title={usersById[message.created_by].partyName}
+                    alt={`${usersById[message.created_by].partyName} profile`}
+                    width={50}
+                    height={50}
                   />
                   <div className="message-bubble">{message.text}</div>
                 </div>
@@ -59,7 +69,7 @@ const ReactionPage = () => {
           </div>
           {users && (
             <div className="col-4">
-              <UserList users={users} />
+              <UserList users={users} isAudioEffectDisabled />
             </div>
           )}
         </div>

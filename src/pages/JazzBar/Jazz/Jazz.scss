@@ -45,6 +45,10 @@
       margin-bottom: 0px;
       margin-left: 10px;
       width: 100px;
+      &[type="submit"]:disabled {
+        color: rgba($white, 0.2);
+        background-color: rgba(green, 0.5);
+      }
     }
   }
 }

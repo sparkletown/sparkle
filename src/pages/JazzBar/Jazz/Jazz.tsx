@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useState } from "react";
+import React, { useCallback, useContext, useState, useEffect } from "react";
 import { User as FUser } from "firebase";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
@@ -22,6 +22,7 @@ import {
   Reactions,
 } from "components/context/ExperienceContext";
 import firebase from "firebase/app";
+import CallOutMessageForm from "./CallOutMessageForm";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -196,6 +197,17 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
       muteReactions: state.muteReactions,
     })
   );
+
+  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+
+  useEffect(() => {
+    if (isMessageToTheBandSent) {
+      setTimeout(() => {
+        setIsMessageToTheBandSent(false);
+      }, 2000);
+    }
+  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+
   const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
 
@@ -271,6 +283,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         )
       );
     setValue([{ messageToTheBand: "" }]);
+    setIsMessageToTheBandSent(true);
   };
 
   return (
@@ -331,21 +344,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             />
             {seatedAtTable && (
               <div className="call-out-band-container-at-table">
-                <form
+                <CallOutMessageForm
                   onSubmit={handleSubmit(onSubmit)}
-                  className="form-shout-out"
-                >
-                  <input
-                    name="messageToTheBand"
-                    placeholder="Shout out to the band"
-                    ref={register({ required: true })}
-                  />
-                  <input
-                    className="btn btn-primary btn-block btn-centered"
-                    type="submit"
-                    value="Send"
-                  />
-                </form>
+                  isMessageToTheBandSent={isMessageToTheBandSent}
+                  register={register}
+                />
               </div>
             )}
           </div>
@@ -356,21 +359,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           >
             {!seatedAtTable && (
               <div className="call-out-band-container">
-                <form
+                <CallOutMessageForm
                   onSubmit={handleSubmit(onSubmit)}
-                  className="form-shout-out"
-                >
-                  <input
-                    name="messageToTheBand"
-                    placeholder="Shout out to the band"
-                    ref={register({ required: true })}
-                  />
-                  <input
-                    className="btn btn-primary btn-block btn-centered"
-                    type="submit"
-                    value="Send"
-                  />
-                </form>
+                  isMessageToTheBandSent={isMessageToTheBandSent}
+                  register={register}
+                />
               </div>
             )}
             <div className="emoji-container">
