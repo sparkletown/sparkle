@@ -45,7 +45,7 @@ const ReactionPage = () => {
           <div className="col-8">
             {usersById &&
               messagesToTheBand &&
-              messagesToTheBand.map((message: Reaction) => (
+              messagesToTheBand.map((message: MessageToTheBandReaction) => (
                 <div className="message">
                   <img
                     onClick={() =>
@@ -65,7 +65,6 @@ const ReactionPage = () => {
                     width={50}
                     height={50}
                   />
-                  {/* @ts-ignore */}
                   <div className="message-bubble">{message.text}</div>
                 </div>
               ))}

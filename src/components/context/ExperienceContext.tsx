@@ -75,12 +75,7 @@ export type Reaction =
       created_at: number;
       created_by: string;
     }
-  | {
-      reaction: TextReactionType;
-      text: string;
-      created_at: number;
-      created_by: string;
-    };
+  | MessageToTheBandReaction;
 
 export const ExperienceContext = React.createContext<
   ExperienceContextType | undefined
