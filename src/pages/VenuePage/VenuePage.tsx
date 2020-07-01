@@ -5,9 +5,12 @@ import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
 import { User as FUser } from "firebase";
+import FriendShipPage from "pages/FriendShipPage";
+import { User } from "types/User";
 
 enum VenueTemplate {
   jazzbar = "jazzbar",
+  friendship = "friendship",
 }
 
 interface Venue {
@@ -25,21 +28,27 @@ const VenuePage = () => {
     storeAs: "currentVenue",
   });
 
-  const { venue, user } = useSelector((state: any) => ({
+  const { venue, user, users } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
-  })) as { venue: Venue; user: FUser };
+    users: state.firestore.ordered.partyGoers,
+  })) as { venue: Venue; user: FUser; users: User[] };
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!venue) {
-    return "Loading...";
+  if (!venue && !users) {
+    return <>Loading...</>;
   }
 
   let template;
-  if (venue.template === VenueTemplate.jazzbar) {
-    template = <JazzbarRouter venueName={venue.name} />;
+  switch (venue.template) {
+    case VenueTemplate.jazzbar:
+      template = <JazzbarRouter venueName={venue.name} />;
+      break;
+    case VenueTemplate.friendship:
+      template = <FriendShipPage />;
+      break;
   }
 
   return template;

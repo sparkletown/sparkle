@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import JazzBarSkeletonPage from "./JazzBarSkeletonPage";
 import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 
-import Jazz from "./JazzTab";
+import JazzTab from "./JazzTab";
 import Cocktail from "./CocktailTab";
 import { User } from "types/User";
 
@@ -17,7 +17,7 @@ const JazzBar = () => {
       selectedTab={selectedTab}
       setSelectedTab={setSelectedTab}
     >
-      {selectedTab === "jazz" && <Jazz setUserList={setUserList} />}
+      {selectedTab === "jazz" && <JazzTab setUserList={setUserList} />}
       {selectedTab === "cocktail" && (
         <Cocktail userList={userList} setUserList={setUserList} />
       )}

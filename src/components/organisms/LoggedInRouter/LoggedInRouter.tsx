@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
-
-import JazzBar from "components/venues/Jazzbar";
-// import LoggedInPartyPage from "pages/LoggedInPartyPage";
-// import FriendShipPage from "pages/FriendShipPage";
-// import Room from "pages/RoomPage";
+import Venue from "pages/VenuePage";
 import { getHoursAgoInSeconds } from "utils/time";
-import ReactionPage from "pages/ReactionPage";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 
 const LoggedInRouter = () => {
   const [userLastSeenLimit, setUserLastSeenLimit] = useState(
@@ -21,21 +16,11 @@ const LoggedInRouter = () => {
     return () => clearInterval(id);
   }, [setUserLastSeenLimit]);
 
-  useFirestoreConnect([
-    {
-      collection: "users",
-      where: [["lastSeenAt", ">", userLastSeenLimit]],
-      storeAs: "partygoers",
-    },
-  ]);
+  useConnectPartyGoers();
 
   return (
     <Switch>
-      <Route path="/band" component={ReactionPage} />
-      <Route path="/" component={JazzBar} />
-      {/* <Route path="/friendship" component={FriendShipPage} />
-        <Route path="/" exact component={LoggedInPartyPage} />
-        <Route path="/:roomName" component={Room} /> */}
+      <Route path="/venue/:venueId" component={Venue} />
     </Switch>
   );
 };
