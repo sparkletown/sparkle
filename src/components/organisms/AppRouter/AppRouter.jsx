@@ -56,7 +56,7 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/account/edit" component={EditProfilePage} />
-        <Route path="/venue/:venueName/" component={Venue} />
+        <Route path="/venue/:venueId" component={Venue} />
         <Route path="/" component={App} />
       </Switch>
     </Router>

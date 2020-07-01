@@ -3,13 +3,11 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import TabNavigation from "components/molecules/TabNavigation";
 import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import { useSelector } from "react-redux";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
-import { PARTY_NAME } from "config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
 import ChatModal from "components/organisms/ChatModal";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 interface PropsType {
   selectedTab: string;
@@ -22,19 +20,18 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
   setSelectedTab,
 }) => {
-  const { user, experience } = useSelector((state: any) => ({
-    user: state.user,
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
-  }));
-
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  useUpdateLocationEffect(user, experience.associatedRoom);
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+  }));
 
   return (
     <>
       <WithNavigationBar>
         <div className="full-page-container experience-container">
-          <InformationLeftColumn experienceLogoPath="/kansas-smittys-logo-red.png">
+          <InformationLeftColumn
+            venueLogoPath={venue ? venue.logoImageUrl : ""}
+          >
             <InformationCard title="About the venue">
               <p>
                 Kansas Smitty’s.

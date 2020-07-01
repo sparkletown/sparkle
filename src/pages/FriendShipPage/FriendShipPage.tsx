@@ -52,7 +52,7 @@ const FriendShipPage = () => {
             <div className={`col ${seatedAtTable ? "table-container" : ""}`}>
               {experience && (
                 <TablesUserList
-                  experienceName={experience.associatedRoom}
+                  venueName="friendship"
                   setSeatedAtTable={setSeatedAtTable}
                   seatedAtTable={seatedAtTable}
                   TableComponent={TableComponent}

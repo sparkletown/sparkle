@@ -28,7 +28,7 @@ if (argv.length < 3) {
   usage();
 }
 var apiKey = argv[0];
-var venueName = argv[1];
+var venueId = argv[1];
 var path = argv[2];
 var doc = require(path);
 var validateResult = validate(doc, schema);

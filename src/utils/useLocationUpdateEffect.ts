@@ -20,7 +20,7 @@ export const leaveRoom = (user: User) => {
 
 const useLocationUpdateEffect = (user: User, roomName: string) => {
   useEffect(() => {
-    if (!user) return;
+    if (!user || !roomName) return;
 
     updateLocationData(user, roomName);
   }, [user, roomName]);
