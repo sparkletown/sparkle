@@ -3,9 +3,6 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import TabNavigation from "components/molecules/TabNavigation";
 import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import { useSelector } from "react-redux";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
-import { PARTY_NAME } from "config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
 import ChatModal from "components/organisms/ChatModal";
@@ -22,13 +19,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
   setSelectedTab,
 }) => {
-  const { user, experience } = useSelector((state: any) => ({
-    user: state.user,
-    experience: state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
-  }));
-
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  useUpdateLocationEffect(user, experience.associatedRoom);
 
   return (
     <>

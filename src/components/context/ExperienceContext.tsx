@@ -4,6 +4,7 @@ import { useFirebase } from "react-redux-firebase";
 type ExperienceContextType = {
   reactions: Reaction[];
   addReaction: (newReaction: Reaction) => void;
+  venueName: string;
 };
 
 export enum EmojiReactionType {
@@ -82,10 +83,10 @@ export const ExperienceContext = React.createContext<
 >(undefined);
 
 export default ({
-  experienceName,
+  venueName,
   children,
 }: {
-  experienceName: string;
+  venueName: string;
   children: any;
 }) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
@@ -94,7 +95,7 @@ export default ({
   useEffect(() => {
     firebase
       .firestore()
-      .collection(`experiences/${experienceName}/reactions`)
+      .collection(`experiences/${venueName}/reactions`)
       .where("created_at", ">", new Date().getTime())
       .onSnapshot(function (snapshot) {
         snapshot.docChanges().forEach(function (change) {
@@ -109,19 +110,19 @@ export default ({
           }
         });
       });
-  }, [firebase, setReactions, experienceName]);
+  }, [firebase, setReactions, venueName]);
 
   const addReaction = useCallback(
     (newReaction: Reaction) => {
       firebase
         .firestore()
-        .collection(`experiences/${experienceName}/reactions`)
+        .collection(`experiences/${venueName}/reactions`)
         .add(newReaction);
     },
-    [firebase, experienceName]
+    [firebase, venueName]
   );
 
-  const store = { reactions, addReaction };
+  const store = { reactions, addReaction, venueName };
 
   return (
     <ExperienceContext.Provider value={store}>

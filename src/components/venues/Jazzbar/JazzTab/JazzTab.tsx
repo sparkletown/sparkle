@@ -34,21 +34,17 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
-const TableHeader = ({
-  seatedAtTable,
-  setSeatedAtTable,
-  experienceName,
-}: any) => {
+const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
   const { experience, user, users } = useSelector((state: any) => ({
     experience:
       state.firestore.data.experiences &&
-      state.firestore.data.experiences[experienceName],
+      state.firestore.data.experiences[venueName],
     user: state.user,
     users: state.firestore.ordered.partygoers,
   }));
   useFirestoreConnect({
     collection: "experiences",
-    doc: experienceName,
+    doc: venueName,
   });
   const tableOfUser =
     seatedAtTable &&
@@ -58,7 +54,7 @@ const TableHeader = ({
     seatedAtTable &&
     users &&
     users.filter(
-      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
+      (user: User) => user.data?.[venueName]?.table === seatedAtTable
     );
 
   const firestoreUpdate = (doc: string, update: any) => {
@@ -75,7 +71,7 @@ const TableHeader = ({
     // Empty tables are never locked
     if (
       users &&
-      users.filter((user: User) => user.data?.[experienceName]?.table === table)
+      users.filter((user: User) => user.data?.[venueName]?.table === table)
         .length === 0
     ) {
       return false;
@@ -85,7 +81,7 @@ const TableHeader = ({
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${experienceName}`;
+    const doc = `experiences/${venueName}`;
     const update = {
       tables: { ...experience?.tables, [tableName]: { locked } },
     };
@@ -100,7 +96,7 @@ const TableHeader = ({
     const update = {
       data: {
         ...existingData,
-        [experienceName]: {
+        [venueName]: {
           table: null,
           videoRoom: null,
         },
@@ -108,7 +104,7 @@ const TableHeader = ({
     };
     await firestoreUpdate(doc, update);
     setSeatedAtTable("");
-  }, [user, setSeatedAtTable, experienceName]);
+  }, [user, setSeatedAtTable, venueName]);
 
   return (
     <div className="row no-margin at-table table-header">
@@ -190,13 +186,14 @@ const TableFooter = ({ isVideoFocused, setIsVideoFocused }: any) => (
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const dispatch = useDispatch();
-  const { experience, user, users, muteReactions } = useSelector(
+  const { experience, user, users, muteReactions, venue } = useSelector(
     (state: any) => ({
       experience:
         state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
       user: state.user,
       users: state.firestore.ordered.partygoers,
       muteReactions: state.muteReactions,
+      venue: state.firestore.data.currentVenue,
     })
   );
 
@@ -218,15 +215,18 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const usersInJazzBar =
     users &&
     experience &&
-    users.filter((user: User) => user.lastSeenIn === experience.associatedRoom);
+    users.filter(
+      (user: User) =>
+        experienceContext && user.lastSeenIn === experienceContext.venueName
+    );
 
   const usersAtSameTable =
     users &&
-    experience &&
+    experienceContext &&
     users.filter(
       (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table === seatedAtTable
+        user.data?.[experienceContext.venueName] &&
+        user.data[experienceContext.venueName].table === seatedAtTable
     );
 
   const usersInJazzbarWithoutPeopleAtTable =
@@ -242,15 +242,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     users &&
     users.filter(
       (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table
+        experienceContext &&
+        user.data?.[experienceContext.venueName] &&
+        user.data[experienceContext.venueName].table
     );
 
   const usersStanding =
     usersSeated &&
     users.filter(
       (user: User) =>
-        user.lastSeenIn === experience.associatedRoom &&
+        user.lastSeenIn === experienceContext?.venueName &&
         !usersSeated.includes(user)
     );
 
@@ -312,11 +313,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
         }`}
       >
-        {experience && (
+        {experienceContext && (
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
-            experienceName={experience.associatedRoom}
+            venueName={experienceContext.venueName}
             TableComponent={TableComponent}
             joinMessage={true}
             customTables={JAZZBAR_TABLES}
@@ -344,7 +345,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               width="100%"
               height="100%"
               className="youtube-video"
-              src="https://www.youtube.com/embed/dqZAA8ZIAVE?autoplay=1"
+              src={venue.iframeUrl ? `${venue.iframeUrl}?autoplay=1` : ""}
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
@@ -406,11 +407,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 isVideoFocused ? "col-5" : "col-12"
               } table-container`}
             >
-              <TableHeader
-                seatedAtTable={seatedAtTable}
-                setSeatedAtTable={setSeatedAtTable}
-                experienceName={experience.associatedRoom}
-              />
+              {experienceContext && (
+                <TableHeader
+                  seatedAtTable={seatedAtTable}
+                  setSeatedAtTable={setSeatedAtTable}
+                  venueName={experienceContext.venueName}
+                />
+              )}
               <div className="jazz-wrapper">
                 <Room roomName={seatedAtTable} setUserList={setUserList} />
               </div>

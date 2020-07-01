@@ -31,7 +31,7 @@ import { Table, TableComponentPropsType } from "types/Table";
 // };
 
 interface PropsType {
-  experienceName: string;
+  venueName: string;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
   customTables?: Table[];
@@ -64,7 +64,7 @@ const firestoreUpdate = (doc: string, update: any) => {
 const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
 
 const TablesUserList: React.FunctionComponent<PropsType> = ({
-  experienceName,
+  venueName,
   setSeatedAtTable,
   seatedAtTable,
   customTables,
@@ -79,26 +79,26 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [videoRoom, setVideoRoom] = useState("");
 
   const nameOfVideoRoom = (i: number) => {
-    return `${experienceName}-table${i + 1}`;
+    return `${venueName}-table${i + 1}`;
   };
 
-  useFirestoreConnect({ collection: "experiences", doc: experienceName });
+  useFirestoreConnect({ collection: "experiences", doc: venueName });
   const { user, users, experience, usersById } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.ordered.partygoers,
     usersById: state.firestore.data.users,
     experience:
       state.firestore.data.experiences &&
-      state.firestore.data.experiences[experienceName],
+      state.firestore.data.experiences[venueName],
   }));
 
   useEffect(() => {
-    if (user && usersById?.[user.uid]?.data?.[experienceName]?.table) {
-      setSeatedAtTable(usersById[user.uid].data[experienceName].table);
+    if (user && usersById?.[user.uid]?.data?.[venueName]?.table) {
+      setSeatedAtTable(usersById[user.uid].data[venueName].table);
     } else {
       setSeatedAtTable("");
     }
-  }, [user, setSeatedAtTable, usersById, experienceName]);
+  }, [user, setSeatedAtTable, usersById, venueName]);
 
   if (!users) {
     return <>Loading...</>;
@@ -111,16 +111,16 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtTables[table.reference] = [];
   }
   const unseatedUsers = [];
-  for (const u of users.filter((u: User) => u.lastSeenIn === experienceName)) {
+  for (const u of users.filter((u: User) => u.lastSeenIn === venueName)) {
     if (
       u.data &&
-      u.data[experienceName] &&
-      u.data[experienceName].table &&
+      u.data[venueName] &&
+      u.data[venueName].table &&
       tables
         .map((table: Table) => table.reference)
-        .includes(u.data[experienceName].table)
+        .includes(u.data[venueName].table)
     ) {
-      usersAtTables[u.data[experienceName].table].push(u);
+      usersAtTables[u.data[venueName].table].push(u);
     } else {
       unseatedUsers.push(u);
     }
@@ -130,7 +130,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     // Empty tables are never locked
     if (
       users &&
-      users.filter((user: User) => user.data?.[experienceName]?.table === table)
+      users.filter((user: User) => user.data?.[venueName]?.table === table)
         .length === 0
     ) {
       return false;
@@ -162,7 +162,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     const update = {
       data: {
         ...existingData,
-        [experienceName]: {
+        [venueName]: {
           table,
           videoRoom,
         },
@@ -249,7 +249,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         <>
           {tables.map((table: Table, i: number) => (
             <TableComponent
-              experienceName={experienceName}
+              experienceName={venueName}
               users={users}
               table={table}
               tableLocked={tableLocked}

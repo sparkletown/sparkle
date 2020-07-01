@@ -2,8 +2,9 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "react-redux";
-
-import Jazzbar from "components/venues/Jazzbar";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
+import { User as FUser } from "firebase";
 
 enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -11,6 +12,7 @@ enum VenueTemplate {
 
 interface Venue {
   template: VenueTemplate;
+  iframeUrl?: string;
 }
 
 const VenuePage = () => {
@@ -22,9 +24,12 @@ const VenuePage = () => {
     storeAs: "currentVenue",
   });
 
-  const { venue } = useSelector((state: any) => ({
+  const { venue, user } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
-  })) as { venue: Venue };
+    user: state.user,
+  })) as { venue: Venue; user: FUser };
+
+  useUpdateLocationEffect(user, venueName);
 
   if (!venue) {
     return "Loading...";
@@ -32,7 +37,7 @@ const VenuePage = () => {
 
   let template;
   if (venue.template === VenueTemplate.jazzbar) {
-    template = <Jazzbar />;
+    template = <JazzbarRouter venueName={venueName} />;
   }
 
   return template;
