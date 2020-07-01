@@ -4,7 +4,6 @@ import { useFirebase } from "react-redux-firebase";
 type ExperienceContextType = {
   reactions: Reaction[];
   addReaction: (newReaction: Reaction) => void;
-  venueName: string;
 };
 
 export enum EmojiReactionType {
@@ -122,7 +121,7 @@ export default ({
     [firebase, venueName]
   );
 
-  const store = { reactions, addReaction, venueName };
+  const store = { reactions, addReaction };
 
   return (
     <ExperienceContext.Provider value={store}>

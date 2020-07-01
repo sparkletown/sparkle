@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import "./InformationLeftColumn.scss";
 
 interface PropsType {
-  experienceLogoPath: string;
+  venueLogoPath: string;
   children: React.ReactNode;
 }
 
 const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
-  experienceLogoPath,
+  venueLogoPath,
   children,
 }) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
@@ -19,7 +19,7 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
       >
         <img
-          src={experienceLogoPath}
+          src={venueLogoPath}
           alt="experience-logo"
           className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
         />

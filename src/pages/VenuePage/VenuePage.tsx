@@ -13,14 +13,15 @@ enum VenueTemplate {
 interface Venue {
   template: VenueTemplate;
   iframeUrl?: string;
+  name: string;
 }
 
 const VenuePage = () => {
-  let { venueName } = useParams();
+  const { venueId } = useParams();
 
   useFirestoreConnect({
     collection: "venues",
-    doc: venueName,
+    doc: venueId,
     storeAs: "currentVenue",
   });
 
@@ -29,6 +30,7 @@ const VenuePage = () => {
     user: state.user,
   })) as { venue: Venue; user: FUser };
 
+  const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
   if (!venue) {
@@ -37,7 +39,7 @@ const VenuePage = () => {
 
   let template;
   if (venue.template === VenueTemplate.jazzbar) {
-    template = <JazzbarRouter venueName={venueName} />;
+    template = <JazzbarRouter venueName={venue.name} />;
   }
 
   return template;

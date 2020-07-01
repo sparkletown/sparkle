@@ -215,18 +215,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const usersInJazzBar =
     users &&
     experience &&
-    users.filter(
-      (user: User) =>
-        experienceContext && user.lastSeenIn === experienceContext.venueName
-    );
+    users.filter((user: User) => venue && user.lastSeenIn === venue.name);
 
   const usersAtSameTable =
     users &&
-    experienceContext &&
+    venue &&
     users.filter(
       (user: User) =>
-        user.data?.[experienceContext.venueName] &&
-        user.data[experienceContext.venueName].table === seatedAtTable
+        user.data?.[venue.name] && user.data[venue.name].table === seatedAtTable
     );
 
   const usersInJazzbarWithoutPeopleAtTable =
@@ -240,19 +236,17 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const usersSeated =
     users &&
+    venue &&
     users.filter(
-      (user: User) =>
-        experienceContext &&
-        user.data?.[experienceContext.venueName] &&
-        user.data[experienceContext.venueName].table
+      (user: User) => user.data?.[venue.name] && user.data[venue.name].table
     );
 
   const usersStanding =
+    venue &&
     usersSeated &&
     users.filter(
       (user: User) =>
-        user.lastSeenIn === experienceContext?.venueName &&
-        !usersSeated.includes(user)
+        user.lastSeenIn === venue.name && !usersSeated.includes(user)
     );
 
   function createReaction(
@@ -313,11 +307,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
         }`}
       >
-        {experienceContext && (
+        {venue && (
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
-            venueName={experienceContext.venueName}
+            venueName={venue.name}
             TableComponent={TableComponent}
             joinMessage={true}
             customTables={JAZZBAR_TABLES}
@@ -339,16 +333,19 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 : ""
             }`}
           >
-            <iframe
-              key="main-event"
-              title="main event"
-              width="100%"
-              height="100%"
-              className="youtube-video"
-              src={venue.iframeUrl ? `${venue.iframeUrl}?autoplay=1` : ""}
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-            />
+            {venue && (
+              <iframe
+                key="main-event"
+                title="main event"
+                width="100%"
+                height="100%"
+                className="youtube-video"
+                src={`${venue.iframeUrl}?autoplay=1`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+              />
+            )}
+
             {seatedAtTable && (
               <div className="call-out-band-container-at-table">
                 <CallOutMessageForm
@@ -407,11 +404,11 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 isVideoFocused ? "col-5" : "col-12"
               } table-container`}
             >
-              {experienceContext && (
+              {venue && (
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
-                  venueName={experienceContext.venueName}
+                  venueName={venue.name}
                 />
               )}
               <div className="jazz-wrapper">

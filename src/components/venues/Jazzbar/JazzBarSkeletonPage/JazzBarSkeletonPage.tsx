@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
 import ChatModal from "components/organisms/ChatModal";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { useSelector } from "react-redux";
 
 interface PropsType {
   selectedTab: string;
@@ -20,12 +21,17 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   setSelectedTab,
 }) => {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+  }));
 
   return (
     <>
       <WithNavigationBar>
         <div className="full-page-container experience-container">
-          <InformationLeftColumn experienceLogoPath="/kansas-smittys-logo-red.png">
+          <InformationLeftColumn
+            venueLogoPath={venue ? venue.logoImageUrl : ""}
+          >
             <InformationCard title="About the venue">
               <p>
                 Kansas Smitty’s.
