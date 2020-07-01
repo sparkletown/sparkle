@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { TOGGLE_MUTE_REACTIONS } from "actions";
-import "./Jazz.scss";
+import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import { useDispatch, useSelector } from "react-redux";

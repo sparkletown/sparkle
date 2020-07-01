@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Switch, Route } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 
-import JazzBarLoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
+import JazzBar from "components/venues/Jazzbar";
 // import LoggedInPartyPage from "pages/LoggedInPartyPage";
 // import FriendShipPage from "pages/FriendShipPage";
 // import Room from "pages/RoomPage";
@@ -34,7 +34,7 @@ const LoggedInRouter = () => {
     <ExperienceContextProvider experienceName="kansassmittys">
       <Switch>
         <Route path="/band" component={ReactionPage} />
-        <Route path="/" component={JazzBarLoggedInPartyPage} />
+        <Route path="/" component={JazzBar} />
         {/* <Route path="/friendship" component={FriendShipPage} />
         <Route path="/" exact component={LoggedInPartyPage} />
         <Route path="/:roomName" component={Room} /> */}

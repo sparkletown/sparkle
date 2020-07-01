@@ -28,7 +28,7 @@ if (argv.length < 3) {
   usage();
 }
 var apiKey = argv[0];
-var config = argv[1];
+var venueName = argv[1];
 var path = argv[2];
 var doc = require(path);
 var validateResult = validate(doc, schema);
@@ -63,7 +63,7 @@ if (!validateResult.valid) {
         .then(function () {
           firebase
             .firestore()
-            .doc(`config/${config}`)
+            .doc(`venues/${venueName}`)
             .set(doc)
             .then(function () {
               console.log("Document successfully written!");

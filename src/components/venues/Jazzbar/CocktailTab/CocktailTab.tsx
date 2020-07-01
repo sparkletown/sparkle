@@ -1,7 +1,7 @@
 import React from "react";
 
 import Room from "components/organisms/Room";
-import "./Cocktail.scss";
+import "./CocktailTab.scss";
 import { User } from "types/User";
 import UserList from "components/molecules/UserList";
 import { useSelector } from "react-redux";

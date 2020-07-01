@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Register from "pages/Account/Register";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
+import Venue from "pages/VenuePage";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import App from "App";
@@ -55,6 +56,7 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/account/edit" component={EditProfilePage} />
+        <Route path="/venue/:venueName/" component={Venue} />
         <Route path="/" component={App} />
       </Switch>
     </Router>
