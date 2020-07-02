@@ -12,12 +12,7 @@ import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 import { Map, PartyTitle } from "./components";
-import { PartyMapData } from "./types";
-
-export interface PartyMapVenue {
-  template: string;
-  data: PartyMapData;
-}
+import { PartyMapVenue } from "./types";
 
 const PartyMap = () => {
   const { partygoers, user, venue } = useSelector((state: any) => ({
@@ -41,7 +36,7 @@ const PartyMap = () => {
       <div className="container">
         <div className="small-right-margin">
           <PartyTitle
-            startUtcSeconds={venue.data.start_utc_seconds}
+            startUtcSeconds={venue.start_utc_seconds}
             withCountDown={false}
           />
         </div>
@@ -52,10 +47,10 @@ const PartyMap = () => {
         )}
         <div className="col">
           <div className="starting-indication">
-            {venue.data.description.text}{" "}
-            {venue.data.description.program_url && (
+            {venue.description.text}{" "}
+            {venue.description.program_url && (
               <a
-                href={venue.data.description.program_url}
+                href={venue.description.program_url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -63,16 +58,16 @@ const PartyMap = () => {
               </a>
             )}
           </div>
-          <CountDown startUtcSeconds={venue.data.start_utc_seconds} />
+          <CountDown startUtcSeconds={venue.start_utc_seconds} />
         </div>
         <div className="row">
-          <Map config={venue.data} attendances={attendances} />
+          <Map config={venue} attendances={attendances} />
         </div>
         <div className="row">
           <div className="col">
             <RoomList
-              startUtcSeconds={venue.data.start_utc_seconds}
-              rooms={venue.data.rooms}
+              startUtcSeconds={venue.start_utc_seconds}
+              rooms={venue.rooms}
               attendances={attendances}
             />
           </div>

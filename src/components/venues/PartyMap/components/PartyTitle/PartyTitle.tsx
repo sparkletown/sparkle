@@ -2,7 +2,7 @@ import React from "react";
 import CountDown from "components/molecules/CountDown";
 import "./PartyTitle.scss";
 import { useSelector } from "react-redux";
-import { PartyMapVenue } from "../../PartyMapPage";
+import { PartyMapVenue } from "../../types";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -19,17 +19,17 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="col">
-      <h1 className="title">{venue.data.party_name}</h1>
+      <h1 className="title">{venue.party_name}</h1>
       <div className="subtitle-container">
         <img
           className="collective-icon"
-          src={venue.data.host.icon}
+          src={venue.host.icon}
           alt="Co-Reality collective"
           width="20"
           height="20"
         />
         <div>
-          Hosted by <a href={venue.data.host.url}>{venue.data.host.name}</a>{" "}
+          Hosted by <a href={venue.host.url}>{venue.host.name}</a>{" "}
           {withCountDown && <CountDown startUtcSeconds={startUtcSeconds} />}
         </div>
       </div>

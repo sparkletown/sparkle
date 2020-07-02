@@ -37,10 +37,8 @@ interface ChatOutDataType {
 
 export interface JazzbarVenue extends Venue {
   template: VenueTemplate.jazzbar;
-  data: {
-    iframeUrl: string;
-    logoImageUrl: string;
-  };
+  iframeUrl: string;
+  logoImageUrl: string;
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
@@ -198,7 +196,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               width="100%"
               height="100%"
               className="youtube-video"
-              src={`${venue.data.iframeUrl}?autoplay=1`}
+              src={`${venue.iframeUrl}?autoplay=1`}
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />

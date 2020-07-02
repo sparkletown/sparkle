@@ -1,3 +1,5 @@
+import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
+
 export type EventData = {
   start_minute: number;
   duration_minutes: number;
@@ -7,7 +9,8 @@ export type EventData = {
   interactivity: string;
 }[];
 
-export interface PartyMapData {
+export interface PartyMapVenue extends Venue {
+  template: VenueTemplate.partymap;
   host: {
     url: string;
     icon: string;

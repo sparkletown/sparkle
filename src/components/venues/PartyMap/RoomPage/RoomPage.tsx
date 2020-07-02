@@ -14,7 +14,7 @@ import { enterRoom } from "utils/useLocationUpdateEffect";
 import "./RoomPage.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
-import { PartyMapVenue } from "components/venues/PartyMap/PartyMapPage";
+import { PartyMapVenue } from "components/venues/PartyMap/types";
 
 export default function RoomPage() {
   let { roomPath } = useParams();
@@ -29,9 +29,7 @@ export default function RoomPage() {
     return null;
   }
 
-  const partyData = venue.data;
-
-  const room = partyData.rooms.find((r: any) => r.url === `/${roomPath}`);
+  const room = venue.rooms.find((r: any) => r.url === `/${roomPath}`);
 
   if (!room) {
     return null;
@@ -45,7 +43,7 @@ export default function RoomPage() {
   }
 
   const currentEvent =
-    room.events && getCurrentEvent(room, partyData.start_utc_seconds);
+    room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
     <WithNavigationBar>
@@ -66,7 +64,7 @@ export default function RoomPage() {
                 <RoomModalOngoingEvent
                   room={room}
                   enterRoom={enter}
-                  startUtcSeconds={partyData.start_utc_seconds}
+                  startUtcSeconds={venue.start_utc_seconds}
                 />
               </div>
             </div>
@@ -81,7 +79,7 @@ export default function RoomPage() {
               {room.events.map((event: any, idx: number) => (
                 <ScheduleItem
                   key={idx}
-                  startUtcSeconds={partyData.start_utc_seconds}
+                  startUtcSeconds={venue.start_utc_seconds}
                   event={event}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
