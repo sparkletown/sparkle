@@ -20,7 +20,11 @@ const WelcomePage: React.FunctionComponent = () => (
         <div className="col-md-4">
           <div className="info-card">
             <h3 className="card-title">1. Digital Playa Map</h3>
-            <img className="image-in-card" src="/landscape.webp" />
+            <img
+              className="image-in-card"
+              src="/marketing-page/digital-playa-map.jpg"
+              title="Digital Playa Map image"
+            />
             <p>
               A 2-D browser-based map for roaming in shared adventures through
               an integrated patchwork quilt of places and experiences
@@ -32,7 +36,11 @@ const WelcomePage: React.FunctionComponent = () => (
             <h3 className="card-title">
               2. Easy, powerful tools to create magic
             </h3>
-            <img className="image-in-card" src="/landscape.webp" />
+            <img
+              className="image-in-card"
+              src="/marketing-page/powerful-tools.jpg"
+              title="Powerful tools image"
+            />
             <p>
               Populate the playa with your camp, art, host performances (DJs,
               talks) etc using simple yet powerful space-creation tools and
@@ -43,7 +51,11 @@ const WelcomePage: React.FunctionComponent = () => (
         <div className="col-md-4">
           <div className="info-card">
             <h3 className="card-title">3. Community education + support</h3>
-            <img className="image-in-card" src="/landscape.webp" />
+            <img
+              className="image-in-card"
+              src="/marketing-page/community-education.jpg"
+              title="Community education image"
+            />
             <p>
               Forums, examples, templates and community support to help you add
               your magic to the Sparkleverse for others to enjoy
@@ -65,8 +77,9 @@ const WelcomePage: React.FunctionComponent = () => (
       <h3>Watch the video for a quick introduction to our approach</h3>
       <div className="video-container">
         <iframe
+          title="Our approach to Burning Man"
           className="video"
-          src="https://www.youtube.com/embed/sB6HY8r983c"
+          src="https://www.youtube.com/embed/4Ku4E2MXp-k"
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen

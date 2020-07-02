@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 
 interface FAQuestion {
   id: string;
-  category: string;
   question: string;
   answer: string;
+  category: string;
 }
 
 const FAQPage: React.FunctionComponent = () => {

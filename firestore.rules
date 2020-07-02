@@ -18,5 +18,8 @@ service cloud.firestore {
     match /experiences/{experienceId}/{restOfPath=**} {
       allow write, read: if request.auth.uid != null;
     }
+    match /faq/{faqId} {
+      allow read: if true;
+    }
   }
 }
