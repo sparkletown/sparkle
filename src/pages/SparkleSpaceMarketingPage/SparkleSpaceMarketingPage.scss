@@ -1,0 +1,24 @@
+.marketing-tab-bar {
+  border-radius: 22px;
+  background: #1a1d24;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  width: 100%;
+
+  .tab {
+    display: flex;
+    justify-content: center;
+    margin: 0 24px;
+    border-radius: 22px;
+    font-weight: 500;
+    font-size: 20px;
+    padding: 13px 10px;
+    cursor: pointer;
+
+    &.active {
+      background: #bc271a;
+      color: #000;
+    }
+  }
+}
