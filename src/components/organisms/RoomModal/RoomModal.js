@@ -7,7 +7,7 @@ import { exitPreviewRoom } from "actions";
 import { getCurrentEvent } from "utils/time";
 
 import Chatbox from "components/organisms/Chatbox";
-import RoomModalOngoingEvent from "components/molecules/RoomModalOngoingEvent";
+import RoomModalOngoingEvent from "components/venues/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/molecules/ScheduleItem";
 import { enterRoom, leaveRoom } from "utils/useLocationUpdateEffect";

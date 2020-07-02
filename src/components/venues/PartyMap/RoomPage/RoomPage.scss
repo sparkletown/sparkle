@@ -1,0 +1,21 @@
+.room-container {
+  .chatbox-container {
+    margin-top: 30px;
+    padding: 0 10px;
+    margin-left: 20px;
+    max-height: 800px;
+  }
+  .about-this-room {
+    font-size: 20px;
+  }
+  .room-page-image {
+    width: 100%;
+  }
+  .room-image-container {
+    display: flex;
+    justify-content: center;
+  }
+  .ongoing-event-row {
+    align-items: center;
+  }
+}
