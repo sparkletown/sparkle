@@ -1,4 +1,6 @@
 import React from "react";
+import TabNavigation from "components/molecules/TabNavigation";
+import { MARKETING_PAGE_TABS } from "./constants";
 
 const INTRO_VIDEO = (
   <iframe
@@ -26,6 +28,11 @@ const CTA_BUTTON = (
 
 const SparkleSpaceMarketingPage = () => (
   <div className="full-page-container marketing-page">
+    <TabNavigation
+      selectedTab={"hello"}
+      setSelectedTab={() => null}
+      tabsArray={MARKETING_PAGE_TABS}
+    />
     <div className="hero">
       <p className="hero-text">
         Welcome to the co-creation of The SparkleVerse!{" "}

@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
 import ChatModal from "components/organisms/ChatModal";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { JAZZ_BAR_TABS } from "./constants";
 
 interface PropsType {
   selectedTab: string;
@@ -75,6 +76,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               <TabNavigation
                 selectedTab={selectedTab}
                 setSelectedTab={setSelectedTab}
+                tabsArray={JAZZ_BAR_TABS}
               />
               <button
                 className="btn btn-primary chat-button"
