@@ -31,7 +31,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
       <WithNavigationBar>
         <div className="full-page-container experience-container">
           <InformationLeftColumn
-            venueLogoPath={venue ? venue.data.logoImageUrl : ""}
+            venueLogoPath={venue ? venue.logoImageUrl : ""}
           >
             <InformationCard title="About the venue">
               <p>
