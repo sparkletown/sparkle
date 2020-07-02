@@ -7,10 +7,10 @@ export const MARKETING_PAGE_TABS = [
     id: "faq",
     name: "FAQ",
   },
-  {
-    id: "partyExamples",
-    name: "Party examples",
-  },
+  // {
+  //   id: "partyExamples",
+  //   name: "Party examples",
+  // },
   {
     id: "aboutUs",
     name: "About us",

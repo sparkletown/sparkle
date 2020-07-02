@@ -4,6 +4,7 @@ import { MARKETING_PAGE_TABS } from "./constants";
 import "./SparkleSpaceMarketingPage.scss";
 import WelcomePage from "./WelcomePage";
 import FAQPage from "./FAQPage";
+import AboutUsPage from "./AboutUsPage";
 
 const SparkleSpaceMarketingPage = () => {
   const [selectedTab, setSelectedTab] = useState("welcome");
@@ -17,6 +18,7 @@ const SparkleSpaceMarketingPage = () => {
 
       {selectedTab === "welcome" && <WelcomePage />}
       {selectedTab === "faq" && <FAQPage />}
+      {selectedTab === "aboutUs" && <AboutUsPage />}
     </div>
   );
 };
