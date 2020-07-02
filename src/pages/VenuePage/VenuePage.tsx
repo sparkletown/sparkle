@@ -31,13 +31,13 @@ const VenuePage = () => {
   const { venue, user, users } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
-    users: state.firestore.ordered.partyGoers,
+    users: state.firestore.ordered.partygoers,
   })) as { venue: Venue; user: FUser; users: User[] };
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!venue && !users) {
+  if (!venue || !users) {
     return <>Loading...</>;
   }
 
