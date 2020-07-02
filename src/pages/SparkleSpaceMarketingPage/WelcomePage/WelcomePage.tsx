@@ -66,7 +66,7 @@ const WelcomePage: React.FunctionComponent = () => (
       <div className="video-container">
         <iframe
           className="video"
-          src="https://www.youtube.com/embed/sB6HY8r983c"
+          src="https://www.youtube.com/embed/4Ku4E2MXp-k"
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
