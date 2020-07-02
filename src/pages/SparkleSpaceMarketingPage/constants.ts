@@ -8,8 +8,8 @@ export const MARKETING_PAGE_TABS = [
     name: "FAQ",
   },
   {
-    id: "examples",
-    name: "Examples",
+    id: "partyExamples",
+    name: "Party examples",
   },
   {
     id: "aboutUs",
