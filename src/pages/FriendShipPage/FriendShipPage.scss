@@ -9,6 +9,18 @@
     margin: 30px;
   }
 
+  .table-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .at-table {
+    .action {
+      margin-right: 20px;
+    }
+  }
+
   .title {
     font-size: 15px;
     padding: 30px;
