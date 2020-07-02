@@ -162,7 +162,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           joinMessage={true}
           customTables={JAZZBAR_TABLES}
         />
-
         <div
           className={`jazz-container ${
             !seatedAtTable ? "container-in-grid" : "container-in-row "

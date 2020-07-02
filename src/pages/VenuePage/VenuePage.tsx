@@ -17,6 +17,10 @@ interface Venue {
   template: VenueTemplate;
   iframeUrl?: string;
   name: string;
+  theme: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
 }
 
 const VenuePage = () => {
@@ -33,6 +37,18 @@ const VenuePage = () => {
     user: state.user,
     users: state.firestore.ordered.partyGoers,
   })) as { venue: Venue; user: FUser; users: User[] };
+
+  venue &&
+    document.documentElement.style.setProperty(
+      "--primary-color",
+      venue.theme.primaryColor
+    );
+
+  venue?.theme.backgroundColor &&
+    document.documentElement.style.setProperty(
+      "--background-color",
+      venue.theme.backgroundColor
+    );
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
