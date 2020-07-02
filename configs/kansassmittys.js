@@ -1,9 +1,11 @@
 module.exports = {
   template: "jazzbar",
-  iframeUrl: "https://www.youtube.com/embed/dqZAA8ZIAVE",
   name: "Kansas Smittys",
-  logoImageUrl: "/kansas-smittys-logo-red.png",
   theme: {
     primaryColor: "#bc271a",
+  },
+  data: {
+    iframeUrl: "https://www.youtube.com/embed/dqZAA8ZIAVE",
+    logoImageUrl: "/kansas-smittys-logo-red.png",
   },
 };

@@ -9,6 +9,7 @@ import ChatModal from "components/organisms/ChatModal";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
 import { JAZZ_BAR_TABS } from "./constants";
+import { JazzbarVenue } from "components/venues/Jazzbar/JazzTab/JazzTab";
 
 interface PropsType {
   selectedTab: string;
@@ -24,14 +25,14 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const { venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
-  }));
+  })) as { venue: JazzbarVenue };
 
   return (
     <>
       <WithNavigationBar>
         <div className="full-page-container experience-container">
           <InformationLeftColumn
-            venueLogoPath={venue ? venue.logoImageUrl : ""}
+            venueLogoPath={venue ? venue.data.logoImageUrl : ""}
           >
             <InformationCard title="About the venue">
               <p>

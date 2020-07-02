@@ -25,6 +25,7 @@ import {
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
 import TableFooter from "components/molecules/TableFooter";
+import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -32,6 +33,14 @@ interface PropsType {
 
 interface ChatOutDataType {
   messageToTheBand: string;
+}
+
+export interface JazzbarVenue extends Venue {
+  template: VenueTemplate.jazzbar;
+  data: {
+    iframeUrl: string;
+    logoImageUrl: string;
+  };
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
@@ -45,7 +54,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
       muteReactions: state.muteReactions,
       venue: state.firestore.data.currentVenue,
     })
-  );
+  ) as {
+    users: User[];
+    user: FUser;
+    venue: JazzbarVenue;
+    muteReactions: boolean;
+    experience: any;
+  };
 
   const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
@@ -183,7 +198,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               width="100%"
               height="100%"
               className="youtube-video"
-              src={`${venue.iframeUrl}?autoplay=1`}
+              src={`${venue.data.iframeUrl}?autoplay=1`}
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />

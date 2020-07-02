@@ -9,7 +9,7 @@ import { User as FUser } from "firebase";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 
-enum VenueTemplate {
+export enum VenueTemplate {
   jazzbar = "jazzbar",
   friendship = "friendship",
   partymap = "partymap",
@@ -17,7 +17,6 @@ enum VenueTemplate {
 
 export interface Venue {
   template: VenueTemplate;
-  iframeUrl?: string;
   name: string;
   theme: {
     primaryColor: string;
