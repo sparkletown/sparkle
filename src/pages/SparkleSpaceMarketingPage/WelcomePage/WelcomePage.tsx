@@ -22,7 +22,7 @@ const WelcomePage: React.FunctionComponent = () => (
             <h3 className="card-title">1. Digital Playa Map</h3>
             <img
               className="image-in-card"
-              src="/landscape.webp"
+              src="/marketing-page/digital-playa-map.jpg"
               title="Digital Playa Map image"
             />
             <p>
@@ -38,7 +38,7 @@ const WelcomePage: React.FunctionComponent = () => (
             </h3>
             <img
               className="image-in-card"
-              src="/landscape.webp"
+              src="/marketing-page/powerful-tools.jpg"
               title="Powerful tools image"
             />
             <p>
@@ -53,7 +53,7 @@ const WelcomePage: React.FunctionComponent = () => (
             <h3 className="card-title">3. Community education + support</h3>
             <img
               className="image-in-card"
-              src="/landscape.webp"
+              src="/marketing-page/community-education.jpg"
               title="Community education image"
             />
             <p>
