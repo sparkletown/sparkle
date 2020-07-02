@@ -65,7 +65,7 @@ if (!validateResult.valid) {
         .then(function () {
           firebase
             .firestore()
-            .doc(`venues/${venueName}`)
+            .doc(`venues/${venueId}`)
             .set(doc)
             .then(function () {
               console.log("Document successfully written!");
