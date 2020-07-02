@@ -24,6 +24,7 @@ const WelcomePage: React.FunctionComponent = () => (
               className="image-in-card"
               src="/marketing-page/digital-playa-map.jpg"
               title="Digital Playa Map image"
+              alt="Digital Playa Map"
             />
             <p>
               A 2-D browser-based map for roaming in shared adventures through
@@ -40,6 +41,7 @@ const WelcomePage: React.FunctionComponent = () => (
               className="image-in-card"
               src="/marketing-page/powerful-tools.jpg"
               title="Powerful tools image"
+              alt="Powerful tools"
             />
             <p>
               Populate the playa with your camp, art, host performances (DJs,
@@ -55,6 +57,7 @@ const WelcomePage: React.FunctionComponent = () => (
               className="image-in-card"
               src="/marketing-page/community-education.jpg"
               title="Community education image"
+              alt="Community education"
             />
             <p>
               Forums, examples, templates and community support to help you add
