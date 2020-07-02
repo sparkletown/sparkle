@@ -155,9 +155,9 @@ const TABS: { [key: string]: any } = {
       </div>
     </>
   ),
-  FAQ: <>FAQ content</>,
-  "Party Examples": <>Party Examples content</>,
-  "About Us": <>About Us content</>,
+  // FAQ: <>FAQ content</>,
+  // "Party Examples": <>Party Examples content</>,
+  // "About Us": <>About Us content</>,
 };
 
 const SparkleSpaceMarketingPage = () => {
