@@ -1,14 +1,5 @@
 import React from "react";
 import "./FAQPage.scss";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useSelector } from "react-redux";
-
-interface FAQuestion {
-  id: string;
-  category: string;
-  question: string;
-  answer: string;
-}
 
 const FAQPage: React.FunctionComponent = () => {
   return (
