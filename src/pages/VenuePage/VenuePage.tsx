@@ -15,7 +15,7 @@ enum VenueTemplate {
   partymap = "partymap",
 }
 
-interface Venue {
+export interface Venue {
   template: VenueTemplate;
   iframeUrl?: string;
   name: string;
@@ -62,7 +62,7 @@ const VenuePage = () => {
   let template;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <JazzbarRouter venueName={venue.name} />;
+      template = <JazzbarRouter />;
       break;
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
