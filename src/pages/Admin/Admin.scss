@@ -1,0 +1,13 @@
+.admin-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+
+  h1 {
+    text-align: center;
+    margin: 30px;
+  }
+  .btn {
+    width: 300px;
+  }
+}

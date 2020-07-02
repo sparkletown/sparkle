@@ -9,6 +9,7 @@ import JazzBarLoggedInPartyPage from "pages/JazzBar/LoggedInPartyPage";
 import { getHoursAgoInSeconds } from "utils/time";
 import ReactionPage from "pages/ReactionPage";
 import ExperienceContextProvider from "components/context/ExperienceContext";
+import Admin from "pages/Admin";
 
 const LoggedInRouter = () => {
   const [userLastSeenLimit, setUserLastSeenLimit] = useState(
@@ -34,6 +35,7 @@ const LoggedInRouter = () => {
     <ExperienceContextProvider experienceName="kansassmittys">
       <Switch>
         <Route path="/band" component={ReactionPage} />
+        <Route path="/admin" component={Admin} />
         <Route path="/" component={JazzBarLoggedInPartyPage} />
         {/* <Route path="/friendship" component={FriendShipPage} />
         <Route path="/" exact component={LoggedInPartyPage} />

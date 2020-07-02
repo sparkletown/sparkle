@@ -23,8 +23,8 @@ const FAQPage: React.FunctionComponent = () => {
         faq.map((question: FAQuestion) => (
           <div key={question.id}>
             <h2>{question.category}</h2>
-            <p>{question.question}</p>
-            <p>{question.answer}</p>
+            <p className="question">{question.question}</p>
+            <p className="answer">{question.answer}</p>
           </div>
         ))}
     </div>
