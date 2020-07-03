@@ -25,5 +25,8 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if true;
     }
+     match /venues/{restOfPath=**} {
+      allow write, read: if request.auth.uid != null;
+    }
   }
 }
