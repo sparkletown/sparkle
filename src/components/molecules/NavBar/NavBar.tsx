@@ -2,16 +2,28 @@ import React from "react";
 import "./NavBar.scss";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { faCommentAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isChatValid } from "validation";
 
 interface PropsType {
   redirectionUrl?: string;
 }
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
-  const { user, users } = useSelector((state: any) => ({
+  const { user, users, privateChats } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
+    privateChats: state.firestore.ordered.privatechats,
   }));
+
+  const numberOfUnreadMessages =
+    privateChats &&
+    user &&
+    privateChats
+      .filter(isChatValid)
+      .filter((chat: any) => chat.to === user.uid && chat.isRead === false)
+      .length;
 
   return (
     <header>
@@ -26,7 +38,15 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           </span>
         </Link>
         {user && users && users[user.uid] && (
-          <div>
+          <div className="icons-container">
+            <span className="private-chat-icon">
+              {!!numberOfUnreadMessages && numberOfUnreadMessages > 0 && (
+                <div className="notification-card">
+                  {numberOfUnreadMessages}
+                </div>
+              )}
+              <FontAwesomeIcon icon={faCommentAlt} />
+            </span>
             <Link to="/account/edit">
               <img
                 src={users[user.uid].pictureUrl}
