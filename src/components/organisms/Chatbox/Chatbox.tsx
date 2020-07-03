@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { useFirestoreConnect } from "react-redux-firebase";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
@@ -36,7 +35,6 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     room ? "room" : "global"
   );
 
-  useFirestoreConnect("chatsv3");
   const {
     users,
     userArray,
@@ -48,17 +46,10 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     users: state.firestore.data.users,
     userArray: state.firestore.ordered.users,
     currentUserUID: state.user.uid,
-    chats: state.firestore.ordered.chatsv3,
+    chats: state.firestore.ordered.venueChats,
     privateChats: state.firestore.ordered.privatechats,
     user: state.user,
   }));
-
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);

@@ -1,13 +1,7 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useContext, useState } from "react";
 
-import {
-  sendGlobalChat,
-  sendPrivateChat,
-  sendRoomChat,
-  sendTableChat,
-} from "actions";
 import { User } from "types/User";
+import { ChatContext } from "components/context/ChatContext";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
@@ -29,8 +23,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
   table,
   setIsRecipientChangeBlocked,
 }) => {
-  const dispatch = useDispatch();
-
   const [text, setText] = useState("");
   const [longEnoughSinceLastSend, setLongEnoughSinceLastSend] = useState(true);
 
@@ -38,23 +30,36 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     setText(e.target.value);
   }
 
+  const chatContext = useContext(ChatContext);
+
+  if (!chatContext) return <></>;
+
+  const {
+    sendPrivateChat,
+    sendGlobalChat,
+    sendRoomChat,
+    sendTableChat,
+  } = chatContext;
+
   const sendMessage = (
     type: string,
     currentUserUID: string | undefined,
     discussionPartner: User | undefined,
     text: string
   ) => {
+    if (!currentUserUID) return;
     switch (type) {
       case "private":
-        return dispatch(
-          sendPrivateChat(currentUserUID, discussionPartner?.id, text)
+        return (
+          discussionPartner &&
+          sendPrivateChat(currentUserUID, discussionPartner.id, text)
         );
       case "global":
-        return dispatch(sendGlobalChat(currentUserUID, text));
+        return sendGlobalChat(currentUserUID, text);
       case "room":
-        return dispatch(sendRoomChat(currentUserUID, room, text));
+        return room && sendRoomChat(currentUserUID, room, text);
       case "table":
-        return dispatch(sendTableChat(currentUserUID, table, text));
+        return table && sendTableChat(currentUserUID, table, text);
       default:
         return;
     }

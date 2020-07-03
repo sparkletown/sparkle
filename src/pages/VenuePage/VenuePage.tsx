@@ -8,6 +8,7 @@ import PartyMap from "components/venues/PartyMap";
 import { User as FUser } from "firebase";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
+import ChatContext from "components/context/ChatContext";
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -71,7 +72,7 @@ const VenuePage = () => {
       break;
   }
 
-  return template;
+  return <ChatContext>{template}</ChatContext>;
 };
 
 export default VenuePage;
