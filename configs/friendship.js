@@ -7,4 +7,8 @@ module.exports = {
   defaultTableTitle: "Welcome reception",
   defaultTableSubtitle:
     "Sip on Prosecco as you greet your fellow festival goers",
+  theme: {
+    primaryColor: "#f6e652",
+    backgroundColor: "#f6e652",
+  },
 };

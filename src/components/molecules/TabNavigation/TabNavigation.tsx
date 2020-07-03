@@ -1,32 +1,34 @@
 import React from "react";
 import "./TabNavigation.scss";
 
+interface TabType {
+  id: string;
+  name: string;
+}
+
 interface PropsType {
   selectedTab: string;
   setSelectedTab: (value: string) => void;
+  tabsArray: TabType[];
 }
 
 const TabNavigation: React.FunctionComponent<PropsType> = ({
   selectedTab,
   setSelectedTab,
+  tabsArray,
 }) => (
   <div className="tab-navigation-container">
-    <div
-      className={`col tab-item ${
-        selectedTab === "jazz" ? "selected-tab-item" : ""
-      }`}
-      onClick={() => setSelectedTab("jazz")}
-    >
-      Jazz
-    </div>
-    <div
-      className={`col tab-item ${
-        selectedTab === "cocktail" ? "selected-tab-item" : ""
-      }`}
-      onClick={() => setSelectedTab("cocktail")}
-    >
-      Cocktail
-    </div>
+    {tabsArray.map((tab) => (
+      <div
+        key={`${tab.id}-tab`}
+        className={`col tab-item ${
+          selectedTab === tab.id ? "selected-tab-item" : ""
+        }`}
+        onClick={() => setSelectedTab(tab.id)}
+      >
+        {tab.name}
+      </div>
+    ))}
   </div>
 );
 
