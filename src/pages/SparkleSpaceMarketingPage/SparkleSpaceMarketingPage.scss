@@ -93,4 +93,17 @@
     // Important is used to overwrite the class btn from bootstrap
     max-width: 400px !important;
   }
+
+  .input-info,
+  .input-error {
+    font-size: 16px;
+  }
+
+  .input-info {
+    color: $green;
+  }
+
+  .input-error {
+    color: $red;
+  }
 }

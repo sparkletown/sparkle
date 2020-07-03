@@ -21,5 +21,9 @@ service cloud.firestore {
     match /faq/{faqId} {
       allow read: if true;
     }
+    match /marketingemails/{emailId} {
+      allow read: if request.auth.uid != null;
+      allow write: if true;
+    }
   }
 }
