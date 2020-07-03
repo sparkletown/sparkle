@@ -23,7 +23,7 @@ const AboutUsPage: React.FunctionComponent = () => {
           <strong>Ed</strong> is a UK based tech entrepreneur, student of memory
           palaces and amateur philosopher of parties. You can hear some of his
           thoughts on Burning Man in{" "}
-          <a href="https://www.youtube.com/watch?v=4Ku4E2MXp-k">
+          <a href="https://www.youtube.com/watch?v=CMuZ0pV1Vdk">
             this fragment
           </a>{" "}
           of a podcast recorded with Tim Ferriss. He’s helping with the product
