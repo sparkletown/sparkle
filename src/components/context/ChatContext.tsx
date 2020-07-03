@@ -34,7 +34,7 @@ interface RestrictedChatMessage {
   ts_utc: any;
 }
 
-interface PrivateChatMessage {
+export interface PrivateChatMessage {
   type: "private";
   from: string;
   to: string;

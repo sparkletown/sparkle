@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { faCommentAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
+import { OverlayTrigger, Popover } from "react-bootstrap";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -16,6 +18,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     users: state.firestore.data.users,
     privateChats: state.firestore.ordered.privatechats,
   }));
+
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Content>
+        <PrivateChatModal />
+      </Popover.Content>
+    </Popover>
+  );
 
   const numberOfUnreadMessages =
     privateChats &&
@@ -39,14 +49,21 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
         </Link>
         {user && users && users[user.uid] && (
           <div className="icons-container">
-            <span className="private-chat-icon">
-              {!!numberOfUnreadMessages && numberOfUnreadMessages > 0 && (
-                <div className="notification-card">
-                  {numberOfUnreadMessages}
-                </div>
-              )}
-              <FontAwesomeIcon icon={faCommentAlt} />
-            </span>
+            <OverlayTrigger
+              trigger="click"
+              placement="bottom-end"
+              overlay={popover}
+            >
+              <span className="private-chat-icon">
+                {!!numberOfUnreadMessages && numberOfUnreadMessages > 0 && (
+                  <div className="notification-card">
+                    {numberOfUnreadMessages}
+                  </div>
+                )}
+                <FontAwesomeIcon icon={faCommentAlt} />
+              </span>
+            </OverlayTrigger>
+
             <Link to="/account/edit">
               <img
                 src={users[user.uid].pictureUrl}
