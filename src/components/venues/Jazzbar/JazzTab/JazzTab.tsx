@@ -1,12 +1,11 @@
-import React, { useCallback, useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { User as FUser } from "firebase";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { TOGGLE_MUTE_REACTIONS } from "actions";
-import "./Jazz.scss";
+import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,8 +22,9 @@ import {
   TextReactionType,
   Reaction,
 } from "components/context/ExperienceContext";
-import firebase from "firebase/app";
 import CallOutMessageForm from "./CallOutMessageForm";
+import TableHeader from "components/molecules/TableHeader";
+import TableFooter from "components/molecules/TableFooter";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -34,169 +34,16 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
-const TableHeader = ({
-  seatedAtTable,
-  setSeatedAtTable,
-  experienceName,
-}: any) => {
-  const { experience, user, users } = useSelector((state: any) => ({
-    experience:
-      state.firestore.data.experiences &&
-      state.firestore.data.experiences[experienceName],
-    user: state.user,
-    users: state.firestore.ordered.partygoers,
-  }));
-  useFirestoreConnect({
-    collection: "experiences",
-    doc: experienceName,
-  });
-  const tableOfUser =
-    seatedAtTable &&
-    JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable);
-
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[experienceName]?.table === seatedAtTable
-    );
-
-  const firestoreUpdate = (doc: string, update: any) => {
-    const firestore = firebase.firestore();
-    firestore
-      .doc(doc)
-      .update(update)
-      .catch((e) => {
-        firestore.doc(doc).set(update);
-      });
-  };
-
-  const tableLocked = (table: string) => {
-    // Empty tables are never locked
-    if (
-      users &&
-      users.filter((user: User) => user.data?.[experienceName]?.table === table)
-        .length === 0
-    ) {
-      return false;
-    }
-    // Locked state is in the experience record
-    return experience?.tables?.[table]?.locked;
-  };
-
-  const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${experienceName}`;
-    const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
-    };
-    firestoreUpdate(doc, update);
-  };
-
-  // useWindowUnloadEffect(() => leaveSeat(), true);
-
-  const leaveSeat = useCallback(async () => {
-    const doc = `users/${user.uid}`;
-    const existingData = user.data;
-    const update = {
-      data: {
-        ...existingData,
-        [experienceName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    await firestoreUpdate(doc, update);
-    setSeatedAtTable("");
-  }, [user, setSeatedAtTable, experienceName]);
-
-  return (
-    <div className="row no-margin at-table table-header">
-      <div className="header" style={{ marginRight: "60px" }}>
-        <div className="action">
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="btn"
-            onClick={leaveSeat}
-          >
-            Back
-          </button>
-        </div>
-        <div className="table-title-container">
-          <div className="private-table-title" style={{ fontSize: "20px" }}>
-            {tableOfUser?.title || seatedAtTable}
-            {tableOfUser && tableOfUser.capacity && (
-              <>
-                {" "}
-                <span style={{ fontSize: "12px" }}>
-                  (
-                  {usersAtCurrentTable &&
-                    `${tableOfUser.capacity - usersAtCurrentTable.length}`}{" "}
-                  seats left )
-                </span>
-              </>
-            )}
-          </div>
-          {tableOfUser && tableOfUser.subtitle && (
-            <div className="private-table-subtitle">{tableOfUser.subtitle}</div>
-          )}
-        </div>
-        <div className="action">
-          <label className="switch">
-            <input
-              type="checkbox"
-              checked={!tableLocked(seatedAtTable)}
-              onChange={() =>
-                onLockedChanged(seatedAtTable, !tableLocked(seatedAtTable))
-              }
-            />
-            <span className="slider" />
-          </label>
-          <div className="lock-table-checbox-indication">
-            {tableLocked(seatedAtTable) ? (
-              <p className="locked-text">Table is locked</p>
-            ) : (
-              <p className="unlocked-text">Others can join this table</p>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const TableFooter = ({ isVideoFocused, setIsVideoFocused }: any) => (
-  <div className="table-footer">
-    <div className="actions">
-      <div className="action">
-        {/* <div className="full-screen-checkbox"> */}
-        <div className="focus">Focus on:</div>
-        <div className="focus-option">Jazz</div>
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={!isVideoFocused}
-            onChange={() => setIsVideoFocused(!isVideoFocused)}
-          />
-          <span className="slider" />
-        </label>
-        <div className="focus-option">Friends</div>
-        {/* </div> */}
-      </div>
-    </div>
-  </div>
-);
-
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const dispatch = useDispatch();
-  const { experience, user, users, muteReactions } = useSelector(
+  const { experience, user, users, muteReactions, venue } = useSelector(
     (state: any) => ({
       experience:
         state.firestore.data.config?.[PARTY_NAME]?.experiences.jazzbar,
       user: state.user,
       users: state.firestore.ordered.partygoers,
       muteReactions: state.muteReactions,
+      venue: state.firestore.data.currentVenue,
     })
   );
 
@@ -218,15 +65,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const usersInJazzBar =
     users &&
     experience &&
-    users.filter((user: User) => user.lastSeenIn === experience.associatedRoom);
+    users.filter((user: User) => user.lastSeenIn === venue.name);
 
   const usersAtSameTable =
     users &&
-    experience &&
     users.filter(
       (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table === seatedAtTable
+        user.data?.[venue.name] && user.data[venue.name].table === seatedAtTable
     );
 
   const usersInJazzbarWithoutPeopleAtTable =
@@ -241,17 +86,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const usersSeated =
     users &&
     users.filter(
-      (user: User) =>
-        user.data?.[experience.associatedRoom] &&
-        user.data[experience.associatedRoom].table
+      (user: User) => user.data?.[venue.name] && user.data[venue.name].table
     );
 
   const usersStanding =
     usersSeated &&
     users.filter(
       (user: User) =>
-        user.lastSeenIn === experience.associatedRoom &&
-        !usersSeated.includes(user)
+        user.lastSeenIn === venue.name && !usersSeated.includes(user)
     );
 
   function createReaction(
@@ -312,17 +154,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
         }`}
       >
-        {experience && (
-          <TablesUserList
-            setSeatedAtTable={setSeatedAtTable}
-            seatedAtTable={seatedAtTable}
-            experienceName={experience.associatedRoom}
-            TableComponent={TableComponent}
-            joinMessage={true}
-            customTables={JAZZBAR_TABLES}
-          />
-        )}
-
+        <TablesUserList
+          setSeatedAtTable={setSeatedAtTable}
+          seatedAtTable={seatedAtTable}
+          venueName={venue.name}
+          TableComponent={TableComponent}
+          joinMessage={true}
+          customTables={JAZZBAR_TABLES}
+        />
         <div
           className={`jazz-container ${
             !seatedAtTable ? "container-in-grid" : "container-in-row "
@@ -344,7 +183,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               width="100%"
               height="100%"
               className="youtube-video"
-              src="https://www.youtube.com/embed/dqZAA8ZIAVE?autoplay=1"
+              src={`${venue.iframeUrl}?autoplay=1`}
               frameBorder="0"
               allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
             />
@@ -409,7 +248,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               <TableHeader
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
-                experienceName={experience.associatedRoom}
+                venueName={venue.name}
               />
               <div className="jazz-wrapper">
                 <Room roomName={seatedAtTable} setUserList={setUserList} />

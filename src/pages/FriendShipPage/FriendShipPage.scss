@@ -1,12 +1,24 @@
 @import "scss/constants";
 
 .friendship-container {
-  background: $yellow;
+  background: $backgroundColor;
   color: $black;
   padding: 30px;
 
   .table-component-container {
     margin: 30px;
+  }
+
+  .table-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .at-table {
+    .action {
+      margin-right: 20px;
+    }
   }
 
   .title {

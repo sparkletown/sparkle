@@ -48,7 +48,7 @@ const CodeOfConduct = () => {
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push("/");
+    history.push("/venue/kansassmittys");
   };
 
   return (

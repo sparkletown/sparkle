@@ -29,7 +29,7 @@ $login-max-width: 540px;
   }
   &.checkbox-checked {
     &:before {
-      background-color: $primary;
+      background-color: $primaryColor;
       box-shadow: 0 0 0 2px rgba($white, 0);
       background-image: url("./img/checkbox-checked.png");
       background-size: 30px 30px;
@@ -99,7 +99,7 @@ $login-max-width: 540px;
 }
 
 .profile-picture-button {
-  background: $primary;
+  background: $primaryColor;
   max-width: 300px;
   display: flex;
   align-items: center;
@@ -110,7 +110,7 @@ $login-max-width: 540px;
 
   &:hover {
     transform: translateY(-1px);
-    background-color: rgba($primary, 0.6);
+    background-color: rgba($primaryColor, 0.6);
     color: rgba(0, 0, 0, 1);
   }
 }

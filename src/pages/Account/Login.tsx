@@ -24,7 +24,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
-      history.push("/");
+      history.push("/venue/kansassmittys");
     } catch (error) {
       setError("email", "firebase", error.message);
     }

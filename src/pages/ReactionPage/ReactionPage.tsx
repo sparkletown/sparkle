@@ -4,7 +4,6 @@ import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Reaction,
-  MessageToTheBandReaction,
   isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";

@@ -1,43 +1,37 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import TablesUserList from "components/molecules/TablesUserList";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import "./FriendShipPage.scss";
 import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import TableComponent from "components/molecules/TableComponent";
-import { PARTY_NAME } from "config";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import TableHeader from "components/molecules/TableHeader";
+import { useSelector } from "react-redux";
 
-const FriendShipPage = () => {
+const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const { user, experience } = useSelector((state: any) => ({
-    user: state.user,
-    experience:
-      state.firestore.data.config?.[PARTY_NAME]?.experiences.friendship,
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
   }));
-  useUpdateLocationEffect(user, experience.associatedRoom);
+
+  useConnectPartyGoers();
 
   return (
     <div className="full-page-container">
       <WithNavigationBar>
         <div className="friendship-container">
           <div className="title">
-            <h1>Welcome to Isle of Friends!</h1>
-            <h3>
-              Chat in the entrance room, or scroll down to the spaces below to
-              make new connections
-            </h3>
+            <h1>{venue.title}</h1>
+            <h3>{venue.subtitle}</h3>
           </div>
           <div className="content">
             {!seatedAtTable && (
               <div className="row">
                 <div className="col bar-container">
-                  <div className="title">Welcome reception</div>
-                  <div className="subtitle">
-                    Sip on Prosecco as you greet your fellow festival goers
-                  </div>
+                  <div className="title">{venue.defaultTableTitle}</div>
+                  <div className="subtitle">{venue.defaultTableSubtitle}</div>
                   <div className="wrapper">
                     <Room roomName="friendship" setUserList={() => null} />
                   </div>
@@ -49,24 +43,29 @@ const FriendShipPage = () => {
             )}
           </div>
           <div className="row">
-            <div className={`col ${seatedAtTable ? "table-container" : ""}`}>
-              {experience && (
-                <TablesUserList
-                  experienceName={experience.associatedRoom}
-                  setSeatedAtTable={setSeatedAtTable}
-                  seatedAtTable={seatedAtTable}
-                  TableComponent={TableComponent}
-                  customTables={FRIENDSHIP_CUSTOM_TABLES}
-                  leaveText="Return to Isle of Friends"
-                  joinMessage={false}
-                />
-              )}
+            <div
+              className={`col ${
+                seatedAtTable ? "table-container" : "table-grid"
+              }`}
+            >
+              <TablesUserList
+                venueName={venue.name}
+                setSeatedAtTable={setSeatedAtTable}
+                seatedAtTable={seatedAtTable}
+                TableComponent={TableComponent}
+                customTables={FRIENDSHIP_CUSTOM_TABLES}
+                leaveText="Return to Isle of Friends"
+                joinMessage={true}
+              />
               {seatedAtTable && (
-                <>
-                  <div className="col wrapper">
-                    <Room roomName={seatedAtTable} setUserList={() => null} />
-                  </div>
-                </>
+                <div className="col wrapper">
+                  <TableHeader
+                    seatedAtTable={seatedAtTable}
+                    setSeatedAtTable={setSeatedAtTable}
+                    venueName={venue.name}
+                  />
+                  <Room roomName={seatedAtTable} setUserList={() => null} />
+                </div>
               )}
             </div>
           </div>
