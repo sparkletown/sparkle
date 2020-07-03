@@ -1,0 +1,51 @@
+@import "scss/constants.scss";
+
+.room-card-container {
+  background: $dark;
+  width: 200px;
+  border-radius: 22px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.room-title {
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.room-img {
+  width: 100%;
+  border-radius: 22px;
+  margin-bottom: 10px;
+}
+
+.artist-playing {
+  color: $primaryColor;
+  width: 100%;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.sparkle-icon {
+  height: 25px;
+  margin-right: 5px;
+  margin-top: -5px;
+  margin-left: -8px;
+}
+
+.event-name-container {
+  display: flex;
+}
+
+.event-name {
+  font-size: 14px;
+}
+
+.host-name {
+  font-weight: 700;
+}

@@ -4,18 +4,19 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
+import PartyMap from "components/venues/PartyMap";
 import { User as FUser } from "firebase";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 
-enum VenueTemplate {
+export enum VenueTemplate {
   jazzbar = "jazzbar",
   friendship = "friendship",
+  partymap = "partymap",
 }
 
-interface Venue {
+export interface Venue {
   template: VenueTemplate;
-  iframeUrl?: string;
   name: string;
   theme: {
     primaryColor: string;
@@ -60,10 +61,13 @@ const VenuePage = () => {
   let template;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <JazzbarRouter venueName={venue.name} />;
+      template = <JazzbarRouter />;
       break;
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
+      break;
+    case VenueTemplate.partymap:
+      template = <PartyMap />;
       break;
   }
 

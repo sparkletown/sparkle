@@ -7,7 +7,9 @@ require("firebase/firestore");
 var validate = require("jsonschema").validate;
 var read = require("read");
 
-var schema = require("./schema.json");
+// Change this to upload a different type of Venue
+// var schema = require("./schema.json");
+var schema = require("./venue-schema.json");
 
 function usage() {
   console.log(`
@@ -39,7 +41,7 @@ if (!validateResult.valid) {
   );
 } else {
   console.log(
-    `Validation succeeded, log in to upload event config from ${path} to config document ID "${config}".`
+    `Validation succeeded, log in to upload event config from ${path} to config document ID.`
   );
   read({ prompt: "Username:" }, function (err, username) {
     if (err) {
@@ -63,7 +65,7 @@ if (!validateResult.valid) {
         .then(function () {
           firebase
             .firestore()
-            .doc(`venues/${venueName}`)
+            .doc(`venues/${venueId}`)
             .set(doc)
             .then(function () {
               console.log("Document successfully written!");
