@@ -148,7 +148,7 @@ const WelcomePage: React.FunctionComponent = () => {
           <iframe
             title="Our approach to Burning Man"
             className="video"
-            src="https://www.youtube.com/embed/4Ku4E2MXp-k"
+            src="https://www.youtube.com/embed/0FvFcO5Oq_k"
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
