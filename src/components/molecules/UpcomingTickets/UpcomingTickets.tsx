@@ -22,14 +22,20 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
         <img
           src="/ticket.png"
           className="image"
-          alt="Upcoming Tickets"
+          alt="Upcoming Event Tickets"
+          title="Upcoming Event Tickets"
           onClick={() => setShowOverlay(!showOverlay)}
         />
       </div>
       <div className={"overlay " + (showOverlay ? "d-block" : "d-none")}>
         <h6>Get Tickets for Future Events</h6>
         {events.map((event) => (
-          <a href={event.url} target="_blank" rel="noopener noreferrer">
+          <a
+            className="link"
+            href={event.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <div className="event">
               <div className="time-section">
                 <div className="date">

@@ -30,6 +30,10 @@
     width: 400px;
     background: $dark;
     border: 1px solid $white;
+
+    .link {
+      text-decoration: none;
+    }
   }
 
   .event {
