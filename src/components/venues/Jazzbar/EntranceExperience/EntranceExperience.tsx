@@ -26,20 +26,17 @@ const EntranceExperience = () => (
         className="col information-card"
       >
         <p>
-          Tonight, the Kansas Smitty’s House Band are playing from their new
-          album, Things Happened Here. Drawing influence from over one hundred
-          years of jazz history, from Django Reinhardt to Ahmad Jamal, and the
-          vivid musical landscapes of Debussy and even Brian Eno, Kansas
-          Smitty’s new album combines journeying into the jazz sublime with
-          every flavour of cinematic texture.
+          Saturdays at Kansas Smitty's have always been about having a great
+          time. The band for this evenings performance features Giacomo Smith on
+          clarinet and alto, Ferg Ireland on double bass, Joe Webb on piano,
+          Alec Harper on tenor sax and Will Cleasby on drums.
         </p>
         <p>Performing tonight at Kansas Smitty's:</p>
         <ul>
           <li>Giacomo Smith - alto/clarinet</li>
-          <li>Alec harper - Tenor</li>
-          <li>Dave Archer - Guitar</li>
-          <li>Joe Webb - Piano</li>
           <li>Ferg Ireland - Double Bass</li>
+          <li>Joe Webb - Piano</li>
+          <li>Alec harper - Tenor Sax</li>
           <li>Will Cleasby - Drums</li>
         </ul>
       </InformationCard>
