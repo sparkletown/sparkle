@@ -143,6 +143,17 @@ const WelcomePage: React.FunctionComponent = () => {
       </div>
 
       <div className="info-wrapper">
+        <h3>Watch the video for a quick introduction to our approach</h3>
+        <div className="video-container">
+          <iframe
+            title="Our approach to Burning Man"
+            className="video"
+            src="https://www.youtube.com/embed/0FvFcO5Oq_k"
+            frameBorder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          ></iframe>
+        </div>
         <button
           className="btn btn-primary btn-block btn-centered help-build-button"
           onClick={() =>

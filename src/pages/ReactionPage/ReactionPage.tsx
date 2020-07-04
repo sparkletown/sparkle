@@ -17,7 +17,7 @@ const ReactionPage = () => {
   useFirestoreConnect([
     {
       collection: "experiences",
-      doc: "kansassmittys",
+      doc: "Kansas Smittys",
       subcollections: [{ collection: "reactions" }],
       storeAs: "reactions",
       orderBy: ["created_at", "desc"],
