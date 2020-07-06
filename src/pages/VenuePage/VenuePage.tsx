@@ -40,13 +40,13 @@ const VenuePage = () => {
     users: state.firestore.ordered.partygoers,
   })) as { venue: Venue; user: FUser; users: User[] };
 
-  venue &&
+  venue?.theme?.primaryColor &&
     document.documentElement.style.setProperty(
       "--primary-color",
       venue.theme.primaryColor
     );
 
-  venue?.theme.backgroundColor &&
+  venue?.theme?.backgroundColor &&
     document.documentElement.style.setProperty(
       "--background-color",
       venue.theme.backgroundColor
