@@ -23,7 +23,6 @@ interface GlobalChatMessage {
 
 enum RestrictedMessageType {
   room = "room",
-  private = "private",
   table = "table",
 }
 
@@ -35,10 +34,28 @@ interface RestrictedChatMessage {
   ts_utc: any;
 }
 
-type ChatMessage = GlobalChatMessage | RestrictedChatMessage;
+export interface PrivateChatMessage {
+  type: "private";
+  from: string;
+  to: string;
+  text: string;
+  ts_utc: any;
+  isRead: boolean;
+}
+
+type ChatMessage =
+  | GlobalChatMessage
+  | RestrictedChatMessage
+  | PrivateChatMessage;
 
 function buildMessage(
   type: RestrictedMessageType,
+  text: string,
+  from: string,
+  to: string
+): ChatMessage;
+function buildMessage(
+  type: "private",
   text: string,
   from: string,
   to: string
@@ -67,6 +84,13 @@ function buildMessage(
       ...message,
       to,
     } as RestrictedChatMessage;
+  }
+
+  if (type === "private") {
+    message = {
+      ...message,
+      isRead: false,
+    } as PrivateChatMessage;
   }
 
   return message;
@@ -120,7 +144,7 @@ export default ({ children }: { children: any }) => {
         .collection("privatechats")
         .doc(messageUser)
         .collection("chats")
-        .add(buildMessage(RestrictedMessageType.private, text, from, to));
+        .add(buildMessage("private", text, from, to));
     }
   }, []);
 

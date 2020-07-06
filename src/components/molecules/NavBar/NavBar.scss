@@ -8,6 +8,36 @@
   .logout-span {
     cursor: pointer;
   }
+
+  .private-chat-icon {
+    color: $white;
+    margin-right: 20px;
+    font-size: 25px;
+    margin-top: 5px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .notification-card {
+    background: $red;
+    color: $white;
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    padding: 2px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .icons-container {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .navbar {

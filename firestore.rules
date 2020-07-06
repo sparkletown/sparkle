@@ -1,4 +1,9 @@
 rules_version = '2';
+
+function isUpdateRestrictedToField(request, field) {
+    return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]);
+}
+
 service cloud.firestore {
   match /databases/{database}/documents {
     match /config/{configFile} {
@@ -12,8 +17,9 @@ service cloud.firestore {
       allow write, read: if request.auth.uid != null;
     }
     match /privatechats/{userId}/{restOfPath=**} {
-      allow write: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
+      allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
       allow read: if request.auth.uid != null && userId == request.auth.uid;
+      allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'isRead');
     }
     match /experiences/{experienceId}/{restOfPath=**} {
       allow write, read: if request.auth.uid != null;
