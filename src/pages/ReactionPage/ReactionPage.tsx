@@ -14,23 +14,27 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 const ReactionPage = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+
+  useConnectPartyGoers();
+
+  const { reactions, usersById, partyGoers, venue } = useSelector(
+    (state: any) => ({
+      reactions: state.firestore.ordered.reactions,
+      usersById: state.firestore.data.users,
+      partyGoers: state.firestore.ordered.partygoers,
+      venue: state.firestore.data.currentVenue,
+    })
+  );
+
   useFirestoreConnect([
     {
       collection: "experiences",
-      doc: "Kansas Smittys",
+      doc: venue.name,
       subcollections: [{ collection: "reactions" }],
       storeAs: "reactions",
       orderBy: ["created_at", "desc"],
     },
   ]);
-
-  useConnectPartyGoers();
-
-  const { reactions, usersById, partyGoers } = useSelector((state: any) => ({
-    reactions: state.firestore.ordered.reactions,
-    usersById: state.firestore.data.users,
-    partyGoers: state.firestore.ordered.partygoers,
-  }));
 
   const typedReaction = (reactions ? reactions : []) as Reaction[];
 
