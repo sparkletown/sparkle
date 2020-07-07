@@ -17,6 +17,7 @@ interface PropsType {
   isInProfileModal: boolean;
   setSelectedUserProfile: (value: React.SetStateAction<undefined>) => void;
   user: any;
+  withoutSenderInformation?: boolean;
 }
 
 const ChatMessage: React.FunctionComponent<PropsType> = ({
@@ -25,6 +26,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
   user,
   isInProfileModal,
   setSelectedUserProfile,
+  withoutSenderInformation,
 }) => {
   const getRecipient = () => {
     switch (chat.type) {
@@ -47,25 +49,27 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="chat-message">
-      <div className="sender-information">
-        {chat.from && users[chat.from] && (
-          <img
-            src={users[chat.from].pictureUrl}
-            className="profile-icon avatar-picture"
-            alt={chat.to}
-            onClick={() => {
-              !isInProfileModal &&
-                setSelectedUserProfile({
-                  ...users[chat.from],
-                  id: chat.from,
-                });
-            }}
-          />
-        )}
-        <span className="xs-size">
-          <b>{sender}</b> to <b>{getRecipient()}</b>
-        </span>
-      </div>
+      {!withoutSenderInformation && (
+        <div className="sender-information">
+          {chat.from && users[chat.from] && (
+            <img
+              src={users[chat.from].pictureUrl}
+              className="profile-icon avatar-picture"
+              alt={chat.to}
+              onClick={() => {
+                !isInProfileModal &&
+                  setSelectedUserProfile({
+                    ...users[chat.from],
+                    id: chat.from,
+                  });
+              }}
+            />
+          )}
+          <span className="xs-size">
+            <b>{sender}</b> to <b>{getRecipient()}</b>
+          </span>
+        </div>
+      )}
       <div
         className={`chat-content-container ${
           sender === "you" ? "right-side" : ""

@@ -17,6 +17,7 @@ const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
   isInProfileModal?: boolean;
+  displayNameOfDiscussionPartnerAsTitle?: boolean;
   discussionPartner?: User;
   room?: string;
 }
@@ -24,6 +25,7 @@ interface PropsType {
 const Chatbox: React.FunctionComponent<PropsType> = ({
   isInProfileModal,
   discussionPartner,
+  displayNameOfDiscussionPartnerAsTitle,
   room,
 }) => {
   const [isRecipientChangeBlocked, setIsRecipientChangeBlocked] = useState(
@@ -118,15 +120,27 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   return (
     <>
       <div className="chatbox-container">
-        <div className="chatbox-title">
-          <img
-            src="/sparkle-icon.png"
-            className="side-title-icon"
-            alt="sparkle icon"
-            width="20"
-          />
-          Chat
-        </div>
+        {discussionPartner && displayNameOfDiscussionPartnerAsTitle ? (
+          <div className="discussion-partner-info">
+            <img
+              className="profile-picture"
+              src={discussionPartner.pictureUrl}
+              alt="profile"
+            />
+            {discussionPartner.partyName}
+          </div>
+        ) : (
+          <div className="chatbox-title">
+            <img
+              src="/sparkle-icon.png"
+              className="side-title-icon"
+              alt="sparkle icon"
+              width="20"
+            />
+            Chat
+          </div>
+        )}
+
         {users && (
           <>
             {!isInProfileModal && (
@@ -240,6 +254,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     setSelectedUserProfile={setSelectedUserProfile}
                     isInProfileModal={!!isInProfileModal}
                     chat={chat}
+                    withoutSenderInformation={
+                      displayNameOfDiscussionPartnerAsTitle
+                    }
                   />
                 ))}
             </div>
