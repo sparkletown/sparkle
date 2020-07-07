@@ -7,7 +7,7 @@ import Chatbox from "components/organisms/Chatbox";
 import { formatUtcSeconds } from "utils/time";
 import { User } from "types/User";
 import { setPrivateChatMessageIsRead } from "./helpers";
-import { faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface LastMessageByUser {
@@ -63,13 +63,18 @@ const PrivateChatModal: React.FunctionComponent = () => {
             onClick={() => setSelectedUser(undefined)}
             id="private-chat-back-button"
           >
-            <FontAwesomeIcon icon={faChevronRight} />
+            <FontAwesomeIcon icon={faChevronLeft} />
           </div>
-          <Chatbox discussionPartner={selectedUser} isInProfileModal />
+          <Chatbox
+            discussionPartner={selectedUser}
+            isInProfileModal
+            displayNameOfDiscussionPartnerAsTitle
+          />
         </div>
       ) : (
         discussionPartnerWithLastMessageExchanged && (
           <>
+            <h2 className="private-chat-title">Private Chat</h2>
             {Object.keys(discussionPartnerWithLastMessageExchanged)
               .sort(
                 (a, b) =>
