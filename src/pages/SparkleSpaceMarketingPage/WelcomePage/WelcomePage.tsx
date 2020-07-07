@@ -129,6 +129,7 @@ const WelcomePage: React.FunctionComponent = () => {
           type="submit"
           onClick={submitEmail}
           disabled={emailSubmitted}
+          id="marketing-page-submit-email"
         />
         {emailSubmitted && (
           <span className="input-info">
@@ -161,6 +162,7 @@ const WelcomePage: React.FunctionComponent = () => {
               "https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform"
             )
           }
+          id="marketing-page-google-form"
         >
           Help build the SparkleVerse
         </button>

@@ -102,7 +102,7 @@ const Participant = ({ participant, profileData, bartender, children }) => {
       )}
       {children}
       <div className="mute-other-container">
-        <div onClick={() => setMuted(!muted)}>
+        <div onClick={() => setMuted(!muted)} id="mute-myself">
           <FontAwesomeIcon
             size="lg"
             icon={muted ? faVolumeMute : faVolumeUp}

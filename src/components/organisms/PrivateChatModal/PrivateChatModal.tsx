@@ -61,6 +61,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
           <div
             className="back-button"
             onClick={() => setSelectedUser(undefined)}
+            id="private-chat-back-button"
           >
             <FontAwesomeIcon icon={faChevronLeft} />
           </div>
@@ -89,6 +90,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
                     key={userId}
                     className="private-message-sender"
                     onClick={() => onClickOnSender(sender)}
+                    id="private-chat-modal-select-private-recipient"
                   >
                     <UserProfilePicture
                       user={sender}

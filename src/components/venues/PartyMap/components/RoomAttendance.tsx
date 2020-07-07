@@ -29,7 +29,13 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
     : undefined;
 
   return (
-    <div className={className} style={style} title={title} onClick={onClick}>
+    <div
+      className={className}
+      style={style}
+      title={title}
+      onClick={onClick}
+      id={`attendance-number-${title}`}
+    >
       <span className="attendance-number">{attendance}</span>
       <FontAwesomeIcon icon={faUser} />
     </div>

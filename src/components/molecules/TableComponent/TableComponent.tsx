@@ -2,6 +2,7 @@ import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 import "./TableComponent.scss";
+import { useSelector } from "react-redux";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -13,6 +14,9 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   table,
   tableLocked,
 }) => {
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+  }));
   const locked = tableLocked(table.reference);
   const usersSeatedAtTable = users.filter(
     (u: User) => u.data?.[experienceName]?.table === table.reference
@@ -87,6 +91,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
               onClick={() =>
                 onJoinClicked(table.reference, locked, nameOfVideoRoom)
               }
+              id={`join-table-${venue.name}-${table.reference}`}
               className="add-participant-button"
             >
               +

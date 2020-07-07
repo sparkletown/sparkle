@@ -129,6 +129,7 @@ const FAQPage: React.FunctionComponent = () => {
 
       <button
         className="btn btn-primary btn-block btn-centered help-build-button"
+        id="marketing-page-enter-faq-tab"
         onClick={() =>
           window.open(
             "https://docs.google.com/forms/d/e/1FAIpQLSeGGsafBOnO63GOiPjBhIdFaEqoM0xBSERdkTEqh3DrPteQvw/viewform"

@@ -184,12 +184,14 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() => changeChatboxMessageType("global")}
+                      id="chatbox-dropdown-everybody"
                     >
                       Everybody
                     </Dropdown.Item>
                     {room && (
                       <Dropdown.Item
                         onClick={() => changeChatboxMessageType("room")}
+                        id="chatbox-dropdown-room"
                       >
                         This Room: {room}
                       </Dropdown.Item>
@@ -214,6 +216,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                           .map((u: any) => (
                             <Dropdown.Item
                               onClick={() => setPrivateRecipient(u)}
+                              id="chatbox-dropdown-private-recipient"
                               key={u.id}
                             >
                               <img
