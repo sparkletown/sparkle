@@ -4,6 +4,7 @@ import { User } from "types/User";
 
 import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { useSelector } from "react-redux";
 
 interface PropsType {
   users: User[];
@@ -26,6 +27,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   users = users.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users.slice(0, limit);
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+  }));
 
   return (
     <>
@@ -39,6 +43,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
             <p
               className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}
+              id={`see-venue-information-${venue.name}`}
             >
               See {isExpanded ? "less" : "all"}
             </p>

@@ -26,45 +26,44 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
   const history = useHistory();
 
   return (
-    <>
-      <div
-        className="room-card-container"
-        onClick={() => {
-          window.scrollTo(0, 0);
-          history.push(room.url);
-        }}
-      >
-        <img
-          src={`room-images/${room.image}`}
-          className="room-img"
-          alt={room.title}
-        />
-        <h4 className="room-title">{room.title}</h4>
-        <RoomAttendance room={room} attendance={attendance} />
-        {eventToDisplay && (
-          <div className="artist-playing">
-            <div className="event-name-container">
-              <img
-                className="sparkle-icon"
-                alt="sparkles"
-                src="/sparkle-icon.png"
-              />
-              <h5 className="event-name">{eventToDisplay.name}</h5>
-            </div>
-            {eventToDisplay.host && (
-              <div>
-                by <span className="host-name">{eventToDisplay.host}</span>
-              </div>
-            )}
-            <div>
-              <small>
-                {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
-              </small>
-            </div>
+    <div
+      className="room-card-container"
+      onClick={() => {
+        window.scrollTo(0, 0);
+        history.push(room.url);
+      }}
+      id={`room-card-${room.title}`}
+    >
+      <img
+        src={`room-images/${room.image}`}
+        className="room-img"
+        alt={room.title}
+      />
+      <h4 className="room-title">{room.title}</h4>
+      <RoomAttendance room={room} attendance={attendance} />
+      {eventToDisplay && (
+        <div className="artist-playing">
+          <div className="event-name-container">
+            <img
+              className="sparkle-icon"
+              alt="sparkles"
+              src="/sparkle-icon.png"
+            />
+            <h5 className="event-name">{eventToDisplay.name}</h5>
           </div>
-        )}
-      </div>
-    </>
+          {eventToDisplay.host && (
+            <div>
+              by <span className="host-name">{eventToDisplay.host}</span>
+            </div>
+          )}
+          <div>
+            <small>
+              {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
+            </small>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

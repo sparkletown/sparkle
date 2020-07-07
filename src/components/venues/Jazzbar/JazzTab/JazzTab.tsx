@@ -230,6 +230,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   <button
                     className="reaction"
                     onClick={() => reactionClicked(user, reaction.type)}
+                    id={`send-reaction-${reaction.type}`}
                   >
                     <span role="img" aria-label={reaction.ariaLabel}>
                       {reaction.text}
@@ -241,6 +242,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             <div
               className="reaction-mute"
               onClick={() => dispatch({ type: TOGGLE_MUTE_REACTIONS })}
+              id="toggle-mute-reactions"
             >
               <div className="reaction-mute-text">Reactions:</div>
               <FontAwesomeIcon

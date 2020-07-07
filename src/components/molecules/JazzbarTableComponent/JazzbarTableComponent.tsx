@@ -51,6 +51,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
             type="button"
             title={"Join " + table.reference}
             className={"btn " + (locked ? "disabled" : "")}
+            id={`join-table-${table.reference}`}
             onClick={() =>
               onJoinClicked(table.reference, locked, nameOfVideoRoom)
             }

@@ -83,6 +83,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               <button
                 className="btn btn-primary chat-button"
                 onClick={() => setIsChatModalOpen(!isChatModalOpen)}
+                id="toggle-open-chat-modal"
               >
                 Chat
                 <FontAwesomeIcon

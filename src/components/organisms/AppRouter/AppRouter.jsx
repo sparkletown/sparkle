@@ -12,14 +12,17 @@ import { setUser } from "actions";
 import { PARTY_NAME } from "config";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
+import "firebase/analytics";
 
 const AppRouter = () => {
   const firebase = useFirebase();
   const dispatch = useDispatch();
+  const analytics = firebase.analytics();
   useFirestoreConnect([{ collection: "config", doc: PARTY_NAME }, "users"]);
-  const { config } = useSelector((state) => ({
+  const { config, user } = useSelector((state) => ({
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
+    user: state.user,
   }));
 
   // REVISIT: properly wrap dependencies in useRef per https://github.com/facebook/create-react-app/issues/6880
@@ -44,6 +47,18 @@ const AppRouter = () => {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config]);
+
+  const onClickWindow = (event) => {
+    event.target.id &&
+      analytics.logEvent("clickonbutton", event.target.id, user.uid);
+  };
+
+  useEffect(() => {
+    window.addEventListener("click", onClickWindow, false);
+    return () => {
+      window.removeEventListener("click", onClickWindow, false);
+    };
+  });
 
   return (
     <Router basename="/">

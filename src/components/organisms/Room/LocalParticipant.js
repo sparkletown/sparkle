@@ -29,7 +29,7 @@ const LocalParticipant = ({ participant, profileData, bartender }) => {
       bartender={bartender}
     >
       <div className="mute-container">
-        <div onClick={() => setMuted(!muted)}>
+        <div onClick={() => setMuted(!muted)} id="mute-person">
           <FontAwesomeIcon
             size="lg"
             icon={muted ? faMicrophoneSlash : faMicrophone}

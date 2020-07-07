@@ -112,7 +112,11 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
             disabled={!formState.isValid}
           />
         </form>
-        <div className="cancel-button" onClick={onHide}>
+        <div
+          className="cancel-button"
+          onClick={onHide}
+          id="edit-profile-modal-cancel"
+        >
           Cancel
         </div>
       </Modal.Body>

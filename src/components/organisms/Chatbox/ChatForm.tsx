@@ -101,6 +101,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
         <button
           className="chat-submit-button"
           onClick={chatSubmitted}
+          id="chatbox-send-message"
           disabled={!allowSend()}
         >
           <img

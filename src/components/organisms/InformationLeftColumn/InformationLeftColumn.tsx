@@ -17,6 +17,7 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
       <div
         className={`left-column ${isLeftColumnExpanded ? "expanded" : ""}`}
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
+        id="expand-venue-information"
       >
         <img
           src={venueLogoPath}
