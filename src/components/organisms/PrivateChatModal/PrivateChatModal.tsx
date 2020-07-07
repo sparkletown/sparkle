@@ -73,6 +73,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
       ) : (
         discussionPartnerWithLastMessageExchanged && (
           <>
+            <h2 className="private-chat-title">Private Chat</h2>
             {Object.keys(discussionPartnerWithLastMessageExchanged)
               .sort(
                 (a, b) =>
