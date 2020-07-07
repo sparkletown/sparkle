@@ -5,7 +5,6 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import App from "App";
-import EditProfilePage from "pages/EditProfilePage";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { setUser } from "actions";
@@ -54,7 +53,6 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
-        <Route path="/account/edit" component={EditProfilePage} />
         <Route path="/" component={App} />
       </Switch>
     </Router>

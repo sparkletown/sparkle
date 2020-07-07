@@ -1,0 +1,46 @@
+@import "scss/constants.scss";
+
+.profile-modal-container {
+  padding: 30px;
+
+  .user-information {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  .profile-modal-avatar {
+    margin-right: 30px;
+  }
+
+  .profile-modal-container {
+    padding: 30px;
+  }
+
+  .ellipsis-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .question-section {
+    margin-bottom: 30px;
+  }
+
+  .question {
+    color: $concrete;
+  }
+
+  .answer {
+    font-size: 25px;
+  }
+
+  .modal-title {
+    text-align: center;
+  }
+
+  input {
+    margin-bottom: 10px;
+    // width: 200px;
+  }
+}
