@@ -12,7 +12,7 @@ const useProfileInformationCheck = () => {
 
   useEffect(() => {
     if (usersByUid && user && !usersByUid[user.uid]) {
-      history.push("account/profile");
+      history.push("/account/profile");
     }
   }, [usersByUid, history, user]);
 };
