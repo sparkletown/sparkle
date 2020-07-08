@@ -72,13 +72,13 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       )}
       {messagesToBand && (
         <div className="reaction-container">
-          <span
-            className={"reaction messageToBand"}
+          <div
+            className="reaction messageToBand"
             role="img"
-            aria-label={"messageToTheBand"}
+            aria-label="messageToTheBand"
           >
             {messagesToBand.text}
-          </span>
+          </div>
         </div>
       )}
     </div>
