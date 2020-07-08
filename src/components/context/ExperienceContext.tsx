@@ -18,38 +18,46 @@ export type TextReactionType = "messageToTheBand";
 
 export type ReactionType = EmojiReactionType | TextReactionType;
 
+export const ReactionsTextMap = {
+  [EmojiReactionType.heart]: "❤️",
+  [EmojiReactionType.clap]: "👏",
+  [EmojiReactionType.laugh]: "😂",
+  [EmojiReactionType.thatsjazz]: "🎹",
+  [EmojiReactionType.boo]: "👻",
+};
+
 export const Reactions = [
   {
     name: "heart",
-    text: "❤️",
+    text: ReactionsTextMap[EmojiReactionType.heart],
     type: EmojiReactionType.heart,
     ariaLabel: "heart-emoji",
     audioPath: "/sounds/woo.mp3",
   },
   {
     name: "clap",
-    text: "👏",
+    text: ReactionsTextMap[EmojiReactionType.clap],
     type: EmojiReactionType.clap,
     ariaLabel: "clap-emoji",
     audioPath: "/sounds/clap.mp3",
   },
   {
     name: "laugh",
-    text: "😂",
+    text: ReactionsTextMap[EmojiReactionType.laugh],
     type: EmojiReactionType.laugh,
     ariaLabel: "laugh-emoji",
     audioPath: "/sounds/laugh.mp3",
   },
   {
     name: "thatsjazz",
-    text: "🎹",
+    text: ReactionsTextMap[EmojiReactionType.thatsjazz],
     type: EmojiReactionType.thatsjazz,
     ariaLabel: "piano-emoji",
     audioPath: "/sounds/thatsjazz.mp3",
   },
   {
     name: "boo",
-    text: "👻",
+    text: ReactionsTextMap[EmojiReactionType.boo],
     type: EmojiReactionType.boo,
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",

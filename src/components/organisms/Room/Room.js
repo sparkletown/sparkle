@@ -5,7 +5,9 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 
-const Room = ({ roomName, setUserList }) => {
+import "./Room.scss";
+
+const Room = ({ roomName, setUserList, capacity = undefined }) => {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
@@ -105,12 +107,16 @@ const Room = ({ roomName, setUserList }) => {
     users[room?.localParticipant?.identity]?.data?.[roomName]?.bartender;
 
   const meComponent = room ? (
-    <LocalParticipant
-      key={room.localParticipant.sid}
-      participant={room.localParticipant}
-      profileData={users[room.localParticipant.identity]}
-      bartender={meIsBartender}
-    />
+    <>
+      <div className={`participant-container-${capacity}`}>
+        <LocalParticipant
+          key={room.localParticipant.sid}
+          participant={room.localParticipant}
+          profileData={users[room.localParticipant.identity]}
+          bartender={meIsBartender}
+        />
+      </div>
+    </>
   ) : null;
 
   if (meIsBartender) {
@@ -129,16 +135,29 @@ const Room = ({ roomName, setUserList }) => {
     }
 
     return (
-      <Participant
-        key={`${participant.sid}-${index}`}
-        participant={participant}
-        profileData={users[participant.identity]}
-        bartender={bartender}
-      />
+      <div className={`participant-container-${capacity}`}>
+        <Participant
+          key={`${participant.sid}-${index}`}
+          participant={participant}
+          profileData={users[participant.identity]}
+          bartender={bartender}
+        />
+      </div>
     );
   });
 
-  return <>{[meComponent, ...othersComponents]}</>;
+  const emptyComponents = [
+    ...Array(capacity - (participants + room?.localParticipant ? 1 : 0)),
+  ].map((e, index) => (
+    <div
+      key={`empty-participant-${index}`}
+      className={`participant-container-${capacity}`}
+    >
+      <img style={{ width: "80%" }} src="/empty-chair.png" alt="empty chair" />
+    </div>
+  ));
+
+  return <>{[meComponent, ...othersComponents, ...emptyComponents]}</>;
 };
 
 export default Room;

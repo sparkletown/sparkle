@@ -21,11 +21,14 @@ import {
   EmojiReactionType,
   TextReactionType,
   Reaction,
+  isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
 import TableFooter from "components/molecules/TableFooter";
 import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
+import { useFirestoreConnect } from "react-redux-firebase";
+import ReactionList from "../components/ReactionList";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -43,17 +46,38 @@ export interface JazzbarVenue extends Venue {
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const dispatch = useDispatch();
-  const { user, users, muteReactions, venue } = useSelector((state: any) => ({
+  const {
+    user,
+    users,
+    muteReactions,
+    venue,
+    usersById,
+    reactions,
+  } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.ordered.partygoers,
     muteReactions: state.muteReactions,
     venue: state.firestore.data.currentVenue,
+    usersById: state.firestore.data.users,
+    reactions: state.firestore.ordered.reactions,
   })) as {
     users: User[];
     user: FUser;
     venue: JazzbarVenue;
     muteReactions: boolean;
+    usersById: Omit<User, "id">[];
+    reactions: Reaction[] | undefined;
   };
+
+  useFirestoreConnect([
+    {
+      collection: "experiences",
+      doc: venue.name,
+      subcollections: [{ collection: "reactions" }],
+      storeAs: "reactions",
+      orderBy: ["created_at", "desc"],
+    },
+  ]);
 
   const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
@@ -123,7 +147,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexBasis: 0,
         }}
       >
-        <div style={{ border: "1px solid white", height: "500px" }}>
+        <div style={{ border: "0px solid white", height: "500px" }}>
           <iframe
             key="main-event"
             title="main event"
@@ -137,10 +161,12 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         </div>
         <div
           style={{
-            border: "1px solid white",
+            border: "0px solid white",
             display: "flex",
             flexWrap: "wrap",
+            justifyContent: "space-around",
           }}
+          className="seated-area"
         >
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
@@ -162,8 +188,15 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
                 />
-                <div className="jazz-wrapper">
-                  <Room roomName={seatedAtTable} setUserList={setUserList} />
+                <div className="participants-container">
+                  <Room
+                    roomName={seatedAtTable}
+                    setUserList={setUserList}
+                    capacity={
+                      JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)
+                        ?.capacity
+                    }
+                  />
                 </div>
                 <TableFooter
                   isVideoFocused={isVideoFocused}
@@ -182,7 +215,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexBasis: 0,
         }}
       >
-        <div style={{ border: "1px solid white" }}>
+        <div className="band-reaction-container">
           <div className="call-out-band-container-at-table">
             <CallOutMessageForm
               onSubmit={handleSubmit(onSubmit)}
@@ -204,10 +237,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 </div>
               ))}
             </div>
-            Messages to the Band
+            <div>
+              {usersById && reactions && (
+                <ReactionList reactions={reactions} small />
+              )}
+            </div>
           </div>
         </div>
-        <div style={{ border: "1px solid white" }}>
+        <div style={{ border: "0px solid white" }}>
           {users && (
             <UserList
               users={usersInJazzBar}
@@ -218,129 +255,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         </div>
       </div>
     </div>
-    //   <div className="scrollable-area">
-    //     <div
-    //       className={`content ${
-    //         !seatedAtTable ? "jazz-bar-grid" : "jazz-bar-table"
-    //       }`}
-    //     >
-    //       <TablesUserList
-    //         setSeatedAtTable={setSeatedAtTable}
-    //         seatedAtTable={seatedAtTable}
-    //         venueName={venue.name}
-    //         TableComponent={TableComponent}
-    //         joinMessage={true}
-    //         customTables={JAZZBAR_TABLES}
-    //       />
-    //       <div
-    //         className={`jazz-container ${
-    //           !seatedAtTable ? "container-in-grid" : "container-in-row "
-    //         }`}
-    //       >
-    //         <div
-    //           key="main-event-container"
-    //           className={`video ${
-    //             seatedAtTable
-    //               ? isVideoFocused
-    //                 ? "video-focused col-11"
-    //                 : "col-5 video-not-focused"
-    //               : ""
-    //           }`}
-    //         >
-    //           <iframe
-    //             key="main-event"
-    //             title="main event"
-    //             width="100%"
-    //             height="100%"
-    //             className="youtube-video"
-    //             src={`${venue.iframeUrl}?autoplay=1`}
-    //             frameBorder="0"
-    //             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-    //           />
-    //           {seatedAtTable && (
-    //             <div className="call-out-band-container-at-table">
-    //               <CallOutMessageForm
-    //                 onSubmit={handleSubmit(onSubmit)}
-    //                 isMessageToTheBandSent={isMessageToTheBandSent}
-    //                 register={register}
-    //               />
-    //             </div>
-    //           )}
-    //         </div>
-    //         <div
-    //           className={`reaction-bar ${
-    //             isVideoFocused ? "video-focused" : "video-not-focused"
-    //           }`}
-    //         >
-    //           {!seatedAtTable && (
-    //             <div className="call-out-band-container">
-    //               <CallOutMessageForm
-    //                 onSubmit={handleSubmit(onSubmit)}
-    //                 isMessageToTheBandSent={isMessageToTheBandSent}
-    //                 register={register}
-    //               />
-    //             </div>
-    //           )}
-    //           <div className="emoji-container">
-    //             {Reactions.map((reaction) => (
-    //               <div className="reaction-container">
-    //                 <button
-    //                   className="reaction"
-    //                   onClick={() => reactionClicked(user, reaction.type)}
-    //                   id={`send-reaction-${reaction.type}`}
-    //                 >
-    //                   <span role="img" aria-label={reaction.ariaLabel}>
-    //                     {reaction.text}
-    //                   </span>
-    //                 </button>
-    //               </div>
-    //             ))}
-    //           </div>
-    //           <div
-    //             className="reaction-mute"
-    //             onClick={() => dispatch({ type: TOGGLE_MUTE_REACTIONS })}
-    //             id="toggle-mute-reactions"
-    //           >
-    //             <div className="reaction-mute-text">Reactions:</div>
-    //             <FontAwesomeIcon
-    //               size="lg"
-    //               icon={muteReactions ? faVolumeMute : faVolumeUp}
-    //               color={muteReactions ? "red" : undefined}
-    //             />
-    //           </div>
-    //         </div>
-    //       </div>
-    //       {seatedAtTable && (
-    //         <div className="container-in-row">
-    //           <div
-    //             className={`${
-    //               isVideoFocused ? "col-5" : "col-12"
-    //             } table-container`}
-    //           >
-    //             <TableHeader
-    //               seatedAtTable={seatedAtTable}
-    //               setSeatedAtTable={setSeatedAtTable}
-    //               venueName={venue.name}
-    //             />
-    //             <div className="jazz-wrapper">
-    //               <Room roomName={seatedAtTable} setUserList={setUserList} />
-    //             </div>
-    //             <TableFooter
-    //               isVideoFocused={isVideoFocused}
-    //               setIsVideoFocused={setIsVideoFocused}
-    //             />
-    //           </div>
-    //         </div>
-    //       )}
-    //     </div>
-    //     {!seatedAtTable && (
-    //       <div className="user-interaction-container">
-    //         {usersStanding && (
-    //           <UserList users={usersStanding} limit={26} activity="standing" />
-    //         )}
-    //       </div>
-    //     )}
-    //   </div>
   );
 };
 

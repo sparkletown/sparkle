@@ -130,48 +130,67 @@
 /*              Reaction Component              */
 /************************************************/
 
-.reaction-bar {
-  display: flex;
-  justify-content: space-around;
-  background: $dark;
-  padding: 0 16px;
-  border-radius: 0 0 22px 22px;
-  height: 56px;
-  margin-bottom: 20px;
-}
+.band-reaction-container {
+  background-color: $dark;
+  padding: 15px;
+  border-radius: 15px;
+  height: 70vh;
+  overflow: auto;
+  flex-wrap: wrap;
 
-.emoji-container {
-  display: flex;
-  justify-content: space-evenly;
-}
+  .reaction-bar {
+    display: flex;
+    justify-content: space-around;
+    background: $dark;
+    padding: 0 16px;
+    border-radius: 0 0 22px 22px;
+    height: 56px;
+    margin-bottom: 20px;
+  }
 
-.call-out-band-container {
-  display: flex;
-  align-items: center;
-}
+  .emoji-container {
+    display: flex;
+    justify-content: space-evenly;
+  }
 
-.reaction {
-  background: inherit;
-  border: none;
-  font-size: 44px;
-  padding: 2px 12px;
-  &:focus {
-    outline: none;
-    box-shadow: none;
-    animation: pulse 0.5s ease 2;
+  .call-out-band-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .reaction {
+    background: inherit;
+    border: none;
+    font-size: 44px;
+    padding: 2px 12px;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+      animation: pulse 0.5s ease 2;
+    }
+  }
+
+  .form-shout-out {
+    display: flex;
+
+    input[type="submit"] {
+      margin-bottom: 0px;
+      margin-left: 10px;
+      width: 100px;
+      &[type="submit"]:disabled {
+        color: rgba($white, 0.2);
+        background-color: rgba(green, 0.5);
+      }
+    }
   }
 }
 
-.form-shout-out {
-  display: flex;
-
-  input[type="submit"] {
-    margin-bottom: 0px;
-    margin-left: 10px;
-    width: 100px;
-    &[type="submit"]:disabled {
-      color: rgba($white, 0.2);
-      background-color: rgba(green, 0.5);
-    }
+/************************************************/
+/*              SeatedArea Component            */
+/************************************************/
+.seated-area {
+  .participants-container {
+    display: flex;
+    flex-wrap: wrap;
   }
 }

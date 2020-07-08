@@ -342,7 +342,7 @@ h4 {
 
 .full-page-container.experience-container {
   display: flex;
-  padding: 0 30px;
+  padding: 5px 30px;
   height: calc(100vh - 50px);
 
   .reduced {
@@ -355,7 +355,6 @@ h4 {
     border-radius: 22px;
     transition: all 0.1s linear;
     padding: 10px;
-    margin-left: 20px;
   }
   .content-column {
     height: 100%;
