@@ -38,20 +38,6 @@
     margin-top: 15px;
     border-radius: 0px 0px 22px 22px;
   }
-
-  .form-shout-out {
-    display: flex;
-
-    input[type="submit"] {
-      margin-bottom: 0px;
-      margin-left: 10px;
-      width: 100px;
-      &[type="submit"]:disabled {
-        color: rgba($white, 0.2);
-        background-color: rgba(green, 0.5);
-      }
-    }
-  }
 }
 
 .content.jazz-bar-grid {
@@ -128,37 +114,6 @@
     flex-direction: column;
   }
 
-  .reaction-bar {
-    display: flex;
-    justify-content: space-around;
-    background: $dark;
-    padding: 0 16px;
-    border-radius: 0 0 22px 22px;
-    height: 56px;
-    margin-bottom: 20px;
-  }
-
-  .emoji-container {
-    display: flex;
-  }
-
-  .call-out-band-container {
-    display: flex;
-    align-items: center;
-  }
-
-  .reaction {
-    background: inherit;
-    border: none;
-    font-size: 44px;
-    padding: 2px 12px;
-    &:focus {
-      outline: none;
-      box-shadow: none;
-      animation: pulse 0.5s ease 2;
-    }
-  }
-
   .reaction-mute {
     display: flex;
     flex-direction: column;
@@ -167,6 +122,56 @@
 
     .reaction-mute-text {
       font-size: 14px;
+    }
+  }
+}
+
+/************************************************/
+/*              Reaction Component              */
+/************************************************/
+
+.reaction-bar {
+  display: flex;
+  justify-content: space-around;
+  background: $dark;
+  padding: 0 16px;
+  border-radius: 0 0 22px 22px;
+  height: 56px;
+  margin-bottom: 20px;
+}
+
+.emoji-container {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.call-out-band-container {
+  display: flex;
+  align-items: center;
+}
+
+.reaction {
+  background: inherit;
+  border: none;
+  font-size: 44px;
+  padding: 2px 12px;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    animation: pulse 0.5s ease 2;
+  }
+}
+
+.form-shout-out {
+  display: flex;
+
+  input[type="submit"] {
+    margin-bottom: 0px;
+    margin-left: 10px;
+    width: 100px;
+    &[type="submit"]:disabled {
+      color: rgba($white, 0.2);
+      background-color: rgba(green, 0.5);
     }
   }
 }
