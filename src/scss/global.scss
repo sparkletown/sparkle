@@ -588,3 +588,10 @@ input.btn.btn-primary.btn-success {
   overflow-y: auto;
   height: calc(100vh - 120px);
 }
+
+.edit-profile-modal-dialog {
+  position: absolute;
+  right: 15px;
+  width: 300px;
+  top: 20px;
+}

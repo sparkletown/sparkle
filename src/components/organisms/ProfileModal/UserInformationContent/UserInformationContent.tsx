@@ -36,8 +36,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           className="profile-icon profile-modal-avatar"
           src={users[user.uid].pictureUrl}
           alt="profile avatar"
-          width="100"
-          height="100"
+          width="50"
+          height="50"
         />
         <div className="text-container">
           <h2 className="title ellipsis-text">{users[user.uid].partyName}</h2>
