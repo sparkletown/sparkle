@@ -21,7 +21,11 @@ const ProfileModal: React.FunctionComponent<PropsType> = ({ show, onHide }) => {
   };
 
   return (
-    <Modal show={show} onHide={onHideModal}>
+    <Modal
+      show={show}
+      onHide={onHideModal}
+      dialogClassName="edit-profile-modal-dialog"
+    >
       <Modal.Body className="profile-modal-container">
         {!isEditMode && !isPasswordEditMode && (
           <UserInformationContent

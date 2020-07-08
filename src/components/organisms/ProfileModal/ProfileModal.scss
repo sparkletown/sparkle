@@ -10,7 +10,7 @@
   }
 
   .profile-modal-avatar {
-    margin-right: 30px;
+    margin-right: 10px;
   }
 
   .profile-modal-container {
@@ -32,15 +32,22 @@
   }
 
   .answer {
-    font-size: 25px;
+    font-size: 20px;
   }
 
   .modal-title {
-    text-align: center;
+    font-style: normal;
+    font-size: 25px;
+    margin-bottom: 10px;
+    text-decoration: underline;
   }
 
   input {
     margin-bottom: 10px;
-    // width: 200px;
+  }
+
+  .text-container {
+    overflow: hidden;
+    font-size: 12px;
   }
 }
