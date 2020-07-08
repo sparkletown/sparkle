@@ -1,14 +1,21 @@
 .jazz-bar-entrance-experience-container {
   display: flex;
-  height: 100vh;
   width: 100%;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 
+  .band-logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
   .band-logo {
+    width: 100%;
+    margin: 10px 0;
     max-width: 250px;
-    margin-bottom: 30px;
   }
 
   .party-information {
@@ -21,6 +28,76 @@
 
     &:not(:last-child) {
       margin-right: 20px;
+    }
+  }
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+  }
+
+  .header {
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .secret-password-form-wrapper {
+    padding: 0 40px;
+  }
+
+  @media (max-width: 991px) {
+    .header {
+      justify-content: center;
+    }
+  }
+
+  .welcome-message {
+    font-size: 30px;
+    padding: 0 30px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .entrance-video {
+    width: 100%;
+    height: 350px;
+  }
+
+  .video-row {
+    width: 100%;
+  }
+
+  .description-item {
+    margin: 20px;
+    display: flex;
+    font-size: 25px;
+  }
+
+  .decscription-items-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+  .check-icon-container {
+    margin-right: 30px;
+  }
+
+  .upcoming-gigs-title {
+    font-size: 25px;
+    margin-top: 20px;
+  }
+  .event-date {
+    font-size: 20px;
+  }
+
+  .event-description {
+    font-size: 15px;
+  }
+
+  .event-card {
+    margin-top: 20px;
+
+    &:last-child {
+      margin-bottom: 50px;
     }
   }
 }
