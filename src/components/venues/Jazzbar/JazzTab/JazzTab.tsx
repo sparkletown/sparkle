@@ -28,7 +28,11 @@ import TableHeader from "components/molecules/TableHeader";
 import TableFooter from "components/molecules/TableFooter";
 import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
 import { useFirestoreConnect } from "react-redux-firebase";
-import ReactionList from "../components/ReactionList";
+import MessageList from "../components/MessageList";
+import {
+  ChatContext,
+  RestrictedChatMessage,
+} from "components/context/ChatContext";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -53,6 +57,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     venue,
     usersById,
     reactions,
+    chats,
   } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.ordered.partygoers,
@@ -60,6 +65,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     venue: state.firestore.data.currentVenue,
     usersById: state.firestore.data.users,
     reactions: state.firestore.ordered.reactions,
+    chats: state.firestore.ordered.venueChats,
   })) as {
     users: User[];
     user: FUser;
@@ -67,6 +73,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     muteReactions: boolean;
     usersById: Omit<User, "id">[];
     reactions: Reaction[] | undefined;
+    chats: RestrictedChatMessage[];
   };
 
   useFirestoreConnect([
@@ -78,16 +85,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
       orderBy: ["created_at", "desc"],
     },
   ]);
-
-  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
-
-  useEffect(() => {
-    if (isMessageToTheBandSent) {
-      setTimeout(() => {
-        setIsMessageToTheBandSent(false);
-      }, 2000);
-    }
-  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
   const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
@@ -121,11 +118,25 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
-  const { register, handleSubmit, setValue } = useForm<ChatOutDataType>({
+  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+
+  useEffect(() => {
+    if (isMessageToTheBandSent) {
+      setTimeout(() => {
+        setIsMessageToTheBandSent(false);
+      }, 2000);
+    }
+  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+
+  const {
+    register: registerBandMessage,
+    handleSubmit: handleBandMessageSubmit,
+    setValue: setBandMessageValue,
+  } = useForm<ChatOutDataType>({
     mode: "onSubmit",
   });
 
-  const onSubmit = async (data: ChatOutDataType) => {
+  const onBandMessageSubmit = async (data: ChatOutDataType) => {
     experienceContext &&
       experienceContext.addReaction(
         createReaction(
@@ -133,8 +144,34 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           user
         )
       );
-    setValue([{ messageToTheBand: "" }]);
-    setIsMessageToTheBandSent(true);
+    setBandMessageValue([{ messageToTheBand: "" }]);
+  };
+
+  const roomName = "jazz";
+  const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
+
+  useEffect(() => {
+    if (isMessageToTheBarSent) {
+      setTimeout(() => {
+        setIsMessageToTheBarSent(false);
+      }, 2000);
+    }
+  }, [isMessageToTheBarSent, setIsMessageToTheBarSent]);
+
+  const {
+    register: registerBarMessage,
+    handleSubmit: handleBarMessageSubmit,
+    setValue: setBarMessageValue,
+  } = useForm<ChatOutDataType>({
+    mode: "onSubmit",
+  });
+
+  const chatContext = useContext(ChatContext);
+
+  const onBarMessageSubmit = async (data: ChatOutDataType) => {
+    chatContext &&
+      chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
+    setBarMessageValue([{ messageToTheBand: "" }]);
   };
 
   return (
@@ -226,9 +263,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         <div className="band-reaction-container">
           <div className="call-out-band-container-at-table">
             <CallOutMessageForm
-              onSubmit={handleSubmit(onSubmit)}
+              onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+              register={registerBandMessage}
               isMessageToTheBandSent={isMessageToTheBandSent}
-              register={register}
+              placeholder="Shout out to the band"
             />
             <div className="emoji-container">
               {Reactions.map((reaction) => (
@@ -243,9 +281,22 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 </button>
               ))}
             </div>
+            <CallOutMessageForm
+              onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
+              register={registerBarMessage}
+              placeholder="Chat to the bar"
+              isMessageToTheBandSent={isMessageToTheBarSent}
+            />
             <div>
-              {usersById && reactions && (
-                <ReactionList reactions={reactions} small />
+              {usersById && chats && (
+                <MessageList
+                  messages={chats
+                    .filter(
+                      (message) =>
+                        message.type === "room" && message.to === roomName
+                    )
+                    .sort((a, b) => b.ts_utc - a.ts_utc)}
+                />
               )}
             </div>
           </div>

@@ -4,22 +4,24 @@ import { useSelector } from "react-redux";
 interface PropsType {
   onSubmit: () => void;
   register: any;
+  placeholder: string;
   isMessageToTheBandSent: boolean;
 }
 
 const CallOutMessageForm: React.FunctionComponent<PropsType> = ({
   onSubmit,
   register,
+  placeholder,
   isMessageToTheBandSent,
 }) => {
   const { venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
   }));
   return (
-    <form onSubmit={onSubmit} className="form-shout-out">
+    <form onSubmit={onSubmit} className="form-message">
       <input
         name="messageToTheBand"
-        placeholder="Shout out to the band"
+        placeholder={placeholder}
         ref={register({ required: true })}
       />
       {venue && (
