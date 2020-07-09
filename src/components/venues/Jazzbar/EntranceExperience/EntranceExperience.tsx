@@ -72,6 +72,24 @@ const EntranceExperience = () => {
             </div>
           </div>
           <div className="upcoming-gigs-title">Upcoming gigs:</div>
+          <InformationCard
+            className="event-card"
+            title="Buy tickets on EventBrite"
+          >
+            <a
+              href={venue.eventBriteUrl}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              <button
+                id={`eventbrite-${venue.name}`}
+                type="button"
+                className="btn btn-primary"
+              >
+                Buy Tickets
+              </button>
+            </a>
+          </InformationCard>
           {venue.events.map((event: any) => (
             <InformationCard
               className="event-card"
