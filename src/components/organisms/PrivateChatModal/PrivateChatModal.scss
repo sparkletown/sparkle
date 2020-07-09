@@ -5,6 +5,39 @@
   flex-direction: column;
   cursor: pointer;
 
+  .private-recipient {
+    text-decoration: none;
+
+    &:hover {
+      background: $primaryColor;
+    }
+  }
+
+  .form-control {
+    background: $black;
+    margin: 0 20px;
+    color: $white;
+    border-radius: 22px;
+    text-align: left;
+  }
+
+  .floating-dropdown {
+    position: absolute;
+    background: $dark;
+    z-index: 1;
+    width: 100%;
+    border: 2px solid $light-grey;
+  }
+
+  .private-recipient-input {
+    background: $dark;
+  }
+
+  .picture-logo {
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
   .back-button {
     position: absolute;
     left: 15px;
