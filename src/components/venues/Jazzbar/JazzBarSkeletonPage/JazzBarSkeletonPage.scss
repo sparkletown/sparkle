@@ -2,12 +2,11 @@
 
 .content-container {
   display: flex;
-  margin: 0 10px;
   flex: 1 1 auto;
 
   flex-wrap: wrap;
   & > * + * {
-    margin-left: 5px;
+    margin-left: 10px;
   }
 
   .navigation-container {

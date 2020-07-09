@@ -53,7 +53,11 @@ const ReactionList: React.FC<ReactionListProps> = ({
               width={profileImageSize}
               height={profileImageSize}
             />
-            <div className="message-bubble">
+            <div
+              className={`message-bubble ${
+                isMessageToTheBand(message) ? "" : "emoji"
+              }`}
+            >
               {isMessageToTheBand(message)
                 ? message.text
                 : ReactionsTextMap[message.reaction]}
