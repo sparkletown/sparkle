@@ -2,14 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { User as FUser } from "firebase";
 import { useForm } from "react-hook-form";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { TOGGLE_MUTE_REACTIONS } from "actions";
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useDispatch, useSelector } from "react-redux";
-import { PARTY_NAME } from "config";
+import { useSelector } from "react-redux";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
@@ -21,7 +17,6 @@ import {
   EmojiReactionType,
   TextReactionType,
   Reaction,
-  isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
@@ -45,22 +40,16 @@ export interface JazzbarVenue extends Venue {
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const dispatch = useDispatch();
-  const {
-    user,
-    users,
-    muteReactions,
-    venue,
-    usersById,
-    reactions,
-  } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.ordered.partygoers,
-    muteReactions: state.muteReactions,
-    venue: state.firestore.data.currentVenue,
-    usersById: state.firestore.data.users,
-    reactions: state.firestore.ordered.reactions,
-  })) as {
+  const { user, users, venue, usersById, reactions } = useSelector(
+    (state: any) => ({
+      user: state.user,
+      users: state.firestore.ordered.partygoers,
+      muteReactions: state.muteReactions,
+      venue: state.firestore.data.currentVenue,
+      usersById: state.firestore.data.users,
+      reactions: state.firestore.ordered.reactions,
+    })
+  ) as {
     users: User[];
     user: FUser;
     venue: JazzbarVenue;

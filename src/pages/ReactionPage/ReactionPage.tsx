@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
