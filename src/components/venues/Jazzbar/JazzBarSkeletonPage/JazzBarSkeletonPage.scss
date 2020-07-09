@@ -2,9 +2,13 @@
 
 .content-container {
   display: flex;
-  flex-grow: 1;
-  flex-direction: column;
   margin: 0 10px;
+  flex: 1 1 auto;
+
+  flex-wrap: wrap;
+  & > * + * {
+    margin-left: 5px;
+  }
 
   .navigation-container {
     display: flex;

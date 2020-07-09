@@ -138,16 +138,18 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   };
 
   return (
-    <div style={{ display: "flex", width: "90vw", flexWrap: "wrap" }}>
+    <>
+      {/* <div style={{ display: "flex", width: "90vw", flexWrap: "wrap" }}> */}
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           flexGrow: 3,
           flexBasis: 0,
+          maxHeight: "100%",
         }}
       >
-        <div style={{ border: "0px solid white", height: "500px" }}>
+        <div style={{ border: "0px solid white", flex: "1 1 auto" }}>
           <iframe
             key="main-event"
             title="main event"
@@ -165,6 +167,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "space-around",
+            flex: "0 0 auto",
           }}
           className="seated-area"
         >
@@ -254,7 +257,8 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           )}
         </div>
       </div>
-    </div>
+      {/* </div> */}
+    </>
   );
 };
 
