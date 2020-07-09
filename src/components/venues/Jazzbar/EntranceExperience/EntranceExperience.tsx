@@ -5,7 +5,7 @@ import InformationCard from "components/molecules/InformationCard";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -20,14 +20,19 @@ const EntranceExperience = () => {
     storeAs: "currentVenue",
   });
 
-  const { venue } = useSelector((state: any) => ({
+  const { venue, user } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
+    user: state.user,
   }));
 
   venue && updateTheme(venue);
 
   if (!venue) {
     return <>Loading...</>;
+  }
+
+  if (user) {
+    return <Redirect to={`/venue/${venueId}`} />;
   }
 
   return (
