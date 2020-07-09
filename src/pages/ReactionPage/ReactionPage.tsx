@@ -9,12 +9,9 @@ import {
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
-import { User } from "types/User";
-import UserProfileModal from "components/organisms/UserProfileModal";
+import ReactionList from "components/venues/Jazzbar/components/ReactionList";
 
 const ReactionPage = () => {
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
-
   useConnectPartyGoers();
 
   const { reactions, usersById, partyGoers, venue } = useSelector(
@@ -46,31 +43,9 @@ const ReactionPage = () => {
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
-            {usersById &&
-              messagesToTheBand &&
-              messagesToTheBand.map((message) => (
-                <div className="message">
-                  <img
-                    onClick={() =>
-                      setSelectedUserProfile({
-                        ...usersById[message.created_by],
-                        id: message.created_by,
-                      })
-                    }
-                    key={`${message.created_by}-messaging-the-band`}
-                    className="profile-icon"
-                    src={
-                      usersById[message.created_by].pictureUrl ||
-                      "/anonymous-profile-icon.jpeg"
-                    }
-                    title={usersById[message.created_by].partyName}
-                    alt={`${usersById[message.created_by].partyName} profile`}
-                    width={50}
-                    height={50}
-                  />
-                  <div className="message-bubble">{message.text}</div>
-                </div>
-              ))}
+            {usersById && messagesToTheBand && (
+              <ReactionList reactions={messagesToTheBand} />
+            )}
           </div>
           {partyGoers && (
             <div className="col-4">
@@ -83,11 +58,6 @@ const ReactionPage = () => {
           )}
         </div>
       </div>
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
     </WithNavigationBar>
   );
 };

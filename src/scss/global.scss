@@ -342,8 +342,12 @@ h4 {
 
 .full-page-container.experience-container {
   display: flex;
-  padding: 30px;
+  padding: 5px 30px;
   height: calc(100vh - 50px);
+  width: 100vw;
+  & > * + * {
+    margin-left: 10px;
+  }
 
   .reduced {
     width: 560px;
@@ -355,7 +359,6 @@ h4 {
     border-radius: 22px;
     transition: all 0.1s linear;
     padding: 10px;
-    margin-left: 20px;
   }
   .content-column {
     height: 100%;
@@ -587,4 +590,11 @@ input.btn.btn-primary.btn-success {
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
+}
+
+.edit-profile-modal-dialog {
+  position: absolute;
+  right: 15px;
+  width: 300px;
+  top: 20px;
 }

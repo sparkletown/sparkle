@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
@@ -9,6 +9,7 @@ import { User as FUser } from "firebase";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 import ChatContext from "components/context/ChatContext";
+import { updateTheme } from "./helpers";
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -40,20 +41,14 @@ const VenuePage = () => {
     users: state.firestore.ordered.partygoers,
   })) as { venue: Venue; user: FUser; users: User[] };
 
-  venue?.theme?.primaryColor &&
-    document.documentElement.style.setProperty(
-      "--primary-color",
-      venue.theme.primaryColor
-    );
-
-  venue?.theme?.backgroundColor &&
-    document.documentElement.style.setProperty(
-      "--background-color",
-      venue.theme.backgroundColor
-    );
+  venue && updateTheme(venue);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
+
+  if (!user) {
+    return <Redirect to={`/venue/${venueId}/entrance-experience`} />;
+  }
 
   if (!venue || !users) {
     return <>Loading...</>;

@@ -57,6 +57,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 trigger="click"
                 placement="bottom-end"
                 overlay={popover}
+                rootClose={true}
               >
                 <span className="private-chat-icon">
                   {!!numberOfUnreadMessages && numberOfUnreadMessages > 0 && (

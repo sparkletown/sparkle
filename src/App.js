@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import "bootstrap";
 import qs from "qs";
 
-import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
 import LockedSite from "./LockedSite";
 import { PARTY_NAME } from "./config";
-import LoggedInRouter from "components/organisms/LoggedInRouter";
 import { leaveRoom } from "utils/useLocationUpdateEffect";
+import VenueRouter from "components/venues/VenueRouter";
 
 const ONE_HOUR_IN_SECONDS = 60 * 60;
 
@@ -48,9 +47,5 @@ export default function App(props) {
     return <LockedSite />;
   }
 
-  if (!user) {
-    return <EntranceExperience config={config} />;
-  }
-
-  return <LoggedInRouter />;
+  return <VenueRouter />;
 }
