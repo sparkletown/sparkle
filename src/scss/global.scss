@@ -579,7 +579,6 @@ input.btn.btn-primary.btn-success {
 
 .popover-body {
   padding: 0;
-  width: 250px;
 }
 
 .popover {
@@ -587,6 +586,11 @@ input.btn.btn-primary.btn-success {
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
+}
+
+.bs-popover-bottom-end {
+  width: 300px;
+  max-width: 100%;
 }
 
 .edit-profile-modal-dialog {
