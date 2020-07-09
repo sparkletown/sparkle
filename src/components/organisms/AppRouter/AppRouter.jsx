@@ -50,7 +50,10 @@ const AppRouter = () => {
   const onClickWindow = (event) => {
     event.target.id &&
       user &&
-      analytics.logEvent("clickonbutton", event.target.id, user.uid);
+      analytics.logEvent("clickonbutton", {
+        buttonId: event.target.id,
+        userId: user.uid,
+      });
   };
 
   useEffect(() => {
