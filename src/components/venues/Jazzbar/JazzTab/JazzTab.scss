@@ -19,6 +19,12 @@
   width: 100%;
   display: flex;
   justify-content: center;
+
+  .table-header {
+    background: $white;
+    color: $black;
+    padding: 10px 20px;
+  }
 }
 
 .jazz-container {
