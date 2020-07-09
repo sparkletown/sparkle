@@ -2,6 +2,13 @@
 
 .profile-modal-container {
   padding: 30px;
+  background: $black;
+  background-image: linear-gradient(
+    0deg,
+    rgba($white, 0.05) 0%,
+    rgba($white, 0.05) 100%
+  );
+  border-radius: 22px;
 
   .user-information {
     display: flex;
@@ -39,7 +46,6 @@
     font-style: normal;
     font-size: 25px;
     margin-bottom: 10px;
-    text-decoration: underline;
   }
 
   input {

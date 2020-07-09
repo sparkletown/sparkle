@@ -51,7 +51,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
-          {user && users && users[user.uid] && (
+          {user && user.email && users && users[user.uid] && (
             <div className="icons-container">
               <OverlayTrigger
                 trigger="click"

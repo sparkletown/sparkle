@@ -579,7 +579,6 @@ input.btn.btn-primary.btn-success {
 
 .popover-body {
   padding: 0;
-  width: 250px;
 }
 
 .popover {
@@ -587,6 +586,53 @@ input.btn.btn-primary.btn-success {
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
+}
+
+.bs-popover-bottom-end {
+  width: 300px;
+  max-width: 100%;
+  background: $black;
+  border: 1px solid $light-grey;
+  background-image: linear-gradient(
+    0deg,
+    rgba($white, 0.05) 0%,
+    rgba($white, 0.05) 100%
+  );
+  // important is too overwrite some bootstrap css
+  transform: translate3d(781px, 49px, 0px) !important;
+
+  .chatbox-container {
+    background: $black;
+    background-image: linear-gradient(
+      0deg,
+      rgba($white, 0.05) 0%,
+      rgba($white, 0.05) 100%
+    );
+
+    .buble {
+      padding: 10px;
+      border-radius: 10px;
+      color: $white;
+
+      &.global {
+        background: $dark;
+      }
+      &.private {
+        background: $dark;
+      }
+      &.room {
+        background: $dark;
+      }
+    }
+  }
+  .chat-input {
+    background: $dark;
+    margin-bottom: 10px;
+
+    &:hover {
+      background: rgba($dark, 0.7);
+    }
+  }
 }
 
 .edit-profile-modal-dialog {
