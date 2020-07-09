@@ -162,7 +162,8 @@
     background: inherit;
     border: none;
     font-size: 44px;
-    padding: 2px 12px;
+    padding: 2px 0;
+    flex-grow: 1;
     &:focus {
       outline: none;
       box-shadow: none;

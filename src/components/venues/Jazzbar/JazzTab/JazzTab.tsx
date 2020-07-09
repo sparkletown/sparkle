@@ -139,7 +139,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   return (
     <>
-      {/* <div style={{ display: "flex", width: "90vw", flexWrap: "wrap" }}> */}
       <div
         style={{
           display: "flex",
@@ -149,7 +148,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           maxHeight: "100%",
         }}
       >
-        <div style={{ border: "0px solid white", flex: "1 1 auto" }}>
+        <div
+          style={{
+            border: "0px solid white",
+            height: seatedAtTable ? undefined : "500px",
+            flex: seatedAtTable ? "1 1 auto" : undefined,
+          }}
+        >
           <iframe
             key="main-event"
             title="main event"
@@ -227,17 +232,15 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             />
             <div className="emoji-container">
               {Reactions.map((reaction) => (
-                <div className="reaction-container">
-                  <button
-                    className="reaction"
-                    onClick={() => reactionClicked(user, reaction.type)}
-                    id={`send-reaction-${reaction.type}`}
-                  >
-                    <span role="img" aria-label={reaction.ariaLabel}>
-                      {reaction.text}
-                    </span>
-                  </button>
-                </div>
+                <button
+                  className="reaction"
+                  onClick={() => reactionClicked(user, reaction.type)}
+                  id={`send-reaction-${reaction.type}`}
+                >
+                  <span role="img" aria-label={reaction.ariaLabel}>
+                    {reaction.text}
+                  </span>
+                </button>
               ))}
             </div>
             <div>
@@ -257,7 +260,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           )}
         </div>
       </div>
-      {/* </div> */}
     </>
   );
 };
