@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import "./PrivateChatModal.scss";
 import { useSelector } from "react-redux";
 import { PrivateChatMessage } from "components/context/ChatContext";
@@ -9,26 +9,20 @@ import { User } from "types/User";
 import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { debounce } from "lodash";
-import { FormControl, Dropdown } from "react-bootstrap";
+import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
 }
 
 const PrivateChatModal: React.FunctionComponent = () => {
-  const { privateChats, users, user, userArray } = useSelector(
-    (state: any) => ({
-      privateChats: state.firestore.ordered.privatechats,
-      users: state.firestore.data.users,
-      user: state.user,
-      userArray: state.firestore.ordered.users,
-    })
-  );
+  const { privateChats, users, user } = useSelector((state: any) => ({
+    privateChats: state.firestore.ordered.privatechats,
+    users: state.firestore.data.users,
+    user: state.user,
+    userArray: state.firestore.ordered.users,
+  }));
   const [selectedUser, setSelectedUser] = useState<User>();
-  const [searchValue, setSearchValue] = useState<string>("");
-  const debouncedSearch = debounce((v) => setSearchValue(v), 500);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   const discussionPartnerWithLastMessageExchanged =
     privateChats &&
@@ -61,11 +55,6 @@ const PrivateChatModal: React.FunctionComponent = () => {
     setSelectedUser(sender);
   };
 
-  const onClickOnUserInSearchInput = (user: User) => {
-    setSelectedUser(user);
-    setSearchValue("");
-  };
-
   return (
     <div className="private-chat-modal-container">
       {selectedUser ? (
@@ -87,44 +76,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
         discussionPartnerWithLastMessageExchanged && (
           <>
             <h2 className="private-chat-title">Private Chat</h2>
-            <Dropdown className="private-recipient-input">
-              <FormControl
-                autoFocus
-                className="mx-3 my-2 w-auto"
-                placeholder="Search for partygoer..."
-                onChange={(e) => {
-                  debouncedSearch(e.target.value);
-                }}
-                ref={searchRef}
-              />
-              {searchValue && (
-                <ul className="floating-dropdown">
-                  {userArray
-                    .filter((u: User) =>
-                      u.partyName
-                        ?.toLowerCase()
-                        .includes(searchValue.toLowerCase())
-                    )
-                    .map((u: User) => (
-                      <Dropdown.Item
-                        onClick={() => onClickOnUserInSearchInput(u)}
-                        id="private-chat-dropdown-private-recipient"
-                        className="private-recipient"
-                        key={u.id}
-                      >
-                        <img
-                          src={u.pictureUrl}
-                          className="picture-logo"
-                          alt={u.partyName}
-                          width="20"
-                          height="20"
-                        />
-                        {u.partyName}
-                      </Dropdown.Item>
-                    ))}
-                </ul>
-              )}
-            </Dropdown>
+            <PrivateRecipientSearchInput setSelectedUser={setSelectedUser} />
             {Object.keys(discussionPartnerWithLastMessageExchanged)
               .sort(
                 (a, b) =>
