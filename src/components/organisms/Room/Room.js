@@ -147,7 +147,9 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
   });
 
   const emptyComponents = [
-    ...Array(capacity - (participants + room?.localParticipant ? 1 : 0)),
+    ...Array(
+      capacity - (participants.length + (room?.localParticipant ? 1 : 0))
+    ),
   ].map((e, index) => (
     <div
       key={`empty-participant-${index}`}
