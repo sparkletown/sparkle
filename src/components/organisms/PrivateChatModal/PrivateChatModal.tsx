@@ -9,6 +9,7 @@ import { User } from "types/User";
 import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -19,11 +20,13 @@ const PrivateChatModal: React.FunctionComponent = () => {
     privateChats: state.firestore.ordered.privatechats,
     users: state.firestore.data.users,
     user: state.user,
+    userArray: state.firestore.ordered.users,
   }));
   const [selectedUser, setSelectedUser] = useState<User>();
 
-  const discussionPartnerWithLastMessageExchanged = privateChats.reduce(
-    (agg: LastMessageByUser, item: PrivateChatMessage) => {
+  const discussionPartnerWithLastMessageExchanged =
+    privateChats &&
+    privateChats.reduce((agg: LastMessageByUser, item: PrivateChatMessage) => {
       let lastMessageTimeStamp;
       let discussionPartner;
       if (item.from === user.uid) {
@@ -40,9 +43,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
         agg[discussionPartner] = item;
       }
       return agg;
-    },
-    {}
-  );
+    }, {});
 
   const onClickOnSender = (sender: User) => {
     const chatsToUpdate = privateChats.filter(
@@ -75,6 +76,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
         discussionPartnerWithLastMessageExchanged && (
           <>
             <h2 className="private-chat-title">Private Chat</h2>
+            <PrivateRecipientSearchInput setSelectedUser={setSelectedUser} />
             {Object.keys(discussionPartnerWithLastMessageExchanged)
               .sort(
                 (a, b) =>
