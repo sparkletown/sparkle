@@ -598,6 +598,8 @@ input.btn.btn-primary.btn-success {
     rgba($white, 0.05) 0%,
     rgba($white, 0.05) 100%
   );
+  // important is too overwrite some bootstrap css
+  transform: translate3d(781px, 49px, 0px) !important;
 
   .chatbox-container {
     background: $black;
