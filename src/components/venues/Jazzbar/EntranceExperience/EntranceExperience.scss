@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .jazz-bar-entrance-experience-container {
   display: flex;
   width: 100%;
@@ -95,6 +97,14 @@
 
   .event-card {
     margin-top: 20px;
+
+    .btn-primary {
+      font-size: 15px;
+
+      &:focus {
+        background: $primaryColor;
+      }
+    }
 
     &:last-child {
       margin-bottom: 50px;

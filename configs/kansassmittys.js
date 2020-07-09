@@ -6,11 +6,13 @@ module.exports = {
   },
   iframeUrl: "https://www.youtube.com/embed/dqZAA8ZIAVE",
   logoImageUrl: "/kansas-smittys-logo-red.png",
-  welcomeMessage: "Welcome to the word's first online jazz bar",
+  welcomeMessage: "The world's only virtual jazz bar",
   host: {
     icon: "/kansas-smittys-logo-red.png",
   },
-  entranceVideoIframeUrl: "https://www.youtube.com/embed/dqZAA8ZIAVE",
+  entranceVideoIframeUrl: "https://www.youtube.com/embed/aFfLdgmgLSg",
+  eventBriteUrl:
+    "https://www.eventbrite.co.uk/e/kansas-smittys-virtual-jazz-bar-tickets-112193672294",
   descriptionItems: [
     {
       id: "intimate-atmosphere",
