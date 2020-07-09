@@ -85,7 +85,7 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
           <button
             type="button"
             title={"Leave " + seatedAtTable}
-            className="btn"
+            className="btn back-button"
             id="leave-seat"
             onClick={leaveSeat}
           >

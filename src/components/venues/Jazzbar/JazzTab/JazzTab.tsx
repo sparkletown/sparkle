@@ -175,30 +175,33 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           />
           {seatedAtTable && (
             <div className="container-in-row">
-              <div
-                className={`${
-                  isVideoFocused ? "col-5" : "col-12"
-                } table-container`}
-              >
+              <div className="down-video-wrapper">
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
                 />
-                <div className="participants-container">
-                  <Room
-                    roomName={seatedAtTable}
-                    setUserList={setUserList}
-                    capacity={
-                      JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)
-                        ?.capacity
-                    }
+                <div
+                  className={`${
+                    isVideoFocused ? "col-5" : "col-12"
+                  } table-container`}
+                >
+                  <div className="participants-container">
+                    <Room
+                      roomName={seatedAtTable}
+                      setUserList={setUserList}
+                      capacity={
+                        JAZZBAR_TABLES.find(
+                          (t) => t.reference === seatedAtTable
+                        )?.capacity
+                      }
+                    />
+                  </div>
+                  <TableFooter
+                    isVideoFocused={isVideoFocused}
+                    setIsVideoFocused={setIsVideoFocused}
                   />
                 </div>
-                <TableFooter
-                  isVideoFocused={isVideoFocused}
-                  setIsVideoFocused={setIsVideoFocused}
-                />
               </div>
             </div>
           )}

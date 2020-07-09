@@ -356,7 +356,7 @@ h4 {
 
   .table-container {
     background: $dark;
-    border-radius: 22px;
+    border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
     padding: 10px;
   }
