@@ -7,7 +7,6 @@ import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
@@ -21,7 +20,6 @@ const PartyMap = () => {
     partygoers: state.firestore.ordered.partygoers,
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
 
-  useProfileInformationCheck();
   useUpdateLocationEffect(user, "Map");
 
   const attendances = partygoers
