@@ -19,6 +19,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-shrink: 0;
 
   .table-header {
     background: $dark;
@@ -35,6 +36,7 @@
 
   .video-wrapper {
     width: 100%;
+    height: fit-content;
   }
 }
 
