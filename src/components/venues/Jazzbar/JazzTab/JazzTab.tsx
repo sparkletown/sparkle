@@ -2,14 +2,10 @@ import React, { useContext, useState, useEffect } from "react";
 import { User as FUser } from "firebase";
 import { useForm } from "react-hook-form";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { TOGGLE_MUTE_REACTIONS } from "actions";
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useDispatch, useSelector } from "react-redux";
-import { PARTY_NAME } from "config";
+import { useSelector } from "react-redux";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
@@ -21,7 +17,6 @@ import {
   EmojiReactionType,
   TextReactionType,
   Reaction,
-  isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
@@ -49,30 +44,21 @@ export interface JazzbarVenue extends Venue {
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const dispatch = useDispatch();
-  const {
-    user,
-    users,
-    muteReactions,
-    venue,
-    usersById,
-    reactions,
-    chats,
-  } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.ordered.partygoers,
-    muteReactions: state.muteReactions,
-    venue: state.firestore.data.currentVenue,
-    usersById: state.firestore.data.users,
-    reactions: state.firestore.ordered.reactions,
-    chats: state.firestore.ordered.venueChats,
-  })) as {
+  const { user, users, venue, usersById, chats } = useSelector(
+    (state: any) => ({
+      user: state.user,
+      users: state.firestore.ordered.partygoers,
+      muteReactions: state.muteReactions,
+      venue: state.firestore.data.currentVenue,
+      usersById: state.firestore.data.users,
+      chats: state.firestore.ordered.venueChats,
+    })
+  ) as {
     users: User[];
     user: FUser;
     venue: JazzbarVenue;
     muteReactions: boolean;
     usersById: Omit<User, "id">[];
-    reactions: Reaction[] | undefined;
     chats: RestrictedChatMessage[];
   };
 
@@ -223,30 +209,33 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           />
           {seatedAtTable && (
             <div className="container-in-row">
-              <div
-                className={`${
-                  isVideoFocused ? "col-5" : "col-12"
-                } table-container`}
-              >
+              <div className="down-video-wrapper">
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
                 />
-                <div className="participants-container">
-                  <Room
-                    roomName={seatedAtTable}
-                    setUserList={setUserList}
-                    capacity={
-                      JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)
-                        ?.capacity
-                    }
+                <div
+                  className={`${
+                    isVideoFocused ? "col-5" : "col-12"
+                  } table-container`}
+                >
+                  <div className="participants-container">
+                    <Room
+                      roomName={seatedAtTable}
+                      setUserList={setUserList}
+                      capacity={
+                        JAZZBAR_TABLES.find(
+                          (t) => t.reference === seatedAtTable
+                        )?.capacity
+                      }
+                    />
+                  </div>
+                  <TableFooter
+                    isVideoFocused={isVideoFocused}
+                    setIsVideoFocused={setIsVideoFocused}
                   />
                 </div>
-                <TableFooter
-                  isVideoFocused={isVideoFocused}
-                  setIsVideoFocused={setIsVideoFocused}
-                />
               </div>
             </div>
           )}
