@@ -153,9 +153,9 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
   ].map((e, index) => (
     <div
       key={`empty-participant-${index}`}
-      className={`participant-container-${capacity}`}
+      className={`participant-container participant-container-${capacity}`}
     >
-      <img style={{ width: "80%" }} src="/empty-chair.png" alt="empty chair" />
+      <img style={{ width: "50%" }} src="/empty-chair.png" alt="empty chair" />
     </div>
   ));
 

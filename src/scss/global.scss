@@ -358,7 +358,6 @@ h4 {
     background: $dark;
     border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
-    padding: 10px;
   }
   .content-column {
     height: 100%;
@@ -432,7 +431,7 @@ h4 {
   .participant {
     display: flex;
     background: $dark;
-    padding: 10px;
+    padding: 0;
     border-radius: 22px;
     flex: 0 0 24%;
 

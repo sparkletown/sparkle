@@ -86,11 +86,6 @@
   .centered-row {
     justify-content: center;
   }
-  .table-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
   .video {
     height: 90%;
     transition: all 0.2s linear;
@@ -197,6 +192,13 @@
 /*              SeatedArea Component            */
 /************************************************/
 .seated-area {
+  .table-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+  }
+
   .participants-container {
     display: flex;
     flex-wrap: wrap;

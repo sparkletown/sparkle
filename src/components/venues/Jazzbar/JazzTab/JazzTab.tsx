@@ -231,10 +231,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                       }
                     />
                   </div>
-                  <TableFooter
+                  {/* <TableFooter
                     isVideoFocused={isVideoFocused}
                     setIsVideoFocused={setIsVideoFocused}
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
