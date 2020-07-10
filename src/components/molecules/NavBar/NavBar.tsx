@@ -45,7 +45,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           <Link to={redirectionUrl || "/"}>
             <span className="navbar-brand title">
               <img
-                className="sparkle-icon"
+                className="sparkle-navbar-icon"
                 src="/sparkle-header.png"
                 alt="Sparkle collective"
               />

@@ -19,7 +19,7 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="col">
-      <h1 className="title">{venue.party_name}</h1>
+      <h1 className="title">{venue.name}</h1>
       <div className="subtitle-container">
         <img
           className="collective-icon"

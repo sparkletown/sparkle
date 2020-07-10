@@ -99,14 +99,14 @@ function buildMessage(
 export default ({ children }: { children: any }) => {
   const { user, venue } = useSelector((state: any) => ({
     user: state.user,
-    venue: state.firestore.data.currentVenue,
+    venue: state.firestore.ordered.currentVenue?.[0],
   })) as { user: FUser; venue: Venue };
 
-  const chatCollectionName = `venues/${venue.name}/chats`;
+  const chatCollectionName = `venues/${venue.id}/chats`;
 
   useFirestoreConnect({
     collection: "venues",
-    doc: venue.name,
+    doc: venue.id,
     subcollections: [{ collection: "chats" }],
     storeAs: "venueChats",
   });
