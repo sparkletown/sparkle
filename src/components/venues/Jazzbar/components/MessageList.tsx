@@ -1,8 +1,4 @@
 import React, { useState } from "react";
-import {
-  isMessageToTheBand,
-  ReactionsTextMap,
-} from "components/context/ExperienceContext";
 import { useSelector } from "react-redux";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
