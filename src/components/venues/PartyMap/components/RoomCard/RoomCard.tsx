@@ -35,7 +35,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       id={`room-card-${room.title}`}
     >
       <img
-        src={`room-images/${room.image}`}
+        src={`/room-images/${room.image}`}
         className="room-img"
         alt={room.title}
       />

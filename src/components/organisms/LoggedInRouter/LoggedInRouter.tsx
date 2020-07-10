@@ -11,7 +11,7 @@ const LoggedInRouter = () => {
       <Route path="/venue/:venueId" component={Venue} />
       <Route
         path="/"
-        component={() => <Redirect to="/venue/kansassmittys" />}
+        component={() => <Redirect to="/venue/interdependenceday" />}
       />
     </Switch>
   );

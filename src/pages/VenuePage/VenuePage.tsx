@@ -18,6 +18,7 @@ export enum VenueTemplate {
 }
 
 export interface Venue {
+  id?: string;
   template: VenueTemplate;
   name: string;
   theme: {
