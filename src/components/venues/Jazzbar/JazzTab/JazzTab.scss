@@ -21,9 +21,20 @@
   justify-content: center;
 
   .table-header {
-    background: $white;
-    color: $black;
+    background: $dark;
+    color: $white;
     padding: 10px 20px;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .jazz-video {
+    .full-height-video {
+      height: 100%;
+    }
+  }
+
+  .video-wrapper {
+    width: 100%;
   }
 }
 
@@ -196,9 +207,9 @@
 /************************************************/
 /*              SeatedArea Component            */
 /************************************************/
-.seated-area {
-  .participants-container {
-    display: flex;
-    flex-wrap: wrap;
-  }
+
+.participants-container {
+  display: flex;
+  flex-wrap: wrap;
+  height: calc(100vh - 118px);
 }

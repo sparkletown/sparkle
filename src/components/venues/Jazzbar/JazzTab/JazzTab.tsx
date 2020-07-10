@@ -20,7 +20,6 @@ import {
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import TableFooter from "components/molecules/TableFooter";
 import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
 import { useFirestoreConnect } from "react-redux-firebase";
 import MessageList from "../components/MessageList";
@@ -72,7 +71,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     },
   ]);
 
-  const [isVideoFocused, setIsVideoFocused] = useState(false);
+  // const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -160,6 +159,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     setBarMessageValue([{ messageToTheBand: "" }]);
   };
 
+  const capacity =
+    seatedAtTable &&
+    JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity;
+
   return (
     <>
       <div
@@ -171,23 +174,54 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           maxHeight: "100%",
         }}
       >
-        <div
-          style={{
-            border: "0px solid white",
-            height: seatedAtTable ? undefined : "500px",
-            flex: seatedAtTable ? "1 1 auto" : undefined,
-          }}
-        >
-          <iframe
-            key="main-event"
-            title="main event"
-            width="100%"
-            height="100%"
-            className="youtube-video"
-            src={`${venue.iframeUrl}?autoplay=1`}
-            frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-          />
+        <div className="container-in-row">
+          <div className="video-wrapper">
+            {seatedAtTable && (
+              <TableHeader
+                seatedAtTable={seatedAtTable}
+                setSeatedAtTable={setSeatedAtTable}
+                venueName={venue.name}
+              />
+            )}
+            <div
+              style={{
+                height: seatedAtTable ? undefined : "500px",
+              }}
+              className={`${
+                seatedAtTable ? "participants-container" : "jazz-video"
+              }`}
+            >
+              <div
+                className={`${
+                  seatedAtTable
+                    ? `participant-container-${capacity}`
+                    : "full-height-video"
+                }`}
+              >
+                <iframe
+                  key="main-event"
+                  title="main event"
+                  width="100%"
+                  height="100%"
+                  className="youtube-video"
+                  src={`${venue.iframeUrl}?autoplay=1`}
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                />
+              </div>
+              {seatedAtTable && (
+                <Room
+                  roomName={seatedAtTable}
+                  setUserList={setUserList}
+                  capacity={capacity}
+                />
+                // <TableFooter
+                //   isVideoFocused={isVideoFocused}
+                //   setIsVideoFocused={setIsVideoFocused}
+                // />
+              )}
+            </div>
+          </div>
         </div>
         <div
           style={{
@@ -207,38 +241,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             joinMessage={true}
             customTables={JAZZBAR_TABLES}
           />
-          {seatedAtTable && (
-            <div className="container-in-row">
-              <div className="down-video-wrapper">
-                <TableHeader
-                  seatedAtTable={seatedAtTable}
-                  setSeatedAtTable={setSeatedAtTable}
-                  venueName={venue.name}
-                />
-                <div
-                  className={`${
-                    isVideoFocused ? "col-5" : "col-12"
-                  } table-container`}
-                >
-                  <div className="participants-container">
-                    <Room
-                      roomName={seatedAtTable}
-                      setUserList={setUserList}
-                      capacity={
-                        JAZZBAR_TABLES.find(
-                          (t) => t.reference === seatedAtTable
-                        )?.capacity
-                      }
-                    />
-                  </div>
-                  <TableFooter
-                    isVideoFocused={isVideoFocused}
-                    setIsVideoFocused={setIsVideoFocused}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
       <div

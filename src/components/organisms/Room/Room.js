@@ -155,7 +155,11 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
       key={`empty-participant-${index}`}
       className={`participant-container-${capacity}`}
     >
-      <img style={{ width: "80%" }} src="/empty-chair.png" alt="empty chair" />
+      <img
+        className="empty-chair-image"
+        src="/empty-chair.png"
+        alt="empty chair"
+      />
     </div>
   ));
 

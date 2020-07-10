@@ -1,5 +1,15 @@
+@import "scss/constants.scss";
+
 .participant-container-2 {
   width: 50%;
+}
+.participant-container-3 {
+  background: $black;
+  width: 50%;
+  height: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .participant-container-4 {
@@ -11,4 +21,10 @@
 }
 .participant-container-8 {
   width: 25%;
+}
+
+.empty-chair-image {
+  height: 100%;
+  object-fit: contain;
+  width: 80%;
 }
