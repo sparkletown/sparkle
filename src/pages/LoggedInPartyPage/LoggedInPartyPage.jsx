@@ -9,7 +9,6 @@ import CountDown from "components/molecules/CountDown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { PARTY_NAME } from "config";
 import { useSelector } from "react-redux";
-import useProfileInformationCheck from "hooks/useProfileInformationCheck";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 const LoggedInPartyPage = () => {
@@ -20,7 +19,6 @@ const LoggedInPartyPage = () => {
     partygoers: state.firestore.ordered.partygoers,
   }));
 
-  useProfileInformationCheck();
   useUpdateLocationEffect(user, "Map");
 
   const attendances = partygoers
