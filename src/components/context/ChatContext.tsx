@@ -26,7 +26,7 @@ enum RestrictedMessageType {
   table = "table",
 }
 
-interface RestrictedChatMessage {
+export interface RestrictedChatMessage {
   type: RestrictedMessageType;
   from: string;
   to: string;

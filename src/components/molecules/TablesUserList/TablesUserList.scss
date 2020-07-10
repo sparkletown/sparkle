@@ -7,6 +7,19 @@
 .header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+
+  .action {
+    align-items: center;
+  }
+
+  .back-button {
+    margin-right: 20px;
+  }
+
+  .unlocked-text {
+    margin-bottom: 0;
+  }
 }
 
 .clickable-text {

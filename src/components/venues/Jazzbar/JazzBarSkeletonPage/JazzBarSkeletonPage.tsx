@@ -1,28 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import TabNavigation from "components/molecules/TabNavigation";
 import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./JazzBarSkeletonPage.scss";
-import ChatModal from "components/organisms/ChatModal";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { useSelector } from "react-redux";
-import { JAZZ_BAR_TABS } from "./constants";
 import { JazzbarVenue } from "components/venues/Jazzbar/JazzTab/JazzTab";
 
 interface PropsType {
-  selectedTab: string;
   children: React.ReactNode;
-  setSelectedTab: (value: string) => void;
 }
 
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
-  selectedTab,
   children,
-  setSelectedTab,
 }) => {
-  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const { venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
   })) as { venue: JazzbarVenue };
@@ -73,31 +63,9 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               <p>We'll see you in the bar...</p>
             </InformationCard>
           </InformationLeftColumn>
-          <div className="content-container">
-            <div className="navigation-container">
-              <TabNavigation
-                selectedTab={selectedTab}
-                setSelectedTab={setSelectedTab}
-                tabsArray={JAZZ_BAR_TABS}
-              />
-              <button
-                className="btn btn-primary chat-button"
-                onClick={() => setIsChatModalOpen(!isChatModalOpen)}
-                id="toggle-open-chat-modal"
-              >
-                Chat
-                <FontAwesomeIcon
-                  icon={faChevronDown}
-                  className={`chevron ${isChatModalOpen ? "chat-open" : ""}`}
-                  size="sm"
-                />
-              </button>
-            </div>
-            {children}
-          </div>
+          <div className="content-container">{children}</div>
         </div>
       </WithNavigationBar>
-      <ChatModal show={isChatModalOpen} room={selectedTab} />
     </>
   );
 };
