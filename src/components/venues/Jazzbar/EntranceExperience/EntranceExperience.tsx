@@ -12,7 +12,6 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const EntranceExperience = () => {
   const { venueId } = useParams();
-  console.log(venueId);
 
   useFirestoreConnect({
     collection: "venues",

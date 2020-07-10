@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import LoggedInRouter from "components/organisms/LoggedInRouter";
-import EntranceExperience from "../Jazzbar/EntranceExperience";
+import EntranceExperience from "pages/EntranceExperience";
 
 const VenueRouter = () => (
   <Switch>
