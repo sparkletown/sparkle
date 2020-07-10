@@ -1,14 +1,37 @@
-.participant-container-2 {
+@import "scss/constants.scss";
+
+.participant-container-3,
+.participant-container-5,
+.participant-container-7,
+.participant-container-9 {
+  background: $black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.participant-container-3 {
   width: 50%;
+  height: 50%;
 }
 
-.participant-container-4 {
-  width: 25%;
-}
-
-.participant-container-6 {
+.participant-container-5 {
   width: 33%;
+  height: 50%;
 }
-.participant-container-8 {
+
+.participant-container-7 {
   width: 25%;
+  height: 50%;
+}
+
+.participant-container-9 {
+  width: 33%;
+  height: 33%;
+}
+
+.empty-chair-image {
+  height: 100%;
+  object-fit: contain;
+  width: 80%;
 }

@@ -349,6 +349,7 @@ h4 {
   padding: 5px 30px;
   height: calc(100vh - 50px);
   width: 100vw;
+  overflow: hidden;
   & > * + * {
     margin-left: 10px;
   }
@@ -362,7 +363,8 @@ h4 {
     background: $dark;
     border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
-    padding: 10px;
+    padding: 0;
+    max-height: calc(100vh - 118px);
   }
   .content-column {
     height: 100%;
@@ -435,10 +437,9 @@ h4 {
   }
   .participant {
     display: flex;
-    background: $dark;
-    padding: 10px;
+    height: 100%;
+    padding: 0;
     border-radius: 22px;
-    flex: 0 0 24%;
 
     .profile-icon {
       position: absolute;
@@ -472,7 +473,6 @@ h4 {
     max-width: 600px;
     display: block;
     margin: 0 auto;
-    border-radius: 6px;
   }
 }
 
@@ -484,7 +484,9 @@ h4 {
     margin-bottom: 10px;
 
     .participant {
-      flex: 0 0 33%;
+      display: flex;
+      flex-grow: 1;
+      background: $black;
     }
   }
 }
@@ -497,6 +499,13 @@ h4 {
   }
   .participant {
     width: 50%;
+  }
+}
+
+.participant-container {
+  .participant {
+    display: flex;
+    flex-grow: 1;
   }
 }
 

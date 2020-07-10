@@ -3,6 +3,7 @@
 .content-container {
   display: flex;
   flex: 1 1 auto;
+  overflow: scroll;
 
   flex-wrap: wrap;
   & > * + * {
