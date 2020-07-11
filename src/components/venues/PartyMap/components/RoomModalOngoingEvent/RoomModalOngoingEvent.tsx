@@ -43,8 +43,6 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
             onClick={() => enterRoom()}
             id={`enter-room-in-ongoing-event-card-${room.title}`}
             href={room.external_url}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             {room.button_text || "Join the room"}
           </a>

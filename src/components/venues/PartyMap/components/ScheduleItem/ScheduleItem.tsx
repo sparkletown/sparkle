@@ -49,8 +49,6 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             onClick={() => enterRoom()}
             id={`enter-room-from-schedule-event-${event}`}
             href={roomUrl}
-            target="_blank"
-            rel="noopener noreferrer"
           >
             Live
           </a>
