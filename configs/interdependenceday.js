@@ -256,9 +256,9 @@ module.exports = {
       subtitle: "... on Earth",
       about:
         "Join our unseeing guides for descriptive play and dancing, silly and soulful campfire songs, open mic nonsense, audio described cabaret, and the last fireworks on earth.",
-      url: "/wishing-well-preview",
+      url: "/last-campfire-preview",
       external_url:
-        "https://us02web.zoom.us/j/85964632944?pwd=dE1nR1lxWGpIRHB2L1RuMk5EWitMZz09",
+        "https://us02web.zoom.us/j/89520829926?pwd=elE2SmhvMHNnR2RqUk1BeFdZK25Rdz09",
       on_map: true,
       on_list: true,
       path:

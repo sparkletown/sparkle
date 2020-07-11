@@ -10,7 +10,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
-const EntranceExperience = () => {
+const JazzbarEntranceExperience = () => {
   const { venueId } = useParams();
 
   useFirestoreConnect({
@@ -109,4 +109,4 @@ const EntranceExperience = () => {
   );
 };
 
-export default EntranceExperience;
+export default JazzbarEntranceExperience;

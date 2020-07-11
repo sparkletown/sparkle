@@ -11,7 +11,8 @@ service cloud.firestore {
       allow write: if request.auth.uid != null;
     }
     match /users/{userId} {
-      allow write, read: if request.auth.uid != null;
+      allow read: if true;
+      allow write: if request.auth.uid != null;
     }
     match /chatsv3/{chatId} {
       allow write, read: if request.auth.uid != null;

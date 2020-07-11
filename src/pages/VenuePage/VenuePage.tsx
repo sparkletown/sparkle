@@ -47,7 +47,10 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!user && venueId !== "kansassmittys") {
+  if (!user) {
+    if (venueId === "kansassmittys") {
+      return <Redirect to={`/venue/${venueId}/jazzbar-entrance-experience`} />;
+    }
     return <Redirect to={`/venue/${venueId}/entrance-experience`} />;
   }
 
