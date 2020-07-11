@@ -36,7 +36,7 @@ const LoggedInPartyPage = () => {
         </div>
         {partygoers && (
           <div className="col">
-            <UserList users={partygoers} imageSize={50} />
+            <UserList users={partygoers} imageSize={50} disableSeeAll={false} />
           </div>
         )}
         <div className="col">

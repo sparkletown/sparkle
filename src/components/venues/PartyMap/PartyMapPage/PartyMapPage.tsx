@@ -5,15 +5,17 @@ import { User as FUser } from "firebase";
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
-import RoomList from "./components/RoomList";
+import RoomList from "../components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
-import { Map, PartyTitle } from "./components";
-import { PartyMapVenue } from "./types";
+import { Map, PartyTitle } from "../components";
+import { PartyMapVenue } from "../types";
 
-const PartyMap = () => {
+import "./PartyMapPage.scss";
+
+const PartyMapPage = () => {
   const { partygoers, user, venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
@@ -31,7 +33,7 @@ const PartyMap = () => {
 
   return (
     <WithNavigationBar>
-      <div className="container-fluid">
+      <div className="container">
         <div className="small-right-margin">
           <PartyTitle
             startUtcSeconds={venue.start_utc_seconds}
@@ -78,4 +80,4 @@ const PartyMap = () => {
   );
 };
 
-export default PartyMap;
+export default PartyMapPage;
