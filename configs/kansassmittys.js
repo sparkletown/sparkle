@@ -29,9 +29,16 @@ module.exports = {
   ],
   events: [
     {
-      date: "Saturday July 18th",
-      description:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce hendrerit nisl elementum tellus scelerisque eleifend. Integer pulvinar orci quis finibus viverra. Duis lacinia elementum enim nec pellentesque. Duis eu nisi eu nibh lobortis tristique facilisis a neque. Ut quis eleifend eros. Etiam suscipit lacus vitae magna suscipit congue. Morbi consequat elit ipsum, non tincidunt diam fermentum in. Morbi vel justo facilisis, gravida libero eu, interdum ante.",
+      name: "Kansas Smitty's on Saturday July 18th",
+      ts_utc: { seconds: 1595098800, nanoseconds: 0 },
+      url:
+        "https://www.eventbrite.co.uk/e/kansas-smittys-virtual-jazz-bar-tickets-112196382400",
+    },
+    {
+      name: "Kansas Smitty's on Saturday July 25th",
+      ts_utc: { seconds: 1595703600, nanoseconds: 0 },
+      url:
+        "https://www.eventbrite.co.uk/e/kansas-smittys-virtual-jazz-bar-tickets-112196962134",
     },
   ],
 };

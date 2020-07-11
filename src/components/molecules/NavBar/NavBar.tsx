@@ -1,28 +1,47 @@
 import React, { useState } from "react";
+import firebase from "firebase/app";
 import "./NavBar.scss";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { faCommentAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
+import { UpcomingEvent } from "types/UpcomingEvent";
+import UpcomingTickets from "components/molecules/UpcomingTickets";
 
 interface PropsType {
   redirectionUrl?: string;
 }
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
-  const { user, users, privateChats } = useSelector((state: any) => ({
+  const { user, users, venue, privateChats } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
+    venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
   }));
 
+  const now = firebase.firestore.Timestamp.fromDate(new Date());
+  const futureUpcoming = venue?.events?.filter(
+    (e: UpcomingEvent) => e?.ts_utc?.valueOf() > now.valueOf()
+  );
+
+  const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
+
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  const popover = (
+  const ticketsPopover = (
+    <Popover id="popover-basic">
+      <Popover.Content>
+        <UpcomingTickets events={futureUpcoming} />
+      </Popover.Content>
+    </Popover>
+  );
+
+  const chatPopover = (
     <Popover id="popover-basic">
       <Popover.Content>
         <PrivateChatModal />
@@ -53,10 +72,22 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           </Link>
           {user && user.email && users && users[user.uid] && (
             <div className="icons-container">
+              {hasUpcomingEvents && (
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={ticketsPopover}
+                  rootClose={true}
+                >
+                  <span className="tickets-icon">
+                    <FontAwesomeIcon icon={faTicketAlt} />
+                  </span>
+                </OverlayTrigger>
+              )}
               <OverlayTrigger
                 trigger="click"
                 placement="bottom-end"
-                overlay={popover}
+                overlay={chatPopover}
                 rootClose={true}
               >
                 <span className="private-chat-icon">
