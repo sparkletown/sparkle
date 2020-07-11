@@ -47,7 +47,7 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!user) {
+  if (!user && venueId !== "kansassmittys") {
     return <Redirect to={`/venue/${venueId}/entrance-experience`} />;
   }
 
