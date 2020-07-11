@@ -89,7 +89,7 @@ module.exports = {
       about:
         "Join Kansas Smitty’s House Band for some jazz, live from London to submerge you into the party nice and slowly.",
       url: "/kansas-smittys-preview",
-      external_url: "https://sparkle.space/venue/kansassmittys",
+      external_url: "/venue/kansassmittys",
       on_map: true,
       on_list: true,
       path:
