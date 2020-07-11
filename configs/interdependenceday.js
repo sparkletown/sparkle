@@ -45,7 +45,7 @@ module.exports = {
   },
   duration_hours: 8,
   entrance_hosted_hours: 0,
-  unhosted_entry_video_url: "https://www.youtube.com/embed/u_3a8wEHo7E",
+  unhosted_entry_video_url: "https://www.youtube.com/embed/r8PHCT4J2b8",
   map_url: "/maps/interdependence-day.jpg",
   map_viewbox: "0 0 2000 1250",
   host: {
@@ -70,7 +70,7 @@ module.exports = {
   ],
   rooms: [
     {
-      title: "Entry: Vulcanic Lift Shaft",
+      title: "Entry: Vulcano Lift Shaft",
       subtitle: "Going Down - Entry to the Party",
       about:
         "Start your journey to the centre of the Earth via the elevator. Learn the ropes, enjoy the music, meet world renowned Earth Scientists.",
@@ -358,8 +358,7 @@ module.exports = {
       title: "Donate to the Artists: Buried Treasure",
       subtitle: "",
       about: "",
-      url: "https://donorbox.org/interdependence-day-bury-treasure",
-      external_url: "",
+      external_url: "https://donorbox.org/interdependence-day-bury-treasure",
       on_map: true,
       on_list: false,
       path:
@@ -373,8 +372,7 @@ module.exports = {
       title: "Super Fly",
       subtitle: "You Have Found a Secret!",
       about: "",
-      url: "",
-      external_url: "",
+      external_url: "https://www.youtube.com/watch?v=EvuL5jyCHOw",
       on_map: true,
       on_list: false,
       path:
@@ -388,8 +386,7 @@ module.exports = {
       title: "Facebook Event",
       subtitle: "Invite Your Friends and Buy Tickets",
       about: "",
-      url: "https://www.facebook.com/events/269176114264594",
-      external_url: "",
+      external_url: "https://www.facebook.com/events/269176114264594",
       on_map: true,
       on_list: false,
       path:
@@ -403,8 +400,7 @@ module.exports = {
       title: "Co-reality Collective",
       subtitle: "Go to our Home Page",
       about: "",
-      url: "https://co-reality.co/",
-      external_url: "",
+      external_url: "https://co-reality.co/",
       on_map: true,
       on_list: false,
       path:

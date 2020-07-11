@@ -25,7 +25,12 @@ export default function Map({ config, attendances }) {
               .map((room, idx) => {
                 const color = "#ffffff33";
                 return (
-                  <a key={idx} href={`${baseUrl}${room.url}`}>
+                  <a
+                    key={idx}
+                    href={
+                      room.url ? `${baseUrl}${room.url}` : room.external_url
+                    }
+                  >
                     <path d={room.path} style={{ fill: color }}>
                       <title>{room.title}</title>
                     </path>
@@ -43,7 +48,11 @@ export default function Map({ config, attendances }) {
                 positioned={true}
                 attendance={attendances[room.title]}
                 key={idx}
-                onClick={() => history.push(`${baseUrl}${room.url}`)}
+                onClick={() =>
+                  history.push(
+                    room.url ? `${baseUrl}${room.url}` : room.external_url
+                  )
+                }
               />
             ))}
           <img
