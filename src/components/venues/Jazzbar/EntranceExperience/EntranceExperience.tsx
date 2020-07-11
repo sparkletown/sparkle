@@ -41,7 +41,7 @@ const EntranceExperience = () => {
           <div className="row header">
             <div className="col-lg-4 col-5 band-logo-container">
               <img
-                src={venue.host.icon}
+                src={venue?.host?.icon}
                 alt="Kansas Smitty's"
                 className="band-logo"
               />
