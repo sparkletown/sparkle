@@ -53,6 +53,9 @@ const ReactionList: React.FC<ReactionListProps> = ({
               width={profileImageSize}
               height={profileImageSize}
             />
+            <div className="partyname-bubble">
+              {usersById[message.created_by].partyName}:
+            </div>
             <div
               className={`message-bubble ${
                 isMessageToTheBand(message) ? "" : "emoji"

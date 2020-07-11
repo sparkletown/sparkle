@@ -7,13 +7,24 @@
     margin-bottom: 20px;
   }
 
-  .message-bubble {
+  .message-bubble,
+  .partyname-bubble {
     font-size: 30px;
-    background: $primaryColor;
     margin-bottom: 25px;
     padding: 10px 20px;
     border-radius: 22px;
   }
+
+  .message-bubble {
+    background: $primaryColor;
+  }
+
+  .partyname-bubble {
+    background: $white;
+    color: $dark;
+    margin-right: 20px;
+  }
+
   .message {
     display: flex;
 
