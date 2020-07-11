@@ -1,6 +1,6 @@
 const midnight_event = {
   start_minute: 240,
-  duration_minutes: 45,
+  duration_minutes: 30,
   host: "Ben aka Bobcat and the Co-reality Collective",
   name: "Midnight Ritual AT CORE-REALITY",
   text:
@@ -30,22 +30,390 @@ const vulcano_events = [
   },
 ];
 
-const TODO_events = [
+const jazzus_crust_superstar_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 90,
+    host: "Kansas Smitty's",
+    name: "Jazz Show at 8pm",
+    text:
+      "Join Kansas Smitty’s House Bank for some jazz, live from London to submerge you into the party nice and slowly.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const stalag_might_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 30,
+    host: "Michael",
+    name: "Cave Drawings!",
+    text: "Get your pens and draw with us!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 30,
+    duration_minutes: 60,
+    host: "Yulia",
+    name: "Collage to the Core",
+    text:
+      "Collaborative art collage. Co-create a beautiful digital collage and take it home as a souvenir!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 90,
+    duration_minutes: 30,
+    host: "Meena",
+    name: "A Refugee’s Journey",
+    text:
+      "Teenager Harshana tells an uplifting and  true story of how her mother escaped the civil war in Sri Lanka and came to the UK as a refugee.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const centre_of_groovity_events = [
+  midnight_event,
+  {
+    start_minute: 270,
+    duration_minutes: 90,
+    host: "DJ Code Affinity",
+    name: "Live DJ Show",
+    text: "Dance your booty off to an insane live DJ, Code Affinity.",
+    interactivity: "low",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 120,
+    host: "DJ Alza",
+    name: "Live DJ Show",
+    text: "Dance the night away to our last live DJ of the night, Alza.",
+    interactivity: "low",
+  },
+];
+
+const techno_tronics_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 120,
+    host: "DJ Maximitosis",
+    name: "Live DJ Show",
+    text:
+      "Rumble into your rhythm and feel the earth move beneath your feet to our live DJ Maximitosis.",
+    interactivity: "low",
+  },
+  midnight_event,
+];
+
+const richter_rpm_events = [
+  {
+    start_minute: 120,
+    duration_minutes: 120,
+    host: "DJ Carl, Dancer Zandra, & DJ Anonemau5",
+    name: "Live DJ Show",
+    text:
+      "Quake your booty alongside an interpretive dancer while Carl live DJs. Make sure to drop into a breakout room with DJ Anonemau5.",
+    interactivity: "low",
+  },
+  midnight_event,
+];
+
+const core_reality_events = [
+  midnight_event,
+  {
+    start_minute: 270,
+    duration_minutes: 30,
+    host: "Co-reality Collective",
+    name: "Acceptance Orchestra",
+    text: "Meditate on mutual acceptance.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 300,
+    duration_minutes: 60,
+    host: "Co-reality Collective",
+    name: "Trust Disco",
+    text: "A healing trust circle with music and dance magic.",
+    interactivity: "high",
+  },
+];
+
+const mantle_peace_events = [
+  {
+    start_minute: 90,
+    duration_minutes: 15,
+    host: "Shelly & Rae",
+    name: "Opening Ceremony",
+    text: "Mighty Organ Ritual Enshrinement from the Mantle Priest.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 105,
+    duration_minutes: 30,
+    host: "Shelly & Rae",
+    name: "Inner Inferno",
+    text: "Fire up your senses and ignite your Inner Core.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 105,
+    duration_minutes: 30,
+    host: "Shelly & Rae",
+    name: "Private Confession Booth",
+    text: "Seek redemption from the Mantle Priest in this sacred space.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 135,
+    duration_minutes: 30,
+    host: "Shelly & Rae",
+    name: "Alter my Altar workshop",
+    text: "Create your sacred space and open up the portal of high vibes.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 165,
+    duration_minutes: 30,
+    host: "Shelly & Rae",
+    name: "Mantle Mystery School",
+    text:
+      "Inner Earth Myth and Mystery Memoirs; a chronicler's tale from the dawn of time.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 195,
+    duration_minutes: 15,
+    host: "Shelly & Rae",
+    name: "Holy Chakra Shake Down",
+    text: "Shake off your dormant self.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 210,
+    duration_minutes: 15,
+    host: "Shelly & Rae",
+    name: "Mantra Rap Shop",
+    text: "Bring your hottest language lingo to the Mantle MC.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 225,
+    duration_minutes: 15,
+    host: "Shelly & Rae",
+    name: "Closing Ceremony",
+    text: "Sizzling Sonnets of Volcanic Prose with the Mantle Priest.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const fantasea_events = [
+  {
+    start_minute: 90,
+    duration_minutes: 150,
+    host: "The Fantasea Group",
+    name: "The Fantasea Lava Spa",
+    text:
+      "Join us for an experience like no other in a world of luxury and indulgence. Our highly skilled staff who will help you live out for fantaseas. By the Tropicana Fantasea group.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const magnetic_feels_events = [
+  midnight_event,
+  {
+    start_minute: 300,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Safety Message w Tour Guide Hawt Hattie + Pattie",
+    text:
+      "Keep your arms & elbows in! Be careful of lava and erupting volcanoes",
+    interactivity: "high",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Musical Exploration Opera",
+    text: "w Joanna Ceja",
+    interactivity: "high",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Activating our Core",
+    text: "w Poi Priestess Leah",
+    interactivity: "high",
+  },
+  {
+    start_minute: 330,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Pop Project Debut Opera",
+    text: "w Kitti Girl",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Spoken Movement",
+    text: "w Komorebi",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Songs from the Desert",
+    text: "w Komorebi",
+    interactivity: "high",
+  },
+  {
+    start_minute: 360,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Motion is Lotion",
+    text: "w Komorebi",
+    interactivity: "high",
+  },
+  {
+    start_minute: 390,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Breakdancing Acrobatic Show",
+    text: "w/ Jwolf, Earthquake & Sho’ N’ Tell",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Futuristic to Ancient Dance Bellydance + Popping",
+    text: "w/ Edenia Archuleta",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Sensual Pole Flow",
+    text: "w Diamond Reign",
+    interactivity: "high",
+  },
+  {
+    start_minute: 420,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Moving through Layers",
+    text: "w J Villl",
+    interactivity: "high",
+  },
+  {
+    start_minute: 450,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Prayerformance: An Offering",
+    text: "w Diamond Reign",
+    interactivity: "high",
+  },
+  {
+    start_minute: 450,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "From Heavy to Light Whip + Hoop Ceremony",
+    text: "w Flowesha",
+    interactivity: "high",
+  },
+  {
+    start_minute: 480,
+    duration_minutes: 30,
+    host: "Magnetic Feels Cabaret",
+    name: "Releasing Emotional Blockages",
+    text: "Exotic Pole Series w Cory Catt",
+    interactivity: "high",
+  },
+];
+
+const wishing_well_events = [
+  {
+    start_minute: 120,
+    duration_minutes: 120,
+    host: "Hannah",
+    name: "Wishing Well",
+    text:
+      "A conversation awaits you with Earth Mother Goddesses.  We’ll grant your wishes  and help you manifest your intentions. ",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const campfire_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 360,
+    host: "Blind Burners",
+    name: "Welcome to the Last Campfire on Earth.",
+    text:
+      "Join our unseeing guides for descriptive play and dancing, silly and soulful campfire songs, open mic nonsense, audio described cabaret, and the last fireworks on earth.",
+    interactivity: "high",
+  },
+  midnight_event,
+];
+
+const unhosted_events = [
   {
     start_minute: 0,
     duration_minutes: 240,
-    host: "Co-reality Collective",
+    host: "You and whoever shows up!",
     name: "Room Open",
-    text: "More details are on the way!",
+    text: "Bring your own party!",
     interactivity: "high",
   },
   midnight_event,
   {
-    start_minute: 285,
-    duration_minutes: 195,
-    host: "Co-reality Collective",
+    start_minute: 270,
+    duration_minutes: 210,
+    host: "You and whoever shows up!",
     name: "Room Open",
-    text: "More details are on the way!",
+    text: "Bring your own party!",
+    interactivity: "high",
+  },
+];
+
+const grace_station_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 240,
+    host: "Co-reality Collective",
+    name: "Backstage & VIP",
+    text:
+      "Come visit us backstage. If you're a VIP, join https://co-reality.co/help and ask for the password.",
+    interactivity: "high",
+  },
+  midnight_event,
+  {
+    start_minute: 270,
+    duration_minutes: 210,
+    host: "Co-reality Collective",
+    name: "Backstage & VIP",
+    text:
+      "Come visit us backstage. If you're a VIP, join https://co-reality.co/help and ask for the password.",
+    interactivity: "high",
+  },
+];
+
+const ddp_events = [
+  midnight_event,
+  {
+    start_minute: 480,
+    duration_minutes: 120,
+    host: "Distributed Dance Party",
+    name: "Official After Party",
+    text: "Dance your booty off!",
     interactivity: "high",
   },
 ];
@@ -120,7 +488,7 @@ module.exports = {
       attendance_x: "80%",
       attendance_y: "2%",
       image: "CRC_Interdependence_Jazzus.jpg",
-      events: TODO_events,
+      events: jazzus_crust_superstar_events,
     },
     {
       title: "Q&A: The Stalag Might?",
@@ -137,7 +505,7 @@ module.exports = {
       attendance_x: "29.5%",
       attendance_y: "42.5%",
       image: "CRC_Interdependence_StalagMight.jpg",
-      events: TODO_events,
+      events: stalag_might_events,
     },
     {
       title: "Dancing: Centre of Groovity",
@@ -153,7 +521,7 @@ module.exports = {
       attendance_x: "53%",
       attendance_y: "57.5%",
       image: "CRC_Interdependence_Groovity.jpg",
-      events: TODO_events,
+      events: centre_of_groovity_events,
     },
     {
       title: "Dancing: Techno-Tonics",
@@ -170,7 +538,7 @@ module.exports = {
       attendance_x: "50%",
       attendance_y: "8.5%",
       image: "CRC_Interdependence_TechnoTonics.jpg",
-      events: TODO_events,
+      events: techno_tronics_events,
     },
     {
       title: "Dancing: Richter RPM",
@@ -187,7 +555,7 @@ module.exports = {
       attendance_x: "52%",
       attendance_y: "35%",
       image: "CRC_Interdependence_RichterRPM.jpg",
-      events: TODO_events,
+      events: richter_rpm_events,
     },
     {
       title: "Core-Reality",
@@ -204,7 +572,7 @@ module.exports = {
       attendance_x: "54%",
       attendance_y: "83%",
       image: "CRC_Interdependence_CoreReality.jpg",
-      events: TODO_events,
+      events: core_reality_events,
     },
     {
       title: "Games and Entertainment: The Mantle Peace",
@@ -221,7 +589,7 @@ module.exports = {
       attendance_x: "70%",
       attendance_y: "59.5%",
       image: "CRC_Interdependence_MantlePeace.jpg",
-      events: TODO_events,
+      events: mantle_peace_events,
     },
     {
       title: "Games and Entertainment: Fantasea Lava Spa",
@@ -238,7 +606,7 @@ module.exports = {
       attendance_x: "17%",
       attendance_y: "57%",
       image: "CRC_Interdependence_Fantasea.jpg",
-      events: TODO_events,
+      events: fantasea_events,
     },
     {
       title: "Entertainment: Magnetic Feels Cabaret",
@@ -255,7 +623,7 @@ module.exports = {
       attendance_x: "31.5%",
       attendance_y: "69.5%",
       image: "CRC_Interdependence_MagneticFeels.jpg",
-      events: TODO_events,
+      events: magnetic_feels_events,
     },
     {
       title: "Conversations: Wishing Well",
@@ -272,13 +640,14 @@ module.exports = {
       attendance_x: "82.2%",
       attendance_y: "24%",
       image: "CRC_Interdependence_WishingWell.jpg",
-      events: TODO_events,
+      events: wishing_well_events,
     },
     {
       title: "Unseeing Experience: The Last Campfire",
-      subtitle: "... on Earth",
+      subtitle:
+        "... on Earth. More info: https://docs.google.com/presentation/d/1E4FmJRx5KURNVRkDnmR95pvj8dfgPRzNxZHBFboz7FQ/edit#slide=id.g8b43d13bd1_3_6",
       about:
-        "Join our unseeing guides for descriptive play and dancing, silly and soulful campfire songs, open mic nonsense, audio described cabaret, and the last fireworks on earth.",
+        "Join our unseeing guides for descriptive play and dancing, silly and soulful campfire songs, open mic nonsense, audio described cabaret, and the last fireworks on earth. More info at https://docs.google.com/presentation/d/1E4FmJRx5KURNVRkDnmR95pvj8dfgPRzNxZHBFboz7FQ/edit#slide=id.g8b43d13bd1_3_6",
       url: "/last-campfire-preview",
       external_url:
         "https://us02web.zoom.us/j/89520829926?pwd=elE2SmhvMHNnR2RqUk1BeFdZK25Rdz09",
@@ -289,7 +658,7 @@ module.exports = {
       attendance_x: "28%",
       attendance_y: "23.5%",
       image: "CRC_Interdependence_Campfire.jpg",
-      events: TODO_events,
+      events: campfire_events,
     },
     {
       title: "Bring Your Own Party: The Landfill",
@@ -306,7 +675,7 @@ module.exports = {
       attendance_x: "92%",
       attendance_y: "39%",
       image: "CRC_Interdependence_Landfill.jpg",
-      events: TODO_events,
+      events: unhosted_events,
     },
     {
       title: "Bring Your Own Party: Sedi Mental",
@@ -323,7 +692,7 @@ module.exports = {
       attendance_x: "91%",
       attendance_y: "58.5%",
       image: "CRC_Interdependence_SediMental.jpg",
-      events: TODO_events,
+      events: unhosted_events,
     },
     {
       title: "Bring Your Own Party: Meta More Peak",
@@ -340,7 +709,7 @@ module.exports = {
       attendance_x: "90.5%",
       attendance_y: "74%",
       image: "CRC_Interdependence_MetaMorePeak.jpg",
-      events: TODO_events,
+      events: unhosted_events,
     },
     {
       title: "Backstage: The International Grace Station",
@@ -356,7 +725,7 @@ module.exports = {
       attendance_x: "6%",
       attendance_y: "4%",
       image: "CRC_Interdependence_GraceStation.jpg",
-      events: TODO_events,
+      events: grace_station_events,
     },
     {
       title: "Dancing and Fun: DDP Disco Diamond",
@@ -372,7 +741,7 @@ module.exports = {
       attendance_x: "72.5%",
       attendance_y: "84%",
       image: "CRC_Interdependence_DDP.jpg",
-      events: TODO_events,
+      events: ddp_events,
     },
     {
       title: "Donate to the Artists: Bury Some Treasure!",
@@ -384,7 +753,7 @@ module.exports = {
       path:
         "M -0.241 522.301 C 49.369 522.301 107.53 530.244 156.131 525.124 C 173.923 523.249 199.178 530.579 214.466 522.826 C 222.093 518.957 225.812 509.541 229.688 502.903 C 244.194 478.06 236.635 457.58 220.868 427.602 C 216.629 419.543 199.276 408.932 193.778 397.937 C 179.584 369.547 199.409 339.243 169.343 324.103 C 156.703 317.738 130.017 307.568 122.524 316.769 C 121.511 318.014 110.813 316.769 109.076 316.769 C 95.924 316.769 82.508 314.052 68.811 314.052 C 62.545 314.052 35.65 309.835 31.373 314.052 C 28.339 317.043 2.968 321.402 -0.286 321.402",
       image: "CRC_Interdependence_BuriedTreasure.jpg",
-      events: TODO_events,
+      events: [midnight_event],
     },
     {
       title: "Super Fly",
@@ -396,7 +765,7 @@ module.exports = {
       path:
         "M 1290.4492769678993 21.572686792894984 C 1281.3613688741518 35.428806873496214 1262.0679214284182 23.758246457672048 1252.2183837890625 33.468658447265625 C 1250.3229125984703 35.337355928202285 1248.98294630118 39.24330005210504 1247.5396728515625 42.243927001953125 C 1246.7863000407367 43.810221150886676 1247.5396728515625 47.73729611181097 1247.5396728515625 49.465667724609375 C 1247.5396728515625 51.46318767926784 1245.6570050534365 54.832280830219794 1246.7366943359375 56.99220275878906 C 1251.3255695598361 66.17226260027168 1264.32457998985 64.17844280462488 1270.489990234375 71.02853393554688 C 1273.3856699919145 74.24578460312816 1275.0948951864345 78.67430987551323 1280.216064453125 81.10030364990234 C 1287.9755591936748 84.77612160331752 1299.7734606669785 80.66278946528098 1306.2552490234375 77.35182189941406 C 1307.6749191880497 76.62663903154463 1311.05820776502 76.93237793030322 1312.0462646484375 75.90065002441406 C 1314.57876325174 73.2562177811867 1321.895324537423 74.8041452730175 1324.4949951171875 71.87467193603516 C 1326.2774323683986 69.86610883465181 1329.606678754788 63.83473075687702 1331.705322265625 62.76277160644531 C 1336.7315600215204 60.19543631254958 1343.7460045880243 58.22586546696695 1346.4581298828125 52.761512756347656 C 1348.4226115595443 48.80350211582142 1345.576013054298 43.373536803123464 1343.3101806640625 41.074798583984375 C 1341.5445588748457 39.283535335693045 1340.9845222533086 35.16037012054457 1338.6473388671875 33.99180603027344 C 1328.93854904313 29.13752578176772 1318.2613688929919 28.234098941382204 1308.3614501953125 25.50313377380371 C 1305.8501253128538 24.81036638975689 1298.2653352615253 18.238120226520433 1295.9627685546875 20.508190155029297 C 1295.381910596601 21.080850299671845 1291.763916015625 21.234579409342377 1291.763916015625 22.2641544342041",
       image: "CRC_Interdependence_SuperFly.jpg",
-      events: TODO_events,
+      events: [midnight_event],
     },
     {
       title: "Facebook Event",
@@ -408,7 +777,7 @@ module.exports = {
       path:
         "M 32.305 960.1 C 29.71 996.827 34.627 1032.453 30.815 1069.096 C 28.175 1094.47 25.936 1117.664 30.478 1142.952 C 31.901 1150.873 39.732 1179.12 34.9 1188.65 C 33.988 1190.447 31.939 1201.031 33.706 1202.984 C 42.585 1212.798 83.82 1200.67 93.856 1200.67 C 152.282 1200.67 213.892 1199.185 262.632 1199.185 C 284.211 1199.185 306.538 1194.977 328.408 1197.711 C 353.258 1200.818 377.084 1204.018 402.376 1198.619 C 412.269 1196.507 442.294 1204.806 448.522 1198.272 C 452.567 1194.028 453.977 1171.158 454.994 1165.014 C 458.945 1141.148 461.635 1113.033 455.437 1088.238 C 451.588 1072.844 447.479 1053.181 450.192 1036.791 C 452.538 1022.615 452.51 1000.29 447.805 986.902 C 445.618 980.682 449.755 971.985 445.586 967.816 C 441.076 963.307 426.089 965.165 419.932 965.165 C 401.513 965.165 383.376 963.916 365.078 963.916 C 360.056 963.916 349.261 966.147 344.798 963.916 C 319.471 951.251 276.149 970.584 247.149 970.584 C 235.7 970.584 228.077 965.312 218.257 962.857 C 202.699 958.967 182.056 967.443 167.538 960.184 C 157.143 954.986 149.345 973.726 137.783 967.945 C 124.07 961.089 86.26 959.406 71.295 967.166 C 67.587 969.089 44.271 962.078 37.421 962.078",
       image: "CRC_Interdependence_Journey.jpg",
-      events: TODO_events,
+      events: [midnight_event],
     },
     {
       title: "Co-reality Collective",
@@ -420,7 +789,7 @@ module.exports = {
       path:
         "M 1629.261 1250.532 C 1629.261 1222.512 1621.13 1176.075 1629.261 1148.313 C 1639.503 1113.348 1658.691 1109.88 1685.377 1097.996 C 1727.73 1079.135 1793.549 1103.077 1848.918 1101.449 C 1862.25 1101.057 1938.448 1073.762 1998.867 1097.281 C 2003.311 1099.011 1998.662 1214.704 1998.662 1250.351",
       image: "CRC_Interdependence_CoReality.jpg",
-      events: TODO_events,
+      events: [midnight_event],
     },
   ],
 };
