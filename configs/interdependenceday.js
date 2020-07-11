@@ -432,7 +432,7 @@ module.exports = {
       "https://docs.google.com/presentation/d/1E4FmJRx5KURNVRkDnmR95pvj8dfgPRzNxZHBFboz7FQ/edit?usp=sharing",
   },
   duration_hours: 8,
-  entrance_hosted_hours: 4,
+  entrance_hosted_hours: 3,
   unhosted_entry_video_url: "https://www.youtube.com/embed/r8PHCT4J2b8",
   map_url: "/maps/interdependence-day.jpg",
   map_viewbox: "0 0 2000 1250",
