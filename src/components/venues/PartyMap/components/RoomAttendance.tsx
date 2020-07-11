@@ -18,12 +18,6 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
   onClick,
 }) => {
   attendance = (attendance || 0) + 4;
-  if (
-    room.title === "Live Music: Jazzus Crust Superstar" ||
-    room.title === "Dancing: Techno-Tonics"
-  ) {
-    attendance += 20;
-  }
   const singularTitle = `${attendance} person in ${room.title}`;
   const pluralTitle = `${attendance} people in ${room.title}`;
   const title = attendance === 1 ? singularTitle : pluralTitle;
