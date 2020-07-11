@@ -2,9 +2,9 @@ const midnight_event = {
   start_minute: 240,
   duration_minutes: 45,
   host: "Ben aka Bobcat and the Co-reality Collective",
-  name: "Midnight Ritual IN THE WORLDPOOL",
+  name: "Midnight Ritual AT CORE-REALITY",
   text:
-    "Room temporarily closed. Make your way to the Worldpool for the midnight ritual.",
+    "Room temporarily closed. Make your way to Core-Reality for the midnight ritual.",
   interactivity: "high",
 };
 
