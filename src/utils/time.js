@@ -43,6 +43,10 @@ export function formatMinute(minute, startUtcSeconds) {
   return formatUtcSeconds(utcSeconds);
 }
 
+export function formatDate(utcSeconds) {
+  return format(new Date(utcSeconds * 1000), "MMM do");
+}
+
 export function formatUtcSeconds(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "p");
 }
