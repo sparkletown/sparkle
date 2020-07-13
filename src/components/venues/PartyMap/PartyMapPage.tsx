@@ -27,11 +27,36 @@ const PartyMap = () => {
         acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
         return acc;
       }, {})
-    : [];
+    : {};
+
+  const combinedAttendanceRoomTitles = [
+    [
+      "Bring Your Own Party: The Landfill",
+      "Bring Your Own Party: Sedi Mental",
+      "Bring Your Own Party: Meta More Peak",
+    ],
+    [
+      "Dancing: Centre of Groovity",
+      "Dancing: Techno-Tonics",
+      "Dancing: Richter RPM",
+    ],
+  ];
+
+  for (const roomTitles of combinedAttendanceRoomTitles) {
+    let combinedAttendance = 0;
+    for (const roomTitle of roomTitles) {
+      if (roomTitle in attendances && attendances[roomTitle] !== undefined) {
+        combinedAttendance += attendances[roomTitle];
+      }
+    }
+    for (const roomTitle of roomTitles) {
+      attendances[roomTitle] = combinedAttendance;
+    }
+  }
 
   return (
     <WithNavigationBar>
-      <div className="container">
+      <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle
             startUtcSeconds={venue.start_utc_seconds}
@@ -40,7 +65,7 @@ const PartyMap = () => {
         </div>
         {partygoers && (
           <div className="col">
-            <UserList users={partygoers} imageSize={50} />
+            <UserList users={partygoers} imageSize={50} disableSeeAll={false} />
           </div>
         )}
         <div className="col">

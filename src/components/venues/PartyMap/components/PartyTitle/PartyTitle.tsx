@@ -23,13 +23,13 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
       <div className="subtitle-container">
         <img
           className="collective-icon"
-          src={venue.host.icon}
+          src={venue?.host?.icon}
           alt="Co-Reality collective"
           width="20"
           height="20"
         />
         <div>
-          Hosted by <a href={venue.host.url}>{venue.host.name}</a>{" "}
+          Hosted by <a href={venue?.host?.url}>{venue?.host?.name}</a>{" "}
           {withCountDown && <CountDown startUtcSeconds={startUtcSeconds} />}
         </div>
       </div>

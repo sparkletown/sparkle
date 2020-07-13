@@ -34,7 +34,7 @@ export function isRoomValid(room) {
     validBool(room.on_list) &&
     validBool(room.on_map) &&
     room.path !== undefined &&
-    room.url !== undefined &&
+    (room.url !== undefined || room.external_url !== undefined) &&
     room.title !== undefined
   );
 }

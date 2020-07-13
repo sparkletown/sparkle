@@ -20,6 +20,10 @@
     {
       "target": "bodyssey",
       "public": "build",
+      "rewrites": [ {
+        "source": "**",
+        "destination": "/index.html"
+      }],
       "ignore": [
         "firebase.json",
         "**/.*",
@@ -29,6 +33,10 @@
     {
       "target": "treeoflife",
       "public": "build",
+      "rewrites": [ {
+        "source": "**",
+        "destination": "/index.html"
+      }],
       "ignore": [
         "firebase.json",
         "**/.*",
