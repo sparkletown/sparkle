@@ -15,8 +15,8 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "06/19/2020";
-const to = "06/21/2020";
+const from = "07/10/2020";
+const to = "07/12/2020";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
@@ -80,10 +80,16 @@ const password = "";
       .length;
     console.log(`Number of reports on page ${pageNum}: ${numberOfReports}`);
 
+    await page.waitFor(2000);
+
     let i = 1;
 
     while (i <= numberOfReports) {
       console.log(`Page ${pageNum}: exporting report ${i}...`);
+
+      await page.waitForSelector(`#meeting_list > tbody > tr`, {
+        visible: true,
+      });
 
       await page.waitForSelector(
         `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`,
