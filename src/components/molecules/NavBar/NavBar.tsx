@@ -64,7 +64,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           <Link to={redirectionUrl || "/"}>
             <span className="navbar-brand title">Co-Reality</span>
           </Link>
-          {user && user.email && users && users[user.uid] && (
+          {user && users && users[user.uid] && (
             <div className="icons-container">
               {hasUpcomingEvents && (
                 <OverlayTrigger
