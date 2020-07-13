@@ -21,6 +21,7 @@
 
   .reaction {
     position: absolute;
+    font-size: 50px;
     top: -25px;
     right: -20px;
     width: 50px;
@@ -44,9 +45,5 @@
     100% {
       transform: scale(1);
     }
-  }
-
-  .clap {
-    font-size: 50px;
   }
 }
