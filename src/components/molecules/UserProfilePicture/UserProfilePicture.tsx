@@ -56,7 +56,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           ) && (
             <div className="reaction-container">
               <span
-                className={"reaction " + reaction.name}
+                className={`reaction ${reaction.name}`}
                 role="img"
                 aria-label={reaction.ariaLabel}
               >
