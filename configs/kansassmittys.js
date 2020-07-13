@@ -10,6 +10,7 @@ module.exports = {
   host: {
     icon: "/kansas-smittys-logo-red.png",
   },
+  eventbriteEventId: "112196382400",
   entranceVideoIframeUrl: "https://www.youtube.com/embed/aFfLdgmgLSg",
   eventBriteUrl:
     "https://www.eventbrite.co.uk/e/kansas-smittys-virtual-jazz-bar-tickets-112193672294",
