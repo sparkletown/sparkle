@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 import "bootstrap";
 import qs from "qs";
 
@@ -17,21 +17,17 @@ function isAfterEvent(startUtcSeconds, durationMinutes) {
 }
 
 export default function App(props) {
-  const dispatch = useDispatch();
   const { config, user } = useSelector((state) => ({
     config:
       state.firestore.data.config && state.firestore.data.config[PARTY_NAME],
     user: state.user,
   }));
 
-  useEffect(() => {
-    // Remove room presence etc. on disconnect
-    window.onbeforeunload = () => {
-      if (user) {
-        leaveRoom(user);
-      }
-    };
-  }, [dispatch, user]);
+  window.onbeforeunload = () => {
+    if (user) {
+      leaveRoom(user);
+    }
+  };
 
   const search = qs.parse(props.location.search, { ignoreQueryPrefix: true });
   const unlock = search.unlock !== undefined;
