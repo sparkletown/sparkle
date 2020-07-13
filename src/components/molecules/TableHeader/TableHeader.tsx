@@ -39,6 +39,8 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
       });
   };
 
+  window.onbeforeunload = () => leaveSeat();
+
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
