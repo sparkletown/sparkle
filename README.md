@@ -5,7 +5,7 @@ Codebase for SparkleTown, brought to you by Sparkle.
 ## Getting started
 
 ```
-git clone ...
+git clone ....
 cd co-reality-map
 npm i
 npm run init # Initialize secrets files with default values
