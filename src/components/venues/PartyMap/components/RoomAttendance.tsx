@@ -17,7 +17,7 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
   positioned,
   onClick,
 }) => {
-  attendance = (attendance || 0) + 4;
+  attendance = attendance || 0;
   const singularTitle = `${attendance} person in ${room.title}`;
   const pluralTitle = `${attendance} people in ${room.title}`;
   const title = attendance === 1 ? singularTitle : pluralTitle;
