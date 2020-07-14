@@ -9,6 +9,7 @@ import { useParams, Redirect } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import EventbriteButton from "react-eventbrite-popup-checkout";
 
 const JazzbarEntranceExperience = () => {
   const { venueId } = useParams();
@@ -76,24 +77,25 @@ const JazzbarEntranceExperience = () => {
             </div>
           </div>
           <div className="upcoming-gigs-title">Upcoming gigs:</div>
-          <InformationCard
-            className="event-card"
-            title="Buy tickets on EventBrite"
-          >
-            <a
-              href={venue.eventBriteUrl}
-              rel="noopener noreferrer"
-              target="_blank"
+          {venue.eventbriteEventId && (
+            <InformationCard
+              className="event-card"
+              title="Buy tickets on EventBrite"
             >
-              <button
-                id={`eventbrite-${venue.name}`}
-                type="button"
-                className="btn btn-primary"
+              <EventbriteButton
+                ebEventId={venue.eventbriteEventId}
+                className="eventbrite-widget"
               >
-                Buy Tickets
-              </button>
-            </a>
-          </InformationCard>
+                <button
+                  id={`eventbrite-${venue.name}`}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Buy Tickets
+                </button>
+              </EventbriteButton>
+            </InformationCard>
+          )}
           {venue.events.map((event: any) => (
             <InformationCard
               className="event-card"
