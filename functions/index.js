@@ -1,9 +1,10 @@
 const firebase = require("firebase");
+const { PROJECT_ID } = require("./secrets");
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
 const firebaseConfig = {
-  projectId: "co-reality-map",
+  projectId: PROJECT_ID,
 };
 firebase.initializeApp(firebaseConfig);
 
