@@ -1,15 +1,14 @@
 import React from "react";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+// import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import "./EntranceExperience.scss";
-import InformationCard from "components/molecules/InformationCard";
+// import InformationCard from "components/molecules/InformationCard";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams, Redirect } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import EventbriteButton from "react-eventbrite-popup-checkout";
+// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 const JazzbarEntranceExperience = () => {
   const { venueId } = useParams();
@@ -37,7 +36,30 @@ const JazzbarEntranceExperience = () => {
 
   return (
     <WithNavigationBar>
-      <div className="jazz-bar-entrance-experience-container">
+      <div className="container venue-entrance-experience-container">
+        <div
+          className="header"
+          style={{
+            background: `linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.7) 2%,
+            rgba(0, 0, 0, 0) 98%
+          ), url(${venue.config.landingPageConfig.coverImageUrl}`,
+            backgroundSize: "cover",
+          }}
+        >
+          <div className="venue-host">
+            <div className="host-icon-container">
+              <img className="host-icon" src={venue.host.icon} alt="host" />
+            </div>
+            <div className="title">{venue.name}</div>
+            <div className="subtitle">
+              {venue.config.landingPageConfig.subtitle}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="jazz-bar-entrance-experience-container">
         <div className="container">
           <div className="row header">
             <div className="col-lg-4 col-5 band-logo-container">
@@ -110,7 +132,7 @@ const JazzbarEntranceExperience = () => {
               </InformationCard>
             ))}
         </div>
-      </div>
+      </div> */}
     </WithNavigationBar>
   );
 };
