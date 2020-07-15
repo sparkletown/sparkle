@@ -9,6 +9,7 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
+            - run: cp ./src/secrets.dist.js ./src/secrets.js
             - run: npm install
             - run: npm run init
             - run: npm run build

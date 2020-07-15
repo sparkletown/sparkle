@@ -18,20 +18,7 @@
       ]
     },
     {
-      "target": "bodyssey",
-      "public": "build",
-      "rewrites": [ {
-        "source": "**",
-        "destination": "/index.html"
-      }],
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ]
-    },
-    {
-      "target": "treeoflife",
+      "target": "staging",
       "public": "build",
       "rewrites": [ {
         "source": "**",

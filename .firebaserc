@@ -1,6 +1,8 @@
 {
   "projects": {
-    "default": "co-reality-map"
+    "default": "co-reality-map",
+    "staging": "co-reality-staging",
+    "prod": "co-reality-map"
   },
   "targets": {
     "co-reality-map": {
@@ -13,6 +15,20 @@
         ],
         "treeoflife": [
           "treeoflife"
+        ]
+      }
+    },
+    "staging": {
+      "hosting": {
+        "staging": [
+          "co-reality-staging"
+        ]
+      }
+    },
+    "co-reality-staging": {
+      "hosting": {
+        "staging": [
+          "co-reality-staging"
         ]
       }
     }
