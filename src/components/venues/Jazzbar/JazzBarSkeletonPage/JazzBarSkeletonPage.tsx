@@ -21,9 +21,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     <>
       <WithNavigationBar>
         <div className="full-page-container experience-container">
-          <InformationLeftColumn
-            venueLogoPath={venue ? venue.logoImageUrl : ""}
-          >
+          <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
             <InformationCard title="About the venue">
               <p>
                 Kansas Smitty’s.
