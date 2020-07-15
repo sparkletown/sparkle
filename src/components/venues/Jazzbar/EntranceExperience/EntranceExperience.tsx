@@ -52,32 +52,35 @@ const JazzbarEntranceExperience = () => {
             </div>
           </div>
 
-          <div className="welcome-message">{venue.welcomeMessage}</div>
+          <div className="welcome-message">
+            {venue.config.landingPageConfig.welcomeMessage}
+          </div>
 
           <div className="row video-row">
             <div className="col-lg-6 col-12">
               <iframe
                 title="Entrance video"
                 className="entrance-video"
-                src={venue.entranceVideoIframeUrl}
+                src={venue.config.landingPageConfig.videoIframeUrl}
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
             </div>
             <div className="col-lg-6 col-12 decscription-items-container">
-              {venue.descriptionItems.map((descriptionItem: any) => (
-                <div key={descriptionItem.id} className="description-item">
-                  <div className="check-icon-container">
-                    <FontAwesomeIcon icon={faCheck} />
+              {venue.descriptionItems &&
+                venue.descriptionItems.map((descriptionItem: any) => (
+                  <div key={descriptionItem.id} className="description-item">
+                    <div className="check-icon-container">
+                      <FontAwesomeIcon icon={faCheck} />
+                    </div>
+                    <div>{descriptionItem.text}</div>
                   </div>
-                  <div>{descriptionItem.text}</div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
           <div className="upcoming-gigs-title">Upcoming gigs:</div>
-          {venue.eventbriteEventId && (
+          {venue.config.landingPageConfig.eventbriteEventId && (
             <InformationCard
               className="event-card"
               title="Buy tickets on EventBrite"
@@ -96,15 +99,16 @@ const JazzbarEntranceExperience = () => {
               </EventbriteButton>
             </InformationCard>
           )}
-          {venue.events.map((event: any) => (
-            <InformationCard
-              className="event-card"
-              title={event.date}
-              key={event.date}
-            >
-              <div className="event-description">{event.description}</div>
-            </InformationCard>
-          ))}
+          {venue.events &&
+            venue.events.map((event: any) => (
+              <InformationCard
+                className="event-card"
+                title={event.date}
+                key={event.date}
+              >
+                <div className="event-description">{event.description}</div>
+              </InformationCard>
+            ))}
         </div>
       </div>
     </WithNavigationBar>

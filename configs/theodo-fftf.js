@@ -6,8 +6,6 @@ module.exports = {
   },
   password: "theodo",
   iframeUrl: "https://www.youtube.com/embed/SM3F3wwMe2o",
-  logoImageUrl:
-    "https://www.theodo.fr/hs-fs/hubfs/theodologo-ConvertImage.png?width=287&name=theodologo-ConvertImage.png",
   start_utc_seconds: 1594223921,
   host: {
     icon:
