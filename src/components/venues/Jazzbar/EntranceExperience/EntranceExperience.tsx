@@ -82,7 +82,9 @@ const JazzbarEntranceExperience = () => {
             </div>
           </div>
           <div className="secret-password-form-wrapper">
-            <SecretPasswordForm />
+            <SecretPasswordForm
+              buttonText={venue.config.landingPageConfig.joinButtonText}
+            />
           </div>
         </div>
         <div className="row">

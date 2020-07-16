@@ -9,6 +9,7 @@ module.exports = {
       subtitle: "The world's only virtual jazz bar",
       eventbriteEventId: "112196382400",
       videoIframeUrl: "https://www.youtube.com/embed/aFfLdgmgLSg",
+      joinButtonText: "Enter the bar",
       coverImageUrl:
         "https://syncopatedtimes.com/wp-content/uploads/2019/04/Kansas-Smittys-House-Band.jpg",
       presentation: [
