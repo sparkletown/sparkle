@@ -11,19 +11,15 @@ module.exports = {
       videoIframeUrl: "https://www.youtube.com/embed/aFfLdgmgLSg",
       coverImageUrl:
         "https://syncopatedtimes.com/wp-content/uploads/2019/04/Kansas-Smittys-House-Band.jpg",
-      descriptionItems: [
-        {
-          id: "intimate-atmosphere",
-          text: "Listen to incredible live jazz in an intimate atmosphere",
-        },
-        {
-          id: "video-chat",
-          text: "Claim a table video and video chat with your friends",
-        },
-        {
-          id: "musicians",
-          text: "Meet the musicians in the green room",
-        },
+      presentation: [
+        "Aliquam erat volutpat. Proin id urna lorem. Quisque cursus, dolor eu faucibus ornare, nisl libero malesuada dolor, eu egestas nisl mi eget ante. Vivamus malesuada sodales lobortis.",
+        "Suspendisse nulla velit, sollicitudin in iaculis at, vehicula vel sapien. Nam justo ante, ultricies ac urna ac, maximus lacinia orci.",
+        "Sed a faucibus erat, at molestie turpis. Nulla facilisi. Sed non lectus pretium, facilisis tellus in, fringilla nibh. Etiam non lectus imperdiet, molestie nisl nec, pretium orci.",
+      ],
+      checkList: [
+        "Listen to incredible live jazz in an intimate atmosphere",
+        "Claim a table video and video chat with your friends",
+        "Meet the musicians in the green room",
       ],
     },
   },

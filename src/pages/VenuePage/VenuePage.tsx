@@ -29,6 +29,8 @@ export interface Venue {
     landingPageConfig: {
       coverImageUrl: string;
       subtitle: string;
+      presentation: string[];
+      checkList: string[];
     };
   };
   host: {

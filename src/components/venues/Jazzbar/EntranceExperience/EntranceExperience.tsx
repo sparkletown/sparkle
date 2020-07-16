@@ -1,7 +1,5 @@
 import React from "react";
-// import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import "./EntranceExperience.scss";
-// import InformationCard from "components/molecules/InformationCard";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -13,9 +11,8 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "pages/VenuePage/VenuePage";
 import { User } from "types/User";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
-
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 
 interface VenueEvent {
   id: string;
@@ -88,119 +85,76 @@ const JazzbarEntranceExperience = () => {
             <SecretPasswordForm />
           </div>
         </div>
-        <div className="col oncoming-events">
-          <div className="upcoming-gigs-title">Upcoming gigs</div>
-          {venueEvents &&
-            venueEvents.map((venueEvent: VenueEvent) => {
-              const startingDate = new Date(
-                venueEvent.start_utc_seconds * 1000
-              );
-              const endingDate = new Date(
-                (venueEvent.start_utc_seconds +
-                  60 * venueEvent.duration_minutes) *
-                  1000
-              );
-              const isNextVenueEvent = venueEvent.id === nextVenueEventId;
-              return (
-                <InformationCard
-                  title={venueEvent.name}
-                  key={venueEvent.id}
-                  className={`${!isNextVenueEvent ? "disabled" : ""}`}
-                >
-                  <div className="date">
-                    {`${dayjs(startingDate).format("ddd MMMM Do - Ha")}/${dayjs(
-                      endingDate
-                    ).format("Ha")}`}
-                  </div>
-                  <div className="event-description">
-                    {venueEvent.description}
-                  </div>
-                  {isNextVenueEvent && (
-                    <div className="button-container">
-                      <button className="btn btn-primary buy-tickets-button">
-                        Buy tickets
-                      </button>
+        <div className="row">
+          <div className="col-lg-6 col-12 venue-presentation">
+            {venue.config.landingPageConfig.presentation &&
+              venue.config.landingPageConfig.presentation.map(
+                (paragraph: string, index: number) => (
+                  <p
+                    key={`venue-presentation-paragraph-${index}`}
+                    className="presentation-paragraph"
+                  >
+                    {paragraph}
+                  </p>
+                )
+              )}
+            <div>
+              {venue.config.landingPageConfig.checkList &&
+                venue.config.landingPageConfig.checkList.map(
+                  (checkListItem: string, index: number) => (
+                    <div
+                      key={`checklist-item-${index}`}
+                      className="checklist-item"
+                    >
+                      <div className="check-icon-container">
+                        <FontAwesomeIcon icon={faCheckCircle} />
+                      </div>
+                      <div>{checkListItem}</div>
                     </div>
-                  )}
-                </InformationCard>
-              );
-            })}
+                  )
+                )}
+            </div>
+          </div>
+          <div className="col-lg-6 col-12 oncoming-events">
+            <div className="upcoming-gigs-title">Upcoming gigs</div>
+            {venueEvents &&
+              venueEvents.map((venueEvent: VenueEvent) => {
+                const startingDate = new Date(
+                  venueEvent.start_utc_seconds * 1000
+                );
+                const endingDate = new Date(
+                  (venueEvent.start_utc_seconds +
+                    60 * venueEvent.duration_minutes) *
+                    1000
+                );
+                const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+                return (
+                  <InformationCard
+                    title={venueEvent.name}
+                    key={venueEvent.id}
+                    className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                  >
+                    <div className="date">
+                      {`${dayjs(startingDate).format(
+                        "ddd MMMM Do - Ha"
+                      )}/${dayjs(endingDate).format("Ha")}`}
+                    </div>
+                    <div className="event-description">
+                      {venueEvent.description}
+                    </div>
+                    {isNextVenueEvent && (
+                      <div className="button-container">
+                        <button className="btn btn-primary buy-tickets-button">
+                          Buy tickets
+                        </button>
+                      </div>
+                    )}
+                  </InformationCard>
+                );
+              })}
+          </div>
         </div>
       </div>
-      {/* <div className="jazz-bar-entrance-experience-container">
-        <div className="container">
-          <div className="row header">
-            <div className="col-lg-4 col-5 band-logo-container">
-              <img
-                src={venue?.host?.icon}
-                alt="Kansas Smitty's"
-                className="band-logo"
-              />
-            </div>
-            <div className="col-lg-4 col-xs-6 secret-password-form-wrapper">
-              <SecretPasswordForm />
-            </div>
-          </div>
-
-          <div className="welcome-message">
-            {venue.config.landingPageConfig.welcomeMessage}
-          </div>
-
-          <div className="row video-row">
-            <div className="col-lg-6 col-12">
-              <iframe
-                title="Entrance video"
-                className="entrance-video"
-                src={venue.config.landingPageConfig.videoIframeUrl}
-                frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-            <div className="col-lg-6 col-12 decscription-items-container">
-              {venue.descriptionItems &&
-                venue.descriptionItems.map((descriptionItem: any) => (
-                  <div key={descriptionItem.id} className="description-item">
-                    <div className="check-icon-container">
-                      <FontAwesomeIcon icon={faCheck} />
-                    </div>
-                    <div>{descriptionItem.text}</div>
-                  </div>
-                ))}
-            </div>
-          </div>
-          <div className="upcoming-gigs-title">Upcoming gigs:</div>
-          {venue.config.landingPageConfig.eventbriteEventId && (
-            <InformationCard
-              className="event-card"
-              title="Buy tickets on EventBrite"
-            >
-              <EventbriteButton
-                ebEventId={venue.eventbriteEventId}
-                className="eventbrite-widget"
-              >
-                <button
-                  id={`eventbrite-${venue.name}`}
-                  type="button"
-                  className="btn btn-primary"
-                >
-                  Buy Tickets
-                </button>
-              </EventbriteButton>
-            </InformationCard>
-          )}
-          {venue.events &&
-            venue.events.map((event: any) => (
-              <InformationCard
-                className="event-card"
-                title={event.date}
-                key={event.date}
-              >
-                <div className="event-description">{event.description}</div>
-              </InformationCard>
-            ))}
-        </div>
-      </div> */}
     </WithNavigationBar>
   );
 };
