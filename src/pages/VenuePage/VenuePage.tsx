@@ -10,6 +10,8 @@ import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 import ChatContext from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -39,18 +41,14 @@ export interface Venue {
 }
 
 const VenuePage = () => {
-  const { venueId } = useParams();
-
-  useFirestoreConnect({
-    collection: "venues",
-    doc: venueId,
-    storeAs: "currentVenue",
-  });
+  useConnectPartyGoers();
+  useConnectCurrentVenue();
 
   const { venue, user, users } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
     users: state.firestore.ordered.partygoers,
+    eventPurchase: state.firestore.data.eventPurchase,
   })) as { venue: Venue; user: FUser; users: User[] };
 
   venue && updateTheme(venue);
@@ -58,14 +56,7 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!user) {
-    if (venueId === "kansassmittys") {
-      return <Redirect to={`/venue/${venueId}/jazzbar-entrance-experience`} />;
-    }
-    return <Redirect to={`/venue/${venueId}/entrance-experience`} />;
-  }
-
-  if (!venue || !users) {
+  if (!user || !venue || !users) {
     return <>Loading...</>;
   }
 

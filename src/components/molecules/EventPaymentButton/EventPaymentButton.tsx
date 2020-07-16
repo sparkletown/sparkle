@@ -28,12 +28,12 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({ event }) => {
     try {
       const {
         session_id: sessionId,
-      } = (
-        // @ts-ignore firebase.functions() exists
+      } = // @ts-ignore firebase.functions() exists
+      (
         await firebase.functions().httpsCallable("payment-getSessionId")({
           venueId: venue.id,
           eventId: event.id,
-          returnUrl: window.location.href,
+          returnUrl: `${window.location.protocol}//${window.location.host}/venue/${venue.id}/entrance/${event.id}`,
         })
       ).data;
 
