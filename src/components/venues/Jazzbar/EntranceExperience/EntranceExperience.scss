@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    align-items: start;
+    align-items: flex-start;
 
     .venue-host {
       margin: 30px 50px;
@@ -30,6 +30,43 @@
           width: 100%;
           height: 100%;
         }
+      }
+    }
+  }
+  .oncoming-events {
+    .upcoming-gigs-title {
+      margin: 20px 0;
+      font-size: 25px;
+      font-weight: 700;
+    }
+    h4 {
+      font-size: 30px;
+      font-style: italic;
+    }
+    .date {
+      font-size: 15px;
+      color: $white;
+      margin-bottom: 5px;
+    }
+    .event-description {
+      margin-bottom: 20px;
+      font-size: 15px;
+    }
+    .button-container {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .buy-tickets-button {
+      font-size: 15px;
+      padding: 10px 30px;
+    }
+    .disabled {
+      background: rgba($dark, 0.6);
+    }
+    .information-card-container {
+      margin-bottom: 20px;
+      &:last-child {
+        margin-bottom: 50px;
       }
     }
   }
