@@ -4,9 +4,17 @@
   .header {
     height: 400px;
     display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    .secret-password-form-wrapper {
+      background: rgba($black, 0.75);
+      padding: 20px;
+      width: 250px;
+      margin-right: 40px;
+      margin-bottom: 30px;
+      border-radius: 22px;
+    }
 
     .venue-host {
       margin: 30px 50px;
