@@ -10,6 +10,8 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { Venue } from "pages/VenuePage/VenuePage";
+import { User } from "types/User";
 
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -44,7 +46,7 @@ const JazzbarEntranceExperience = () => {
     venue: state.firestore.data.currentVenue,
     user: state.user,
     venueEvents: state.firestore.ordered.venueEvents,
-  }));
+  })) as { venue: Venue; user: User; venueEvents: VenueEvent[] };
 
   venue && updateTheme(venue);
 
