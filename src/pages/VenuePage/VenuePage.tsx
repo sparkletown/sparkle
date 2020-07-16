@@ -26,6 +26,13 @@ export interface Venue {
       primaryColor: string;
       backgroundColor?: string;
     };
+    landingPageConfig: {
+      coverImageUrl: string;
+      subtitle: string;
+    };
+  };
+  host: {
+    icon: string;
   };
 }
 

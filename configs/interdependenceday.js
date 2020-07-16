@@ -420,11 +420,13 @@ const ddp_events = [
 
 module.exports = {
   start_utc_seconds: 1594494000,
-  theme: {
-    primaryColor: "yellow",
-  },
   name: "Interdependence Day: Journey to the Center of the Earth",
   template: "partymap",
+  config: {
+    theme: {
+      primaryColor: "yellow",
+    },
+  },
   description: {
     text:
       "Welcome to the party. We recommend starting at the Vulcano Lift Shaft.",
