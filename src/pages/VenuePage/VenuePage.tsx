@@ -31,6 +31,7 @@ export interface Venue {
       subtitle: string;
       presentation: string[];
       checkList: string[];
+      videoIframeUrl: string;
     };
   };
   host: {
