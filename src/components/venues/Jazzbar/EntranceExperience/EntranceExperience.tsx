@@ -12,6 +12,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "pages/VenuePage/VenuePage";
 import { User } from "types/User";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCheck } from "@fortawesome/free-solid-svg-icons";
@@ -82,6 +83,9 @@ const JazzbarEntranceExperience = () => {
             <div className="subtitle">
               {venue.config.landingPageConfig.subtitle}
             </div>
+          </div>
+          <div className="secret-password-form-wrapper">
+            <SecretPasswordForm />
           </div>
         </div>
         <div className="col oncoming-events">
