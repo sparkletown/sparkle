@@ -3,7 +3,7 @@ import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams, Redirect } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
@@ -13,14 +13,8 @@ import { User } from "types/User";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-
-interface VenueEvent {
-  id: string;
-  name: string;
-  start_utc_seconds: number;
-  description: string;
-  duration_minutes: number;
-}
+import { VenueEvent } from "types/VenueEvent";
+import EventPaymentButton from "components/molecules/EventPaymentButton";
 
 const JazzbarEntranceExperience = () => {
   const { venueId } = useParams();
@@ -40,7 +34,7 @@ const JazzbarEntranceExperience = () => {
     orderBy: ["start_utc_seconds", "asc"],
   });
 
-  const { venue, user, venueEvents } = useSelector((state: any) => ({
+  const { venue, venueEvents } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
     venueEvents: state.firestore.ordered.venueEvents,
@@ -50,10 +44,6 @@ const JazzbarEntranceExperience = () => {
 
   if (!venue) {
     return <>Loading...</>;
-  }
-
-  if (user) {
-    return <Redirect to={`/venue/${venueId}`} />;
   }
 
   const nextVenueEventId = venueEvents && venueEvents[0].id;
@@ -144,9 +134,7 @@ const JazzbarEntranceExperience = () => {
                     </div>
                     {isNextVenueEvent && (
                       <div className="button-container">
-                        <button className="btn btn-primary buy-tickets-button">
-                          Buy tickets
-                        </button>
+                        <EventPaymentButton event={venueEvent} />
                       </div>
                     )}
                   </InformationCard>

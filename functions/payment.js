@@ -14,7 +14,7 @@ exports.getSessionId = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
 
-  if (context.auth.token.aud !== "co-reality-map") {
+  if (context.auth.token.aud !== secrets.PROJECT_ID) {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 
@@ -35,10 +35,14 @@ exports.getSessionId = functions.https.onCall(async (data, context) => {
   };
   const venue = await getVenue();
 
-  const getEvent = async () => ({
-    name: "Pool Party",
-    price: 100,
-  });
+  const getEvent = async () => {
+    return (
+      await firebase
+        .firestore()
+        .doc(`venues/${data.venueId}/events/${data.eventId}`)
+        .get()
+    ).data();
+  };
   const event = await getEvent();
 
   // @TODO: Check if venue and event entries exist
@@ -108,5 +112,5 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
   }
 
   // Return a response to acknowledge receipt of the event
-  return { received: true };
+  return res.status(200).send({ received: true });
 });
