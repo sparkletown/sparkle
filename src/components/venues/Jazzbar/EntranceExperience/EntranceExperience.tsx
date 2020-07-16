@@ -7,11 +7,24 @@ import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams, Redirect } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import InformationCard from "components/molecules/InformationCard";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
+interface VenueEvent {
+  id: string;
+  name: string;
+  start_utc_seconds: number;
+  description: string;
+  duration_minutes: number;
+}
+
 const JazzbarEntranceExperience = () => {
   const { venueId } = useParams();
+  dayjs.extend(advancedFormat);
 
   useFirestoreConnect({
     collection: "venues",
@@ -19,9 +32,18 @@ const JazzbarEntranceExperience = () => {
     storeAs: "currentVenue",
   });
 
-  const { venue, user } = useSelector((state: any) => ({
+  useFirestoreConnect({
+    collection: "venues",
+    doc: venueId,
+    subcollections: [{ collection: "events" }],
+    storeAs: "venueEvents",
+    orderBy: ["start_utc_seconds", "asc"],
+  });
+
+  const { venue, user, venueEvents } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
+    venueEvents: state.firestore.ordered.venueEvents,
   }));
 
   venue && updateTheme(venue);
@@ -34,6 +56,8 @@ const JazzbarEntranceExperience = () => {
     return <Redirect to={`/venue/${venueId}`} />;
   }
 
+  const nextVenueEventId = venueEvents && venueEvents[0].id;
+
   return (
     <WithNavigationBar>
       <div className="container venue-entrance-experience-container">
@@ -42,7 +66,7 @@ const JazzbarEntranceExperience = () => {
           style={{
             background: `linear-gradient(
             0deg,
-            rgba(0, 0, 0, 0.7) 2%,
+            rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
           ), url(${venue.config.landingPageConfig.coverImageUrl}`,
             backgroundSize: "cover",
@@ -57,6 +81,44 @@ const JazzbarEntranceExperience = () => {
               {venue.config.landingPageConfig.subtitle}
             </div>
           </div>
+        </div>
+        <div className="col oncoming-events">
+          <div className="upcoming-gigs-title">Upcoming gigs</div>
+          {venueEvents &&
+            venueEvents.map((venueEvent: VenueEvent) => {
+              const startingDate = new Date(
+                venueEvent.start_utc_seconds * 1000
+              );
+              const endingDate = new Date(
+                (venueEvent.start_utc_seconds +
+                  60 * venueEvent.duration_minutes) *
+                  1000
+              );
+              const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+              return (
+                <InformationCard
+                  title={venueEvent.name}
+                  key={venueEvent.id}
+                  className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                >
+                  <div className="date">
+                    {`${dayjs(startingDate).format("ddd MMMM Do - Ha")}/${dayjs(
+                      endingDate
+                    ).format("Ha")}`}
+                  </div>
+                  <div className="event-description">
+                    {venueEvent.description}
+                  </div>
+                  {isNextVenueEvent && (
+                    <div className="button-container">
+                      <button className="btn btn-primary buy-tickets-button">
+                        Buy tickets
+                      </button>
+                    </div>
+                  )}
+                </InformationCard>
+              );
+            })}
         </div>
       </div>
       {/* <div className="jazz-bar-entrance-experience-container">
