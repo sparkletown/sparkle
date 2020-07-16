@@ -4,7 +4,7 @@ import "./SecretPasswordForm.scss";
 
 import { PARTY_NAME } from "config";
 
-const SecretPasswordForm = () => {
+const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
 
   const [invalidPassword, setInvalidPassword] = useState();
@@ -62,7 +62,7 @@ const SecretPasswordForm = () => {
       <input
         className="btn btn-primary btn-block btn-centered"
         type="submit"
-        value="Enter the bar!"
+        value={buttonText}
       />
       <div className="form-group">
         {message && <small>{message}</small>}
