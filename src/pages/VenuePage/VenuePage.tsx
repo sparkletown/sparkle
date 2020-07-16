@@ -21,9 +21,20 @@ export interface Venue {
   id?: string;
   template: VenueTemplate;
   name: string;
-  theme: {
-    primaryColor: string;
-    backgroundColor?: string;
+  config: {
+    theme: {
+      primaryColor: string;
+      backgroundColor?: string;
+    };
+    landingPageConfig: {
+      coverImageUrl: string;
+      subtitle: string;
+      presentation: string[];
+      checkList: string[];
+    };
+  };
+  host: {
+    icon: string;
   };
 }
 
