@@ -82,11 +82,22 @@ const JazzbarEntranceExperience = () => {
             </div>
           </div>
           <div className="secret-password-form-wrapper">
-            <SecretPasswordForm />
+            <SecretPasswordForm
+              buttonText={venue.config.landingPageConfig.joinButtonText}
+            />
           </div>
         </div>
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
+            <iframe
+              title="entrance video"
+              width="100%"
+              height="300"
+              className="youtube-video"
+              src={venue.config.landingPageConfig.videoIframeUrl}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+            />
             {venue.config.landingPageConfig.presentation &&
               venue.config.landingPageConfig.presentation.map(
                 (paragraph: string, index: number) => (
