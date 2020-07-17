@@ -1,1 +1,1 @@
-export const PARTY_NAME = "co-reality-6";
+export const PARTY_NAME = "kansassmittys";

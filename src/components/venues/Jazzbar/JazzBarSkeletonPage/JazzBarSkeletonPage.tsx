@@ -43,17 +43,23 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               </p>
               <p>Performing tonight at Kansas Smitty's:</p>
               <ul>
-                <li>Giacomo Smith - alto/clarinet</li>
-                <li>Ferg Ireland - Double Bass</li>
-                <li>Joe Webb - Piano</li>
-                <li>Alec harper - Tenor Sax</li>
-                <li>Will Cleasby - Drums</li>
+                <li>Giacomo Smith - clarinet and tenor sax</li>
+                <li>Will Sach - double bass</li>
+                <li>Alec Harper - alto sax</li>
+                <li>Will Cleasby - drums</li>
+                <li>Joe Webb - piano</li>
               </ul>
               <p>
                 If you enjoy the music why not join the Patreon community. Our
                 Patreons get access to all sorts of additional musical content
-                and updates on all new shows, performances and events we run.
-                https://www.patreon.com/kansassmittys
+                and updates on all new shows, performances and events we run.{" "}
+                <a
+                  href="https://www.patreon.com/kansassmittys"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  https://www.patreon.com/kansassmittys
+                </a>
               </p>
               <p>
                 Kansas Smitty's have just released their new album 'Things
