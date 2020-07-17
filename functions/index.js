@@ -1,5 +1,7 @@
 const firebase = require("firebase");
+const admin = require("firebase-admin");
 const { PROJECT_ID } = require("./secrets");
+
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
@@ -7,8 +9,10 @@ const firebaseConfig = {
   projectId: PROJECT_ID,
 };
 firebase.initializeApp(firebaseConfig);
+admin.initializeApp(firebaseConfig);
 
 const video = require("./video");
+const payment = require("./payment");
 
 // Case-insensitive first character for iDevices
 function lowercaseFirstChar(password) {
@@ -45,3 +49,4 @@ exports.checkPassword = functions.https.onCall(async (data, context) => {
 });
 
 exports.video = video;
+exports.payment = payment;

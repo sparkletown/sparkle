@@ -8,6 +8,7 @@ const {
   TWILIO_ACCOUNT_SID,
   TWILIO_API_KEY,
   TWILIO_API_SECRET,
+  PROJECT_ID,
 } = require("./secrets");
 
 const generateToken = () => {
@@ -27,7 +28,7 @@ exports.getToken = functions.https.onCall((data, context) => {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
 
-  if (context.auth.token.aud !== "co-reality-map") {
+  if (context.auth.token.aud !== PROJECT_ID) {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 
