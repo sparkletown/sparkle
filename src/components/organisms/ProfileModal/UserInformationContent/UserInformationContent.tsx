@@ -14,18 +14,21 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
   setIsPasswordEditMode,
 }) => {
-  const { user, users, profileQuestions } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.data.users,
-    profileQuestions:
-      state.firestore.data.config?.[PARTY_NAME].profile_questions,
-  }));
+  const { user, venue, users, profileQuestions } = useSelector(
+    (state: any) => ({
+      user: state.user,
+      users: state.firestore.data.users,
+      profileQuestions:
+        state.firestore.data.config?.[PARTY_NAME].profile_questions,
+      venue: state.firestore.ordered.currentVenue[0],
+    })
+  );
 
   const history = useHistory();
   const firebase = useFirebase();
   const logout = () => {
     firebase.auth().signOut();
-    history.push("/");
+    history.push(`/venue/${venue.id}`);
   };
 
   return (
