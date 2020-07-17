@@ -153,13 +153,13 @@ const JazzbarEntranceExperience = () => {
                     <div className="event-description">
                       {venueEvent.description}
                     </div>
-                    {isNextVenueEvent && (
+                    {/* {isNextVenueEvent && (
                       <div className="button-container">
                         <button className="btn btn-primary buy-tickets-button">
                           Buy tickets
                         </button>
                       </div>
-                    )}
+                    )} */}
                   </InformationCard>
                 );
               })}

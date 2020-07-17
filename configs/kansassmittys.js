@@ -1,6 +1,7 @@
 module.exports = {
   template: "jazzbar",
   name: "Kansas Smitty's",
+  password: "secret",
   config: {
     theme: {
       primaryColor: "#bc271a",
