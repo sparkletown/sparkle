@@ -62,7 +62,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <header>
         <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
           <Link to={redirectionUrl || "/"}>
-            <span className="navbar-brand title">Co-Reality</span>
+            <span className="navbar-brand title">
+              <img
+                className="sparkle-navbar-icon"
+                src="/sparkle-header.png"
+                alt="Sparkle collective"
+              />
+            </span>
           </Link>
           {user && users && users[user.uid] && (
             <div className="icons-container">
