@@ -40,6 +40,9 @@ export interface JazzbarVenue extends Venue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;
+  host: {
+    icon: string;
+  };
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
