@@ -20,6 +20,7 @@ interface VenueEvent {
   start_utc_seconds: number;
   description: string;
   duration_minutes: number;
+  url?: string;
 }
 
 const JazzbarEntranceExperience = () => {
@@ -144,6 +145,7 @@ const JazzbarEntranceExperience = () => {
                     title={venueEvent.name}
                     key={venueEvent.id}
                     className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                    url={venueEvent.url}
                   >
                     <div className="date">
                       {`${dayjs(startingDate).format(
