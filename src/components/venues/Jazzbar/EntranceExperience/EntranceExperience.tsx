@@ -147,8 +147,8 @@ const JazzbarEntranceExperience = () => {
                   >
                     <div className="date">
                       {`${dayjs(startingDate).format(
-                        "ddd MMMM Do - Ha"
-                      )}/${dayjs(endingDate).format("Ha")}`}
+                        "ddd MMMM Do: Ha"
+                      )} - ${dayjs(endingDate).format("Ha")}`}
                     </div>
                     <div className="event-description">
                       {venueEvent.description}
