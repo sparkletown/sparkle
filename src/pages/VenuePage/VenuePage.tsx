@@ -1,6 +1,4 @@
 import React from "react";
-import { useParams, Redirect } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
@@ -10,6 +8,12 @@ import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 import ChatContext from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { Redirect, useParams } from "react-router-dom";
+import { Purchase } from "types/Purchase";
+import { VenueEvent } from "types/VenueEvent";
+import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -43,32 +47,62 @@ export interface Venue {
 const VenuePage = () => {
   const { venueId } = useParams();
 
-  useFirestoreConnect({
-    collection: "venues",
-    doc: venueId,
-    storeAs: "currentVenue",
-  });
+  useConnectPartyGoers();
+  useConnectCurrentVenue();
+  useConnectCurrentEvent();
 
-  const { venue, user, users } = useSelector((state: any) => ({
+  const {
+    venue,
+    user,
+    users,
+    eventPurchase,
+    eventPurchaseRequestStatus,
+    event,
+    eventRequestStatus,
+    venueRequestStatus,
+  } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
+    venueRequestStatus: state.firestore.status.requested.currentVenue,
     user: state.user,
     users: state.firestore.ordered.partygoers,
-  })) as { venue: Venue; user: FUser; users: User[] };
+    event: state.firestore.data.currentEvent,
+    eventRequestStatus: state.firestore.status.requested.currentEvent,
+    eventPurchase: state.firestore.data.eventPurchase,
+    eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
+  })) as {
+    venue: Venue;
+    user: FUser;
+    users: User[];
+    eventPurchase: Purchase;
+    eventPurchaseRequestStatus: boolean;
+    event: VenueEvent;
+    eventRequestStatus: boolean;
+    venueRequestStatus: boolean;
+  };
 
   venue && updateTheme(venue);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!user) {
-    if (venueId === "kansassmittys") {
-      return <Redirect to={`/venue/${venueId}/jazzbar-entrance-experience`} />;
-    }
-    return <Redirect to={`/venue/${venueId}/entrance-experience`} />;
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
   }
 
-  if (!venue || !users) {
+  if (eventRequestStatus && !event) {
+    return <>This event does not exist</>;
+  }
+
+  if (eventPurchaseRequestStatus && !eventPurchase) {
+    return <>Forbidden</>;
+  }
+
+  if (!eventPurchase || !venue || !users) {
     return <>Loading...</>;
+  }
+
+  if (!user) {
+    return <Redirect to={`/venue/${venueId}`} />;
   }
 
   let template;
