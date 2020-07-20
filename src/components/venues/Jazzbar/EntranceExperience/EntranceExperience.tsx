@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
@@ -28,6 +28,10 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   location,
 }) => {
   const { venueId } = useParams();
+  const [isStripeCheckoutLoading, setIsStripeCheckoutLoading] = useState(false);
+  const [stripeCheckoutError, setStripeCheckoutError] = useState<
+    string | undefined
+  >();
   dayjs.extend(advancedFormat);
 
   useConnectCurrentVenue();
@@ -60,22 +64,23 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
   const history = useHistory();
 
+  useEffect(() => {
+    if (eventId && venueId && redirectTo === "payment") {
+      openStripeCheckout(
+        eventId,
+        venueId,
+        setIsStripeCheckoutLoading,
+        setStripeCheckoutError
+      );
+    }
+  }, [venueId, eventId, redirectTo]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (redirectTo === "payment" && eventId && venueId) {
-    openStripeCheckout(
-      eventId,
-      venueId,
-      (value) => null,
-      (value) => null
-    );
-    return <>Loading...</>;
-  }
-
-  if (!venue) {
-    return <>Loading...</>;
+  if (!venue || isStripeCheckoutLoading) {
+    return <>{stripeCheckoutError ? "Oops an error occured" : "Loading..."}</>;
   }
 
   const nextVenueEventId = venueEvents?.[0]?.id;
