@@ -4,7 +4,12 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
+import getQueryParameters from "utils/getQueryParameters";
+import { RouterLocation } from "types/RouterLocation";
 
+interface PropsType {
+  location: RouterLocation;
+}
 export interface CodeOfConductFormData {
   contributeToExperience: string;
   cheerBand: string;
@@ -36,11 +41,12 @@ const QUESTIONS: {
   },
 ];
 
-const CodeOfConduct = () => {
+const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user } = useSelector((state: any) => ({
     user: state.user,
   }));
+  const { venueId } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
@@ -48,7 +54,7 @@ const CodeOfConduct = () => {
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push("/");
+    history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
   };
 
   return (

@@ -31,6 +31,7 @@ const ProfileModal: React.FunctionComponent<PropsType> = ({ show, onHide }) => {
           <UserInformationContent
             setIsEditMode={setIsEditMode}
             setIsPasswordEditMode={setIsPasswordEditMode}
+            hideModal={onHide}
           />
         )}
         {isEditMode && <EditProfileForm setIsEditMode={setIsEditMode} />}

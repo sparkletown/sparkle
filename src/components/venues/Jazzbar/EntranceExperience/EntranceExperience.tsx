@@ -1,23 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "pages/VenuePage/VenuePage";
+import { User as FUser } from "firebase/app";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { VenueEvent } from "types/VenueEvent";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import getQueryParameters from "utils/getQueryParameters";
+import openStripeCheckout from "utils/openStripeCheckout";
+import { RouterLocation } from "types/RouterLocation";
 
-const JazzbarEntranceExperience = () => {
+interface PropsType {
+  location: RouterLocation;
+}
+
+const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
+  location,
+}) => {
   const { venueId } = useParams();
+  const [isStripeCheckoutLoading, setIsStripeCheckoutLoading] = useState(false);
+  const [stripeCheckoutError, setStripeCheckoutError] = useState<
+    string | undefined
+  >();
   dayjs.extend(advancedFormat);
 
   useConnectCurrentVenue();
@@ -30,25 +44,51 @@ const JazzbarEntranceExperience = () => {
     orderBy: ["start_utc_seconds", "asc"],
   });
 
-  const { venue, venueEvents, venueRequestStatus } = useSelector(
+  const { venue, venueEvents, venueRequestStatus, user } = useSelector(
     (state: any) => ({
       venue: state.firestore.data.currentVenue,
+      user: state.user,
       venueRequestStatus: state.firestore.status.requested.currentVenue,
       venueEvents: state.firestore.ordered.venueEvents,
     })
-  ) as { venue: Venue; venueEvents: VenueEvent[]; venueRequestStatus: boolean };
+  ) as {
+    venue: Venue;
+    venueEvents: VenueEvent[];
+    venueRequestStatus: boolean;
+    user: FUser;
+  };
+
+  const { eventId, redirectTo } = getQueryParameters(location.search);
 
   venue && updateTheme(venue);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (eventId && venueId && redirectTo === "payment") {
+      openStripeCheckout(
+        eventId,
+        venueId,
+        setIsStripeCheckoutLoading,
+        setStripeCheckoutError
+      );
+    }
+  }, [venueId, eventId, redirectTo]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!venue) {
-    return <>Loading...</>;
+  if (!venue || isStripeCheckoutLoading) {
+    return <>{stripeCheckoutError ? "Oops an error occured" : "Loading..."}</>;
   }
 
-  const nextVenueEventId = venueEvents && venueEvents[0].id;
+  const nextVenueEventId = venueEvents?.[0]?.id;
+  const redirectToSignUpFlow = (eventId: string) => {
+    history.push(
+      `/account/register?venueId=${venueId}&eventId=${eventId}&redirectTo=payment`
+    );
+  };
 
   return (
     <>
@@ -146,7 +186,21 @@ const JazzbarEntranceExperience = () => {
                       </div>
                       {isNextVenueEvent && (
                         <div className="button-container">
-                          <EventPaymentButton event={venueEvent} />
+                          {user ? (
+                            <EventPaymentButton
+                              eventId={venueEvent.id}
+                              venueId={venueId}
+                            />
+                          ) : (
+                            <button
+                              className="btn btn-primary buy-tickets-button"
+                              onClick={() =>
+                                redirectToSignUpFlow(venueEvent.id)
+                              }
+                            >
+                              Buy tickets
+                            </button>
+                          )}
                         </div>
                       )}
                     </InformationCard>
