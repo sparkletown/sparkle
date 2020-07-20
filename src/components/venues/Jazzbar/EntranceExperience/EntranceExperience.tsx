@@ -20,6 +20,7 @@ interface VenueEvent {
   start_utc_seconds: number;
   description: string;
   duration_minutes: number;
+  descriptions?: string[];
   url?: string;
 }
 
@@ -154,6 +155,9 @@ const JazzbarEntranceExperience = () => {
                     </div>
                     <div className="event-description">
                       {venueEvent.description}
+                      {venueEvent.descriptions?.map((d) => (
+                        <p>{d}</p>
+                      ))}
                     </div>
                     {/* {isNextVenueEvent && (
                       <div className="button-container">
