@@ -4,6 +4,7 @@ import { useHistory, Link } from "react-router-dom";
 import firebase from "firebase/app";
 
 import "./Account.scss";
+import { RouterLocation } from "types/RouterLocation";
 
 interface RegisterFormData {
   email: string;
@@ -14,11 +15,11 @@ const signUp = ({ email, password }: RegisterFormData) => {
   return firebase.auth().createUserWithEmailAndPassword(email, password);
 };
 
-// const signIn = ({email, password}: RegisterFormData) => {
-//   return firebase.auth().signInWithEmailAndPassword(email, password);
-// }
+interface PropsType {
+  location: RouterLocation;
+}
 
-const Register = () => {
+const Register: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { register, handleSubmit, errors, formState, setError } = useForm<
     RegisterFormData
@@ -28,7 +29,7 @@ const Register = () => {
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await signUp(data);
-      history.push("/account/profile");
+      history.push(`/account/profile${location.search}`);
     } catch (error) {
       setError("email", "firebase", error.message);
     }
@@ -95,7 +96,7 @@ const Register = () => {
         <div className="secondary-action">
           Already have an account?
           <br />
-          <Link to="/login">Login</Link>
+          <Link to={`/login${location.search}`}>Login</Link>
         </div>
       </div>
     </div>

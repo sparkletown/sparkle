@@ -90,6 +90,12 @@
     .button-container {
       display: flex;
       justify-content: flex-end;
+
+      .buy-tickets-button {
+        width: 150px;
+        height: 50px;
+        font-size: 15px;
+      }
     }
     .disabled {
       background: rgba($dark, 0.6);

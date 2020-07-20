@@ -4,18 +4,25 @@ import { useHistory, Link } from "react-router-dom";
 import firebase from "firebase/app";
 
 import "./Account.scss";
+import getQueryParameters from "utils/getQueryParameters";
+import { RouterLocation } from "types/RouterLocation";
 
 interface LoginFormData {
   email: string;
   password: string;
 }
 
+interface PropsType {
+  location: RouterLocation;
+}
+
 const signIn = ({ email, password }: LoginFormData) => {
   return firebase.auth().signInWithEmailAndPassword(email, password);
 };
 
-const Login = () => {
+const Login: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
+  const { venueId } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({
@@ -24,7 +31,7 @@ const Login = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
-      history.push("/");
+      history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
     } catch (error) {
       setError("email", "firebase", error.message);
     }
@@ -74,7 +81,9 @@ const Login = () => {
         <div className="secondary-action">
           Don't have an account yet?
           <br />
-          <Link to="/account/register">Register instead!</Link>
+          <Link to={`/account/register${location.search}`}>
+            Register instead!
+          </Link>
         </div>
       </div>
     </div>

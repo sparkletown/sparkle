@@ -6,13 +6,18 @@ import { updateUserProfile } from "./helpers";
 import "firebase/storage";
 import "./Account.scss";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { RouterLocation } from "types/RouterLocation";
 
 export interface ProfileFormData {
   partyName: string;
   pictureUrl: string;
 }
 
-const Profile = () => {
+interface PropsType {
+  location: RouterLocation;
+}
+
+const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user } = useSelector((state: any) => ({
     user: state.user,
@@ -31,7 +36,7 @@ const Profile = () => {
 
   const onSubmit = async (data: ProfileFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push("/account/questions");
+    history.push(`/account/questions${location.search}`);
   };
 
   const pictureUrl = watch("pictureUrl");

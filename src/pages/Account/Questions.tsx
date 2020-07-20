@@ -6,6 +6,7 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import { QuestionType } from "types/Question";
 import { PARTY_NAME } from "config";
+import { RouterLocation } from "types/RouterLocation";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -13,7 +14,11 @@ export interface QuestionsFormData {
   likeAboutParties: string;
 }
 
-const Questions = () => {
+interface PropsType {
+  location: RouterLocation;
+}
+
+const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
@@ -25,7 +30,7 @@ const Questions = () => {
   });
   const onSubmit = async (data: QuestionsFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push("/account/code-of-conduct");
+    history.push(`/account/code-of-conduct${location.search}`);
   };
 
   return (

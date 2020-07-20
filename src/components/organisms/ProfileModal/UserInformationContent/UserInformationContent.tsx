@@ -11,11 +11,13 @@ import { User } from "types/User";
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
   setIsPasswordEditMode: (value: boolean) => void;
+  hideModal: () => void;
 }
 
 const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
   setIsPasswordEditMode,
+  hideModal,
 }) => {
   const { user, venue, users, profileQuestions } = useSelector(
     (state: any) =>
@@ -37,8 +39,12 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const firebase = useFirebase();
   const logout = () => {
     firebase.auth().signOut();
+    // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
+    hideModal();
     history.push(`/venue/${venue?.id}`);
   };
+
+  if (!user) return <></>;
 
   return (
     <>
