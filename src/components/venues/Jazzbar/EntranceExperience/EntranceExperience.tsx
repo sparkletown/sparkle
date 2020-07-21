@@ -163,7 +163,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                     >
                       <div className="date">
                         {`${dayjs(startingDate).format(
-                          "ddd MMMM Do - Ha"
+                          "ddd MMMM Do: Ha"
                         )}/${dayjs(endingDate).format("Ha")}`}
                       </div>
                       <div className="event-description">
