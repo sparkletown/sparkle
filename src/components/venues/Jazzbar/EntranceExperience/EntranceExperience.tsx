@@ -168,6 +168,9 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       </div>
                       <div className="event-description">
                         {venueEvent.description}
+                        {venueEvent.descriptions?.map((d) => (
+                          <p>{d}</p>
+                        ))}
                       </div>
                       {isNextVenueEvent && (
                         <div className="button-container">
