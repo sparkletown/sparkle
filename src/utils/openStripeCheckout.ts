@@ -14,13 +14,14 @@ const openStripeCheckout = async (
 ) => {
   setIsLoading(true);
   setStripeError(undefined);
+  const postPaymentRedirectionBaseURL = `${window.location.protocol}//${window.location.host}/venue/${venueId}`;
   try {
     const { session_id: sessionId } = (
       await firebase.functions().httpsCallable("payment-getSessionId")({
         venueId: venueId,
         eventId: eventId,
-        successUrl: `${window.location.protocol}//${window.location.host}/venue/${venueId}/entrance/${eventId}`,
-        cancelUrl: `${window.location.protocol}//${window.location.host}/venue/${venueId}`,
+        successUrl: `${postPaymentRedirectionBaseURL}?redirectTo=payment_success`,
+        cancelUrl: postPaymentRedirectionBaseURL,
       })
     ).data;
 

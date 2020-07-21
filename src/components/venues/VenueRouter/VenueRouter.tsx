@@ -7,7 +7,6 @@ import VenuePage from "pages/VenuePage";
 const VenueRouter = () => (
   <Switch>
     <Route exact path="/venue/:venueId" component={EntranceExperience} />
-    <Route path="/venue/:venueId/entrance/:eventId" component={EventPage} />
     <Route path="/venue/:venueId/event/:eventId" component={VenuePage} />
     <Route path="/" component={() => <Redirect to="/venue/kansassmittys" />} />
   </Switch>
