@@ -18,9 +18,7 @@ exports.getSessionId = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 
-  if (
-    !(data && data.venueId && data.eventId && data.successUrl && data.cancelUrl)
-  ) {
+  if (!(data && data.venueId && data.eventId && data.returnUrl)) {
     throw new functions.https.HttpsError(
       "invalid-argument",
       "venue, event or return url data missing"
@@ -66,8 +64,8 @@ exports.getSessionId = functions.https.onCall(async (data, context) => {
       },
     ],
     mode: "payment",
-    success_url: `${data.successUrl}?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: data.cancelUrl,
+    success_url: `${data.returnUrl}?session_id={CHECKOUT_SESSION_ID}&redirectTo=payment_success`,
+    cancel_url: data.returnUrl,
   });
 
   // Create purchase item
