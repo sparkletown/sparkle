@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
@@ -18,6 +18,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import CheckPaymentIsNeeded from "components/molecules/CheckPaymentIsNeeded";
+import { Toast } from "react-bootstrap";
 
 interface PropsType {
   location: RouterLocation;
@@ -28,6 +29,10 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 }) => {
   const { venueId } = useParams();
   dayjs.extend(advancedFormat);
+
+  const [isPaymentSuccessToastOpen, setIsPaymentSuccessToastOpen] = useState(
+    false
+  );
 
   useConnectCurrentVenue();
 
@@ -54,6 +59,12 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   };
 
   const { eventId, redirectTo } = getQueryParameters(location.search);
+
+  useEffect(() => {
+    if (redirectTo === "payment_success") {
+      setIsPaymentSuccessToastOpen(true);
+    }
+  }, [redirectTo]);
 
   venue && updateTheme(venue);
 
@@ -82,6 +93,14 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     <>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
+          {isPaymentSuccessToastOpen && (
+            <div className="toast-container">
+              <Toast onClose={() => setIsPaymentSuccessToastOpen(false)}>
+                <Toast.Header>Thank you!</Toast.Header>
+                <Toast.Body>Your payment is confirmed</Toast.Body>
+              </Toast>
+            </div>
+          )}
           <div
             className="header"
             style={{
