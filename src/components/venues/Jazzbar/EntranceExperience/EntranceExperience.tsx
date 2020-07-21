@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
@@ -10,15 +10,14 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "pages/VenuePage/VenuePage";
 import { User as FUser } from "firebase/app";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { VenueEvent } from "types/VenueEvent";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import getQueryParameters from "utils/getQueryParameters";
-import openStripeCheckout from "utils/openStripeCheckout";
 import { RouterLocation } from "types/RouterLocation";
+import CheckPaymentIsNeeded from "components/molecules/CheckPaymentIsNeeded";
 
 interface PropsType {
   location: RouterLocation;
@@ -28,10 +27,6 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   location,
 }) => {
   const { venueId } = useParams();
-  const [isStripeCheckoutLoading, setIsStripeCheckoutLoading] = useState(false);
-  const [stripeCheckoutError, setStripeCheckoutError] = useState<
-    string | undefined
-  >();
   dayjs.extend(advancedFormat);
 
   useConnectCurrentVenue();
@@ -64,23 +59,16 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
   const history = useHistory();
 
-  useEffect(() => {
-    if (eventId && venueId && redirectTo === "payment") {
-      openStripeCheckout(
-        eventId,
-        venueId,
-        setIsStripeCheckoutLoading,
-        setStripeCheckoutError
-      );
-    }
-  }, [venueId, eventId, redirectTo]);
+  if (user && venueId && eventId && redirectTo === "payment") {
+    return <CheckPaymentIsNeeded eventId={eventId} venueId={venueId} />;
+  }
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!venue || isStripeCheckoutLoading) {
-    return <>{stripeCheckoutError ? "Oops an error occured" : "Loading..."}</>;
+  if (!venue) {
+    return <>Loading...</>;
   }
 
   const nextVenueEventId = venueEvents?.[0]?.id;
@@ -113,9 +101,6 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
               <div className="subtitle">
                 {venue.config.landingPageConfig.subtitle}
               </div>
-            </div>
-            <div className="secret-password-form-wrapper">
-              <SecretPasswordForm />
             </div>
           </div>
           <div className="row">
