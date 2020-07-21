@@ -6,6 +6,7 @@ import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "react-redux";
 import { Purchase } from "types/Purchase";
 import { Link } from "react-router-dom";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 
 interface PropsType {
   eventId: string;
@@ -25,8 +26,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   })) as { purchaseHistory: Purchase[] };
 
   const hasUserAlreadyBoughtTicket =
-    purchaseHistory &&
-    purchaseHistory.find((purchase) => purchase.eventId === eventId);
+    purchaseHistory && hasUserBoughtTicketForEvent(purchaseHistory, eventId);
 
   return (
     <div className="event-payment-button-container">

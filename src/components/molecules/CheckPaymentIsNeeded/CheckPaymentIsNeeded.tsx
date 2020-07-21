@@ -5,6 +5,7 @@ import { Purchase } from "types/Purchase";
 import openStripeCheckout from "utils/openStripeCheckout";
 import { Redirect } from "react-router-dom";
 import { ParsedQs } from "qs";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 
 interface PropsType {
   venueId: string | string[] | ParsedQs | ParsedQs[];
@@ -26,10 +27,7 @@ const CheckPaymentIsNeeded: React.FunctionComponent<PropsType> = ({
     })
   ) as { purchaseHistory: Purchase[]; purchaseHistoryRequestStatus: boolean };
   const hasUserBoughtTicket =
-    purchaseHistory &&
-    purchaseHistory.find(
-      (purchase) => purchase.eventId === eventId && purchase.venueId === venueId
-    );
+    purchaseHistory && hasUserBoughtTicketForEvent(purchaseHistory, eventId);
 
   if (!purchaseHistoryRequestStatus || isStripeCheckoutLoading) {
     return <>Loading...</>;
