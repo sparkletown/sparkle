@@ -8,8 +8,7 @@ const secrets = require("./secrets");
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 const stripe = require("stripe")(secrets.STRIPE_SECRET_KEY);
 
-exports.getSessionId = functions.https.onCall(async (data, context) => {
-  // Validation checks
+exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
@@ -18,66 +17,30 @@ exports.getSessionId = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 
-  if (!(data && data.venueId && data.eventId && data.returnUrl)) {
+  if (
+    !(data && data.venueId && data.eventId && data.userEmail && data.userId)
+  ) {
     throw new functions.https.HttpsError(
       "invalid-argument",
       "venue, event or return url data missing"
     );
   }
 
-  const getVenue = async () => {
-    const venueDoc = await firebase
-      .firestore()
-      .doc(`venues/${data.venueId}`)
-      .get();
-
-    return venueDoc.data();
-  };
-  const venue = await getVenue();
-
-  const getEvent = async () => {
-    return (
-      await firebase
-        .firestore()
-        .doc(`venues/${data.venueId}/events/${data.eventId}`)
-        .get()
-    ).data();
-  };
-  const event = await getEvent();
-
-  // @TODO: Check if venue and event entries exist
-  // @TODO: Check if purchase entry exist
-
-  // Do Stripe stuff
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ["card"],
-    line_items: [
-      {
-        price_data: {
-          currency: "gbp",
-          product_data: {
-            name: `Ticket to ${event.name}@${venue.name}`,
-          },
-          unit_amount: event.price,
-        },
-        quantity: 1,
-      },
-    ],
-    mode: "payment",
-    success_url: `${data.returnUrl}?session_id={CHECKOUT_SESSION_ID}&redirectTo=payment_success`,
-    cancel_url: data.returnUrl,
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: data.price,
+    currency: "gbp",
+    metadata: { integration_check: "accept_a_payment" },
+    receipt_email: data.userEmail,
   });
 
-  // Create purchase item
-  // await firebase.firestore().collection("purchases").doc(`${data.venueId}-${data.eventId}-${context.auth.uid}`).set({
-  await firebase.firestore().collection("purchases").doc(session.id).set({
+  await firebase.firestore().collection("purchases").doc(paymentIntent.id).set({
     venueId: data.venueId,
     eventId: data.eventId,
-    userId: context.auth.uid,
+    userId: data.userId,
     status: "PENDING",
   });
 
-  return { session_id: session.id };
+  return { client_secret: paymentIntent.client_secret };
 });
 
 const endpointSecret = secrets.STRIPE_ENDPOINT_KEY;
@@ -101,14 +64,17 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
   }
 
   // Handle the checkout.session.completed event
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    console.log(session);
+  if (event.type === "charge.succeeded") {
+    const charge = event.data.object;
 
     // Fulfill the purchase...
-    await firebase.firestore().collection("purchases").doc(session.id).update({
-      status: "COMPLETE",
-    });
+    await firebase
+      .firestore()
+      .collection("purchases")
+      .doc(charge.payment_intent)
+      .update({
+        status: "COMPLETE",
+      });
   }
 
   // Return a response to acknowledge receipt of the event

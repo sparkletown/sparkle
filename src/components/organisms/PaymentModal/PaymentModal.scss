@@ -1,0 +1,52 @@
+@import "scss/constants.scss";
+
+.payment-modal-container {
+  padding: 20px;
+
+  .payment-confirmation-container {
+    margin-bottom: 20px;
+  }
+
+  .event-title {
+    font-size: 30px;
+  }
+
+  .tab-navigation-container {
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .payment-form-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px 0;
+
+    input {
+      padding: 10px;
+    }
+  }
+
+  .cancel-button {
+    cursor: pointer;
+  }
+
+  .disabled {
+    color: $light-grey;
+    cursor: default;
+  }
+
+  .confirm-order-button {
+    height: 50px;
+    margin-top: 5px;
+  }
+
+  .price {
+    font-size: 20px;
+  }
+
+  .red-text {
+    color: $red;
+    text-align: center;
+  }
+}
