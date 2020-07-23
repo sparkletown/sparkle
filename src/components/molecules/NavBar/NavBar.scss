@@ -5,6 +5,17 @@
   display: flex;
   justify-content: space-between;
 
+  .log-in-button {
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 18px;
+    text-decoration: none;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
   .logout-span {
     cursor: pointer;
   }
