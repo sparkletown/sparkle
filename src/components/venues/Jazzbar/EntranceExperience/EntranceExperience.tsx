@@ -17,8 +17,7 @@ import EventPaymentButton from "components/molecules/EventPaymentButton";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
-import CheckPaymentIsNeeded from "components/molecules/CheckPaymentIsNeeded";
-import { Toast } from "react-bootstrap";
+import PaymentModal from "components/organisms/PaymentModal";
 
 interface PropsType {
   location: RouterLocation;
@@ -29,10 +28,8 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 }) => {
   const { venueId } = useParams();
   dayjs.extend(advancedFormat);
-
-  const [isPaymentSuccessToastOpen, setIsPaymentSuccessToastOpen] = useState(
-    false
-  );
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<VenueEvent | undefined>();
 
   useConnectCurrentVenue();
 
@@ -60,19 +57,16 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
   const { eventId, redirectTo } = getQueryParameters(location.search);
 
-  useEffect(() => {
-    if (redirectTo === "payment_success") {
-      setIsPaymentSuccessToastOpen(true);
-    }
-  }, [redirectTo]);
-
   venue && updateTheme(venue);
 
   const history = useHistory();
 
-  if (user && venueId && eventId && redirectTo === "payment") {
-    return <CheckPaymentIsNeeded eventId={eventId} venueId={venueId} />;
-  }
+  useEffect(() => {
+    if (user && venueEvents && venueId && eventId && redirectTo === "payment") {
+      setSelectedEvent(venueEvents.find((event) => event.id === eventId));
+      setIsPaymentModalOpen(true);
+    }
+  }, [user, venueId, eventId, redirectTo, venueEvents]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
@@ -93,14 +87,6 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     <>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
-          {isPaymentSuccessToastOpen && (
-            <div className="toast-container">
-              <Toast onClose={() => setIsPaymentSuccessToastOpen(false)}>
-                <Toast.Header>Thank you!</Toast.Header>
-                <Toast.Body>Your payment is confirmed</Toast.Body>
-              </Toast>
-            </div>
-          )}
           <div
             className="header"
             style={{
@@ -197,6 +183,8 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                             <EventPaymentButton
                               eventId={venueEvent.id}
                               venueId={venueId}
+                              selectEvent={() => setSelectedEvent(venueEvent)}
+                              setIsPaymentModalOpen={setIsPaymentModalOpen}
                             />
                           ) : (
                             <button
@@ -216,6 +204,13 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         </div>
+        {user && selectedEvent && (
+          <PaymentModal
+            selectedEvent={selectedEvent}
+            show={isPaymentModalOpen}
+            onHide={() => setIsPaymentModalOpen(false)}
+          />
+        )}
       </WithNavigationBar>
     </>
   );

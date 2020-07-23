@@ -1,0 +1,29 @@
+@import "scss/constants.scss";
+
+.StripeElement {
+  height: 40px;
+  padding: 10px;
+  width: 100%;
+  color: #32325d;
+  background-color: rgba($white, 0.12);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  margin: 10px 0;
+
+  box-shadow: 0 1px 3px 0 $dark;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+  border-radius: 22px;
+}
+
+.StripeElement--focus {
+  border: 1px solid $light-grey;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}

@@ -12,6 +12,7 @@ import "firebase/auth";
 import "firebase/functions";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import { STRIPE_PUBLISHABLE_KEY } from "secrets";
 
 import "bootstrap";
 import "scss/global.scss";
@@ -28,6 +29,11 @@ import {
   PROJECT_ID,
 } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -74,11 +80,13 @@ const rrfProps = {
 };
 
 render(
-  <Provider store={store}>
-    <ReactReduxFirebaseProvider {...rrfProps}>
-      <AppRouter />
-    </ReactReduxFirebaseProvider>
-  </Provider>,
+  <Elements stripe={stripePromise}>
+    <Provider store={store}>
+      <ReactReduxFirebaseProvider {...rrfProps}>
+        <AppRouter />
+      </ReactReduxFirebaseProvider>
+    </Provider>
+  </Elements>,
   document.getElementById("root")
 );
 
