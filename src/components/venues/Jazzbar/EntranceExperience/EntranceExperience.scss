@@ -1,6 +1,32 @@
 @import "scss/constants.scss";
 
 .venue-entrance-experience-container {
+  .count-down-container {
+    font-size: 15px;
+  }
+
+  .login-invitation {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .quotation-container {
+    display: flex;
+    flex-direction: column;
+    color: $white;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .quotation {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    .quotation-author {
+      font-size: 13px;
+    }
+  }
+
   .toast {
     position: absolute;
     max-width: none;

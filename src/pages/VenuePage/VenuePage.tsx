@@ -21,6 +21,11 @@ export enum VenueTemplate {
   partymap = "partymap",
 }
 
+interface Quotation {
+  author: string;
+  text: string;
+}
+
 export interface Venue {
   id?: string;
   template: VenueTemplate;
@@ -37,6 +42,7 @@ export interface Venue {
       checkList: string[];
       videoIframeUrl: string;
       joinButtonText: string;
+      quotations?: Quotation[];
     };
   };
   host: {
