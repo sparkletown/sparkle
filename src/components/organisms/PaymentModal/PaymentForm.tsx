@@ -6,6 +6,8 @@ import "firebase/functions";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { VenueEvent } from "types/VenueEvent";
+import TabNavigation from "components/molecules/TabNavigation";
+import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
@@ -20,6 +22,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   isFormBeingSubmitted,
   event,
 }) => {
+  const [selectedTab, setSelectedTab] = useState(INDIVIDUAL_TICKET_TAB.id);
   const { venueId } = useParams();
   const stripe = useStripe();
   const elements = useElements();
@@ -29,16 +32,22 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     user: state.user,
   }));
 
+  const ticketPrice =
+    selectedTab === INDIVIDUAL_TICKET_TAB.id
+      ? event.price
+      : event.collective_price;
+
   const [billingEmail, setBillingEmail] = useState(user.email);
 
   useEffect(() => {
+    setClientSecret(undefined);
     async function getPaymentIntent() {
       const { client_secret: clientSecretToken } = (
         await firebase.functions().httpsCallable("payment-createPaymentIntent")(
           {
             venueId: venueId,
             eventId: event.id,
-            price: event.price,
+            price: ticketPrice,
             userEmail: user.email,
             userId: user.uid,
           }
@@ -51,7 +60,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     } catch {
       setErrorMessage("Could not create a payment intent");
     }
-  }, [event.id, venueId, event.price, user.uid, user.email]);
+  }, [event.id, venueId, ticketPrice, user.uid, user.email, selectedTab]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setIsFormBeingSubmitted(true);
@@ -80,35 +89,40 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     setIsFormBeingSubmitted(false);
   };
 
-  if (!clientSecret) {
-    return <>Loading...</>;
-  }
-
   return (
     <>
-      <div className="price">{`£${event.price / 100}`}</div>
-      <form onSubmit={handleSubmit} className="payment-form-container">
-        <input
-          value={billingEmail}
-          onChange={(event) => setBillingEmail(event.target.value)}
-          className=""
-        />
-        <CardSection />
-        <button
-          disabled={!stripe || isFormBeingSubmitted}
-          className="btn btn-primary btn-block confirm-order-button"
-          type="submit"
-        >
-          {!isFormBeingSubmitted ? (
-            "Confirm order"
-          ) : (
-            <div className="spinner-border" role="status">
-              <span className="sr-only">Loading...</span>
-            </div>
-          )}
-        </button>
-        <div className="red-text">{errorMessage}</div>
-      </form>
+      <div className="price">{`£${ticketPrice / 100}`}</div>
+      <TabNavigation
+        selectedTab={selectedTab}
+        setSelectedTab={setSelectedTab}
+        tabsArray={PAYMENT_FORM_TAB_ARRAY}
+      />
+      {!clientSecret ? (
+        <>Loading...</>
+      ) : (
+        <form onSubmit={handleSubmit} className="payment-form-container">
+          <input
+            value={billingEmail}
+            onChange={(event) => setBillingEmail(event.target.value)}
+            className=""
+          />
+          <CardSection />
+          <button
+            disabled={!stripe || isFormBeingSubmitted}
+            className="btn btn-primary btn-block confirm-order-button"
+            type="submit"
+          >
+            {!isFormBeingSubmitted ? (
+              "Confirm order"
+            ) : (
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            )}
+          </button>
+          <div className="red-text">{errorMessage}</div>
+        </form>
+      )}
     </>
   );
 };

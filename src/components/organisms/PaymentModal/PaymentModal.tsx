@@ -7,6 +7,7 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { Purchase } from "types/Purchase";
 import "./PaymentModal.scss";
 import PaymentForm from "./PaymentForm";
+import PaymentConfirmation from "./PaymentConfirmation";
 
 interface PropsType {
   show: boolean;
@@ -20,7 +21,6 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   selectedEvent,
 }) => {
   useConnectUserPurchaseHistory();
-
   const { purchaseHistory, purchaseHistoryRequestStatus } = useSelector(
     (state: any) => ({
       purchaseHistory: state.firestore.ordered.userPurchaseHistory,
@@ -48,7 +48,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     modalContent = <>Loading...</>;
   } else if (isPaymentSuccess) {
     modalContent = (
-      <>Thank you, your payment was confirmed. See you at the party!</>
+      <PaymentConfirmation startUtcSeconds={selectedEvent.start_utc_seconds} />
     );
   } else if (!hasUserBoughtTicket) {
     modalContent = (

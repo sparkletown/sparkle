@@ -183,6 +183,9 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       </div>
                       {isNextVenueEvent && (
                         <div className="button-container">
+                          <div className="price-container">
+                            Tickets are £{venueEvent.price / 100}
+                          </div>
                           {user ? (
                             <EventPaymentButton
                               eventId={venueEvent.id}

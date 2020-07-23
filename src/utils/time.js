@@ -4,35 +4,46 @@ const ONE_MINUTE_IN_SECONDS = 60;
 const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
+const formatMeasurementInString = (value, measureUnit) =>
+  value > 0
+    ? value > 1
+      ? `${value} ${measureUnit}s`
+      : `1 ${measureUnit}`
+    : "";
+
 export const getTimeBeforeParty = (startUtcSeconds) => {
   const secondsBeforeParty = startUtcSeconds - Date.now() / 1000;
   if (secondsBeforeParty < 0) {
     return 0;
   }
-  if (secondsBeforeParty > ONE_DAY_IN_SECONDS) {
-    const numberOfCompleteDaysBeforeParty = Math.floor(
-      secondsBeforeParty / ONE_DAY_IN_SECONDS
-    );
-    if (numberOfCompleteDaysBeforeParty > 1) {
-      return `${Math.floor(secondsBeforeParty / ONE_DAY_IN_SECONDS)} days`;
-    }
-    return "1 day";
-  }
-  const numberOfCompleteHours = Math.floor(
-    secondsBeforeParty / ONE_HOUR_IN_SECONDS
+  const numberOfCompleteDaysBeforeParty = Math.floor(
+    secondsBeforeParty / ONE_DAY_IN_SECONDS
   );
+
+  const numberOfCompleteHours = Math.floor(
+    (secondsBeforeParty %
+      (numberOfCompleteDaysBeforeParty * ONE_DAY_IN_SECONDS)) /
+      ONE_HOUR_IN_SECONDS
+  );
+
   const numberOfMinutes = Math.floor(
     (secondsBeforeParty % ONE_HOUR_IN_SECONDS) / ONE_MINUTE_IN_SECONDS
   );
-  if (numberOfCompleteHours >= 4) {
-    return `${numberOfCompleteHours} hours`;
-  }
-  if (numberOfCompleteHours >= 1) {
-    return `${numberOfCompleteHours} ${
-      numberOfCompleteHours > 1 ? "hours" : "hour"
-    } and ${numberOfMinutes} minutes`;
-  }
-  return `${numberOfMinutes} minutes`;
+
+  const numberOfDaysInString = formatMeasurementInString(
+    numberOfCompleteDaysBeforeParty,
+    "day"
+  );
+  const numberOfHoursInString = formatMeasurementInString(
+    numberOfCompleteHours,
+    "hour"
+  );
+  const numberOfMinutesInString = formatMeasurementInString(
+    numberOfMinutes,
+    "minute"
+  );
+
+  return `${numberOfDaysInString} ${numberOfHoursInString} ${numberOfMinutesInString}`;
 };
 
 export function formatMinute(minute, startUtcSeconds) {

@@ -125,9 +125,15 @@
       margin-bottom: 20px;
       font-size: 15px;
     }
+
+    .price-container {
+      color: $white;
+      font-size: 17px;
+    }
     .button-container {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
 
       .buy-tickets-button {
         width: 150px;

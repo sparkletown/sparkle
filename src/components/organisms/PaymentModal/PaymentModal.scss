@@ -3,8 +3,17 @@
 .payment-modal-container {
   padding: 20px;
 
+  .payment-confirmation-container {
+    margin-bottom: 20px;
+  }
+
   .event-title {
     font-size: 30px;
+  }
+
+  .tab-navigation-container {
+    margin-top: 20px;
+    width: 100%;
   }
 
   .payment-form-container {

@@ -6,4 +6,5 @@ export interface VenueEvent {
   descriptions?: string[];
   duration_minutes: number;
   price: number;
+  collective_price: number;
 }
