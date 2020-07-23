@@ -70,7 +70,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
-          {user && users && users[user.uid] && (
+          {user && users && users[user.uid] ? (
             <div className="icons-container">
               {hasUpcomingEvents && (
                 <OverlayTrigger
@@ -112,6 +112,10 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 />
               </div>
             </div>
+          ) : (
+            <Link to="/login" className="log-in-button">
+              Log in
+            </Link>
           )}
         </nav>
       </header>
