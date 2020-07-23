@@ -3,7 +3,7 @@ import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Link } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
@@ -17,8 +17,10 @@ import EventPaymentButton from "components/molecules/EventPaymentButton";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
-import CheckPaymentIsNeeded from "components/molecules/CheckPaymentIsNeeded";
-import { Toast } from "react-bootstrap";
+import PaymentModal from "components/organisms/PaymentModal";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import CountDown from "components/molecules/CountDown";
+import { Purchase } from "types/Purchase";
 
 interface PropsType {
   location: RouterLocation;
@@ -29,10 +31,8 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 }) => {
   const { venueId } = useParams();
   dayjs.extend(advancedFormat);
-
-  const [isPaymentSuccessToastOpen, setIsPaymentSuccessToastOpen] = useState(
-    false
-  );
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<VenueEvent | undefined>();
 
   useConnectCurrentVenue();
 
@@ -44,35 +44,39 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     orderBy: ["start_utc_seconds", "asc"],
   });
 
-  const { venue, venueEvents, venueRequestStatus, user } = useSelector(
-    (state: any) => ({
-      venue: state.firestore.data.currentVenue,
-      user: state.user,
-      venueRequestStatus: state.firestore.status.requested.currentVenue,
-      venueEvents: state.firestore.ordered.venueEvents,
-    })
-  ) as {
+  const {
+    venue,
+    venueEvents,
+    venueRequestStatus,
+    user,
+    purchaseHistory,
+  } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+    user: state.user,
+    venueRequestStatus: state.firestore.status.requested.currentVenue,
+    venueEvents: state.firestore.ordered.venueEvents,
+    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+  })) as {
     venue: Venue;
     venueEvents: VenueEvent[];
     venueRequestStatus: boolean;
     user: FUser;
+    purchaseHistory: Purchase[];
+    purchaseHistoryRequestStatus: boolean;
   };
 
   const { eventId, redirectTo } = getQueryParameters(location.search);
-
-  useEffect(() => {
-    if (redirectTo === "payment_success") {
-      setIsPaymentSuccessToastOpen(true);
-    }
-  }, [redirectTo]);
 
   venue && updateTheme(venue);
 
   const history = useHistory();
 
-  if (user && venueId && eventId && redirectTo === "payment") {
-    return <CheckPaymentIsNeeded eventId={eventId} venueId={venueId} />;
-  }
+  useEffect(() => {
+    if (user && venueEvents && venueId && eventId && redirectTo === "payment") {
+      setSelectedEvent(venueEvents.find((event) => event.id === eventId));
+      setIsPaymentModalOpen(true);
+    }
+  }, [user, venueId, eventId, redirectTo, venueEvents]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
@@ -89,18 +93,14 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     );
   };
 
+  const closePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+  };
+
   return (
     <>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
-          {isPaymentSuccessToastOpen && (
-            <div className="toast-container">
-              <Toast onClose={() => setIsPaymentSuccessToastOpen(false)}>
-                <Toast.Header>Thank you!</Toast.Header>
-                <Toast.Body>Your payment is confirmed</Toast.Body>
-              </Toast>
-            </div>
-          )}
           <div
             className="header"
             style={{
@@ -124,26 +124,6 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
           </div>
           <div className="row">
             <div className="col-lg-6 col-12 venue-presentation">
-              <iframe
-                title="entrance video"
-                width="100%"
-                height="300"
-                className="youtube-video"
-                src={venue.config.landingPageConfig.videoIframeUrl}
-                frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-              />
-              {venue.config.landingPageConfig.presentation &&
-                venue.config.landingPageConfig.presentation.map(
-                  (paragraph: string, index: number) => (
-                    <p
-                      key={`venue-presentation-paragraph-${index}`}
-                      className="presentation-paragraph"
-                    >
-                      {paragraph}
-                    </p>
-                  )
-                )}
               <div>
                 {venue.config.landingPageConfig.checkList &&
                   venue.config.landingPageConfig.checkList.map(
@@ -160,6 +140,33 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                     )
                   )}
               </div>
+              <iframe
+                title="entrance video"
+                width="100%"
+                height="300"
+                className="youtube-video"
+                src={venue.config.landingPageConfig.videoIframeUrl}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+              />
+              {venue.config.landingPageConfig.quotations &&
+                venue.config.landingPageConfig.quotations.map((quotation) => (
+                  <div className="quotation-container">
+                    <div className="quotation">{quotation.text}</div>
+                    <div className="quotation-author">- {quotation.author}</div>
+                  </div>
+                ))}
+              {venue.config.landingPageConfig.presentation &&
+                venue.config.landingPageConfig.presentation.map(
+                  (paragraph: string, index: number) => (
+                    <p
+                      key={`venue-presentation-paragraph-${index}`}
+                      className="presentation-paragraph"
+                    >
+                      {paragraph}
+                    </p>
+                  )
+                )}
             </div>
             <div className="col-lg-6 col-12 oncoming-events">
               <div className="upcoming-gigs-title">Upcoming gigs</div>
@@ -174,6 +181,9 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       1000
                   );
                   const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+                  const hasUserBoughtTicket =
+                    user &&
+                    hasUserBoughtTicketForEvent(purchaseHistory, venueEvent.id);
                   return (
                     <InformationCard
                       title={venueEvent.name}
@@ -181,9 +191,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       className={`${!isNextVenueEvent ? "disabled" : ""}`}
                     >
                       <div className="date">
-                        {`${dayjs(startingDate).format(
-                          "ddd MMMM Do: Ha"
-                        )}/${dayjs(endingDate).format("Ha")}`}
+                        {`${dayjs(startingDate).format("ha")}-${dayjs(
+                          endingDate
+                        ).format("ha")} ${dayjs(startingDate).format(
+                          "dddd MMMM"
+                        )}`}
                       </div>
                       <div className="event-description">
                         {venueEvent.description}
@@ -193,10 +205,33 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       </div>
                       {isNextVenueEvent && (
                         <div className="button-container">
+                          {hasUserBoughtTicket ? (
+                            <div>
+                              <div>You have a ticket for this event</div>
+                              <CountDown
+                                startUtcSeconds={venueEvent.start_utc_seconds}
+                              />
+                            </div>
+                          ) : (
+                            <div className="price-container">
+                              Individual tickets £{venueEvent.price / 100}
+                              <br />
+                              Group tickets £{venueEvent.collective_price / 100}
+                              {!user && (
+                                <div className="login-invitation">
+                                  Already have a ticket?{" "}
+                                  <Link to="/login">Log in</Link>.
+                                </div>
+                              )}
+                            </div>
+                          )}
+
                           {user ? (
                             <EventPaymentButton
                               eventId={venueEvent.id}
                               venueId={venueId}
+                              selectEvent={() => setSelectedEvent(venueEvent)}
+                              setIsPaymentModalOpen={setIsPaymentModalOpen}
                             />
                           ) : (
                             <button
@@ -216,6 +251,13 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         </div>
+        {user && selectedEvent && (
+          <PaymentModal
+            selectedEvent={selectedEvent}
+            show={isPaymentModalOpen}
+            onHide={closePaymentModal}
+          />
+        )}
       </WithNavigationBar>
     </>
   );
