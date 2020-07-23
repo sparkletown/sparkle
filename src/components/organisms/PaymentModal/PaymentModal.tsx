@@ -20,6 +20,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   selectedEvent,
 }) => {
   useConnectUserPurchaseHistory();
+
   const { purchaseHistory, purchaseHistoryRequestStatus } = useSelector(
     (state: any) => ({
       purchaseHistory: state.firestore.ordered.userPurchaseHistory,
@@ -27,11 +28,14 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
         state.firestore.status.requested.userPurchaseHistory,
     })
   ) as { purchaseHistory: Purchase[]; purchaseHistoryRequestStatus: boolean };
-  const hasUserBoughtTicket =
-    purchaseHistory &&
-    hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id);
+
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
+
+  const hasUserBoughtTicket = hasUserBoughtTicketForEvent(
+    purchaseHistory,
+    selectedEvent.id
+  );
 
   const closePaymentModal = () => {
     if (!isFormBeingSubmitted) {

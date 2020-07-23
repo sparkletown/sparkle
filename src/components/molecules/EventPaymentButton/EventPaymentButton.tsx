@@ -25,8 +25,10 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
     purchaseHistory: state.firestore.ordered.userPurchaseHistory,
   })) as { purchaseHistory: Purchase[] };
 
-  const hasUserAlreadyBoughtTicket =
-    purchaseHistory && hasUserBoughtTicketForEvent(purchaseHistory, eventId);
+  const hasUserAlreadyBoughtTicket = hasUserBoughtTicketForEvent(
+    purchaseHistory,
+    eventId
+  );
 
   const handleClick = () => {
     selectEvent();

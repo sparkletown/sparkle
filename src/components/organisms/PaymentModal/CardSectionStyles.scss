@@ -4,7 +4,6 @@
   height: 40px;
   padding: 10px;
   width: 100%;
-  color: #32325d;
   background-color: rgba($white, 0.12);
   border: 1px solid transparent;
   border-radius: 4px;
@@ -21,9 +20,9 @@
 }
 
 .StripeElement--invalid {
-  border-color: #fa755a;
+  border-color: $red;
 }
 
 .StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
+  background-color: $stripe-auto-fill-background-color !important;
 }

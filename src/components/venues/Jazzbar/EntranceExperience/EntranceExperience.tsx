@@ -83,6 +83,10 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     );
   };
 
+  const closePaymentModal = () => {
+    setIsPaymentModalOpen(false);
+  };
+
   return (
     <>
       <WithNavigationBar>
@@ -208,7 +212,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
           <PaymentModal
             selectedEvent={selectedEvent}
             show={isPaymentModalOpen}
-            onHide={() => setIsPaymentModalOpen(false)}
+            onHide={closePaymentModal}
           />
         )}
       </WithNavigationBar>
