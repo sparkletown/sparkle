@@ -1,10 +1,299 @@
-const TODO_events = [
+const latin_quarter_events = [
   {
     start_minute: 0,
+    duration_minutes: 90,
+    host: "Pinky Promise",
+    name: "Poly Ritmo (DJ Set)",
+    text:
+      "Working in esteemed Soho record store, Sounds Of The Universe and graduating with an ethnomusicology degree from SOAS, Poly- Ritmo brings her wide knowledge of music to the decks. 2019 saw her joining the Soundway Records crew as well as playing Glastonbury, Shambala and Wilderness festivals, the Tate Modern, XOYO and more. Poly-Ritmo can be heard on her monthly Worldwide FM show, playing anything from Brazilian funk to broken beat to jazz.",
+    interactivity: "low",
+  },
+  {
+    start_minute: 90,
+    duration_minutes: 75,
+    host: "Poly Ritmo",
+    name: "Philippo (DJ Set)",
+    text:
+      "Philippo is the founder of London’s wildest theatrical parties 'Gypsy Disco' & 'Pinky Promise'. He is also the man behind the decks at some of UK & Europes most exciting festivals! With his trademark blend of cosmic latin rhythms, tropical bass and global beats, Philippo has been helping to raise the heat on the dancefloor and championing the new wave of Latin electronica through his sets that have graced audiences across Europe including in France, Spain, Germany, Portugal, Poland, Bulgaria, Romania & Croatia!",
+    interactivity: "low",
+  },
+  {
+    start_minute: 165,
+    duration_minutes: 105,
+    host: "Philippo",
+    name: "Village Cuts (DJ Set)",
+    text:
+      "Village Cuts are a dynamic DJ duo from London, exploring a blend of African, Latin, Caribbean and UK underground dance music.",
+    interactivity: "low",
+  },
+];
+
+const twisted_time_machine_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 30,
+    host: "Twisted Time Machine",
+    name: "Sexy 70s",
+    text: "Disco Thrusting Workshop with Gary Velour",
+    interactivity: "high",
+  },
+  {
+    start_minute: 90,
+    duration_minutes: 20,
+    host: "Twisted Time Machine",
+    name: "Naughty 00s",
+    text: "Loose Lips Lip Sync Challenge with Katy ‘Pop My’ Cherry",
+    interactivity: "high",
+  },
+  {
+    start_minute: 110,
+    duration_minutes: 40,
+    host: "Twisted Time Machine",
+    name: "Swinging 60s",
+    text: "Groovy Baby Best Mojo Competition with Ziggy Goldfinger",
+    interactivity: "high",
+  },
+  {
+    start_minute: 150,
     duration_minutes: 60,
-    host: "TODO",
-    name: "TODO",
-    text: "TODO",
+    host: "Twisted Time Machine",
+    name: "Erotic 80s",
+    text:
+      "Suck It Up Hoover Strut Off with Mrs Mercury - Lycra 80s Aerobics with Jane Fondle",
+    interactivity: "high",
+  },
+  {
+    start_minute: 210,
+    duration_minutes: 15,
+    host: "Twisted Time Machine",
+    name: "Titilating 20s",
+    text: "Cheeky Charleston Class with Minnie",
+    interactivity: "high",
+  },
+  {
+    start_minute: 225,
+    duration_minutes: 35,
+    host: "Twisted Time Machine",
+    name: "NASTY 90s",
+    text: "Pop vs Rave Dance Battle with Lustin Timberlake & Mel G Spot",
+    interactivity: "high",
+  },
+  {
+    start_minute: 260,
+    duration_minutes: 10,
+    host: "Twisted Time Machine",
+    name: "Future Foreplay",
+    text: "No one knows what the future holds...",
+    interactivity: "high",
+  },
+];
+
+const boudoir_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 90,
+    host: "Cabaret and Private Dancers",
+    name: "Cabaret Show",
+    text:
+      "A bunch of feisty, feminist, fiercely independent women, who also happen to be strippers. They aim at shattering stereotypes and challenging stigma, whilst improving their own working conditions.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 90,
+    duration_minutes: 60,
+    host: "Pinky Promise",
+    name: "Mattana (DJ Set)",
+    text: "Afro, Latin & funky beats from DJ Mattana, aka Carys Evans",
+    interactivity: "high",
+  },
+  {
+    start_minute: 150,
+    duration_minutes: 60,
+    host: "Berlin Strippers Collective",
+    name: "Tasty Lopez (DJ Set)",
+    text:
+      "Vocalist, DJ and Soho Radio presenter Tasty Lopez curates a colourful mix of genres from all over the world; from global club music, bass, house, dancehall, afro-beat &amp; baile funk to disco, soul, boogie and latin. Each set is a full-bodied fiesta and celebration of life",
+    interactivity: "high",
+  },
+  {
+    start_minute: 210,
+    duration_minutes: 90,
+    host: "Berlin Strippers Collective",
+    name: "Hazel Marimba (DJ Set)",
+    text:
+      "London based DJ Hazel Marimba fuses genres across the board and has a love of bass, groove and anything with soul.",
+    interactivity: "high",
+  },
+];
+
+const lovers_layer_events = [
+  {
+    start_minute: 15,
+    duration_minutes: 60,
+    host: "Body Love Sketch Club",
+    name: "Sexy Life Drawing",
+    text:
+      "We can't feel each other at the moment, so let's celebrate feeling ourselves! A nourishing, creative tonic to self-isolation frustration, this class invites us to tap into our juicy feelings, enjoy the intimacy and eroticism of drawing (and being drawn if we choose to pose). All bodies, artistic capabilities and confidence levels welcome.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 75,
+    duration_minutes: 70,
+    host: "You Topia Productions",
+    name: "Quarandating: Lockdown love",
+    text:
+      "It's fun, it's naughty, it's chaotic, and it's EXACTLY what the doctor ordered",
+    interactivity: "high",
+  },
+  {
+    start_minute: 145,
+    duration_minutes: 45,
+    host: "Lola Jean",
+    name: "Naughty Games",
+    text:
+      "Lola Jean will be rummaging up a series of games for you to delve deep into your pleasures and hidden kinks",
+    interactivity: "high",
+  },
+  {
+    start_minute: 190,
+    duration_minutes: 70,
+    host: "Babiest Baby",
+    name: "Strip Pass the Parcel",
+    text:
+      "Lets see how we can re-imagine this classic game via Zoom - bring your layers and reveal your truths - this game is not for the faint hearted!",
+    interactivity: "high",
+  },
+];
+
+const den_of_iniquity_events = [
+  {
+    start_minute: 30,
+    duration_minutes: 90,
+    host: "Embers Collective",
+    name: "Queerstory",
+    text:
+      "Embers Collective will be delving into world mythology and folklore to present you with a range of queer stories and songs from around the world.",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Smut Slam",
+    name: "Smut Slam",
+    text:
+      "If you’re having sex or getting kinky, you’ve probably had a LOT of firsts! Tell us about ‘em, for a chance to win sweet swag. this high-energy open mic features real-life, first-person sex stories from the audience; insight from our celebrity judges, and readings from THE FUCKBUCKET, a convenient receptacle for all your anonymous questions and confessions!",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 90,
+    host: "Pass the Porn",
+    name: "Pass the Porn",
+    text:
+      "Think of this as an elevated and sophisticated version of that sleepover where one of your friends decided to search for porn and show the group. A cross between cinema and smut. Pillows, cuddle puddles, blankets and popcorn. Each Pass the Porn film series will feature multiple films from well known and indie artists with an underlying theme. Masturbation, Facials, BDSM, Group Sex and much more. Between films, expect panel discussions, Q&A, and mini workshops related to the content you just saw.",
+    interactivity: "high",
+  },
+];
+
+const pussy_cat_parlour_events = [
+  {
+    start_minute: 60,
+    duration_minutes: 60,
+    host: "Pussy Cat Lounge",
+    name: "PsyPhyllis Rave Granny",
+    text:
+      "Let the Host granny cat guide you into their furry chamber of pleasurable pats",
+    interactivity: "high",
+  },
+  {
+    start_minute: 120,
+    duration_minutes: 60,
+    host: "Pussy Cat Lounge",
+    name: "MEWSROUND and political broadcast with Margaret Scratcher",
+    text:
+      "Saucy Stories, Creative Cat lap dances, Disco sing along, Kitty Pole Performances, Disco Reads",
+    interactivity: "high",
+  },
+  {
+    start_minute: 180,
+    duration_minutes: 30,
+    host: "Pussy Cat Lounge",
+    name: "MEWS ROUND and political broadcast with Jeremy Clawbin",
+    text: "Kitty Kat Puuurformances",
+    interactivity: "high",
+  },
+  {
+    start_minute: 210,
+    duration_minutes: 60,
+    host: "Pussy Cat Lounge",
+    name: "Disco the DJ CAT",
+    text:
+      "Join the kitty cat walk, spit out your fur balls and lose yourself like you are on heat",
+    interactivity: "high",
+  },
+];
+
+const living_room_events = [
+  {
+    start_minute: 0,
+    duration_minutes: 15,
+    host: "The Living Room",
+    name: "Soothing Music",
+    text: `Whether you are joining us on your own or with a partner, you are welcome to prepare the following:
+🎈Soft lights, nice environment
+🎈Cushions and blankets to get comfortable on
+🎈Massage oil and towels
+🎈Any sex toys you might want to use
+🎈Feathers or other items you can use to explore touch and sensations on your skin
+🎈Fruits or chocolates or other sexy edibles
+🎈A face mask or eye mask, a hat, a wig - whatever might make you feel more comfortable online.  You are welcome to play with your anonymity as much as you can (but you need to be on screen the whole time).`,
+    interactivity: "high",
+  },
+  {
+    start_minute: 15,
+    duration_minutes: 15,
+    host: "The Living Room",
+    name: "Interactive Games to help you meet other party guests",
+    text: `Whether you are joining us on your own or with a partner, you are welcome to prepare the following:
+🎈Soft lights, nice environment
+🎈Cushions and blankets to get comfortable on
+🎈Massage oil and towels
+🎈Any sex toys you might want to use
+🎈Feathers or other items you can use to explore touch and sensations on your skin
+🎈Fruits or chocolates or other sexy edibles
+🎈A face mask or eye mask, a hat, a wig - whatever might make you feel more comfortable online.  You are welcome to play with your anonymity as much as you can (but you need to be on screen the whole time).`,
+    interactivity: "high",
+  },
+  {
+    start_minute: 0,
+    duration_minutes: 15,
+    host: "The Living Room",
+    name: "Hysterical Literature Readings",
+    text: `Whether you are joining us on your own or with a partner, you are welcome to prepare the following:
+🎈Soft lights, nice environment
+🎈Cushions and blankets to get comfortable on
+🎈Massage oil and towels
+🎈Any sex toys you might want to use
+🎈Feathers or other items you can use to explore touch and sensations on your skin
+🎈Fruits or chocolates or other sexy edibles
+🎈A face mask or eye mask, a hat, a wig - whatever might make you feel more comfortable online.  You are welcome to play with your anonymity as much as you can (but you need to be on screen the whole time).`,
+    interactivity: "high",
+  },
+  {
+    start_minute: 0,
+    duration_minutes: 15,
+    host: "The Living Room",
+    name: "Cabaret Performances featuring Pole dancing & strip-burlesque.",
+    text: "",
+    interactivity: "high",
+  },
+  {
+    start_minute: 0,
+    duration_minutes: 15,
+    host: "The Living Room",
+    name: "Playroom & Sensual Games",
+    text:
+      "The Playroom is a gently guided and supervised sensuality lounge. Guests are invited to explore the experience in whichever way feels most comfortable. A space for you to play both with your inner exhibitionist, as well as inner voyeur. A space to see and be seen, to reveal, to show, to unfold.",
     interactivity: "high",
   },
 ];
@@ -15,7 +304,7 @@ module.exports = {
   description: {
     text: "",
   },
-  start_utc_seconds: 1595624400,
+  start_utc_seconds: 1595620800,
   duration_hours: 4,
   entrance_hosted_hours: 400,
   party_name: "Pinky Promise Online Party",
@@ -76,8 +365,7 @@ module.exports = {
     },
   ],
   description: {
-    program_url:
-      "https://docs.google.com/spreadsheets/d/1LtUNnWvFWHKGg53sw_CCn6Rp_d0bhuWClITrBg2Udpg/",
+    program_url: "https://www.pinkypromiseland.co.uk/schedule",
     text:
       "Welcome to the party. There are many spaces to choose from. We hope you have a great time!",
   },
@@ -95,7 +383,7 @@ module.exports = {
       attendance_x: "58%",
       attendance_y: "53%",
       image: "PP_LatinQuarter.jpg",
-      events: TODO_events,
+      events: latin_quarter_events,
     },
     {
       title: "The Boudoir",
@@ -110,7 +398,7 @@ module.exports = {
       attendance_x: "49%",
       attendance_y: "21%",
       image: "PP_Boudoir.jpg",
-      events: TODO_events,
+      events: boudoir_events,
     },
     {
       title: "Twisted Time Machine",
@@ -125,7 +413,7 @@ module.exports = {
       attendance_x: "39%",
       attendance_y: "53%",
       image: "PP_TwistedTimeMachine.jpg",
-      events: TODO_events,
+      events: twisted_time_machine_events,
     },
     {
       title: "Lovers Layer",
@@ -140,7 +428,7 @@ module.exports = {
       attendance_x: "16%",
       attendance_y: "23%",
       image: "PP_LoversLayer.jpg",
-      events: TODO_events,
+      events: lovers_layer_events,
     },
     {
       title: "The Den of Iniquity",
@@ -155,7 +443,7 @@ module.exports = {
       attendance_x: "81%",
       attendance_y: "63%",
       image: "PP_DenOfIniquity.jpg",
-      events: TODO_events,
+      events: den_of_iniquity_events,
     },
     {
       title: "The Pussy Cat Parlour",
@@ -170,7 +458,7 @@ module.exports = {
       attendance_x: "81%",
       attendance_y: "23%",
       image: "PP_PussyCatParlour.jpg",
-      events: TODO_events,
+      events: pussy_cat_parlour_events,
     },
     {
       title: "The Living Room",
@@ -185,7 +473,7 @@ module.exports = {
       attendance_x: "17%",
       attendance_y: "63%",
       image: "PP_LivingRoom.jpg",
-      events: TODO_events,
+      events: living_room_events,
     },
   ],
 };
