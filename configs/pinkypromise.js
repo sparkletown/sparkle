@@ -15,7 +15,7 @@ module.exports = {
   description: {
     text: "",
   },
-  start_utc_seconds: 1595620800,
+  start_utc_seconds: 1595624400,
   duration_hours: 4,
   entrance_hosted_hours: 400,
   party_name: "Pinky Promise Online Party",
