@@ -124,7 +124,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
               </div>
             </div>
           </div>
-          {venue.template == VenueTemplate.partymap && (
+          {venue.template === VenueTemplate.partymap && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
                 buttonText={venue.config.landingPageConfig.joinButtonText}
