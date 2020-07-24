@@ -228,7 +228,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
                           {user ? (
                             <EventPaymentButton
-                              eventId={venueEvent.id}
+                              event={venueEvent}
                               venueId={venueId}
                               selectEvent={() => setSelectedEvent(venueEvent)}
                               setIsPaymentModalOpen={setIsPaymentModalOpen}
