@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { PARTY_NAME } from "config";
 
 interface PropsType {
   show: boolean;
@@ -22,8 +21,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
   const { user, users, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
-    profileQuestions:
-      state.firestore.data.config?.[PARTY_NAME].profile_questions,
+    profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     await updateUserProfile(user.uid, data);

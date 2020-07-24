@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import "./SecretPasswordForm.scss";
 
-import { PARTY_NAME } from "config";
-
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
 
@@ -11,6 +9,8 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const [error, setError] = useState();
   const [password, setPassword] = useState();
   const [message, setMessage] = useState();
+
+  const { venueId } = useParams();
 
   function passwordChanged(e) {
     setPassword(e.target.value);
@@ -23,7 +23,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     setMessage("Checking password...");
 
     const checkPassword = firebase.functions().httpsCallable("checkPassword");
-    checkPassword({ config: PARTY_NAME, password: password })
+    checkPassword({ venue: venueId, password: password })
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");

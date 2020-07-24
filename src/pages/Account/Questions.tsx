@@ -5,7 +5,6 @@ import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import { QuestionType } from "types/Question";
-import { PARTY_NAME } from "config";
 import { RouterLocation } from "types/RouterLocation";
 
 export interface QuestionsFormData {
@@ -22,8 +21,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
-    profileQuestions:
-      state.firestore.data.config?.[PARTY_NAME].profile_questions,
+    profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",

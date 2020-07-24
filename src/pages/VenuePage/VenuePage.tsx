@@ -58,6 +58,10 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
+  if (!eventPurchase || !venue || !users || !venue) {
+    return <>Loading...</>;
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -68,10 +72,6 @@ const VenuePage = () => {
 
   if (eventPurchaseRequestStatus && !eventPurchase) {
     return <>Forbidden</>;
-  }
-
-  if (!eventPurchase || !venue || !users) {
-    return <>Loading...</>;
   }
 
   if (!user) {

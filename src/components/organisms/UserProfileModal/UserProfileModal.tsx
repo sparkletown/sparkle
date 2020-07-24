@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 
-import { PARTY_NAME } from "config";
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
 import { useSelector } from "react-redux";
@@ -18,10 +17,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   onHide,
   userProfile,
 }) => {
-  const { user, usersordered, config } = useSelector((state: any) => ({
+  const { user, usersordered, venue } = useSelector((state: any) => ({
     user: state.user,
     usersordered: state.firestore.ordered.users,
-    config: state.firestore.data.config?.[PARTY_NAME],
+    venue: state.firestore.data.currentVenue,
   }));
 
   if (!userProfile) {
@@ -62,7 +61,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             </div>
             <div className="profile-extras">
-              {config.profile_questions?.map((question: any) => (
+              {venue.profile_questions?.map((question: any) => (
                 <>
                   <p className="light question">{question.text}</p>
                   <h6>

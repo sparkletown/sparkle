@@ -78,12 +78,12 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     }
   }, [user, venueId, eventId, redirectTo, venueEvents]);
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
-  }
-
   if (!venue) {
     return <>Loading...</>;
+  }
+
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
   }
 
   const nextVenueEventId = venueEvents?.[0]?.id;

@@ -42,6 +42,10 @@ const EventPage = () => {
 
   venue && updateTheme(venue);
 
+  if (!user || !event || !eventPurchase || !venue) {
+    return <>Loading...</>;
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -52,10 +56,6 @@ const EventPage = () => {
 
   if (eventPurchaseRequestStatus && !eventPurchase) {
     return <>Forbidden</>;
-  }
-
-  if (!user || !event || !eventPurchase) {
-    return <>Loading...</>;
   }
 
   if (!user) {
