@@ -46,6 +46,13 @@ export const getTimeBeforeParty = (startUtcSeconds) => {
   return `${numberOfDaysInString} ${numberOfHoursInString} ${numberOfMinutesInString}`;
 };
 
+export const canUserJoinTheEvent = (event) => {
+  if (event.start_utc_seconds - Date.now() / 1000 > ONE_HOUR_IN_SECONDS) {
+    return false;
+  }
+  return true;
+};
+
 export function formatMinute(minute, startUtcSeconds) {
   if (minute === null || minute === undefined) {
     return "(unknown)";

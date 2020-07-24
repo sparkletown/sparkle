@@ -6,16 +6,18 @@ import { useSelector } from "react-redux";
 import { Purchase } from "types/Purchase";
 import { Link } from "react-router-dom";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { canUserJoinTheEvent } from "utils/time";
+import { VenueEvent } from "types/VenueEvent";
 
 interface PropsType {
-  eventId: string;
+  event: VenueEvent;
   venueId: string;
   setIsPaymentModalOpen: (value: boolean) => void;
   selectEvent: () => void;
 }
 
 const EventPaymentButton: React.FunctionComponent<PropsType> = ({
-  eventId,
+  event,
   venueId,
   setIsPaymentModalOpen,
   selectEvent,
@@ -27,7 +29,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
 
   const hasUserAlreadyBoughtTicket = hasUserBoughtTicketForEvent(
     purchaseHistory,
-    eventId
+    event.id
   );
 
   const handleClick = () => {
@@ -38,8 +40,12 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   return (
     <div className="event-payment-button-container">
       {hasUserAlreadyBoughtTicket ? (
-        <Link to={`/venue/${venueId}/event/${eventId}`}>
-          <button role="link" className="btn btn-primary buy-tickets-button">
+        <Link to={`/venue/${venueId}/event/${event.id}`}>
+          <button
+            role="link"
+            className="btn btn-primary buy-tickets-button"
+            disabled={!canUserJoinTheEvent(event)}
+          >
             Join the event
           </button>
         </Link>
