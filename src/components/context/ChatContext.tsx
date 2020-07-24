@@ -97,8 +97,7 @@ function buildMessage(
 }
 
 export default ({ children }: { children: any }) => {
-  const { user, venue } = useSelector((state: any) => ({
-    user: state.user,
+  const { venue } = useSelector((state: any) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
   })) as { user: FUser; venue: Venue };
 
@@ -109,12 +108,6 @@ export default ({ children }: { children: any }) => {
     doc: venue.id,
     subcollections: [{ collection: "chats" }],
     storeAs: "venueChats",
-  });
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
   });
 
   const sendGlobalChat = useCallback(
