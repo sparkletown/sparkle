@@ -7,6 +7,7 @@ import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { updateTheme } from "pages/VenuePage/helpers";
 
 interface PropsType {
   location: RouterLocation;
@@ -43,13 +44,19 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
   };
 
+  if (!venue?.code_of_conduct_questions) {
+    return <>Loading...</>;
+  }
+
+  venue && updateTheme(venue);
+
   return (
     <div className="page-container code-of-conduct-container">
       <div className="kansas-smittys-logo"></div>
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {venue.profile_questions.map((q: CodeOfConductQuestion) => (
+          {venue.code_of_conduct_questions.map((q: CodeOfConductQuestion) => (
             <div className="input-group" key={q.name}>
               <label
                 htmlFor={q.name}
