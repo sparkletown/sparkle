@@ -123,7 +123,7 @@ module.exports = {
       about:
         "Live jazz shows from the marvellous Kansas Smitty's and mellifluous Sam Leak. Come enjoy at a table with your party friends.",
       url: "/jazztastic-park-preview",
-      external_url: "/venue/jazztastic-park",
+      external_url: "/venue/jazztastic-park/event/abbott",
       on_map: true,
       on_list: true,
       path:

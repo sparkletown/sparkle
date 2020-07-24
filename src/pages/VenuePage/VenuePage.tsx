@@ -99,11 +99,11 @@ const VenuePage = () => {
     return <>This event does not exist</>;
   }
 
-  if (eventPurchaseRequestStatus && !eventPurchase) {
+  if (event?.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
     return <>Forbidden</>;
   }
 
-  if (!eventPurchase || !venue || !users) {
+  if ((event?.price > 0 && !eventPurchase) || !venue || !users) {
     return <>Loading...</>;
   }
 
