@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
-import Register from "pages/Account/Register";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
-import Login from "pages/Account/Login";
 import App from "App";
 import { useDispatch, useSelector } from "react-redux";
 import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
@@ -67,11 +65,9 @@ const AppRouter = () => {
     <Router basename="/">
       <Switch>
         <Route path="/SparkleVerse" component={SparkleSpaceMarketingPage} />
-        <Route path="/account/register" component={Register} />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
-        <Route path="/login" component={Login} />
         <Route path="/" component={App} />
       </Switch>
     </Router>

@@ -27,13 +27,14 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
     setIsEditMode(false);
   };
   const defaultValues: any = {
-    partyName: users[user.uid].partyName,
-    pictureUrl: users[user.uid].pictureUrl,
+    partyName: users?.[user.uid]?.partyName || "",
+    pictureUrl: users?.[user.uid]?.pictureUrl || "/anonymous-profile-icon.jpeg",
   };
   profileQuestions &&
     profileQuestions.map(
       (question: QuestionType) =>
-        (defaultValues[question.name] = users[user.uid][question.name])
+        (defaultValues[question.name] =
+          users?.[user.uid]?.[question.name] || "")
     );
 
   const {
@@ -64,14 +65,14 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
           <input
             name="partyName"
             className="input-block input-centered"
-            placeholder="Your jazz bar name"
+            placeholder="Your party name"
             ref={register({
               required: true,
               maxLength: 16,
             })}
           />
           {errors.partyName && errors.partyName.type === "required" && (
-            <span className="input-error">Jazz bar name is required</span>
+            <span className="input-error">Party name is required</span>
           )}
           {errors.partyName && errors.partyName.type === "maxLength" && (
             <span className="input-error">

@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
@@ -42,11 +41,10 @@ const QUESTIONS: {
 ];
 
 const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
-  const history = useHistory();
   const { user } = useSelector((state: any) => ({
     user: state.user,
   }));
-  const { venueId } = getQueryParameters(location.search);
+  const { venueId, eventId } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
@@ -54,7 +52,9 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
+    window.location.assign(
+      `/${venueId && eventId ? `venue/${venueId}/event/${eventId}` : ""}`
+    );
   };
 
   return (

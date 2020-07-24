@@ -53,7 +53,7 @@ export interface Venue {
 }
 
 const VenuePage = () => {
-  const { venueId } = useParams();
+  const { venueId, eventId } = useParams();
 
   useConnectPartyGoers();
   useConnectCurrentVenue();
@@ -63,6 +63,7 @@ const VenuePage = () => {
     venue,
     user,
     users,
+    usersById,
     eventPurchase,
     eventPurchaseRequestStatus,
     event,
@@ -74,6 +75,7 @@ const VenuePage = () => {
     user: state.user,
     users: state.firestore.ordered.partygoers,
     event: state.firestore.data.currentEvent,
+    usersById: state.firestore.data.partygoers,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
     eventPurchase: state.firestore.data.eventPurchase,
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
@@ -84,6 +86,7 @@ const VenuePage = () => {
     eventPurchase: Purchase;
     eventPurchaseRequestStatus: boolean;
     event: VenueEvent;
+    usersById: { [id: string]: User };
     eventRequestStatus: boolean;
     venueRequestStatus: boolean;
   };
@@ -120,6 +123,14 @@ const VenuePage = () => {
 
   if (!user) {
     return <Redirect to={`/venue/${venueId}`} />;
+  }
+
+  if (
+    !(usersById?.[user.uid]?.partyName && usersById?.[user.uid]?.pictureUrl)
+  ) {
+    return (
+      <Redirect to={`/account/profile?venueId=${venueId}&eventId=${eventId}`} />
+    );
   }
 
   let template;
