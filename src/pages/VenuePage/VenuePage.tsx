@@ -14,6 +14,8 @@ import { Redirect, useParams } from "react-router-dom";
 import { Purchase } from "types/Purchase";
 import { VenueEvent } from "types/VenueEvent";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
+import { canUserJoinTheEvent } from "utils/time";
+import CountDown from "components/molecules/CountDown";
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -103,8 +105,17 @@ const VenuePage = () => {
     return <>Forbidden</>;
   }
 
-  if ((event?.price > 0 && !eventPurchase) || !venue || !users) {
+  if ((event?.price > 0 && !eventPurchase) || !venue || !users || !event) {
     return <>Loading...</>;
+  }
+
+  if (!canUserJoinTheEvent(event)) {
+    return (
+      <CountDown
+        startUtcSeconds={event.start_utc_seconds}
+        textBeforeCountdown="Bar opens in"
+      />
+    );
   }
 
   if (!user) {

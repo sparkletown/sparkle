@@ -60,7 +60,7 @@ $login-max-width: 540px;
     margin: 0 auto;
     background-image: url("/sparkle-logo.png");
     width: 280px;
-    height: 280px;
+    height: 225px;
     background-size: 280px;
   }
 }
@@ -81,8 +81,11 @@ $login-max-width: 540px;
 
 .secondary-action {
   margin-top: 2rem;
-  font-size: 0.8em;
+  font-size: 1.2em;
   opacity: 0.8;
+  width: 100%;
+  margin: 10px auto;
+  text-align: center;
 }
 
 .profile-picture-preview {
