@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "types/Venue";
 import { User as FUser } from "firebase/app";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { VenueEvent } from "types/VenueEvent";
@@ -21,6 +22,7 @@ import PaymentModal from "components/organisms/PaymentModal";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import CountDown from "components/molecules/CountDown";
 import { Purchase } from "types/Purchase";
+import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   location: RouterLocation;
@@ -122,6 +124,13 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
               </div>
             </div>
           </div>
+          {venue.template == VenueTemplate.partymap && (
+            <div className="secret-password-form-wrapper">
+              <SecretPasswordForm
+                buttonText={venue.config.landingPageConfig.joinButtonText}
+              />
+            </div>
+          )}
           <div className="row">
             <div className="col-lg-6 col-12 venue-presentation">
               <div>
@@ -173,85 +182,94 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                 )}
             </div>
             <div className="col-lg-6 col-12 oncoming-events">
-              <div className="upcoming-gigs-title">Upcoming gigs</div>
-              {venueEvents &&
-                venueEvents.map((venueEvent: VenueEvent) => {
-                  const startingDate = new Date(
-                    venueEvent.start_utc_seconds * 1000
-                  );
-                  const endingDate = new Date(
-                    (venueEvent.start_utc_seconds +
-                      60 * venueEvent.duration_minutes) *
-                      1000
-                  );
-                  const isNextVenueEvent = venueEvent.id === nextVenueEventId;
-                  const hasUserBoughtTicket =
-                    user &&
-                    hasUserBoughtTicketForEvent(purchaseHistory, venueEvent.id);
-                  return (
-                    <InformationCard
-                      title={venueEvent.name}
-                      key={venueEvent.id}
-                      className={`${!isNextVenueEvent ? "disabled" : ""}`}
-                    >
-                      <div className="date">
-                        {`${dayjs(startingDate).format("ha")}-${dayjs(
-                          endingDate
-                        ).format("ha")} ${dayjs(startingDate).format(
-                          "dddd MMMM"
-                        )}`}
-                      </div>
-                      <div className="event-description">
-                        {venueEvent.description}
-                        {venueEvent.descriptions?.map((description, index) => (
-                          <p key={index}>{description}</p>
-                        ))}
-                      </div>
-                      {isNextVenueEvent && (
-                        <div className="button-container">
-                          {hasUserBoughtTicket ? (
-                            <div>
-                              <div>You have a ticket for this event</div>
-                              <CountDown
-                                startUtcSeconds={venueEvent.start_utc_seconds}
-                              />
-                            </div>
-                          ) : (
-                            <div className="price-container">
-                              Individual tickets £{venueEvent.price / 100}
-                              <br />
-                              Group tickets £{venueEvent.collective_price / 100}
-                              {!user && (
-                                <div className="login-invitation">
-                                  Already have a ticket?{" "}
-                                  <Link to="/login">Log in</Link>.
-                                </div>
-                              )}
-                            </div>
-                          )}
-
-                          {user ? (
-                            <EventPaymentButton
-                              eventId={venueEvent.id}
-                              venueId={venueId}
-                              selectEvent={() => setSelectedEvent(venueEvent)}
-                              setIsPaymentModalOpen={setIsPaymentModalOpen}
-                            />
-                          ) : (
-                            <button
-                              className="btn btn-primary buy-tickets-button"
-                              onClick={() =>
-                                redirectToSignUpFlow(venueEvent.id)
-                              }
-                            >
-                              Buy tickets
-                            </button>
+              {venueEvents && venueEvents.length > 0 && (
+                <>
+                  <div className="upcoming-gigs-title">Upcoming gigs</div>
+                  {venueEvents.map((venueEvent: VenueEvent) => {
+                    const startingDate = new Date(
+                      venueEvent.start_utc_seconds * 1000
+                    );
+                    const endingDate = new Date(
+                      (venueEvent.start_utc_seconds +
+                        60 * venueEvent.duration_minutes) *
+                        1000
+                    );
+                    const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+                    const hasUserBoughtTicket =
+                      user &&
+                      hasUserBoughtTicketForEvent(
+                        purchaseHistory,
+                        venueEvent.id
+                      );
+                    return (
+                      <InformationCard
+                        title={venueEvent.name}
+                        key={venueEvent.id}
+                        className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                      >
+                        <div className="date">
+                          {`${dayjs(startingDate).format("ha")}-${dayjs(
+                            endingDate
+                          ).format("ha")} ${dayjs(startingDate).format(
+                            "dddd MMMM"
+                          )}`}
+                        </div>
+                        <div className="event-description">
+                          {venueEvent.description}
+                          {venueEvent.descriptions?.map(
+                            (description, index) => (
+                              <p key={index}>{description}</p>
+                            )
                           )}
                         </div>
-                      )}
-                    </InformationCard>
-                  );
-                })}
+                        {isNextVenueEvent && (
+                          <div className="button-container">
+                            {hasUserBoughtTicket ? (
+                              <div>
+                                <div>You have a ticket for this event</div>
+                                <CountDown
+                                  startUtcSeconds={venueEvent.start_utc_seconds}
+                                />
+                              </div>
+                            ) : (
+                              <div className="price-container">
+                                Individual tickets £{venueEvent.price / 100}
+                                <br />
+                                Group tickets £
+                                {venueEvent.collective_price / 100}
+                                {!user && (
+                                  <div className="login-invitation">
+                                    Already have a ticket?{" "}
+                                    <Link to="/login">Log in</Link>.
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {user ? (
+                              <EventPaymentButton
+                                eventId={venueEvent.id}
+                                venueId={venueId}
+                                selectEvent={() => setSelectedEvent(venueEvent)}
+                                setIsPaymentModalOpen={setIsPaymentModalOpen}
+                              />
+                            ) : (
+                              <button
+                                className="btn btn-primary buy-tickets-button"
+                                onClick={() =>
+                                  redirectToSignUpFlow(venueEvent.id)
+                                }
+                              >
+                                Buy tickets
+                              </button>
+                            )}
+                          </div>
+                        )}
+                      </InformationCard>
+                    );
+                  })}
+                </>
+              )}
             </div>
           </div>
         </div>
