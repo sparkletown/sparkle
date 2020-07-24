@@ -390,7 +390,7 @@ module.exports = {
       subtitle: "",
       about: "",
       url: "/boudoir-preview",
-      external_url: "https://zoom.us/j/98223917421",
+      external_url: "https://zoom.us/j/97706567976",
       on_map: true,
       on_list: true,
       path:
