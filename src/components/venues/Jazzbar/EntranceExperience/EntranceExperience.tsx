@@ -7,6 +7,7 @@ import { useParams, useHistory, Link } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
+import ChatContext from "components/context/ChatContext";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
 import { User as FUser } from "firebase/app";
@@ -99,7 +100,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <>
+    <ChatContext>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
           <div
@@ -272,7 +273,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
           />
         )}
       </WithNavigationBar>
-    </>
+    </ChatContext>
   );
 };
 
