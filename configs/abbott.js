@@ -102,6 +102,20 @@ module.exports = {
       text: "Do you dance?",
     },
   ],
+  code_of_conduct_questions: [
+    {
+      name: "followAbbottPolicies",
+      text: "I agree to abide by Abbott's Code of Conduct",
+      link:
+        "https://www.abbott.com/investors/governance/code-of-business-conduct.html",
+    },
+    {
+      name: "sampleQueston",
+      text:
+        "I agree to do this thing that's in this other sample question (link is optional)",
+      link: "https://www.google.com/",
+    },
+  ],
   experiences: {
     jazzbar: {
       associatedRoom: "Jazz Mountain",
