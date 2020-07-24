@@ -18,11 +18,43 @@ ${process.argv[1]}: Upload event config
 Config will be validated using schema.json in the script directory,
 then uploaded to the config collection in the co-reality-map firestore.
 
-Usage: node ${process.argv[1]} API_KEY EVENT_NAME CONFIG_PATH
+Usage: node ${process.argv[1]} API_KEY EVENT_NAME CONFIG_PATH [USERNAME] [PASSWORD]
 
 Example: node ${process.argv[1]} aaazzz111222333 example example.js
+Example: node ${process.argv[1]} aaazzz111222333 example example.js user@name.com password
 `);
   process.exit(1);
+}
+
+function uploadConfig(username, password, apiKey, venueId, doc) {
+  const path = `venues/${venueId}`;
+  console.log(`Uploading "${venueId}" to venues: ${path}...`);
+
+  const firebaseConfig = {
+    apiKey: apiKey,
+    projectId: "co-reality-map",
+  };
+  firebase.initializeApp(firebaseConfig);
+  firebase
+    .auth()
+    .signInWithEmailAndPassword(username, password)
+    .then(function () {
+      firebase
+        .firestore()
+        .doc(path)
+        .set(doc)
+        .then(function () {
+          console.log(`Document ${path} successfully written!`);
+          process.exit(0);
+        })
+        .catch(function (err) {
+          console.error("Error writing document: ", err);
+          process.exit(1);
+        });
+    })
+    .catch(function (err) {
+      console.error("Login error:", err);
+    });
 }
 
 const argv = process.argv.slice(2);
@@ -33,6 +65,13 @@ var apiKey = argv[0];
 var venueId = argv[1];
 var path = argv[2];
 var doc = require(path);
+
+var username;
+var password;
+if (argv.length >= 5) {
+  username = argv[3];
+  password = argv[4];
+}
 var validateResult = validate(doc, schema);
 if (!validateResult.valid) {
   console.error(
@@ -40,45 +79,25 @@ if (!validateResult.valid) {
     validateResult
   );
 } else {
-  console.log(
-    `Validation succeeded, log in to upload event config from ${path} to config document ID.`
-  );
-  read({ prompt: "Username:" }, function (err, username) {
-    if (err) {
-      console.error("Error obtaining username:", err);
-      process.exit(1);
-    }
-    read({ prompt: "Password:", silent: true }, function (err, password) {
+  console.log(`Validation of ${path} succeeded!`);
+  if (username && password) {
+    uploadConfig(username, password, apiKey, venueId, doc);
+  } else {
+    console.log(`log in to upload.`);
+    read({ prompt: "Username:" }, function (err, username) {
       if (err) {
-        console.error("Error obtaining password:", err);
+        console.error("Error obtaining username:", err);
         process.exit(1);
       }
+      read({ prompt: "Password:", silent: true }, function (err, password) {
+        if (err) {
+          console.error("Error obtaining password:", err);
+          process.exit(1);
+        }
 
-      const firebaseConfig = {
-        apiKey: apiKey,
-        projectId: "co-reality-map",
-      };
-      firebase.initializeApp(firebaseConfig);
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(username, password)
-        .then(function () {
-          firebase
-            .firestore()
-            .doc(`venues/${venueId}`)
-            .set(doc)
-            .then(function () {
-              console.log("Document successfully written!");
-              process.exit(0);
-            })
-            .catch(function (err) {
-              console.error("Error writing document: ", err);
-              process.exit(1);
-            });
-        })
-        .catch(function (err) {
-          console.error("Login error:", err);
-        });
+        console.log("Login succeeded!");
+        uploadConfig(username, password, apiKey, venueId, doc);
+      });
     });
-  });
+  }
 }

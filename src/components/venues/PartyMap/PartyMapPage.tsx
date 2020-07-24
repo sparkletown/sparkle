@@ -8,6 +8,7 @@ import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { User } from "types/User";
+import { updateTheme } from "pages/VenuePage/helpers";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 import { Map, PartyTitle } from "./components";
@@ -21,6 +22,8 @@ const PartyMap = () => {
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
 
   useUpdateLocationEffect(user, "Map");
+
+  venue && updateTheme(venue);
 
   const attendances = partygoers
     ? partygoers.reduce((acc: { [key: string]: number }, value) => {

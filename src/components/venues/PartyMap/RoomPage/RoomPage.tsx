@@ -1,16 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
 import { useParams } from "react-router-dom";
-
 import { getCurrentEvent } from "utils/time";
-
 import Chatbox from "components/organisms/Chatbox";
 import RoomModalOngoingEvent from "components/venues/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/venues/PartyMap/components/ScheduleItem";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { enterRoom } from "utils/useLocationUpdateEffect";
+import { updateTheme } from "pages/VenuePage/helpers";
 import "./RoomPage.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
@@ -34,6 +32,8 @@ export default function RoomPage() {
   if (!room) {
     return null;
   }
+
+  venue && updateTheme(venue);
 
   const usersToDisplay =
     users?.filter((user: any) => user.room === room?.title) ?? [];
