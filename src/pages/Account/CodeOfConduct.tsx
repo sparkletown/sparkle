@@ -86,7 +86,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Enter the bar"
+            value="Enter the event"
             disabled={!formState.isValid}
           />
         </form>

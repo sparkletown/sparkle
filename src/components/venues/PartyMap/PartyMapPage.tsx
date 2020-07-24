@@ -10,11 +10,14 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { User } from "types/User";
 import { updateTheme } from "pages/VenuePage/helpers";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 
 import { Map, PartyTitle } from "./components";
 import { PartyMapVenue } from "./types";
 
 const PartyMap = () => {
+  useConnectPartyGoers();
+
   const { partygoers, user, venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     user: state.user,
