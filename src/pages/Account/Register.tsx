@@ -38,6 +38,11 @@ const Register: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
+      <div className="secondary-action">
+        Already have an account?
+        <br />
+        <Link to={`/login${location.search}`}>Login</Link>
+      </div>
       <div className="login-container">
         <h2>First, create your account</h2>
         <p>This will give you access to all sorts of wonderful experiences</p>
@@ -93,11 +98,6 @@ const Register: React.FunctionComponent<PropsType> = ({ location }) => {
             disabled={!formState.isValid}
           />
         </form>
-        <div className="secondary-action">
-          Already have an account?
-          <br />
-          <Link to={`/login${location.search}`}>Login</Link>
-        </div>
       </div>
     </div>
   );

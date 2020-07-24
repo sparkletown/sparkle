@@ -210,6 +210,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                               <div>You have a ticket for this event</div>
                               <CountDown
                                 startUtcSeconds={venueEvent.start_utc_seconds}
+                                textBeforeCountdown="Bar opens in"
                               />
                             </div>
                           ) : (

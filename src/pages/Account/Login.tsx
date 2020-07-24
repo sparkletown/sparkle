@@ -40,6 +40,13 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
+      <div className="secondary-action">
+        Don't have an account yet?
+        <br />
+        <Link to={`/account/register${location.search}`}>
+          Register instead!
+        </Link>
+      </div>
       <div className="login-container">
         <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
@@ -78,13 +85,6 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
             disabled={!formState.isValid}
           />
         </form>
-        <div className="secondary-action">
-          Don't have an account yet?
-          <br />
-          <Link to={`/account/register${location.search}`}>
-            Register instead!
-          </Link>
-        </div>
       </div>
     </div>
   );

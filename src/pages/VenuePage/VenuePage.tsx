@@ -110,7 +110,12 @@ const VenuePage = () => {
   }
 
   if (!canUserJoinTheEvent(event)) {
-    return <CountDown startUtcSeconds={event.start_utc_seconds} />;
+    return (
+      <CountDown
+        startUtcSeconds={event.start_utc_seconds}
+        textBeforeCountdown="Bar opens in"
+      />
+    );
   }
 
   if (!user) {
