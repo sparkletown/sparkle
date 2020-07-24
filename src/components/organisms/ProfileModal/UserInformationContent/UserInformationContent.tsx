@@ -5,7 +5,7 @@ import { QuestionType } from "types/Question";
 import { User as FUser } from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 import { User } from "types/User";
 
 interface PropsType {

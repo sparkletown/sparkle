@@ -23,7 +23,7 @@
 
 it("renders with minimal dependencies", () => {
   // const div = document.createElement("div");
-
+  //
   // const firebaseConfig = {
   //   apiKey: API_KEY,
   //   appId: APP_ID,
@@ -31,33 +31,33 @@ it("renders with minimal dependencies", () => {
   //   projectId: "co-reality-map",
   // };
   // const rfConfig = {}; // optional redux-firestore Config Options
-
+  //
   // const rrfConfig = {
   //   userProfile: "users",
   //   useFirestoreForProfile: true,
   // };
-
+  //
   // firebase.initializeApp(firebaseConfig);
   // firebase.auth();
-
+  //
   // const createStoreWithFirebase = compose(reduxFirestore(firebase, rfConfig))(
   //   createStore
   // );
-
+  //
   // const initialState = {};
   // const store = createStoreWithFirebase(
   //   rootReducer,
   //   initialState,
   //   composeWithDevTools(applyMiddleware(thunkMiddleware))
   // );
-
+  //
   // const rrfProps = {
   //   firebase,
   //   config: rrfConfig,
   //   dispatch: store.dispatch,
   //   createFirestoreInstance,
   // };
-
+  //
   // ReactDOM.render(
   //   <Provider store={store}>
   //     <ReactReduxFirebaseProvider {...rrfProps}>

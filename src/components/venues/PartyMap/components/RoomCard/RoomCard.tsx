@@ -2,7 +2,7 @@ import React from "react";
 import "./RoomCard.scss";
 import RoomAttendance from "../RoomAttendance";
 import { formatMinute } from "utils/time";
-import { RoomData } from "../../types";
+import { RoomData } from "types/RoomData";
 import { getCurrentEvent } from "utils/time";
 import { useHistory } from "react-router-dom";
 

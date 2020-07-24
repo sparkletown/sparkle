@@ -5,7 +5,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { Purchase } from "types/Purchase";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 import { User as FUser } from "firebase/app";
 

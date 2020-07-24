@@ -20,7 +20,7 @@ import {
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
+import { JazzbarVenue } from "types/JazzbarVenue";
 import { useFirestoreConnect } from "react-redux-firebase";
 import MessageList from "../components/MessageList";
 import {
@@ -34,15 +34,6 @@ interface PropsType {
 
 interface ChatOutDataType {
   messageToTheBand: string;
-}
-
-export interface JazzbarVenue extends Venue {
-  template: VenueTemplate.jazzbar;
-  iframeUrl: string;
-  logoImageUrl: string;
-  host: {
-    icon: string;
-  };
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
