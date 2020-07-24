@@ -52,7 +52,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your jazz bar name"
+              placeholder="Your display name"
               ref={register({
                 required: true,
                 maxLength: 16,
@@ -62,11 +62,11 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               This is your public name (max 16 characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Jazz bar name is required</span>
+              <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Name is less than 16 characters
+                Display name is less than 16 characters
               </span>
             )}
             <ProfilePictureInput
