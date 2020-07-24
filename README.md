@@ -38,10 +38,16 @@ npm run build && firebase deploy --only hosting
 To upload a new config, use `scripts/upload.sh`:
 
 ```
-$ scripts/upload.sh co-reality-5
+$ scripts/upload.sh co-reality-5 user@name.com password
 ```
 This will upload the JSON object exported from `configs/co-reality-5.js` to the Firestore document `config/co-reality-5`.
 
+Watching for changes:
+
+```
+$ brew install fswatch
+$ VENUE=co-reality-5; fswatch -o configs/${VENUE}.js | xargs -n1 -I{} ./scripts/upload.sh ${VENUE} user@name.com password
+```
 
 ## Automatic upload of map changes
 
