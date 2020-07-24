@@ -150,12 +150,16 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
               />
               {venue.config.landingPageConfig.quotations &&
-                venue.config.landingPageConfig.quotations.map((quotation) => (
-                  <div className="quotation-container">
-                    <div className="quotation">{quotation.text}</div>
-                    <div className="quotation-author">- {quotation.author}</div>
-                  </div>
-                ))}
+                venue.config.landingPageConfig.quotations.map(
+                  (quotation, index) => (
+                    <div className="quotation-container" key={index}>
+                      <div className="quotation">{quotation.text}</div>
+                      <div className="quotation-author">
+                        - {quotation.author}
+                      </div>
+                    </div>
+                  )
+                )}
               {venue.config.landingPageConfig.presentation &&
                 venue.config.landingPageConfig.presentation.map(
                   (paragraph: string, index: number) => (
@@ -199,8 +203,8 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                       </div>
                       <div className="event-description">
                         {venueEvent.description}
-                        {venueEvent.descriptions?.map((d) => (
-                          <p>{d}</p>
+                        {venueEvent.descriptions?.map((description, index) => (
+                          <p key={index}>{description}</p>
                         ))}
                       </div>
                       {isNextVenueEvent && (

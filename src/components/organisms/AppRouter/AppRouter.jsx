@@ -1,16 +1,25 @@
 import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useFirebase } from "react-redux-firebase";
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect,
+} from "react-router-dom";
+import "firebase/analytics";
+import { setUser } from "actions";
+
 import Register from "pages/Account/Register";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
-import App from "App";
-import { useDispatch, useSelector } from "react-redux";
-import { useFirebase } from "react-redux-firebase";
-import { setUser } from "actions";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
-import "firebase/analytics";
+import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
+import VenuePage from "pages/VenuePage";
+
+import { leaveRoom } from "utils/useLocationUpdateEffect";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -20,13 +29,11 @@ const AppRouter = () => {
     user: state.user,
   }));
 
-  // REVISIT: properly wrap dependencies in useRef per https://github.com/facebook/create-react-app/issues/6880
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       dispatch(setUser(user));
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user, dispatch, firebase]);
 
   const onClickWindow = (event) => {
     event.target.id &&
@@ -37,10 +44,22 @@ const AppRouter = () => {
       });
   };
 
+  const leaveRoomBeforeUnload = () => {
+    if (user) {
+      leaveRoom(user);
+    }
+  };
+
   useEffect(() => {
     window.addEventListener("click", onClickWindow, false);
+    window.addEventListener("onbeforeunload", leaveRoomBeforeUnload, false);
     return () => {
       window.removeEventListener("click", onClickWindow, false);
+      window.removeEventListener(
+        "onbeforeunload",
+        leaveRoomBeforeUnload,
+        false
+      );
     };
   });
 
@@ -53,7 +72,12 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
-        <Route path="/" component={App} />
+        <Route exact path="/venue/:venueId" component={EntranceExperience} />
+        <Route path="/venue/:venueId/event/:eventId" component={VenuePage} />
+        <Route
+          path="/"
+          component={() => <Redirect to="/venue/kansassmittys" />}
+        />
       </Switch>
     </Router>
   );
