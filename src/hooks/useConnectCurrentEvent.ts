@@ -17,6 +17,11 @@ const useConnectCurrentEvent = () => {
     },
   ]);
 
+  const { event } = useSelector((state: any) => ({
+    event: state.firestore.data.currentEvent,
+  }));
+  console.log("useConnectCurrentEvent", venueId, eventId, event);
+
   useFirestoreConnect([
     {
       collection: "purchases",
