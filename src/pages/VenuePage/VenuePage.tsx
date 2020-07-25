@@ -46,6 +46,7 @@ export interface Venue {
       joinButtonText: string;
       quotations?: Quotation[];
     };
+    memberEmails?: string[];
   };
   host: {
     icon: string;

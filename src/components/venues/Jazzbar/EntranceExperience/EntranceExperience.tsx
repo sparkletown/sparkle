@@ -20,6 +20,7 @@ import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import PaymentModal from "components/organisms/PaymentModal";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
 import { Purchase } from "types/Purchase";
 
@@ -190,10 +191,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                     const isNextVenueEvent = venueEvent.id === nextVenueEventId;
                     const hasUserBoughtTicket =
                       user &&
-                      hasUserBoughtTicketForEvent(
+                      (hasUserBoughtTicketForEvent(
                         purchaseHistory,
                         venueEvent.id
-                      );
+                      ) ||
+                        isUserAMember(user.email, venue.config.memberEmails));
                     return (
                       <InformationCard
                         title={venueEvent.name}
