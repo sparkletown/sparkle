@@ -8,6 +8,8 @@ const secrets = require("./secrets");
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 const stripe = require("stripe")(secrets.STRIPE_SECRET_KEY);
 
+const PURCHASE_TABLE = "purchases";
+
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
@@ -33,7 +35,7 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     receipt_email: data.userEmail,
   });
 
-  await firebase.firestore().collection("purchases").doc(paymentIntent.id).set({
+  await admin.firestore().collection(PURCHASE_TABLE).doc(paymentIntent.id).set({
     venueId: data.venueId,
     eventId: data.eventId,
     userId: data.userId,
@@ -68,9 +70,9 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
     const charge = event.data.object;
 
     // Fulfill the purchase...
-    await firebase
+    await admin
       .firestore()
-      .collection("purchases")
+      .collection(PURCHASE_TABLE)
       .doc(charge.payment_intent)
       .update({
         status: "COMPLETE",

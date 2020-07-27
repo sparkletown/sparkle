@@ -38,8 +38,8 @@ service cloud.firestore {
       allow write: if request.auth.uid != null;
     }
     match /purchases/{restOfPath=**} {
-      allow read: if true;
-      allow write: if true;
+      allow read: if request.auth.uid != null && resource.data.userId == request.auth.uid;
+      allow write: if false;
     }
   }
 }
