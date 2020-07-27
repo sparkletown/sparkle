@@ -2,7 +2,7 @@ import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { RoomData } from "../types";
+import { RoomData } from "types/RoomData";
 
 interface PropsType {
   room: RoomData;

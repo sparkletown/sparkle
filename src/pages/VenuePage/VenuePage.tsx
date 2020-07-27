@@ -13,44 +13,11 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { Redirect, useParams } from "react-router-dom";
 import { Purchase } from "types/Purchase";
 import { VenueEvent } from "types/VenueEvent";
+import { Venue } from "types/Venue";
+import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { canUserJoinTheEvent } from "utils/time";
 import CountDown from "components/molecules/CountDown";
-
-export enum VenueTemplate {
-  jazzbar = "jazzbar",
-  friendship = "friendship",
-  partymap = "partymap",
-}
-
-interface Quotation {
-  author: string;
-  text: string;
-}
-
-export interface Venue {
-  id?: string;
-  template: VenueTemplate;
-  name: string;
-  config: {
-    theme: {
-      primaryColor: string;
-      backgroundColor?: string;
-    };
-    landingPageConfig: {
-      coverImageUrl: string;
-      subtitle: string;
-      presentation: string[];
-      checkList: string[];
-      videoIframeUrl: string;
-      joinButtonText: string;
-      quotations?: Quotation[];
-    };
-  };
-  host: {
-    icon: string;
-  };
-}
 
 const VenuePage = () => {
   const { venueId, eventId } = useParams();
@@ -96,6 +63,10 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
+  if (!eventPurchase || !venue || !users || !venue) {
+    return <>Loading...</>;
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -104,12 +75,12 @@ const VenuePage = () => {
     return <>This event does not exist</>;
   }
 
-  if (eventPurchaseRequestStatus && !eventPurchase) {
-    return <>Forbidden</>;
+  if (!event || (event.price > 0 && !eventPurchase) || !venue || !users) {
+    return <>Loading...</>;
   }
 
-  if (!eventPurchase || !venue || !event || !users) {
-    return <>Loading...</>;
+  if (event.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
+    return <>Forbidden</>;
   }
 
   if (!canUserJoinTheEvent(event)) {

@@ -1,6 +1,6 @@
 import React from "react";
 import "./RoomModalOngoingEvent.scss";
-import { RoomData } from "../../types";
+import { RoomData } from "types/RoomData";
 import { getCurrentEvent } from "utils/time";
 
 interface PropsType {

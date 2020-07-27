@@ -1,11 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { PARTY_NAME } from "config";
 import { QuestionType } from "types/Question";
 import { User as FUser } from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 import { User } from "types/User";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 
@@ -25,8 +24,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       ({
         user: state.user,
         users: state.firestore.data.users,
-        profileQuestions:
-          state.firestore.data.config?.[PARTY_NAME].profile_questions,
+        profileQuestions: state.firestore.data.currentVenue.profile_questions,
         venue: state.firestore.ordered.currentVenue[0],
       } as {
         user: FUser;

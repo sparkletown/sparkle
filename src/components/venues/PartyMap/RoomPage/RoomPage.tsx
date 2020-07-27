@@ -1,26 +1,24 @@
 import React from "react";
 import { useSelector } from "react-redux";
-
 import { useParams } from "react-router-dom";
-
 import { getCurrentEvent } from "utils/time";
-
 import Chatbox from "components/organisms/Chatbox";
 import RoomModalOngoingEvent from "components/venues/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/venues/PartyMap/components/ScheduleItem";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { enterRoom } from "utils/useLocationUpdateEffect";
+import { updateTheme } from "pages/VenuePage/helpers";
 import "./RoomPage.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
-import { PartyMapVenue } from "components/venues/PartyMap/types";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 export default function RoomPage() {
   let { roomPath } = useParams();
 
   const { user, users, venue } = useSelector((state: any) => ({
-    venue: state.firestore.data.currentVenue,
+    venue: state.firestore.ordered.currentVenue?.[0],
     user: state.user,
     users: state.firestore.ordered.partygoers,
   })) as { users: User[]; user: FUser; venue: PartyMapVenue };
@@ -35,6 +33,8 @@ export default function RoomPage() {
     return null;
   }
 
+  venue && updateTheme(venue);
+
   const usersToDisplay =
     users?.filter((user: any) => user.room === room?.title) ?? [];
 
@@ -46,7 +46,7 @@ export default function RoomPage() {
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">

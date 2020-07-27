@@ -1,7 +1,7 @@
 import React from "react";
 import "./RoomList.scss";
 
-import { RoomData } from "../../types";
+import { RoomData } from "types/RoomData";
 import RoomCard from "../RoomCard";
 import { eventHappeningNow } from "utils/time";
 

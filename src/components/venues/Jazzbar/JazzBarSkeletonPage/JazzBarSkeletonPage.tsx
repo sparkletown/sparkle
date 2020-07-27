@@ -4,7 +4,7 @@ import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
 import { useSelector } from "react-redux";
-import { JazzbarVenue } from "components/venues/Jazzbar/JazzTab/JazzTab";
+import { JazzbarVenue } from "types/JazzbarVenue";
 
 interface PropsType {
   children: React.ReactNode;

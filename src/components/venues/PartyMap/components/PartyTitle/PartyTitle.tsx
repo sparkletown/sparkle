@@ -2,7 +2,7 @@ import React from "react";
 import CountDown from "components/molecules/CountDown";
 import "./PartyTitle.scss";
 import { useSelector } from "react-redux";
-import { PartyMapVenue } from "../../types";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 interface PropsType {
   startUtcSeconds: number;

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import { useSelector } from "react-redux";
@@ -18,6 +19,7 @@ interface PropsType {
 }
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
+  useFirestoreConnect("users");
   const { user, users, venue, privateChats } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,

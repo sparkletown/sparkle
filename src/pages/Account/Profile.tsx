@@ -46,27 +46,27 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
       <div className="hero-logo sparkle"></div>
       <div className="login-container">
         <h2>Well done! Now create your profile</h2>
-        <p>The jazz is nigh!</p>
+        <p>Nearly done!</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your jazz bar name"
+              placeholder="Your display name"
               ref={register({
                 required: true,
                 maxLength: 16,
               })}
             />
             <span className="input-info">
-              This is your public jazz bar name (max 16 characters)
+              This is your public name (max 16 characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Jazz bar name is required</span>
+              <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Jazz bar name is less than 16 characters
+                Display name is less than 16 characters
               </span>
             )}
             <ProfilePictureInput

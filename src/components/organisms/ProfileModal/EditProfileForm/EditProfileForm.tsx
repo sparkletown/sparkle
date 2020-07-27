@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { PARTY_NAME } from "config";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -19,8 +18,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   const { user, users, profileQuestions } = useSelector((state: any) => ({
     user: state.user,
     users: state.firestore.data.users,
-    profileQuestions:
-      state.firestore.data.config?.[PARTY_NAME].profile_questions,
+    profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     await updateUserProfile(user.uid, data);
@@ -65,18 +63,18 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
           <input
             name="partyName"
             className="input-block input-centered"
-            placeholder="Your party name"
+            placeholder="Your display name"
             ref={register({
               required: true,
               maxLength: 16,
             })}
           />
           {errors.partyName && errors.partyName.type === "required" && (
-            <span className="input-error">Party name is required</span>
+            <span className="input-error">Display name is required</span>
           )}
           {errors.partyName && errors.partyName.type === "maxLength" && (
             <span className="input-error">
-              Jazz bar name is less than 16 characters
+              Display name is less than 16 characters
             </span>
           )}
           <ProfilePictureInput
