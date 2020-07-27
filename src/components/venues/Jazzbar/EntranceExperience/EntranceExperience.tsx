@@ -247,56 +247,53 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                             )
                           )}
                         </div>
-                        {isNextVenueEvent && (
-                          <div className="button-container">
-                            {hasUserBoughtTicket ? (
-                              <div>
-                                <div>You have a ticket for this event</div>
-                                <CountDown
-                                  startUtcSeconds={venueEvent.start_utc_seconds}
-                                />
-                              </div>
-                            ) : (
-                              <div className="price-container">
-                                Individual tickets £{venueEvent.price / 100}
-                                <br />
-                                Group tickets £
-                                {venueEvent.collective_price / 100}
-                                {!user && (
-                                  <div className="login-invitation">
-                                    Already have a ticket?{" "}
-                                    <span
-                                      className="link"
-                                      onClick={openAuthenticationModal}
-                                    >
-                                      Log in
-                                    </span>
-                                    .
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {user ? (
-                              <EventPaymentButton
-                                event={venueEvent}
-                                venueId={venueId}
-                                selectEvent={() => setSelectedEvent(venueEvent)}
-                                setIsPaymentModalOpen={setIsPaymentModalOpen}
+                        <div className="button-container">
+                          {hasUserBoughtTicket ? (
+                            <div>
+                              <div>You have a ticket for this event</div>
+                              <CountDown
+                                startUtcSeconds={venueEvent.start_utc_seconds}
                               />
-                            ) : (
-                              <button
-                                className="btn btn-primary buy-tickets-button"
-                                onClick={() => {
-                                  setSelectedEvent(venueEvent);
-                                  openAuthenticationModal();
-                                }}
-                              >
-                                Buy tickets
-                              </button>
-                            )}
-                          </div>
-                        )}
+                            </div>
+                          ) : (
+                            <div className="price-container">
+                              Individual tickets £{venueEvent.price / 100}
+                              <br />
+                              Group tickets £{venueEvent.collective_price / 100}
+                              {!user && (
+                                <div className="login-invitation">
+                                  Already have a ticket?{" "}
+                                  <span
+                                    className="link"
+                                    onClick={openAuthenticationModal}
+                                  >
+                                    Log in
+                                  </span>
+                                  .
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {user ? (
+                            <EventPaymentButton
+                              event={venueEvent}
+                              venueId={venueId}
+                              selectEvent={() => setSelectedEvent(venueEvent)}
+                              setIsPaymentModalOpen={setIsPaymentModalOpen}
+                            />
+                          ) : (
+                            <button
+                              className="btn btn-primary buy-tickets-button"
+                              onClick={() => {
+                                setSelectedEvent(venueEvent);
+                                openAuthenticationModal();
+                              }}
+                            >
+                              Buy tickets
+                            </button>
+                          )}
+                        </div>
                       </InformationCard>
                     );
                   })}
