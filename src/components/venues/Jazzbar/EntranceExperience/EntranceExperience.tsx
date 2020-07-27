@@ -3,7 +3,7 @@ import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams, useHistory, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
@@ -25,6 +25,7 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
 import { Purchase } from "types/Purchase";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
 
 interface PropsType {
   location: RouterLocation;
@@ -37,6 +38,10 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<VenueEvent | undefined>();
+  const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
+    false
+  );
+  const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
 
   useConnectCurrentVenue();
 
@@ -73,14 +78,23 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
   venue && updateTheme(venue);
 
-  const history = useHistory();
-
   useEffect(() => {
     if (user && venueEvents && venueId && eventId && redirectTo === "payment") {
       setSelectedEvent(venueEvents.find((event) => event.id === eventId));
       setIsPaymentModalOpen(true);
     }
   }, [user, venueId, eventId, redirectTo, venueEvents]);
+
+  useEffect(() => {
+    if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {
+      setIsPaymentModalOpen(true);
+      setShouldOpenPaymentModal(false);
+    }
+  }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
+
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
+  }
 
   if (!venue) {
     return <>Loading...</>;
@@ -91,14 +105,17 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   }
 
   const nextVenueEventId = venueEvents?.[0]?.id;
-  const redirectToSignUpFlow = (eventId: string) => {
-    history.push(
-      `/account/register?venueId=${venueId}&eventId=${eventId}&redirectTo=payment`
-    );
-  };
 
   const closePaymentModal = () => {
     setIsPaymentModalOpen(false);
+  };
+
+  const openAuthenticationModal = () => {
+    setIsAuthenticationModalOpen(true);
+  };
+
+  const closeAuthenticationModal = () => {
+    setIsAuthenticationModalOpen(false);
   };
 
   return (
@@ -230,49 +247,53 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                             )
                           )}
                         </div>
-                        {isNextVenueEvent && (
-                          <div className="button-container">
-                            {hasUserBoughtTicket ? (
-                              <div>
-                                <div>You have a ticket for this event</div>
-                                <CountDown
-                                  startUtcSeconds={venueEvent.start_utc_seconds}
-                                />
-                              </div>
-                            ) : (
-                              <div className="price-container">
-                                Individual tickets £{venueEvent.price / 100}
-                                <br />
-                                Group tickets £
-                                {venueEvent.collective_price / 100}
-                                {!user && (
-                                  <div className="login-invitation">
-                                    Already have a ticket?{" "}
-                                    <Link to="/login">Log in</Link>.
-                                  </div>
-                                )}
-                              </div>
-                            )}
-
-                            {user ? (
-                              <EventPaymentButton
-                                event={venueEvent}
-                                venueId={venueId}
-                                selectEvent={() => setSelectedEvent(venueEvent)}
-                                setIsPaymentModalOpen={setIsPaymentModalOpen}
+                        <div className="button-container">
+                          {hasUserBoughtTicket ? (
+                            <div>
+                              <div>You have a ticket for this event</div>
+                              <CountDown
+                                startUtcSeconds={venueEvent.start_utc_seconds}
                               />
-                            ) : (
-                              <button
-                                className="btn btn-primary buy-tickets-button"
-                                onClick={() =>
-                                  redirectToSignUpFlow(venueEvent.id)
-                                }
-                              >
-                                Buy tickets
-                              </button>
-                            )}
-                          </div>
-                        )}
+                            </div>
+                          ) : (
+                            <div className="price-container">
+                              Individual tickets £{venueEvent.price / 100}
+                              <br />
+                              Group tickets £{venueEvent.collective_price / 100}
+                              {!user && (
+                                <div className="login-invitation">
+                                  Already have a ticket?{" "}
+                                  <span
+                                    className="link"
+                                    onClick={openAuthenticationModal}
+                                  >
+                                    Log in
+                                  </span>
+                                  .
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {user ? (
+                            <EventPaymentButton
+                              event={venueEvent}
+                              venueId={venueId}
+                              selectEvent={() => setSelectedEvent(venueEvent)}
+                              setIsPaymentModalOpen={setIsPaymentModalOpen}
+                            />
+                          ) : (
+                            <button
+                              className="btn btn-primary buy-tickets-button"
+                              onClick={() => {
+                                setSelectedEvent(venueEvent);
+                                openAuthenticationModal();
+                              }}
+                            >
+                              Buy tickets
+                            </button>
+                          )}
+                        </div>
                       </InformationCard>
                     );
                   })}
@@ -289,6 +310,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
           />
         )}
       </WithNavigationBar>
+      <AuthenticationModal
+        show={isAuthenticationModalOpen}
+        onHide={closeAuthenticationModal}
+        afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
+      />
     </ChatContext>
   );
 };

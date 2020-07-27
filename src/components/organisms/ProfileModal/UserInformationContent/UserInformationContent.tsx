@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { User } from "types/User";
+import { DEFAULT_PROFILE_VALUES } from "../constants";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -50,13 +51,15 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <div className="user-information">
         <img
           className="profile-icon profile-modal-avatar"
-          src={users[user.uid].pictureUrl}
+          src={users?.[user.uid]?.pictureUrl || "/anonymous-profile-icon.jpeg"}
           alt="profile avatar"
           width="50"
           height="50"
         />
         <div className="text-container">
-          <h2 className="title ellipsis-text">{users[user.uid].partyName}</h2>
+          <h2 className="title ellipsis-text">
+            {users?.[user.uid]?.partyName || DEFAULT_PROFILE_VALUES.partyName}
+          </h2>
           <div className="ellipsis-text">{user.email}</div>
         </div>
       </div>
@@ -67,7 +70,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             <div className="answer">
               {
                 // @ts-ignore question.name is a correct index for type User
-                users[user.uid][question.name]
+                users?.[user.uid]?.[question.name] ||
+                  DEFAULT_PROFILE_VALUES.questionAnswer
               }
             </div>
           </div>
