@@ -10,13 +10,18 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { User } from "types/User";
 import { updateTheme } from "pages/VenuePage/helpers";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { Map, PartyTitle } from "./components";
 import { PartyMapVenue } from "./types";
 
 const PartyMap = () => {
+  useConnectPartyGoers();
+  useConnectCurrentVenue();
+
   const { partygoers, user, venue } = useSelector((state: any) => ({
-    venue: state.firestore.data.currentVenue,
+    venue: state.firestore.ordered.currentVenue?.[0],
     user: state.user,
     partygoers: state.firestore.ordered.partygoers,
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
@@ -58,7 +63,7 @@ const PartyMap = () => {
   }
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
       <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle

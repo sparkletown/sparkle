@@ -46,6 +46,7 @@ export interface Venue {
       joinButtonText: string;
       quotations?: Quotation[];
     };
+    memberEmails?: string[];
   };
   host: {
     icon: string;
@@ -101,12 +102,12 @@ const VenuePage = () => {
     return <>This event does not exist</>;
   }
 
-  if (event?.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
-    return <>Forbidden</>;
+  if (!event || (event.price > 0 && !eventPurchase) || !venue || !users) {
+    return <>Loading...</>;
   }
 
-  if ((event?.price > 0 && !eventPurchase) || !venue || !users || !event) {
-    return <>Loading...</>;
+  if (event.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
+    return <>Forbidden</>;
   }
 
   if (!canUserJoinTheEvent(event)) {
