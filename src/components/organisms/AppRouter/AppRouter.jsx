@@ -16,8 +16,8 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
-import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
 import VenuePage from "pages/VenuePage";
+import TemplateRouter from "components/venues/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 
@@ -73,12 +73,8 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
 
-        <Route
-          exact
-          path="/venue/:venueId"
-          render={(props) => <Redirect to={`/${props.match.params.venueId}`} />}
-        />
-        <Route exact path="/:venueId" component={EntranceExperience} />
+        <Route path="/venue/:venueId" component={TemplateRouter} />
+        <Route path="/v/:venueId" component={TemplateRouter} />
 
         <Route
           exact
@@ -91,7 +87,10 @@ const AppRouter = () => {
         />
         <Route path="/:venueId/event/:eventId" component={VenuePage} />
 
-        <Route path="/" component={() => <Redirect to="/kansassmittys" />} />
+        <Route
+          path="/"
+          component={() => <Redirect to="/venue/kansassmittys" />}
+        />
       </Switch>
     </Router>
   );
