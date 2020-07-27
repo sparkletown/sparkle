@@ -38,6 +38,8 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
+    // if we use history.push, the new profile information are not in the redux store
+    // when we arrive on `venue/${venueId}/event/${eventId}` and we get redirected again to account/profile
     window.location.assign(
       `/${venueId && eventId ? `venue/${venueId}/event/${eventId}` : ""}`
     );

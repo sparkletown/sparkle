@@ -8,6 +8,12 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 
+interface EditProfileFormValuesType {
+  partyName: string;
+  pictureUrl: string;
+  [questionId: string]: string;
+}
+
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
 }
@@ -24,10 +30,11 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
     await updateUserProfile(user.uid, data);
     setIsEditMode(false);
   };
-  const defaultValues: any = {
+  const defaultValues: EditProfileFormValuesType = {
     partyName: users?.[user.uid]?.partyName || "",
     pictureUrl: users?.[user.uid]?.pictureUrl || "/anonymous-profile-icon.jpeg",
   };
+
   profileQuestions &&
     profileQuestions.map(
       (question: QuestionType) =>

@@ -10,7 +10,7 @@ import ChatContext from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { Redirect, useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Purchase } from "types/Purchase";
 import { VenueEvent } from "types/VenueEvent";
 import { Venue } from "types/Venue";
@@ -21,6 +21,7 @@ import CountDown from "components/molecules/CountDown";
 
 const VenuePage = () => {
   const { venueId, eventId } = useParams();
+  const history = useHistory();
 
   useConnectPartyGoers();
   useConnectCurrentVenue();
@@ -93,14 +94,14 @@ const VenuePage = () => {
   }
 
   if (!user) {
-    return <Redirect to={`/venue/${venueId}`} />;
+    return history.push(`/venue/${venueId}`);
   }
 
   if (
     !(usersById?.[user.uid]?.partyName && usersById?.[user.uid]?.pictureUrl)
   ) {
-    return (
-      <Redirect to={`/account/profile?venueId=${venueId}&eventId=${eventId}`} />
+    return history.push(
+      `/account/profile?venueId=${venueId}&eventId=${eventId}`
     );
   }
 

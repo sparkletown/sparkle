@@ -85,11 +85,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           {errors.password && errors.password.type === "required" && (
             <span className="input-error">Password is required</span>
           )}
-          {/* {errors.password && errors.password.type === "minLength" && (
-              <span className="input-info">
-                Password must be at least 8 characters long
-              </span>
-            )} */}
         </div>
         <input
           className="btn btn-primary btn-block btn-centered"
