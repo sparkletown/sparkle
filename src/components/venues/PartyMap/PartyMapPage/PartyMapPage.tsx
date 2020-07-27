@@ -11,7 +11,7 @@ import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 import { Map, PartyTitle } from "../components";
-import { PartyMapVenue } from "../types";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./PartyMapPage.scss";
 

@@ -9,7 +9,8 @@ import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import ChatContext from "components/context/ChatContext";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
+import { VenueTemplate } from "types/VenueTemplate";
 import { User as FUser } from "firebase/app";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,12 +82,12 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     }
   }, [user, venueId, eventId, redirectTo, venueEvents]);
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
-  }
-
   if (!venue) {
     return <>Loading...</>;
+  }
+
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
   }
 
   const nextVenueEventId = venueEvents?.[0]?.id;
@@ -130,6 +131,13 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
               </div>
             )}
           </div>
+          {venue.template === VenueTemplate.partymap && (
+            <div className="secret-password-form-wrapper">
+              <SecretPasswordForm
+                buttonText={venue.config.landingPageConfig.joinButtonText}
+              />
+            </div>
+          )}
           <div className="row">
             <div className="col-lg-6 col-12 venue-presentation">
               <div>
@@ -158,12 +166,16 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
               />
               {venue.config.landingPageConfig.quotations &&
-                venue.config.landingPageConfig.quotations.map((quotation) => (
-                  <div className="quotation-container">
-                    <div className="quotation">{quotation.text}</div>
-                    <div className="quotation-author">- {quotation.author}</div>
-                  </div>
-                ))}
+                venue.config.landingPageConfig.quotations.map(
+                  (quotation, index) => (
+                    <div className="quotation-container" key={index}>
+                      <div className="quotation">{quotation.text}</div>
+                      <div className="quotation-author">
+                        - {quotation.author}
+                      </div>
+                    </div>
+                  )
+                )}
               {venue.config.landingPageConfig.presentation &&
                 venue.config.landingPageConfig.presentation.map(
                   (paragraph: string, index: number) => (
@@ -212,9 +224,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                         </div>
                         <div className="event-description">
                           {venueEvent.description}
-                          {venueEvent.descriptions?.map((d) => (
-                            <p>{d}</p>
-                          ))}
+                          {venueEvent.descriptions?.map(
+                            (description, index) => (
+                              <p key={index}>{description}</p>
+                            )
+                          )}
                         </div>
                         {isNextVenueEvent && (
                           <div className="button-container">

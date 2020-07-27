@@ -8,6 +8,8 @@ import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
+import { User as FUser } from "firebase/app";
+import { Venue } from "types/Venue";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -26,7 +28,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   const { user, venue } = useSelector((state: any) => ({
     user: state.user,
     venue: state.firestore.data.currentVenue,
-  }));
+  })) as { user: FUser; venue: Venue };
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });

@@ -1,5 +1,5 @@
 import React from "react";
-import { EventData } from "../../types";
+import { EventData } from "types/EventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 

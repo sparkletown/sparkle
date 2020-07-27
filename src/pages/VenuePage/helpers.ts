@@ -1,4 +1,4 @@
-import { Venue } from "./VenuePage";
+import { Venue } from "types/Venue";
 
 export const updateTheme = (venue: Venue) => {
   venue?.config?.theme?.primaryColor &&

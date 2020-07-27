@@ -6,7 +6,7 @@ import ReactionPage from "pages/ReactionPage";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import ExperienceContextProvider from "components/context/ExperienceContext";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();

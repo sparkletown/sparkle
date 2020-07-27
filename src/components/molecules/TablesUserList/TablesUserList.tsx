@@ -10,26 +10,6 @@ import "./TablesUserList.scss";
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 
-// https://stackoverflow.com/questions/39084924/componentwillunmount-not-being-called-when-refreshing-the-current-page#answer-39085062
-// const useWindowUnloadEffect = (handler: any, callOnCleanup: boolean) => {
-//   const cb = useRef();
-
-//   cb.current = handler;
-
-//   useEffect(() => {
-//     // @ts-ignore
-//     const handler = () => cb.current();
-
-//     window.addEventListener("beforeunload", handler);
-
-//     return () => {
-//       if (callOnCleanup) handler();
-
-//       window.removeEventListener("beforeunload", handler);
-//     };
-//   }, [cb, callOnCleanup]);
-// };
-
 interface PropsType {
   venueName: string;
   setSeatedAtTable: (value: string) => void;
@@ -179,72 +159,10 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtOtherTables.push(...usersAtTables[table.reference]);
   }
 
-  // const tableOfUser =
-  //   seatedAtTable && tables.find((table) => table.reference === seatedAtTable);
-
-  // const usersAtCurrentTable =
-  //   seatedAtTable &&
-  //   users &&
-  //   users.filter(
-  //     (user: User) => user.data?.[experienceName]?.table === seatedAtTable
-  //   );
-
   return (
     <>
       {seatedAtTable !== "" ? (
-        <>
-          {/* <div className="row no-margin at-table">
-            <div className="header">
-              <div className="table-title-container">
-                <div className="private-table-title">{seatedAtTable}</div>
-                {tableOfUser && tableOfUser.subtitle && (
-                  <div className="private-table-subtitle">
-                    {tableOfUser.subtitle}
-                  </div>
-                )}
-              </div>
-              <div>
-                {tableOfUser && tableOfUser.capacity && (
-                  <div>
-                    {usersAtCurrentTable &&
-                      `${
-                        tableOfUser.capacity - usersAtCurrentTable.length
-                      }`}{" "}
-                    seats left
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  title={"Leave " + seatedAtTable}
-                  className="btn"
-                  onClick={leaveSeat}
-                >
-                  {leaveText}
-                </button>
-              </div>
-            </div>
-            <div className="actions">
-              <label className="switch">
-                <input
-                  type="checkbox"
-                  checked={!tableLocked(seatedAtTable)}
-                  onChange={() =>
-                    onLockedChanged(seatedAtTable, !tableLocked(seatedAtTable))
-                  }
-                />
-                <span className="slider" />
-              </label>
-              <div className="lock-table-checbox-indication">
-                {tableLocked(seatedAtTable) ? (
-                  <p className="locked-text">Table is locked</p>
-                ) : (
-                  <p className="unlocked-text">Others can join this table</p>
-                )}
-              </div>
-            </div>
-          </div> */}
-        </>
+        <></>
       ) : (
         <>
           {tables.map((table: Table, i: number) => (

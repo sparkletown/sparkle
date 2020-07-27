@@ -9,7 +9,7 @@ import { Purchase } from "types/Purchase";
 import "./PaymentModal.scss";
 import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 import { User as FUser } from "firebase/app";
 
 interface PropsType {

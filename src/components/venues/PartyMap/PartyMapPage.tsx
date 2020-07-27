@@ -14,7 +14,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { Map, PartyTitle } from "./components";
-import { PartyMapVenue } from "./types";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 const PartyMap = () => {
   useConnectPartyGoers();

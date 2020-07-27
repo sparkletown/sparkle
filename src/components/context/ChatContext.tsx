@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase, { User as FUser } from "firebase/app";
 import { useSelector } from "react-redux";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 
 interface ChatContextType {
   sendGlobalChat: (from: string, text: string) => void;

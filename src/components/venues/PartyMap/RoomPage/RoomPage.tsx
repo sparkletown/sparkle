@@ -12,7 +12,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import "./RoomPage.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
-import { PartyMapVenue } from "components/venues/PartyMap/types";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 export default function RoomPage() {
   let { roomPath } = useParams();

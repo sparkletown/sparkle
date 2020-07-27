@@ -9,7 +9,7 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
-import { Venue } from "pages/VenuePage/VenuePage";
+import { Venue } from "types/Venue";
 import { User as FUser } from "firebase/app";
 
 interface PropsType {

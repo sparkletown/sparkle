@@ -13,45 +13,11 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { Redirect, useParams } from "react-router-dom";
 import { Purchase } from "types/Purchase";
 import { VenueEvent } from "types/VenueEvent";
+import { Venue } from "types/Venue";
+import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { canUserJoinTheEvent } from "utils/time";
 import CountDown from "components/molecules/CountDown";
-
-export enum VenueTemplate {
-  jazzbar = "jazzbar",
-  friendship = "friendship",
-  partymap = "partymap",
-}
-
-interface Quotation {
-  author: string;
-  text: string;
-}
-
-export interface Venue {
-  id?: string;
-  template: VenueTemplate;
-  name: string;
-  config: {
-    theme: {
-      primaryColor: string;
-      backgroundColor?: string;
-    };
-    landingPageConfig: {
-      coverImageUrl: string;
-      subtitle: string;
-      presentation: string[];
-      checkList: string[];
-      videoIframeUrl: string;
-      joinButtonText: string;
-      quotations?: Quotation[];
-    };
-    memberEmails?: string[];
-  };
-  host: {
-    icon: string;
-  };
-}
 
 const VenuePage = () => {
   const { venueId } = useParams();
@@ -93,6 +59,10 @@ const VenuePage = () => {
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
+
+  if (!eventPurchase || !venue || !users || !venue) {
+    return <>Loading...</>;
+  }
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
