@@ -1,6 +1,12 @@
 import { VenueTemplate } from "./VenueTemplate";
 import { Quotation } from "./Quotation";
 
+interface Question {
+  name: string;
+  text: string;
+  link?: string;
+}
+
 export interface Venue {
   id?: string;
   template: VenueTemplate;
@@ -19,8 +25,11 @@ export interface Venue {
       joinButtonText: string;
       quotations?: Quotation[];
     };
+    memberEmails?: string[];
   };
   host: {
     icon: string;
   };
+  profile_questions: Question[];
+  code_of_conduct_questions: Question[];
 }

@@ -6,6 +6,8 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { updateTheme } from "pages/VenuePage/helpers";
 
 interface PropsType {
   location: RouterLocation;
@@ -17,34 +19,19 @@ export interface CodeOfConductFormData {
   willingToImprovise: string;
 }
 
-const QUESTIONS: {
-  id: keyof CodeOfConductFormData;
-  label: string;
+export interface CodeOfConductQuestion {
+  name: keyof CodeOfConductFormData;
+  text: string;
   link?: string;
-}[] = [
-  {
-    id: "contributeToExperience",
-    label: "I agree to contribute to the experience.",
-  },
-  {
-    id: "cheerBand",
-    label:
-      "I understand I can cheer the band live using the buttons under the video.",
-  },
-  {
-    id: "greatNight",
-    label: "I will have a great night out.",
-  },
-  {
-    id: "willingToImprovise",
-    label: "I realise this is jazz and i'm willing to improvise.",
-  },
-];
+}
 
 const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
+  useConnectCurrentVenue();
+
   const history = useHistory();
-  const { user } = useSelector((state: any) => ({
+  const { user, venue } = useSelector((state: any) => ({
     user: state.user,
+    venue: state.firestore.data.currentVenue,
   }));
   const { venueId } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
@@ -57,34 +44,40 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
   };
 
+  if (!venue?.code_of_conduct_questions) {
+    return <>Loading...</>;
+  }
+
+  venue && updateTheme(venue);
+
   return (
     <div className="page-container code-of-conduct-container">
       <div className="kansas-smittys-logo"></div>
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {QUESTIONS.map((q) => (
-            <div className="input-group" key={q.id}>
+          {venue.code_of_conduct_questions.map((q: CodeOfConductQuestion) => (
+            <div className="input-group" key={q.name}>
               <label
-                htmlFor={q.id}
-                className={`checkbox ${watch(q.id) && "checkbox-checked"}`}
+                htmlFor={q.name}
+                className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
               >
                 {q.link && (
                   <a href={q.link} target="_blank" rel="noopener noreferrer">
-                    {q.label}
+                    {q.text}
                   </a>
                 )}
-                {!q.link && q.label}
+                {!q.link && q.text}
               </label>
               <input
                 type="checkbox"
-                name={q.id}
-                id={q.id}
+                name={q.name}
+                id={q.name}
                 ref={register({
                   required: true,
                 })}
               />
-              {errors[q.id]?.type === "required" && (
+              {errors[q.name]?.type === "required" && (
                 <span className="input-error">Required</span>
               )}
             </div>
@@ -93,7 +86,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Enter the bar"
+            value="Enter the event"
             disabled={!formState.isValid}
           />
         </form>

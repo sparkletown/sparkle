@@ -4,10 +4,13 @@ import { VenueEvent } from "types/VenueEvent";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "react-redux";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { isUserAMember } from "utils/isUserAMember";
 import { Purchase } from "types/Purchase";
 import "./PaymentModal.scss";
 import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
+import { Venue } from "types/Venue";
+import { User as FUser } from "firebase/app";
 
 interface PropsType {
   show: boolean;
@@ -21,21 +24,30 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   selectedEvent,
 }) => {
   useConnectUserPurchaseHistory();
-  const { purchaseHistory, purchaseHistoryRequestStatus } = useSelector(
-    (state: any) => ({
-      purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-      purchaseHistoryRequestStatus:
-        state.firestore.status.requested.userPurchaseHistory,
-    })
-  ) as { purchaseHistory: Purchase[]; purchaseHistoryRequestStatus: boolean };
+  const {
+    purchaseHistory,
+    purchaseHistoryRequestStatus,
+    user,
+    venue,
+  } = useSelector((state: any) => ({
+    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+    purchaseHistoryRequestStatus:
+      state.firestore.status.requested.userPurchaseHistory,
+    user: state.user,
+    venue: state.firestore.data.currentVenue,
+  })) as {
+    purchaseHistory: Purchase[];
+    purchaseHistoryRequestStatus: boolean;
+    user: FUser;
+    venue: Venue;
+  };
 
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
 
-  const hasUserBoughtTicket = hasUserBoughtTicketForEvent(
-    purchaseHistory,
-    selectedEvent.id
-  );
+  const hasUserBoughtTicket =
+    hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
+    isUserAMember(user.email, venue.config.memberEmails);
 
   const closePaymentModal = () => {
     if (!isFormBeingSubmitted) {

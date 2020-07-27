@@ -6,29 +6,39 @@ import { useSelector } from "react-redux";
 import { Purchase } from "types/Purchase";
 import { Link } from "react-router-dom";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { isUserAMember } from "utils/isUserAMember";
+import { canUserJoinTheEvent } from "utils/time";
+import { VenueEvent } from "types/VenueEvent";
+import { Venue } from "types/Venue";
+import { User as FUser } from "firebase/app";
 
 interface PropsType {
-  eventId: string;
+  event: VenueEvent;
   venueId: string;
   setIsPaymentModalOpen: (value: boolean) => void;
   selectEvent: () => void;
 }
 
 const EventPaymentButton: React.FunctionComponent<PropsType> = ({
-  eventId,
+  event,
   venueId,
   setIsPaymentModalOpen,
   selectEvent,
 }) => {
   useConnectUserPurchaseHistory();
-  const { purchaseHistory } = useSelector((state: any) => ({
+  const { purchaseHistory, user, venue } = useSelector((state: any) => ({
     purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-  })) as { purchaseHistory: Purchase[] };
+    user: state.user,
+    venue: state.firestore.data.currentVenue,
+  })) as {
+    purchaseHistory: Purchase[];
+    user: FUser;
+    venue: Venue;
+  };
 
-  const hasUserAlreadyBoughtTicket = hasUserBoughtTicketForEvent(
-    purchaseHistory,
-    eventId
-  );
+  const hasUserAlreadyBoughtTicket =
+    hasUserBoughtTicketForEvent(purchaseHistory, event.id) ||
+    isUserAMember(user.email, venue.config.memberEmails);
 
   const handleClick = () => {
     selectEvent();
@@ -38,8 +48,12 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   return (
     <div className="event-payment-button-container">
       {hasUserAlreadyBoughtTicket ? (
-        <Link to={`/venue/${venueId}/event/${eventId}`}>
-          <button role="link" className="btn btn-primary buy-tickets-button">
+        <Link to={`/venue/${venueId}/event/${event.id}`}>
+          <button
+            role="link"
+            className="btn btn-primary buy-tickets-button"
+            disabled={!canUserJoinTheEvent(event)}
+          >
             Join the event
           </button>
         </Link>

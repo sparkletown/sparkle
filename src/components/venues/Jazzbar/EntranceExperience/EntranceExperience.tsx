@@ -7,8 +7,10 @@ import { useParams, useHistory, Link } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
+import ChatContext from "components/context/ChatContext";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "types/Venue";
+import { VenueTemplate } from "types/VenueTemplate";
 import { User as FUser } from "firebase/app";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,9 +22,9 @@ import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import PaymentModal from "components/organisms/PaymentModal";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
 import { Purchase } from "types/Purchase";
-import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   location: RouterLocation;
@@ -100,7 +102,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <>
+    <ChatContext>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
           <div
@@ -123,6 +125,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                 {venue.config.landingPageConfig.subtitle}
               </div>
             </div>
+            {venue.template === VenueTemplate.partymap && (
+              <div className="secret-password-form-wrapper">
+                <SecretPasswordForm />
+              </div>
+            )}
           </div>
           {venue.template === VenueTemplate.partymap && (
             <div className="secret-password-form-wrapper">
@@ -197,10 +204,11 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                     const isNextVenueEvent = venueEvent.id === nextVenueEventId;
                     const hasUserBoughtTicket =
                       user &&
-                      hasUserBoughtTicketForEvent(
+                      (hasUserBoughtTicketForEvent(
                         purchaseHistory,
                         venueEvent.id
-                      );
+                      ) ||
+                        isUserAMember(user.email, venue.config.memberEmails));
                     return (
                       <InformationCard
                         title={venueEvent.name}
@@ -211,7 +219,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
                           {`${dayjs(startingDate).format("ha")}-${dayjs(
                             endingDate
                           ).format("ha")} ${dayjs(startingDate).format(
-                            "dddd MMMM"
+                            "dddd MMMM Do"
                           )}`}
                         </div>
                         <div className="event-description">
@@ -248,7 +256,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
 
                             {user ? (
                               <EventPaymentButton
-                                eventId={venueEvent.id}
+                                event={venueEvent}
                                 venueId={venueId}
                                 selectEvent={() => setSelectedEvent(venueEvent)}
                                 setIsPaymentModalOpen={setIsPaymentModalOpen}
@@ -281,7 +289,7 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
           />
         )}
       </WithNavigationBar>
-    </>
+    </ChatContext>
   );
 };
 

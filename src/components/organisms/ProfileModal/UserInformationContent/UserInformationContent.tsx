@@ -24,7 +24,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         user: state.user,
         users: state.firestore.data.users,
         profileQuestions: state.firestore.data.currentVenue.profile_questions,
-        venue: state.firestore.data.currentVenue,
+        venue: state.firestore.ordered.currentVenue[0],
       } as {
         user: FUser;
         venue: Venue;

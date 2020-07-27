@@ -4,7 +4,7 @@ import RoomAttendance from "../RoomAttendance";
 import { formatMinute } from "utils/time";
 import { RoomData } from "types/RoomData";
 import { getCurrentEvent } from "utils/time";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -24,13 +24,14 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     (currentEvent ? currentEvent : room.events[0]);
 
   const history = useHistory();
+  const { url: baseUrl } = useRouteMatch();
 
   return (
     <div
       className="room-card-container"
       onClick={() => {
         window.scrollTo(0, 0);
-        history.push(room.url);
+        history.push(room.url ? `${baseUrl}${room.url}` : room.external_url);
       }}
       id={`room-card-${room.title}`}
     >

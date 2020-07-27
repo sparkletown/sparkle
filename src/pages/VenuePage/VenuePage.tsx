@@ -16,6 +16,8 @@ import { VenueEvent } from "types/VenueEvent";
 import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
+import { canUserJoinTheEvent } from "utils/time";
+import CountDown from "components/molecules/CountDown";
 
 const VenuePage = () => {
   const { venueId } = useParams();
@@ -70,8 +72,21 @@ const VenuePage = () => {
     return <>This event does not exist</>;
   }
 
-  if (eventPurchaseRequestStatus && !eventPurchase) {
+  if (!event || (event.price > 0 && !eventPurchase) || !venue || !users) {
+    return <>Loading...</>;
+  }
+
+  if (event.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
     return <>Forbidden</>;
+  }
+
+  if (!canUserJoinTheEvent(event)) {
+    return (
+      <CountDown
+        startUtcSeconds={event.start_utc_seconds}
+        textBeforeCountdown="Bar opens in"
+      />
+    );
   }
 
   if (!user) {

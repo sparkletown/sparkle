@@ -1,11 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 import { useHistory, Link } from "react-router-dom";
 import firebase from "firebase/app";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
+import { updateTheme } from "pages/VenuePage/helpers";
 
 interface LoginFormData {
   email: string;
@@ -21,8 +24,12 @@ const signIn = ({ email, password }: LoginFormData) => {
 };
 
 const Login: React.FunctionComponent<PropsType> = ({ location }) => {
+  useConnectCurrentVenue();
   const history = useHistory();
   const { venueId } = getQueryParameters(location.search);
+  const { venue } = useSelector((state: any) => ({
+    venue: state.firestore.data.currentVenue,
+  }));
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({
@@ -37,9 +44,18 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
     }
   };
 
+  venue && updateTheme(venue);
+
   return (
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
+      <div className="secondary-action">
+        Don't have an account yet?
+        <br />
+        <Link to={`/account/register${location.search}`}>
+          Register instead!
+        </Link>
+      </div>
       <div className="login-container">
         <h2>Log in</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
@@ -78,13 +94,6 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
             disabled={!formState.isValid}
           />
         </form>
-        <div className="secondary-action">
-          Don't have an account yet?
-          <br />
-          <Link to={`/account/register${location.search}`}>
-            Register instead!
-          </Link>
-        </div>
       </div>
     </div>
   );

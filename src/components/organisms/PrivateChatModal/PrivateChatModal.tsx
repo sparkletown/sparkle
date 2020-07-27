@@ -10,6 +10,7 @@ import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -20,8 +21,15 @@ const PrivateChatModal: React.FunctionComponent = () => {
     privateChats: state.firestore.ordered.privatechats,
     users: state.firestore.data.users,
     user: state.user,
-    userArray: state.firestore.ordered.users,
   }));
+
+  useFirestoreConnect({
+    collection: "privatechats",
+    doc: user.uid,
+    subcollections: [{ collection: "chats" }],
+    storeAs: "privatechats",
+  });
+
   const [selectedUser, setSelectedUser] = useState<User>();
 
   const discussionPartnerWithLastMessageExchanged =

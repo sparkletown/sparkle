@@ -6,6 +6,10 @@ import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { updateTheme } from "pages/VenuePage/helpers";
+import { User as FUser } from "firebase/app";
+import { Venue } from "types/Venue";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -18,11 +22,13 @@ interface PropsType {
 }
 
 const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
+  useConnectCurrentVenue();
+
   const history = useHistory();
-  const { user, profileQuestions } = useSelector((state: any) => ({
+  const { user, venue } = useSelector((state: any) => ({
     user: state.user,
-    profileQuestions: state.firestore.data.currentVenue.profile_questions,
-  }));
+    venue: state.firestore.data.currentVenue,
+  })) as { user: FUser; venue: Venue };
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
@@ -31,15 +37,21 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(`/account/code-of-conduct${location.search}`);
   };
 
+  if (!venue) {
+    return <>Loading...</>;
+  }
+
+  venue && updateTheme(venue);
+
   return (
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
       <div className="login-container">
-        <h2>Now complete your profile by answering 3 short questions</h2>
-        <p>This will help your fellow bar-goers break the ice</p>
+        <h2>Now complete your profile by answering some short questions</h2>
+        <p>This will help your fellow partygoers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {profileQuestions &&
-            profileQuestions.map((question: QuestionType) => (
+          {venue.profile_questions &&
+            venue.profile_questions.map((question: QuestionType) => (
               <div key={question.name} className="input-group">
                 <textarea
                   className="input-block input-centered"
