@@ -6,6 +6,7 @@ import { RouterLocation } from "types/RouterLocation";
 import { Venue, VenueTemplate } from "pages/VenuePage/VenuePage";
 import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
 import PartyMapRouter from "components/venues/PartyMap/router";
+import ChatContext from "components/context/ChatContext";
 
 interface PropsType {
   location: RouterLocation;
@@ -32,7 +33,11 @@ const TemplateRouter: React.FunctionComponent<PropsType> = ({ location }) => {
       return <EntranceExperience location={location} />;
     case VenueTemplate.partymap:
       if (user) {
-        return <PartyMapRouter />;
+        return (
+          <ChatContext>
+            <PartyMapRouter />
+          </ChatContext>
+        );
       }
       return <EntranceExperience location={location} />;
   }

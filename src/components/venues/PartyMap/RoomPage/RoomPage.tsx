@@ -18,7 +18,7 @@ export default function RoomPage() {
   let { roomPath } = useParams();
 
   const { user, users, venue } = useSelector((state: any) => ({
-    venue: state.firestore.data.currentVenue,
+    venue: state.firestore.ordered.currentVenue?.[0],
     user: state.user,
     users: state.firestore.ordered.partygoers,
   })) as { users: User[]; user: FUser; venue: PartyMapVenue };
@@ -46,7 +46,7 @@ export default function RoomPage() {
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">

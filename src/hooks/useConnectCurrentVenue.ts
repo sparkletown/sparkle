@@ -1,8 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
+import getQueryParameters from "utils/getQueryParameters";
 
 const useConnectCurrentVenue = () => {
-  const { venueId } = useParams();
+  let { venueId } = useParams();
+  if (!venueId) {
+    venueId = getQueryParameters(window.location.search)?.venueId;
+  }
   useFirestoreConnect([
     {
       collection: "venues",
