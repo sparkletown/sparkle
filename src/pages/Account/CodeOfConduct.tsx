@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
@@ -27,13 +26,11 @@ export interface CodeOfConductQuestion {
 
 const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
-
-  const history = useHistory();
   const { user, venue } = useSelector((state: any) => ({
     user: state.user,
     venue: state.firestore.data.currentVenue,
   }));
-  const { venueId } = getQueryParameters(location.search);
+  const { venueId, eventId } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
@@ -41,7 +38,11 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
     await updateUserProfile(user.uid, data);
-    history.push(`/${venueId ? `venue/${venueId}${location.search}` : ""}`);
+    // if we use history.push, the new profile information are not in the redux store
+    // when we arrive on `venue/${venueId}/event/${eventId}` and we get redirected again to account/profile
+    window.location.assign(
+      `/${venueId && eventId ? `venue/${venueId}/event/${eventId}` : ""}`
+    );
   };
 
   if (!venue?.code_of_conduct_questions) {

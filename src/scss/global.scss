@@ -654,3 +654,12 @@ input.btn.btn-primary.btn-success {
   width: 300px;
   top: 20px;
 }
+
+span.link {
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: $primaryColor;
+  }
+}

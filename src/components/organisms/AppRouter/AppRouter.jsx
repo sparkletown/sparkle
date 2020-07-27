@@ -9,8 +9,6 @@ import {
 } from "react-router-dom";
 import "firebase/analytics";
 import { setUser } from "actions";
-
-import Register from "pages/Account/Register";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
@@ -67,7 +65,6 @@ const AppRouter = () => {
     <Router basename="/">
       <Switch>
         <Route path="/SparkleVerse" component={SparkleSpaceMarketingPage} />
-        <Route path="/account/register" component={Register} />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />

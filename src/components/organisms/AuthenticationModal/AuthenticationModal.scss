@@ -1,0 +1,24 @@
+@import "scss/constants.scss";
+
+.authentication-modal-container {
+  padding: 20px;
+
+  .secondary-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+
+    .form {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}

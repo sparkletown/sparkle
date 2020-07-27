@@ -10,7 +10,7 @@ import ChatContext from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { Redirect, useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { Purchase } from "types/Purchase";
 import { VenueEvent } from "types/VenueEvent";
 import { Venue } from "types/Venue";
@@ -20,7 +20,8 @@ import { canUserJoinTheEvent } from "utils/time";
 import CountDown from "components/molecules/CountDown";
 
 const VenuePage = () => {
-  const { venueId } = useParams();
+  const { venueId, eventId } = useParams();
+  const history = useHistory();
 
   useConnectPartyGoers();
   useConnectCurrentVenue();
@@ -30,6 +31,7 @@ const VenuePage = () => {
     venue,
     user,
     users,
+    usersById,
     eventPurchase,
     eventPurchaseRequestStatus,
     event,
@@ -41,6 +43,7 @@ const VenuePage = () => {
     user: state.user,
     users: state.firestore.ordered.partygoers,
     event: state.firestore.data.currentEvent,
+    usersById: state.firestore.data.partygoers,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
     eventPurchase: state.firestore.data.eventPurchase,
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
@@ -51,6 +54,7 @@ const VenuePage = () => {
     eventPurchase: Purchase;
     eventPurchaseRequestStatus: boolean;
     event: VenueEvent;
+    usersById: { [id: string]: User };
     eventRequestStatus: boolean;
     venueRequestStatus: boolean;
   };
@@ -90,7 +94,15 @@ const VenuePage = () => {
   }
 
   if (!user) {
-    return <Redirect to={`/venue/${venueId}`} />;
+    return history.push(`/venue/${venueId}`);
+  }
+
+  if (
+    !(usersById?.[user.uid]?.partyName && usersById?.[user.uid]?.pictureUrl)
+  ) {
+    return history.push(
+      `/account/profile?venueId=${venueId}&eventId=${eventId}`
+    );
   }
 
   let template;
