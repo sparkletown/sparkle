@@ -72,25 +72,13 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
-
-        <Route path="/venue/:venueId" component={TemplateRouter} />
         <Route path="/v/:venueId" component={TemplateRouter} />
-
+        <Route path="/v/:venueId/event/:eventId" component={VenuePage} />
         <Route
-          exact
-          path="/venue/:venueId/event/:eventId"
-          render={(props) => (
-            <Redirect
-              to={`/${props.match.params.venueId}/event/${props.match.params.eventId}`}
-            />
-          )}
+          path="/venue/*"
+          render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}
         />
-        <Route path="/:venueId/event/:eventId" component={VenuePage} />
-
-        <Route
-          path="/"
-          component={() => <Redirect to="/venue/kansassmittys" />}
-        />
+        <Route path="/" component={() => <Redirect to="/v/kansassmittys" />} />
       </Switch>
     </Router>
   );
