@@ -9,7 +9,12 @@ const firebaseConfig = {
   projectId: PROJECT_ID,
 };
 firebase.initializeApp(firebaseConfig);
-admin.initializeApp(firebaseConfig);
+
+const serviceAccount = require("./serviceAccount.json");
+admin.initializeApp({
+  ...firebaseConfig,
+  credential: admin.credential.cert(serviceAccount),
+});
 
 const video = require("./video");
 const payment = require("./payment");

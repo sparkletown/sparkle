@@ -1,2 +1,5 @@
 node_modules/
 secrets.js
+secrets.*.js
+serviceAccount.json
+*.log
