@@ -17,6 +17,7 @@
 .env.local
 .env.development.local
 .env.test.local
+.env.staging.local
 .env.production.local
 
 npm-debug.log*
@@ -33,6 +34,7 @@ firebase-debug.log
 
 # Secrets
 src/secrets.js
+functions/secrets*.js
 
 # Reports
 reporting/env
