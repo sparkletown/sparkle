@@ -2,20 +2,24 @@ const firebase = require("firebase");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
-const secrets = require("./secrets");
+const PROJECT_ID = functions.config().project.id;
+const STRIPE_CONFIG = functions.config().stripe;
 
 // Set your secret key. Remember to switch to your live secret key in production!
 // See your keys here: https://dashboard.stripe.com/account/apikeys
-const stripe = require("stripe")(secrets.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(STRIPE_CONFIG.secret_key);
 
 const PURCHASE_TABLE = "purchases";
 
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
+  console.log("FENV");
+  console.log(functions.config());
+  console.log("FENDENV");
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
 
-  if (context.auth.token.aud !== secrets.PROJECT_ID) {
+  if (context.auth.token.aud !== PROJECT_ID) {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 
@@ -45,7 +49,7 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   return { client_secret: paymentIntent.client_secret };
 });
 
-const endpointSecret = secrets.STRIPE_ENDPOINT_KEY;
+const endpointSecret = STRIPE_CONFIG.endpoint_secret;
 
 exports.webhooks = functions.https.onRequest(async (request, res) => {
   const sig = request.headers["stripe-signature"];
