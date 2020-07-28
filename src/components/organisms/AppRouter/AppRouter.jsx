@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 import {
   BrowserRouter as Router,
@@ -13,6 +12,7 @@ import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
+import Admin from "pages/Account/Admin";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
 import VenuePage from "pages/VenuePage";
 import TemplateRouter from "components/venues/TemplateRouter";
@@ -61,6 +61,7 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
+        <Route path="/admin" component={Admin} />
         <Route path="/v/:venueId/event/:eventId" component={VenuePage} />
         <Route path="/v/:venueId" component={TemplateRouter} />
         <Route
