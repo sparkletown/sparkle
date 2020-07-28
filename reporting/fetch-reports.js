@@ -15,13 +15,13 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "07/10/2020";
-const to = "07/12/2020";
+const from = "07/24/2020";
+const to = "07/26/2020";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = true;
+const newLogin = false;
 
 // Login credentials (only needed if newLogin is true)
 const username = "";
