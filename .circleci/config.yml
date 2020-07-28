@@ -44,11 +44,11 @@ workflows:
             filters:
               branches:
                 only:
-                  - feature/cd
+                  - staging
         - deploy-hosting:
             requires:
               - build-and-test
             filters:
               branches:
                 only:
-                  - feature/cd
+                  - staging
