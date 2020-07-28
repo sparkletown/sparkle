@@ -38,7 +38,7 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
-      history.push(venueId ? `v/${venueId}${location.search}` : "");
+      history.push(venueId ? `/v/${venueId}${location.search}` : "");
     } catch (error) {
       setError("email", "firebase", error.message);
     }
