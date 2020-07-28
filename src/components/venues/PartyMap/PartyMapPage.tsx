@@ -64,7 +64,7 @@ const PartyMap = () => {
   }
 
   return (
-    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
+    <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
       <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle

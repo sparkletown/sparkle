@@ -37,7 +37,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
-    history.push(`/venue/${venue?.id}`);
+    history.push(`/v/${venue?.id}`);
   };
 
   if (!user) return <></>;

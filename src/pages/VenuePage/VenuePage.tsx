@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
@@ -15,25 +15,23 @@ import { VenueEvent } from "types/VenueEvent";
 import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import { canUserJoinTheEvent } from "utils/time";
+import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import CountDown from "components/molecules/CountDown";
 import { useUser } from "hooks/useUser";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 
 const VenuePage = () => {
-  const { venueId, eventId } = useParams();
+  const { venueId } = useParams();
   const history = useHistory();
+  const [currentTimestamp] = useState(Date.now() / 1000);
 
-  useConnectPartyGoers();
-  useConnectCurrentVenue();
-  useConnectCurrentEvent();
-
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const {
     venue,
     users,
-    usersById,
-    eventPurchase,
-    eventPurchaseRequestStatus,
+    userPurchaseHistory,
+    userPurchaseHistoryRequestStatus,
     event,
     eventRequestStatus,
     venueRequestStatus,
@@ -42,29 +40,36 @@ const VenuePage = () => {
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     users: state.firestore.ordered.partygoers,
     event: state.firestore.data.currentEvent,
-    usersById: state.firestore.data.partygoers,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
-    eventPurchase: state.firestore.data.eventPurchase,
-    eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
+    userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
+    userPurchaseHistoryRequestStatus:
+      state.firestore.status.requested.userPurchaseHistory,
   })) as {
     venue: Venue;
     users: User[];
-    eventPurchase: Purchase;
-    eventPurchaseRequestStatus: boolean;
+    userPurchaseHistory: Purchase[];
+    userPurchaseHistoryRequestStatus: boolean;
     event: VenueEvent;
-    usersById: { [id: string]: User };
     eventRequestStatus: boolean;
     venueRequestStatus: boolean;
   };
 
   venue && updateTheme(venue);
+  const hasUserBoughtTicket =
+    event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
+
+  const isEventFinished =
+    event &&
+    currentTimestamp >
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
-  if (!eventPurchase || !venue || !users || !venue) {
-    return <>Loading...</>;
-  }
+  useConnectPartyGoers();
+  useConnectCurrentVenue();
+  useConnectCurrentEvent();
+  useConnectUserPurchaseHistory();
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
@@ -74,11 +79,16 @@ const VenuePage = () => {
     return <>This event does not exist</>;
   }
 
-  if (!event || (event.price > 0 && !eventPurchase) || !venue || !users) {
+  if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
     return <>Loading...</>;
   }
 
-  if (event.price > 0 && eventPurchaseRequestStatus && !eventPurchase) {
+  if (
+    (event.price > 0 &&
+      userPurchaseHistoryRequestStatus &&
+      !hasUserBoughtTicket) ||
+    isEventFinished
+  ) {
     return <>Forbidden</>;
   }
 
@@ -91,16 +101,8 @@ const VenuePage = () => {
     );
   }
 
-  if (!user) {
-    return history.push(`/venue/${venueId}`);
-  }
-
-  if (
-    !(usersById?.[user.uid]?.partyName && usersById?.[user.uid]?.pictureUrl)
-  ) {
-    return history.push(
-      `/account/profile?venueId=${venueId}&eventId=${eventId}`
-    );
+  if (!(profile?.partyName && profile?.pictureUrl)) {
+    history.push(`/account/profile?venueId=${venueId}`);
   }
 
   let template;
