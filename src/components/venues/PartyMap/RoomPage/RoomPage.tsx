@@ -47,7 +47,7 @@ export default function RoomPage() {
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
-    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
+    <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">

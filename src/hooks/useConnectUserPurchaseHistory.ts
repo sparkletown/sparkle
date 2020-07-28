@@ -10,7 +10,7 @@ const useConnectUserPurchaseHistory = () => {
     {
       collection: "purchases",
       where: [
-        ["userId", "==", user?.uid],
+        ["userId", "==", user?.uid ?? ""],
         ["venueId", "==", venueId],
         ["status", "==", "COMPLETE"],
       ],
