@@ -17,5 +17,5 @@
   "[json]": {
     "editor.tabSize": 2
   },
-  "typescript.tsdk": "./src/node_modules/typescript/lib"
+  "typescript.tsdk": "./node_modules/typescript/lib"
 }
