@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { User as FUser } from "firebase";
+import { User as FUser, UserInfo } from "firebase";
 import { useForm } from "react-hook-form";
 
 import "./JazzTab.scss";
@@ -27,6 +27,7 @@ import {
   ChatContext,
   RestrictedChatMessage,
 } from "components/context/ChatContext";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -37,16 +38,14 @@ interface ChatOutDataType {
 }
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const { user, users, venue, usersById, chats } = useSelector(
-    (state: any) => ({
-      user: state.user,
-      users: state.firestore.ordered.partygoers,
-      muteReactions: state.muteReactions,
-      venue: state.firestore.data.currentVenue,
-      usersById: state.firestore.data.users,
-      chats: state.firestore.ordered.venueChats,
-    })
-  ) as {
+  const { user } = useUser();
+  const { users, venue, usersById, chats } = useSelector((state: any) => ({
+    users: state.firestore.ordered.partygoers,
+    muteReactions: state.muteReactions,
+    venue: state.firestore.data.currentVenue,
+    usersById: state.firestore.data.users,
+    chats: state.firestore.ordered.venueChats,
+  })) as {
     users: User[];
     user: FUser;
     venue: JazzbarVenue;
@@ -77,13 +76,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   function createReaction(
     reaction: { reaction: EmojiReactionType },
-    user: FUser
+    user: UserInfo
   ): Reaction;
   function createReaction(
     reaction: { reaction: TextReactionType; text: string },
-    user: FUser
+    user: UserInfo
   ): Reaction;
-  function createReaction(reaction: any, user: FUser) {
+  function createReaction(reaction: any, user: UserInfo) {
     return {
       created_at: new Date().getTime(),
       created_by: user.uid,
@@ -91,7 +90,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     };
   }
 
-  const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
+  const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     experienceContext &&
       experienceContext.addReaction(createReaction({ reaction }, user));
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
@@ -117,6 +116,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
     experienceContext &&
+      user &&
       experienceContext.addReaction(
         createReaction(
           { reaction: "messageToTheBand", text: data.messageToTheBand },
@@ -149,6 +149,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onBarMessageSubmit = async (data: ChatOutDataType) => {
     chatContext &&
+      user &&
       chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
     setBarMessageValue([{ messageToTheBand: "" }]);
   };
@@ -257,7 +258,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               {Reactions.map((reaction) => (
                 <button
                   className="reaction"
-                  onClick={() => reactionClicked(user, reaction.type)}
+                  onClick={() => user && reactionClicked(user, reaction.type)}
                   id={`send-reaction-${reaction.type}`}
                 >
                   <span role="img" aria-label={reaction.ariaLabel}>

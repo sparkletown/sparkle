@@ -9,6 +9,7 @@ import {
   isMessageToTheBand,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 type UserProfilePictureProp = {
   user: User;
@@ -42,7 +43,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         onClick={() => setSelectedUserProfile(user)}
         key={user.id}
         className="profile-icon"
-        src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+        src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
         title={user.partyName}
         alt={`${user.partyName} profile`}
         width={imageSize}

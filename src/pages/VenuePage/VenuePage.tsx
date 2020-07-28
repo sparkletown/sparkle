@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
 import PartyMap from "components/venues/PartyMap";
-import { User as FUser } from "firebase";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
 import ChatContext from "components/context/ChatContext";
@@ -18,6 +17,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { canUserJoinTheEvent } from "utils/time";
 import CountDown from "components/molecules/CountDown";
+import { useUser } from "hooks/useUser";
 
 const VenuePage = () => {
   const { venueId, eventId } = useParams();
@@ -27,9 +27,9 @@ const VenuePage = () => {
   useConnectCurrentVenue();
   useConnectCurrentEvent();
 
+  const { user } = useUser();
   const {
     venue,
-    user,
     users,
     usersById,
     eventPurchase,
@@ -40,7 +40,6 @@ const VenuePage = () => {
   } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
-    user: state.user,
     users: state.firestore.ordered.partygoers,
     event: state.firestore.data.currentEvent,
     usersById: state.firestore.data.partygoers,
@@ -49,7 +48,6 @@ const VenuePage = () => {
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
   })) as {
     venue: Venue;
-    user: FUser;
     users: User[];
     eventPurchase: Purchase;
     eventPurchaseRequestStatus: boolean;

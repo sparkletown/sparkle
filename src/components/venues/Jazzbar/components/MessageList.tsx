@@ -5,6 +5,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface MessageListProps {
   messages: RestrictedChatMessage[];
@@ -33,10 +34,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
               }
               key={`${message.from}-messaging-the-band`}
               className="profile-icon"
-              src={
-                usersById[message.from].pictureUrl ||
-                "/anonymous-profile-icon.jpeg"
-              }
+              src={usersById[message.from].pictureUrl || DEFAULT_PROFILE_IMAGE}
               title={usersById[message.from].partyName}
               alt={`${usersById[message.from].partyName} profile`}
               width={profileImageSize}

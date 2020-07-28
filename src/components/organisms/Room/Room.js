@@ -6,13 +6,14 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 
 import "./Room.scss";
+import { useUser } from "hooks/useUser";
 
 const Room = ({ roomName, setUserList, capacity = undefined }) => {
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 
-  const { user, users } = useSelector((state) => ({
-    user: state.user,
+  const { user } = useUser();
+  const { users } = useSelector((state) => ({
     users: state.firestore.data.partygoers,
   }));
   const [token, setToken] = useState();
@@ -30,7 +31,7 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
       });
       setToken(response.data.token);
     })();
-  }, [user, firebase, roomName]);
+  }, [firebase, roomName, user]);
 
   useEffect(() => {
     if (!token) return;

@@ -15,14 +15,15 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { Map, PartyTitle } from "./components";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { useUser } from "hooks/useUser";
 
 const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
-  const { partygoers, user, venue } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { partygoers, venue } = useSelector((state: any) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
-    user: state.user,
     partygoers: state.firestore.ordered.partygoers,
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
 

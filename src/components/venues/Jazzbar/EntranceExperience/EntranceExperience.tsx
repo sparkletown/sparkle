@@ -26,6 +26,7 @@ import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
 import { Purchase } from "types/Purchase";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   location: RouterLocation;
@@ -53,15 +54,15 @@ const JazzbarEntranceExperience: React.FunctionComponent<PropsType> = ({
     orderBy: ["start_utc_seconds", "asc"],
   });
 
+  const { user } = useUser();
+
   const {
     venue,
     venueEvents,
     venueRequestStatus,
-    user,
     purchaseHistory,
   } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
-    user: state.user,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     venueEvents: state.firestore.ordered.venueEvents,
     purchaseHistory: state.firestore.ordered.userPurchaseHistory,

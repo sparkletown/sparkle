@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import { useSelector } from "react-redux";
@@ -12,17 +11,17 @@ import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
 import { UpcomingEvent } from "types/UpcomingEvent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
+import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface PropsType {
   redirectionUrl?: string;
 }
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
-  useFirestoreConnect("users");
-  const { user, users, venue, privateChats } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.data.users,
+  const { user, profile } = useUser();
+  const { venue, privateChats } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
   }));
@@ -76,7 +75,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
-          {user ? (
+          {profile ? (
             <div className="icons-container">
               {hasUpcomingEvents && (
                 <OverlayTrigger
@@ -90,7 +89,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </span>
                 </OverlayTrigger>
               )}
-              {users && users[user.uid] && (
+              {profile && (
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"
@@ -112,10 +111,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 onClick={() => setIsProfileModalOpen(true)}
               >
                 <img
-                  src={
-                    users?.[user.uid]?.pictureUrl ||
-                    "/anonymous-profile-icon.jpeg"
-                  }
+                  src={profile.pictureUrl || DEFAULT_PROFILE_IMAGE}
                   className="profile-icon"
                   alt="avatar"
                   width="40"

@@ -14,11 +14,12 @@ import { Map, PartyTitle } from "../components";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./PartyMapPage.scss";
+import { useUser } from "hooks/useUser";
 
 const PartyMapPage = () => {
-  const { partygoers, user, venue } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { partygoers, venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
-    user: state.user,
     partygoers: state.firestore.ordered.partygoers,
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
 

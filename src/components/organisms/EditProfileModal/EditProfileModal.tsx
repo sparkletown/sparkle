@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   show: boolean;
@@ -18,23 +19,26 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
 }) => {
-  const { user, users, profileQuestions } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.data.users,
+  const { user, profile } = useUser();
+  const { profileQuestions } = useSelector((state: any) => ({
     profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
+    if (!user) return;
     await updateUserProfile(user.uid, data);
     onHide();
   };
   const defaultValues: any = {
-    partyName: users[user.uid].partyName,
-    pictureUrl: users[user.uid].pictureUrl,
+    partyName: profile?.partyName,
+    pictureUrl: profile?.pictureUrl,
   };
   profileQuestions &&
     profileQuestions.map(
       (question: QuestionType) =>
-        (defaultValues[question.name] = users[user.uid][question.name])
+        (defaultValues[question.name] = profile
+          ? //@ts-ignore
+            profile[question.name]
+          : undefined) // no idea what's going on here. Typescript will clarify.
     );
 
   const {

@@ -1,12 +1,10 @@
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
+import { useUser } from "./useUser";
 
 const useConnectCurrentEvent = () => {
   const { venueId, eventId } = useParams();
-  const { user } = useSelector((state: any) => ({
-    user: state.user,
-  }));
+  const { user } = useUser();
 
   useFirestoreConnect([
     {
@@ -22,7 +20,7 @@ const useConnectCurrentEvent = () => {
       collection: "purchases",
       where: [
         ["eventId", "==", eventId],
-        ["userId", "==", user.uid],
+        ["userId", "==", user?.uid],
         ["venueId", "==", venueId],
         ["status", "==", "COMPLETE"],
       ],
