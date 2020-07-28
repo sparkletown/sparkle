@@ -69,8 +69,8 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
-        <Route path="/v/:venueId" component={TemplateRouter} />
         <Route path="/v/:venueId/event/:eventId" component={VenuePage} />
+        <Route path="/v/:venueId" component={TemplateRouter} />
         <Route
           path="/venue/*"
           render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}
