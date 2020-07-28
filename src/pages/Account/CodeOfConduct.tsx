@@ -7,6 +7,7 @@ import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   location: RouterLocation;
@@ -26,8 +27,9 @@ export interface CodeOfConductQuestion {
 
 const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
-  const { user, venue } = useSelector((state: any) => ({
-    user: state.user,
+
+  const { user } = useUser();
+  const { venue } = useSelector((state: any) => ({
     venue: state.firestore.data.currentVenue,
   }));
   const { venueId, eventId } = getQueryParameters(location.search);
@@ -37,11 +39,12 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     mode: "onChange",
   });
   const onSubmit = async (data: CodeOfConductFormData) => {
+    if (!user) return;
     await updateUserProfile(user.uid, data);
     // if we use history.push, the new profile information are not in the redux store
     // when we arrive on `venue/${venueId}/event/${eventId}` and we get redirected again to account/profile
     window.location.assign(
-      `/${venueId && eventId ? `venue/${venueId}/event/${eventId}` : ""}`
+      venueId && eventId ? `venue/${venueId}/event/${eventId}` : ""
     );
   };
 

@@ -10,7 +10,7 @@ import "./PaymentModal.scss";
 import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { Venue } from "types/Venue";
-import { User as FUser } from "firebase/app";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   show: boolean;
@@ -24,21 +24,17 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   selectedEvent,
 }) => {
   useConnectUserPurchaseHistory();
-  const {
-    purchaseHistory,
-    purchaseHistoryRequestStatus,
-    user,
-    venue,
-  } = useSelector((state: any) => ({
-    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    purchaseHistoryRequestStatus:
-      state.firestore.status.requested.userPurchaseHistory,
-    user: state.user,
-    venue: state.firestore.data.currentVenue,
-  })) as {
+  const { user } = useUser();
+  const { purchaseHistory, purchaseHistoryRequestStatus, venue } = useSelector(
+    (state: any) => ({
+      purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+      purchaseHistoryRequestStatus:
+        state.firestore.status.requested.userPurchaseHistory,
+      venue: state.firestore.data.currentVenue,
+    })
+  ) as {
     purchaseHistory: Purchase[];
     purchaseHistoryRequestStatus: boolean;
-    user: FUser;
     venue: Venue;
   };
 
@@ -47,7 +43,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
 
   const hasUserBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
-    isUserAMember(user.email, venue.config.memberEmails);
+    (user && isUserAMember(user.email, venue.config.memberEmails));
 
   const closePaymentModal = () => {
     if (!isFormBeingSubmitted) {

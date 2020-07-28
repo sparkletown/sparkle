@@ -10,7 +10,7 @@ import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
 import { Venue } from "types/Venue";
-import { User as FUser } from "firebase/app";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   event: VenueEvent;
@@ -26,19 +26,18 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   selectEvent,
 }) => {
   useConnectUserPurchaseHistory();
-  const { purchaseHistory, user, venue } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { purchaseHistory, venue } = useSelector((state: any) => ({
     purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    user: state.user,
     venue: state.firestore.data.currentVenue,
   })) as {
     purchaseHistory: Purchase[];
-    user: FUser;
     venue: Venue;
   };
 
   const hasUserAlreadyBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, event.id) ||
-    isUserAMember(user.email, venue.config.memberEmails);
+    (user && isUserAMember(user.email, venue.config.memberEmails));
 
   const handleClick = () => {
     selectEvent();

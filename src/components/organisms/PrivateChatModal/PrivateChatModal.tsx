@@ -11,21 +11,22 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
 import { useFirestoreConnect } from "react-redux-firebase";
+import { useUser } from "hooks/useUser";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
 }
 
 const PrivateChatModal: React.FunctionComponent = () => {
-  const { privateChats, users, user } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { privateChats, users } = useSelector((state: any) => ({
     privateChats: state.firestore.ordered.privatechats,
     users: state.firestore.data.users,
-    user: state.user,
   }));
 
   useFirestoreConnect({
     collection: "privatechats",
-    doc: user.uid,
+    doc: user?.uid,
     subcollections: [{ collection: "chats" }],
     storeAs: "privatechats",
   });
@@ -37,7 +38,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
     privateChats.reduce((agg: LastMessageByUser, item: PrivateChatMessage) => {
       let lastMessageTimeStamp;
       let discussionPartner;
-      if (item.from === user.uid) {
+      if (item.from === user?.uid) {
         discussionPartner = item.to;
       } else {
         discussionPartner = item.from;
@@ -57,8 +58,9 @@ const PrivateChatModal: React.FunctionComponent = () => {
     const chatsToUpdate = privateChats.filter(
       (chat: PrivateChatMessage) => !chat.isRead && chat.from === sender.id
     );
-    chatsToUpdate.map((chat: PrivateChatMessage & { id: string }) =>
-      setPrivateChatMessageIsRead(user.uid, chat.id)
+    chatsToUpdate.map(
+      (chat: PrivateChatMessage & { id: string }) =>
+        user && setPrivateChatMessageIsRead(user.uid, chat.id)
     );
     setSelectedUser(sender);
   };
@@ -116,7 +118,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
                       </div>
                       <div>{formatUtcSeconds(lastMessageExchanged.ts_utc)}</div>
                     </div>
-                    {lastMessageExchanged.from !== user.uid &&
+                    {lastMessageExchanged.from !== user?.uid &&
                       !lastMessageExchanged.isRead && (
                         <div className="not-read-indicator" />
                       )}

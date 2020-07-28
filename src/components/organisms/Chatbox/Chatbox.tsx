@@ -10,6 +10,7 @@ import ChatForm from "./ChatForm";
 import "./Chatbox.scss";
 import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
+import { useUser } from "hooks/useUser";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -37,21 +38,15 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     room ? "room" : "global"
   );
 
-  const {
-    users,
-    userArray,
-    currentUserUID,
-    chats,
-    user,
-    privateChats,
-  } = useSelector((state: any) => ({
-    users: state.firestore.data.users,
-    userArray: state.firestore.ordered.users,
-    currentUserUID: state.user.uid,
-    chats: state.firestore.ordered.venueChats,
-    privateChats: state.firestore.ordered.privatechats,
-    user: state.user,
-  }));
+  const { user } = useUser();
+  const { users, userArray, chats, privateChats } = useSelector(
+    (state: any) => ({
+      users: state.firestore.data.users,
+      userArray: state.firestore.ordered.users,
+      chats: state.firestore.ordered.venueChats,
+      privateChats: state.firestore.ordered.privatechats,
+    })
+  );
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
@@ -77,7 +72,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       .sort((a: any, b: any) => b.ts_utc - a.ts_utc)
       .slice(0, RECENT_MESSAGE_COUNT);
 
-  if (isInProfileModal && discussionPartner) {
+  if (user && isInProfileModal && discussionPartner) {
     chatsToDisplay =
       chatsToDisplay &&
       chatsToDisplay.filter(
@@ -94,6 +89,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   };
 
   useEffect(() => {
+    if (!user) return;
     if (!isRecipientChangeBlocked) {
       const lastChat = chatsToDisplay && chatsToDisplay[0];
       setPrivateRecipient(undefined);
@@ -113,7 +109,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     privateChats,
     isInProfileModal,
     isRecipientChangeBlocked,
-    user.uid,
+    user,
     users,
   ]);
 
@@ -243,7 +239,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   : chatboxMessageType
               }
               discussionPartner={privateRecipient || discussionPartner}
-              currentUserUID={currentUserUID}
+              currentUserUID={user?.uid}
               room={room}
               setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />

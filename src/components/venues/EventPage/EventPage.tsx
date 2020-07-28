@@ -7,12 +7,12 @@ import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { Purchase } from "types/Purchase";
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
-import { User as FUser } from "firebase/app";
+import { useUser } from "hooks/useUser";
 
 const EventPage = () => {
   const { venueId, eventId } = useParams();
+  const { user } = useUser();
   const {
-    user,
     venue,
     event,
     eventPurchase,
@@ -20,7 +20,6 @@ const EventPage = () => {
     venueRequestStatus,
     eventRequestStatus,
   } = useSelector((state: any) => ({
-    user: state.user,
     eventPurchase: state.firestore.data.eventPurchase,
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
@@ -28,7 +27,6 @@ const EventPage = () => {
     eventRequestStatus: state.firestore.status.requested.currentEvent,
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
   })) as {
-    user: FUser;
     eventPurchase: Purchase;
     venue: Venue;
     venueRequestStatus: boolean;

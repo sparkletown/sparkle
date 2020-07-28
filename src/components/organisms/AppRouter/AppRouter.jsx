@@ -8,7 +8,7 @@ import {
   Redirect,
 } from "react-router-dom";
 import "firebase/analytics";
-import { setUser } from "actions";
+
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
@@ -18,20 +18,12 @@ import VenuePage from "pages/VenuePage";
 import TemplateRouter from "components/venues/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
+import { useUser } from "hooks/useUser";
 
 const AppRouter = () => {
   const firebase = useFirebase();
-  const dispatch = useDispatch();
   const analytics = firebase.analytics();
-  const { user } = useSelector((state) => ({
-    user: state.user,
-  }));
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      dispatch(setUser(user));
-    });
-  }, [user, dispatch, firebase]);
+  const { user } = useUser();
 
   const onClickWindow = (event) => {
     event.target.id &&

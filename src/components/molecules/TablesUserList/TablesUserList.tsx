@@ -9,6 +9,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import "./TablesUserList.scss";
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   venueName: string;
@@ -63,8 +64,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   useFirestoreConnect({ collection: "experiences", doc: venueName });
-  const { user, users, experience, usersById } = useSelector((state: any) => ({
-    user: state.user,
+  const { user, profile } = useUser();
+  const { users, experience, usersById } = useSelector((state: any) => ({
     users: state.firestore.ordered.partygoers,
     usersById: state.firestore.data.users,
     experience:
@@ -73,12 +74,14 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   }));
 
   useEffect(() => {
-    if (user && usersById?.[user.uid]?.data?.[venueName]?.table) {
-      setSeatedAtTable(usersById[user.uid].data[venueName].table);
+    if (!profile) return;
+    const table = profile.data?.[venueName]?.table;
+    if (table) {
+      setSeatedAtTable(table);
     } else {
       setSeatedAtTable("");
     }
-  }, [user, setSeatedAtTable, usersById, venueName]);
+  }, [profile, setSeatedAtTable, user, usersById, venueName]);
 
   if (!users) {
     return <>Loading...</>;
@@ -137,6 +140,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const takeSeat = (table: string) => {
+    if (!user) return;
     const doc = `users/${user.uid}`;
     const existingData = users.find((u: any) => u.id === user.uid)?.data;
     const update = {

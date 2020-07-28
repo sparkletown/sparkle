@@ -1,12 +1,11 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { QuestionType } from "types/Question";
-import { User as FUser } from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 import { Venue } from "types/Venue";
-import { User } from "types/User";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -19,17 +18,14 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsPasswordEditMode,
   hideModal,
 }) => {
-  const { user, venue, users, profileQuestions } = useSelector(
+  const { user, profile } = useUser();
+  const { venue, profileQuestions } = useSelector(
     (state: any) =>
       ({
-        user: state.user,
-        users: state.firestore.data.users,
         profileQuestions: state.firestore.data.currentVenue.profile_questions,
         venue: state.firestore.ordered.currentVenue[0],
       } as {
-        user: FUser;
         venue: Venue;
-        users: { [uid: string]: User };
         profileQuestions: QuestionType[];
       })
   );
@@ -43,7 +39,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     history.push(`/venue/${venue?.id}`);
   };
 
-  if (!user) return <></>;
+  if (!user || !profile) return <></>;
 
   return (
     <>
@@ -51,14 +47,14 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <div className="user-information">
         <img
           className="profile-icon profile-modal-avatar"
-          src={users?.[user.uid]?.pictureUrl || "/anonymous-profile-icon.jpeg"}
+          src={profile.pictureUrl || "/anonymous-profile-icon.jpeg"}
           alt="profile avatar"
           width="50"
           height="50"
         />
         <div className="text-container">
           <h2 className="title ellipsis-text">
-            {users?.[user.uid]?.partyName || DEFAULT_PROFILE_VALUES.partyName}
+            {profile.partyName || DEFAULT_PROFILE_VALUES.partyName}
           </h2>
           <div className="ellipsis-text">{user.email}</div>
         </div>
@@ -70,8 +66,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             <div className="answer">
               {
                 // @ts-ignore question.name is a correct index for type User
-                users?.[user.uid]?.[question.name] ||
-                  DEFAULT_PROFILE_VALUES.questionAnswer
+                profile[question.name] || DEFAULT_PROFILE_VALUES.questionAnswer
               }
             </div>
           </div>

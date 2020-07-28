@@ -13,13 +13,14 @@ import ScheduleItem from "components/molecules/ScheduleItem";
 import { enterRoom, leaveRoom } from "utils/useLocationUpdateEffect";
 
 import "./RoomModal.scss";
+import { useUser } from "hooks/useUser";
 
 export default function RoomModal({ startUtcSeconds, show, onHide }) {
   const dispatch = useDispatch();
   const [inRoom, setInRoom] = useState();
-  const { room, user, users } = useSelector((state) => ({
+  const { user } = useUser();
+  const { room, users } = useSelector((state) => ({
     room: state.room,
-    user: state.user,
     users: state.firestore.ordered.partygoers,
   }));
 

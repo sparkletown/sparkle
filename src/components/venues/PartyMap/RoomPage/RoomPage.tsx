@@ -13,13 +13,14 @@ import "./RoomPage.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { useUser } from "hooks/useUser";
 
 export default function RoomPage() {
   let { roomPath } = useParams();
 
-  const { user, users, venue } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { users, venue } = useSelector((state: any) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
-    user: state.user,
     users: state.firestore.ordered.partygoers,
   })) as { users: User[]; user: FUser; venue: PartyMapVenue };
 
@@ -39,7 +40,7 @@ export default function RoomPage() {
     users?.filter((user: any) => user.room === room?.title) ?? [];
 
   function enter() {
-    room && enterRoom(user, room.title);
+    room && user && enterRoom(user, room.title);
   }
 
   const currentEvent =

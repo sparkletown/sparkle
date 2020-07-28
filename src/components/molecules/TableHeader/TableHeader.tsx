@@ -4,13 +4,14 @@ import { JAZZBAR_TABLES } from "components/venues/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
 import { useSelector } from "react-redux";
 import { User } from "types/User";
+import { useUser } from "hooks/useUser";
 
 const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
-  const { experience, user, users } = useSelector((state: any) => ({
+  const { user, profile } = useUser();
+  const { experience, users } = useSelector((state: any) => ({
     experience:
       state.firestore.data.experiences &&
       state.firestore.data.experiences[venueName],
-    user: state.user,
     users: state.firestore.ordered.partygoers,
   }));
   useFirestoreConnect({
@@ -65,8 +66,9 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
   // useWindowUnloadEffect(() => leaveSeat(), true);
 
   const leaveSeat = useCallback(async () => {
+    if (!user || !profile) return;
     const doc = `users/${user.uid}`;
-    const existingData = user.data;
+    const existingData = profile.data;
     const update = {
       data: {
         ...existingData,
@@ -78,7 +80,7 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
     };
     await firestoreUpdate(doc, update);
     setSeatedAtTable("");
-  }, [user, setSeatedAtTable, venueName]);
+  }, [user, profile, venueName, setSeatedAtTable]);
 
   return (
     <div className="row no-margin at-table table-header">
