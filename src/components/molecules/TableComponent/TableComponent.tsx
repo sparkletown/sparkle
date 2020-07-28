@@ -3,6 +3,7 @@ import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 import "./TableComponent.scss";
 import { useSelector } from "react-redux";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -76,7 +77,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
               onClick={() => setSelectedUserProfile(user)}
               key={user.id}
               className="profile-icon table-participant-picture"
-              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+              src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
               title={user.partyName}
               alt={`${user.partyName} profile`}
               width={imageSize}

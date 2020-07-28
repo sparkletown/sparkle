@@ -8,6 +8,7 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { useUser } from "hooks/useUser";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface EditProfileFormValuesType {
   partyName: string;
@@ -33,7 +34,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   };
   const defaultValues = {
     partyName: profile?.partyName,
-    pictureUrl: profile?.pictureUrl || "/anonymous-profile-icon.jpeg",
+    pictureUrl: profile?.pictureUrl || DEFAULT_PROFILE_IMAGE,
   };
 
   profileQuestions &&

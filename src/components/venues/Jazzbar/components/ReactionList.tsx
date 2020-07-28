@@ -9,6 +9,7 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ReactionList.scss";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -46,7 +47,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
               className="profile-icon"
               src={
                 usersById[message.created_by].pictureUrl ||
-                "/anonymous-profile-icon.jpeg"
+                DEFAULT_PROFILE_IMAGE
               }
               title={usersById[message.created_by].partyName}
               alt={`${usersById[message.created_by].partyName} profile`}

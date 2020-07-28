@@ -6,6 +6,7 @@ import { useFirebase } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { useUser } from "hooks/useUser";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -39,7 +40,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     history.push(`/venue/${venue?.id}`);
   };
 
-  if (!user || !profile) return <></>;
+  if (!user) return <></>;
 
   return (
     <>
@@ -47,14 +48,14 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <div className="user-information">
         <img
           className="profile-icon profile-modal-avatar"
-          src={profile.pictureUrl || "/anonymous-profile-icon.jpeg"}
+          src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
           alt="profile avatar"
           width="50"
           height="50"
         />
         <div className="text-container">
           <h2 className="title ellipsis-text">
-            {profile.partyName || DEFAULT_PROFILE_VALUES.partyName}
+            {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
           </h2>
           <div className="ellipsis-text">{user.email}</div>
         </div>

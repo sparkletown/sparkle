@@ -13,6 +13,7 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -110,7 +111,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 onClick={() => setIsProfileModalOpen(true)}
               >
                 <img
-                  src={profile.pictureUrl}
+                  src={profile.pictureUrl || DEFAULT_PROFILE_IMAGE}
                   className="profile-icon"
                   alt="avatar"
                   width="40"
