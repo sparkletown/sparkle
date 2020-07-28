@@ -1,16 +1,20 @@
 import React from "react";
 import { render } from "react-dom";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 
-import { createStore, compose, applyMiddleware } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import thunkMiddleware from "redux-thunk";
-import { reduxFirestore, createFirestoreInstance } from "redux-firestore";
+import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/analytics";
 import "firebase/auth";
 import "firebase/functions";
-import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import {
+  ReactReduxFirebaseProvider,
+  firebaseReducer,
+  isLoaded,
+} from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import { STRIPE_PUBLISHABLE_KEY } from "secrets";
 
@@ -42,7 +46,6 @@ const firebaseConfig = {
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
 };
-const rfConfig = {}; // optional redux-firestore Config Options
 
 const rrfConfig = {
   userProfile: "users",
@@ -52,6 +55,7 @@ const rrfConfig = {
 firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 firebase.auth();
+firebase.firestore();
 
 if (window.location.hostname === "localhost") {
   firebase.functions().useFunctionsEmulator("http://localhost:5000");
@@ -59,13 +63,16 @@ if (window.location.hostname === "localhost") {
   firebase.functions();
 }
 
-const createStoreWithFirebase = compose(reduxFirestore(firebase, rfConfig))(
-  createStore
-);
+// Add firebase to reducers
+const rootFirebaseReducer = combineReducers({
+  firebase: firebaseReducer,
+  firestore: firestoreReducer,
+  ...rootReducer,
+});
 
 const initialState = {};
-const store = createStoreWithFirebase(
-  rootReducer,
+const store = createStore(
+  rootFirebaseReducer,
   initialState,
   composeWithDevTools(
     applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
@@ -79,11 +86,19 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
+const AuthIsLoaded = ({ children }) => {
+  const auth = useSelector((state) => state.firebase.auth);
+  if (!isLoaded(auth)) return <div>Loading...</div>;
+  return children;
+};
+
 render(
   <Elements stripe={stripePromise}>
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-        <AppRouter />
+        <AuthIsLoaded>
+          <AppRouter />
+        </AuthIsLoaded>
       </ReactReduxFirebaseProvider>
     </Provider>
   </Elements>,
