@@ -13,8 +13,25 @@ jobs:
             - run: npm install
             - run: npm run init
             - run: npm run build
-            - run: npm test
+            # - run: npm test
+  deploy-functions:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: cd functions && npm i
+            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
+            - run: ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
 workflows:
-    build-and-test:
+    build-test-deploy:
       jobs:
         - build-and-test
+        - deploy-functions:
+            requires:
+              - build-and-test
+            filters:
+              branches:
+                only:
+                  - feature/cd
