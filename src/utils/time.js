@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 
-const ONE_MINUTE_IN_SECONDS = 60;
+export const ONE_MINUTE_IN_SECONDS = 60;
 const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
