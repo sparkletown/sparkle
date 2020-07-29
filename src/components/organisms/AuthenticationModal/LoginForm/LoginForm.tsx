@@ -41,7 +41,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     <div className="form-container">
       <h2>Log in</h2>
       <div className="secondary-action">
-        Don't have an account yet?
+        {`Don't have an account yet?`}
         <br />
         <span className="link" onClick={displayRegisterForm}>
           Register instead!

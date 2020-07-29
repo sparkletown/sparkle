@@ -1,27 +1,25 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { User as FUser } from "firebase";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "../components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { User } from "types/User";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 
 import { Map, PartyTitle } from "../components";
-import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./PartyMapPage.scss";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { isPartyMapVenue } from "types/PartyMapVenue";
 
 const PartyMapPage = () => {
   const { user } = useUser();
-  const { partygoers, venue } = useSelector((state: any) => ({
+  const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     partygoers: state.firestore.ordered.partygoers,
-  })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
+  }));
 
   useUpdateLocationEffect(user, "Map");
 
@@ -56,6 +54,8 @@ const PartyMapPage = () => {
       attendances[roomTitle] = combinedAttendance;
     }
   }
+
+  if (!isPartyMapVenue(venue)) return null;
 
   return (
     <WithNavigationBar>

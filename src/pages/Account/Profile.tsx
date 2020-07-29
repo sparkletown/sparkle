@@ -68,13 +68,15 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 Display name is less than 16 characters
               </span>
             )}
-            <ProfilePictureInput
-              setValue={setValue}
-              user={user}
-              errors={errors}
-              pictureUrl={pictureUrl}
-              register={register}
-            />
+            {user && (
+              <ProfilePictureInput
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
+              />
+            )}
           </div>
           <input
             className="btn btn-primary btn-block btn-centered"

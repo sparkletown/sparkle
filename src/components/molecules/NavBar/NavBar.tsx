@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,11 +8,11 @@ import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
-import { UpcomingEvent } from "types/UpcomingEvent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -21,15 +20,14 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue, privateChats } = useSelector((state: any) => ({
+  const { venue, privateChats } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
   }));
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
-  const futureUpcoming = venue?.events?.filter(
-    (e: UpcomingEvent) => e?.ts_utc?.valueOf() > now.valueOf()
-  );
+  const futureUpcoming =
+    venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
@@ -59,8 +57,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     user &&
     privateChats
       .filter(isChatValid)
-      .filter((chat: any) => chat.to === user.uid && chat.isRead === false)
-      .length;
+      .filter((chat) => chat.to === user.uid && chat.isRead === false).length;
 
   return (
     <>
@@ -75,7 +72,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
-          {profile ? (
+          {user ? (
             <div className="icons-container">
               {hasUpcomingEvents && (
                 <OverlayTrigger
@@ -111,7 +108,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 onClick={() => setIsProfileModalOpen(true)}
               >
                 <img
-                  src={profile.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                  src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
                   className="profile-icon"
                   alt="avatar"
                   width="40"

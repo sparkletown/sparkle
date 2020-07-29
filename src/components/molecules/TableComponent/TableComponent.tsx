@@ -2,8 +2,8 @@ import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 import "./TableComponent.scss";
-import { useSelector } from "react-redux";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -15,7 +15,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   table,
   tableLocked,
 }) => {
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
   const locked = tableLocked(table.reference);
@@ -27,14 +27,6 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   const full = numberOfSeatsLeft === 0;
   return (
     <div className={`table-component-container ${table.reference}`}>
-      {/* {table.title && (
-        <div className="table-title-container">
-          <div className="table-title">{table.title}</div>
-          {table.subtitle && (
-            <div className="table-subtitle">{table.subtitle}</div>
-          )}
-        </div>
-      )} */}
       <div
         className="table-item"
         style={{
@@ -89,6 +81,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           table.capacity - usersSeatedAtTable.length >= 0 &&
           [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
+              key={i}
               onClick={() =>
                 onJoinClicked(table.reference, locked, nameOfVideoRoom)
               }

@@ -11,7 +11,7 @@ const PaymentConfirmation: React.FunctionComponent<PropsType> = ({
   <div className="payment-confirmation-container">
     <h3>Congratulations!</h3>
     <p>
-      You have purchased your ticket for Saturday's gig
+      {`You have purchased your ticket for Saturday's gig`}
       <br />
       We look forward to seeing you in the bar on Saturday.
     </p>

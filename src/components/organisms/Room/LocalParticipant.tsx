@@ -4,20 +4,35 @@ import {
   faMicrophoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import Video from "twilio-video";
+import { User } from "types/User";
 import Participant from "./Participant";
 
-const LocalParticipant = ({ participant, profileData, bartender }) => {
+interface LocalParticipantProps {
+  participant: Video.Participant;
+  profileData: User;
+  bartender?: User;
+}
+
+const LocalParticipant: React.FC<LocalParticipantProps> = ({
+  participant,
+  profileData,
+  bartender,
+}) => {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
     if (muted) {
       participant.audioTracks.forEach(function (audioTrack) {
-        audioTrack.track.disable();
+        audioTrack.track &&
+          "disable" in audioTrack.track &&
+          audioTrack.track.disable();
       });
     } else {
       participant.audioTracks.forEach(function (audioTrack) {
-        audioTrack.track.enable();
+        audioTrack.track &&
+          "enable" in audioTrack.track &&
+          audioTrack.track.enable();
       });
     }
   }, [participant, muted]);

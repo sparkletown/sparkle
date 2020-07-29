@@ -30,7 +30,7 @@ const WelcomePage: React.FunctionComponent = () => {
         setEmailSubmitted(true);
         setEmailSubmitError(null);
       })
-      .catch((e) => {
+      .catch(() => {
         firestore
           .doc(doc)
           .set(update)

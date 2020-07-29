@@ -1,29 +1,29 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
 import JazzBar from "../Jazzbar";
 import ReactionPage from "pages/ReactionPage";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import ExperienceContextProvider from "components/context/ExperienceContext";
+import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Venue } from "types/Venue";
+import { useSelector } from "hooks/useSelector";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
   useFirestoreConnect("users");
 
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   })) as { venue: Venue };
 
   return (
-    <ExperienceContextProvider venueName={venue.name}>
+    <ExperienceContextWrapper venueName={venue.name}>
       <Switch>
         <Route path={`${match.url}/band`} component={ReactionPage} />
         <Route path={`${match.url}/`} component={JazzBar} />
       </Switch>
-    </ExperienceContextProvider>
+    </ExperienceContextWrapper>
   );
 };
 

@@ -1,27 +1,23 @@
 import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
-import {
-  Reaction,
-  isMessageToTheBand,
-} from "components/context/ExperienceContext";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/venues/Jazzbar/components/ReactionList";
+import { useSelector } from "hooks/useSelector";
+import { MessageToTheBandReaction } from "components/context/ExperienceContext";
+import { OrderedIdEnhancer } from "types/Firestore";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
 
-  const { reactions, usersById, partyGoers, venue } = useSelector(
-    (state: any) => ({
-      reactions: state.firestore.ordered.reactions,
-      usersById: state.firestore.data.users,
-      partyGoers: state.firestore.ordered.partygoers,
-      venue: state.firestore.data.currentVenue,
-    })
-  );
+  const { reactions, usersById, partyGoers, venue } = useSelector((state) => ({
+    reactions: state.firestore.ordered.reactions,
+    usersById: state.firestore.data.users,
+    partyGoers: state.firestore.ordered.partygoers,
+    venue: state.firestore.data.currentVenue,
+  }));
 
   useFirestoreConnect([
     {
@@ -33,9 +29,9 @@ const ReactionPage = () => {
     },
   ]);
 
-  const typedReaction = (reactions ? reactions : []) as Reaction[];
-
-  const messagesToTheBand = typedReaction.filter(isMessageToTheBand);
+  const messagesToTheBand = reactions.filter(
+    (reaction) => reaction.reaction === "messageToTheBand"
+  ) as Array<OrderedIdEnhancer<MessageToTheBandReaction>>;
 
   return (
     <WithNavigationBar>

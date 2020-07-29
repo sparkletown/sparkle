@@ -1,8 +1,8 @@
 import React from "react";
 import { render } from "react-dom";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 
-import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
 import firebase from "firebase/app";
@@ -14,6 +14,7 @@ import {
   ReactReduxFirebaseProvider,
   firebaseReducer,
   isLoaded,
+  FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import { STRIPE_PUBLISHABLE_KEY } from "secrets";
@@ -23,7 +24,7 @@ import "scss/global.scss";
 
 import AppRouter from "components/organisms/AppRouter";
 
-import rootReducer from "./reducers/";
+import { roomReducer } from "./store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import {
   API_KEY,
@@ -36,8 +37,11 @@ import * as serviceWorker from "./serviceWorker";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { useSelector } from "hooks/useSelector";
+import { Firestore } from "types/Firestore";
+import { User } from "types/User";
 
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -64,15 +68,17 @@ if (window.location.hostname === "localhost") {
 }
 
 // Add firebase to reducers
-const rootFirebaseReducer = combineReducers({
-  firebase: firebaseReducer,
-  firestore: firestoreReducer,
-  ...rootReducer,
+const rootReducer = combineReducers({
+  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
+  firestore: firestoreReducer as Reducer<Firestore>,
+  room: roomReducer,
 });
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 const initialState = {};
 const store = createStore(
-  rootFirebaseReducer,
+  rootReducer,
   initialState,
   composeWithDevTools(
     applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
@@ -86,10 +92,12 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
-const AuthIsLoaded = ({ children }) => {
+const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
   const auth = useSelector((state) => state.firebase.auth);
   if (!isLoaded(auth)) return <div>Loading...</div>;
-  return children;
+  return <>{children}</>;
 };
 
 render(

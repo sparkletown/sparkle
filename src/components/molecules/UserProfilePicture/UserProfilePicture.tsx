@@ -1,15 +1,15 @@
 import React, { useContext } from "react";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 
 import {
   ExperienceContext,
   Reactions,
   Reaction,
-  isMessageToTheBand,
+  MessageToTheBandReaction,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 type UserProfilePictureProp = {
   user: User;
@@ -25,17 +25,17 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
 }) => {
   const experienceContext = useContext(ExperienceContext);
-  const { muteReactions } = useSelector((state: any) => ({
-    muteReactions: state.muteReactions,
+  const { muteReactions } = useSelector((state) => ({
+    muteReactions: state.room.mute,
   }));
 
   const typedReaction = (experienceContext
     ? experienceContext.reactions
     : []) as Reaction[];
 
-  const messagesToBand = typedReaction
-    .filter(isMessageToTheBand)
-    .find((r) => r.created_by === user.id && r.reaction === "messageToTheBand");
+  const messagesToBand = typedReaction.find(
+    (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
+  ) as MessageToTheBandReaction | undefined;
 
   return (
     <div className="profile-picture-container">

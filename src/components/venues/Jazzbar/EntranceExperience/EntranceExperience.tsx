@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
-import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
-import ChatContext from "components/context/ChatContext";
+import { ChatContextWrapper } from "components/context/ChatContext";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
-import { User as FUser } from "firebase/app";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
@@ -22,10 +19,10 @@ import PaymentModal from "components/organisms/PaymentModal";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
-import { Purchase } from "types/Purchase";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { useSelector } from "hooks/useSelector";
 
 const JazzbarEntranceExperience: React.FunctionComponent = () => {
   const { venueId } = useParams();
@@ -54,19 +51,12 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
     venueEvents,
     venueRequestStatus,
     purchaseHistory,
-  } = useSelector((state: any) => ({
+  } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     venueEvents: state.firestore.ordered.venueEvents,
     purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-  })) as {
-    venue: Venue;
-    venueEvents: VenueEvent[];
-    venueRequestStatus: boolean;
-    user: FUser;
-    purchaseHistory: Purchase[];
-    purchaseHistoryRequestStatus: boolean;
-  };
+  }));
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event: VenueEvent) =>
@@ -110,7 +100,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
   };
 
   return (
-    <ChatContext>
+    <ChatContextWrapper>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
           <div
@@ -318,7 +308,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
         onHide={closeAuthenticationModal}
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
       />
-    </ChatContext>
+    </ChatContextWrapper>
   );
 };
 

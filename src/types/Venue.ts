@@ -1,5 +1,6 @@
 import { VenueTemplate } from "./VenueTemplate";
 import { Quotation } from "./Quotation";
+import { UpcomingEvent } from "./UpcomingEvent";
 
 interface Question {
   name: string;
@@ -32,4 +33,6 @@ export interface Venue {
   };
   profile_questions: Question[];
   code_of_conduct_questions: Question[];
+  iframeUrl?: string;
+  events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
 }

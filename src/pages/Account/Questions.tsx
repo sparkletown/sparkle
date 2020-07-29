@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
@@ -10,6 +9,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -26,7 +26,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const history = useHistory();
   const { user } = useUser();
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   })) as { venue: Venue };
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({

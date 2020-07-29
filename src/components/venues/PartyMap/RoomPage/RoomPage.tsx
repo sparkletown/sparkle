@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getCurrentEvent } from "utils/time";
 import Chatbox from "components/organisms/Chatbox";
@@ -14,12 +13,13 @@ import { User } from "types/User";
 import { User as FUser } from "firebase";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 export default function RoomPage() {
-  let { roomPath } = useParams();
+  const { roomPath } = useParams(); //@debt typing - we should type this hook
 
   const { user } = useUser();
-  const { users, venue } = useSelector((state: any) => ({
+  const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
   })) as { users: User[]; user: FUser; venue: PartyMapVenue };
@@ -28,7 +28,7 @@ export default function RoomPage() {
     return null;
   }
 
-  const room = venue.rooms.find((r: any) => r.url === `/${roomPath}`);
+  const room = venue.rooms.find((r) => r.url === `/${roomPath}`);
 
   if (!room) {
     return null;
@@ -37,7 +37,7 @@ export default function RoomPage() {
   venue && updateTheme(venue);
 
   const usersToDisplay =
-    users?.filter((user: any) => user.room === room?.title) ?? [];
+    users?.filter((user) => user.room === room?.title) ?? [];
 
   function enter() {
     room && user && enterRoom(user, room.title);
@@ -77,7 +77,7 @@ export default function RoomPage() {
           {room.events && room.events.length > 0 && (
             <div className="col schedule-container">
               <div className="schedule-title">Room Schedule</div>
-              {room.events.map((event: any, idx: number) => (
+              {room.events.map((event, idx: number) => (
                 <ScheduleItem
                   key={idx}
                   startUtcSeconds={venue.start_utc_seconds}

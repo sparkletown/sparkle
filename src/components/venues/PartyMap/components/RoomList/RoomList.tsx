@@ -8,7 +8,7 @@ import { eventHappeningNow } from "utils/time";
 interface PropsType {
   startUtcSeconds: number;
   rooms: RoomData[];
-  attendances: any;
+  attendances: Record<string, number>;
 }
 
 const RoomList: React.FunctionComponent<PropsType> = ({
@@ -23,7 +23,7 @@ const RoomList: React.FunctionComponent<PropsType> = ({
   return (
     <>
       <div className="room-list-title">
-        What's on now: {rooms.length} rooms open
+        {`What's on now: ${rooms.length} rooms open`}
       </div>
       <div className="rooms-container">
         {rooms.map((room) => (

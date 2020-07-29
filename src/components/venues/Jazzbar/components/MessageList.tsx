@@ -1,22 +1,19 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-
 import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface MessageListProps {
   messages: RestrictedChatMessage[];
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages }) => {
-  const { usersById } = useSelector((state: any) => ({
+  const { usersById } = useSelector((state) => ({
     usersById: state.firestore.data.users,
-  })) as {
-    usersById: { [key: string]: Omit<User, "id"> };
-  };
+  }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
   const profileImageSize = 40;

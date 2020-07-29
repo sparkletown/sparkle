@@ -1,26 +1,22 @@
 import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
-
-interface ChatMessageType {
-  id: string;
-  from: string;
-  text: string;
-  to?: string;
-  type: string;
-  ts_utc: { seconds: number; nanoseconds: number };
-}
+import { User } from "types/User";
+import { UserInfo } from "firebase";
+import { ChatMessage } from "components/context/ChatContext";
 
 interface PropsType {
-  chat: ChatMessageType;
-  users: any;
+  chat: ChatMessage;
+  users: Record<string, User>;
   isInProfileModal: boolean;
-  setSelectedUserProfile: (value: React.SetStateAction<undefined>) => void;
-  user: any;
+  setSelectedUserProfile: (
+    value: React.SetStateAction<User | undefined>
+  ) => void;
+  user: UserInfo;
   withoutSenderInformation?: boolean;
 }
 
-const ChatMessage: React.FunctionComponent<PropsType> = ({
+const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
   chat,
   users,
   user,
@@ -55,7 +51,7 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
             <img
               src={users[chat.from].pictureUrl}
               className="profile-icon avatar-picture"
-              alt={chat.to}
+              alt={chat.from}
               onClick={() => {
                 !isInProfileModal &&
                   setSelectedUserProfile({
@@ -92,4 +88,4 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default ChatMessage;
+export default ChatMessageComponent;
