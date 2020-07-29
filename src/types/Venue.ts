@@ -32,4 +32,5 @@ export interface Venue {
   };
   profile_questions: Question[];
   code_of_conduct_questions: Question[];
+  iframeUrl?: string; //@debt typing is this optional
 }
