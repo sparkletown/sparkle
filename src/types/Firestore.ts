@@ -28,6 +28,8 @@ interface Experience {
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
 
+type OrderedIdEnhancer<T extends object> = { id: string } & T;
+
 export interface Firestore {
   status: {
     requesting: VenueStatus;
@@ -45,13 +47,13 @@ export interface Firestore {
     experiences: Record<string, Experience>;
   };
   ordered: {
-    currentVenue: Array<Venue>;
-    venueChats: Array<RestrictedChatMessage>;
-    venueEvents: Array<VenueEvent>;
-    userPurchaseHistory: Array<Purchase>;
-    partygoers: Array<User>;
-    users: Array<User>;
-    privatechats: Array<PrivateChatMessage>;
-    experiences: Array<Experience>;
+    currentVenue: Array<OrderedIdEnhancer<Venue>>;
+    venueChats: Array<OrderedIdEnhancer<RestrictedChatMessage>>;
+    venueEvents: Array<OrderedIdEnhancer<VenueEvent>>;
+    userPurchaseHistory: Array<OrderedIdEnhancer<Purchase>>;
+    partygoers: Array<OrderedIdEnhancer<User>>;
+    users: Array<OrderedIdEnhancer<User>>;
+    privatechats: Array<OrderedIdEnhancer<PrivateChatMessage>>;
+    experiences: Array<OrderedIdEnhancer<Experience>>;
   };
 }
