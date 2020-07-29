@@ -16,86 +16,64 @@ export const ChatContext = React.createContext<ChatContextType | undefined>(
 
 type Time = firebase.firestore.Timestamp;
 
-interface GlobalChatMessage {
-  type: "global";
+type RestrictedMessageType = "room" | "table";
+
+interface BaseChatMessage {
   from: string;
   text: string;
+  ts_utc: Time;
 }
 
-export enum RestrictedMessageType {
-  room = "room",
-  table = "table",
+interface BaseNonGlobalChatMessage extends BaseChatMessage {
+  to: string;
 }
 
-export interface RestrictedChatMessage {
+export interface RestrictedChatMessage extends BaseNonGlobalChatMessage {
   type: RestrictedMessageType;
-  from: string;
-  to: string;
-  text: string;
-  ts_utc: Time;
 }
 
-export interface PrivateChatMessage {
+export interface PrivateChatMessage extends BaseNonGlobalChatMessage {
   type: "private";
-  from: string;
-  to: string;
-  text: string;
-  ts_utc: Time;
   isRead: boolean;
 }
 
-type ChatMessage =
+interface GlobalChatMessage extends BaseChatMessage {
+  type: "global";
+}
+
+export type ChatMessage =
   | GlobalChatMessage
   | RestrictedChatMessage
   | PrivateChatMessage;
 
+interface BaseMessageBuilderInput {
+  text: string;
+  from: string;
+}
+
+type MessageBuilderInput = BaseMessageBuilderInput &
+  (
+    | { type: RestrictedMessageType | "private"; to: string }
+    | { type: "global" }
+  );
+
 // @debt typing this can be typed better
-function buildMessage(
-  type: RestrictedMessageType,
-  text: string,
-  from: string,
-  to: string
-): ChatMessage;
-function buildMessage(
-  type: "private",
-  text: string,
-  from: string,
-  to: string
-): ChatMessage;
-function buildMessage(
-  type: "global",
-  text: string,
-  from: string,
-  to: undefined
-): ChatMessage;
-function buildMessage(
-  type: any,
-  text: string,
-  from: string,
-  to: any
-): ChatMessage {
-  let message: ChatMessage = {
-    type,
+function buildMessage(data: MessageBuilderInput): ChatMessage {
+  const baseMessage: BaseChatMessage = {
     ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
-    text,
-    from,
+    text: data.text,
+    from: data.from,
   };
 
-  if (type !== "global") {
-    message = {
-      ...message,
-      to,
-    } as RestrictedChatMessage;
+  switch (data.type) {
+    case "private":
+      return { ...baseMessage, type: "private", to: data.to, isRead: false };
+    case "room":
+    case "table":
+      return { ...baseMessage, type: data.type, to: data.to };
+    case "global":
+      return { ...baseMessage, type: "global" };
   }
-
-  if (type === "private") {
-    message = {
-      ...message,
-      isRead: false,
-    } as PrivateChatMessage;
-  }
-
-  return message;
 }
 
 export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
@@ -119,7 +97,7 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage("global", text, from, undefined));
+        .add(buildMessage({ type: "global", text, from }));
     },
     [chatCollectionName]
   );
@@ -129,7 +107,7 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage(RestrictedMessageType.room, text, from, to));
+        .add(buildMessage({ type: "room", text, from, to }));
     },
     [chatCollectionName]
   );
@@ -141,7 +119,7 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
         .collection("privatechats")
         .doc(messageUser)
         .collection("chats")
-        .add(buildMessage("private", text, from, to));
+        .add(buildMessage({ type: "private", text, from, to }));
     }
   }, []);
 
@@ -150,7 +128,7 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage(RestrictedMessageType.table, text, from, to));
+        .add(buildMessage({ type: "table", text, from, to }));
     },
     [chatCollectionName]
   );
