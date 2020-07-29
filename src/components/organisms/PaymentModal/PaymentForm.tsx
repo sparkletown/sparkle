@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import CardSection from "./CardSection";
+import CardInput from "components/molecules/CardInput";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { useParams } from "react-router-dom";
@@ -106,7 +106,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
             onChange={(event) => setBillingEmail(event.target.value)}
             className=""
           />
-          <CardSection />
+          <CardInput />
           <button
             disabled={!stripe || isFormBeingSubmitted}
             className="btn btn-primary btn-block confirm-order-button"

@@ -133,6 +133,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={() => setIsAuthenticationModalOpen(false)}
+        showLogin
       />
     </>
   );

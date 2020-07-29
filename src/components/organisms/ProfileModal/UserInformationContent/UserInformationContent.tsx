@@ -67,7 +67,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             <div className="answer">
               {
                 // @ts-ignore question.name is a correct index for type User
-                profile[question.name] || DEFAULT_PROFILE_VALUES.questionAnswer
+                (profile && profile[question.name]) ||
+                  DEFAULT_PROFILE_VALUES.questionAnswer
               }
             </div>
           </div>
