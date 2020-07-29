@@ -14,6 +14,7 @@ import {
   ReactReduxFirebaseProvider,
   firebaseReducer,
   isLoaded,
+  FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import { STRIPE_PUBLISHABLE_KEY } from "secrets";
@@ -38,6 +39,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
+import { User } from "types/User";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
@@ -67,7 +69,7 @@ if (window.location.hostname === "localhost") {
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
-  firebase: firebaseReducer,
+  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
   firestore: firestoreReducer as Reducer<Firestore>,
   room: roomReducer,
 });

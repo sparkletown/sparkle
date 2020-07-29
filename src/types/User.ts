@@ -1,3 +1,6 @@
+//@debt typing I think this is correct from Room.tsx, need to confirm
+type UserBartenderData = Record<string, { bartender: User }>;
+
 export interface User {
   id: string;
   drinkOfChoice?: string;
@@ -5,7 +8,7 @@ export interface User {
   doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
-  data: { [key: string]: any };
+  data: UserBartenderData;
   lastSeenIn: string;
   room?: string;
 }

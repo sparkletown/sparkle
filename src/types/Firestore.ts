@@ -1,5 +1,6 @@
 import { Venue } from "./Venue";
 import { Purchase } from "./Purchase";
+import { User } from "./User";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -38,11 +39,13 @@ export interface Firestore {
     venueChats: Record<string, VenueChat> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
+    partygoers: Record<string, User>;
   };
   ordered: {
     currentVenue: Array<Venue>;
     venueChats: Array<VenueChat>;
     venueEvents: Array<VenueEvent>;
     userPurchaseHistory: Array<Purchase>;
+    partygoers: Array<User>;
   };
 }
