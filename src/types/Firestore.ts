@@ -1,7 +1,11 @@
 import { Venue } from "./Venue";
 import { Purchase } from "./Purchase";
 import { User } from "./User";
-import { RestrictedChatMessage } from "components/context/ChatContext";
+import {
+  RestrictedChatMessage,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
+import { VenueEvent } from "./VenueEvent";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -11,15 +15,6 @@ interface VenueStatus {
 }
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
-
-interface VenueEvent {
-  name: string;
-  price: number;
-  descriptions: Array<string>;
-  collective_price: number;
-  start_utc_seconds: number;
-  duration_minutes: number;
-}
 
 export interface Firestore {
   status: {
@@ -34,6 +29,7 @@ export interface Firestore {
     userPurchaseHistory: Record<string, Purchase>;
     partygoers: Record<string, User>;
     users: Record<string, User>;
+    privatechats: Record<string, PrivateChatMessage>;
   };
   ordered: {
     currentVenue: Array<Venue>;
@@ -42,5 +38,6 @@ export interface Firestore {
     userPurchaseHistory: Array<Purchase>;
     partygoers: Array<User>;
     users: Array<User>;
+    privatechats: Array<PrivateChatMessage>;
   };
 }
