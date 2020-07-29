@@ -56,7 +56,11 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <div className="partyname-bubble">
               {usersById[message.created_by].partyName}:
             </div>
-            <div className={`message-bubble ${message ? "" : "emoji"}`}>
+            <div
+              className={`message-bubble ${
+                message.reaction === "messageToTheBand" ? "" : "emoji"
+              }`}
+            >
               {message.reaction === "messageToTheBand"
                 ? message.text
                 : ReactionsTextMap[message.reaction]}

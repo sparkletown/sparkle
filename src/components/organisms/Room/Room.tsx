@@ -81,7 +81,7 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignore
+          //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
         localRoom.disconnect();

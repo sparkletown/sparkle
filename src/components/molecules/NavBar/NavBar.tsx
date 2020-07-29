@@ -72,7 +72,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
-          {profile ? (
+          {user ? (
             <div className="icons-container">
               {hasUpcomingEvents && (
                 <OverlayTrigger
@@ -108,7 +108,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 onClick={() => setIsProfileModalOpen(true)}
               >
                 <img
-                  src={profile.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                  src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
                   className="profile-icon"
                   alt="avatar"
                   width="40"

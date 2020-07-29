@@ -33,6 +33,6 @@ export interface Venue {
   };
   profile_questions: Question[];
   code_of_conduct_questions: Question[];
-  iframeUrl?: string; //@debt typing is this optional
+  iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
 }

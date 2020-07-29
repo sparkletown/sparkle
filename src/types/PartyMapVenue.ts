@@ -2,8 +2,7 @@ import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
 import { RoomData } from "./RoomData";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isPartyMapVenue = (val: any): val is PartyMapVenue =>
+export const isPartyMapVenue = (val: Venue): val is PartyMapVenue =>
   "template" in val && val.template === VenueTemplate.partymap;
 
 export interface PartyMapVenue extends Venue {

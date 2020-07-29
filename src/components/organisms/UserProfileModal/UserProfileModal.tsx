@@ -18,7 +18,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   userProfile,
 }) => {
   const { venue } = useSelector((state) => ({
-    usersordered: state.firestore.ordered.users,
     venue: state.firestore.data.currentVenue,
   }));
 

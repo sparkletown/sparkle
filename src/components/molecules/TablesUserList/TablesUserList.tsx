@@ -86,7 +86,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return <>Loading...</>;
   }
 
-  const seatedAtTableName = "";
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: Record<string, Array<User>> = {};
   for (const table of tables) {
@@ -141,7 +140,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const takeSeat = (table: string) => {
     if (!user) return;
     const doc = `users/${user.uid}`;
-    const existingData = users.find((u: any) => u.id === user.uid)?.data;
+    const existingData = users.find((u) => u.id === user.uid)?.data;
     const update = {
       data: {
         ...existingData,
@@ -156,7 +155,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const usersAtOtherTables = [];
   for (const table of tables) {
-    if (table.reference === seatedAtTableName) {
+    if (table.reference === seatedAtTable) {
       continue;
     }
     usersAtOtherTables.push(...usersAtTables[table.reference]);

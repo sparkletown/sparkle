@@ -8,6 +8,7 @@ import {
 import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
 import { PartyMapVenue } from "./PartyMapVenue";
+import { Reaction } from "components/context/ExperienceContext";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -16,12 +17,6 @@ interface VenueStatus {
   venueChats: boolean;
   venueEvents: boolean;
   userPurchaseHistory: boolean;
-}
-
-interface Reaction {
-  created_at: number;
-  created_by: string;
-  reaction: string;
 }
 
 interface Experience {

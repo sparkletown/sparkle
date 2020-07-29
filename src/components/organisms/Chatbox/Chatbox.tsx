@@ -59,7 +59,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     listOfChats &&
     listOfChats
       .filter(isChatValid)
-      .filter((chat: typeof listOfChats[number]) =>
+      .filter((chat) =>
         room
           ? //@ts-ignore
             chat.type === "global" || //@debt can privateChats or venueChats ever be global?
