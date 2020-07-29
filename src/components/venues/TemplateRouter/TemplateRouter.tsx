@@ -6,7 +6,7 @@ import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
 import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
 import PartyMapRouter from "components/venues/PartyMap/router";
-import ChatContext from "components/context/ChatContext";
+import { ChatContextWrapper } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
 
 const TemplateRouter = () => {
@@ -30,9 +30,9 @@ const TemplateRouter = () => {
     case VenueTemplate.partymap:
       if (user) {
         return (
-          <ChatContext>
+          <ChatContextWrapper>
             <PartyMapRouter />
-          </ChatContext>
+          </ChatContextWrapper>
         );
       }
       return <EntranceExperience />;

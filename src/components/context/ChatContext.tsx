@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
-import firebase, { User as FUser } from "firebase/app";
-import { useSelector } from "react-redux";
-import { Venue } from "types/Venue";
+import firebase from "firebase/app";
+import { useSelector } from "hooks/useSelector";
 
 interface ChatContextType {
   sendGlobalChat: (from: string, text: string) => void;
@@ -15,13 +14,15 @@ export const ChatContext = React.createContext<ChatContextType | undefined>(
   undefined
 );
 
+type Time = firebase.firestore.Timestamp;
+
 interface GlobalChatMessage {
   type: "global";
   from: string;
   text: string;
 }
 
-enum RestrictedMessageType {
+export enum RestrictedMessageType {
   room = "room",
   table = "table",
 }
@@ -31,7 +32,7 @@ export interface RestrictedChatMessage {
   from: string;
   to: string;
   text: string;
-  ts_utc: any;
+  ts_utc: Time;
 }
 
 export interface PrivateChatMessage {
@@ -39,7 +40,7 @@ export interface PrivateChatMessage {
   from: string;
   to: string;
   text: string;
-  ts_utc: any;
+  ts_utc: Time;
   isRead: boolean;
 }
 
@@ -96,10 +97,12 @@ function buildMessage(
   return message;
 }
 
-export default ({ children }: { children: any }) => {
-  const { venue } = useSelector((state: any) => ({
+export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
-  })) as { user: FUser; venue: Venue };
+  }));
 
   const chatCollectionName = `venues/${venue.id}/chats`;
 
@@ -132,7 +135,7 @@ export default ({ children }: { children: any }) => {
 
   const sendPrivateChat = useCallback((from, to, text) => {
     const firestore = firebase.firestore();
-    for (let messageUser of [from, to]) {
+    for (const messageUser of [from, to]) {
       firestore
         .collection("privatechats")
         .doc(messageUser)

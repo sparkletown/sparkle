@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import { User as FUser, UserInfo } from "firebase";
+import { UserInfo } from "firebase";
 import { useForm } from "react-hook-form";
 
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useSelector } from "react-redux";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
@@ -20,14 +19,11 @@ import {
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import { JazzbarVenue } from "types/JazzbarVenue";
 import { useFirestoreConnect } from "react-redux-firebase";
 import MessageList from "../components/MessageList";
-import {
-  ChatContext,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { ChatContext } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -39,20 +35,12 @@ interface ChatOutDataType {
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user } = useUser();
-  const { users, venue, usersById, chats } = useSelector((state: any) => ({
+  const { users, venue, usersById, chats } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
-    muteReactions: state.muteReactions,
     venue: state.firestore.data.currentVenue,
     usersById: state.firestore.data.users,
     chats: state.firestore.ordered.venueChats,
-  })) as {
-    users: User[];
-    user: FUser;
-    venue: JazzbarVenue;
-    muteReactions: boolean;
-    usersById: Omit<User, "id">[];
-    chats: RestrictedChatMessage[];
-  };
+  }));
 
   useFirestoreConnect([
     {
@@ -154,9 +142,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     setBarMessageValue([{ messageToTheBand: "" }]);
   };
 
-  const capacity =
-    seatedAtTable &&
-    JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity;
+  const capacity = seatedAtTable
+    ? JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity
+    : undefined;
 
   return (
     <>
@@ -257,6 +245,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             <div className="emoji-container">
               {Reactions.map((reaction) => (
                 <button
+                  key={reaction.name}
                   className="reaction"
                   onClick={() => user && reactionClicked(user, reaction.type)}
                   id={`send-reaction-${reaction.type}`}
@@ -281,7 +270,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                       (message) =>
                         message.type === "room" && message.to === roomName
                     )
-                    .sort((a, b) => b.ts_utc - a.ts_utc)}
+                    .sort((a, b) =>
+                      b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
+                    )}
                 />
               )}
             </div>

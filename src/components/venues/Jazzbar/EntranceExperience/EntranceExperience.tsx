@@ -7,7 +7,7 @@ import { useParams } from "react-router-dom";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
-import ChatContext from "components/context/ChatContext";
+import { ChatContextWrapper } from "components/context/ChatContext";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -110,7 +110,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
   };
 
   return (
-    <ChatContext>
+    <ChatContextWrapper>
       <WithNavigationBar>
         <div className="container venue-entrance-experience-container">
           <div
@@ -318,7 +318,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
         onHide={closeAuthenticationModal}
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
       />
-    </ChatContext>
+    </ChatContextWrapper>
   );
 };
 

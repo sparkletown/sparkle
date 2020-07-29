@@ -5,7 +5,7 @@ import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
 import PartyMap from "components/venues/PartyMap";
 import FriendShipPage from "pages/FriendShipPage";
 import { User } from "types/User";
-import ChatContext from "components/context/ChatContext";
+import { ChatContextWrapper } from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -118,7 +118,7 @@ const VenuePage = () => {
       break;
   }
 
-  return <ChatContext>{template}</ChatContext>;
+  return <ChatContextWrapper>{template}</ChatContextWrapper>;
 };
 
 export default VenuePage;
