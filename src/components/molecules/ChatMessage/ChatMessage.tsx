@@ -16,7 +16,7 @@ interface PropsType {
   withoutSenderInformation?: boolean;
 }
 
-const ChatMessage: React.FunctionComponent<PropsType> = ({
+const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
   chat,
   users,
   user,
@@ -88,4 +88,4 @@ const ChatMessage: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default ChatMessage;
+export default ChatMessageComponent;
