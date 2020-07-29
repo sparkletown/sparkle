@@ -1,22 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
-
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
-const Room = ({ roomName, setUserList, capacity = undefined }) => {
-  const [room, setRoom] = useState(null);
-  const [participants, setParticipants] = useState([]);
+interface RoomProps {
+  roomName: string;
+  setUserList: (val: any) => void;
+  capacity?: number;
+}
+
+const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
+  const [room, setRoom] = useState<Video.Room>();
+  const [participants, setParticipants] = useState<Array<Video.Participant>>(
+    []
+  );
 
   const { user } = useUser();
   const { users } = useSelector((state) => ({
     users: state.firestore.data.partygoers,
   }));
-  const [token, setToken] = useState();
+  const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
   useEffect(() => {
@@ -36,9 +43,9 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
   useEffect(() => {
     if (!token) return;
 
-    let localRoom;
+    let localRoom: Video.Room;
 
-    const participantConnected = (participant) => {
+    const participantConnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => [
         // Hopefully prevents duplicate users in the participant list
         ...prevParticipants.filter((p) => p.identity !== participant.identity),
@@ -46,7 +53,7 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
       ]);
     };
 
-    const participantDisconnected = (participant) => {
+    const participantDisconnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
         if (!prevParticipants.find((p) => p === participant)) {
           // Remove when root issue foudn and fixed
@@ -73,12 +80,10 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          trackPublication.track.stop();
+          //@ts-ignore
+          trackPublication.track.stop(); //@debt typing does this work?
         });
         localRoom.disconnect();
-        return null;
-      } else {
-        return localRoom;
       }
     };
   }, [roomName, setRoom, token]);
@@ -102,38 +107,31 @@ const Room = ({ roomName, setUserList, capacity = undefined }) => {
   // 3. Rest of the participants, in order
 
   // Only allow the first bartender to appear as bartender
-  let hasBartender = false;
+  const userIdentity = room?.localParticipant?.identity;
   const meIsBartender =
-    users &&
-    users[room?.localParticipant?.identity]?.data?.[roomName]?.bartender;
+    users && userIdentity
+      ? users[userIdentity]?.data?.[roomName]?.bartender
+      : undefined;
 
   const meComponent = room ? (
-    <>
-      <div className={`participant-container-${capacity}`}>
-        <LocalParticipant
-          key={room.localParticipant.sid}
-          participant={room.localParticipant}
-          profileData={users[room.localParticipant.identity]}
-          bartender={meIsBartender}
-        />
-      </div>
-    </>
+    <div className={`participant-container-${capacity}`}>
+      <LocalParticipant
+        key={room.localParticipant.sid}
+        participant={room.localParticipant}
+        profileData={users[room.localParticipant.identity]}
+        bartender={meIsBartender}
+      />
+    </div>
   ) : null;
-
-  if (meIsBartender) {
-    hasBartender = true;
-  }
 
   const othersComponents = participants.map((participant, index) => {
     if (!participant) {
       return null;
     }
 
-    const bartender =
-      !hasBartender && users[participant.identity]?.data?.[roomName]?.bartender;
-    if (bartender) {
-      hasBartender = true;
-    }
+    const bartender = !!meIsBartender
+      ? users[participant.identity]?.data?.[roomName]?.bartender
+      : undefined;
 
     return (
       <div className={`participant-container-${capacity}`}>

@@ -3,26 +3,48 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
+import Video from "twilio-video";
+import { User } from "types/User";
 
-const Participant = ({ participant, profileData, bartender, children }) => {
-  const [videoTracks, setVideoTracks] = useState([]);
-  const [audioTracks, setAudioTracks] = useState([]);
+interface ParticipantProps {
+  participant: Video.Participant;
+  profileData: User;
+  bartender?: User;
+}
+
+type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
+type AudioTracks = Array<Video.LocalAudioTrack | Video.RemoteAudioTrack>;
+type Track = VideoTracks[number] | AudioTracks[number];
+
+const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
+  participant,
+  profileData,
+  bartender,
+  children,
+}) => {
+  const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
+  const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
   const [showProfile, setShowProfile] = useState(false);
   const [muted, setMuted] = useState(false);
 
-  const videoRef = useRef();
-  const audioRef = useRef();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const trackpubsToTracks = (trackMap) =>
+  const videoTrackpubsToTracks = (trackMap: Video.Participant["videoTracks"]) =>
     Array.from(trackMap.values())
       .map((publication) => publication.track)
-      .filter((track) => track !== null);
+      .filter((track) => track !== null) as VideoTracks;
+
+  const audioTrackpubsToTracks = (trackMap: Video.Participant["audioTracks"]) =>
+    Array.from(trackMap.values())
+      .map((publication) => publication.track)
+      .filter((track) => track !== null) as AudioTracks;
 
   useEffect(() => {
-    setVideoTracks(trackpubsToTracks(participant.videoTracks));
-    setAudioTracks(trackpubsToTracks(participant.audioTracks));
+    setVideoTracks(videoTrackpubsToTracks(participant.videoTracks));
+    setAudioTracks(audioTrackpubsToTracks(participant.audioTracks));
 
-    const trackSubscribed = (track) => {
+    const trackSubscribed = (track: Track) => {
       if (track.kind === "video") {
         setVideoTracks((videoTracks) => [...videoTracks, track]);
       } else if (track.kind === "audio") {
@@ -30,7 +52,7 @@ const Participant = ({ participant, profileData, bartender, children }) => {
       }
     };
 
-    const trackUnsubscribed = (track) => {
+    const trackUnsubscribed = (track: Track) => {
       if (track.kind === "video") {
         setVideoTracks((videoTracks) => videoTracks.filter((v) => v !== track));
       } else if (track.kind === "audio") {
@@ -50,7 +72,7 @@ const Participant = ({ participant, profileData, bartender, children }) => {
 
   useEffect(() => {
     const videoTrack = videoTracks[0];
-    if (videoTrack) {
+    if (videoTrack && videoRef.current) {
       videoTrack.attach(videoRef.current);
       return () => {
         videoTrack.detach();
@@ -60,7 +82,7 @@ const Participant = ({ participant, profileData, bartender, children }) => {
 
   useEffect(() => {
     const audioTrack = audioTracks[0];
-    if (audioTrack) {
+    if (audioTrack && audioRef.current) {
       audioTrack.attach(audioRef.current);
       return () => {
         audioTrack.detach();
@@ -76,7 +98,7 @@ const Participant = ({ participant, profileData, bartender, children }) => {
       }
     } else {
       const audioTrack = audioTracks[0];
-      if (audioTrack) {
+      if (audioTrack && audioRef.current) {
         audioTrack.attach(audioRef.current);
       }
     }
