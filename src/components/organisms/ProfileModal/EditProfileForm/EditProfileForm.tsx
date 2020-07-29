@@ -3,12 +3,12 @@ import { useForm } from "react-hook-form";
 import "./EditProfileForm.scss";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
-import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { useUser } from "hooks/useUser";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface EditProfileFormValuesType {
   partyName: string;
@@ -24,7 +24,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
 }) => {
   const { user, profile } = useUser();
-  const { profileQuestions } = useSelector((state: any) => ({
+  const { profileQuestions } = useSelector((state) => ({
     profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
@@ -86,13 +86,15 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
               Display name is less than 16 characters
             </span>
           )}
-          <ProfilePictureInput
-            setValue={setValue}
-            user={user}
-            errors={errors}
-            pictureUrl={pictureUrl}
-            register={register}
-          />
+          {user && (
+            <ProfilePictureInput
+              setValue={setValue}
+              user={user}
+              errors={errors}
+              pictureUrl={pictureUrl}
+              register={register}
+            />
+          )}
         </div>
         {profileQuestions &&
           profileQuestions.map((question: QuestionType) => (

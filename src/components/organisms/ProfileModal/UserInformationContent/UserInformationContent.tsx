@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { QuestionType } from "types/Question";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
@@ -7,6 +6,7 @@ import { Venue } from "types/Venue";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { useUser } from "hooks/useUser";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -21,7 +21,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const { venue, profileQuestions } = useSelector(
-    (state: any) =>
+    (state) =>
       ({
         profileQuestions: state.firestore.data.currentVenue.profile_questions,
         venue: state.firestore.ordered.currentVenue[0],
@@ -62,7 +62,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       </div>
       {profileQuestions &&
         profileQuestions.map((question: QuestionType) => (
-          <div className="question-section">
+          <div key={question.name} className="question-section">
             <div className="question">{question.text}</div>
             <div className="answer">
               {

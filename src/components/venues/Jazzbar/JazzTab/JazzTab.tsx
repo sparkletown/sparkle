@@ -193,10 +193,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   setUserList={setUserList}
                   capacity={capacity}
                 />
-                // <TableFooter
-                //   isVideoFocused={isVideoFocused}
-                //   setIsVideoFocused={setIsVideoFocused}
-                // />
               )}
             </div>
           </div>

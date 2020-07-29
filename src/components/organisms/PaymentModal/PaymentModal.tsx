@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { VenueEvent } from "types/VenueEvent";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
-import { useSelector } from "react-redux";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { Purchase } from "types/Purchase";
@@ -11,6 +10,7 @@ import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   show: boolean;
@@ -26,7 +26,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   useConnectUserPurchaseHistory();
   const { user } = useUser();
   const { purchaseHistory, purchaseHistoryRequestStatus, venue } = useSelector(
-    (state: any) => ({
+    (state) => ({
       purchaseHistory: state.firestore.ordered.userPurchaseHistory,
       purchaseHistoryRequestStatus:
         state.firestore.status.requested.userPurchaseHistory,

@@ -6,10 +6,11 @@ import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { User } from "types/User";
 
 interface RoomProps {
   roomName: string;
-  setUserList: (val: any) => void;
+  setUserList: (val: User[]) => void;
   capacity?: number;
 }
 
@@ -134,7 +135,10 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
       : undefined;
 
     return (
-      <div className={`participant-container-${capacity}`}>
+      <div
+        key={participant.identity}
+        className={`participant-container-${capacity}`}
+      >
         <Participant
           key={`${participant.sid}-${index}`}
           participant={participant}
