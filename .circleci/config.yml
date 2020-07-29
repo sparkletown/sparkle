@@ -21,7 +21,15 @@ jobs:
       - node/with-cache:
           steps:
             - run: cd functions && npm i
-            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    ENV=staging
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    ENV=prod
+                  fi
+                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             - run: ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
   deploy-hosting:
     executor:
@@ -30,10 +38,34 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: ./scripts/init-env.sh STAGING_
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    PREFIX=STAGING_
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    PREFIX=PROD_
+                  fi
+                  ./scripts/init-env.sh $PREFIX
             - run: npm run build
-            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
-            - run: ./node_modules/.bin/firebase deploy --only hosting:staging --token "$FIREBASE_TOKEN"
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    ENV=staging
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    ENV=prod
+                  fi
+                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    TARGET=staging
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    TARGET=co-reality-map
+                  fi
+                  ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
 workflows:
   build-test-deploy:
     jobs:
@@ -44,6 +76,7 @@ workflows:
           filters:
             branches:
               only:
+                - master
                 - staging
       - deploy-hosting:
           requires:
@@ -51,4 +84,5 @@ workflows:
           filters:
             branches:
               only:
+                - master
                 - staging
