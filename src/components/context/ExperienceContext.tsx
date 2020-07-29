@@ -89,13 +89,13 @@ export const ExperienceContext = React.createContext<
   ExperienceContextType | undefined
 >(undefined);
 
-export default ({
-  venueName,
-  children,
-}: {
+interface ExperienceContextWrapperProps {
   venueName: string;
-  children: any;
-}) => {
+}
+
+export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
+  ExperienceContextWrapperProps
+>> = ({ venueName, children }) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const firebase = useFirebase();
 

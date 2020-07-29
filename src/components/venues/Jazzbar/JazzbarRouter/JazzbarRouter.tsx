@@ -4,7 +4,7 @@ import { useRouteMatch, Switch, Route } from "react-router-dom";
 import JazzBar from "../Jazzbar";
 import ReactionPage from "pages/ReactionPage";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import ExperienceContextProvider from "components/context/ExperienceContext";
+import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 
@@ -18,12 +18,12 @@ const JazzbarRouter: React.FunctionComponent = () => {
   })) as { venue: Venue };
 
   return (
-    <ExperienceContextProvider venueName={venue.name}>
+    <ExperienceContextWrapper venueName={venue.name}>
       <Switch>
         <Route path={`${match.url}/band`} component={ReactionPage} />
         <Route path={`${match.url}/`} component={JazzBar} />
       </Switch>
-    </ExperienceContextProvider>
+    </ExperienceContextWrapper>
   );
 };
 
