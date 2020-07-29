@@ -4,6 +4,8 @@ Codebase for SparkleTown, brought to you by Sparkle.
 
 ## Getting started
 
+### Frontend
+
 ```
 git clone ...
 cd co-reality-map
@@ -13,6 +15,15 @@ npm test
 npm start
 npm run build
 ```
+
+### Firebase Functions
+
+```
+cp functions/.runtimeconfig.json{.dist,}
+# Fill in the values
+firebase emulators:start --only functions
+```
+
 
 ## Deploying
 

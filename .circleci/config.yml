@@ -9,12 +9,46 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: cp ./src/secrets.dist.js ./src/secrets.js
             - run: npm install
             - run: npm run init
+            - run: npm run lint
+            # - run: npm test
+  deploy-functions:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: cd functions && npm i
+            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
+            - run: ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+  deploy-hosting:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: ./scripts/init-env.sh
             - run: npm run build
-            - run: npm test
+            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
+            - run: ./node_modules/.bin/firebase deploy --only hosting:staging --token "$FIREBASE_TOKEN"
 workflows:
-    build-and-test:
+    build-test-deploy:
       jobs:
         - build-and-test
+        - deploy-functions:
+            requires:
+              - build-and-test
+            filters:
+              branches:
+                only:
+                  - staging
+        - deploy-hosting:
+            requires:
+              - build-and-test
+            filters:
+              branches:
+                only:
+                  - staging

@@ -87,6 +87,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/twilio-video": "^2.0.12",
+    "firebase-tools": "^8.6.0",
     "typescript": "^3.9.3"
   }
 }

@@ -1,12 +1,11 @@
 const firebase = require("firebase");
 const admin = require("firebase-admin");
-const { PROJECT_ID } = require("./secrets");
 
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
 const firebaseConfig = {
-  projectId: PROJECT_ID,
+  projectId: functions.config().project.id,
 };
 firebase.initializeApp(firebaseConfig);
 

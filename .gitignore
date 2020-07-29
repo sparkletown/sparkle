@@ -32,10 +32,6 @@ yarn-error.log*
 # Firebase debug log
 firebase-debug.log
 
-# Secrets
-src/secrets.js
-functions/secrets*.js
-
 # Reports
 reporting/env
 reporting/*.pdf
