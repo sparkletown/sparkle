@@ -9,10 +9,9 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-const serviceAccount = require("./serviceAccount.json");
 admin.initializeApp({
   ...firebaseConfig,
-  credential: admin.credential.cert(serviceAccount),
+  credential: admin.credential.cert(functions.config().service_account),
 });
 
 const video = require("./video");
