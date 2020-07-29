@@ -16,14 +16,58 @@ npm start
 npm run build
 ```
 
-### Firebase Functions
+### Firebase functions
 
+```bash
+cd functions
+npm install
+firebase login
+firebase use staging
+firebase functions:config:get
 ```
-cp functions/.runtimeconfig.json{.dist,}
-# Fill in the values
+Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with:
+
+```bash
 firebase emulators:start --only functions
 ```
 
+### Stripe
+
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials. Contact [chris@cadams.com.au](mailto:chris@cadams.com.au) if you don't.
+
+```bash
+brew install stripe/stripe-cli/stripe
+stripe login
+stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/payment-webhooks
+```
+
+You should see
+```
+> Ready! Your webhook signing secret is {YOUR_LOCAL_SIGNING_SECRET_KEY} (^C to quit)
+```
+
+Copy this value and add it to the file `functions/secrets.js`.
+```js
+// functions/secrets.js
+...
+const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
+```
+
+## Git flow
+To contribute to the code base, please follow these steps:
+ - create a branch from staging
+ - code
+ - create a pull request on staging
+
+Then, to deploy functionalities to production, **merge staging into master**.
+
+> When adding a quick fix to production:
+>  - create a branch from master
+>  - code
+>  - create a pull request on master
+>  - create a branch from staging
+>  - cherry-pick the commit
+>  - create a pull request on staging
 
 ## Deploying
 
