@@ -88,6 +88,7 @@
     "firebase-tools": "^8.6.0",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "eslint-plugin-react": "^7.20.5",
     "typescript": "^3.9.3"
   }
 }
