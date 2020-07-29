@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import { User } from "types/User";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
-import { useSelector } from "react-redux";
 import "./PrivateRecipientSearchInput.scss";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   setSelectedUser: (user: User) => void;
@@ -20,7 +20,7 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
     setSelectedUser(user);
   };
 
-  const { userArray } = useSelector((state: any) => ({
+  const { userArray } = useSelector((state) => ({
     userArray: state.firestore.ordered.users,
   }));
 
@@ -48,10 +48,10 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
         {searchValue && (
           <ul className="floating-dropdown">
             {userArray
-              .filter((u: User) =>
+              .filter((u) =>
                 u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
               )
-              .map((u: User) => (
+              .map((u) => (
                 <Dropdown.Item
                   onClick={() => onClickOnUserInSearchInput(u)}
                   id="private-chat-dropdown-private-recipient"

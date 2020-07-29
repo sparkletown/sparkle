@@ -49,6 +49,7 @@ type ChatMessage =
   | RestrictedChatMessage
   | PrivateChatMessage;
 
+// @debt typing this can be typed better
 function buildMessage(
   type: RestrictedMessageType,
   text: string,

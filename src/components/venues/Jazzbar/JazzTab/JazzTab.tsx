@@ -15,7 +15,6 @@ import {
   Reactions,
   EmojiReactionType,
   TextReactionType,
-  Reaction,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
@@ -32,6 +31,10 @@ interface PropsType {
 interface ChatOutDataType {
   messageToTheBand: string;
 }
+
+type ReactionType =
+  | { reaction: EmojiReactionType }
+  | { reaction: TextReactionType; text: string };
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user } = useUser();
@@ -62,15 +65,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     venue &&
     users.filter((user: User) => user.lastSeenIn === venue.name);
 
-  function createReaction(
-    reaction: { reaction: EmojiReactionType },
-    user: UserInfo
-  ): Reaction;
-  function createReaction(
-    reaction: { reaction: TextReactionType; text: string },
-    user: UserInfo
-  ): Reaction;
-  function createReaction(reaction: any, user: UserInfo) {
+  function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
       created_at: new Date().getTime(),
       created_by: user.uid,

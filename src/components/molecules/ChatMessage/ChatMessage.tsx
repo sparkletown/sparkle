@@ -1,6 +1,8 @@
 import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
+import { User } from "types/User";
+import { UserInfo } from "firebase";
 
 interface ChatMessageType {
   id: string;
@@ -13,10 +15,10 @@ interface ChatMessageType {
 
 interface PropsType {
   chat: ChatMessageType;
-  users: any;
+  users: Record<string, User>;
   isInProfileModal: boolean;
-  setSelectedUserProfile: (value: React.SetStateAction<undefined>) => void;
-  user: any;
+  setSelectedUserProfile: (value: React.SetStateAction<User>) => void;
+  user: UserInfo;
   withoutSenderInformation?: boolean;
 }
 
