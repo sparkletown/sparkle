@@ -30,25 +30,25 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: ./scripts/init-env.sh
+            - run: ./scripts/init-env.sh STAGING_
             - run: npm run build
             - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
             - run: ./node_modules/.bin/firebase deploy --only hosting:staging --token "$FIREBASE_TOKEN"
 workflows:
-    build-test-deploy:
-      jobs:
-        - build-and-test
-        - deploy-functions:
-            requires:
-              - build-and-test
-            filters:
-              branches:
-                only:
-                  - staging
-        - deploy-hosting:
-            requires:
-              - build-and-test
-            filters:
-              branches:
-                only:
-                  - staging
+  build-test-deploy:
+    jobs:
+      - build-and-test
+      - deploy-functions:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - staging
+      - deploy-hosting:
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only:
+                - staging
