@@ -58,7 +58,7 @@ firebase.auth();
 firebase.firestore();
 
 if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5000");
+  firebase.functions().useFunctionsEmulator("http://localhost:5001");
 } else {
   firebase.functions();
 }
