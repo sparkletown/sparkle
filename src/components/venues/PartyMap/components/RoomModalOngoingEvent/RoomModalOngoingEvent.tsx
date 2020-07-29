@@ -29,7 +29,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            What's on now
+            {`What's on now`}
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>

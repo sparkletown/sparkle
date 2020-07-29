@@ -4,12 +4,12 @@ import {
   isMessageToTheBand,
   ReactionsTextMap,
 } from "components/context/ExperienceContext";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ReactionList.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -20,7 +20,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   reactions,
   small = false,
 }) => {
-  const { usersById } = useSelector((state: any) => ({
+  const { usersById } = useSelector((state) => ({
     usersById: state.firestore.data.users,
   })) as {
     usersById: { [key: string]: Omit<User, "id"> };

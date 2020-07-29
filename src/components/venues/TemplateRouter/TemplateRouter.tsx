@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { Venue } from "types/Venue";
@@ -8,13 +7,14 @@ import EntranceExperience from "components/venues/Jazzbar/EntranceExperience";
 import PartyMapRouter from "components/venues/PartyMap/router";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 const TemplateRouter = () => {
   useConnectCurrentVenue();
   const { venueId } = useParams();
 
   const { user } = useUser();
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   })) as {
     venue: Venue;

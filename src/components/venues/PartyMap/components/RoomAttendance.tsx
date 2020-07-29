@@ -6,7 +6,7 @@ import { RoomData } from "types/RoomData";
 
 interface PropsType {
   room: RoomData;
-  attendance: any;
+  attendance?: number;
   positioned?: boolean;
   onClick?: () => void;
 }

@@ -9,7 +9,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 interface PropsType {
   startUtcSeconds: number;
   room: RoomData;
-  attendance: any;
+  attendance?: number;
 }
 
 const RoomCard: React.FunctionComponent<PropsType> = ({

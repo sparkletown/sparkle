@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
@@ -9,6 +8,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   location: RouterLocation;
@@ -30,7 +30,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
 
   const { user } = useUser();
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
   const history = useHistory();
@@ -58,7 +58,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {venue.code_of_conduct_questions.map((q: CodeOfConductQuestion) => (
+          {venue.code_of_conduct_questions.map((q) => (
             <div className="input-group" key={q.name}>
               <label
                 htmlFor={q.name}
@@ -79,7 +79,8 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
                   required: true,
                 })}
               />
-              {errors[q.name]?.type === "required" && (
+              {/* @ts-ignore @debt questions should be typed if possible */}
+              {q.name in errors && errors[q.name].type === "required" && (
                 <span className="input-error">Required</span>
               )}
             </div>

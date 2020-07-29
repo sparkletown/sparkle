@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { User as FUser } from "firebase";
 
 import CountDown from "components/molecules/CountDown";
@@ -15,10 +14,11 @@ import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./PartyMapPage.scss";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 const PartyMapPage = () => {
   const { user } = useUser();
-  const { partygoers, venue } = useSelector((state: any) => ({
+  const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     partygoers: state.firestore.ordered.partygoers,
   })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
