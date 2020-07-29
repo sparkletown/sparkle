@@ -10,6 +10,8 @@ import { Table } from "./Table";
 
 interface VenueStatus {
   currentVenue: boolean;
+  currentEvent: boolean;
+  eventPurchase: boolean;
   venueChats: boolean;
   venueEvents: boolean;
   userPurchaseHistory: boolean;
@@ -38,6 +40,7 @@ export interface Firestore {
   };
   data: {
     currentVenue: Venue;
+    currentEvent: VenueEvent;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
@@ -45,9 +48,11 @@ export interface Firestore {
     users: Record<string, User>;
     privatechats: Record<string, PrivateChatMessage>;
     experiences: Record<string, Experience>;
+    eventPurchase: Record<string, Purchase>;
   };
   ordered: {
     currentVenue: Array<OrderedIdEnhancer<Venue>>;
+    currentEvent: Array<OrderedIdEnhancer<VenueEvent>>;
     venueChats: Array<OrderedIdEnhancer<RestrictedChatMessage>>;
     venueEvents: Array<OrderedIdEnhancer<VenueEvent>>;
     userPurchaseHistory: Array<OrderedIdEnhancer<Purchase>>;
@@ -55,5 +60,6 @@ export interface Firestore {
     users: Array<OrderedIdEnhancer<User>>;
     privatechats: Array<OrderedIdEnhancer<PrivateChatMessage>>;
     experiences: Array<OrderedIdEnhancer<Experience>>;
+    eventPurchase: Array<OrderedIdEnhancer<Purchase>>;
   };
 }

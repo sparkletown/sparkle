@@ -3,9 +3,8 @@ import { Modal } from "react-bootstrap";
 
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
-import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropTypes {
   userProfile?: User;
@@ -18,8 +17,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   onHide,
   userProfile,
 }) => {
-  const { user } = useUser();
-  const { usersordered, venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     usersordered: state.firestore.ordered.users,
     venue: state.firestore.data.currentVenue,
   }));
@@ -30,17 +28,13 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   // @TODO: Need to figure out why it's sometimes not set
   // state.firestore.data.users vs state.firestore.ordered.users
-  let fullUserProfile;
-  if (!userProfile.id) {
-    fullUserProfile = {
-      ...userProfile,
-      id: usersordered.find(
-        (u: User) => u.pictureUrl === userProfile.pictureUrl
-      )?.id,
-    };
-  } else {
-    fullUserProfile = userProfile;
-  }
+  // const fullUserProfile = !userProfile.id
+  //   ? {
+  //       ...userProfile,
+  //       id: usersordered.find((u) => u.pictureUrl === userProfile.pictureUrl)
+  //         ?.id,
+  //     }
+  //   : userProfile;
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -62,11 +56,11 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             </div>
             <div className="profile-extras">
-              {venue.profile_questions?.map((question: any) => (
+              {venue.profile_questions?.map((question) => (
                 <>
                   <p className="light question">{question.text}</p>
                   <h6>
-                    {(userProfile as any)?.[question.name] ||
+                    {userProfile.data[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </>
@@ -79,11 +73,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {fullUserProfile.id !== user?.uid && (
-            <div className="private-chat-container">
-              <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
-            </div>
-          )}
+          <div className="private-chat-container">
+            <Chatbox isInProfileModal discussionPartner={userProfile} />
+          </div>
         </div>
       </Modal.Body>
     </Modal>
