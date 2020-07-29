@@ -11,7 +11,12 @@ firebase.initializeApp(firebaseConfig);
 
 admin.initializeApp({
   ...firebaseConfig,
-  credential: admin.credential.cert(functions.config().service_account),
+  credential: admin.credential.cert({
+    ...functions.config().service_account,
+    private_key: functions
+      .config()
+      .service_account.private_key.replace(/\\n/g, "\n"),
+  }),
 });
 
 const video = require("./video");
