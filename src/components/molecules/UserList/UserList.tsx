@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
-
 import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { useSelector } from "react-redux";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   users: User[];
@@ -27,7 +26,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   users = users.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users.slice(0, limit);
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
 

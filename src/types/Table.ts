@@ -7,6 +7,7 @@ export interface Table {
   columns?: number;
   rows?: number;
   reference: string;
+  locked?: boolean;
 }
 
 export interface TableComponentPropsType {

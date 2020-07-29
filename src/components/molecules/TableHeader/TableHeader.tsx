@@ -2,13 +2,23 @@ import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { JAZZBAR_TABLES } from "components/venues/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
-const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
+interface TableHeaderProps {
+  seatedAtTable: string;
+  setSeatedAtTable: (val: string) => void;
+  venueName: string;
+}
+
+const TableHeader: React.FC<TableHeaderProps> = ({
+  seatedAtTable,
+  setSeatedAtTable,
+  venueName,
+}) => {
   const { user, profile } = useUser();
-  const { experience, users } = useSelector((state: any) => ({
+  const { experience, users } = useSelector((state) => ({
     experience:
       state.firestore.data.experiences &&
       state.firestore.data.experiences[venueName],
@@ -19,9 +29,9 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
     doc: venueName,
   });
 
-  const tableOfUser =
-    seatedAtTable &&
-    JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable);
+  const tableOfUser = seatedAtTable
+    ? JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable)
+    : undefined;
 
   const usersAtCurrentTable =
     seatedAtTable &&
@@ -35,7 +45,7 @@ const TableHeader = ({ seatedAtTable, setSeatedAtTable, venueName }: any) => {
     firestore
       .doc(doc)
       .update(update)
-      .catch((e) => {
+      .catch(() => {
         firestore.doc(doc).set(update);
       });
   };

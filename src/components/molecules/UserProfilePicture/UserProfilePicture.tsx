@@ -1,5 +1,4 @@
 import React, { useContext } from "react";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 
 import {
@@ -10,6 +9,7 @@ import {
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 type UserProfilePictureProp = {
   user: User;
@@ -25,8 +25,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
 }) => {
   const experienceContext = useContext(ExperienceContext);
-  const { muteReactions } = useSelector((state: any) => ({
-    muteReactions: state.muteReactions,
+  const { muteReactions } = useSelector((state) => ({
+    muteReactions: state.room.mute,
   }));
 
   const typedReaction = (experienceContext

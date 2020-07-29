@@ -6,12 +6,24 @@ import {
   PrivateChatMessage,
 } from "components/context/ChatContext";
 import { VenueEvent } from "./VenueEvent";
+import { Table } from "./Table";
 
 interface VenueStatus {
   currentVenue: boolean;
   venueChats: boolean;
   venueEvents: boolean;
   userPurchaseHistory: boolean;
+}
+
+interface Reaction {
+  created_at: number;
+  created_by: string;
+  reaction: string;
+}
+
+interface Experience {
+  reactions: Record<string, Reaction>;
+  tables: Record<string, Table>;
 }
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
@@ -30,6 +42,7 @@ export interface Firestore {
     partygoers: Record<string, User>;
     users: Record<string, User>;
     privatechats: Record<string, PrivateChatMessage>;
+    experiences: Record<string, Experience>;
   };
   ordered: {
     currentVenue: Array<Venue>;
@@ -39,5 +52,6 @@ export interface Firestore {
     partygoers: Array<User>;
     users: Array<User>;
     privatechats: Array<PrivateChatMessage>;
+    experiences: Array<Experience>;
   };
 }
