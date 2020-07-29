@@ -7,6 +7,7 @@ import {
 } from "components/context/ChatContext";
 import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
+import { PartyMapVenue } from "./PartyMapVenue";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -30,7 +31,7 @@ interface Experience {
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
 
-type OrderedIdEnhancer<T extends object> = { id: string } & T;
+export type OrderedIdEnhancer<T extends object> = { id: string } & T;
 
 export interface Firestore {
   status: {
@@ -39,7 +40,7 @@ export interface Firestore {
     timestamps: VenueTimestamps;
   };
   data: {
-    currentVenue: Venue;
+    currentVenue: Venue | PartyMapVenue;
     currentEvent: VenueEvent;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
@@ -49,9 +50,10 @@ export interface Firestore {
     privatechats: Record<string, PrivateChatMessage>;
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;
+    reactions: Record<string, Reaction>;
   };
   ordered: {
-    currentVenue: Array<OrderedIdEnhancer<Venue>>;
+    currentVenue: Array<OrderedIdEnhancer<Venue | PartyMapVenue>>;
     currentEvent: Array<OrderedIdEnhancer<VenueEvent>>;
     venueChats: Array<OrderedIdEnhancer<RestrictedChatMessage>>;
     venueEvents: Array<OrderedIdEnhancer<VenueEvent>>;
@@ -61,5 +63,6 @@ export interface Firestore {
     privatechats: Array<OrderedIdEnhancer<PrivateChatMessage>>;
     experiences: Array<OrderedIdEnhancer<Experience>>;
     eventPurchase: Array<OrderedIdEnhancer<Purchase>>;
+    reactions: Array<OrderedIdEnhancer<Reaction>>;
   };
 }

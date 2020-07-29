@@ -64,26 +64,20 @@ export const Reactions = [
   },
 ];
 
-export type MessageToTheBandReaction = {
-  reaction: TextReactionType;
-  text: string;
+interface BaseReaction {
   created_at: number;
   created_by: string;
-};
+}
 
-export const isMessageToTheBand = (
-  reaction: Reaction
-): reaction is MessageToTheBandReaction => {
-  return reaction.reaction === "messageToTheBand";
-};
+export interface EmojiReaction extends BaseReaction {
+  reaction: EmojiReactionType;
+}
+export interface MessageToTheBandReaction extends BaseReaction {
+  reaction: TextReactionType;
+  text: string;
+}
 
-export type Reaction =
-  | {
-      reaction: EmojiReactionType;
-      created_at: number;
-      created_by: string;
-    }
-  | MessageToTheBandReaction;
+export type Reaction = EmojiReaction | MessageToTheBandReaction;
 
 export const ExperienceContext = React.createContext<
   ExperienceContextType | undefined

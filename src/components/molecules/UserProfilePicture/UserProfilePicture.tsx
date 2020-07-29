@@ -5,7 +5,7 @@ import {
   ExperienceContext,
   Reactions,
   Reaction,
-  isMessageToTheBand,
+  MessageToTheBandReaction,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
@@ -33,9 +33,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     ? experienceContext.reactions
     : []) as Reaction[];
 
-  const messagesToBand = typedReaction
-    .filter(isMessageToTheBand)
-    .find((r) => r.created_by === user.id && r.reaction === "messageToTheBand");
+  const messagesToBand = typedReaction.find(
+    (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
+  ) as MessageToTheBandReaction | undefined;
 
   return (
     <div className="profile-picture-container">

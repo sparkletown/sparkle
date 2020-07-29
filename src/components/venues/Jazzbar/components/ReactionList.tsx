@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   Reaction,
-  isMessageToTheBand,
   ReactionsTextMap,
 } from "components/context/ExperienceContext";
 import { User } from "types/User";
@@ -57,12 +56,8 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <div className="partyname-bubble">
               {usersById[message.created_by].partyName}:
             </div>
-            <div
-              className={`message-bubble ${
-                isMessageToTheBand(message) ? "" : "emoji"
-              }`}
-            >
-              {isMessageToTheBand(message)
+            <div className={`message-bubble ${message ? "" : "emoji"}`}>
+              {message.reaction === "messageToTheBand"
                 ? message.text
                 : ReactionsTextMap[message.reaction]}
             </div>

@@ -23,7 +23,7 @@ const updateUserProfile = (
   return firestore
     .doc(doc)
     .update(profileData)
-    .catch((e) => {
+    .catch(() => {
       firestore.doc(doc).set(profileData);
     });
 };

@@ -1,18 +1,13 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
 import PartyMap from "components/venues/PartyMap";
 import FriendShipPage from "pages/FriendShipPage";
-import { User } from "types/User";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useParams, useHistory } from "react-router-dom";
-import { Purchase } from "types/Purchase";
-import { VenueEvent } from "types/VenueEvent";
-import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
@@ -20,6 +15,7 @@ import CountDown from "components/molecules/CountDown";
 import { useUser } from "hooks/useUser";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
+import { useSelector } from "hooks/useSelector";
 
 const VenuePage = () => {
   const { venueId } = useParams();
@@ -35,25 +31,18 @@ const VenuePage = () => {
     event,
     eventRequestStatus,
     venueRequestStatus,
-  } = useSelector((state: any) => ({
+  } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     users: state.firestore.ordered.partygoers,
     event: state.firestore.data.currentEvent,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
+    eventPurchase: state.firestore.data.eventPurchase,
+    eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
     userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
     userPurchaseHistoryRequestStatus:
       state.firestore.status.requested.userPurchaseHistory,
-  })) as {
-    venue: Venue;
-    users: User[];
-    userPurchaseHistory: Purchase[];
-    userPurchaseHistoryRequestStatus: boolean;
-    event: VenueEvent;
-    eventRequestStatus: boolean;
-    venueRequestStatus: boolean;
-  };
-
+  }));
   venue && updateTheme(venue);
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
