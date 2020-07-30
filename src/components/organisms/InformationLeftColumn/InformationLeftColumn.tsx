@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./InformationLeftColumn.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
   venueLogoPath: string;
@@ -19,6 +21,13 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
         id="expand-venue-information"
       >
+        {
+          <div
+            className={`chevron-icon ${isLeftColumnExpanded ? "turned" : ""}`}
+          >
+            <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
+          </div>
+        }
         <img
           src={venueLogoPath}
           alt="experience-logo"
