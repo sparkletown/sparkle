@@ -35,7 +35,7 @@ const ReactionPage = () => {
 
   return (
     <WithNavigationBar>
-      <div className="full-page-container experience-container reaction-page-container">
+      <div className="full-page-container reaction-page-container">
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">

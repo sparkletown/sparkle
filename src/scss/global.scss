@@ -350,7 +350,7 @@ h4 {
   align-items: center;
 }
 
-.full-page-container.experience-container {
+.full-page-container {
   display: flex;
   padding: 5px 30px;
   height: calc(100vh - 50px);
@@ -431,7 +431,7 @@ h4 {
   }
 }
 
-.full-page-container.experience-container,
+.full-page-container,
 .friendship-container {
   .content {
     .wrapper {

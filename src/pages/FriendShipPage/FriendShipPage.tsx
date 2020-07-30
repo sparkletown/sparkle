@@ -19,65 +19,63 @@ const FriendShipPage: React.FunctionComponent = () => {
   useConnectPartyGoers();
 
   return (
-    <div className="full-page-container">
-      <WithNavigationBar>
-        <div className="friendship-container">
-          <div className="title">
-            <h1>{venue.name}</h1>
-          </div>
-          <div className="content">
-            {!seatedAtTable && (
-              <div className="row">
-                <div className="col bar-container">
-                  <div className="title">{venue.name}</div>
-                  <div className="subtitle">{venue.name}</div>
-                  <div className="wrapper">
-                    <Room roomName="friendship" setUserList={() => null} />
-                  </div>
-                </div>
-                <div className="col-4">
-                  <Chatbox room="friendship" />
+    <WithNavigationBar>
+      <div className="friendship-container">
+        <div className="title">
+          <h1>{venue.name}</h1>
+        </div>
+        <div className="content">
+          {!seatedAtTable && (
+            <div className="row">
+              <div className="col bar-container">
+                <div className="title">{venue.name}</div>
+                <div className="subtitle">{venue.name}</div>
+                <div className="wrapper">
+                  <Room roomName="friendship" setUserList={() => null} />
                 </div>
               </div>
-            )}
-          </div>
-          <div className="row">
-            <div
-              className={`col ${
-                seatedAtTable ? "table-container" : "table-grid"
-              }`}
-            >
-              <TablesUserList
-                venueName={venue.name}
-                setSeatedAtTable={setSeatedAtTable}
-                seatedAtTable={seatedAtTable}
-                TableComponent={TableComponent}
-                customTables={FRIENDSHIP_CUSTOM_TABLES}
-                leaveText="Return to Isle of Friends"
-                joinMessage={true}
-              />
-              {seatedAtTable && (
-                <div className="col wrapper">
-                  <TableHeader
-                    seatedAtTable={seatedAtTable}
-                    setSeatedAtTable={setSeatedAtTable}
-                    venueName={venue.name}
-                  />
-                  <Room roomName={seatedAtTable} setUserList={() => null} />
-                </div>
-              )}
-            </div>
-          </div>
-          {seatedAtTable && (
-            <div className="centered-row">
-              <div className="col-6">
+              <div className="col-4">
                 <Chatbox room="friendship" />
               </div>
             </div>
           )}
         </div>
-      </WithNavigationBar>
-    </div>
+        <div className="row">
+          <div
+            className={`col ${
+              seatedAtTable ? "table-container" : "table-grid"
+            }`}
+          >
+            <TablesUserList
+              venueName={venue.name}
+              setSeatedAtTable={setSeatedAtTable}
+              seatedAtTable={seatedAtTable}
+              TableComponent={TableComponent}
+              customTables={FRIENDSHIP_CUSTOM_TABLES}
+              leaveText="Return to Isle of Friends"
+              joinMessage={true}
+            />
+            {seatedAtTable && (
+              <div className="col wrapper">
+                <TableHeader
+                  seatedAtTable={seatedAtTable}
+                  setSeatedAtTable={setSeatedAtTable}
+                  venueName={venue.name}
+                />
+                <Room roomName={seatedAtTable} setUserList={() => null} />
+              </div>
+            )}
+          </div>
+        </div>
+        {seatedAtTable && (
+          <div className="centered-row">
+            <div className="col-6">
+              <Chatbox room="friendship" />
+            </div>
+          </div>
+        )}
+      </div>
+    </WithNavigationBar>
   );
 };
 
