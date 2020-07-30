@@ -90,6 +90,10 @@ const VenuePage = () => {
     );
   }
 
+  if (profile === undefined) {
+    return <>Loading...</>;
+  }
+
   if (!(profile?.partyName && profile?.pictureUrl)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
