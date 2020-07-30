@@ -24,6 +24,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   isPaymentProceeding,
   event,
   isCardBeingSaved,
+  setIsCardBeingSaved,
 }) => {
   const [selectedTab, setSelectedTab] = useState(INDIVIDUAL_TICKET_TAB.id);
   const { venueId } = useParams();
@@ -103,6 +104,27 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const saveCardAndPay = async () => {
+    const cardElement = elements?.getElement(CardElement);
+    if (cardElement && stripe) {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
+
+      if (error) {
+        setErrorMessage(error.message);
+      } else {
+        await firebase
+          .functions()
+          .httpsCallable("payment-createCustomerWithPaymentMethod")({
+          paymentMethodId: paymentMethod?.id,
+        });
+      }
+    }
+    await pay();
+  };
+
   return (
     <>
       <div className="price">{`£${ticketPrice / 100}`}</div>
@@ -126,6 +148,9 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
               className="btn btn-primary btn-block submit-button"
               type="submit"
+              onClick={(e) =>
+                handleSubmit(e, setIsCardBeingSaved, saveCardAndPay)
+              }
             >
               {!isCardBeingSaved ? (
                 "Save card and pay"
