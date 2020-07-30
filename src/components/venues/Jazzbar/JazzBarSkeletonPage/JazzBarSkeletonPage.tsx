@@ -3,8 +3,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
-import { useSelector } from "react-redux";
-import { JazzbarVenue } from "types/JazzbarVenue";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   children: React.ReactNode;
@@ -13,9 +12,9 @@ interface PropsType {
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
 }) => {
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
-  })) as { venue: JazzbarVenue };
+  }));
 
   return (
     <>
@@ -25,7 +24,8 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             <InformationCard title="About the venue">
               <p>
                 Kansas Smitty’s.
-                <br /> It's a band and it's a bar.
+                <br />
+                {` It's a band and it's a bar.`}
               </p>
 
               <p>
@@ -33,13 +33,13 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                 the sounds of our House band.
               </p>
               <p>
-                Saturdays at Kansas Smitty's have always been about having a
+                {`Saturdays at Kansas Smitty's have always been about having a
                 great time. The band for this evenings performance features
                 Giacomo Smith on clarinet and alto, Ferg Ireland on double bass,
                 Joe Webb on piano, Alec Harper on tenor sax and Will Cleasby on
-                drums.
+                drums.`}
               </p>
-              <p>Performing tonight at Kansas Smitty's:</p>
+              <p>{`Performing tonight at Kansas Smitty's:`}</p>
               <ul>
                 <li>Giacomo Smith - alto/clarinet</li>
                 <li>Ferg Ireland - Double Bass</li>
@@ -54,11 +54,12 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                 https://www.patreon.com/kansassmittys
               </p>
               <p>
-                Kansas Smitty's have just released their new album 'Things
+                {`Kansas Smitty's have just released their new album 'Things
                 Happened Here' available on all good streaming platforms and
                 vinyl /CD https://ever-records.lnk.to/ThingsHappenedHere
+              `}
               </p>
-              <p>We'll see you in the bar...</p>
+              <p>{`We'll see you in the bar...`}</p>
             </InformationCard>
           </InformationLeftColumn>
           <div className="content-container">{children}</div>

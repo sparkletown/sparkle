@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import {
   Reaction,
-  isMessageToTheBand,
   ReactionsTextMap,
 } from "components/context/ExperienceContext";
-import { useSelector } from "react-redux";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ReactionList.scss";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -19,7 +19,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   reactions,
   small = false,
 }) => {
-  const { usersById } = useSelector((state: any) => ({
+  const { usersById } = useSelector((state) => ({
     usersById: state.firestore.data.users,
   })) as {
     usersById: { [key: string]: Omit<User, "id"> };
@@ -46,7 +46,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
               className="profile-icon"
               src={
                 usersById[message.created_by].pictureUrl ||
-                "/anonymous-profile-icon.jpeg"
+                DEFAULT_PROFILE_IMAGE
               }
               title={usersById[message.created_by].partyName}
               alt={`${usersById[message.created_by].partyName} profile`}
@@ -58,10 +58,10 @@ const ReactionList: React.FC<ReactionListProps> = ({
             </div>
             <div
               className={`message-bubble ${
-                isMessageToTheBand(message) ? "" : "emoji"
+                message.reaction === "messageToTheBand" ? "" : "emoji"
               }`}
             >
-              {isMessageToTheBand(message)
+              {message.reaction === "messageToTheBand"
                 ? message.text
                 : ReactionsTextMap[message.reaction]}
             </div>

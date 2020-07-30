@@ -8,11 +8,11 @@ import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import TableComponent from "components/molecules/TableComponent";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import TableHeader from "components/molecules/TableHeader";
-import { useSelector } from "react-redux";
+import { useSelector } from "hooks/useSelector";
 
 const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
 
@@ -23,15 +23,14 @@ const FriendShipPage: React.FunctionComponent = () => {
       <WithNavigationBar>
         <div className="friendship-container">
           <div className="title">
-            <h1>{venue.title}</h1>
-            <h3>{venue.subtitle}</h3>
+            <h1>{venue.name}</h1>
           </div>
           <div className="content">
             {!seatedAtTable && (
               <div className="row">
                 <div className="col bar-container">
-                  <div className="title">{venue.defaultTableTitle}</div>
-                  <div className="subtitle">{venue.defaultTableSubtitle}</div>
+                  <div className="title">{venue.name}</div>
+                  <div className="subtitle">{venue.name}</div>
                   <div className="wrapper">
                     <Room roomName="friendship" setUserList={() => null} />
                   </div>

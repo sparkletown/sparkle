@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import CardSection from "./CardSection";
+import CardInput from "components/molecules/CardInput";
 import firebase from "firebase/app";
 import "firebase/functions";
-import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { VenueEvent } from "types/VenueEvent";
 import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
+import { useUser } from "hooks/useUser";
+import { Stripe, StripeElements } from "@stripe/stripe-js";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
-  setIsFormBeingSubmitted: (value: boolean) => void;
-  isFormBeingSubmitted: boolean;
+  setIsPaymentProceeding: (value: boolean) => void;
+  setIsCardBeingSaved: (value: boolean) => void;
+  isPaymentProceeding: boolean;
+  isCardBeingSaved: boolean;
   event: VenueEvent;
 }
 
 const PaymentForm: React.FunctionComponent<PropsType> = ({
   setIsPaymentSuccess,
-  setIsFormBeingSubmitted,
-  isFormBeingSubmitted,
+  setIsPaymentProceeding,
+  isPaymentProceeding,
   event,
+  isCardBeingSaved,
+  setIsCardBeingSaved,
 }) => {
   const [selectedTab, setSelectedTab] = useState(INDIVIDUAL_TICKET_TAB.id);
   const { venueId } = useParams();
@@ -28,28 +33,25 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState<string | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const { user } = useSelector((state: any) => ({
-    user: state.user,
-  }));
+  const { user } = useUser();
 
   const ticketPrice =
     selectedTab === INDIVIDUAL_TICKET_TAB.id
       ? event.price
       : event.collective_price;
 
-  const [billingEmail, setBillingEmail] = useState(user.email);
+  const [billingEmail, setBillingEmail] = useState(user?.email);
 
   useEffect(() => {
     setClientSecret(undefined);
     async function getPaymentIntent() {
+      if (!user) return;
       const { client_secret: clientSecretToken } = (
         await firebase.functions().httpsCallable("payment-createPaymentIntent")(
           {
             venueId: venueId,
             eventId: event.id,
             price: ticketPrice,
-            userEmail: user.email,
-            userId: user.uid,
           }
         )
       ).data;
@@ -60,16 +62,36 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     } catch {
       setErrorMessage("Could not create a payment intent");
     }
-  }, [event.id, venueId, ticketPrice, user.uid, user.email, selectedTab]);
+  }, [event.id, venueId, ticketPrice, user, selectedTab]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    setIsFormBeingSubmitted(true);
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    setIsLoading: (isLoading: boolean) => void,
+    operations: (stripe: Stripe, elements: StripeElements) => Promise<void>
+  ) => {
+    if (!user) return;
+    setIsLoading(true);
     e.preventDefault();
     if (!stripe || !elements) {
       setErrorMessage("Oops something wrong happened");
+      setIsLoading(false);
       return;
     }
-    const result = await stripe.confirmCardPayment(clientSecret || "", {
+    await operations(stripe, elements);
+    setIsLoading(false);
+  };
+
+  const handlePayment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+    handleSubmit(e, setIsPaymentProceeding, pay);
+  const handleSaveCard = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+    handleSubmit(e, setIsCardBeingSaved, saveCardAndPay);
+
+  const pay = async (stripe: Stripe, elements: StripeElements) => {
+    if (!(user?.email && clientSecret)) {
+      setErrorMessage("Oops something wrong happened");
+      return;
+    }
+    const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement) || { token: "" },
         billing_details: {
@@ -81,12 +103,32 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
 
     if (result.error) {
       setErrorMessage(result.error.message);
+    } else if (result.paymentIntent?.status === "succeeded") {
+      setIsPaymentSuccess(true);
     } else {
-      if (result.paymentIntent?.status === "succeeded") {
-        setIsPaymentSuccess(true);
+      setErrorMessage("Payment didn't work, try again");
+    }
+  };
+
+  const saveCardAndPay = async (stripe: Stripe, elements: StripeElements) => {
+    const cardElement = elements.getElement(CardElement);
+    if (cardElement && stripe) {
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+      });
+
+      if (error) {
+        setErrorMessage(error.message);
+      } else if (paymentMethod) {
+        await firebase
+          .functions()
+          .httpsCallable("payment-createCustomerWithPaymentMethod")({
+          paymentMethodId: paymentMethod.id,
+        });
+        await pay(stripe, elements);
       }
     }
-    setIsFormBeingSubmitted(false);
   };
 
   return (
@@ -100,26 +142,43 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       {!clientSecret ? (
         <>Loading...</>
       ) : (
-        <form onSubmit={handleSubmit} className="payment-form-container">
+        <form className="payment-form-container">
           <input
-            value={billingEmail}
+            value={billingEmail ?? undefined}
             onChange={(event) => setBillingEmail(event.target.value)}
             className=""
           />
-          <CardSection />
-          <button
-            disabled={!stripe || isFormBeingSubmitted}
-            className="btn btn-primary btn-block confirm-order-button"
-            type="submit"
-          >
-            {!isFormBeingSubmitted ? (
-              "Confirm order"
-            ) : (
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            )}
-          </button>
+          <CardInput />
+          <div className="button-container">
+            <button
+              disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
+              className="btn btn-primary btn-block submit-button hidden"
+              type="submit"
+              onClick={handleSaveCard}
+            >
+              {!isCardBeingSaved ? (
+                "Save card and pay"
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+            <button
+              disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
+              className="btn btn-primary btn-block submit-button"
+              type="submit"
+              onClick={handlePayment}
+            >
+              {!isPaymentProceeding ? (
+                "Pay"
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+          </div>
           <div className="red-text">{errorMessage}</div>
         </form>
       )}

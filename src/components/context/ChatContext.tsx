@@ -1,8 +1,7 @@
 import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
-import firebase, { User as FUser } from "firebase/app";
-import { useSelector } from "react-redux";
-import { Venue } from "types/Venue";
+import firebase from "firebase/app";
+import { useSelector } from "hooks/useSelector";
 
 interface ChatContextType {
   sendGlobalChat: (from: string, text: string) => void;
@@ -15,91 +14,74 @@ export const ChatContext = React.createContext<ChatContextType | undefined>(
   undefined
 );
 
-interface GlobalChatMessage {
-  type: "global";
+type Time = firebase.firestore.Timestamp;
+
+type RestrictedMessageType = "room" | "table";
+
+interface BaseChatMessage {
   from: string;
   text: string;
+  ts_utc: Time;
 }
 
-enum RestrictedMessageType {
-  room = "room",
-  table = "table",
+interface BaseNonGlobalChatMessage extends BaseChatMessage {
+  to: string;
 }
 
-export interface RestrictedChatMessage {
+export interface RestrictedChatMessage extends BaseNonGlobalChatMessage {
   type: RestrictedMessageType;
-  from: string;
-  to: string;
-  text: string;
-  ts_utc: any;
 }
 
-export interface PrivateChatMessage {
+export interface PrivateChatMessage extends BaseNonGlobalChatMessage {
   type: "private";
-  from: string;
-  to: string;
-  text: string;
-  ts_utc: any;
   isRead: boolean;
 }
 
-type ChatMessage =
+interface GlobalChatMessage extends BaseChatMessage {
+  type: "global";
+}
+
+export type ChatMessage =
   | GlobalChatMessage
   | RestrictedChatMessage
   | PrivateChatMessage;
 
-function buildMessage(
-  type: RestrictedMessageType,
-  text: string,
-  from: string,
-  to: string
-): ChatMessage;
-function buildMessage(
-  type: "private",
-  text: string,
-  from: string,
-  to: string
-): ChatMessage;
-function buildMessage(
-  type: "global",
-  text: string,
-  from: string,
-  to: undefined
-): ChatMessage;
-function buildMessage(
-  type: any,
-  text: string,
-  from: string,
-  to: any
-): ChatMessage {
-  let message: ChatMessage = {
-    type,
-    ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
-    text,
-    from,
-  };
-
-  if (type !== "global") {
-    message = {
-      ...message,
-      to,
-    } as RestrictedChatMessage;
-  }
-
-  if (type === "private") {
-    message = {
-      ...message,
-      isRead: false,
-    } as PrivateChatMessage;
-  }
-
-  return message;
+interface BaseMessageBuilderInput {
+  text: string;
+  from: string;
 }
 
-export default ({ children }: { children: any }) => {
-  const { venue } = useSelector((state: any) => ({
+type MessageBuilderInput = BaseMessageBuilderInput &
+  (
+    | { type: RestrictedMessageType | "private"; to: string }
+    | { type: "global" }
+  );
+
+// @debt typing this can be typed better
+function buildMessage(data: MessageBuilderInput): ChatMessage {
+  const baseMessage: BaseChatMessage = {
+    ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+    text: data.text,
+    from: data.from,
+  };
+
+  switch (data.type) {
+    case "private":
+      return { ...baseMessage, type: "private", to: data.to, isRead: false };
+    case "room":
+    case "table":
+      return { ...baseMessage, type: data.type, to: data.to };
+    case "global":
+      return { ...baseMessage, type: "global" };
+  }
+}
+
+export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
-  })) as { user: FUser; venue: Venue };
+  }));
 
   const chatCollectionName = `venues/${venue.id}/chats`;
 
@@ -115,7 +97,7 @@ export default ({ children }: { children: any }) => {
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage("global", text, from, undefined));
+        .add(buildMessage({ type: "global", text, from }));
     },
     [chatCollectionName]
   );
@@ -125,19 +107,19 @@ export default ({ children }: { children: any }) => {
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage(RestrictedMessageType.room, text, from, to));
+        .add(buildMessage({ type: "room", text, from, to }));
     },
     [chatCollectionName]
   );
 
   const sendPrivateChat = useCallback((from, to, text) => {
     const firestore = firebase.firestore();
-    for (let messageUser of [from, to]) {
+    for (const messageUser of [from, to]) {
       firestore
         .collection("privatechats")
         .doc(messageUser)
         .collection("chats")
-        .add(buildMessage("private", text, from, to));
+        .add(buildMessage({ type: "private", text, from, to }));
     }
   }, []);
 
@@ -146,7 +128,7 @@ export default ({ children }: { children: any }) => {
       const firestore = firebase.firestore();
       firestore
         .collection(chatCollectionName)
-        .add(buildMessage(RestrictedMessageType.table, text, from, to));
+        .add(buildMessage({ type: "table", text, from, to }));
     },
     [chatCollectionName]
   );

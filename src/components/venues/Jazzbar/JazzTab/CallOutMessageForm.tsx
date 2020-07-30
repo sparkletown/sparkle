@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   onSubmit: () => void;
@@ -14,7 +14,7 @@ const CallOutMessageForm: React.FunctionComponent<PropsType> = ({
   placeholder,
   isMessageToTheBandSent,
 }) => {
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
   return (

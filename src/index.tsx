@@ -2,15 +2,20 @@ import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 
-import { createStore, compose, applyMiddleware } from "redux";
+import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
-import { reduxFirestore, createFirestoreInstance } from "redux-firestore";
+import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/analytics";
 import "firebase/auth";
 import "firebase/functions";
-import { ReactReduxFirebaseProvider } from "react-redux-firebase";
+import {
+  ReactReduxFirebaseProvider,
+  firebaseReducer,
+  isLoaded,
+  FirebaseReducer,
+} from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
 import { STRIPE_PUBLISHABLE_KEY } from "secrets";
 
@@ -19,7 +24,7 @@ import "scss/global.scss";
 
 import AppRouter from "components/organisms/AppRouter";
 
-import rootReducer from "./reducers/";
+import { roomReducer } from "./store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import {
   API_KEY,
@@ -32,8 +37,11 @@ import * as serviceWorker from "./serviceWorker";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import { useSelector } from "hooks/useSelector";
+import { Firestore } from "types/Firestore";
+import { User } from "types/User";
 
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const firebaseConfig = {
   apiKey: API_KEY,
@@ -42,7 +50,6 @@ const firebaseConfig = {
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
 };
-const rfConfig = {}; // optional redux-firestore Config Options
 
 const rrfConfig = {
   userProfile: "users",
@@ -52,19 +59,25 @@ const rrfConfig = {
 firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics();
 firebase.auth();
+firebase.firestore();
 
 if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5000");
+  firebase.functions().useFunctionsEmulator("http://localhost:5001");
 } else {
   firebase.functions();
 }
 
-const createStoreWithFirebase = compose(reduxFirestore(firebase, rfConfig))(
-  createStore
-);
+// Add firebase to reducers
+const rootReducer = combineReducers({
+  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
+  firestore: firestoreReducer as Reducer<Firestore>,
+  room: roomReducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
 
 const initialState = {};
-const store = createStoreWithFirebase(
+const store = createStore(
   rootReducer,
   initialState,
   composeWithDevTools(
@@ -79,11 +92,21 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
+const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
+  children,
+}) => {
+  const auth = useSelector((state) => state.firebase.auth);
+  if (!isLoaded(auth)) return <div>Loading...</div>;
+  return <>{children}</>;
+};
+
 render(
   <Elements stripe={stripePromise}>
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-        <AppRouter />
+        <AuthIsLoaded>
+          <AppRouter />
+        </AuthIsLoaded>
       </ReactReduxFirebaseProvider>
     </Provider>
   </Elements>,

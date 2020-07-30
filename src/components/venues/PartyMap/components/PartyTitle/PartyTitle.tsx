@@ -1,8 +1,8 @@
 import React from "react";
 import CountDown from "components/molecules/CountDown";
 import "./PartyTitle.scss";
-import { useSelector } from "react-redux";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -13,7 +13,7 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   withCountDown,
 }) => {
-  const { venue } = useSelector((state: any) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   })) as { venue: PartyMapVenue };
 

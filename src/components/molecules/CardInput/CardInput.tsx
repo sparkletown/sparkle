@@ -1,6 +1,6 @@
 import React from "react";
 import { CardElement } from "@stripe/react-stripe-js";
-import "./CardSectionStyles.scss";
+import "./CardInput.scss";
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -12,8 +12,8 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-function CardSection() {
+const CardInput = () => {
   return <CardElement options={CARD_ELEMENT_OPTIONS} />;
-}
+};
 
-export default CardSection;
+export default CardInput;

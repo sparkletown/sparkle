@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
+import { UserInfo } from "firebase";
+import { FirebaseStorage } from "@firebase/storage-types";
+
+type Reference = ReturnType<FirebaseStorage["ref"]>;
 
 interface PropsType {
-  setValue: (inputName: string, value: any, rerender: boolean) => void;
-  user: any;
-  errors: any;
+  setValue: (inputName: string, value: string, rerender: boolean) => void;
+  user: UserInfo;
+  errors: Record<string, any>;
   pictureUrl: string;
   register: any;
 }
@@ -19,14 +23,15 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const firebase = useFirebase();
 
-  const uploadPicture = async (profilePictureRef: any, file: File) => {
+  const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
     const uploadedProfilePicture = await profilePictureRef.put(file);
     setIsPictureUploading(false);
     return uploadedProfilePicture;
   };
 
-  const handleFileChange = async (e: any) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
     const file = e.target.files[0];
     const storageRef = firebase.storage().ref();
     // TODO: add rule to forbid other users to edit a user's image

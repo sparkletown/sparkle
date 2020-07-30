@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { VenueEvent } from "types/VenueEvent";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
-import { useSelector } from "react-redux";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { Purchase } from "types/Purchase";
@@ -10,7 +9,8 @@ import "./PaymentModal.scss";
 import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { Venue } from "types/Venue";
-import { User as FUser } from "firebase/app";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   show: boolean;
@@ -24,33 +24,30 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   selectedEvent,
 }) => {
   useConnectUserPurchaseHistory();
-  const {
-    purchaseHistory,
-    purchaseHistoryRequestStatus,
-    user,
-    venue,
-  } = useSelector((state: any) => ({
-    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    purchaseHistoryRequestStatus:
-      state.firestore.status.requested.userPurchaseHistory,
-    user: state.user,
-    venue: state.firestore.data.currentVenue,
-  })) as {
+  const { user } = useUser();
+  const { purchaseHistory, purchaseHistoryRequestStatus, venue } = useSelector(
+    (state) => ({
+      purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+      purchaseHistoryRequestStatus:
+        state.firestore.status.requested.userPurchaseHistory,
+      venue: state.firestore.data.currentVenue,
+    })
+  ) as {
     purchaseHistory: Purchase[];
     purchaseHistoryRequestStatus: boolean;
-    user: FUser;
     venue: Venue;
   };
 
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
-  const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
+  const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
+  const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);
 
   const hasUserBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
-    isUserAMember(user.email, venue.config.memberEmails);
+    (user && isUserAMember(user.email, venue.config.memberEmails));
 
   const closePaymentModal = () => {
-    if (!isFormBeingSubmitted) {
+    if (!isPaymentProceeding && !isCardBeingSaved) {
       onHide();
     }
   };
@@ -66,8 +63,10 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     modalContent = (
       <PaymentForm
         setIsPaymentSuccess={setIsPaymentSuccess}
-        setIsFormBeingSubmitted={setIsFormBeingSubmitted}
-        isFormBeingSubmitted={isFormBeingSubmitted}
+        setIsPaymentProceeding={setIsPaymentProceeding}
+        setIsCardBeingSaved={setIsCardBeingSaved}
+        isPaymentProceeding={isPaymentProceeding}
+        isCardBeingSaved={isCardBeingSaved}
         event={selectedEvent}
       />
     );

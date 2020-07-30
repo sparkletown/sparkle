@@ -7,6 +7,14 @@
     margin-bottom: 20px;
   }
 
+  .button-container {
+    display: flex;
+
+    button {
+      margin: 0 10px;
+    }
+  }
+
   .event-title {
     font-size: 30px;
   }
@@ -36,9 +44,15 @@
     cursor: default;
   }
 
-  .confirm-order-button {
+  .submit-button {
     height: 50px;
     margin-top: 5px;
+    white-space: nowrap;
+    padding: 0 30px;
+  }
+
+  .submit-button.hidden {
+    display: none;
   }
 
   .price {

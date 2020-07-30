@@ -65,6 +65,10 @@ export function formatDate(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "MMM do");
 }
 
+export function oneHourAfterTimestamp(timestamp) {
+  return timestamp + ONE_HOUR_IN_SECONDS;
+}
+
 export function formatUtcSeconds(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "p");
 }

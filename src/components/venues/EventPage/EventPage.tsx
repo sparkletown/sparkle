@@ -1,41 +1,29 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { useParams, Link, Redirect } from "react-router-dom";
 import { updateTheme } from "pages/VenuePage/helpers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import { Purchase } from "types/Purchase";
-import { Venue } from "types/Venue";
-import { VenueEvent } from "types/VenueEvent";
-import { User as FUser } from "firebase/app";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 const EventPage = () => {
   const { venueId, eventId } = useParams();
+  const { user } = useUser();
   const {
-    user,
     venue,
     event,
     eventPurchase,
     eventPurchaseRequestStatus,
     venueRequestStatus,
     eventRequestStatus,
-  } = useSelector((state: any) => ({
-    user: state.user,
+  } = useSelector((state) => ({
     eventPurchase: state.firestore.data.eventPurchase,
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     event: state.firestore.data.currentEvent,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
-  })) as {
-    user: FUser;
-    eventPurchase: Purchase;
-    venue: Venue;
-    venueRequestStatus: boolean;
-    event: VenueEvent;
-    eventRequestStatus: boolean;
-    eventPurchaseRequestStatus: boolean;
-  };
+  }));
 
   useConnectCurrentVenue();
   useConnectCurrentEvent();

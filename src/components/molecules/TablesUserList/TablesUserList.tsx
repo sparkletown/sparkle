@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
@@ -9,6 +8,8 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import "./TablesUserList.scss";
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   venueName: string;
@@ -22,7 +23,7 @@ interface PropsType {
 
 const TABLES = 4;
 
-const createTable = (i: number) => {
+const createTable = (i: number): Table => {
   return {
     reference: `Table ${i + 1}`,
     capacity: 8,
@@ -36,7 +37,7 @@ const firestoreUpdate = (doc: string, update: any) => {
   firestore
     .doc(doc)
     .update(update)
-    .catch((e) => {
+    .catch(() => {
       firestore.doc(doc).set(update);
     });
 };
@@ -50,7 +51,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   customTables,
   TableComponent,
   joinMessage,
-  leaveText = "Back",
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
@@ -63,8 +63,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   useFirestoreConnect({ collection: "experiences", doc: venueName });
-  const { user, users, experience, usersById } = useSelector((state: any) => ({
-    user: state.user,
+  const { user, profile } = useUser();
+  const { users, experience, usersById } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
     usersById: state.firestore.data.users,
     experience:
@@ -73,20 +73,21 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   }));
 
   useEffect(() => {
-    if (user && usersById?.[user.uid]?.data?.[venueName]?.table) {
-      setSeatedAtTable(usersById[user.uid].data[venueName].table);
+    if (!profile) return;
+    const table = profile.data?.[venueName]?.table;
+    if (table) {
+      setSeatedAtTable(table);
     } else {
       setSeatedAtTable("");
     }
-  }, [user, setSeatedAtTable, usersById, venueName]);
+  }, [profile, setSeatedAtTable, user, usersById, venueName]);
 
   if (!users) {
     return <>Loading...</>;
   }
 
-  let seatedAtTableName = "";
   const tables: Table[] = customTables || defaultTables;
-  const usersAtTables: { [key: string]: any } = {};
+  const usersAtTables: Record<string, Array<User>> = {};
   for (const table of tables) {
     usersAtTables[table.reference] = [];
   }
@@ -116,7 +117,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       return false;
     }
     // Locked state is in the experience record
-    return experience?.tables?.[table]?.locked;
+    return !!experience?.tables?.[table]?.locked;
   };
 
   const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {
@@ -137,8 +138,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const takeSeat = (table: string) => {
+    if (!user) return;
     const doc = `users/${user.uid}`;
-    const existingData = users.find((u: any) => u.id === user.uid)?.data;
+    const existingData = users.find((u) => u.id === user.uid)?.data;
     const update = {
       data: {
         ...existingData,
@@ -153,7 +155,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const usersAtOtherTables = [];
   for (const table of tables) {
-    if (table.reference === seatedAtTableName) {
+    if (table.reference === seatedAtTable) {
       continue;
     }
     usersAtOtherTables.push(...usersAtTables[table.reference]);
@@ -167,6 +169,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         <>
           {tables.map((table: Table, i: number) => (
             <TableComponent
+              key={table.title}
               experienceName={venueName}
               users={users}
               table={table}
@@ -189,7 +192,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       >
         <Modal.Body>
           <div className="modal-container modal-container_message">
-            <p>Can't join this table because it's been locked.</p>
+            <p>{`Can't join this table because it's been locked.`}</p>
             <p>Perhaps ask in the chat?</p>
             <button
               type="button"

@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import "./EditProfileForm.scss";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
-import { useSelector } from "react-redux";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { useUser } from "hooks/useUser";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 interface EditProfileFormValuesType {
   partyName: string;
@@ -21,25 +23,25 @@ interface PropsType {
 const EditProfileForm: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
 }) => {
-  const { user, users, profileQuestions } = useSelector((state: any) => ({
-    user: state.user,
-    users: state.firestore.data.users,
+  const { user, profile } = useUser();
+  const { profileQuestions } = useSelector((state) => ({
     profileQuestions: state.firestore.data.currentVenue.profile_questions,
   }));
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
+    if (!user) return;
     await updateUserProfile(user.uid, data);
     setIsEditMode(false);
   };
-  const defaultValues: EditProfileFormValuesType = {
-    partyName: users?.[user.uid]?.partyName || "",
-    pictureUrl: users?.[user.uid]?.pictureUrl || "/anonymous-profile-icon.jpeg",
+  const defaultValues = {
+    partyName: profile?.partyName,
+    pictureUrl: profile?.pictureUrl || DEFAULT_PROFILE_IMAGE,
   };
 
   profileQuestions &&
     profileQuestions.map(
       (question: QuestionType) =>
-        (defaultValues[question.name] =
-          users?.[user.uid]?.[question.name] || "")
+        //@ts-ignore wtf is this
+        (defaultValues[question.name] = profile[question.name])
     );
 
   const {
@@ -84,13 +86,15 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
               Display name is less than 16 characters
             </span>
           )}
-          <ProfilePictureInput
-            setValue={setValue}
-            user={user}
-            errors={errors}
-            pictureUrl={pictureUrl}
-            register={register}
-          />
+          {user && (
+            <ProfilePictureInput
+              setValue={setValue}
+              user={user}
+              errors={errors}
+              pictureUrl={pictureUrl}
+              register={register}
+            />
+          )}
         </div>
         {profileQuestions &&
           profileQuestions.map((question: QuestionType) => (

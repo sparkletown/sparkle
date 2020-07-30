@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
-import { User as FUser } from "firebase";
+import { UserInfo } from "firebase";
 import { useForm } from "react-hook-form";
 
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useSelector } from "react-redux";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
@@ -16,17 +15,14 @@ import {
   Reactions,
   EmojiReactionType,
   TextReactionType,
-  Reaction,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "./CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import { JazzbarVenue } from "types/JazzbarVenue";
 import { useFirestoreConnect } from "react-redux-firebase";
 import MessageList from "../components/MessageList";
-import {
-  ChatContext,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { ChatContext } from "components/context/ChatContext";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -36,24 +32,18 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
+type ReactionType =
+  | { reaction: EmojiReactionType }
+  | { reaction: TextReactionType; text: string };
+
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const { user, users, venue, usersById, chats } = useSelector(
-    (state: any) => ({
-      user: state.user,
-      users: state.firestore.ordered.partygoers,
-      muteReactions: state.muteReactions,
-      venue: state.firestore.data.currentVenue,
-      usersById: state.firestore.data.users,
-      chats: state.firestore.ordered.venueChats,
-    })
-  ) as {
-    users: User[];
-    user: FUser;
-    venue: JazzbarVenue;
-    muteReactions: boolean;
-    usersById: Omit<User, "id">[];
-    chats: RestrictedChatMessage[];
-  };
+  const { user } = useUser();
+  const { users, venue, usersById, chats } = useSelector((state) => ({
+    users: state.firestore.ordered.partygoers,
+    venue: state.firestore.data.currentVenue,
+    usersById: state.firestore.data.users,
+    chats: state.firestore.ordered.venueChats,
+  }));
 
   useFirestoreConnect([
     {
@@ -75,15 +65,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     venue &&
     users.filter((user: User) => user.lastSeenIn === venue.name);
 
-  function createReaction(
-    reaction: { reaction: EmojiReactionType },
-    user: FUser
-  ): Reaction;
-  function createReaction(
-    reaction: { reaction: TextReactionType; text: string },
-    user: FUser
-  ): Reaction;
-  function createReaction(reaction: any, user: FUser) {
+  function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
       created_at: new Date().getTime(),
       created_by: user.uid,
@@ -91,7 +73,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     };
   }
 
-  const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
+  const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     experienceContext &&
       experienceContext.addReaction(createReaction({ reaction }, user));
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
@@ -117,6 +99,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
     experienceContext &&
+      user &&
       experienceContext.addReaction(
         createReaction(
           { reaction: "messageToTheBand", text: data.messageToTheBand },
@@ -149,13 +132,14 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
 
   const onBarMessageSubmit = async (data: ChatOutDataType) => {
     chatContext &&
+      user &&
       chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
     setBarMessageValue([{ messageToTheBand: "" }]);
   };
 
-  const capacity =
-    seatedAtTable &&
-    JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity;
+  const capacity = seatedAtTable
+    ? JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity
+    : undefined;
 
   return (
     <>
@@ -209,10 +193,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   setUserList={setUserList}
                   capacity={capacity}
                 />
-                // <TableFooter
-                //   isVideoFocused={isVideoFocused}
-                //   setIsVideoFocused={setIsVideoFocused}
-                // />
               )}
             </div>
           </div>
@@ -256,8 +236,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             <div className="emoji-container">
               {Reactions.map((reaction) => (
                 <button
+                  key={reaction.name}
                   className="reaction"
-                  onClick={() => reactionClicked(user, reaction.type)}
+                  onClick={() => user && reactionClicked(user, reaction.type)}
                   id={`send-reaction-${reaction.type}`}
                 >
                   <span role="img" aria-label={reaction.ariaLabel}>
@@ -280,7 +261,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                       (message) =>
                         message.type === "room" && message.to === roomName
                     )
-                    .sort((a, b) => b.ts_utc - a.ts_utc)}
+                    .sort((a, b) =>
+                      b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
+                    )}
                 />
               )}
             </div>

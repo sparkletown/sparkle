@@ -1,15 +1,23 @@
 const firebase = require("firebase");
 const admin = require("firebase-admin");
-const { PROJECT_ID } = require("./secrets");
 
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
 const firebaseConfig = {
-  projectId: PROJECT_ID,
+  projectId: functions.config().project.id,
 };
 firebase.initializeApp(firebaseConfig);
-admin.initializeApp(firebaseConfig);
+
+admin.initializeApp({
+  ...firebaseConfig,
+  credential: admin.credential.cert({
+    ...functions.config().service_account,
+    private_key: functions
+      .config()
+      .service_account.private_key.replace(/\\n/g, "\n"),
+  }),
+});
 
 const video = require("./video");
 const payment = require("./payment");

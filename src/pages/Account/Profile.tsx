@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "firebase/storage";
 import "./Account.scss";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { RouterLocation } from "types/RouterLocation";
+import { useUser } from "hooks/useUser";
 
 export interface ProfileFormData {
   partyName: string;
@@ -19,9 +19,7 @@ interface PropsType {
 
 const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
-  const { user } = useSelector((state: any) => ({
-    user: state.user,
-  }));
+  const { user } = useUser();
 
   const {
     register,
@@ -35,6 +33,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   });
 
   const onSubmit = async (data: ProfileFormData) => {
+    if (!user) return;
     await updateUserProfile(user.uid, data);
     history.push(`/account/questions${location.search}`);
   };
@@ -69,13 +68,15 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 Display name is less than 16 characters
               </span>
             )}
-            <ProfilePictureInput
-              setValue={setValue}
-              user={user}
-              errors={errors}
-              pictureUrl={pictureUrl}
-              register={register}
-            />
+            {user && (
+              <ProfilePictureInput
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
+              />
+            )}
           </div>
           <input
             className="btn btn-primary btn-block btn-centered"
