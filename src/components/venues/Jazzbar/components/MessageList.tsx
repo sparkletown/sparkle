@@ -25,7 +25,12 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
               <Message
                 sender={usersById[message.from]}
                 message={message}
-                onClick={() => setSelectedUserProfile(usersById[message.from])}
+                onClick={() =>
+                  setSelectedUserProfile({
+                    ...usersById[message.from],
+                    id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
+                  })
+                }
               />
             )}
           </>
