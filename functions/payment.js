@@ -1,4 +1,3 @@
-const firebase = require("firebase");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
@@ -10,11 +9,60 @@ const STRIPE_CONFIG = functions.config().stripe;
 const stripe = require("stripe")(STRIPE_CONFIG.secret_key);
 
 const PURCHASE_TABLE = "purchases";
+const CUSTOMER_TABLE = "customers";
+
+exports.createCustomerWithPaymentMethod = functions.https.onCall(
+  async (data, context) => {
+    if (!context.auth || !context.auth.token) {
+      throw new functions.https.HttpsError("unauthenticated", "Please log in");
+    }
+
+    if (context.auth.token.aud !== PROJECT_ID) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Token invalid"
+      );
+    }
+
+    if (!data.paymentMethodId) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "paymentMethodId data missing"
+      );
+    }
+
+    await stripe.customers.create(
+      {
+        email: context.auth.token.email,
+      },
+      async (err, customer) => {
+        if (err) {
+          throw new functions.https.HttpsError("unavailable", err.message);
+        }
+        await stripe.paymentMethods.attach(
+          data.paymentMethodId,
+          { customer: customer.id },
+          async (err) => {
+            if (err) {
+              throw new functions.https.HttpsError("unavailable", err.message);
+            }
+            await admin
+              .firestore()
+              .collection(CUSTOMER_TABLE)
+              .doc(context.auth.token.user_id)
+              .set({
+                userId: context.auth.token.user_id,
+                custormerId: customer.id,
+              });
+          }
+        );
+      }
+    );
+    return;
+  }
+);
 
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
-  console.log("FENV");
-  console.log(functions.config());
-  console.log("FENDENV");
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
@@ -24,7 +72,13 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   }
 
   if (
-    !(data && data.venueId && data.eventId && data.userEmail && data.userId)
+    !(
+      data &&
+      data.venueId &&
+      data.eventId &&
+      context.auth.token.email &&
+      context.auth.token.user_id
+    )
   ) {
     throw new functions.https.HttpsError(
       "invalid-argument",
@@ -36,13 +90,13 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     amount: data.price,
     currency: "gbp",
     metadata: { integration_check: "accept_a_payment" },
-    receipt_email: data.userEmail,
+    receipt_email: context.auth.token.email,
   });
 
   await admin.firestore().collection(PURCHASE_TABLE).doc(paymentIntent.id).set({
     venueId: data.venueId,
     eventId: data.eventId,
-    userId: data.userId,
+    userId: context.auth.token.user_id,
     status: "PENDING",
   });
 
