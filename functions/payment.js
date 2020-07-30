@@ -1,7 +1,5 @@
-const firebase = require("firebase");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const { firestore } = require("firebase");
 
 const PROJECT_ID = functions.config().project.id;
 const STRIPE_CONFIG = functions.config().stripe;
@@ -33,7 +31,7 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
       );
     }
 
-    const customer = await stripe.customers.create(
+    await stripe.customers.create(
       {
         email: context.auth.token.email,
       },
@@ -51,9 +49,9 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
             await admin
               .firestore()
               .collection(CUSTOMER_TABLE)
-              .doc(data.userId)
+              .doc(context.auth.token.user_id)
               .set({
-                userId: context.auth.user_id,
+                userId: context.auth.token.user_id,
                 custormerId: customer.id,
               });
           }
@@ -74,7 +72,13 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   }
 
   if (
-    !(data && data.venueId && data.eventId && data.userEmail && data.userId)
+    !(
+      data &&
+      data.venueId &&
+      data.eventId &&
+      context.auth.token.email &&
+      context.auth.token.user_id
+    )
   ) {
     throw new functions.https.HttpsError(
       "invalid-argument",
@@ -86,13 +90,13 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     amount: data.price,
     currency: "gbp",
     metadata: { integration_check: "accept_a_payment" },
-    receipt_email: data.userEmail,
+    receipt_email: context.auth.token.email,
   });
 
   await admin.firestore().collection(PURCHASE_TABLE).doc(paymentIntent.id).set({
     venueId: data.venueId,
     eventId: data.eventId,
-    userId: data.userId,
+    userId: context.auth.token.user_id,
     status: "PENDING",
   });
 

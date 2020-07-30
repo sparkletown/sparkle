@@ -50,8 +50,6 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
             venueId: venueId,
             eventId: event.id,
             price: ticketPrice,
-            userEmail: user.email,
-            userId: user.uid,
           }
         )
       ).data;
