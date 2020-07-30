@@ -8,6 +8,7 @@ import { VenueEvent } from "types/VenueEvent";
 import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";
+import { Stripe, StripeElements } from "@stripe/stripe-js";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
@@ -66,7 +67,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   const handleSubmit = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     setIsLoading: (isLoading: boolean) => void,
-    operations: () => Promise<void>
+    operations: (stripe: Stripe, elements: StripeElements) => Promise<void>
   ) => {
     if (!user) return;
     setIsLoading(true);
@@ -76,36 +77,39 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       setIsLoading(false);
       return;
     }
-    await operations();
+    await operations(stripe, elements);
     setIsLoading(false);
   };
 
-  const pay = async () => {
-    if (!(user.email && clientSecret)) {
+  const handlePayment = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+    handleSubmit(e, setIsPaymentProceeding, pay);
+  const handleSaveCard = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+    handleSubmit(e, setIsCardBeingSaved, saveCardAndPay);
+
+  const pay = async (stripe: Stripe, elements: StripeElements) => {
+    if (!(user?.email && clientSecret)) {
       setErrorMessage("Oops something wrong happened");
       return;
     }
-    const result = await stripe?.confirmCardPayment(clientSecret || "", {
+    const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
-        card: elements?.getElement(CardElement) || { token: "" },
+        card: elements.getElement(CardElement) || { token: "" },
         billing_details: {
-          email: user?.email ?? undefined,
+          email: user.email,
         },
       },
-      receipt_email: user?.email ?? undefined,
+      receipt_email: user.email,
     });
 
-    if (result?.error) {
-      setErrorMessage(result?.error.message);
-    } else {
-      if (result?.paymentIntent?.status === "succeeded") {
-        setIsPaymentSuccess(true);
-      }
+    if (result.error) {
+      setErrorMessage(result.error.message);
+    } else if (result.paymentIntent?.status === "succeeded") {
+      setIsPaymentSuccess(true);
     }
   };
 
-  const saveCardAndPay = async () => {
-    const cardElement = elements?.getElement(CardElement);
+  const saveCardAndPay = async (stripe: Stripe, elements: StripeElements) => {
+    const cardElement = elements.getElement(CardElement);
     if (cardElement && stripe) {
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
@@ -114,15 +118,15 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
 
       if (error) {
         setErrorMessage(error.message);
-      } else {
+      } else if (paymentMethod) {
         await firebase
           .functions()
           .httpsCallable("payment-createCustomerWithPaymentMethod")({
-          paymentMethodId: paymentMethod?.id,
+          paymentMethodId: paymentMethod.id,
         });
+        await pay(stripe, elements);
       }
     }
-    await pay();
   };
 
   return (
@@ -148,9 +152,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
               className="btn btn-primary btn-block submit-button"
               type="submit"
-              onClick={(e) =>
-                handleSubmit(e, setIsCardBeingSaved, saveCardAndPay)
-              }
+              onClick={handleSaveCard}
             >
               {!isCardBeingSaved ? (
                 "Save card and pay"
@@ -164,7 +166,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
               className="btn btn-primary btn-block submit-button"
               type="submit"
-              onClick={(e) => handleSubmit(e, setIsPaymentProceeding, pay)}
+              onClick={handlePayment}
             >
               {!isPaymentProceeding ? (
                 "Pay"
