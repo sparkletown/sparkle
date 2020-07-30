@@ -135,6 +135,10 @@ input.btn {
   }
 }
 
+.input-error {
+  color: red;
+}
+
 button.btn {
   font-weight: 700;
   text-decoration: none;
@@ -744,4 +748,15 @@ span.link {
 .image-input .default-input:focus {
   opacity: 1;
   border-radius: 0;
+}
+
+.image-input .empty {
+  flex: 1;
+  padding: 40px 10px;
+  background-color: gray;
+  height: 100%;
+}
+
+.image-input .empty .text {
+  text-align: center;
 }
