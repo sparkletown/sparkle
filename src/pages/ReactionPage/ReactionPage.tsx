@@ -29,13 +29,13 @@ const ReactionPage = () => {
     },
   ]);
 
-  const messagesToTheBand = reactions.filter(
+  const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
   ) as Array<OrderedIdEnhancer<MessageToTheBandReaction>>;
 
   return (
     <WithNavigationBar>
-      <div className="full-page-container experience-container reaction-page-container">
+      <div className="full-page-container reaction-page-container">
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
