@@ -29,7 +29,7 @@ const ReactionPage = () => {
     },
   ]);
 
-  const messagesToTheBand = reactions.filter(
+  const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
   ) as Array<OrderedIdEnhancer<MessageToTheBandReaction>>;
 
