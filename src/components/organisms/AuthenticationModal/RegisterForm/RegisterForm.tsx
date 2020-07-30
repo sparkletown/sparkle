@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 interface PropsType {
   displayLoginForm: () => void;
   afterUserIsLoggedIn?: () => void;
-  displaySaveCardForm: () => void;
+  closeAuthenticationModal: () => void;
 }
 
 interface RegisterFormData {
@@ -16,7 +16,7 @@ interface RegisterFormData {
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   afterUserIsLoggedIn,
-  displaySaveCardForm,
+  closeAuthenticationModal,
 }) => {
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -30,7 +30,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     try {
       await signUp(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
-      displaySaveCardForm();
+      closeAuthenticationModal();
     } catch (error) {
       setError("email", "firebase", error.message);
     }

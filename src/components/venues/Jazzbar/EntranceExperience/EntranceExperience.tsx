@@ -307,6 +307,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
+        showAuth="register"
       />
     </ChatContextWrapper>
   );

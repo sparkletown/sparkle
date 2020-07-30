@@ -14,7 +14,7 @@ const Admin: React.FC = () => {
     <WithNavigationBar>
       <div className="container admin-container">
         <div className="title">Admin</div>
-        <AuthenticationModal show={!user} onHide={() => {}} />
+        <AuthenticationModal show={!user} onHide={() => { }} showAuth="login" />
         <div className="centered-flex">
           <button
             className="btn btn-primary"

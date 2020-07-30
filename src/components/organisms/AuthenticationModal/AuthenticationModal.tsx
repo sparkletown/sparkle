@@ -2,64 +2,51 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
-import SaveCardComponent from "./SaveCardForm";
 import "./AuthenticationModal.scss";
 
 interface PropsType {
   show: boolean;
   onHide: () => void;
   afterUserIsLoggedIn?: () => void;
-  showLogin?: boolean;
+  showAuth: "login" | "register";
 }
 
 const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   afterUserIsLoggedIn,
-  showLogin,
+  showAuth,
 }) => {
-  const [showRegisterForm, setShowRegisterForm] = useState(!showLogin);
-  const [showSaveCardForm, setShowSaveCardForm] = useState(false);
+  const [formToDisplay, setFormToDisplay] = useState(showAuth);
 
   const displayLoginForm = () => {
-    setShowRegisterForm(false);
+    setFormToDisplay("login");
   };
 
   const displayRegisterForm = () => {
-    setShowRegisterForm(true);
-  };
-
-  const displaySaveCardForm = () => {
-    setShowRegisterForm(false);
-    setShowSaveCardForm(true);
+    setFormToDisplay("register");
   };
 
   const closeAuthenticationModal = () => {
-    setShowRegisterForm(!showLogin);
-    setShowSaveCardForm(false);
+    setFormToDisplay(showAuth);
     onHide();
   };
 
   return (
     <Modal show={show} onHide={closeAuthenticationModal}>
       <div className="authentication-modal-container">
-        {showRegisterForm && (
+        {formToDisplay === "register" && (
           <RegisterForm
             displayLoginForm={displayLoginForm}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
-            displaySaveCardForm={displaySaveCardForm}
+            closeAuthenticationModal={closeAuthenticationModal}
           />
         )}
-        {!showRegisterForm && !showSaveCardForm && (
+        {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
             closeAuthenticationModal={closeAuthenticationModal}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
-          />
-        )}
-        {showSaveCardForm && (
-          <SaveCardComponent
-            closeAuthenticationModal={closeAuthenticationModal}
           />
         )}
       </div>
