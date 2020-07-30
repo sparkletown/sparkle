@@ -64,33 +64,45 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     }
   }, [event.id, venueId, ticketPrice, user, selectedTab]);
 
-  const pay = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    setIsLoading: (isLoading: boolean) => void,
+    operations: () => Promise<void>
+  ) => {
     if (!user) return;
-    setIsPaymentProceeding(true);
+    setIsLoading(true);
     e.preventDefault();
     if (!stripe || !elements) {
       setErrorMessage("Oops something wrong happened");
-      setIsPaymentProceeding(false);
+      setIsLoading(false);
       return;
     }
-    const result = await stripe.confirmCardPayment(clientSecret || "", {
+    await operations();
+    setIsLoading(false);
+  };
+
+  const pay = async () => {
+    if (!(user.email && clientSecret)) {
+      setErrorMessage("Oops something wrong happened");
+      return;
+    }
+    const result = await stripe?.confirmCardPayment(clientSecret || "", {
       payment_method: {
-        card: elements.getElement(CardElement) || { token: "" },
+        card: elements?.getElement(CardElement) || { token: "" },
         billing_details: {
-          email: user.email ?? undefined,
+          email: user?.email ?? undefined,
         },
       },
-      receipt_email: user.email ?? undefined,
+      receipt_email: user?.email ?? undefined,
     });
 
-    if (result.error) {
-      setErrorMessage(result.error.message);
+    if (result?.error) {
+      setErrorMessage(result?.error.message);
     } else {
-      if (result.paymentIntent?.status === "succeeded") {
+      if (result?.paymentIntent?.status === "succeeded") {
         setIsPaymentSuccess(true);
       }
     }
-    setIsPaymentProceeding(false);
   };
 
   return (
@@ -129,7 +141,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
               className="btn btn-primary btn-block submit-button"
               type="submit"
-              onClick={pay}
+              onClick={(e) => handleSubmit(e, setIsPaymentProceeding, pay)}
             >
               {!isPaymentProceeding ? (
                 "Pay"
