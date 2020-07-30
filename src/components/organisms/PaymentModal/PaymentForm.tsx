@@ -105,6 +105,8 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       setErrorMessage(result.error.message);
     } else if (result.paymentIntent?.status === "succeeded") {
       setIsPaymentSuccess(true);
+    } else {
+      setErrorMessage("Payment didn't work, try again");
     }
   };
 
