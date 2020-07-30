@@ -3,8 +3,8 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { Message } from "./Message";
 
 interface MessageListProps {
   messages: RestrictedChatMessage[];
@@ -16,29 +16,24 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
-  const profileImageSize = 40;
   return (
     <>
       <div className="reaction-list small">
         {messages.map((message) => (
-          <div className="message" key={`${message.from}-${message.ts_utc}`}>
-            <img
-              onClick={() =>
-                setSelectedUserProfile({
-                  ...usersById[message.from],
-                  id: message.from,
-                })
-              }
-              key={`${message.from}-messaging-the-band`}
-              className="profile-icon"
-              src={usersById[message.from].pictureUrl || DEFAULT_PROFILE_IMAGE}
-              title={usersById[message.from].partyName}
-              alt={`${usersById[message.from].partyName} profile`}
-              width={profileImageSize}
-              height={profileImageSize}
-            />
-            <div className="message-bubble">{message.text}</div>
-          </div>
+          <>
+            {message.from in usersById && (
+              <Message
+                sender={usersById[message.from]}
+                message={message}
+                onClick={() =>
+                  setSelectedUserProfile({
+                    ...usersById[message.from],
+                    id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
+                  })
+                }
+              />
+            )}
+          </>
         ))}
       </div>
       <UserProfileModal
