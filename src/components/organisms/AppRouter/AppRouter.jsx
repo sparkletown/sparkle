@@ -19,6 +19,7 @@ import TemplateRouter from "components/venues/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
+import { AdminVenue } from "pages/Account/AdminVenue";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -61,6 +62,7 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
+        <Route path="/admin/venue/creation" component={AdminVenue} />
         <Route path="/admin" component={Admin} />
         <Route path="/v/:venueId/live" component={VenuePage} />
         <Route path="/v/:venueId" component={TemplateRouter} />

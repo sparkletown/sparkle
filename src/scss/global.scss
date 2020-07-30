@@ -344,6 +344,12 @@ h4 {
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
 }
 
+.centered-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .full-page-container.experience-container {
   display: flex;
   padding: 5px 30px;
