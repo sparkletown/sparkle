@@ -218,6 +218,9 @@ textarea {
     display: block;
     margin-bottom: 0.8rem;
   }
+  &.align-left {
+    text-align: left;
+  }
   &.input-centered {
     margin-left: auto;
     margin-right: auto;

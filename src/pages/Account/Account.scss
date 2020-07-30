@@ -80,10 +80,32 @@ $login-max-width: 540px;
 
 #admin-venue .form {
   margin-top: 10px;
+  max-width: 600px;
+  margin: auto;
 }
 
-#admin-venue .url-text {
+#admin-venue .input-container {
+  margin-top: 20px;
+}
+
+#admin-venue .input-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+#admin-venue .input-subtext {
   margin-left: 10px;
+  font-size: 0.8rem;
+}
+
+#admin-venue .input-logo-container {
+  width: 150px;
+  height: 150px;
+}
+
+#admin-venue .input-logo-image {
+  height: 100%;
+  object-fit: cover;
 }
 
 .login-container {
