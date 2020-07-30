@@ -151,6 +151,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexBasis: 0,
           maxHeight: "100%",
         }}
+        className="scrollable-area"
       >
         <div className="container-in-row">
           <div className="video-wrapper">
@@ -162,9 +163,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               />
             )}
             <div
-              style={{
-                height: seatedAtTable ? undefined : "500px",
-              }}
               className={`${
                 seatedAtTable ? "participants-container" : "jazz-video"
               }`}
@@ -172,20 +170,51 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               <div
                 className={`${
                   seatedAtTable
-                    ? `participant-container-${capacity}`
+                    ? `participant-container-${capacity} video-participant`
                     : "full-height-video"
                 }`}
               >
-                <iframe
-                  key="main-event"
-                  title="main event"
-                  width="100%"
-                  height="100%"
-                  className="youtube-video"
-                  src={`${venue.iframeUrl}?autoplay=1`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-                />
+                <div
+                  className="iframe-container"
+                  style={{
+                    height: seatedAtTable ? "calc(100% - 55px)" : "500px",
+                  }}
+                >
+                  <iframe
+                    key="main-event"
+                    title="main event"
+                    width="100%"
+                    height="100%"
+                    className="youtube-video"
+                    src={`${venue.iframeUrl}?autoplay=1`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                  />
+                </div>
+                <div className="call-out-band-container">
+                  <div className="emoji-container">
+                    {Reactions.map((reaction) => (
+                      <button
+                        key={reaction.name}
+                        className="reaction"
+                        onClick={() =>
+                          user && reactionClicked(user, reaction.type)
+                        }
+                        id={`send-reaction-${reaction.type}`}
+                      >
+                        <span role="img" aria-label={reaction.ariaLabel}>
+                          {reaction.text}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  <CallOutMessageForm
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    register={registerBandMessage}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out to the band"
+                  />
+                </div>
               </div>
               {seatedAtTable && (
                 <Room
@@ -228,26 +257,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         <div className="band-reaction-container">
           <div className="call-out-band-container-at-table">
             <CallOutMessageForm
-              onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-              register={registerBandMessage}
-              isMessageToTheBandSent={isMessageToTheBandSent}
-              placeholder="Shout out to the band"
-            />
-            <div className="emoji-container">
-              {Reactions.map((reaction) => (
-                <button
-                  key={reaction.name}
-                  className="reaction"
-                  onClick={() => user && reactionClicked(user, reaction.type)}
-                  id={`send-reaction-${reaction.type}`}
-                >
-                  <span role="img" aria-label={reaction.ariaLabel}>
-                    {reaction.text}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <CallOutMessageForm
               onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
               register={registerBarMessage}
               placeholder="Chat to the bar"
@@ -268,15 +277,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               )}
             </div>
           </div>
-        </div>
-        <div style={{ border: "0px solid white" }}>
-          {users && (
-            <UserList
-              users={usersInJazzBar}
-              limit={26}
-              activity="listening to jazz"
-            />
-          )}
         </div>
       </div>
     </>
