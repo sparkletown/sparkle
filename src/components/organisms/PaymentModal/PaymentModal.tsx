@@ -39,14 +39,15 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   };
 
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
-  const [isFormBeingSubmitted, setIsFormBeingSubmitted] = useState(false);
+  const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
+  const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);
 
   const hasUserBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
     (user && isUserAMember(user.email, venue.config.memberEmails));
 
   const closePaymentModal = () => {
-    if (!isFormBeingSubmitted) {
+    if (!isPaymentProceeding && !isCardBeingSaved) {
       onHide();
     }
   };
@@ -62,8 +63,10 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     modalContent = (
       <PaymentForm
         setIsPaymentSuccess={setIsPaymentSuccess}
-        setIsFormBeingSubmitted={setIsFormBeingSubmitted}
-        isFormBeingSubmitted={isFormBeingSubmitted}
+        setIsPaymentProceeding={setIsPaymentProceeding}
+        setIsCardBeingSaved={setIsCardBeingSaved}
+        isPaymentProceeding={isPaymentProceeding}
+        isCardBeingSaved={isCardBeingSaved}
         event={selectedEvent}
       />
     );

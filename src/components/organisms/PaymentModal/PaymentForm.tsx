@@ -11,16 +11,19 @@ import { useUser } from "hooks/useUser";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
-  setIsFormBeingSubmitted: (value: boolean) => void;
-  isFormBeingSubmitted: boolean;
+  setIsPaymentProceeding: (value: boolean) => void;
+  setIsCardBeingSaved: (value: boolean) => void;
+  isPaymentProceeding: boolean;
+  isCardBeingSaved: boolean;
   event: VenueEvent;
 }
 
 const PaymentForm: React.FunctionComponent<PropsType> = ({
   setIsPaymentSuccess,
-  setIsFormBeingSubmitted,
-  isFormBeingSubmitted,
+  setIsPaymentProceeding,
+  isPaymentProceeding,
   event,
+  isCardBeingSaved,
 }) => {
   const [selectedTab, setSelectedTab] = useState(INDIVIDUAL_TICKET_TAB.id);
   const { venueId } = useParams();
@@ -61,12 +64,13 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     }
   }, [event.id, venueId, ticketPrice, user, selectedTab]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const pay = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     if (!user) return;
-    setIsFormBeingSubmitted(true);
+    setIsPaymentProceeding(true);
     e.preventDefault();
     if (!stripe || !elements) {
       setErrorMessage("Oops something wrong happened");
+      setIsPaymentProceeding(false);
       return;
     }
     const result = await stripe.confirmCardPayment(clientSecret || "", {
@@ -86,7 +90,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
         setIsPaymentSuccess(true);
       }
     }
-    setIsFormBeingSubmitted(false);
+    setIsPaymentProceeding(false);
   };
 
   return (
@@ -100,26 +104,42 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       {!clientSecret ? (
         <>Loading...</>
       ) : (
-        <form onSubmit={handleSubmit} className="payment-form-container">
+        <form className="payment-form-container">
           <input
             value={billingEmail ?? undefined}
             onChange={(event) => setBillingEmail(event.target.value)}
             className=""
           />
           <CardInput />
-          <button
-            disabled={!stripe || isFormBeingSubmitted}
-            className="btn btn-primary btn-block confirm-order-button"
-            type="submit"
-          >
-            {!isFormBeingSubmitted ? (
-              "Confirm order"
-            ) : (
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-            )}
-          </button>
+          <div className="button-container">
+            <button
+              disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
+              className="btn btn-primary btn-block submit-button"
+              type="submit"
+            >
+              {!isCardBeingSaved ? (
+                "Save card and pay"
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+            <button
+              disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
+              className="btn btn-primary btn-block submit-button"
+              type="submit"
+              onClick={pay}
+            >
+              {!isPaymentProceeding ? (
+                "Pay"
+              ) : (
+                <div className="spinner-border" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              )}
+            </button>
+          </div>
           <div className="red-text">{errorMessage}</div>
         </form>
       )}
