@@ -74,6 +74,18 @@ $login-max-width: 540px;
   border-radius: $border-radius;
 }
 
+#admin-venue .title-adornment {
+  color: $yellow;
+}
+
+#admin-venue .form {
+  margin-top: 10px;
+}
+
+#admin-venue .url-text {
+  margin-left: 10px;
+}
+
 .login-container {
   max-width: $login-max-width;
   margin: 0 auto;
