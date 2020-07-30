@@ -4,9 +4,11 @@ import "./Account.scss";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { useHistory } from "react-router-dom";
 
 const Admin: React.FC = () => {
   const { user } = useUser();
+  const { push } = useHistory();
 
   return (
     <WithNavigationBar>
@@ -14,7 +16,12 @@ const Admin: React.FC = () => {
         <div className="title">Admin</div>
         <AuthenticationModal show={!user} onHide={() => {}} />
         <div className="centered-flex">
-          <button className="btn btn-primary">Create a venue</button>
+          <button
+            className="btn btn-primary"
+            onClick={() => push("/admin/venue/creation")}
+          >
+            Create a venue
+          </button>
         </div>
       </div>
     </WithNavigationBar>
