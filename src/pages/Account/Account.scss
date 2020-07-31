@@ -74,6 +74,42 @@ $login-max-width: 540px;
   border-radius: $border-radius;
 }
 
+#admin-venue {
+  .title-adornment {
+    color: $yellow;
+  }
+
+  .form {
+    margin-top: 10px;
+    max-width: 600px;
+    margin: auto;
+  }
+
+  .input-container {
+    margin-top: 20px;
+  }
+
+  .input-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .input-subtext {
+    margin-left: 10px;
+    font-size: 0.8rem;
+  }
+
+  .input-logo-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  .input-logo-image {
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
 .login-container {
   max-width: $login-max-width;
   margin: 0 auto;
