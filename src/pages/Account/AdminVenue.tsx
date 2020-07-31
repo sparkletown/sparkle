@@ -6,7 +6,7 @@ import firebase from "firebase/app";
 import "firebase/functions";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
-  "Describe what is unique andwonderful and sparkling about your venue";
+  "Describe what is unique and wonderful and sparkling about your venue";
 
 interface FormInputs {
   name: string;
