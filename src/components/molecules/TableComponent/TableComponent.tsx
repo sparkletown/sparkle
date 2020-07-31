@@ -1,6 +1,5 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
-import { User } from "types/User";
 import "./TableComponent.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
@@ -20,7 +19,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   }));
   const locked = tableLocked(table.reference);
   const usersSeatedAtTable = users.filter(
-    (u: User) => u.data?.[experienceName]?.table === table.reference
+    (u) => u.data?.[experienceName]?.table === table.reference
   );
   const numberOfSeatsLeft =
     table.capacity && table.capacity - usersSeatedAtTable.length;
@@ -64,7 +63,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 
         {usersSeatedAtTable &&
           usersSeatedAtTable.length >= 0 &&
-          usersSeatedAtTable.map((user: User) => (
+          usersSeatedAtTable.map((user) => (
             <img
               onClick={() => setSelectedUserProfile(user)}
               key={user.id}
