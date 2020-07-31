@@ -7,6 +7,7 @@ interface PropsType {
   isMessageToTheBandSent: boolean;
 }
 
+// eslint-disable-next-line react/display-name
 const CallOutMessageForm = React.forwardRef<HTMLInputElement, PropsType>(
   ({ onSubmit, placeholder, isMessageToTheBandSent }, ref) => {
     const { venue } = useSelector((state) => ({
