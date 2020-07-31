@@ -7,9 +7,9 @@ import { useMemo } from "react";
 
 export const useSelector: TypedUseSelectorHook<RootState> = _useSelector;
 
-export const useKeyedSelector = <T extends RecordType>(
+export const useKeyedSelector = <T extends RecordType, Q extends keyof T>(
   callback: (state: RootState) => T,
-  keys: Array<keyof T>
+  keys: ReadonlyArray<Q>
 ) => {
   const result = useSelector(callback);
   return useMemo(() => withKeyedData(result, keys), [result]);
@@ -40,16 +40,16 @@ type SubRecordType = Record<string, object>;
 type AllOtherTypes = Array<any> | string | number | boolean;
 type RecordType = Record<string, AllOtherTypes | SubRecordType>;
 
-export const withKeyedData = <T extends RecordType>(
+export const withKeyedData = <T extends RecordType, Q extends keyof T>(
   data: T,
-  keys: Array<keyof T>
+  keys: ReadonlyArray<Q>
 ) => {
   type Data = Extract<T, RecordType>;
-  type DataKeys = ExtractArr<typeof keys>;
+  type DataKeys = ExtractReadonlyArray<typeof keys>;
   type KeyedData = WithRootKeysNamed<Data, Extract<DataKeys, string>>;
 
   return Object.keys(data).reduce<KeyedData>((acc, k) => {
-    const key = k as keyof typeof data;
+    const key = k as DataKeys;
     if (keys.includes(key)) {
       const valueAtKey = data[key];
       if (typeof valueAtKey !== "object") return acc;
@@ -62,4 +62,4 @@ export const withKeyedData = <T extends RecordType>(
   }, data as KeyedData);
 };
 
-type ExtractArr<T> = T extends Array<infer U> ? U : never;
+type ExtractReadonlyArray<T> = T extends ReadonlyArray<infer U> ? U : never;

@@ -97,9 +97,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       setPrivateRecipient(undefined);
       if (!isInProfileModal && lastChat && lastChat.type === "private") {
         if (lastChat?.to === user.uid) {
-          setPrivateRecipient({ ...users[lastChat?.from], id: lastChat?.from });
+          setPrivateRecipient({ ...users[lastChat?.from] });
         } else {
-          setPrivateRecipient({ ...users[lastChat?.to], id: lastChat?.to });
+          setPrivateRecipient({ ...users[lastChat?.to] });
         }
       }
     }
