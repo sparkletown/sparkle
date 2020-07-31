@@ -1,12 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { UserInfo } from "firebase";
 import { useForm } from "react-hook-form";
-
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import TableComponent from "components/molecules/TableComponent";
-import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
@@ -16,13 +14,12 @@ import {
   EmojiReactionType,
   TextReactionType,
 } from "components/context/ExperienceContext";
-import CallOutMessageForm from "./CallOutMessageForm";
+import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
 import { useFirestoreConnect } from "react-redux-firebase";
-import MessageList from "../components/MessageList";
-import { ChatContext } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import ChatDrawer from "components/organisms/ChatDrawer";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -38,11 +35,8 @@ type ReactionType =
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user } = useUser();
-  const { users, venue, usersById, chats } = useSelector((state) => ({
-    users: state.firestore.ordered.partygoers,
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
-    usersById: state.firestore.data.users,
-    chats: state.firestore.ordered.venueChats,
   }));
 
   useFirestoreConnect([
@@ -59,11 +53,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
-
-  const usersInJazzBar =
-    users &&
-    venue &&
-    users.filter((user: User) => user.lastSeenIn === venue.name);
 
   function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
@@ -107,34 +96,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
         )
       );
     setBandMessageValue([{ messageToTheBand: "" }]);
-  };
-
-  const roomName = "jazz";
-  const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
-
-  useEffect(() => {
-    if (isMessageToTheBarSent) {
-      setTimeout(() => {
-        setIsMessageToTheBarSent(false);
-      }, 2000);
-    }
-  }, [isMessageToTheBarSent, setIsMessageToTheBarSent]);
-
-  const {
-    register: registerBarMessage,
-    handleSubmit: handleBarMessageSubmit,
-    setValue: setBarMessageValue,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
-  });
-
-  const chatContext = useContext(ChatContext);
-
-  const onBarMessageSubmit = async (data: ChatOutDataType) => {
-    chatContext &&
-      user &&
-      chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
-    setBarMessageValue([{ messageToTheBand: "" }]);
   };
 
   const capacity = seatedAtTable
@@ -246,39 +207,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           />
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          flexBasis: 0,
-        }}
-      >
-        <div className="band-reaction-container">
-          <div className="call-out-band-container-at-table">
-            <CallOutMessageForm
-              onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
-              register={registerBarMessage}
-              placeholder="Chat to the bar"
-              isMessageToTheBandSent={isMessageToTheBarSent}
-            />
-            <div>
-              {usersById && chats && (
-                <MessageList
-                  messages={chats
-                    .filter(
-                      (message) =>
-                        message.type === "room" && message.to === roomName
-                    )
-                    .sort((a, b) =>
-                      b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
-                    )}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      <ChatDrawer />
     </>
   );
 };

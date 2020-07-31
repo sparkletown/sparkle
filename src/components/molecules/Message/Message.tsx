@@ -1,6 +1,5 @@
 import React from "react";
 import { User } from "types/User";
-import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -10,11 +9,7 @@ interface MessageProps {
   onClick: () => void;
 }
 
-export const Message: React.FC<MessageProps> = ({
-  sender,
-  message,
-  onClick,
-}) => {
+const Message: React.FC<MessageProps> = ({ sender, message, onClick }) => {
   const profileImageSize = 40;
   return (
     <div className="message" key={`${message.from}-${message.ts_utc}`}>
@@ -32,3 +27,5 @@ export const Message: React.FC<MessageProps> = ({
     </div>
   );
 };
+
+export default Message;

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
-import { Message } from "./Message";
+import Message from "components/molecules/Message";
 import { useKeyedSelector } from "hooks/useSelector";
 
 interface MessageListProps {
