@@ -12,7 +12,19 @@ jobs:
             - run: npm install
             - run: npm run init
             - run: npm run lint
-            # - run: npm test
+            - run: npm run build # somehow linting rules differ from eslint
+  smoke-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: sudo apt-get update
+            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+            - run: npm install
+            - run: npm run cy:install # cache this instead
+            - run: npm run cy:run
   deploy-functions:
     executor:
       name: node/default
@@ -73,4 +85,12 @@ workflows:
             branches:
               only:
                 - master
+                - staging
+      - smoke-test:
+          requires:
+            - deploy-functions
+            - deploy-hosting
+          filters:
+            branches:
+              only:
                 - staging
