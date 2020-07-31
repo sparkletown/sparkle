@@ -59,7 +59,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 <React.Fragment key="question.text">
                   <p className="light question">{question.text}</p>
                   <h6>
-                    {userProfile.data[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {userProfile.data?.[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </React.Fragment>
