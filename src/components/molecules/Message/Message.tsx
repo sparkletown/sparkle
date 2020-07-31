@@ -1,6 +1,5 @@
 import React from "react";
 import { User } from "types/User";
-import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 

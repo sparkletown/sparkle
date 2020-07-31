@@ -7,11 +7,20 @@ import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
   useFirestoreConnect("users");
+
+  const { user } = useUser();
+  useFirestoreConnect({
+    collection: "privatechats",
+    doc: user?.uid,
+    subcollections: [{ collection: "chats" }],
+    storeAs: "privatechats",
+  });
 
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,

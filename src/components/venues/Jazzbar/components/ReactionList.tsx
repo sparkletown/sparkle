@@ -6,8 +6,7 @@ import {
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import "./ReactionList.scss";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 
 interface ReactionListProps {
@@ -21,9 +20,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
 }) => {
   const { usersById } = useSelector((state) => ({
     usersById: state.firestore.data.users,
-  })) as {
-    usersById: { [key: string]: Omit<User, "id"> };
-  };
+  }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
   const profileImageSize = small ? 40 : 50;
@@ -37,6 +34,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
           >
             <img
               onClick={() =>
+                usersById[message.created_by] &&
                 setSelectedUserProfile({
                   ...usersById[message.created_by],
                   id: message.created_by,
@@ -45,21 +43,21 @@ const ReactionList: React.FC<ReactionListProps> = ({
               key={`${message.created_by}-messaging-the-band`}
               className="profile-icon"
               src={
-                usersById[message.created_by].pictureUrl ||
+                usersById[message.created_by]?.pictureUrl ||
                 DEFAULT_PROFILE_IMAGE
               }
-              title={usersById[message.created_by].partyName}
-              alt={`${usersById[message.created_by].partyName} profile`}
+              title={usersById[message.created_by]?.partyName}
+              alt={`${usersById[message.created_by]?.partyName} profile`}
               width={profileImageSize}
               height={profileImageSize}
             />
             <div className="partyname-bubble">
-              {usersById[message.created_by].partyName}:
+              {usersById[message.created_by]?.partyName || DEFAULT_PARTY_NAME}
             </div>
             <div
               className={`message-bubble ${
                 message.reaction === "messageToTheBand" ? "" : "emoji"
-              }`}
+                }`}
             >
               {message.reaction === "messageToTheBand"
                 ? message.text

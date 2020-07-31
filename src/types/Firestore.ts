@@ -9,6 +9,8 @@ import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
+import { WithId, WithoutId } from "utils/id";
+import { Tidy } from "./Tidy";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -26,7 +28,7 @@ interface Experience {
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
 
-export type OrderedIdEnhancer<T extends object> = { id: string } & T;
+type UserWithoutId = Tidy<WithoutId<User>>;
 
 export interface Firestore {
   status: {
@@ -40,24 +42,24 @@ export interface Firestore {
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
-    partygoers: Record<string, User>;
-    users: Record<string, User>;
+    partygoers: Record<string, UserWithoutId>;
+    users: Record<string, UserWithoutId>;
     privatechats: Record<string, PrivateChatMessage>;
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;
     reactions: Record<string, Reaction>;
   };
   ordered: {
-    currentVenue: Array<OrderedIdEnhancer<Venue | PartyMapVenue>>;
-    currentEvent: Array<OrderedIdEnhancer<VenueEvent>>;
-    venueChats: Array<OrderedIdEnhancer<RestrictedChatMessage>>;
-    venueEvents: Array<OrderedIdEnhancer<VenueEvent>>;
-    userPurchaseHistory: Array<OrderedIdEnhancer<Purchase>>;
-    partygoers: Array<OrderedIdEnhancer<User>>;
-    users: Array<OrderedIdEnhancer<User>>;
-    privatechats: Array<OrderedIdEnhancer<PrivateChatMessage>>;
-    experiences: Array<OrderedIdEnhancer<Experience>>;
-    eventPurchase: Array<OrderedIdEnhancer<Purchase>>;
-    reactions: Array<OrderedIdEnhancer<Reaction>>;
+    currentVenue: Array<WithId<Venue | PartyMapVenue>>;
+    currentEvent: Array<WithId<VenueEvent>>;
+    venueChats: Array<WithId<RestrictedChatMessage>>;
+    venueEvents: Array<WithId<VenueEvent>>;
+    userPurchaseHistory: Array<WithId<Purchase>>;
+    partygoers: Array<WithId<User>>;
+    users: Array<WithId<User>>;
+    privatechats: Array<WithId<PrivateChatMessage>>;
+    experiences: Array<WithId<Experience>>;
+    eventPurchase: Array<WithId<Purchase>>;
+    reactions: Array<WithId<Reaction>>;
   };
 }

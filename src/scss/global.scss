@@ -135,6 +135,10 @@ input.btn {
   }
 }
 
+.input-error {
+  color: red;
+}
+
 button.btn {
   font-weight: 700;
   text-decoration: none;
@@ -213,6 +217,13 @@ textarea {
     display: block;
     max-width: 275px;
     margin-bottom: 0.8rem;
+  }
+  &.wide-input-block {
+    display: block;
+    margin-bottom: 0.8rem;
+  }
+  &.align-left {
+    text-align: left;
   }
   &.input-centered {
     margin-left: auto;
@@ -350,7 +361,7 @@ h4 {
   align-items: center;
 }
 
-.full-page-container.experience-container {
+.full-page-container {
   display: flex;
   padding: 5px 30px;
   height: calc(100vh - 50px);
@@ -385,6 +396,7 @@ h4 {
   }
 
   .left-column {
+    box-shadow: 0 0 30px $black;
     transition: all 0.1s linear;
     width: 70px;
     display: flex;
@@ -392,14 +404,17 @@ h4 {
     align-items: center;
     padding: 10px;
     background: $dark;
-    border-radius: 22px;
+    border-radius: 0 22px 22px 0;
     cursor: pointer;
     overflow: auto;
-    height: 100%;
+    position: absolute;
+    top: 40px;
+    z-index: 1;
   }
 
   .left-column.expanded {
     width: 300px;
+    height: calc(100% - 60px);
   }
 
   .right-column {
@@ -427,7 +442,7 @@ h4 {
   }
 }
 
-.full-page-container.experience-container,
+.full-page-container,
 .friendship-container {
   .content {
     .wrapper {
@@ -451,6 +466,7 @@ h4 {
       bottom: 0;
       left: 0;
       border-radius: 188%;
+      z-index: 1;
     }
 
     .mute-container {
@@ -668,4 +684,79 @@ span.link {
   &:hover {
     color: $primaryColor;
   }
+}
+
+.reaction-list {
+  flex-direction: column;
+  padding: 0 15px;
+
+  .message-bubble {
+    font-size: 30px;
+    background: black;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    border-radius: 22px;
+    width: 100%;
+  }
+  .message {
+    display: flex;
+
+    img {
+      margin-right: 20px;
+    }
+  }
+
+  &.small {
+    .message-bubble {
+      font-size: 15px;
+      margin-bottom: 10px;
+
+      &.emoji {
+        font-size: 25px;
+        padding: 0px 20px;
+      }
+    }
+  }
+}
+.image-input.default-container {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.image-input .default-image {
+  width: 100%;
+}
+
+.image-input .default-input {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  color: transparent;
+}
+.image-input .default-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.image-input .default-input:focus {
+  opacity: 1;
+  border-radius: 0;
+}
+
+.image-input .empty {
+  flex: 1;
+  padding: 40px 10px;
+  background-color: gray;
+  height: 100%;
+}
+
+.image-input .empty .text {
+  text-align: center;
 }

@@ -13,7 +13,7 @@ export interface User {
   doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
-  data: UserExperienceData;
+  data?: UserExperienceData;
   lastSeenIn: string;
   room?: string;
 }

@@ -40,8 +40,8 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   profileQuestions &&
     profileQuestions.map(
       (question: QuestionType) =>
-        //@ts-ignore wtf is this
-        (defaultValues[question.name] = profile[question.name])
+        // @ts-ignore wtf is this
+        (defaultValues[question.name] = profile?.[question.name] || "")
     );
 
   const {

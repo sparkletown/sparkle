@@ -4,7 +4,6 @@ import { User } from "types/User";
 import {
   ExperienceContext,
   Reactions,
-  Reaction,
   MessageToTheBandReaction,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
@@ -29,9 +28,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     muteReactions: state.room.mute,
   }));
 
-  const typedReaction = (experienceContext
-    ? experienceContext.reactions
-    : []) as Reaction[];
+  const typedReaction = experienceContext?.reactions ?? [];
 
   const messagesToBand = typedReaction.find(
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id

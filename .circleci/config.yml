@@ -12,7 +12,19 @@ jobs:
             - run: npm install
             - run: npm run init
             - run: npm run lint
-            # - run: npm test
+            - run: npm run build # somehow linting rules differ from eslint
+  smoke-test:
+    executor:
+      name: node/default
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: sudo apt-get update
+            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+            - run: npm install
+            - run: npm run cy:install # cache this instead
+            - run: npm run cy:run
   deploy-functions:
     executor:
       name: node/default
@@ -21,8 +33,16 @@ jobs:
       - node/with-cache:
           steps:
             - run: cd functions && npm i
-            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
-            - run: ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    ENV=staging
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    ENV=prod
+                  fi
+                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+                  ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
   deploy-hosting:
     executor:
       name: node/default
@@ -30,10 +50,22 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: ./scripts/init-env.sh STAGING_
-            - run: npm run build
-            - run: ./node_modules/.bin/firebase use staging --token "$FIREBASE_TOKEN"
-            - run: ./node_modules/.bin/firebase deploy --only hosting:staging --token "$FIREBASE_TOKEN"
+            - run:
+                command: |
+                  if [ $CIRCLE_BRANCH = "staging" ]; then
+                    PREFIX=STAGING_
+                    ENV=staging
+                    TARGET=staging
+                  fi
+                  if [ $CIRCLE_BRANCH = "master" ]; then
+                    PREFIX=PROD_
+                    ENV=prod
+                    TARGET=co-reality-map
+                  fi
+                  ./scripts/init-env.sh $PREFIX
+                  npm run build
+                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+                  ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
 workflows:
   build-test-deploy:
     jobs:
@@ -44,10 +76,20 @@ workflows:
           filters:
             branches:
               only:
+                - master
                 - staging
       - deploy-hosting:
           requires:
             - build-and-test
+          filters:
+            branches:
+              only:
+                - master
+                - staging
+      - smoke-test:
+          requires:
+            - deploy-functions
+            - deploy-hosting
           filters:
             branches:
               only:

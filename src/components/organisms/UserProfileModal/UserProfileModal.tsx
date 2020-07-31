@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
+import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
@@ -21,7 +22,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     venue: state.firestore.data.currentVenue,
   }));
 
-  if (!userProfile) {
+  const { user } = useUser();
+  if (!userProfile || !user) {
     return <></>;
   }
 
@@ -56,13 +58,13 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             </div>
             <div className="profile-extras">
               {venue.profile_questions?.map((question) => (
-                <>
+                <React.Fragment key="question.text">
                   <p className="light question">{question.text}</p>
                   <h6>
-                    {userProfile.data[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {userProfile.data?.[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
-                </>
+                </React.Fragment>
               ))}
             </div>
             {userProfile.room && (
@@ -72,9 +74,11 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          <div className="private-chat-container">
-            <Chatbox isInProfileModal discussionPartner={userProfile} />
-          </div>
+          {userProfile.id !== user.uid && (
+            <div className="private-chat-container">
+              <Chatbox isInProfileModal discussionPartner={userProfile} />
+            </div>
+          )}
         </div>
       </Modal.Body>
     </Modal>

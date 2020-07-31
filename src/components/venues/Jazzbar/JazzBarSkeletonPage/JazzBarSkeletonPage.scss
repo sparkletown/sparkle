@@ -1,9 +1,13 @@
 @import "scss/constants.scss";
 
+.full-page-container.jazz-bar-container {
+  padding: 0;
+}
 .content-container {
   display: flex;
   flex: 1 1 auto;
   overflow: scroll;
+  padding: 0 0 0 75px;
 
   flex-wrap: wrap;
   & > * + * {

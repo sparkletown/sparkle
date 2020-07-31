@@ -9,7 +9,7 @@ import AboutUsPage from "./AboutUsPage";
 const SparkleSpaceMarketingPage = () => {
   const [selectedTab, setSelectedTab] = useState("welcome");
   return (
-    <div className="full-page-container marketing-page">
+    <div className="marketing-page">
       <TabNavigation
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
