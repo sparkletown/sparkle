@@ -7,7 +7,7 @@ import UserList from "components/molecules/UserList";
 import ReactionList from "components/venues/Jazzbar/components/ReactionList";
 import { useSelector } from "hooks/useSelector";
 import { MessageToTheBandReaction } from "components/context/ExperienceContext";
-import { OrderedIdEnhancer } from "types/Firestore";
+import { WithId } from "utils/id";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
@@ -31,7 +31,7 @@ const ReactionPage = () => {
 
   const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
-  ) as Array<OrderedIdEnhancer<MessageToTheBandReaction>>;
+  ) as Array<WithId<MessageToTheBandReaction>>;
 
   return (
     <WithNavigationBar>
