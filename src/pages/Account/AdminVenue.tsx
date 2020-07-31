@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useForm, FieldError } from "react-hook-form";
 import * as Yup from "yup";
+import firebase from "firebase/app";
+import "firebase/functions";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique andwonderful and sparkling about your venue";
@@ -38,7 +40,7 @@ const validationSchema = Yup.object().shape<FormInputs>({
 
 export const AdminVenue: React.FC = () => {
   const { register, handleSubmit, errors, watch } = useForm<
-    Partial<FormInputs>
+    Partial<FormInputs> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
   >({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -46,7 +48,14 @@ export const AdminVenue: React.FC = () => {
     defaultValues: {},
   });
   const values = watch();
-  const onSubmit = () => {};
+  const onSubmit = async (vals: Partial<FormInputs>) => {
+    const values = vals as FormInputs; // unfortunately the typing is off for react-hook-forms.
+    try {
+      await firebase.functions().httpsCallable("venue-createVenue")(values);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const urlSafeName = values.name?.replace(/\W/g, "");
 
   return (
@@ -96,6 +105,8 @@ export const AdminVenue: React.FC = () => {
           <div className="input-container">
             <div className="input-title">Tagline</div>
             <input
+              name={"tagline"}
+              ref={register}
               className="wide-input-block"
               placeholder="Briefly say what people will find here"
             />
@@ -106,6 +117,8 @@ export const AdminVenue: React.FC = () => {
           <div className="input-container">
             <div className="input-title">Long description</div>
             <textarea
+              name={"longDescription"}
+              ref={register}
               className="wide-input-block input-centered align-left"
               placeholder={LONG_DESCRIPTION_PLACEHOLDER}
             />
