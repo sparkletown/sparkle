@@ -20,11 +20,7 @@ const roomName = "jazz";
 
 const ChatDrawer = () => {
   const { user } = useUser();
-  const { usersById, chats } = useSelector((state) => ({
-    usersById: state.firestore.data.users,
-    chats: state.firestore.ordered.venueChats,
-  }));
-
+  const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
   const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(false);
 
@@ -92,7 +88,7 @@ const ChatDrawer = () => {
               isMessageToTheBandSent={isMessageToTheBarSent}
             />
             <div>
-              {usersById && chats && <MessageList messages={chatsToDisplay} />}
+              {chatsToDisplay && <MessageList messages={chatsToDisplay} />}
             </div>
           </div>
         </div>
