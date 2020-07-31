@@ -242,6 +242,7 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
                                     startUtcSeconds={
                                       venueEvent.start_utc_seconds
                                     }
+                                    textBeforeCountdown="Bar opens in"
                                   />
                                 </div>
                               ) : (
