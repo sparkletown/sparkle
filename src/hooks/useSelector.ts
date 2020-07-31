@@ -12,7 +12,7 @@ export const useKeyedSelector = <T extends RecordType, Q extends keyof T>(
   keys: ReadonlyArray<Q>
 ) => {
   const result = useSelector(callback);
-  return useMemo(() => withKeyedData(result, keys), [result]);
+  return useMemo(() => withKeyedData(result, keys), [result, keys]);
 };
 
 type WithKeys<T extends Record<string, object>> = {
