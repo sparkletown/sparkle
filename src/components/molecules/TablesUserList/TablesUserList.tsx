@@ -32,6 +32,7 @@ const createTable = (i: number): Table => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const firestoreUpdate = (doc: string, update: any) => {
   const firestore = firebase.firestore();
   firestore

@@ -8,8 +8,10 @@ type Reference = ReturnType<FirebaseStorage["ref"]>;
 interface PropsType {
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: Record<string, any>;
   pictureUrl: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: any;
 }
 
