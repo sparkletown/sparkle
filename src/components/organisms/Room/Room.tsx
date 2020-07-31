@@ -5,7 +5,7 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import { useKeyedSelector } from "hooks/useSelector";
 import { User } from "types/User";
 
 interface RoomProps {
@@ -21,9 +21,12 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
   );
 
   const { user } = useUser();
-  const { users } = useSelector((state) => ({
-    users: state.firestore.data.partygoers,
-  }));
+  const { users } = useKeyedSelector(
+    (state) => ({
+      users: state.firestore.data.partygoers,
+    }),
+    ["users"]
+  );
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 

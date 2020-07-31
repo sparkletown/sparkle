@@ -3,17 +3,21 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import "./ReactionList.scss";
 import { RestrictedChatMessage } from "components/context/ChatContext";
-import { useSelector } from "hooks/useSelector";
 import { Message } from "./Message";
+import { useKeyedSelector } from "hooks/useSelector";
 
 interface MessageListProps {
   messages: RestrictedChatMessage[];
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages }) => {
-  const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.users,
-  }));
+  const { usersById } = useKeyedSelector(
+    (state) => ({
+      usersById: state.firestore.data.users,
+    }),
+    ["usersById"]
+  );
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
   return (

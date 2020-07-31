@@ -10,7 +10,7 @@ import "./Chatbox.scss";
 import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import { useKeyedSelector } from "hooks/useSelector";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -39,12 +39,15 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const { users, userArray, chats, privateChats } = useSelector((state) => ({
-    users: state.firestore.data.users,
-    userArray: state.firestore.ordered.users,
-    chats: state.firestore.ordered.venueChats,
-    privateChats: state.firestore.ordered.privatechats,
-  }));
+  const { users, userArray, chats, privateChats } = useKeyedSelector(
+    (state) => ({
+      users: state.firestore.data.users,
+      userArray: state.firestore.ordered.users,
+      chats: state.firestore.ordered.venueChats,
+      privateChats: state.firestore.ordered.privatechats,
+    }),
+    ["users"]
+  );
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
