@@ -403,7 +403,7 @@ h4 {
 
   .left-column.expanded {
     width: 300px;
-    height: 450px;
+    height: calc(100% - 60px);
   }
 
   .right-column {
