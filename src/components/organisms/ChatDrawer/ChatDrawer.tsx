@@ -6,6 +6,11 @@ import { ChatContext } from "components/context/ChatContext";
 import "./ChatDrawer.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCommentDots,
+  faAngleDoubleLeft,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -20,6 +25,7 @@ const ChatDrawer = () => {
   }));
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
+  const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(false);
 
   useEffect(() => {
     if (isMessageToTheBarSent) {
@@ -46,31 +52,55 @@ const ChatDrawer = () => {
   });
 
   return (
-    <div className="chat-drawer-container">
-      <div className="band-reaction-container">
-        <div className="call-out-band-container-at-table">
-          <CallOutMessageForm
-            onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
-            register={registerBarMessage}
-            placeholder="Chat to the bar"
-            isMessageToTheBandSent={isMessageToTheBarSent}
+    <div
+      className={`chat-drawer-container ${
+        isChatDrawerExpanded ? "expanded" : ""
+      }`}
+      onClick={() => !isChatDrawerExpanded && setIsChatDrawerExpanded(true)}
+    >
+      <div className="chevron-container">
+        <div
+          className={`rotating-chevron ${
+            isChatDrawerExpanded ? "expanded" : ""
+          }`}
+        >
+          <FontAwesomeIcon
+            icon={faAngleDoubleLeft}
+            size="lg"
+            onClick={() => setIsChatDrawerExpanded(!isChatDrawerExpanded)}
           />
-          <div>
-            {usersById && chats && (
-              <MessageList
-                messages={chats
-                  .filter(
-                    (message) =>
-                      message.type === "room" && message.to === roomName
-                  )
-                  .sort((a, b) =>
-                    b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
-                  )}
-              />
-            )}
-          </div>
         </div>
       </div>
+      {!isChatDrawerExpanded ? (
+        <div className="chat-icon-container">
+          <FontAwesomeIcon icon={faCommentDots} className="chat-icon" />
+        </div>
+      ) : (
+        <div className="band-reaction-container">
+          <div className="call-out-band-container-at-table">
+            <CallOutMessageForm
+              onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
+              register={registerBarMessage}
+              placeholder="Chat to the bar"
+              isMessageToTheBandSent={isMessageToTheBarSent}
+            />
+            <div>
+              {usersById && chats && (
+                <MessageList
+                  messages={chats
+                    .filter(
+                      (message) =>
+                        message.type === "room" && message.to === roomName
+                    )
+                    .sort((a, b) =>
+                      b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
+                    )}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
