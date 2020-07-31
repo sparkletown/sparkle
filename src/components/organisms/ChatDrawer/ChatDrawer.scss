@@ -1,0 +1,54 @@
+@import "scss/constants.scss";
+
+.chat-drawer-container {
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s linear;
+  flex-basis: 0;
+  margin-top: 40px;
+  background: $dark;
+  height: 100px;
+  padding: 10px;
+  border-radius: 22px 0 0 22px;
+  cursor: pointer;
+
+  &.expanded {
+    height: calc(100% - 60px);
+    width: 500px;
+    cursor: default;
+  }
+
+  .chat-icon-container {
+    width: 50px;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+
+  .form-message {
+    margin-bottom: 10px;
+  }
+
+  .chevron-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 17px;
+    margin-top: 3px;
+    cursor: pointer;
+
+    .rotating-chevron {
+      transition: all 0.2s linear;
+      &.expanded {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+
+  .chat-icon {
+    color: $primaryColor;
+    font-size: 30px;
+  }
+}

@@ -403,7 +403,7 @@ h4 {
 
   .left-column.expanded {
     width: 300px;
-    height: 450px;
+    height: calc(100% - 60px);
   }
 
   .right-column {
@@ -672,5 +672,38 @@ span.link {
 
   &:hover {
     color: $primaryColor;
+  }
+}
+
+.reaction-list {
+  flex-direction: column;
+  padding: 0 15px;
+
+  .message-bubble {
+    font-size: 30px;
+    background: black;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    border-radius: 22px;
+    width: 100%;
+  }
+  .message {
+    display: flex;
+
+    img {
+      margin-right: 20px;
+    }
+  }
+
+  &.small {
+    .message-bubble {
+      font-size: 15px;
+      margin-bottom: 10px;
+
+      &.emoji {
+        font-size: 25px;
+        padding: 0px 20px;
+      }
+    }
   }
 }

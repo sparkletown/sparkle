@@ -21,8 +21,12 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
         id="expand-venue-information"
       >
-        <div className={`chevron-icon ${isLeftColumnExpanded ? "turned" : ""}`}>
-          <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
+        <div className="chevron-icon-container">
+          <div
+            className={`chevron-icon ${isLeftColumnExpanded ? "turned" : ""}`}
+          >
+            <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
+          </div>
         </div>
         <img
           src={venueLogoPath}

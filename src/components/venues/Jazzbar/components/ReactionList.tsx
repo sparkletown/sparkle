@@ -6,7 +6,6 @@ import {
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import "./ReactionList.scss";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 
@@ -58,7 +57,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <div
               className={`message-bubble ${
                 message.reaction === "messageToTheBand" ? "" : "emoji"
-              }`}
+                }`}
             >
               {message.reaction === "messageToTheBand"
                 ? message.text
