@@ -165,7 +165,11 @@ const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
       <>
         <div className={`image-input default-container ${containerClassName}`}>
           {imageUrl ? (
-            <img className={`default-image ${imageClassName}`} src={imageUrl} />
+            <img
+              className={`default-image ${imageClassName}`}
+              src={imageUrl}
+              alt="upload"
+            />
           ) : (
             <div className="centered-flex empty">
               <h6 className=" text">Click to upload an image</h6>

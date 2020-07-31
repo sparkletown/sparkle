@@ -52,7 +52,9 @@
     "lint:src": "eslint src --ext .js,.jsx,.ts,.tsx",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && firebase deploy"
+    "deploy": "npm run build && firebase deploy",
+    "cy:install": "cypress install",
+    "cy:run": "cypress run"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -89,6 +91,8 @@
     "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "cypress": "^4.11.0",
+    "cypress-file-upload": "^4.0.7",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
     "firebase-tools": "^8.6.0",
