@@ -9,7 +9,6 @@ import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 
