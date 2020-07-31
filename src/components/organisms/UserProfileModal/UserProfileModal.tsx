@@ -56,13 +56,13 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             </div>
             <div className="profile-extras">
               {venue.profile_questions?.map((question) => (
-                <>
+                <React.Fragment key="question.text">
                   <p className="light question">{question.text}</p>
                   <h6>
                     {userProfile.data[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
-                </>
+                </React.Fragment>
               ))}
             </div>
             {userProfile.room && (
