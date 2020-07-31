@@ -24,13 +24,6 @@ const PrivateChatModal: React.FunctionComponent = () => {
     users: state.firestore.data.users,
   }));
 
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user?.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
-
   const [selectedUser, setSelectedUser] = useState<User>();
 
   const discussionPartnerWithLastMessageExchanged =
