@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import MessageList from "components/molecules/MessageList";
+import React, { useContext, useEffect, useState, useMemo } from "react";
+import { MessageList } from "components/molecules/MessageList";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
 import { ChatContext } from "components/context/ChatContext";
@@ -16,8 +16,9 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
+const roomName = "jazz";
+
 const ChatDrawer = () => {
-  const roomName = "jazz";
   const { user } = useUser();
   const { usersById, chats } = useSelector((state) => ({
     usersById: state.firestore.data.users,
@@ -33,23 +34,29 @@ const ChatDrawer = () => {
         setIsMessageToTheBarSent(false);
       }, 2000);
     }
-  }, [isMessageToTheBarSent, setIsMessageToTheBarSent]);
+  }, [isMessageToTheBarSent]);
 
   const chatContext = useContext(ChatContext);
+
+  const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
+    mode: "onSubmit",
+  });
+
   const onBarMessageSubmit = async (data: ChatOutDataType) => {
+    setIsMessageToTheBarSent(true);
     chatContext &&
       user &&
       chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
-    setBarMessageValue([{ messageToTheBand: "" }]);
+    reset();
   };
-
-  const {
-    register: registerBarMessage,
-    handleSubmit: handleBarMessageSubmit,
-    setValue: setBarMessageValue,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
-  });
+  const chatsToDisplay = useMemo(
+    () =>
+      chats &&
+      chats
+        .filter((message) => message.type === "room" && message.to === roomName)
+        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
+    [chats]
+  );
 
   return (
     <div
@@ -79,24 +86,13 @@ const ChatDrawer = () => {
         <div className="band-reaction-container">
           <div className="call-out-band-container-at-table">
             <CallOutMessageForm
-              onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
-              register={registerBarMessage}
+              onSubmit={handleSubmit(onBarMessageSubmit)}
+              ref={register({ required: true })}
               placeholder="Chat to the bar"
               isMessageToTheBandSent={isMessageToTheBarSent}
             />
             <div>
-              {usersById && chats && (
-                <MessageList
-                  messages={chats
-                    .filter(
-                      (message) =>
-                        message.type === "room" && message.to === roomName
-                    )
-                    .sort((a, b) =>
-                      b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())
-                    )}
-                />
-              )}
+              {usersById && chats && <MessageList messages={chatsToDisplay} />}
             </div>
           </div>
         </div>

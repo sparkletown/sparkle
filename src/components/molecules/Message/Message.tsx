@@ -9,7 +9,11 @@ interface MessageProps {
   onClick: () => void;
 }
 
-const Message: React.FC<MessageProps> = ({ sender, message, onClick }) => {
+export const Message: React.FC<MessageProps> = ({
+  sender,
+  message,
+  onClick,
+}) => {
   const profileImageSize = 40;
   return (
     <div className="message" key={`${message.from}-${message.ts_utc}`}>
@@ -27,5 +31,3 @@ const Message: React.FC<MessageProps> = ({ sender, message, onClick }) => {
     </div>
   );
 };
-
-export default Message;

@@ -81,12 +81,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const {
     register: registerBandMessage,
     handleSubmit: handleBandMessageSubmit,
-    setValue: setBandMessageValue,
+    reset,
   } = useForm<ChatOutDataType>({
     mode: "onSubmit",
   });
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
+    setIsMessageToTheBandSent(true);
     experienceContext &&
       user &&
       experienceContext.addReaction(
@@ -95,7 +96,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           user
         )
       );
-    setBandMessageValue([{ messageToTheBand: "" }]);
+    reset();
   };
 
   const capacity = seatedAtTable
@@ -144,8 +145,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   <iframe
                     key="main-event"
                     title="main event"
-                    width="100%"
-                    height="100%"
                     className="youtube-video"
                     src={`${venue.iframeUrl}?autoplay=1`}
                     frameBorder="0"
@@ -171,7 +170,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                   </div>
                   <CallOutMessageForm
                     onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                    register={registerBandMessage}
+                    ref={registerBandMessage({ required: true })}
                     isMessageToTheBandSent={isMessageToTheBandSent}
                     placeholder="Shout out to the band"
                   />
