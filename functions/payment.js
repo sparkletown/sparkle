@@ -31,33 +31,28 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
       );
     }
 
-    await stripe.customers.create(
-      {
-        email: context.auth.token.email,
-      },
-      async (err, customer) => {
-        if (err) {
-          throw new functions.https.HttpsError("unavailable", err.message);
-        }
-        await stripe.paymentMethods.attach(
-          data.paymentMethodId,
-          { customer: customer.id },
-          async (err) => {
-            if (err) {
-              throw new functions.https.HttpsError("unavailable", err.message);
-            }
-            await admin
-              .firestore()
-              .collection(CUSTOMER_TABLE)
-              .doc(context.auth.token.user_id)
-              .set({
-                userId: context.auth.token.user_id,
-                custormerId: customer.id,
-              });
-          }
-        );
-      }
-    );
+    const res = await stripe.customers.create({
+      email: context.auth.token.email,
+    });
+    if (res.error || !res.customer)
+      throw new functions.https.HttpsError("unavailable", err.message);
+
+    const pm = await stripe.paymentMethods.attach(data.paymentMethodId, {
+      customer: customer.id,
+    });
+
+    if (pm.err) {
+      throw new functions.https.HttpsError("unavailable", err.message);
+    }
+    await admin
+      .firestore()
+      .collection(CUSTOMER_TABLE)
+      .doc(context.auth.token.user_id)
+      .set({
+        userId: context.auth.token.user_id,
+        custormerId: customer.id,
+      });
+
     return;
   }
 );
