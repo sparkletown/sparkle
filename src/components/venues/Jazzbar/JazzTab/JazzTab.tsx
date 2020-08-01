@@ -187,12 +187,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             </div>
           </div>
         </div>
-        <UserList
-          users={users}
-          limit={20}
-          activity={"in the bar"}
-          disableSeeAll={false}
-        />
+        <UserList users={users} activity={"in the bar"} disableSeeAll={false} />
         <div
           style={{
             border: "0px solid white",
