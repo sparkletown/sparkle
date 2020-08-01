@@ -31,6 +31,10 @@
   .scrollable-area {
     overflow: auto;
     padding: 0 10px;
+
+    .at-table {
+      margin-top: 20px;
+    }
   }
 
   .user-interaction-container {

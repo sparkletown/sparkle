@@ -112,7 +112,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexGrow: 3,
           flexBasis: 0,
         }}
-        className="scrollable-area"
+        className={`scrollable-area ${seatedAtTable && "at-table"}`}
       >
         <div className="container-in-row">
           <div className="video-wrapper">
