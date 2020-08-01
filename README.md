@@ -4,6 +4,8 @@ Codebase for SparkleTown, brought to you by Sparkle.
 
 ## Getting started
 
+### Frontend
+
 ```
 git clone ...
 cd co-reality-map
@@ -13,6 +15,59 @@ npm test
 npm start
 npm run build
 ```
+
+### Firebase functions
+
+```bash
+cd functions
+npm install
+firebase login
+firebase use staging
+firebase functions:config:get
+```
+Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with:
+
+```bash
+firebase emulators:start --only functions
+```
+
+### Stripe
+
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials. Contact [chris@cadams.com.au](mailto:chris@cadams.com.au) if you don't.
+
+```bash
+brew install stripe/stripe-cli/stripe
+stripe login
+stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/payment-webhooks
+```
+
+You should see
+```
+> Ready! Your webhook signing secret is {YOUR_LOCAL_SIGNING_SECRET_KEY} (^C to quit)
+```
+
+Copy this value and add it to the file `functions/secrets.js`.
+```js
+// functions/secrets.js
+...
+const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
+```
+
+## Git flow
+To contribute to the code base, please follow these steps:
+ - create a branch from staging
+ - code
+ - create a pull request on staging
+
+Then, to deploy functionalities to production, **merge staging into master**.
+
+> When adding a quick fix to production:
+>  - create a branch from master
+>  - code
+>  - create a pull request on master
+>  - create a branch from staging
+>  - cherry-pick the commit
+>  - create a pull request on staging
 
 ## Deploying
 
@@ -96,74 +151,3 @@ Paste into a google sheet. Leftmost column is the [UNIX timestamp](https://en.wi
 6. Be mindful this is PII (personally identifiable information) so we should handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
 7. Share the google sheet, ready to import the users into our other email lists.
 8. Email the new folks, welcome them, and say thanks for coming to the party!
-
-## Create React App Documentation
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify

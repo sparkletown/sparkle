@@ -1,11 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
-import { User as FUser } from "firebase";
+import { UserInfo } from "firebase";
 import { useForm } from "react-hook-form";
-
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
-import { useSelector } from "react-redux";
 import TableComponent from "components/molecules/TableComponent";
 import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
@@ -16,17 +14,13 @@ import {
   Reactions,
   EmojiReactionType,
   TextReactionType,
-  Reaction,
 } from "components/context/ExperienceContext";
-import CallOutMessageForm from "./CallOutMessageForm";
+import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import { JazzbarVenue } from "types/JazzbarVenue";
 import { useFirestoreConnect } from "react-redux-firebase";
-import MessageList from "../components/MessageList";
-import {
-  ChatContext,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import ChatDrawer from "components/organisms/ChatDrawer";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -36,24 +30,16 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
+type ReactionType =
+  | { reaction: EmojiReactionType }
+  | { reaction: TextReactionType; text: string };
+
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
-  const { user, users, venue, usersById, chats } = useSelector(
-    (state: any) => ({
-      user: state.user,
-      users: state.firestore.ordered.partygoers,
-      muteReactions: state.muteReactions,
-      venue: state.firestore.data.currentVenue,
-      usersById: state.firestore.data.users,
-      chats: state.firestore.ordered.venueChats,
-    })
-  ) as {
-    users: User[];
-    user: FUser;
-    venue: JazzbarVenue;
-    muteReactions: boolean;
-    usersById: Omit<User, "id">[];
-    chats: RestrictedChatMessage[];
-  };
+  const { user } = useUser();
+  const { venue, users } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    users: state.firestore.ordered.partygoers,
+  }));
 
   useFirestoreConnect([
     {
@@ -69,21 +55,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [participantCount, setParticipantCount] = useState(0);
 
-  const usersInJazzBar =
-    users &&
-    venue &&
-    users.filter((user: User) => user.lastSeenIn === venue.name);
-
-  function createReaction(
-    reaction: { reaction: EmojiReactionType },
-    user: FUser
-  ): Reaction;
-  function createReaction(
-    reaction: { reaction: TextReactionType; text: string },
-    user: FUser
-  ): Reaction;
-  function createReaction(reaction: any, user: FUser) {
+  function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
       created_at: new Date().getTime(),
       created_by: user.uid,
@@ -91,7 +65,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     };
   }
 
-  const reactionClicked = (user: FUser, reaction: EmojiReactionType) => {
+  const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     experienceContext &&
       experienceContext.addReaction(createReaction({ reaction }, user));
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
@@ -110,52 +84,31 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const {
     register: registerBandMessage,
     handleSubmit: handleBandMessageSubmit,
-    setValue: setBandMessageValue,
+    reset,
   } = useForm<ChatOutDataType>({
     mode: "onSubmit",
   });
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
+    setIsMessageToTheBandSent(true);
     experienceContext &&
+      user &&
       experienceContext.addReaction(
         createReaction(
           { reaction: "messageToTheBand", text: data.messageToTheBand },
           user
         )
       );
-    setBandMessageValue([{ messageToTheBand: "" }]);
+    reset();
   };
 
-  const roomName = "jazz";
-  const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
-
-  useEffect(() => {
-    if (isMessageToTheBarSent) {
-      setTimeout(() => {
-        setIsMessageToTheBarSent(false);
-      }, 2000);
-    }
-  }, [isMessageToTheBarSent, setIsMessageToTheBarSent]);
-
-  const {
-    register: registerBarMessage,
-    handleSubmit: handleBarMessageSubmit,
-    setValue: setBarMessageValue,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
-  });
-
-  const chatContext = useContext(ChatContext);
-
-  const onBarMessageSubmit = async (data: ChatOutDataType) => {
-    chatContext &&
-      chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
-    setBarMessageValue([{ messageToTheBand: "" }]);
-  };
-
+  // Capacity is an even number so the grid works
+  // Add one to account for the video
+  const participantWindows = participantCount + 1;
   const capacity =
-    seatedAtTable &&
-    JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity;
+    participantCount > 0
+      ? participantWindows + (participantWindows % 2)
+      : undefined;
 
   return (
     <>
@@ -165,8 +118,8 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexDirection: "column",
           flexGrow: 3,
           flexBasis: 0,
-          maxHeight: "100%",
         }}
+        className={`scrollable-area ${seatedAtTable && "at-table"}`}
       >
         <div className="container-in-row">
           <div className="video-wrapper">
@@ -178,9 +131,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               />
             )}
             <div
-              style={{
-                height: seatedAtTable ? undefined : "500px",
-              }}
               className={`${
                 seatedAtTable ? "participants-container" : "jazz-video"
               }`}
@@ -188,35 +138,61 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
               <div
                 className={`${
                   seatedAtTable
-                    ? `participant-container-${capacity}`
+                    ? `participant-container-${capacity} video-participant`
                     : "full-height-video"
                 }`}
               >
-                <iframe
-                  key="main-event"
-                  title="main event"
-                  width="100%"
-                  height="100%"
-                  className="youtube-video"
-                  src={`${venue.iframeUrl}?autoplay=1`}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-                />
+                <div
+                  className="iframe-container"
+                  style={{
+                    height: seatedAtTable ? "calc(100% - 55px)" : "500px",
+                  }}
+                >
+                  <iframe
+                    key="main-event"
+                    title="main event"
+                    className="youtube-video"
+                    src={`${venue.iframeUrl}?autoplay=1`}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                  />
+                </div>
+                <div className="call-out-band-container">
+                  <div className="emoji-container">
+                    {Reactions.map((reaction) => (
+                      <button
+                        key={reaction.name}
+                        className="reaction"
+                        onClick={() =>
+                          user && reactionClicked(user, reaction.type)
+                        }
+                        id={`send-reaction-${reaction.type}`}
+                      >
+                        <span role="img" aria-label={reaction.ariaLabel}>
+                          {reaction.text}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  <CallOutMessageForm
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    ref={registerBandMessage({ required: true })}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out to the band"
+                  />
+                </div>
               </div>
               {seatedAtTable && (
                 <Room
                   roomName={seatedAtTable}
                   setUserList={setUserList}
-                  capacity={capacity}
+                  setParticipantCount={setParticipantCount}
                 />
-                // <TableFooter
-                //   isVideoFocused={isVideoFocused}
-                //   setIsVideoFocused={setIsVideoFocused}
-                // />
               )}
             </div>
           </div>
         </div>
+        <UserList users={users} activity={"in the bar"} disableSeeAll={false} />
         <div
           style={{
             border: "0px solid white",
@@ -237,65 +213,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           />
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 1,
-          flexBasis: 0,
-        }}
-      >
-        <div className="band-reaction-container">
-          <div className="call-out-band-container-at-table">
-            <CallOutMessageForm
-              onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-              register={registerBandMessage}
-              isMessageToTheBandSent={isMessageToTheBandSent}
-              placeholder="Shout out to the band"
-            />
-            <div className="emoji-container">
-              {Reactions.map((reaction) => (
-                <button
-                  className="reaction"
-                  onClick={() => reactionClicked(user, reaction.type)}
-                  id={`send-reaction-${reaction.type}`}
-                >
-                  <span role="img" aria-label={reaction.ariaLabel}>
-                    {reaction.text}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <CallOutMessageForm
-              onSubmit={handleBarMessageSubmit(onBarMessageSubmit)}
-              register={registerBarMessage}
-              placeholder="Chat to the bar"
-              isMessageToTheBandSent={isMessageToTheBarSent}
-            />
-            <div>
-              {usersById && chats && (
-                <MessageList
-                  messages={chats
-                    .filter(
-                      (message) =>
-                        message.type === "room" && message.to === roomName
-                    )
-                    .sort((a, b) => b.ts_utc - a.ts_utc)}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-        <div style={{ border: "0px solid white" }}>
-          {users && (
-            <UserList
-              users={usersInJazzBar}
-              limit={26}
-              activity="listening to jazz"
-            />
-          )}
-        </div>
-      </div>
+      <ChatDrawer />
     </>
   );
 };

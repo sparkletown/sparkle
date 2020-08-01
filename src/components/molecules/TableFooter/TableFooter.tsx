@@ -1,10 +1,17 @@
 import React from "react";
 
-const TableFooter = ({ isVideoFocused, setIsVideoFocused }: any) => (
+interface TableFooterProps {
+  isVideoFocused: boolean;
+  setIsVideoFocused: (val: boolean) => void;
+}
+
+const TableFooter: React.FC<TableFooterProps> = ({
+  isVideoFocused,
+  setIsVideoFocused,
+}) => (
   <div className="table-footer">
     <div className="actions">
       <div className="action">
-        {/* <div className="full-screen-checkbox"> */}
         <div className="focus">Focus on:</div>
         <div className="focus-option">Jazz</div>
         <label className="switch">
@@ -16,7 +23,6 @@ const TableFooter = ({ isVideoFocused, setIsVideoFocused }: any) => (
           <span className="slider" />
         </label>
         <div className="focus-option">Friends</div>
-        {/* </div> */}
       </div>
     </div>
   </div>

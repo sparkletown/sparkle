@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 import {
   BrowserRouter as Router,
@@ -8,30 +7,24 @@ import {
   Redirect,
 } from "react-router-dom";
 import "firebase/analytics";
-import { setUser } from "actions";
+
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
+import Admin from "pages/Account/Admin";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
 import VenuePage from "pages/VenuePage";
 import TemplateRouter from "components/venues/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
+import { useUser } from "hooks/useUser";
+import { AdminVenue } from "pages/Account/AdminVenue";
 
 const AppRouter = () => {
   const firebase = useFirebase();
-  const dispatch = useDispatch();
   const analytics = firebase.analytics();
-  const { user } = useSelector((state) => ({
-    user: state.user,
-  }));
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      dispatch(setUser(user));
-    });
-  }, [user, dispatch, firebase]);
+  const { user } = useUser();
 
   const onClickWindow = (event) => {
     event.target.id &&
@@ -69,25 +62,15 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
-
-        <Route path="/venue/:venueId" component={TemplateRouter} />
+        <Route path="/admin/venue/creation" component={AdminVenue} />
+        <Route path="/admin" component={Admin} />
+        <Route path="/v/:venueId/live" component={VenuePage} />
         <Route path="/v/:venueId" component={TemplateRouter} />
-
         <Route
-          exact
-          path="/venue/:venueId/event/:eventId"
-          render={(props) => (
-            <Redirect
-              to={`/${props.match.params.venueId}/event/${props.match.params.eventId}`}
-            />
-          )}
+          path="/venue/*"
+          render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}
         />
-        <Route path="/:venueId/event/:eventId" component={VenuePage} />
-
-        <Route
-          path="/"
-          component={() => <Redirect to="/venue/kansassmittys" />}
-        />
+        <Route path="/" component={() => <Redirect to="/v/kansassmittys" />} />
       </Switch>
     </Router>
   );

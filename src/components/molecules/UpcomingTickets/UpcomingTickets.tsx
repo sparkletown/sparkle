@@ -19,6 +19,7 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
       <h2>Get Tickets for Future Events</h2>
       {events.map((event) => (
         <a
+          key={event.name}
           className="link"
           href={event.url}
           target="_blank"

@@ -1,9 +1,14 @@
 @import "scss/constants.scss";
 
+.full-page-container.jazz-bar-container {
+  padding: 0;
+}
 .content-container {
   display: flex;
   flex: 1 1 auto;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 0 0 0 75px;
 
   flex-wrap: wrap;
   & > * + * {
@@ -27,6 +32,10 @@
   .scrollable-area {
     overflow: auto;
     padding: 0 10px;
+
+    .at-table {
+      margin-top: 20px;
+    }
   }
 
   .user-interaction-container {

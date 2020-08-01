@@ -11,6 +11,7 @@ const formatMeasurementInString = (value, measureUnit) =>
       : `1 ${measureUnit}`
     : "";
 
+// @debt quality test this
 export const getTimeBeforeParty = (startUtcSeconds) => {
   const secondsBeforeParty = startUtcSeconds - Date.now() / 1000;
   if (secondsBeforeParty < 0) {
@@ -21,9 +22,7 @@ export const getTimeBeforeParty = (startUtcSeconds) => {
   );
 
   const numberOfCompleteHours = Math.floor(
-    (secondsBeforeParty %
-      (numberOfCompleteDaysBeforeParty * ONE_DAY_IN_SECONDS)) /
-      ONE_HOUR_IN_SECONDS
+    (secondsBeforeParty % ONE_DAY_IN_SECONDS) / ONE_HOUR_IN_SECONDS
   );
 
   const numberOfMinutes = Math.floor(
@@ -63,6 +62,10 @@ export function formatMinute(minute, startUtcSeconds) {
 
 export function formatDate(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "MMM do");
+}
+
+export function oneHourAfterTimestamp(timestamp) {
+  return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
 export function formatUtcSeconds(utcSeconds) {

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./PrivateChatModal.scss";
-import { useSelector } from "react-redux";
 import { PrivateChatMessage } from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Chatbox from "components/organisms/Chatbox";
@@ -10,34 +9,28 @@ import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
 }
 
 const PrivateChatModal: React.FunctionComponent = () => {
-  const { privateChats, users, user } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { privateChats, users } = useSelector((state) => ({
     privateChats: state.firestore.ordered.privatechats,
     users: state.firestore.data.users,
-    user: state.user,
   }));
-
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
 
   const [selectedUser, setSelectedUser] = useState<User>();
 
   const discussionPartnerWithLastMessageExchanged =
     privateChats &&
-    privateChats.reduce((agg: LastMessageByUser, item: PrivateChatMessage) => {
+    privateChats.reduce<LastMessageByUser>((agg, item) => {
       let lastMessageTimeStamp;
       let discussionPartner;
-      if (item.from === user.uid) {
+      if (item.from === user?.uid) {
         discussionPartner = item.to;
       } else {
         discussionPartner = item.from;
@@ -55,10 +48,10 @@ const PrivateChatModal: React.FunctionComponent = () => {
 
   const onClickOnSender = (sender: User) => {
     const chatsToUpdate = privateChats.filter(
-      (chat: PrivateChatMessage) => !chat.isRead && chat.from === sender.id
+      (chat) => !chat.isRead && chat.from === sender.id
     );
-    chatsToUpdate.map((chat: PrivateChatMessage & { id: string }) =>
-      setPrivateChatMessageIsRead(user.uid, chat.id)
+    chatsToUpdate.map(
+      (chat) => user && setPrivateChatMessageIsRead(user.uid, chat.id)
     );
     setSelectedUser(sender);
   };
@@ -86,10 +79,14 @@ const PrivateChatModal: React.FunctionComponent = () => {
             <h2 className="private-chat-title">Private Chat</h2>
             <PrivateRecipientSearchInput setSelectedUser={setSelectedUser} />
             {Object.keys(discussionPartnerWithLastMessageExchanged)
-              .sort(
-                (a, b) =>
-                  discussionPartnerWithLastMessageExchanged[b].ts_utc -
-                  discussionPartnerWithLastMessageExchanged[a].ts_utc
+              .sort((a, b) =>
+                discussionPartnerWithLastMessageExchanged[b].ts_utc
+                  .valueOf()
+                  .localeCompare(
+                    discussionPartnerWithLastMessageExchanged[
+                      a
+                    ].ts_utc.valueOf()
+                  )
               )
               .map((userId: string) => {
                 const sender = { ...users[userId], id: userId };
@@ -116,7 +113,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
                       </div>
                       <div>{formatUtcSeconds(lastMessageExchanged.ts_utc)}</div>
                     </div>
-                    {lastMessageExchanged.from !== user.uid &&
+                    {lastMessageExchanged.from !== user?.uid &&
                       !lastMessageExchanged.isRead && (
                         <div className="not-read-indicator" />
                       )}

@@ -1,31 +1,33 @@
 @import "scss/constants.scss";
 
-.participant-container-3,
-.participant-container-5,
-.participant-container-7,
-.participant-container-9 {
+.participant-container {
   background: $black;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.participant-container-3 {
+.participant-container-2 {
+  width: 50%;
+  height: 100%;
+}
+
+.participant-container-4 {
   width: 50%;
   height: 50%;
 }
 
-.participant-container-5 {
+.participant-container-6 {
   width: 33%;
   height: 50%;
 }
 
-.participant-container-7 {
+.participant-container-8 {
   width: 25%;
   height: 50%;
 }
 
-.participant-container-9 {
+.participant-container-10 {
   width: 33%;
   height: 33%;
 }

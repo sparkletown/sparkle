@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
@@ -8,8 +7,9 @@ import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
-import { User as FUser } from "firebase/app";
 import { Venue } from "types/Venue";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -25,14 +25,15 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
 
   const history = useHistory();
-  const { user, venue } = useSelector((state: any) => ({
-    user: state.user,
+  const { user } = useUser();
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
-  })) as { user: FUser; venue: Venue };
+  })) as { venue: Venue };
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
   const onSubmit = async (data: QuestionsFormData) => {
+    if (!user) return;
     await updateUserProfile(user.uid, data);
     history.push(`/account/code-of-conduct${location.search}`);
   };

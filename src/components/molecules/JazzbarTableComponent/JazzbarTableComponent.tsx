@@ -1,6 +1,6 @@
 import React from "react";
-import { User } from "types/User";
 import { TableComponentPropsType } from "types/Table";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 const DEFAULT_TABLE_CAPACITY = 7;
 const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
@@ -16,19 +16,19 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
 }) => {
   const locked = tableLocked(table.reference);
   const people = users.filter(
-    (u: User) => u.data?.[experienceName]?.table === table.reference
+    (u) => u.data?.[experienceName]?.table === table.reference
   );
   return (
     <>
       <div className="profiles">
         <span>{table.reference}</span>
         <span>
-          {people.map((user: User) => (
+          {people.map((user, idx) => (
             <img
               onClick={() => setSelectedUserProfile(user)}
-              key={user.id}
+              key={`${user.lastSeenIn}-${idx}`}
               className="profile-icon"
-              src={user.pictureUrl || "/anonymous-profile-icon.jpeg"}
+              src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
               title={user.partyName}
               alt={`${user.partyName} profile`}
               width={imageSize}

@@ -11,7 +11,7 @@ export default function Map({ config, attendances }) {
   const { url: baseUrl } = useRouteMatch();
 
   if (!config) {
-    return <>"Loading map..."</>;
+    return <>{`"Loading map..."`}</>;
   }
 
   return (

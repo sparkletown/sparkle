@@ -8,29 +8,44 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   afterUserIsLoggedIn?: () => void;
+  showAuth: "login" | "register";
 }
 
 const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   afterUserIsLoggedIn,
+  showAuth,
 }) => {
-  const [showRegisterForm, setShowRegisterForm] = useState(false);
-  const displayLoginForm = () => setShowRegisterForm(false);
-  const displayRegisterForm = () => setShowRegisterForm(true);
+  const [formToDisplay, setFormToDisplay] = useState(showAuth);
+
+  const displayLoginForm = () => {
+    setFormToDisplay("login");
+  };
+
+  const displayRegisterForm = () => {
+    setFormToDisplay("register");
+  };
+
+  const closeAuthenticationModal = () => {
+    setFormToDisplay(showAuth);
+    onHide();
+  };
+
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={closeAuthenticationModal}>
       <div className="authentication-modal-container">
-        {showRegisterForm ? (
+        {formToDisplay === "register" && (
           <RegisterForm
             displayLoginForm={displayLoginForm}
-            closeAuthenticationModal={onHide}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
+            closeAuthenticationModal={closeAuthenticationModal}
           />
-        ) : (
+        )}
+        {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
-            closeAuthenticationModal={onHide}
+            closeAuthenticationModal={closeAuthenticationModal}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
           />
         )}

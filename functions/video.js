@@ -4,15 +4,15 @@ const twilio = require("twilio");
 const AccessToken = twilio.jwt.AccessToken;
 const { VideoGrant } = AccessToken;
 
-const {
-  TWILIO_ACCOUNT_SID,
-  TWILIO_API_KEY,
-  TWILIO_API_SECRET,
-  PROJECT_ID,
-} = require("./secrets");
+const PROJECT_ID = functions.config().project.id;
+const TWILIO_CONFIG = functions.config().twilio;
 
 const generateToken = () => {
-  return new AccessToken(TWILIO_ACCOUNT_SID, TWILIO_API_KEY, TWILIO_API_SECRET);
+  return new AccessToken(
+    TWILIO_CONFIG.account_sid,
+    TWILIO_CONFIG.api_key,
+    TWILIO_CONFIG.api_secret
+  );
 };
 
 const videoToken = (identity, room) => {

@@ -1,30 +1,29 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { User as FUser } from "firebase";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
 import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { User } from "types/User";
 import { updateTheme } from "pages/VenuePage/helpers";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { Map, PartyTitle } from "./components";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { isPartyMapVenue } from "types/PartyMapVenue";
 
 const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
-  const { partygoers, user, venue } = useSelector((state: any) => ({
+  const { user } = useUser();
+  const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
-    user: state.user,
     partygoers: state.firestore.ordered.partygoers,
-  })) as { partygoers: User[]; user: FUser; venue: PartyMapVenue };
+  }));
 
   useUpdateLocationEffect(user, "Map");
 
@@ -62,8 +61,10 @@ const PartyMap = () => {
     }
   }
 
+  if (!isPartyMapVenue(venue)) return null;
+
   return (
-    <WithNavigationBar redirectionUrl={`/venue/${venue.id}`}>
+    <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
       <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle

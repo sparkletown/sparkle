@@ -1,3 +1,11 @@
+interface Experience {
+  bartender: User;
+  table: string;
+}
+
+//@debt typing I think this is correct from Room.tsx, need to confirm
+type UserExperienceData = Record<string, Experience>;
+
 export interface User {
   id: string;
   drinkOfChoice?: string;
@@ -5,7 +13,7 @@ export interface User {
   doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
-  data: { [key: string]: any };
+  data?: UserExperienceData;
   lastSeenIn: string;
   room?: string;
 }

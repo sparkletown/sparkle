@@ -34,7 +34,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           // window.location forces the reload so a request is sent to firebase to retrieve the users
           // if we use history.push, the users are never fetched and the application keeps on repeating the Account creation flow
           .then(() => (window.location = `/login?venueId=${venueId}`))
-          .catch((error) => {
+          .catch(() => {
             setError(true);
           });
       })

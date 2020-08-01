@@ -1,0 +1,21 @@
+{
+  "editor.formatOnSave": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "[javascript]": {
+    "editor.tabSize": 2
+  },
+  "eslint.workingDirectories": ["./src"],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "[json]": {
+    "editor.tabSize": 2
+  },
+  "typescript.tsdk": "./node_modules/typescript/lib"
+}

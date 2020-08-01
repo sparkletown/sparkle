@@ -3,6 +3,23 @@
 .authentication-modal-container {
   padding: 20px;
 
+  .save-card-form-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 20px 0;
+    width: 100%;
+
+    button {
+      padding: 10px;
+      margin-top: 10px;
+    }
+  }
+
+  h2.centered {
+    text-align: center;
+  }
+
   .secondary-action {
     display: flex;
     flex-direction: column;

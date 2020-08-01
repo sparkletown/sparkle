@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
@@ -10,6 +9,8 @@ import ChatForm from "./ChatForm";
 import "./Chatbox.scss";
 import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
+import { useUser } from "hooks/useUser";
+import { useKeyedSelector } from "hooks/useSelector";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -32,26 +33,21 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     false
   );
   const [privateRecipient, setPrivateRecipient] = useState<User>();
-  const [selectedUserProfile, setSelectedUserProfile] = useState();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [chatboxMessageType, setChatboxMessageType] = useState(
     room ? "room" : "global"
   );
 
-  const {
-    users,
-    userArray,
-    currentUserUID,
-    chats,
-    user,
-    privateChats,
-  } = useSelector((state: any) => ({
-    users: state.firestore.data.users,
-    userArray: state.firestore.ordered.users,
-    currentUserUID: state.user.uid,
-    chats: state.firestore.ordered.venueChats,
-    privateChats: state.firestore.ordered.privatechats,
-    user: state.user,
-  }));
+  const { user } = useUser();
+  const { users, userArray, chats, privateChats } = useKeyedSelector(
+    (state) => ({
+      users: state.firestore.data.users,
+      userArray: state.firestore.ordered.users,
+      chats: state.firestore.ordered.venueChats,
+      privateChats: state.firestore.ordered.privatechats,
+    }),
+    ["users"]
+  );
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
@@ -60,28 +56,29 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const listOfChats =
     chats &&
     privateChats &&
-    (isInProfileModal ? privateChats : privateChats.concat(chats));
+    (isInProfileModal ? privateChats : [...privateChats, ...chats]);
 
   let chatsToDisplay =
     listOfChats &&
     listOfChats
       .filter(isChatValid)
-      .filter((chat: any) =>
+      .filter((chat) =>
         room
-          ? chat.type === "global" ||
+          ? //@ts-ignore
+            chat.type === "global" || //@debt can privateChats or venueChats ever be global?
             chat.type === "private" ||
             (chat.type === "room" && chat.to === room)
           : true
       )
       .concat()
-      .sort((a: any, b: any) => b.ts_utc - a.ts_utc)
+      .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf()))
       .slice(0, RECENT_MESSAGE_COUNT);
 
-  if (isInProfileModal && discussionPartner) {
+  if (user && isInProfileModal && discussionPartner) {
     chatsToDisplay =
       chatsToDisplay &&
       chatsToDisplay.filter(
-        (chat: any) =>
+        (chat) =>
           (chat.from === discussionPartner?.id && chat.to === user.uid) ||
           (chat.to === discussionPartner?.id && chat.from === user.uid)
       );
@@ -94,14 +91,15 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   };
 
   useEffect(() => {
+    if (!user) return;
     if (!isRecipientChangeBlocked) {
       const lastChat = chatsToDisplay && chatsToDisplay[0];
       setPrivateRecipient(undefined);
       if (!isInProfileModal && lastChat && lastChat.type === "private") {
         if (lastChat?.to === user.uid) {
-          setPrivateRecipient({ ...users[lastChat?.from], id: lastChat?.from });
+          setPrivateRecipient({ ...users[lastChat?.from] });
         } else {
-          setPrivateRecipient({ ...users[lastChat?.to], id: lastChat?.to });
+          setPrivateRecipient({ ...users[lastChat?.to] });
         }
       }
     }
@@ -113,7 +111,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     privateChats,
     isInProfileModal,
     isRecipientChangeBlocked,
-    user.uid,
+    user,
     users,
   ]);
 
@@ -208,12 +206,12 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     {searchValue && (
                       <ul className="list-unstyled">
                         {userArray
-                          .filter((u: any) =>
+                          .filter((u) =>
                             u.partyName
                               ?.toLowerCase()
                               .includes(searchValue.toLowerCase())
                           )
-                          .map((u: any) => (
+                          .map((u) => (
                             <Dropdown.Item
                               onClick={() => setPrivateRecipient(u)}
                               id="chatbox-dropdown-private-recipient"
@@ -243,15 +241,16 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   : chatboxMessageType
               }
               discussionPartner={privateRecipient || discussionPartner}
-              currentUserUID={currentUserUID}
+              currentUserUID={user?.uid}
               room={room}
               setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />
             <div className="message-container">
               {chatsToDisplay &&
-                chatsToDisplay.map((chat: any) => (
+                user &&
+                chatsToDisplay.map((chat) => (
                   <ChatMessage
-                    key={chat.id}
+                    key={chat.ts_utc.valueOf()}
                     user={user}
                     users={users}
                     setSelectedUserProfile={setSelectedUserProfile}
