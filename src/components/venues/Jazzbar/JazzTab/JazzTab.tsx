@@ -55,6 +55,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [participantCount, setParticipantCount] = useState(0);
 
   function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
@@ -101,9 +102,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     reset();
   };
 
-  const capacity = seatedAtTable
-    ? JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity
-    : undefined;
+  // Capacity is an even number so the grid works
+  // Add one to account for the video
+  const participantWindows = participantCount + 1;
+  const capacity =
+    participantCount > 0
+      ? participantWindows + (participantWindows % 2)
+      : undefined;
 
   return (
     <>
@@ -181,7 +186,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 <Room
                   roomName={seatedAtTable}
                   setUserList={setUserList}
-                  capacity={capacity}
+                  setParticipantCount={setParticipantCount}
                 />
               )}
             </div>
