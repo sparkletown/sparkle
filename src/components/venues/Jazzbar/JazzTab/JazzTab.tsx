@@ -5,6 +5,7 @@ import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import TableComponent from "components/molecules/TableComponent";
+import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
@@ -35,8 +36,9 @@ type ReactionType =
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user } = useUser();
-  const { venue } = useSelector((state) => ({
+  const { venue, users } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
+    users: state.firestore.ordered.partygoers,
   }));
 
   useFirestoreConnect([
@@ -53,6 +55,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [participantCount, setParticipantCount] = useState(0);
 
   function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
@@ -99,9 +102,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
     reset();
   };
 
-  const capacity = seatedAtTable
-    ? JAZZBAR_TABLES.find((t) => t.reference === seatedAtTable)?.capacity
-    : undefined;
+  // Capacity is an even number so the grid works
+  // Add one to account for the video
+  const participantWindows = participantCount + 1;
+  const capacity =
+    participantCount > 0
+      ? participantWindows + (participantWindows % 2)
+      : undefined;
 
   return (
     <>
@@ -111,9 +118,8 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexDirection: "column",
           flexGrow: 3,
           flexBasis: 0,
-          maxHeight: "100%",
         }}
-        className="scrollable-area"
+        className={`scrollable-area ${seatedAtTable && "at-table"}`}
       >
         <div className="container-in-row">
           <div className="video-wrapper">
@@ -180,12 +186,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
                 <Room
                   roomName={seatedAtTable}
                   setUserList={setUserList}
-                  capacity={capacity}
+                  setParticipantCount={setParticipantCount}
                 />
               )}
             </div>
           </div>
         </div>
+        <UserList users={users} activity={"in the bar"} disableSeeAll={false} />
         <div
           style={{
             border: "0px solid white",

@@ -16,8 +16,8 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   return (
     <>
       <div className="reaction-list small">
-        {messages.map((message) => (
-          <>
+        {messages.map((message, index) => (
+          <React.Fragment key={index}>
             {message.from in usersById && (
               <Message
                 sender={{ ...usersById[message.from], id: message.from }}
@@ -30,7 +30,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                 }
               />
             )}
-          </>
+          </React.Fragment>
         ))}
       </div>
       <UserProfileModal
