@@ -103,7 +103,7 @@ const Room: React.FC<RoomProps> = ({
         localRoom.disconnect();
       }
     };
-  }, [roomName, setRoom, token]);
+  }, [roomName, setRoom, token, participants.length, setParticipantCount]);
 
   useEffect(() => {
     if (!room) return;
