@@ -5,6 +5,7 @@ import "./JazzTab.scss";
 import "./TableHeader.scss";
 import TablesUserList from "components/molecules/TablesUserList";
 import TableComponent from "components/molecules/TableComponent";
+import UserList from "components/molecules/UserList";
 import Room from "components/organisms/Room";
 import { User } from "types/User";
 import { JAZZBAR_TABLES } from "./constants";
@@ -35,8 +36,9 @@ type ReactionType =
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
   const { user } = useUser();
-  const { venue } = useSelector((state) => ({
+  const { venue, users } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
+    users: state.firestore.ordered.partygoers,
   }));
 
   useFirestoreConnect([
@@ -185,6 +187,12 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
             </div>
           </div>
         </div>
+        <UserList
+          users={users}
+          limit={20}
+          activity={"in the bar"}
+          disableSeeAll={false}
+        />
         <div
           style={{
             border: "0px solid white",
