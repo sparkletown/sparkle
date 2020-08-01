@@ -111,7 +111,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           flexDirection: "column",
           flexGrow: 3,
           flexBasis: 0,
-          maxHeight: "100%",
         }}
         className="scrollable-area"
       >
