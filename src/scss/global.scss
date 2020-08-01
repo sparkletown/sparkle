@@ -406,7 +406,6 @@ h4 {
     background: $dark;
     border-radius: 0 22px 22px 0;
     cursor: pointer;
-    overflow: auto;
     position: absolute;
     top: 40px;
     z-index: 1;
@@ -517,9 +516,6 @@ h4 {
     padding: 10px;
     display: flex;
     flex-direction: column;
-  }
-  .participant {
-    width: 50%;
   }
 }
 

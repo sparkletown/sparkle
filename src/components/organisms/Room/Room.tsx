@@ -11,10 +11,14 @@ import { User } from "types/User";
 interface RoomProps {
   roomName: string;
   setUserList: (val: User[]) => void;
-  capacity?: number;
+  setParticipantCount?: (val: number) => void;
 }
 
-const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
+const Room: React.FC<RoomProps> = ({
+  roomName,
+  setUserList,
+  setParticipantCount,
+}) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
     []
@@ -55,6 +59,9 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
         ...prevParticipants.filter((p) => p.identity !== participant.identity),
         participant,
       ]);
+      if (setParticipantCount) {
+        setParticipantCount(participants.length + 2);
+      }
     };
 
     const participantDisconnected = (participant: Video.Participant) => {
@@ -66,6 +73,9 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
         }
         return prevParticipants.filter((p) => p !== participant);
       });
+      if (setParticipantCount) {
+        setParticipantCount(participants.length + 1);
+      }
     };
 
     Video.connect(token, {
@@ -79,6 +89,9 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
       // [1, 2, 3, 4, 5, 6, 7,8,9,10,11,12,13,14,15,16].forEach(() =>
       //   participantConnected(room.localParticipant)
       // );
+      if (setParticipantCount) {
+        setParticipantCount(room.participants.size + 1);
+      }
     });
 
     return () => {
@@ -90,7 +103,7 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
         localRoom.disconnect();
       }
     };
-  }, [roomName, setRoom, token]);
+  }, [roomName, setRoom, token, participants.length, setParticipantCount]);
 
   useEffect(() => {
     if (!room) return;
@@ -116,6 +129,10 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
     users && userIdentity
       ? users[userIdentity]?.data?.[roomName]?.bartender
       : undefined;
+
+  // Video stream and local participant take up 2 slots
+  // Ensure capacity is always even, so the grid works
+  const capacity = 2 + participants.length + (participants.length % 2);
 
   const meComponent = room ? (
     <div className={`participant-container-${capacity}`}>
@@ -152,22 +169,20 @@ const Room: React.FC<RoomProps> = ({ roomName, setUserList, capacity = 0 }) => {
     );
   });
 
-  const emptyComponents = [
-    ...Array(
-      capacity - (participants.length + (room?.localParticipant ? 1 : 0))
-    ),
-  ].map((e, index) => (
-    <div
-      key={`empty-participant-${index}`}
-      className={`participant-container-${capacity}`}
-    >
-      <img
-        className="empty-chair-image"
-        src="/empty-chair.png"
-        alt="empty chair"
-      />
-    </div>
-  ));
+  const emptyComponents = [...Array(participants.length % 2)].map(
+    (e, index) => (
+      <div
+        key={`empty-participant-${index}`}
+        className={`participant-container-${capacity}`}
+      >
+        <img
+          className="empty-chair-image"
+          src="/empty-chair.png"
+          alt="empty chair"
+        />
+      </div>
+    )
+  );
 
   return <>{[meComponent, ...othersComponents, ...emptyComponents]}</>;
 };

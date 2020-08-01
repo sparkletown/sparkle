@@ -152,7 +152,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
           <div className="button-container">
             <button
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
-              className="btn btn-primary btn-block submit-button"
+              className="btn btn-primary btn-block submit-button hidden"
               type="submit"
               onClick={handleSaveCard}
             >

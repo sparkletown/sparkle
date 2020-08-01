@@ -163,6 +163,7 @@
     align-items: center;
     justify-content: space-around;
     border-radius: 0 0 22px 22px;
+    padding-top: 4px;
     background: $dark;
   }
 
@@ -170,6 +171,10 @@
     display: flex;
     justify-content: space-evenly;
     margin-right: 10px;
+
+    .reaction {
+      padding: 0 8px;
+    }
   }
 
   .reaction {
@@ -206,11 +211,11 @@
     flex-direction: column;
 
     .reaction {
-      font-size: 30px;
+      font-size: 44px;
     }
 
     .call-out-band-container {
-      padding: 0 5px;
+      padding: 8px 0 5px 0;
       width: 100%;
     }
     .iframe-container {
