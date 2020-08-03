@@ -8,6 +8,7 @@ export interface VenueInput {
   logoImageFile: FileList;
   tagline: string;
   longDescription: string;
+  mapIconImageFile?: FileList;
 }
 
 type FirestoreVenueInput = Omit<
