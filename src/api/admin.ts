@@ -27,35 +27,29 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const bannerFile = input.logoImageFile[0];
 
   const urlVenueName = createUrlSafeName(input.name);
-  console.log("createVenue -> user", user);
 
   // upload logo file
   const uploadLogoRef = storageRef.child(
-    `users/${user.uid}/venues/${createUrlSafeName(urlVenueName)}/${
-      logoFile.name
-    }`
+    `users/${user.uid}/venues/${urlVenueName}/${logoFile.name}`
   );
   await uploadLogoRef.put(input.logoImageFile[0]);
 
   // upload banner file
   const uploadBannerRef = storageRef.child(
-    `users/${user.uid}/venues/${createUrlSafeName(urlVenueName)}/${
-      bannerFile.name
-    }`
+    `users/${user.uid}/venues/${urlVenueName}/${bannerFile.name}`
   );
   await uploadBannerRef.put(input.logoImageFile[0]);
 
   const logoDownloadUrl: string = await uploadLogoRef.getDownloadURL();
   const bannerDownloadUrl: string = await uploadLogoRef.getDownloadURL();
 
-  const FirestoreVenueInput = {
+  const firestoreVenueInput: FirestoreVenueInput = {
     ..._.omit(input, ["bannerImageFile", "logoImageFile"]),
     bannerImageUrl: bannerDownloadUrl,
     logoImageUrl: logoDownloadUrl,
   };
-  console.log("FirestoreVenueInput", FirestoreVenueInput);
 
   return await firebase.functions().httpsCallable("venue-createVenue")(
-    FirestoreVenueInput
+    firestoreVenueInput
   );
 };
