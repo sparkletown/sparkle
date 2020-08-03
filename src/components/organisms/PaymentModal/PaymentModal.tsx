@@ -16,12 +16,16 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   selectedEvent: VenueEvent;
+  setEventPaidSuccessfully: (value: string | undefined) => void;
+  eventPaidSuccessfully: string | undefined;
 }
 
 const PaymentModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   selectedEvent,
+  setEventPaidSuccessfully,
+  eventPaidSuccessfully,
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
@@ -38,7 +42,6 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     venue: Venue;
   };
 
-  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
   const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
   const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);
 
@@ -55,14 +58,14 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   let modalContent;
   if (!purchaseHistoryRequestStatus) {
     modalContent = <>Loading...</>;
-  } else if (isPaymentSuccess) {
+  } else if (eventPaidSuccessfully === selectedEvent.id) {
     modalContent = (
       <PaymentConfirmation startUtcSeconds={selectedEvent.start_utc_seconds} />
     );
   } else if (!hasUserBoughtTicket) {
     modalContent = (
       <PaymentForm
-        setIsPaymentSuccess={setIsPaymentSuccess}
+        setIsPaymentSuccess={() => setEventPaidSuccessfully(selectedEvent.id)}
         setIsPaymentProceeding={setIsPaymentProceeding}
         setIsCardBeingSaved={setIsCardBeingSaved}
         isPaymentProceeding={isPaymentProceeding}
@@ -71,7 +74,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
       />
     );
   } else {
-    modalContent = <>You have already paid for this event</>;
+    modalContent = <>Oops, an error occured</>;
   }
 
   return (
