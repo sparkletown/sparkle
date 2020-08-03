@@ -1,22 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useForm, FieldError } from "react-hook-form";
 import * as Yup from "yup";
-import firebase from "firebase/app";
 import "firebase/functions";
+import { useUser } from "hooks/useUser";
+import { VenueInput, createUrlSafeName, createVenue } from "api/admin";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
 
-interface FormInputs {
-  name: string;
-  bannerImageUrl: FileList;
-  logoImageUrl: FileList;
-  tagline: string;
-  longDescription: string;
-}
-
-const validationSchema = Yup.object().shape<FormInputs>({
+const validationSchema = Yup.object().shape<VenueInput>({
   name: Yup.string()
     .required("Display name required")
     .test(
@@ -24,14 +17,14 @@ const validationSchema = Yup.object().shape<FormInputs>({
       "Must have alphanumeric characters",
       (val: string) => val.replace(/\W/g, "").length > 0
     ),
-  bannerImageUrl: Yup.mixed<FileList>()
+  bannerImageFile: Yup.mixed<FileList>()
     .required("Required")
     .test(
       "bannerImageUrl",
       "Image required",
       (val: FileList) => val.length > 0
     ),
-  logoImageUrl: Yup.mixed<FileList>()
+  logoImageFile: Yup.mixed<FileList>()
     .required("Required")
     .test("logoImageUrl", "Image required", (val: FileList) => val.length > 0),
   tagline: Yup.string().required("Required"),
@@ -39,24 +32,31 @@ const validationSchema = Yup.object().shape<FormInputs>({
 });
 
 export const AdminVenue: React.FC = () => {
-  const { register, handleSubmit, errors, watch } = useForm<
-    Partial<FormInputs> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+  const { register, handleSubmit, errors, watch, formState } = useForm<
+    Partial<VenueInput> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
   >({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
     defaultValues: {},
   });
+  const { user } = useUser();
+  const { isSubmitting } = formState;
   const values = watch();
-  const onSubmit = async (vals: Partial<FormInputs>) => {
-    const values = vals as FormInputs; // unfortunately the typing is off for react-hook-forms.
-    try {
-      await firebase.functions().httpsCallable("venue-createVenue")(values);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  const urlSafeName = values.name?.replace(/\W/g, "");
+  const onSubmit = useCallback(
+    async (vals: Partial<VenueInput>) => {
+      if (!user) return;
+      const values = vals as VenueInput; // unfortunately the typing is off for react-hook-forms.
+      try {
+        await createVenue(values, user);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [user]
+  );
+  const urlSafeName = values.name ? createUrlSafeName(values.name) : undefined;
+  const disable = isSubmitting;
 
   return (
     <WithNavigationBar>
@@ -69,6 +69,7 @@ export const AdminVenue: React.FC = () => {
           <div className="input-container">
             <div className="input-title">Name your space</div>
             <input
+              disabled={disable}
               name="name"
               ref={register}
               className="wide-input-block"
@@ -85,26 +86,29 @@ export const AdminVenue: React.FC = () => {
           <div className="input-container">
             <div className="input-title">Upload a banner page photo</div>
             <ImageInput
-              name={"bannerImageUrl"}
-              image={values.bannerImageUrl}
+              disabled={disable}
+              name={"bannerImageFile"}
+              image={values.bannerImageFile}
               ref={register}
-              error={errors.bannerImageUrl}
+              error={errors.bannerImageFile}
             />
           </div>
           <div className="input-container">
             <div className="input-title">Upload a square logo</div>
             <ImageInput
+              disabled={disable}
               ref={register}
-              image={values.logoImageUrl}
-              name={"logoImageUrl"}
+              image={values.logoImageFile}
+              name={"logoImageFile"}
               containerClassName="input-logo-container"
               imageClassName="input-logo-image"
-              error={errors.logoImageUrl}
+              error={errors.logoImageFile}
             />
           </div>
           <div className="input-container">
             <div className="input-title">Tagline</div>
             <input
+              disabled={disable}
               name={"tagline"}
               ref={register}
               className="wide-input-block"
@@ -117,6 +121,7 @@ export const AdminVenue: React.FC = () => {
           <div className="input-container">
             <div className="input-title">Long description</div>
             <textarea
+              disabled={disable}
               name={"longDescription"}
               ref={register}
               className="wide-input-block input-centered align-left"
@@ -130,11 +135,7 @@ export const AdminVenue: React.FC = () => {
           </div>
           <div className="centered-flex input-container">
             <div>
-              <input
-                className="btn btn-primary"
-                type="submit"
-                value="Create venue"
-              />
+              <SubmitButton isSubmitting={isSubmitting} />
             </div>
           </div>
         </form>
@@ -143,7 +144,22 @@ export const AdminVenue: React.FC = () => {
   );
 };
 
+interface SubmitButtonProps {
+  isSubmitting: boolean;
+}
+
+const SubmitButton: React.FC<SubmitButtonProps> = ({ isSubmitting }) => {
+  return isSubmitting ? (
+    <div className="spinner-border">
+      <span className="sr-only">Loading...</span>
+    </div>
+  ) : (
+    <input className="btn btn-primary" type="submit" value="Create venue" />
+  );
+};
+
 interface ImageInputProps {
+  disabled: boolean;
   name: string;
   image?: FileList;
   containerClassName?: string;
@@ -154,7 +170,14 @@ interface ImageInputProps {
 // eslint-disable-next-line
 const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
   (props, ref) => {
-    const { image, containerClassName, imageClassName, name, error } = props;
+    const {
+      image,
+      containerClassName,
+      imageClassName,
+      name,
+      error,
+      disabled,
+    } = props;
 
     const imageUrl = useMemo(
       () => image && image.length > 0 && URL.createObjectURL(image[0]),
@@ -176,6 +199,7 @@ const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             </div>
           )}
           <input
+            disabled={disabled}
             name={name}
             type="file"
             ref={ref}
