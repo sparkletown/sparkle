@@ -1,10 +1,11 @@
 import React, { useMemo, useCallback } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useForm, FieldError } from "react-hook-form";
 import * as Yup from "yup";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
 import { VenueInput, createUrlSafeName, createVenue } from "api/admin";
+import { WizardPage } from "./VenueWizard";
+import "./Venue.scss";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
@@ -31,7 +32,7 @@ const validationSchema = Yup.object().shape<VenueInput>({
   longDescription: Yup.string().required("Required"),
 });
 
-export const AdminVenue: React.FC = () => {
+export const DetailsForm: React.FC<WizardPage> = ({ previous }) => {
   const { register, handleSubmit, errors, watch, formState } = useForm<
     Partial<VenueInput> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
   >({
@@ -59,88 +60,86 @@ export const AdminVenue: React.FC = () => {
   const disable = isSubmitting;
 
   return (
-    <WithNavigationBar>
-      <div id="admin-venue" className="container admin-container">
-        <h3 className="title">
-          Create your space in{" "}
-          <span className="title-adornment">The Sparkleverse</span>
-        </h3>
-        <form className="form" onSubmit={handleSubmit(onSubmit)}>
-          <div className="input-container">
-            <div className="input-title">Name your space</div>
-            <input
-              disabled={disable}
-              name="name"
-              ref={register}
-              className="wide-input-block"
-              placeholder="This can't be changed in the future"
-            />
-            {errors.name ? (
-              <span className="input-error">{errors.name.message}</span>
-            ) : (
-              <div className="input-subtext">
-                {`The URL of your space will be: ${urlSafeName}`}
-              </div>
-            )}
-          </div>
-          <div className="input-container">
-            <div className="input-title">Upload a banner page photo</div>
-            <ImageInput
-              disabled={disable}
-              name={"bannerImageFile"}
-              image={values.bannerImageFile}
-              ref={register}
-              error={errors.bannerImageFile}
-            />
-          </div>
-          <div className="input-container">
-            <div className="input-title">Upload a square logo</div>
-            <ImageInput
-              disabled={disable}
-              ref={register}
-              image={values.logoImageFile}
-              name={"logoImageFile"}
-              containerClassName="input-logo-container"
-              imageClassName="input-logo-image"
-              error={errors.logoImageFile}
-            />
-          </div>
-          <div className="input-container">
-            <div className="input-title">Tagline</div>
-            <input
-              disabled={disable}
-              name={"tagline"}
-              ref={register}
-              className="wide-input-block"
-              placeholder="Briefly say what people will find here"
-            />
-            {errors.tagline && (
-              <span className="input-error">{errors.tagline.message}</span>
-            )}
-          </div>
-          <div className="input-container">
-            <div className="input-title">Long description</div>
-            <textarea
-              disabled={disable}
-              name={"longDescription"}
-              ref={register}
-              className="wide-input-block input-centered align-left"
-              placeholder={LONG_DESCRIPTION_PLACEHOLDER}
-            />
-            {errors.longDescription && (
-              <span className="input-error">
-                {errors.longDescription.message}
-              </span>
-            )}
-          </div>
-          <div className="centered-flex input-container">
-            <div>
-              <SubmitButton isSubmitting={isSubmitting} />
+    <div id="admin-venue" className="container form-container">
+      <h3 className="title">
+        Create your space in{" "}
+        <span className="title-adornment">The Sparkleverse</span>
+      </h3>
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="input-container">
+          <div className="input-title">Name your space</div>
+          <input
+            disabled={disable}
+            name="name"
+            ref={register}
+            className="wide-input-block"
+            placeholder="This can't be changed in the future"
+          />
+          {errors.name ? (
+            <span className="input-error">{errors.name.message}</span>
+          ) : (
+            <div className="input-subtext">
+              {`The URL of your space will be: ${urlSafeName}`}
             </div>
+          )}
+        </div>
+        <div className="input-container">
+          <div className="input-title">Upload a banner page photo</div>
+          <ImageInput
+            disabled={disable}
+            name={"bannerImageFile"}
+            image={values.bannerImageFile}
+            ref={register}
+            error={errors.bannerImageFile}
+          />
+        </div>
+        <div className="input-container">
+          <div className="input-title">Upload a square logo</div>
+          <ImageInput
+            disabled={disable}
+            ref={register}
+            image={values.logoImageFile}
+            name={"logoImageFile"}
+            containerClassName="input-logo-container"
+            imageClassName="input-logo-image"
+            error={errors.logoImageFile}
+          />
+        </div>
+        <div className="input-container">
+          <div className="input-title">Tagline</div>
+          <input
+            disabled={disable}
+            name={"tagline"}
+            ref={register}
+            className="wide-input-block"
+            placeholder="Briefly say what people will find here"
+          />
+          {errors.tagline && (
+            <span className="input-error">{errors.tagline.message}</span>
+          )}
+        </div>
+        <div className="input-container">
+          <div className="input-title">Long description</div>
+          <textarea
+            disabled={disable}
+            name={"longDescription"}
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder={LONG_DESCRIPTION_PLACEHOLDER}
+          />
+          {errors.longDescription && (
+            <span className="input-error">
+              {errors.longDescription.message}
+            </span>
+          )}
+        </div>
+        <div className="centered-flex input-container">
+          <div>
+            <SubmitButton isSubmitting={isSubmitting} />
           </div>
-        </form>
-      </div>
-    </WithNavigationBar>
+        </div>
+      </form>
+    </div>
   );
 };
 
