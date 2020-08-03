@@ -41,7 +41,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   await uploadBannerRef.put(input.logoImageFile[0]);
 
   const logoDownloadUrl: string = await uploadLogoRef.getDownloadURL();
-  const bannerDownloadUrl: string = await uploadLogoRef.getDownloadURL();
+  const bannerDownloadUrl: string = await uploadBannerRef.getDownloadURL();
 
   const firestoreVenueInput: FirestoreVenueInput = {
     ..._.omit(input, ["bannerImageFile", "logoImageFile"]),
