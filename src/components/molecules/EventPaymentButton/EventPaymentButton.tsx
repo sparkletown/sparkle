@@ -15,6 +15,7 @@ interface PropsType {
   venueId: string;
   setIsPaymentModalOpen: (value: boolean) => void;
   selectEvent: () => void;
+  paymentConfirmationPending: boolean;
 }
 
 const EventPaymentButton: React.FunctionComponent<PropsType> = ({
@@ -22,6 +23,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   venueId,
   setIsPaymentModalOpen,
   selectEvent,
+  paymentConfirmationPending,
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
@@ -57,8 +59,15 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
             role="link"
             className="btn btn-primary buy-tickets-button"
             onClick={handleClick}
+            disabled={paymentConfirmationPending}
           >
-            Buy tickets
+            {paymentConfirmationPending ? (
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : (
+              "Buy tickets"
+            )}
           </button>
         </div>
       )}

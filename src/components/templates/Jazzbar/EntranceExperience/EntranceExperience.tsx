@@ -33,6 +33,9 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
     false
   );
   const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
+  const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
+    string | undefined
+  >();
 
   useConnectCurrentVenue();
 
@@ -273,6 +276,9 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
                                     setSelectedEvent(venueEvent)
                                   }
                                   setIsPaymentModalOpen={setIsPaymentModalOpen}
+                                  paymentConfirmationPending={
+                                    eventPaidSuccessfully === venueEvent.id
+                                  }
                                 />
                               ) : (
                                 <button
@@ -300,6 +306,8 @@ const JazzbarEntranceExperience: React.FunctionComponent = () => {
             selectedEvent={selectedEvent}
             show={isPaymentModalOpen}
             onHide={closePaymentModal}
+            setEventPaidSuccessfully={setEventPaidSuccessfully}
+            eventPaidSuccessfully={eventPaidSuccessfully}
           />
         )}
       </WithNavigationBar>
