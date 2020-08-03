@@ -361,6 +361,12 @@ h4 {
   align-items: center;
 }
 
+.between-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .full-page-container {
   display: flex;
   padding: 5px 30px;
