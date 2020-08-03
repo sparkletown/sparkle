@@ -3,7 +3,7 @@ import "firebase/storage";
 import "./Account.scss";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import CreateEventModal from "admin/venue/CreateEventModal";
+import AdminEvent from "./AdminEvent";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useHistory } from "react-router-dom";
 
@@ -34,11 +34,12 @@ const Admin: React.FC = () => {
           </button>
         </div>
       </div>
-      <CreateEventModal
+      <AdminEvent
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
         }}
+        venueId={"demo-event-creation"}
       />
     </WithNavigationBar>
   );
