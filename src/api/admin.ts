@@ -1,6 +1,17 @@
 import firebase from "firebase/app";
 import { UserInfo } from "firebase";
 import _ from "lodash";
+import { VenueEvent } from "types/VenueEvent";
+
+export interface EventInput {
+  name: string;
+  description: string;
+  start_date: string;
+  start_time: string;
+  end_date: string;
+  end_time: string;
+  price: number;
+}
 
 export interface VenueInput {
   name: string;
@@ -52,4 +63,11 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   return await firebase.functions().httpsCallable("venue-createVenue")(
     firestoreVenueInput
   );
+};
+
+export const createEvent = async (
+  venueId: string,
+  event: Omit<VenueEvent, "id">
+) => {
+  await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
 };

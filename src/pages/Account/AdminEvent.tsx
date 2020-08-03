@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
 import { VenueEvent } from "types/VenueEvent";
 import dayjs from "dayjs";
 import * as Yup from "yup";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import { createEvent, EventInput } from "api/admin";
 dayjs.extend(isSameOrAfter);
 
 interface PropsType {
@@ -14,21 +14,7 @@ interface PropsType {
   venueId: string;
 }
 
-interface CreateEventFormData {
-  name: string;
-  description: string;
-  start_date: string;
-  start_time: string;
-  end_date: string;
-  end_time: string;
-  price: number;
-}
-
-const postEvent = async (venueId: string, event: Omit<VenueEvent, "id">) => {
-  await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
-};
-
-const validationSchema = Yup.object().shape<CreateEventFormData>({
+const validationSchema = Yup.object().shape<EventInput>({
   name: Yup.string().required("Name required"),
   description: Yup.string().required("Description required"),
   start_date: Yup.string()
@@ -38,7 +24,7 @@ const validationSchema = Yup.object().shape<CreateEventFormData>({
       'Start date must have the format "yyyy-mm-dd"'
     )
     .test(
-      "start_date_futur",
+      "start_date_future",
       "Start date must be in the futur",
       (start_date) => {
         return dayjs(start_date).isSameOrAfter(dayjs(), "day");
@@ -47,7 +33,7 @@ const validationSchema = Yup.object().shape<CreateEventFormData>({
   start_time: Yup.string().required("Start time required"),
   end_date: Yup.string()
     .required("End date required")
-    .test("end_date_futur", "End date must be in the futur", (end_date) => {
+    .test("end_date_future", "End date must be in the futur", (end_date) => {
       return dayjs(end_date).isSameOrAfter(dayjs(), "day");
     }),
   end_time: Yup.string().required("End time required"),
@@ -61,26 +47,29 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   onHide,
   venueId,
 }) => {
-  const { register, handleSubmit, errors, formState } = useForm<
-    CreateEventFormData
-  >({
-    mode: "onChange",
+  const { register, handleSubmit, errors, formState } = useForm<EventInput>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
     validationSchema,
   });
-  const onSubmit = async (data: CreateEventFormData) => {
-    const start = dayjs(`${data.start_date} ${data.start_time}`);
-    const end = dayjs(`${data.end_date} ${data.end_time}`);
-    const event: Omit<VenueEvent, "id"> = {
-      name: data.name,
-      description: data.description,
-      start_utc_seconds: start.unix(),
-      duration_minutes: end.diff(start, "minute"),
-      price: Math.floor(data.price * 100),
-      collective_price: 0,
-    };
-    await postEvent(venueId, event);
-    onHide();
-  };
+
+  const onSubmit = useCallback(
+    async (data: EventInput) => {
+      const start = dayjs(`${data.start_date} ${data.start_time}`);
+      const end = dayjs(`${data.end_date} ${data.end_time}`);
+      const event: Omit<VenueEvent, "id"> = {
+        name: data.name,
+        description: data.description,
+        start_utc_seconds: start.unix(),
+        duration_minutes: end.diff(start, "minute"),
+        price: Math.floor(data.price * 100),
+        collective_price: 0,
+      };
+      await createEvent(venueId, event);
+      onHide();
+    },
+    [onHide, venueId]
+  );
   return (
     <Modal show={show} onHide={onHide}>
       <div className="form-container">
@@ -173,7 +162,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
             className="btn btn-primary btn-block btn-centered"
             type="submit"
             value="Create"
-            disabled={!formState.isValid}
+            disabled={!formState.isValid || formState.isSubmitting}
           />
         </form>
       </div>
