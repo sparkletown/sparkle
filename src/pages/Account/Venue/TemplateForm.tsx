@@ -3,8 +3,10 @@ import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
 import { VENUE_TEMPLATES, Template } from "settings";
 
-export const TemplateForm: React.FC<WizardPage> = ({ next }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<Template>();
+export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<
+    Template | undefined
+  >(state.templatePage?.template);
   return (
     <div className="container form-container">
       <div className="title">Venue Template</div>
@@ -22,7 +24,11 @@ export const TemplateForm: React.FC<WizardPage> = ({ next }) => {
         <button
           disabled={!selectedTemplate}
           className="btn btn-primary"
-          onClick={next}
+          onClick={() =>
+            selectedTemplate &&
+            next &&
+            next({ type: "SUBMIT_TEMPLATE_PAGE", payload: selectedTemplate })
+          }
         >
           Go to your venue
         </button>
