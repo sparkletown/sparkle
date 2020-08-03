@@ -6,4 +6,6 @@ export const hasUserBoughtTicketForEvent = (
   eventId: string | ParsedQs | string[] | ParsedQs[]
 ) =>
   userPurchaseHistory &&
-  !!userPurchaseHistory.find((purchase) => purchase.eventId === eventId);
+  !!userPurchaseHistory.find(
+    (purchase) => purchase.eventId === eventId && purchase.status === "COMPLETE"
+  );

@@ -11,6 +11,19 @@ const stripe = require("stripe")(STRIPE_CONFIG.secret_key);
 const PURCHASE_TABLE = "purchases";
 const CUSTOMER_TABLE = "customers";
 
+const getEventPrice = async (venueId, eventId) => {
+  const event = (
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("events")
+      .doc(eventId)
+      .get()
+  ).data();
+  return event.price;
+};
+
 exports.createCustomerWithPaymentMethod = functions.https.onCall(
   async (data, context) => {
     if (!context.auth || !context.auth.token) {
@@ -55,7 +68,7 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
       .doc(context.auth.token.user_id)
       .set({
         userId: context.auth.token.user_id,
-        custormerId: customer.id,
+        customerId: customer.id,
       });
 
     return;
@@ -85,9 +98,18 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
       "venue, event or return url data missing"
     );
   }
+  let eventPrice;
+  try {
+    eventPrice = await getEventPrice(data.venueId, data.eventId);
+  } catch {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "could not retrieve the event price"
+    );
+  }
 
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: data.price,
+    amount: eventPrice,
     currency: "gbp",
     metadata: { integration_check: "accept_a_payment" },
     receipt_email: context.auth.token.email,
@@ -123,11 +145,10 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
     );
   }
 
-  // Handle the checkout.session.completed event
+  // Handle the charge.succeeded event
   if (event.type === "charge.succeeded") {
     const charge = event.data.object;
 
-    // Fulfill the purchase...
     await admin
       .firestore()
       .collection(PURCHASE_TABLE)
