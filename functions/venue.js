@@ -81,9 +81,11 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
     owners: [context.auth.token.user_id],
   };
 
-  return await admin
+  await admin
     .firestore()
     .collection("venues")
     .doc(data.name.replace(/\W/g, ""))
     .set(venueData);
+
+  return venueData;
 });
