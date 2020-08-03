@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { JAZZBAR_TABLES } from "components/venues/Jazzbar/JazzTab/constants";
+import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
 import { User } from "types/User";
 import { useUser } from "hooks/useUser";

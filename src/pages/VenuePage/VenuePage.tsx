@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
-import JazzbarRouter from "components/venues/Jazzbar/JazzbarRouter";
-import PartyMap from "components/venues/PartyMap";
+import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
+import PartyMap from "components/templates/PartyMap";
 import FriendShipPage from "pages/FriendShipPage";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
