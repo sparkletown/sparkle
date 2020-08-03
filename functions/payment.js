@@ -101,7 +101,7 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   let eventPrice;
   try {
     eventPrice = await getEventPrice(data.venueId, data.eventId);
-  } catch {
+  } catch (err) {
     throw new functions.https.HttpsError(
       "invalid-argument",
       "could not retrieve the event price"
