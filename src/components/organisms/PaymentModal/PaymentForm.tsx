@@ -105,6 +105,12 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       setErrorMessage(result.error.message);
     } else if (result.paymentIntent?.status === "succeeded") {
       setIsPaymentSuccess(true);
+      await firebase.functions().httpsCallable("payment-confirmPaymentIntent")({
+        venueId: venueId,
+        eventId: event.id,
+        price: ticketPrice,
+        paymentIntentId: result.paymentIntent.id,
+      });
     } else {
       setErrorMessage("Payment didn't work, try again");
     }

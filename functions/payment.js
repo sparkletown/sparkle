@@ -98,10 +98,25 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
       "venue, event or return url data missing"
     );
   }
+
+  const ticketsBoughtByUserForThisEvent = await admin
+    .firestore()
+    .collection("purchases")
+    .where("userId", "==", context.auth.token.user_id)
+    .where("eventId", "==", data.eventId)
+    .where("status", "in", ["COMPLETE", "CONFIRMATION_FROM_STRIPE_PENDING"])
+    .get();
+
+  if (!ticketsBoughtByUserForThisEvent.empty) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "the user already paid for this event"
+    );
+  }
   let eventPrice;
   try {
     eventPrice = await getEventPrice(data.venueId, data.eventId);
-  } catch {
+  } catch (err) {
     throw new functions.https.HttpsError(
       "invalid-argument",
       "could not retrieve the event price"
@@ -123,6 +138,52 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
   });
 
   return { client_secret: paymentIntent.client_secret };
+});
+
+exports.confirmPaymentIntent = functions.https.onCall(async (data, context) => {
+  if (!context.auth || !context.auth.token) {
+    throw new functions.https.HttpsError("unauthenticated", "Please log in");
+  }
+
+  if (context.auth.token.aud !== PROJECT_ID) {
+    throw new functions.https.HttpsError("permission-denied", "Token invalid");
+  }
+
+  if (
+    !(
+      data &&
+      data.venueId &&
+      data.eventId &&
+      data.paymentIntentId &&
+      context.auth.token.email &&
+      context.auth.token.user_id
+    )
+  ) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "venue, event or return url data missing"
+    );
+  }
+
+  const documentToUpdate = (
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(data.paymentIntentId)
+      .get()
+  ).data();
+
+  if (!["COMPLETE", "FAILED"].includes(documentToUpdate.status)) {
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(data.paymentIntentId)
+      .update({
+        status: "CONFIRMATION_FROM_STRIPE_PENDING",
+      });
+  }
+
+  return {};
 });
 
 const endpointSecret = STRIPE_CONFIG.endpoint_secret;
@@ -156,8 +217,17 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
       .update({
         status: "COMPLETE",
       });
-  }
+  } else if (event.type === "charge.failed") {
+    const charge = event.data.object;
 
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(charge.payment_intent)
+      .update({
+        status: "FAILED",
+      });
+  }
   // Return a response to acknowledge receipt of the event
   return res.status(200).send({ received: true });
 });
