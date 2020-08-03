@@ -24,7 +24,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 
   const logoFile = input.logoImageFile[0];
-  const bannerFile = input.logoImageFile[0];
+  const bannerFile = input.bannerImageFile[0];
 
   const urlVenueName = createUrlSafeName(input.name);
 
