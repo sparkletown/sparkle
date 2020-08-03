@@ -133,7 +133,12 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous }) => {
             </span>
           )}
         </div>
-        <div className="centered-flex input-container">
+        <div className="between-flex input-container">
+          <div className="wizard-nav-button">
+            <button className="btn btn-primary nav-btn" onClick={previous}>
+              Go Back
+            </button>
+          </div>
           <div>
             <SubmitButton isSubmitting={isSubmitting} />
           </div>
