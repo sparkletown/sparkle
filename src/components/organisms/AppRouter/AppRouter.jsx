@@ -15,7 +15,7 @@ import Login from "pages/Account/Login";
 import Admin from "pages/Account/Admin";
 import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
 import VenuePage from "pages/VenuePage";
-import TemplateRouter from "components/venues/TemplateRouter";
+import TemplateRouter from "components/organisms/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";

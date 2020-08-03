@@ -57,7 +57,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <div
               className={`message-bubble ${
                 message.reaction === "messageToTheBand" ? "" : "emoji"
-                }`}
+              }`}
             >
               {message.reaction === "messageToTheBand"
                 ? message.text
