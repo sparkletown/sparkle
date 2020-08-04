@@ -39,10 +39,9 @@ export const validationSchema = Yup.object()
     // @debt provide some validation error messages for invalid questions
     // advanced options
     profileQuestions: Yup.array<Question>()
-      .ensure()
+      .defined()
       .transform((val: Array<Question>) =>
         val.filter((s) => !!s.name && !!s.text)
-      ) // ensure questions are not empty strings
-      .required(),
+      ), // ensure questions are not empty strings
   })
   .required();
