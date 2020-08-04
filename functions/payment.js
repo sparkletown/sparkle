@@ -11,6 +11,16 @@ const stripe = require("stripe")(STRIPE_CONFIG.secret_key);
 const PURCHASE_TABLE = "purchases";
 const CUSTOMER_TABLE = "customers";
 
+const authenticationCheck = (context) => {
+  if (!context.auth || !context.auth.token) {
+    throw new functions.https.HttpsError("unauthenticated", "Please log in");
+  }
+
+  if (context.auth.token.aud !== PROJECT_ID) {
+    throw new functions.https.HttpsError("permission-denied", "Token invalid");
+  }
+};
+
 const getEventPrice = async (venueId, eventId) => {
   const event = (
     await admin
@@ -26,16 +36,7 @@ const getEventPrice = async (venueId, eventId) => {
 
 exports.createCustomerWithPaymentMethod = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth || !context.auth.token) {
-      throw new functions.https.HttpsError("unauthenticated", "Please log in");
-    }
-
-    if (context.auth.token.aud !== PROJECT_ID) {
-      throw new functions.https.HttpsError(
-        "permission-denied",
-        "Token invalid"
-      );
-    }
+    authenticationCheck(context);
 
     if (!data.paymentMethodId) {
       throw new functions.https.HttpsError(
@@ -76,13 +77,7 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
 );
 
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
+  authenticationCheck(context);
 
   if (
     !(
@@ -104,7 +99,12 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     .collection("purchases")
     .where("userId", "==", context.auth.token.user_id)
     .where("eventId", "==", data.eventId)
-    .where("status", "in", ["COMPLETE", "CONFIRMATION_FROM_STRIPE_PENDING"])
+    .where("venueId", "==", data.venueId)
+    .where("status", "in", [
+      "COMPLETE",
+      "CONFIRMATION_FROM_STRIPE_PENDING",
+      "PROCESSING",
+    ])
     .get();
 
   if (!ticketsBoughtByUserForThisEvent.empty) {
@@ -137,31 +137,83 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     status: "PENDING",
   });
 
-  return { client_secret: paymentIntent.client_secret };
+  return {
+    client_secret: paymentIntent.client_secret,
+    payment_intent_id: paymentIntent.id,
+  };
 });
 
+exports.setPaymentIntentProcessing = functions.https.onCall(
+  async (data, context) => {
+    authenticationCheck(context);
+
+    if (!(data && data.paymentIntentId)) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "payment intent data missing"
+      );
+    }
+
+    const documentToUpdate = (
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .get()
+    ).data();
+
+    if (documentToUpdate.status === "PENDING") {
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .update({
+          status: "PROCESSING",
+        });
+    }
+
+    return {};
+  }
+);
+
+exports.setPaymentIntentPending = functions.https.onCall(
+  async (data, context) => {
+    authenticationCheck(context);
+    if (!(data && data.paymentIntentId)) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "payment intent data missing"
+      );
+    }
+
+    const documentToUpdate = (
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .get()
+    ).data();
+
+    if (documentToUpdate.status === "PROCESSING") {
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .update({
+          status: "PENDING",
+        });
+    }
+
+    return {};
+  }
+);
+
 exports.confirmPaymentIntent = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
-
-  if (
-    !(
-      data &&
-      data.venueId &&
-      data.eventId &&
-      data.paymentIntentId &&
-      context.auth.token.email &&
-      context.auth.token.user_id
-    )
-  ) {
+  authenticationCheck(context);
+  if (!(data && data.paymentIntentId)) {
     throw new functions.https.HttpsError(
       "invalid-argument",
-      "venue, event or return url data missing"
+      "payment intent data missing"
     );
   }
 

@@ -33,6 +33,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState<string | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [paymentIntentId, setPaymentIntentId] = useState<string | undefined>();
   const { user } = useUser();
 
   const ticketPrice =
@@ -46,16 +47,19 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     setClientSecret(undefined);
     async function getPaymentIntent() {
       if (!user) return;
-      const { client_secret: clientSecretToken } = (
+      const {
+        client_secret: clientSecretToken,
+        payment_intent_id: newPaymentIntentId,
+      } = (
         await firebase.functions().httpsCallable("payment-createPaymentIntent")(
           {
             venueId: venueId,
             eventId: event.id,
-            price: ticketPrice,
           }
         )
       ).data;
       setClientSecret(clientSecretToken);
+      setPaymentIntentId(newPaymentIntentId);
     }
     try {
       getPaymentIntent();
@@ -71,6 +75,11 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   ) => {
     if (!user) return;
     setIsLoading(true);
+    await firebase
+      .functions()
+      .httpsCallable("payment-setPaymentIntentProcessing")({
+      paymentIntentId,
+    });
     e.preventDefault();
     if (!stripe || !elements) {
       setErrorMessage("Oops something wrong happened");
@@ -78,6 +87,11 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       return;
     }
     await operations(stripe, elements);
+    await firebase.functions().httpsCallable("payment-setPaymentIntentPending")(
+      {
+        paymentIntentId,
+      }
+    );
     setIsLoading(false);
   };
 
@@ -106,9 +120,6 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     } else if (result.paymentIntent?.status === "succeeded") {
       setIsPaymentSuccess(true);
       await firebase.functions().httpsCallable("payment-confirmPaymentIntent")({
-        venueId: venueId,
-        eventId: event.id,
-        price: ticketPrice,
         paymentIntentId: result.paymentIntent.id,
       });
     } else {
