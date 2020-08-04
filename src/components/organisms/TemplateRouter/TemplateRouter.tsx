@@ -26,6 +26,7 @@ const TemplateRouter = () => {
 
   switch (venue.template) {
     case VenueTemplate.jazzbar:
+    case VenueTemplate.artPiece:
       return <EntranceExperience />;
     case VenueTemplate.partymap:
       if (user) {

@@ -70,6 +70,7 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
+    object-fit: cover;
 
     .secret-password-form-wrapper {
       background: rgba($black, 0.75);
