@@ -11,7 +11,9 @@ interface AdvancedDetailsProps {
 
 export const AdvancedDetailsForm: React.FC<AdvancedDetailsProps> = (props) => {
   const { register, control } = props;
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<
+    AdvancedVenueInput["profileQuestions"][number]
+  >({
     control,
     name: "profileQuestions",
   });
@@ -22,19 +24,28 @@ export const AdvancedDetailsForm: React.FC<AdvancedDetailsProps> = (props) => {
         <ul>
           {fields.map((item, index) => (
             <li className="question" key={item.id}>
-              <div className="centered-flex">
+              <div className="question-inputs-container">
+                <div className="between-flex">
+                  <input
+                    className="question-name-input"
+                    name={`profileQuestions[${index}].name`}
+                    ref={register()}
+                    defaultValue={`Question ${index + 1} Name`} // make sure to set up defaultValue
+                  />
+                  <button
+                    className="btn delete-btn"
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Delete
+                  </button>
+                </div>
                 <input
-                  name={`profileQuestions[${index}]`}
+                  className="question-text-input"
+                  name={`profileQuestions[${index}].text`}
                   ref={register()}
-                  defaultValue={`Question ${index + 1}`} // make sure to set up defaultValue
+                  defaultValue={`Question ${index + 1} Text`} // make sure to set up defaultValue
                 />
-                <button
-                  className="btn delete-btn"
-                  type="button"
-                  onClick={() => remove(index)}
-                >
-                  Delete
-                </button>
               </div>
             </li>
           ))}
@@ -42,7 +53,7 @@ export const AdvancedDetailsForm: React.FC<AdvancedDetailsProps> = (props) => {
         <button
           className="btn btn-primary"
           type="button"
-          onClick={() => append({})}
+          onClick={() => append({ name: "", text: "" })}
         >
           Add a question
         </button>

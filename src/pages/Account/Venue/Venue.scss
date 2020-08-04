@@ -135,3 +135,20 @@ li.question {
   margin-top: 10px;
   list-style: none;
 }
+
+.question-inputs-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid gray;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.question-name-input {
+  max-width: 50%;
+}
+
+.question-text-input {
+  margin-top: 10px;
+}

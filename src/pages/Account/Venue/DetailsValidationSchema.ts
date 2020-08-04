@@ -3,6 +3,8 @@ import "firebase/functions";
 import { VenueInput } from "api/admin";
 import { TemplateType } from "settings";
 
+type Question = VenueInput["profileQuestions"][number];
+
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     name: Yup.string()
@@ -34,10 +36,13 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
+    // @debt provide some validation error messages for invalid questions
     // advanced options
-    profileQuestions: Yup.array<string>()
+    profileQuestions: Yup.array<Question>()
       .ensure()
-      .transform((val: Array<string>) => val.filter((s) => !!s)) // ensure questions are not empty strings
+      .transform((val: Array<Question>) =>
+        val.filter((s) => !!s.name && !!s.text)
+      ) // ensure questions are not empty strings
       .required(),
   })
   .required();

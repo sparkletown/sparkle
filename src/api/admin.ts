@@ -13,8 +13,13 @@ export interface EventInput {
   price: number;
 }
 
+interface Question {
+  name: string;
+  text: string;
+}
+
 export interface AdvancedVenueInput {
-  profileQuestions: Array<string>;
+  profileQuestions: Array<Question>;
 }
 
 export interface VenueInput extends AdvancedVenueInput {
