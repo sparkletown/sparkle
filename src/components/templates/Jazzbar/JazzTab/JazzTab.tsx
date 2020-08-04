@@ -213,7 +213,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
           />
         </div>
       </div>
-      <ChatDrawer />
+      <ChatDrawer
+        roomName={venue.name}
+        chatInputPlaceholder="Chat to the bar"
+      />
     </>
   );
 };

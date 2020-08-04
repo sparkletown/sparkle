@@ -41,7 +41,7 @@ const ArtPiece = () => {
             />
           </div>
         </div>
-        <ChatDrawer />
+        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
       </div>
     </WithNavigationBar>
   );
