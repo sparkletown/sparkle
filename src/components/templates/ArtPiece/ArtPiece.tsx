@@ -5,6 +5,7 @@ import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import Room from "components/organisms/Room";
 
 const ArtPiece = () => {
   const { venue } = useSelector((state) => ({
@@ -32,6 +33,13 @@ const ArtPiece = () => {
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
+          <div className="video-chat-wrapper">
+            <Room
+              roomName={venue.name}
+              setUserList={() => null}
+              hasChairs={false}
+            />
+          </div>
         </div>
         <ChatDrawer />
       </div>

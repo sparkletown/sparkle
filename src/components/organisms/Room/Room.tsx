@@ -12,14 +12,14 @@ interface RoomProps {
   roomName: string;
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
-  withoutChairs?: boolean;
+  hasChairs?: boolean;
 }
 
 const Room: React.FC<RoomProps> = ({
   roomName,
   setUserList,
   setParticipantCount,
-  withoutChairs,
+  hasChairs = true,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
@@ -171,7 +171,7 @@ const Room: React.FC<RoomProps> = ({
     );
   });
 
-  const emptyComponents = !withoutChairs
+  const emptyComponents = hasChairs
     ? [...Array(participants.length % 2)].map((e, index) => (
         <div
           key={`empty-participant-${index}`}
@@ -184,7 +184,7 @@ const Room: React.FC<RoomProps> = ({
           />
         </div>
       ))
-    : [<></>];
+    : [];
 
   return <>{[meComponent, ...othersComponents, ...emptyComponents]}</>;
 };
