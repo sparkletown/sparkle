@@ -5,18 +5,37 @@ import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import AdminEvent from "./AdminEvent";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { useSelector } from "hooks/useSelector";
 
 const Admin: React.FC = () => {
   const { user } = useUser();
   const { push } = useHistory();
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const venues = useSelector((state) => state.firestore.ordered.venues);
+
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      where: [["owners", "array-contains", user?.uid]],
+    },
+  ]);
 
   return (
     <WithNavigationBar>
       <div className="container admin-container">
         <div className="title">Admin</div>
         <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
+        My Venues
+        {venues?.map((venue) => (
+          <div className="information-card-container admin-item" key={venue.id}>
+            <h4>{venue.name}</h4>
+            <Link to={`/admin/venue/${venue.id}`} className="btn btn-primary">
+              Edit
+            </Link>
+          </div>
+        ))}
         <div className="centered-flex">
           <button
             className="btn btn-primary"
