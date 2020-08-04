@@ -35,6 +35,9 @@ export const validationSchema = Yup.object()
     ),
 
     // advanced options
-    profileQuestions: Yup.array<string>().ensure().required(),
+    profileQuestions: Yup.array<string>()
+      .ensure()
+      .transform((val: Array<string>) => val.filter((s) => !!s)) // ensure questions are not empty strings
+      .required(),
   })
   .required();

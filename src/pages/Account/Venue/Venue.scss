@@ -102,6 +102,13 @@ ul.template-card-list li {
   padding-bottom: 12px;
 }
 
+.advanced-container {
+  background-color: #424242;
+  padding: 5px 20px 10px 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 .advanced-toggle {
   margin-top: 20px;
   padding: 5px;
@@ -117,4 +124,14 @@ ul.template-card-list li {
 .toggle-title {
   flex: 1;
   margin-left: 10px;
+}
+
+.delete-btn {
+  margin-left: 10px;
+  background-color: red !important;
+}
+
+li.question {
+  margin-top: 10px;
+  list-style: none;
 }
