@@ -2,12 +2,19 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const PROJECT_ID = functions.config().project.id;
 
+// interface Question {
+//   name: string;
+//   text: string;
+// }
+
 // interface CreateVenueData {
 //   name: string;
-//   bannerImageUrl: FileList;
-//   logoImageUrl: FileList;
+//   mapIconImageUrl?: string;
+//   bannerImageUrl: string;
+//   logoImageUrl: string;
 //   tagline: string;
 //   longDescription: string;
+//   profileQuestions: Array<Question>
 // }
 
 // interface Venue {
@@ -79,6 +86,8 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
     profile_questions: [{ name: "Dance", text: "Do you dance?" }],
     template: "jazzbar",
     owners: [context.auth.token.user_id],
+    profile_questions: data.profileQuestions,
+    //@debt need to do something with mapIconUrl
   };
 
   await admin
