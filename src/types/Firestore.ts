@@ -48,6 +48,7 @@ export interface Firestore {
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;
     reactions: Record<string, Reaction>;
+    venues?: Record<string, Venue>;
   };
   ordered: {
     currentVenue: Array<WithId<Venue | PartyMapVenue>>;
@@ -61,5 +62,6 @@ export interface Firestore {
     experiences: Array<WithId<Experience>>;
     eventPurchase: Array<WithId<Purchase>>;
     reactions: Array<WithId<Reaction>>;
+    venues?: Array<WithId<Venue>>;
   };
 }

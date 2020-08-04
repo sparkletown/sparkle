@@ -766,3 +766,9 @@ span.link {
 ::-webkit-calendar-picker-indicator {
   filter: invert(1);
 }
+
+.admin-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
