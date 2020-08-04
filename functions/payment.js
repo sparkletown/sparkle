@@ -134,7 +134,7 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     venueId: data.venueId,
     eventId: data.eventId,
     userId: context.auth.token.user_id,
-    status: "PENDING",
+    status: "INITIALIZED",
   });
 
   return {
@@ -162,7 +162,7 @@ exports.setPaymentIntentProcessing = functions.https.onCall(
         .get()
     ).data();
 
-    if (documentToUpdate.status === "PENDING") {
+    if (["INITIALIZED", "FAILED"].includes(documentToUpdate.status)) {
       await admin
         .firestore()
         .collection(PURCHASE_TABLE)
@@ -176,7 +176,7 @@ exports.setPaymentIntentProcessing = functions.https.onCall(
   }
 );
 
-exports.setPaymentIntentPending = functions.https.onCall(
+exports.setPaymentIntentFailed = functions.https.onCall(
   async (data, context) => {
     authenticationCheck(context);
     if (!(data && data.paymentIntentId)) {
@@ -200,7 +200,7 @@ exports.setPaymentIntentPending = functions.https.onCall(
         .collection(PURCHASE_TABLE)
         .doc(data.paymentIntentId)
         .update({
-          status: "PENDING",
+          status: "FAILED",
         });
     }
 
@@ -225,7 +225,7 @@ exports.confirmPaymentIntent = functions.https.onCall(async (data, context) => {
       .get()
   ).data();
 
-  if (!["COMPLETE", "FAILED"].includes(documentToUpdate.status)) {
+  if (documentToUpdate.status === "PROCESSING") {
     await admin
       .firestore()
       .collection(PURCHASE_TABLE)

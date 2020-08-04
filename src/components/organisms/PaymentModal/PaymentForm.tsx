@@ -87,11 +87,6 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       return;
     }
     await operations(stripe, elements);
-    await firebase.functions().httpsCallable("payment-setPaymentIntentPending")(
-      {
-        paymentIntentId,
-      }
-    );
     setIsLoading(false);
   };
 
@@ -115,15 +110,20 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       receipt_email: user.email,
     });
 
-    if (result.error) {
-      setErrorMessage(result.error.message);
-    } else if (result.paymentIntent?.status === "succeeded") {
+    if (result.paymentIntent?.status === "succeeded") {
       setIsPaymentSuccess(true);
       await firebase.functions().httpsCallable("payment-confirmPaymentIntent")({
         paymentIntentId: result.paymentIntent.id,
       });
     } else {
-      setErrorMessage("Payment didn't work, try again");
+      setErrorMessage(
+        result.error?.message || "Payment didn't work, try again"
+      );
+      await firebase
+        .functions()
+        .httpsCallable("payment-setPaymentIntentFailed")({
+        paymentIntentId,
+      });
     }
   };
 
