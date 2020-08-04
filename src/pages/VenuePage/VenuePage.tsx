@@ -3,6 +3,7 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
 import PartyMap from "components/templates/PartyMap";
 import FriendShipPage from "pages/FriendShipPage";
+import ArtPiece from "components/templates/ArtPiece";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
@@ -108,6 +109,9 @@ const VenuePage = () => {
       break;
     case VenueTemplate.partymap:
       template = <PartyMap />;
+      break;
+    case VenueTemplate.artPiece:
+      template = <ArtPiece />;
       break;
   }
 
