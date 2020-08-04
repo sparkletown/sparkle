@@ -162,7 +162,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
             className="btn btn-primary btn-block btn-centered"
             type="submit"
             value="Create"
-            disabled={!formState.isValid || formState.isSubmitting}
+            disabled={formState.isSubmitting}
           />
         </form>
       </div>
