@@ -78,12 +78,12 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           { url: `${match.url}`, label: "Venue Infos" },
           { url: `${match.url}/appearance`, label: "Appearance" },
           { url: `${match.url}/events`, label: "Events" },
-        ].map((l) => (
+        ].map((tab) => (
           <li
-            key={l.url}
-            style={location.pathname === l.url ? { color: "red" } : {}}
+            key={tab.url}
+            style={location.pathname === tab.url ? { color: "red" } : {}}
           >
-            <Link to={l.url}>{l.label}</Link>
+            <Link to={tab.url}>{tab.label}</Link>
           </li>
         ))}
       </ul>
