@@ -5,7 +5,8 @@ export type TemplateType =
   | "ZOOM_ROOM"
   | "THEME_CAMP"
   | "PERFORMANCE_VENUE"
-  | "ART_PIECE";
+  | "ART_PIECE"
+  | "ARTCAR";
 
 export interface Template {
   type: TemplateType;
@@ -36,6 +37,11 @@ export const VENUE_TEMPLATES: Array<Template> = [
   {
     type: "ART_PIECE",
     name: "Art Piece",
+    description: ["Clickable map", "Embed zooms, venues, and so on"],
+  },
+  {
+    type: "ARTCAR",
+    name: "Art Car",
     description: ["Clickable map", "Embed zooms, venues, and so on"],
   },
 ];
