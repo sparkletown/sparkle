@@ -68,5 +68,5 @@ export const VenueWizard: React.FC = () => {
     }
   }, [queryPage, next, previous, state]);
 
-  return <WithNavigationBar>{Page}</WithNavigationBar>;
+  return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;
 };
