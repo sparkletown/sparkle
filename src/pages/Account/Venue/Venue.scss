@@ -101,3 +101,20 @@ ul.template-card-list li {
   padding-top: 12px;
   padding-bottom: 12px;
 }
+
+.advanced-toggle {
+  margin-top: 20px;
+  padding: 5px;
+  border: 2px solid darkgray;
+  background-color: gray;
+  border-radius: 5px;
+}
+
+.advanced-toggle:hover {
+  cursor: pointer;
+}
+
+.toggle-title {
+  flex: 1;
+  margin-left: 10px;
+}

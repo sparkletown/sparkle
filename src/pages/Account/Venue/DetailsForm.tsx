@@ -8,6 +8,9 @@ import "./Venue.scss";
 import * as Yup from "yup";
 import { ImageInput } from "components/molecules/ImageInput";
 import { validationSchema } from "./DetailsValidationSchema";
+import { Accordion, useAccordionToggle } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
@@ -138,6 +141,12 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
             </span>
           )}
         </div>
+        <Accordion>
+          <AccordionButton eventKey="0" />
+          <Accordion.Collapse eventKey="0">
+            <div>ello</div>
+          </Accordion.Collapse>
+        </Accordion>
         <div className="between-flex input-container">
           <div className="wizard-nav-button">
             <button className="btn btn-primary nav-btn" onClick={previous}>
@@ -149,6 +158,20 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
           </div>
         </div>
       </form>
+    </div>
+  );
+};
+
+interface AccordionButtonProps {
+  eventKey: string;
+}
+
+const AccordionButton: React.FC<AccordionButtonProps> = ({ eventKey }) => {
+  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
+  return (
+    <div className="advanced-toggle centered-flex" onClick={decoratedOnClick}>
+      <FontAwesomeIcon icon={faCaretDown} size="lg" />
+      <span className="toggle-title">Advanced Options</span>
     </div>
   );
 };
