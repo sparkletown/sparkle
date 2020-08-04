@@ -1,0 +1,159 @@
+@import "scss/constants";
+
+$top-margin: 20px;
+$vertical-padding: 20px;
+$side-padding: 30px;
+$border-radius: 28px;
+
+.title {
+  text-align: center;
+  font-size: 30px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.wizard-buttons-container {
+  margin-top: 20px;
+}
+
+.form-container {
+  margin-top: $top-margin;
+  padding: $vertical-padding $side-padding;
+  background-color: $light-grey;
+  border-radius: $border-radius;
+}
+
+.title-adornment {
+  color: $yellow;
+}
+
+.form {
+  margin-top: 10px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.input-container {
+  margin-top: 20px;
+}
+
+.input-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input-subtext {
+  margin-left: 10px;
+  font-size: 0.8rem;
+}
+
+.input-square-container {
+  width: 150px;
+  height: 150px;
+}
+
+.input-square-image {
+  height: 100%;
+  object-fit: cover;
+}
+
+.templates-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.template-card {
+  flex: 1;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border-color: gray;
+  background-color: darkgray;
+  box-shadow: 0 1px 3px 0 darkgray;
+}
+
+.template-card:hover {
+  cursor: pointer;
+}
+
+.template-card.selected {
+  box-shadow: 0 0 0 5px lightblue;
+}
+
+.template-card .title {
+  text-align: center;
+  color: $yellow;
+}
+
+ul.template-card-list {
+  list-style-position: inside;
+}
+ul.template-card-list li {
+  left: 0;
+}
+
+.wizard-nav-button {
+  margin-right: 20px;
+}
+
+.btn.nav-btn {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.advanced-container {
+  background-color: #424242;
+  padding: 5px 20px 10px 20px;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.advanced-toggle {
+  margin-top: 20px;
+  padding: 5px;
+  border: 2px solid darkgray;
+  background-color: gray;
+  border-radius: 5px;
+}
+
+.advanced-toggle:hover {
+  cursor: pointer;
+}
+
+.toggle-title {
+  flex: 1;
+  margin-left: 10px;
+}
+
+.delete-btn {
+  margin-left: 10px;
+  background-color: red !important;
+}
+
+li.question {
+  margin-top: 10px;
+  list-style: none;
+}
+
+.question-inputs-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid gray;
+  background-color: gray;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.question-inputs-container input {
+  background-color: #3e3e3e;
+}
+
+.question-name-input {
+  max-width: 50%;
+}
+
+.question-text-input {
+  margin-top: 10px;
+}
