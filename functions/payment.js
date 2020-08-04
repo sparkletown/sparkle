@@ -11,6 +11,16 @@ const stripe = require("stripe")(STRIPE_CONFIG.secret_key);
 const PURCHASE_TABLE = "purchases";
 const CUSTOMER_TABLE = "customers";
 
+const authenticationCheck = (context) => {
+  if (!context.auth || !context.auth.token) {
+    throw new functions.https.HttpsError("unauthenticated", "Please log in");
+  }
+
+  if (context.auth.token.aud !== PROJECT_ID) {
+    throw new functions.https.HttpsError("permission-denied", "Token invalid");
+  }
+};
+
 const getEventPrice = async (venueId, eventId) => {
   const event = (
     await admin
@@ -26,16 +36,7 @@ const getEventPrice = async (venueId, eventId) => {
 
 exports.createCustomerWithPaymentMethod = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth || !context.auth.token) {
-      throw new functions.https.HttpsError("unauthenticated", "Please log in");
-    }
-
-    if (context.auth.token.aud !== PROJECT_ID) {
-      throw new functions.https.HttpsError(
-        "permission-denied",
-        "Token invalid"
-      );
-    }
+    authenticationCheck(context);
 
     if (!data.paymentMethodId) {
       throw new functions.https.HttpsError(
@@ -51,15 +52,12 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
     if (!customer)
       throw new functions.https.HttpsError("unavailable", err.message);
 
-    const paymentMethod = await stripe.paymentMethods.attach(
-      data.paymentMethodId,
-      {
+    try {
+      await stripe.paymentMethods.attach(data.paymentMethodId, {
         customer: customer.id,
-      }
-    );
-
-    if (!paymentMethod) {
-      throw new functions.https.HttpsError("unavailable", err.message);
+      });
+    } catch (err) {
+      return { error: err };
     }
 
     await admin
@@ -71,18 +69,12 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
         customerId: customer.id,
       });
 
-    return;
+    return {};
   }
 );
 
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
+  authenticationCheck(context);
 
   if (
     !(
@@ -96,6 +88,26 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError(
       "invalid-argument",
       "venue, event or return url data missing"
+    );
+  }
+
+  const ticketsBoughtByUserForThisEvent = await admin
+    .firestore()
+    .collection("purchases")
+    .where("userId", "==", context.auth.token.user_id)
+    .where("eventId", "==", data.eventId)
+    .where("venueId", "==", data.venueId)
+    .where("status", "in", [
+      "COMPLETE",
+      "CONFIRMATION_FROM_STRIPE_PENDING",
+      "PROCESSING",
+    ])
+    .get();
+
+  if (!ticketsBoughtByUserForThisEvent.empty) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "the user already paid for this event"
     );
   }
   let eventPrice;
@@ -119,10 +131,108 @@ exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
     venueId: data.venueId,
     eventId: data.eventId,
     userId: context.auth.token.user_id,
-    status: "PENDING",
+    status: "INITIALIZED",
   });
 
-  return { client_secret: paymentIntent.client_secret };
+  return {
+    client_secret: paymentIntent.client_secret,
+    payment_intent_id: paymentIntent.id,
+  };
+});
+
+exports.setPaymentIntentProcessing = functions.https.onCall(
+  async (data, context) => {
+    authenticationCheck(context);
+
+    if (!(data && data.paymentIntentId)) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "payment intent data missing"
+      );
+    }
+
+    const documentToUpdate = (
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .get()
+    ).data();
+
+    if (["INITIALIZED", "FAILED"].includes(documentToUpdate.status)) {
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .update({
+          status: "PROCESSING",
+        });
+    }
+
+    return {};
+  }
+);
+
+exports.setPaymentIntentFailed = functions.https.onCall(
+  async (data, context) => {
+    authenticationCheck(context);
+    if (!(data && data.paymentIntentId)) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "payment intent data missing"
+      );
+    }
+
+    const documentToUpdate = (
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .get()
+    ).data();
+
+    if (documentToUpdate.status === "PROCESSING") {
+      await admin
+        .firestore()
+        .collection(PURCHASE_TABLE)
+        .doc(data.paymentIntentId)
+        .update({
+          status: "FAILED",
+        });
+    }
+
+    return {};
+  }
+);
+
+exports.confirmPaymentIntent = functions.https.onCall(async (data, context) => {
+  authenticationCheck(context);
+  if (!(data && data.paymentIntentId)) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "payment intent data missing"
+    );
+  }
+
+  const documentToUpdate = (
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(data.paymentIntentId)
+      .get()
+  ).data();
+
+  if (documentToUpdate.status === "PROCESSING") {
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(data.paymentIntentId)
+      .update({
+        status: "CONFIRMATION_FROM_STRIPE_PENDING",
+      });
+  }
+
+  return {};
 });
 
 const endpointSecret = STRIPE_CONFIG.endpoint_secret;
@@ -156,8 +266,17 @@ exports.webhooks = functions.https.onRequest(async (request, res) => {
       .update({
         status: "COMPLETE",
       });
-  }
+  } else if (event.type === "charge.failed") {
+    const charge = event.data.object;
 
+    await admin
+      .firestore()
+      .collection(PURCHASE_TABLE)
+      .doc(charge.payment_intent)
+      .update({
+        status: "FAILED",
+      });
+  }
   // Return a response to acknowledge receipt of the event
   return res.status(200).send({ received: true });
 });
