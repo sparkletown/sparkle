@@ -33,13 +33,13 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const uploadLogoRef = storageRef.child(
     `users/${user.uid}/venues/${urlVenueName}/${logoFile.name}`
   );
-  await uploadLogoRef.put(input.logoImageFile[0]);
+  await uploadLogoRef.put(logoFile);
 
   // upload banner file
   const uploadBannerRef = storageRef.child(
     `users/${user.uid}/venues/${urlVenueName}/${bannerFile.name}`
   );
-  await uploadBannerRef.put(input.logoImageFile[0]);
+  await uploadBannerRef.put(bannerFile);
 
   const logoDownloadUrl: string = await uploadLogoRef.getDownloadURL();
   const bannerDownloadUrl: string = await uploadBannerRef.getDownloadURL();
