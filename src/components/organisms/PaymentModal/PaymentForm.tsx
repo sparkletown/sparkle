@@ -75,11 +75,6 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   ) => {
     if (!user) return;
     setIsLoading(true);
-    await firebase
-      .functions()
-      .httpsCallable("payment-setPaymentIntentProcessing")({
-      paymentIntentId,
-    });
     e.preventDefault();
     if (!stripe || !elements) {
       setErrorMessage("Oops something wrong happened");
@@ -100,6 +95,11 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       setErrorMessage("Oops something wrong happened");
       return;
     }
+    await firebase
+      .functions()
+      .httpsCallable("payment-setPaymentIntentProcessing")({
+      paymentIntentId,
+    });
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement) || { token: "" },
@@ -138,12 +138,18 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       if (error) {
         setErrorMessage(error.message);
       } else if (paymentMethod) {
-        await firebase
-          .functions()
-          .httpsCallable("payment-createCustomerWithPaymentMethod")({
-          paymentMethodId: paymentMethod.id,
-        });
-        await pay(stripe, elements);
+        const result = (
+          await firebase
+            .functions()
+            .httpsCallable("payment-createCustomerWithPaymentMethod")({
+            paymentMethodId: paymentMethod.id,
+          })
+        ).data;
+        if (result.error) {
+          setErrorMessage(result.error.raw.message);
+        } else {
+          await pay(stripe, elements);
+        }
       }
     }
   };

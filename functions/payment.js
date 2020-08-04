@@ -52,15 +52,12 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
     if (!customer)
       throw new functions.https.HttpsError("unavailable", err.message);
 
-    const paymentMethod = await stripe.paymentMethods.attach(
-      data.paymentMethodId,
-      {
+    try {
+      await stripe.paymentMethods.attach(data.paymentMethodId, {
         customer: customer.id,
-      }
-    );
-
-    if (!paymentMethod) {
-      throw new functions.https.HttpsError("unavailable", err.message);
+      });
+    } catch (err) {
+      return { error: err };
     }
 
     await admin
@@ -72,7 +69,7 @@ exports.createCustomerWithPaymentMethod = functions.https.onCall(
         customerId: customer.id,
       });
 
-    return;
+    return {};
   }
 );
 
