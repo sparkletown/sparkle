@@ -756,3 +756,7 @@ span.link {
 .image-input .empty .text {
   text-align: center;
 }
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
