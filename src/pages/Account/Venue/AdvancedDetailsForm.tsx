@@ -30,7 +30,7 @@ export const AdvancedDetailsForm: React.FC<AdvancedDetailsProps> = (props) => {
                     className="question-name-input"
                     name={`profileQuestions[${index}].name`}
                     ref={register()}
-                    defaultValue={`Question ${index + 1} Name`} // make sure to set up defaultValue
+                    placeholder={`Question ${index + 1} Name`}
                   />
                   <button
                     className="btn delete-btn"
@@ -44,7 +44,7 @@ export const AdvancedDetailsForm: React.FC<AdvancedDetailsProps> = (props) => {
                   className="question-text-input"
                   name={`profileQuestions[${index}].text`}
                   ref={register()}
-                  defaultValue={`Question ${index + 1} Text`} // make sure to set up defaultValue
+                  placeholder={`Question ${index + 1} Text`}
                 />
               </div>
             </li>

@@ -141,8 +141,13 @@ li.question {
   flex-direction: column;
   justify-content: flex-start;
   border: 1px solid gray;
+  background-color: gray;
   padding: 5px;
   border-radius: 10px;
+}
+
+.question-inputs-container input {
+  background-color: #3e3e3e;
 }
 
 .question-name-input {
