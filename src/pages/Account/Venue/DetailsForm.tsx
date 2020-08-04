@@ -11,12 +11,13 @@ import { validationSchema } from "./DetailsValidationSchema";
 import { Accordion, useAccordionToggle } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { AdvancedDetailsForm } from "./AdvancedDetailsForm";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
 
 export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
-  const { register, handleSubmit, errors, watch, formState } = useForm<
+  const { register, control, handleSubmit, errors, watch, formState } = useForm<
     Partial<Yup.InferType<typeof validationSchema>> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
   >({
     mode: "onSubmit",
@@ -144,7 +145,12 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
         <Accordion>
           <AccordionButton eventKey="0" />
           <Accordion.Collapse eventKey="0">
-            <div>ello</div>
+            <AdvancedDetailsForm
+              register={register}
+              control={control}
+              values={values}
+              errors={errors}
+            />
           </Accordion.Collapse>
         </Accordion>
         <div className="between-flex input-container">

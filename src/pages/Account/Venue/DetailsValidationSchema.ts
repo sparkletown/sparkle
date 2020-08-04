@@ -33,5 +33,8 @@ export const validationSchema = Yup.object()
               )
           : schema.notRequired()
     ),
+
+    // advanced options
+    profileQuestions: Yup.array<string>().ensure().required(),
   })
   .required();

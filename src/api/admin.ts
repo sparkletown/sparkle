@@ -13,7 +13,11 @@ export interface EventInput {
   price: number;
 }
 
-export interface VenueInput {
+export interface AdvancedVenueInput {
+  profileQuestions: Array<string>;
+}
+
+export interface VenueInput extends AdvancedVenueInput {
   name: string;
   bannerImageFile: FileList;
   logoImageFile: FileList;
