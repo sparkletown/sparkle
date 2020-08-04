@@ -8,7 +8,7 @@ const templateImageMap: Record<TemplateType, string> = {
   ART_PIECE: "/venues/venue-art.jpg",
   PERFORMANCE_VENUE: "/venues/venue-performance.jpg",
   THEME_CAMP: "/venues/venue-camp.jpg",
-  ARTCAR: "/venues/venue-artcar.jpg",
+  ART_CAR: "/venues/venue-artcar.jpg",
 };
 
 const templateThumbImageMap: Record<TemplateType, string> = {
@@ -16,7 +16,7 @@ const templateThumbImageMap: Record<TemplateType, string> = {
   ART_PIECE: "/venues/pickspace-thumbnail_art.png",
   PERFORMANCE_VENUE: "/venues/pickspace-thumbnail_performance.png",
   THEME_CAMP: "/venues/pickspace-thumbnail_camp.png",
-  ARTCAR: "/venues/pickspace-thumbnail_artcar.png",
+  ART_CAR: "/venues/pickspace-thumbnail_artcar.png",
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -40,7 +40,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
         {selectedTemplate && (
           <img
             src={templateImageMap[selectedTemplate.type]}
-            alt={"venue"}
+            alt="venue"
             className="venue-art"
           />
         )}
@@ -110,7 +110,7 @@ const TemplateCard: React.FC<TemplateCardProps> = (props) => {
     >
       <div className="centered-flex">
         <div className="pickspace-thumbnail">
-          <img src={templateThumbImageMap[type]} alt={"venue thumb"} />
+          <img src={templateThumbImageMap[type]} alt="venue thumb" />
         </div>
         <div className="flex-one">
           <h3>{name}</h3>

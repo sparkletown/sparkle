@@ -20,7 +20,7 @@ $border-radius: 28px;
   .page-container-left {
     background-color: $black;
     padding-top: 40px;
-    overflow-y: scroll;
+    overflow-y: auto;
     .page-container-left-content {
       max-width: 560px;
       margin-right: 20px;
@@ -30,7 +30,7 @@ $border-radius: 28px;
       display: flex;
       flex-direction: column;
       .scrollable-content {
-        overflow-y: scroll;
+        overflow-y: auto;
         padding-left: 10px;
         padding-right: 20px;
       }
