@@ -45,6 +45,17 @@ $border-radius: 28px;
       }
     }
   }
+  &.preview {
+    background-color: $dark;
+  }
+
+  .venue-preview {
+    margin: 30px;
+    background-color: $black;
+    border-radius: 20px;
+    overflow: auto;
+    border: 2px solid gray;
+  }
 }
 
 .title {

@@ -1,13 +1,13 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { Venue } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
-import EntranceExperience from "components/templates/Jazzbar/EntranceExperience";
 import PartyMapRouter from "components/templates/PartyMap";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { EntranceExperienceReduxProvider } from "components/templates/EntranceExperienceProvider";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 const TemplateRouter = () => {
   useConnectCurrentVenue();
@@ -16,9 +16,7 @@ const TemplateRouter = () => {
   const { user } = useUser();
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
-  })) as {
-    venue: Venue;
-  };
+  }));
 
   if (!venue) {
     return <>Loading...</>;
@@ -27,16 +25,25 @@ const TemplateRouter = () => {
   switch (venue.template) {
     case VenueTemplate.jazzbar:
     case VenueTemplate.artPiece:
-      return <EntranceExperience />;
+      return (
+        <WithNavigationBar>
+          <EntranceExperienceReduxProvider />
+        </WithNavigationBar>
+      );
     case VenueTemplate.partymap:
       if (user) {
         return (
+          // @debt .partymap should use the EntranceExperienceReduxProvider and this should be in VenuePage
           <ChatContextWrapper>
             <PartyMapRouter />
           </ChatContextWrapper>
         );
       }
-      return <EntranceExperience />;
+      return (
+        <WithNavigationBar>
+          <EntranceExperienceReduxProvider />
+        </WithNavigationBar>
+      );
   }
   return <>Error loading venue {venueId}</>;
 };
