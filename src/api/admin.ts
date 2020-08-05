@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import { UserInfo } from "firebase";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
-import { ROOT_URL } from "settings";
 
 export interface EventInput {
   name: string;
@@ -41,8 +40,7 @@ type FirestoreVenueInput = Omit<
   mapIconImageUrl?: string;
 };
 
-export const createUrlSafeName = (name: string) =>
-  `${ROOT_URL}/v/${name.replace(/\W/g, "")}`;
+export const createUrlSafeName = (name: string) => name.replace(/\W/g, "");
 
 export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
