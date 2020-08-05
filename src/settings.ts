@@ -45,5 +45,3 @@ export const VENUE_TEMPLATES: Array<Template> = [
     description: ["Clickable map", "Embed zooms, venues, and so on"],
   },
 ];
-
-export const ROOT_URL = "sparkle.space";

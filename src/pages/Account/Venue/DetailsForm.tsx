@@ -16,7 +16,6 @@ import { EntranceExperiencePreviewProvider } from "components/templates/Entrance
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { venueDefaults } from "./defaults";
-import { ROOT_URL } from "settings";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
@@ -157,7 +156,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     state.templatePage?.template.type === "PERFORMANCE_VENUE";
 
   const urlSafeName = values.name
-    ? `/${ROOT_URL}/v/${createUrlSafeName(values.name)}`
+    ? `${window.location.host}/v/${createUrlSafeName(values.name)}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
