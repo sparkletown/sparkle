@@ -86,7 +86,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           <div
             key={tab.url}
             className={`page-container-adminpanel-tab ${
-              location.pathname === tab.url && "selected"
+              location.pathname === tab.url ? "selected" : ""
             }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
