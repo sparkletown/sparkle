@@ -45,6 +45,7 @@ const VenuePage = () => {
     userPurchaseHistoryRequestStatus:
       state.firestore.status.requested.userPurchaseHistory,
   }));
+
   venue && updateTheme(venue);
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
