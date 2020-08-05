@@ -17,7 +17,7 @@ export interface Template {
 export const VENUE_TEMPLATES: Array<Template> = [
   {
     type: "ZOOM_ROOM",
-    name: "A Zoom Room",
+    name: "Zoom Room",
     description: [
       "Simplist venue",
       "Add a link to zoom room",
@@ -26,7 +26,7 @@ export const VENUE_TEMPLATES: Array<Template> = [
   },
   {
     type: "THEME_CAMP",
-    name: "A Theme Camp",
+    name: "Theme Camp",
     description: ["Clickable map", "Embed zooms, venues, and so on"],
   },
   {
@@ -45,3 +45,5 @@ export const VENUE_TEMPLATES: Array<Template> = [
     description: ["Clickable map", "Embed zooms, venues, and so on"],
   },
 ];
+
+export const ROOT_URL = "sparkle.space";

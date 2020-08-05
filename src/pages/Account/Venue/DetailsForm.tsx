@@ -48,19 +48,25 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
 
-  if (!state.templatePage) previous && previous();
+  if (!state.templatePage) {
+    previous && previous();
+    return null;
+  }
+
   return (
     <div className="page">
       <div className="page-side">
         <div className="page-container-left">
-          <DetailsFormLeft
-            state={state}
-            previous={previous}
-            values={values}
-            isSubmitting={isSubmitting}
-            {...rest}
-            onSubmit={onFormSubmit}
-          />
+          <div className="page-container-left-content">
+            <DetailsFormLeft
+              state={state}
+              previous={previous}
+              values={values}
+              isSubmitting={isSubmitting}
+              {...rest}
+              onSubmit={onFormSubmit}
+            />
+          </div>
         </div>
       </div>
       <div className="page-side preview">
@@ -151,30 +157,32 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   const urlSafeName = values.name ? createUrlSafeName(values.name) : undefined;
   const disable = isSubmitting;
+  const templateType = state.templatePage?.template.name;
 
   return (
-    <>
-      <h3 className="title">
-        Create your space in{" "}
-        <span className="title-adornment">The Sparkleverse</span>
-      </h3>
-      <form className="form" onSubmit={onSubmit}>
+    <form className="full-height-container" onSubmit={onSubmit}>
+      <div className="scrollable-content">
+        <h4 className="italic">{`Create your ${templateType}`}</h4>
+        <p className="small light" style={{ marginBottom: "2rem" }}>
+          You can change anything except for the name of your venue later
+        </p>
         <div className="input-container">
-          <div className="input-title">Name your space</div>
+          <div className="input-title">Name your venue</div>
           <input
             disabled={disable}
             name="name"
             ref={register}
-            className="wide-input-block"
-            placeholder="This can't be changed in the future"
+            className="align-left"
+            style={{ marginBottom: "1rem" }}
+            placeholder={`My ${templateType} name`}
           />
           {errors.name ? (
             <span className="input-error">{errors.name.message}</span>
-          ) : (
-            <div className="input-subtext">
-              {`The URL of your space will be: ${urlSafeName}`}
-            </div>
-          )}
+          ) : urlSafeName ? (
+            <span className="input-info">
+              The URL of your venue will be: <b>{urlSafeName}</b>
+            </span>
+          ) : null}
         </div>
         {isNonMapTemplate && (
           <div className="input-container">
@@ -193,7 +201,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </div>
         )}
         <div className="input-container">
-          <div className="input-title">Upload a banner page photo</div>
+          <div className="input-title">Upload a banner photo</div>
           <ImageInput
             disabled={disable}
             name={"bannerImageFile"}
@@ -215,12 +223,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <div className="input-title">Tagline</div>
+          <div className="input-title">The venue tagline</div>
           <input
             disabled={disable}
             name={"tagline"}
             ref={register}
-            className="wide-input-block"
+            className="wide-input-block align-left"
             placeholder="Briefly say what people will find here"
           />
           {errors.tagline && (
@@ -253,18 +261,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             />
           </Accordion.Collapse>
         </Accordion>
-        <div className="between-flex input-container">
-          <div className="wizard-nav-button">
-            <button className="btn btn-primary nav-btn" onClick={previous}>
-              Go Back
-            </button>
-          </div>
-          <div>
-            <SubmitButton isSubmitting={isSubmitting} />
-          </div>
+      </div>
+      <div className="page-container-left-bottombar">
+        <button className="btn btn-primary nav-btn" onClick={previous}>
+          Go Back
+        </button>
+        <div>
+          <SubmitButton isSubmitting={isSubmitting} />
         </div>
-      </form>
-    </>
+      </div>
+    </form>
   );
 };
 

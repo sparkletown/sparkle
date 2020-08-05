@@ -73,6 +73,7 @@ const TemplateFormLeft: React.FC<TemplateFormLeftProps> = (props) => {
         </div>
       </div>
       <div className="page-container-left-bottombar">
+        <div />
         <button
           disabled={!selectedTemplate}
           className={`btn btn-primary ${!selectedTemplate ? "disabled" : ""}`}
