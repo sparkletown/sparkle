@@ -105,6 +105,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
       host: {
         icon: urlFromImage(values.logoImageFile) ?? venueDefaults.host.icon,
       },
+      owners: [],
       profile_questions:
         values.profileQuestions ?? venueDefaults.profile_questions,
       code_of_conduct_questions: venueDefaults.code_of_conduct_questions,

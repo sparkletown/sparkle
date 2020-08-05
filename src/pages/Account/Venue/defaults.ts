@@ -25,6 +25,7 @@ export const venueDefaults: Venue = {
   host: {
     icon: "/logo512.png",
   },
+  owners: [],
   profile_questions: [],
   code_of_conduct_questions: [],
 };

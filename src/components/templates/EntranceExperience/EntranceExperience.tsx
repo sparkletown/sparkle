@@ -57,7 +57,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
       Date.now() / 1000
   );
 
-  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
 
   venue && updateTheme(venue);
 
