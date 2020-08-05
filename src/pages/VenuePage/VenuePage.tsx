@@ -53,6 +53,8 @@ const VenuePage = () => {
     currentTimestamp >
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
 
@@ -65,30 +67,32 @@ const VenuePage = () => {
     return <>This venue does not exist</>;
   }
 
-  if (eventRequestStatus && !event) {
-    return <>This event does not exist</>;
-  }
+  if (!isUserVenueOwner) {
+    if (eventRequestStatus && !event) {
+      return <>This event does not exist</>;
+    }
 
-  if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
-    return <>Loading...</>;
-  }
+    if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
+      return <>Loading...</>;
+    }
 
-  if (
-    (event.price > 0 &&
-      userPurchaseHistoryRequestStatus &&
-      !hasUserBoughtTicket) ||
-    isEventFinished
-  ) {
-    return <>Forbidden</>;
-  }
+    if (
+      (event.price > 0 &&
+        userPurchaseHistoryRequestStatus &&
+        !hasUserBoughtTicket) ||
+      isEventFinished
+    ) {
+      return <>Forbidden</>;
+    }
 
-  if (!canUserJoinTheEvent(event)) {
-    return (
-      <CountDown
-        startUtcSeconds={event.start_utc_seconds}
-        textBeforeCountdown="Bar opens in"
-      />
-    );
+    if (!canUserJoinTheEvent(event)) {
+      return (
+        <CountDown
+          startUtcSeconds={event.start_utc_seconds}
+          textBeforeCountdown="Bar opens in"
+        />
+      );
+    }
   }
 
   if (profile === undefined) {
