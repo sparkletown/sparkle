@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "firebase/storage";
-import "./Account.scss";
+import "./Admin.scss";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import AdminEvent from "./AdminEvent";
@@ -18,6 +18,10 @@ import { useSelector, useKeyedSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
 import { createUrlSafeName } from "api/admin";
+import InformationCard from "components/molecules/InformationCard";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+dayjs.extend(advancedFormat);
 
 type VenueListProps = {
   selectedVenueId?: string;
@@ -27,19 +31,19 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
   const venues = useSelector((state) => state.firestore.ordered.venues);
   return (
     <>
-      <h4>My Venues</h4>
-      <ul>
+      <div className="page-container-adminsidebar-title">My Venues</div>
+      <ul className="page-container-adminsidebar-venueslist">
         {venues?.map((venue) => (
           <li
             key={venue.id}
-            style={venue.id === selectedVenueId ? { color: "red " } : {}}
+            className={`${selectedVenueId === venue.id ? "selected" : ""}`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
           </li>
         ))}
       </ul>
-      <div className="centered-flex">
-        <Link className="btn btn-primary" to="/admin/venue/creation">
+      <div className="page-container-adminsidebar-bottom">
+        <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -73,35 +77,39 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
 
   return (
     <>
-      <ul>
+      <div className="page-container-adminpanel-tabs">
         {[
           { url: `${match.url}`, label: "Venue Infos" },
-          { url: `${match.url}/appearance`, label: "Appearance" },
+          // { url: `${match.url}/appearance`, label: "Appearance" },
           { url: `${match.url}/events`, label: "Events" },
         ].map((tab) => (
-          <li
+          <div
             key={tab.url}
-            style={location.pathname === tab.url ? { color: "red" } : {}}
+            className={`page-container-adminpanel-tab ${
+              location.pathname === tab.url && "selected"
+            }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
-          </li>
+          </div>
         ))}
-      </ul>
-      <Switch>
-        <Route
-          path={`${match.url}/events`}
-          render={() => <EventsComponent venue={venue} />}
-          venue={venue}
-        />
-        <Route
-          path={`${match.url}/Appearance`}
-          component={() => <>Appearance Component</>}
-        />
-        <Route
-          path={`${match.url}`}
-          component={() => <VenueInfosComponent venue={venue} />}
-        />
-      </Switch>
+      </div>
+      <div className="page-container-adminpanel-venuepage">
+        <Switch>
+          <Route
+            path={`${match.url}/events`}
+            render={() => <EventsComponent venue={venue} />}
+            venue={venue}
+          />
+          <Route
+            path={`${match.url}/Appearance`}
+            component={() => <>Appearance Component</>}
+          />
+          <Route
+            path={`${match.url}`}
+            component={() => <VenueInfosComponent venue={venue} />}
+          />
+        </Switch>
+      </div>
     </>
   );
 };
@@ -109,13 +117,44 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
 const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   return (
     <>
-      <Link
-        to={`/v/${createUrlSafeName(venue.name)}`}
-        target="_blank"
-        rel="noopener noreferer"
-      >
-        Preview
-      </Link>
+      <div className="page-container-adminpanel-content">
+        <div className="container venue-entrance-experience-container">
+          <div
+            className="header"
+            style={{
+              background: `linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.8) 2%,
+            rgba(0, 0, 0, 0) 98%
+          ), url(${venue.config.landingPageConfig.coverImageUrl}`,
+              backgroundSize: "cover",
+            }}
+          >
+            <div className="venue-host">
+              <div className="host-icon-container">
+                <img className="host-icon" src={venue.host.icon} alt="host" />
+              </div>
+              <div className="title">{venue.name}</div>
+              <div className="subtitle">
+                {venue.config.landingPageConfig.subtitle}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="page-container-adminpanel-actions">
+        <Link
+          to={`/v/${createUrlSafeName(venue.name)}`}
+          target="_blank"
+          rel="noopener noreferer"
+          className="btn btn-primary btn-block"
+        >
+          Visit preview page
+        </Link>
+        <Link to="#" className="btn btn-block">
+          Edit venue
+        </Link>
+      </div>
     </>
   );
 };
@@ -136,14 +175,47 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
 
   return (
     <>
-      <ul>
-        {events?.map((event) => (
-          <li key={event.id}>
-            {event.name} - {event.description} (£{event.price})
-          </li>
-        ))}
-      </ul>
-      <div className="centered-flex">
+      <div className="page-container-adminpanel-content">
+        <div className="col-lg-6 col-12 oncoming-events">
+          {events && (
+            <>
+              {events.map((venueEvent) => {
+                const startingDate = new Date(
+                  venueEvent.start_utc_seconds * 1000
+                );
+                const endingDate = new Date(
+                  (venueEvent.start_utc_seconds +
+                    60 * venueEvent.duration_minutes) *
+                    1000
+                );
+                return (
+                  <InformationCard title={venueEvent.name} key={venueEvent.id}>
+                    <div className="date">
+                      {`${dayjs(startingDate).format("ha")}-${dayjs(
+                        endingDate
+                      ).format("ha")} ${dayjs(startingDate).format(
+                        "dddd MMMM Do"
+                      )}`}
+                    </div>
+                    <div className="event-description">
+                      {venueEvent.description}
+                      {venueEvent.descriptions?.map((description, index) => (
+                        <p key={index}>{description}</p>
+                      ))}
+                    </div>
+                    <div className="button-container">
+                      <div className="price-container">
+                        Individual tickets £{venueEvent.price / 100}
+                      </div>
+                    </div>
+                  </InformationCard>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </div>
+      <div className="page-container-adminpanel-actions">
         <button
           className="btn btn-primary"
           onClick={() => setShowCreateEventModal(true)}
@@ -169,20 +241,19 @@ const Admin: React.FC = () => {
   useFirestoreConnect([
     {
       collection: "venues",
-      where: [["owners", "array-contains", user?.uid]],
+      where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
 
   return (
     <WithNavigationBar>
-      <div className="container admin-container">
+      <div className="admin-dashboard">
         <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
-        <div className="title">Admin</div>
-        <div style={{ flex: "1", flexDirection: "row", display: "flex" }}>
-          <div style={{ flex: "0 0 auto", border: "red solid 1px" }}>
+        <div className="page-container page-container_adminview">
+          <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} />
           </div>
-          <div style={{ flex: "1 1 auto", border: "red solid 1px" }}>
+          <div className="page-container-adminpanel">
             {venueId ? (
               <VenueDetails venueId={venueId} />
             ) : (
