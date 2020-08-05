@@ -17,6 +17,7 @@ import { useUser } from "hooks/useUser";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
+import "./VenuePage.scss";
 
 const VenuePage = () => {
   const { venueId } = useParams();
@@ -119,7 +120,14 @@ const VenuePage = () => {
       break;
   }
 
-  return <ChatContextWrapper>{template}</ChatContextWrapper>;
+  return (
+    <ChatContextWrapper>
+      {isUserVenueOwner && (
+        <div className="preview-indication">This is a preview of an event</div>
+      )}
+      {template}
+    </ChatContextWrapper>
+  );
 };
 
 export default VenuePage;

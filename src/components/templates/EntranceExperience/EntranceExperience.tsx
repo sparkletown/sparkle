@@ -250,6 +250,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
                             <EventPaymentButton
                               event={venueEvent}
                               venueId={venueId}
+                              isUserVenueOwner={!!isUserVenueOwner}
                               selectEvent={() => setSelectedEvent(venueEvent)}
                               setIsPaymentModalOpen={setIsPaymentModalOpen}
                               paymentConfirmationPending={
@@ -274,15 +275,12 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
                 </>
               )}
             {isUserVenueOwner && (
-              <InformationCard title="Enter the venue as an admin">
+              <InformationCard title="Preview what an event looks like in your venue">
                 <div className="button-container">
                   <div>This is a fake event. Only you can see it.</div>
                   <Link to={`/v/${venueId}/live`}>
-                    <button
-                      role="link"
-                      className="btn btn-primary buy-tickets-button"
-                    >
-                      Join the event
+                    <button role="link" className="btn btn-primary">
+                      Enter as an admin
                     </button>
                   </Link>
                 </div>
