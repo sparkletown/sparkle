@@ -82,7 +82,7 @@ const TemplateFormLeft: React.FC<TemplateFormLeftProps> = (props) => {
             next({ type: "SUBMIT_TEMPLATE_PAGE", payload: selectedTemplate })
           }
         >
-          Go to your venue
+          Create your space
         </button>
       </div>
     </>

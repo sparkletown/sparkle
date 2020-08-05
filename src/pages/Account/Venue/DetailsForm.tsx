@@ -1,5 +1,5 @@
-import React, { useCallback } from "react";
-import { useForm } from "react-hook-form";
+import React, { useCallback, useMemo } from "react";
+import { useForm, FieldErrors } from "react-hook-form";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
 import { VenueInput, createUrlSafeName, createVenue } from "api/admin";
@@ -12,14 +12,18 @@ import { Accordion, useAccordionToggle } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { AdvancedDetailsForm } from "./AdvancedDetailsForm";
+import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
+import { ExtractProps } from "types/utility";
+import { VenueTemplate } from "types/VenueTemplate";
+import { venueDefaults } from "./defaults";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
 
+type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+
 export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
-  const { register, control, handleSubmit, errors, watch, formState } = useForm<
-    Partial<Yup.InferType<typeof validationSchema>> // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
-  >({
+  const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
@@ -42,8 +46,104 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
     [user]
   );
 
-  if (!state.templatePage) previous && previous();
+  const onFormSubmit = rest.handleSubmit(onSubmit);
 
+  if (!state.templatePage) previous && previous();
+  return (
+    <div className="page">
+      <div className="page-side">
+        <div className="page-container-left">
+          <DetailsFormLeft
+            state={state}
+            previous={previous}
+            values={values}
+            isSubmitting={isSubmitting}
+            {...rest}
+            onSubmit={onFormSubmit}
+          />
+        </div>
+      </div>
+      <div className="page-side preview">
+        <VenuePreview values={values} />
+      </div>
+    </div>
+  );
+};
+
+type Venue = ExtractProps<typeof EntranceExperiencePreviewProvider>["venue"];
+
+interface VenuePreviewProps {
+  values: FormValues;
+}
+
+const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
+  const urlFromImage = useCallback(
+    (files?: FileList) =>
+      files && files.length > 0 ? URL.createObjectURL(files[0]) : undefined,
+    []
+  );
+
+  const previewVenue: Venue = useMemo(
+    () => ({
+      template: VenueTemplate.jazzbar,
+      name: values.name || venueDefaults.name,
+      config: {
+        theme: venueDefaults.config.theme,
+        landingPageConfig: {
+          coverImageUrl:
+            urlFromImage(values.bannerImageFile) ??
+            venueDefaults.config.landingPageConfig.coverImageUrl,
+          subtitle:
+            values.tagline || venueDefaults.config.landingPageConfig.subtitle,
+          presentation: venueDefaults.config.landingPageConfig.presentation,
+          checkList: venueDefaults.config.landingPageConfig.checkList,
+          videoIframeUrl: venueDefaults.config.landingPageConfig.videoIframeUrl,
+          joinButtonText: venueDefaults.config.landingPageConfig.joinButtonText,
+          quotations: venueDefaults.config.landingPageConfig.quotations,
+        },
+      },
+      host: {
+        icon: urlFromImage(values.logoImageFile) ?? venueDefaults.host.icon,
+      },
+      profile_questions:
+        values.profileQuestions ?? venueDefaults.profile_questions,
+      code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
+    }),
+    [values, urlFromImage]
+  );
+
+  return (
+    <div className="venue-preview">
+      <EntranceExperiencePreviewProvider
+        venueRequestStatus
+        venue={previewVenue}
+      />
+    </div>
+  );
+};
+
+interface DetailsFormLeftProps {
+  state: WizardPage["state"];
+  previous: WizardPage["previous"];
+  values: FormValues;
+  isSubmitting: boolean;
+  register: ReturnType<typeof useForm>["register"];
+  control: ReturnType<typeof useForm>["control"];
+  onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
+  errors: FieldErrors<FormValues>;
+}
+
+const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
+  const {
+    state,
+    values,
+    isSubmitting,
+    register,
+    errors,
+    control,
+    previous,
+    onSubmit,
+  } = props;
   // would be nice to access this from the form context but can't find a way
   const isNonMapTemplate =
     state.templatePage?.template.type === "ZOOM_ROOM" ||
@@ -53,12 +153,12 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
   const disable = isSubmitting;
 
   return (
-    <div id="admin-venue" className="container form-container">
+    <>
       <h3 className="title">
         Create your space in{" "}
         <span className="title-adornment">The Sparkleverse</span>
       </h3>
-      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+      <form className="form" onSubmit={onSubmit}>
         <div className="input-container">
           <div className="input-title">Name your space</div>
           <input
@@ -164,7 +264,7 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
           </div>
         </div>
       </form>
-    </div>
+    </>
   );
 };
 
