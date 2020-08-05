@@ -25,5 +25,6 @@ export interface PartyMapVenue extends Venue {
   map_viewbox: string;
   password: string;
   admin_password?: string;
+  owners: string[];
   rooms: RoomData[];
 }

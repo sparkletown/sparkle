@@ -18,6 +18,7 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { Firestore } from "types/Firestore";
+import { Link } from "react-router-dom";
 
 export interface EntranceExperienceProps {
   venue: Firestore["data"]["currentVenue"];
@@ -55,6 +56,8 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
       Date.now() / 1000
   );
+
+  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
 
   venue && updateTheme(venue);
 
@@ -247,6 +250,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
                             <EventPaymentButton
                               event={venueEvent}
                               venueId={venueId}
+                              isUserVenueOwner={!!isUserVenueOwner}
                               selectEvent={() => setSelectedEvent(venueEvent)}
                               setIsPaymentModalOpen={setIsPaymentModalOpen}
                               paymentConfirmationPending={
@@ -270,6 +274,18 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
                   })}
                 </>
               )}
+            {isUserVenueOwner && (
+              <InformationCard title="Check how an event looks like in your venue">
+                <div className="button-container">
+                  <div>This is a fake event. Only you can see it.</div>
+                  <Link to={`/v/${venueId}/live`}>
+                    <button role="link" className="btn btn-primary">
+                      Enter as an admin
+                    </button>
+                  </Link>
+                </div>
+              </InformationCard>
+            )}
           </div>
         </div>
       </div>
