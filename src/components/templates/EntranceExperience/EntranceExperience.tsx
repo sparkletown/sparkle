@@ -275,7 +275,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
                 </>
               )}
             {isUserVenueOwner && (
-              <InformationCard title="Preview what an event looks like in your venue">
+              <InformationCard title="Check how an event looks like in your venue">
                 <div className="button-container">
                   <div>This is a fake event. Only you can see it.</div>
                   <Link to={`/v/${venueId}/live`}>
