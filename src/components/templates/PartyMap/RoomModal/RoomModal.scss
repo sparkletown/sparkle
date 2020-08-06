@@ -1,10 +1,4 @@
 .room-container {
-  .chatbox-container {
-    margin-top: 30px;
-    padding: 0 10px;
-    margin-left: 20px;
-    max-height: 800px;
-  }
   .about-this-room {
     font-size: 20px;
   }
@@ -17,5 +11,14 @@
   }
   .ongoing-event-row {
     align-items: center;
+  }
+  .room-modal-title {
+    margin-top: 20px;
+  }
+  .room-modal-title,
+  .room-modal-subtitle,
+  .about-this-room {
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }

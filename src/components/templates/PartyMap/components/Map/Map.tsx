@@ -1,18 +1,32 @@
 import React from "react";
 import { isRoomValid } from "validation";
 import RoomAttendance from "../RoomAttendance";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./Map.scss";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { RoomData } from "types/RoomData";
 
-export default function Map({ config, attendances }) {
-  const history = useHistory();
+interface PropsType {
+  config: PartyMapVenue;
+  attendances: { [location: string]: number };
+  setSelectedRoom: (room: RoomData) => void;
+  setIsRoomModalOpen: (value: boolean) => void;
+}
 
-  const { url: baseUrl } = useRouteMatch();
-
+const Map: React.FC<PropsType> = ({
+  config,
+  attendances,
+  setSelectedRoom,
+  setIsRoomModalOpen,
+}) => {
   if (!config) {
     return <>{`"Loading map..."`}</>;
   }
+
+  const openRoomModal = (room: RoomData) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  };
 
   return (
     <>
@@ -23,18 +37,15 @@ export default function Map({ config, attendances }) {
               .filter(isRoomValid)
               .filter((r) => r.on_map)
               .map((room, idx) => {
-                const color = "#ffffff33";
                 return (
-                  <a
+                  <path
                     key={idx}
-                    href={
-                      room.url ? `${baseUrl}${room.url}` : room.external_url
-                    }
+                    className="map-clickable-area"
+                    onClick={() => openRoomModal(room)}
+                    d={room.path}
                   >
-                    <path d={room.path} style={{ fill: color }}>
-                      <title>{room.title}</title>
-                    </path>
-                  </a>
+                    <title>{room.title}</title>
+                  </path>
                 );
               })}
           </svg>
@@ -48,11 +59,7 @@ export default function Map({ config, attendances }) {
                 positioned={true}
                 attendance={attendances[room.title]}
                 key={idx}
-                onClick={() =>
-                  history.push(
-                    room.url ? `${baseUrl}${room.url}` : room.external_url
-                  )
-                }
+                onClick={() => openRoomModal(room)}
               />
             ))}
           <img
@@ -65,4 +72,6 @@ export default function Map({ config, attendances }) {
       </div>
     </>
   );
-}
+};
+
+export default Map;

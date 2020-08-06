@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
@@ -14,10 +14,15 @@ import { Map, PartyTitle } from "./components";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { isPartyMapVenue } from "types/PartyMapVenue";
+import { RoomData } from "types/RoomData";
+import RoomModal from "./RoomModal";
 
 const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
+
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<RoomData>();
 
   const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
@@ -93,7 +98,12 @@ const PartyMap = () => {
           <CountDown startUtcSeconds={venue.start_utc_seconds} />
         </div>
         <div className="row">
-          <Map config={venue} attendances={attendances} />
+          <Map
+            config={venue}
+            attendances={attendances}
+            setSelectedRoom={setSelectedRoom}
+            setIsRoomModalOpen={setIsRoomModalOpen}
+          />
         </div>
         <div className="row">
           <div className="col">
@@ -101,6 +111,8 @@ const PartyMap = () => {
               startUtcSeconds={venue.start_utc_seconds}
               rooms={venue.rooms}
               attendances={attendances}
+              setSelectedRoom={setSelectedRoom}
+              setIsRoomModalOpen={setIsRoomModalOpen}
             />
           </div>
           <div className="col-5 chat-wrapper">
@@ -108,6 +120,11 @@ const PartyMap = () => {
           </div>
         </div>
       </div>
+      <RoomModal
+        show={isRoomModalOpen}
+        room={selectedRoom}
+        onHide={() => setIsRoomModalOpen(false)}
+      />
     </WithNavigationBar>
   );
 };
