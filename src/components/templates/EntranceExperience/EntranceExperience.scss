@@ -135,49 +135,50 @@
       margin-bottom: 20px;
     }
   }
-  .oncoming-events {
-    .upcoming-gigs-title {
-      margin: 20px 0;
-      font-size: 25px;
-      font-weight: 700;
-    }
-    h4 {
-      font-size: 30px;
-      font-style: italic;
-    }
-    .date {
-      font-size: 15px;
-      color: $white;
-      margin-bottom: 5px;
-    }
-    .event-description {
-      margin-bottom: 20px;
-      font-size: 15px;
-    }
+}
 
-    .price-container {
-      color: $white;
-      font-size: 17px;
-    }
-    .button-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+.oncoming-events {
+  .upcoming-gigs-title {
+    margin: 20px 0;
+    font-size: 25px;
+    font-weight: 700;
+  }
+  h4 {
+    font-size: 30px;
+    font-style: italic;
+  }
+  .date {
+    font-size: 15px;
+    color: $white;
+    margin-bottom: 5px;
+  }
+  .event-description {
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
 
-      .buy-tickets-button {
-        width: 150px;
-        height: 50px;
-        font-size: 15px;
-      }
+  .price-container {
+    color: $white;
+    font-size: 17px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .buy-tickets-button {
+      width: 150px;
+      height: 50px;
+      font-size: 15px;
     }
-    .disabled {
-      background: rgba($dark, 0.6);
-    }
-    .information-card-container {
-      margin-bottom: 20px;
-      &:last-child {
-        margin-bottom: 50px;
-      }
+  }
+  .disabled {
+    background: rgba($dark, 0.6);
+  }
+  .information-card-container {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 50px;
     }
   }
 }

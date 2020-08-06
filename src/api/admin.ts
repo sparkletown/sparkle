@@ -97,3 +97,14 @@ export const createEvent = async (
 ) => {
   await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
 };
+
+export const updateEvent = async (
+  venueId: string,
+  eventId: string,
+  event: Omit<VenueEvent, "id">
+) => {
+  await firebase
+    .firestore()
+    .doc(`venues/${venueId}/events/${eventId}`)
+    .update(event);
+};
