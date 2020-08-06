@@ -38,7 +38,7 @@ export interface Firestore {
   };
   data: {
     currentVenue: Venue | PartyMapVenue;
-    currentEvent: VenueEvent;
+    currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;

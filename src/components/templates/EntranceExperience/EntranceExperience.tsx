@@ -19,6 +19,7 @@ import { useUser } from "hooks/useUser";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { Firestore } from "types/Firestore";
 import { Link } from "react-router-dom";
+import { WithId } from "utils/id";
 
 export interface EntranceExperienceProps {
   venue: Firestore["data"]["currentVenue"];
@@ -40,7 +41,9 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
   } = props;
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<VenueEvent | undefined>();
+  const [selectedEvent, setSelectedEvent] = useState<
+    WithId<VenueEvent> | undefined
+  >();
   const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
     false
   );
@@ -52,7 +55,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
   const { user } = useUser();
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
-    (event: VenueEvent) =>
+    (event) =>
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
       Date.now() / 1000
   );
@@ -180,7 +183,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
               futureOrOngoingVenueEvents.length > 0 && (
                 <>
                   <div className="upcoming-gigs-title">Upcoming gigs</div>
-                  {futureOrOngoingVenueEvents.map((venueEvent: VenueEvent) => {
+                  {futureOrOngoingVenueEvents.map((venueEvent) => {
                     const startingDate = new Date(
                       venueEvent.start_utc_seconds * 1000
                     );

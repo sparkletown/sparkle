@@ -30,14 +30,14 @@ const VenuePage = () => {
     users,
     userPurchaseHistory,
     userPurchaseHistoryRequestStatus,
-    event,
+    currentEvent,
     eventRequestStatus,
     venueRequestStatus,
   } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
     users: state.firestore.ordered.partygoers,
-    event: state.firestore.data.currentEvent,
+    currentEvent: state.firestore.ordered.currentEvent,
     eventRequestStatus: state.firestore.status.requested.currentEvent,
     eventPurchase: state.firestore.data.eventPurchase,
     eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
@@ -45,6 +45,8 @@ const VenuePage = () => {
     userPurchaseHistoryRequestStatus:
       state.firestore.status.requested.userPurchaseHistory,
   }));
+
+  const event = currentEvent?.[0];
 
   venue && updateTheme(venue);
   const hasUserBoughtTicket =
@@ -55,7 +57,7 @@ const VenuePage = () => {
     currentTimestamp >
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
-  const isUserVenueOwner = user && venue?.owners.includes(user.uid);
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);

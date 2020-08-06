@@ -21,6 +21,7 @@ import { createUrlSafeName } from "api/admin";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import { VenueEvent } from "types/VenueEvent";
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -172,6 +173,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
 
   const events = useSelector((state) => state.firestore.ordered.events);
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
     <>
@@ -207,6 +209,20 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                       <div className="price-container">
                         Individual tickets £{venueEvent.price / 100}
                       </div>
+                      <div className="event-payment-button-container">
+                        <div>
+                          <button
+                            role="link"
+                            className="btn btn-primary buy-tickets-button"
+                            onClick={() => {
+                              setShowCreateEventModal(true);
+                              setEditedEvent(venueEvent);
+                            }}
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </InformationCard>
                 );
@@ -227,8 +243,10 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
+          setEditedEvent(undefined);
         }}
         venueId={venue.id}
+        event={editedEvent}
       />
     </>
   );

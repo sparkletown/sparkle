@@ -91,9 +91,17 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
   );
 };
 
-export const createEvent = async (
-  venueId: string,
-  event: Omit<VenueEvent, "id">
-) => {
+export const createEvent = async (venueId: string, event: VenueEvent) => {
   await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
+};
+
+export const updateEvent = async (
+  venueId: string,
+  eventId: string,
+  event: VenueEvent
+) => {
+  await firebase
+    .firestore()
+    .doc(`venues/${venueId}/events/${eventId}`)
+    .update(event);
 };
