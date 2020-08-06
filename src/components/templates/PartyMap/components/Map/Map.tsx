@@ -1,15 +1,29 @@
 import React from "react";
 import { isRoomValid } from "validation";
 import RoomAttendance from "../RoomAttendance";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./Map.scss";
+import { RoomData } from "types/RoomData";
 
-const Map = ({ config, attendances, setSelectedRoom, setIsRoomModalOpen }) => {
+interface PropsType {
+  config: PartyMapVenue;
+  attendances: { [location: string]: number };
+  setSelectedRoom: (room: RoomData) => void;
+  setIsRoomModalOpen: (value: boolean) => void;
+}
+
+const Map: React.FC<PropsType> = ({
+  config,
+  attendances,
+  setSelectedRoom,
+  setIsRoomModalOpen,
+}) => {
   if (!config) {
     return <>{`"Loading map..."`}</>;
   }
 
-  const openRoomModal = (room) => {
+  const openRoomModal = (room: RoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
   };

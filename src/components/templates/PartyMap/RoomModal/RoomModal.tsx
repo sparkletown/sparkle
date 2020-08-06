@@ -19,7 +19,7 @@ interface PropsType {
   room: RoomData | undefined;
 }
 
-const RoomModal: React.FC<PropsType> = ({ show, onHide, room }: PropsType) => {
+const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { user } = useUser();
   const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
