@@ -1,1 +1,1 @@
-export { default } from "./PartyMapRouter";
+export { default } from "./PartyMapPage";
