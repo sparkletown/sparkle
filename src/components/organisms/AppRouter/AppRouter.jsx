@@ -57,7 +57,7 @@ const AppRouter = () => {
   return (
     <Router basename="/">
       <Switch>
-        <Route path="/SparkleVerse" component={SparkleSpaceMarketingPage} />
+        <Route path="/SparkleVerse" component={() => <Redirect to="https://sparklever.se/" />} />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
