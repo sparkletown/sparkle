@@ -33,6 +33,11 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
   return (
     <>
       <div className="page-container-adminsidebar-title">My Venues</div>
+      <div className="page-container-adminsidebar-top">
+        <Link to="/admin/venue/creation" className="btn btn-primary">
+          Create a venue
+        </Link>
+      </div>
       <ul className="page-container-adminsidebar-venueslist">
         {venues?.map((venue) => (
           <li
@@ -43,11 +48,6 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
           </li>
         ))}
       </ul>
-      <div className="page-container-adminsidebar-bottom">
-        <Link to="/admin/venue/creation" className="btn btn-primary">
-          Create a venue
-        </Link>
-      </div>
     </>
   );
 };
