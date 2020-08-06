@@ -172,9 +172,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   ]);
 
   const events = useSelector((state) => state.firestore.ordered.events);
-  const [showCreateEventModal, setShowCreateEventModal] = useState<boolean>(
-    false
-  );
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
@@ -241,17 +239,15 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
           Create an Event
         </button>
       </div>
-      {showCreateEventModal && (
-        <AdminEvent
-          show={showCreateEventModal}
-          onHide={() => {
-            setShowCreateEventModal(false);
-            setEditedEvent(undefined);
-          }}
-          venueId={venue.id}
-          event={editedEvent}
-        />
-      )}
+      <AdminEvent
+        show={showCreateEventModal}
+        onHide={() => {
+          setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+      />
     </>
   );
 };

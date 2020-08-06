@@ -9,6 +9,7 @@ import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";
 import { Stripe, StripeElements } from "@stripe/stripe-js";
+import { WithId } from "utils/id";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
@@ -16,7 +17,7 @@ interface PropsType {
   setIsCardBeingSaved: (value: boolean) => void;
   isPaymentProceeding: boolean;
   isCardBeingSaved: boolean;
-  event: VenueEvent;
+  event: WithId<VenueEvent>;
 }
 
 const PaymentForm: React.FunctionComponent<PropsType> = ({

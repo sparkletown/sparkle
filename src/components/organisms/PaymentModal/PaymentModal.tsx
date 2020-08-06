@@ -11,11 +11,12 @@ import PaymentConfirmation from "./PaymentConfirmation";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
   show: boolean;
   onHide: () => void;
-  selectedEvent: VenueEvent;
+  selectedEvent: WithId<VenueEvent>;
   setEventPaidSuccessfully: (value: string | undefined) => void;
   eventPaidSuccessfully: string | undefined;
 }

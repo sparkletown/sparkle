@@ -9,9 +9,10 @@ import { canUserJoinTheEvent } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  event: VenueEvent;
+  event: WithId<VenueEvent>;
   venueId: string;
   setIsPaymentModalOpen: (value: boolean) => void;
   selectEvent: () => void;

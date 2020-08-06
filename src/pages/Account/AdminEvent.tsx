@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { VenueEvent } from "types/VenueEvent";
@@ -50,36 +50,41 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   venueId,
   event,
 }) => {
-  let defaultValues: Partial<EventInput> = {};
-  if (event) {
-    defaultValues = {
-      name: event.name,
-      description: event.description,
-      start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-      start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
-      end_date: dayjs
-        .unix(event.start_utc_seconds)
-        .add(event.duration_minutes, "minute")
-        .format("YYYY-MM-DD"),
-      end_time: dayjs
-        .unix(event.start_utc_seconds)
-        .add(event.duration_minutes, "minute")
-        .format("HH:mm"),
-      price: event.price / 100,
-    };
-  }
-  const { register, handleSubmit, errors, formState } = useForm<EventInput>({
+  const { register, handleSubmit, errors, formState, reset } = useForm<
+    EventInput
+  >({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
-    defaultValues,
   });
+
+  useEffect(() => {
+    if (!event) {
+      reset({});
+    } else {
+      reset({
+        name: event.name,
+        description: event.description,
+        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
+        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        end_date: dayjs
+          .unix(event.start_utc_seconds)
+          .add(event.duration_minutes, "minute")
+          .format("YYYY-MM-DD"),
+        end_time: dayjs
+          .unix(event.start_utc_seconds)
+          .add(event.duration_minutes, "minute")
+          .format("HH:mm"),
+        price: event.price / 100,
+      });
+    }
+  }, [event, reset]);
 
   const onSubmit = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const end = dayjs(`${data.end_date} ${data.end_time}`);
-      const formEvent: Omit<VenueEvent, "id"> = {
+      const formEvent: VenueEvent = {
         name: data.name,
         description: data.description,
         start_utc_seconds: start.unix(),
@@ -94,12 +99,12 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [onHide, venueId]
+    [event, onHide, venueId]
   );
   return (
     <Modal show={show} onHide={onHide}>
       <div className="form-container">
-        <h2>Create an event</h2>
+        <h2>{event ? "Edit" : "Create"} an event</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <label htmlFor="name">Name</label>
@@ -187,7 +192,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Create"
+            value={event ? "Update" : "Create"}
             disabled={formState.isSubmitting}
           />
         </form>
