@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import { UserInfo } from "firebase";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
+import { InvalidVenueName } from "errors";
 
 export interface EventInput {
   name: string;
@@ -52,6 +53,13 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
     : undefined;
 
   const urlVenueName = createUrlSafeName(input.name);
+
+  const isVenueNameAlreadyTaken = (
+    await firebase.firestore().collection("venues").doc(urlVenueName).get()
+  ).exists;
+  if (isVenueNameAlreadyTaken) {
+    throw new InvalidVenueName();
+  }
 
   // upload logo file
   const uploadLogoRef = storageRef.child(
