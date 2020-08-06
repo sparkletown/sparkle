@@ -1,0 +1,19 @@
+.venue-map-edition-container {
+  display: flex;
+
+  .left-column {
+    flex: 1;
+    padding: 30px;
+  }
+
+  .right-column {
+    flex: 1;
+    align-items: center;
+    display: flex;
+    height: calc(100vh - 50px);
+  }
+
+  .party-map {
+    width: 100%;
+  }
+}

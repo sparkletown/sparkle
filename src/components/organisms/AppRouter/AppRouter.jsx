@@ -20,6 +20,7 @@ import TemplateRouter from "components/organisms/TemplateRouter";
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Account/Venue/VenueWizard";
+import VenueMapEdition from "pages/Account/Venue/VenueMapEdition";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -63,6 +64,7 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/admin/venue/creation" component={VenueWizard} />
+        <Route path="/admin/venue/:venueId/map" component={VenueMapEdition} />
         <Route path="/admin/venue/:venueId" component={Admin} />
         <Route path="/admin" component={Admin} />
         <Route path="/v/:venueId/live" component={VenuePage} />

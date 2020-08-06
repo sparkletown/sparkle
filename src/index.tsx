@@ -34,6 +34,8 @@ import {
   PROJECT_ID,
 } from "./secrets";
 import * as serviceWorker from "./serviceWorker";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -102,13 +104,15 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 
 render(
   <Elements stripe={stripePromise}>
-    <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <AuthIsLoaded>
-          <AppRouter />
-        </AuthIsLoaded>
-      </ReactReduxFirebaseProvider>
-    </Provider>
+    <DndProvider backend={HTML5Backend}>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <AuthIsLoaded>
+            <AppRouter />
+          </AuthIsLoaded>
+        </ReactReduxFirebaseProvider>
+      </Provider>
+    </DndProvider>
   </Elements>,
   document.getElementById("root")
 );
