@@ -4,10 +4,15 @@ import RoomAttendance from "../RoomAttendance";
 
 import "./Map.scss";
 
-const Map = ({ config, attendances, setSelectedRoom }) => {
+const Map = ({ config, attendances, setSelectedRoom, setIsRoomModalOpen }) => {
   if (!config) {
     return <>{`"Loading map..."`}</>;
   }
+
+  const openRoomModal = (room) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  };
 
   return (
     <>
@@ -22,7 +27,7 @@ const Map = ({ config, attendances, setSelectedRoom }) => {
                   <path
                     key={idx}
                     className="map-clickable-area"
-                    onClick={() => setSelectedRoom(room)}
+                    onClick={() => openRoomModal(room)}
                     d={room.path}
                   >
                     <title>{room.title}</title>
@@ -40,7 +45,7 @@ const Map = ({ config, attendances, setSelectedRoom }) => {
                 positioned={true}
                 attendance={attendances[room.title]}
                 key={idx}
-                onClick={() => setSelectedRoom(room)}
+                onClick={() => openRoomModal(room)}
               />
             ))}
           <img

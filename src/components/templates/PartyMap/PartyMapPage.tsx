@@ -21,7 +21,8 @@ const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
-  const [selectedRoom, setSelectedRoom] = useState<RoomData | undefined>();
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<RoomData>();
 
   const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
@@ -101,6 +102,7 @@ const PartyMap = () => {
             config={venue}
             attendances={attendances}
             setSelectedRoom={setSelectedRoom}
+            setIsRoomModalOpen={setIsRoomModalOpen}
           />
         </div>
         <div className="row">
@@ -110,6 +112,7 @@ const PartyMap = () => {
               rooms={venue.rooms}
               attendances={attendances}
               setSelectedRoom={setSelectedRoom}
+              setIsRoomModalOpen={setIsRoomModalOpen}
             />
           </div>
           <div className="col-5 chat-wrapper">
@@ -117,13 +120,11 @@ const PartyMap = () => {
           </div>
         </div>
       </div>
-      {selectedRoom && (
-        <RoomModal
-          show={true}
-          room={selectedRoom}
-          onHide={() => setSelectedRoom(undefined)}
-        />
-      )}
+      <RoomModal
+        show={isRoomModalOpen}
+        room={selectedRoom}
+        onHide={() => setIsRoomModalOpen(false)}
+      />
     </WithNavigationBar>
   );
 };

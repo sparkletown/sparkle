@@ -10,6 +10,7 @@ interface PropsType {
   rooms: RoomData[];
   attendances: Record<string, number>;
   setSelectedRoom: (value: RoomData) => void;
+  setIsRoomModalOpen: (value: boolean) => void;
 }
 
 const RoomList: React.FunctionComponent<PropsType> = ({
@@ -17,10 +18,16 @@ const RoomList: React.FunctionComponent<PropsType> = ({
   rooms,
   attendances,
   setSelectedRoom,
+  setIsRoomModalOpen,
 }) => {
   rooms = rooms.filter(
     (room) => room.on_list && eventHappeningNow(room, startUtcSeconds)
   );
+
+  const openModal = (room: RoomData) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  };
 
   return (
     <>
@@ -34,7 +41,7 @@ const RoomList: React.FunctionComponent<PropsType> = ({
             startUtcSeconds={startUtcSeconds}
             room={room}
             attendance={attendances[room.title]}
-            onClick={() => setSelectedRoom(room)}
+            onClick={() => openModal(room)}
           />
         ))}
       </div>

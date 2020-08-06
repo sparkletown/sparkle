@@ -16,10 +16,10 @@ import { RoomData } from "types/RoomData";
 interface PropsType {
   show: boolean;
   onHide: () => void;
-  room: RoomData;
+  room: RoomData | undefined;
 }
 
-const RoomModal = ({ show, onHide, room }: PropsType) => {
+const RoomModal: React.FC<PropsType> = ({ show, onHide, room }: PropsType) => {
   const { user } = useUser();
   const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
@@ -32,6 +32,8 @@ const RoomModal = ({ show, onHide, room }: PropsType) => {
   function enter() {
     room && user && enterRoom(user, room.title);
   }
+
+  if (!room) return <></>;
 
   const currentEvent =
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
