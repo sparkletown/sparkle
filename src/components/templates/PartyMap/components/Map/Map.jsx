@@ -3,13 +3,8 @@ import { isRoomValid } from "validation";
 import RoomAttendance from "../RoomAttendance";
 
 import "./Map.scss";
-import { useHistory, useRouteMatch } from "react-router-dom";
 
-export default function Map({ config, attendances }) {
-  const history = useHistory();
-
-  const { url: baseUrl } = useRouteMatch();
-
+const Map = ({ config, attendances, setSelectedRoom }) => {
   if (!config) {
     return <>{`"Loading map..."`}</>;
   }
@@ -23,18 +18,15 @@ export default function Map({ config, attendances }) {
               .filter(isRoomValid)
               .filter((r) => r.on_map)
               .map((room, idx) => {
-                const color = "#ffffff33";
                 return (
-                  <a
+                  <path
                     key={idx}
-                    href={
-                      room.url ? `${baseUrl}${room.url}` : room.external_url
-                    }
+                    className="map-clickable-area"
+                    onClick={() => setSelectedRoom(room)}
+                    d={room.path}
                   >
-                    <path d={room.path} style={{ fill: color }}>
-                      <title>{room.title}</title>
-                    </path>
-                  </a>
+                    <title>{room.title}</title>
+                  </path>
                 );
               })}
           </svg>
@@ -48,11 +40,7 @@ export default function Map({ config, attendances }) {
                 positioned={true}
                 attendance={attendances[room.title]}
                 key={idx}
-                onClick={() =>
-                  history.push(
-                    room.url ? `${baseUrl}${room.url}` : room.external_url
-                  )
-                }
+                onClick={() => setSelectedRoom(room)}
               />
             ))}
           <img
@@ -65,4 +53,6 @@ export default function Map({ config, attendances }) {
       </div>
     </>
   );
-}
+};
+
+export default Map;

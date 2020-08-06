@@ -1,39 +1,30 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import { getCurrentEvent } from "utils/time";
 import RoomModalOngoingEvent from "components/templates/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
 import { enterRoom } from "utils/useLocationUpdateEffect";
-import { updateTheme } from "pages/VenuePage/helpers";
-import "./RoomPage.scss";
+import "./RoomModal.scss";
 import { User } from "types/User";
 import { User as FUser } from "firebase";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
+import { RoomData } from "types/RoomData";
 
-export default function RoomPage() {
-  const { roomPath } = useParams(); //@debt typing - we should type this hook
+interface PropsType {
+  show: boolean;
+  onHide: () => void;
+  room: RoomData;
+}
 
+const RoomModal = ({ show, onHide, room }: PropsType) => {
   const { user } = useUser();
   const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
   })) as { users: User[]; user: FUser; venue: PartyMapVenue };
-
-  if (!venue || !user) {
-    return null;
-  }
-
-  const room = venue.rooms.find((r) => r.url === `/${roomPath}`);
-
-  if (!room) {
-    return null;
-  }
-
-  venue && updateTheme(venue);
 
   const usersToDisplay =
     users?.filter((user) => user.room === room?.title) ?? [];
@@ -46,7 +37,7 @@ export default function RoomPage() {
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
-    <Modal show={true}>
+    <Modal show={show} onHide={onHide}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">
@@ -94,4 +85,6 @@ export default function RoomPage() {
       </div>
     </Modal>
   );
-}
+};
+
+export default RoomModal;

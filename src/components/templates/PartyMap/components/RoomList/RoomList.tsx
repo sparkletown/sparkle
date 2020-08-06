@@ -9,12 +9,14 @@ interface PropsType {
   startUtcSeconds: number;
   rooms: RoomData[];
   attendances: Record<string, number>;
+  setSelectedRoom: (value: RoomData) => void;
 }
 
 const RoomList: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   rooms,
   attendances,
+  setSelectedRoom,
 }) => {
   rooms = rooms.filter(
     (room) => room.on_list && eventHappeningNow(room, startUtcSeconds)
@@ -32,6 +34,7 @@ const RoomList: React.FunctionComponent<PropsType> = ({
             startUtcSeconds={startUtcSeconds}
             room={room}
             attendance={attendances[room.title]}
+            onClick={() => setSelectedRoom(room)}
           />
         ))}
       </div>
