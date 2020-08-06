@@ -14,7 +14,9 @@ export const venueDefaults: Venue = {
     },
     landingPageConfig: {
       coverImageUrl: "/default-profile-pic.png",
-      subtitle: "A glorious venue",
+      subtitle: "Briefly say what people will find here",
+      description:
+        "Describe what is unique and wonderful and sparkling about your venue",
       checkList: ["Listen to incredible music", "hang out with mates"],
       presentation: ["Listen to incredible music", "hang out with mates"],
       videoIframeUrl: "https://www.youtube.com/embed/aFfLdgmgLSg",

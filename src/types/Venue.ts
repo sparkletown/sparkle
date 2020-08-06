@@ -1,7 +1,6 @@
 import { VenueTemplate } from "./VenueTemplate";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { RoomData } from "./RoomData";
 
 interface Question {
   name: string;
@@ -21,9 +20,10 @@ export interface Venue {
     landingPageConfig: {
       coverImageUrl: string;
       subtitle: string;
+      description?: string;
       presentation: string[];
       checkList: string[];
-      videoIframeUrl: string;
+      videoIframeUrl?: string;
       joinButtonText: string;
       quotations?: Quotation[];
     };
