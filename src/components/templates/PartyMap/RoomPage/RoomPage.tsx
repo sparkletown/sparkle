@@ -1,11 +1,9 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { getCurrentEvent } from "utils/time";
-import Chatbox from "components/organisms/Chatbox";
 import RoomModalOngoingEvent from "components/templates/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { updateTheme } from "pages/VenuePage/helpers";
 import "./RoomPage.scss";
@@ -14,6 +12,7 @@ import { User as FUser } from "firebase";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { Modal } from "react-bootstrap";
 
 export default function RoomPage() {
   const { roomPath } = useParams(); //@debt typing - we should type this hook
@@ -47,7 +46,7 @@ export default function RoomPage() {
     room.events && getCurrentEvent(room, venue.start_utc_seconds);
 
   return (
-    <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
+    <Modal show={true}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">
@@ -71,7 +70,7 @@ export default function RoomPage() {
             </div>
           </div>
         </div>
-        <UserList users={usersToDisplay} limit={11} activity={"in this room"} />
+        <UserList users={usersToDisplay} limit={11} activity="in this room" />
         {room.about && <div className="about-this-room">{room.about}</div>}
         <div className="row">
           {room.events && room.events.length > 0 && (
@@ -91,11 +90,8 @@ export default function RoomPage() {
               ))}
             </div>
           )}
-          <div className="col-5 chatbox-container">
-            <Chatbox room={room.title} />
-          </div>
         </div>
       </div>
-    </WithNavigationBar>
+    </Modal>
   );
 }
