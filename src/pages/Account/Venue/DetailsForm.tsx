@@ -126,7 +126,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         values.profileQuestions ?? venueDefaults.profile_questions,
       code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
     }),
-    [values, urlFromImage]
+    [values, urlFromImage, templateName]
   );
 
   return (
