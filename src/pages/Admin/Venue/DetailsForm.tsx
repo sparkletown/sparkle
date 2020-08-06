@@ -1,3 +1,7 @@
+import React, { useCallback, useMemo, useState } from "react";
+import { useForm, FieldErrors } from "react-hook-form";
+import "firebase/functions";
+import { useUser } from "hooks/useUser";
 import {
   createUrlSafeName,
   createVenue,
@@ -7,9 +11,6 @@ import {
 } from "api/admin";
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
-import { useUser } from "hooks/useUser";
-import React, { useCallback, useMemo } from "react";
-import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/JazzbarVenue";
 import * as Yup from "yup";
@@ -27,6 +28,7 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
 } from "settings";
+import { InvalidVenueName } from "errors";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -58,6 +60,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+  const [submissionError, setSubmissionError] = useState<string | undefined>();
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -67,7 +70,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         else await createVenue(vals as VenueInput, user);
         history.push("/admin");
       } catch (e) {
-        console.error(e);
+        if (e instanceof InvalidVenueName) {
+          setSubmissionError(e.message);
+        } else {
+          console.error(e);
+        }
       }
     },
     [user, editing, history]
@@ -90,6 +97,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               previous={previous}
               values={values}
               isSubmitting={isSubmitting}
+              submissionError={submissionError}
               {...rest}
               onSubmit={onFormSubmit}
               editing={editing}
@@ -114,6 +122,7 @@ interface DetailsFormLeftProps {
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
   editing?: boolean;
+  submissionError: string | undefined;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
@@ -126,6 +135,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     errors,
     previous,
     onSubmit,
+    submissionError,
   } = props;
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -150,9 +160,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             name="name"
             ref={register}
-            className="align-left"
+            className="align-left no-margin-bottom"
             placeholder={`My ${templateType} name`}
           />
+          <div className="input-error submission-error">{submissionError}</div>
           {errors.name ? (
             <span className="input-error">{errors.name.message}</span>
           ) : urlSafeName ? (
@@ -313,10 +324,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     </form>
   );
 };
-
-interface AccordionButtonProps {
-  eventKey: string;
-}
 
 interface SubmitButtonProps {
   isSubmitting: boolean;
