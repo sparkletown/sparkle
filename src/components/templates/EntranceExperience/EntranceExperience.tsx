@@ -132,30 +132,39 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
             <div>
-              {venue.config.landingPageConfig.checkList &&
-                venue.config.landingPageConfig.checkList.map(
-                  (checkListItem: string, index: number) => (
-                    <div
-                      key={`checklist-item-${index}`}
-                      className="checklist-item"
-                    >
-                      <div className="check-icon-container">
-                        <FontAwesomeIcon icon={faCheckCircle} />
+              <div
+                style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
+              >
+                {venue.config.landingPageConfig.description}
+              </div>
+              <div>
+                {venue.config.landingPageConfig.checkList &&
+                  venue.config.landingPageConfig.checkList.map(
+                    (checkListItem: string, index: number) => (
+                      <div
+                        key={`checklist-item-${index}`}
+                        className="checklist-item"
+                      >
+                        <div className="check-icon-container">
+                          <FontAwesomeIcon icon={faCheckCircle} />
+                        </div>
+                        <div>{checkListItem}</div>
                       </div>
-                      <div>{checkListItem}</div>
-                    </div>
-                  )
-                )}
+                    )
+                  )}
+              </div>
             </div>
-            <iframe
-              title="entrance video"
-              width="100%"
-              height="300"
-              className="youtube-video"
-              src={venue.config.landingPageConfig.videoIframeUrl}
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-            />
+            {venue.config.landingPageConfig.videoIframeUrl && (
+              <iframe
+                title="entrance video"
+                width="100%"
+                height="300"
+                className="youtube-video"
+                src={venue.config.landingPageConfig.videoIframeUrl}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+              />
+            )}
             {venue.config.landingPageConfig.quotations &&
               venue.config.landingPageConfig.quotations.map(
                 (quotation, index) => (

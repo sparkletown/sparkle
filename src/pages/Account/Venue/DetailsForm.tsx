@@ -16,9 +16,7 @@ import { EntranceExperiencePreviewProvider } from "components/templates/Entrance
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { venueDefaults } from "./defaults";
-
-const LONG_DESCRIPTION_PLACEHOLDER =
-  "Describe what is unique and wonderful and sparkling about your venue";
+import { useHistory } from "react-router-dom";
 
 type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -31,6 +29,7 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
     defaultValues: {},
   });
   const { user } = useUser();
+  const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
   const onSubmit = useCallback(
@@ -39,11 +38,13 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
       const values = vals as VenueInput; // unfortunately the typing is off for react-hook-forms.
       try {
         await createVenue(values, user);
+        // redirect to admin page
+        history.push("/admin");
       } catch (e) {
         console.error(e);
       }
     },
-    [user]
+    [user, history]
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
@@ -70,7 +71,10 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
         </div>
       </div>
       <div className="page-side preview">
-        <VenuePreview values={values} />
+        <VenuePreview
+          values={values}
+          templateName={state.templatePage?.template.name}
+        />
       </div>
     </div>
   );
@@ -80,9 +84,13 @@ type Venue = ExtractProps<typeof EntranceExperiencePreviewProvider>["venue"];
 
 interface VenuePreviewProps {
   values: FormValues;
+  templateName?: string;
 }
 
-const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
+const VenuePreview: React.FC<VenuePreviewProps> = ({
+  values,
+  templateName,
+}) => {
   const urlFromImage = useCallback(
     (files?: FileList) =>
       files && files.length > 0 ? URL.createObjectURL(files[0]) : undefined,
@@ -92,7 +100,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
   const previewVenue: Venue = useMemo(
     () => ({
       template: VenueTemplate.jazzbar,
-      name: values.name || venueDefaults.name,
+      name: values.name || `My ${templateName} name`,
       config: {
         theme: venueDefaults.config.theme,
         landingPageConfig: {
@@ -101,11 +109,13 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
             venueDefaults.config.landingPageConfig.coverImageUrl,
           subtitle:
             values.tagline || venueDefaults.config.landingPageConfig.subtitle,
-          presentation: venueDefaults.config.landingPageConfig.presentation,
-          checkList: venueDefaults.config.landingPageConfig.checkList,
-          videoIframeUrl: venueDefaults.config.landingPageConfig.videoIframeUrl,
+          description:
+            values.longDescription ||
+            venueDefaults.config.landingPageConfig.description,
+          presentation: [],
+          checkList: [],
           joinButtonText: venueDefaults.config.landingPageConfig.joinButtonText,
-          quotations: venueDefaults.config.landingPageConfig.quotations,
+          quotations: [],
         },
       },
       host: {
@@ -116,7 +126,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ values }) => {
         values.profileQuestions ?? venueDefaults.profile_questions,
       code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
     }),
-    [values, urlFromImage]
+    [values, urlFromImage, templateName]
   );
 
   return (
@@ -232,7 +242,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"tagline"}
             ref={register}
             className="wide-input-block align-left"
-            placeholder="Briefly say what people will find here"
+            placeholder={venueDefaults.config.landingPageConfig.subtitle}
           />
           {errors.tagline && (
             <span className="input-error">{errors.tagline.message}</span>
@@ -245,7 +255,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"longDescription"}
             ref={register}
             className="wide-input-block input-centered align-left"
-            placeholder={LONG_DESCRIPTION_PLACEHOLDER}
+            placeholder={venueDefaults.config.landingPageConfig.description}
           />
           {errors.longDescription && (
             <span className="input-error">

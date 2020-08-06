@@ -115,11 +115,15 @@ const TemplateCard: React.FC<TemplateCardProps> = (props) => {
         </div>
         <div className="flex-one">
           <h3>{name}</h3>
-          <ul>
-            {description.map((bullet, idx) => (
-              <li key={idx}>{bullet}</li>
-            ))}
-          </ul>
+          {description.length === 1 ? (
+            <div>{description[0]}</div>
+          ) : (
+            <ul>
+              {description.map((bullet, idx) => (
+                <li key={idx}>{bullet}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

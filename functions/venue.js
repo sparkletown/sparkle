@@ -69,6 +69,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
         coverImageUrl: data.bannerImageUrl,
         eventbriteEventId: "00000000000",
         joinButtonText: "Enter our venue",
+        description: data.longDescription,
       },
     },
     presentation: [data.longDescription],
