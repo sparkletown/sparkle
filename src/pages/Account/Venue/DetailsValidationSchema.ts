@@ -2,6 +2,7 @@ import * as Yup from "yup";
 import "firebase/functions";
 import { VenueInput } from "api/admin";
 import { TemplateType } from "settings";
+import firebase from "firebase/app";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -9,6 +10,18 @@ export const validationSchema = Yup.object()
   .shape<VenueInput>({
     name: Yup.string()
       .required("Display name required")
+      .test(
+        "dfsd",
+        "This venue name is already taken",
+        async (val: string) =>
+          !(
+            await firebase
+              .firestore()
+              .collection("venues")
+              .doc(val.replace(/\W/g, ""))
+              .get()
+          ).exists
+      )
       .test(
         "dfsd",
         "Must have alphanumeric characters",

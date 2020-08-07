@@ -186,7 +186,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name="name"
             ref={register}
             className="align-left"
-            style={{ marginBottom: "1rem" }}
             placeholder={`My ${templateType} name`}
           />
           {errors.name ? (

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -104,10 +104,19 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     }
   }, [participant, muted, audioTracks]);
 
+  const videos = useMemo(
+    () => (
+      <>
+        <video ref={videoRef} autoPlay={true} />
+        <audio ref={audioRef} autoPlay={true} />
+      </>
+    ),
+    []
+  );
+
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
-      <video ref={videoRef} autoPlay={true} />
-      <audio ref={audioRef} autoPlay={true} />
+      {videos}
       <div className="profile-icon">
         <UserProfilePicture
           user={{ ...profileData, id: participant.identity }}
