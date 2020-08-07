@@ -55,7 +55,7 @@ const VenuePage = () => {
     currentTimestamp >
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
-  const isUserVenueOwner = user && venue?.owners.includes(user.uid);
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
