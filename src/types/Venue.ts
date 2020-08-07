@@ -9,7 +9,7 @@ interface Question {
 }
 
 export interface Venue {
-  id?: string;
+  parentId?: string;
   template: VenueTemplate;
   name: string;
   config: {

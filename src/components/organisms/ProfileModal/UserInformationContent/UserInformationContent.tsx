@@ -2,7 +2,6 @@ import React from "react";
 import { QuestionType } from "types/Question";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { Venue } from "types/Venue";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { useUser } from "hooks/useUser";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
@@ -20,16 +19,10 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   hideModal,
 }) => {
   const { user, profile } = useUser();
-  const { venue, profileQuestions } = useSelector(
-    (state) =>
-      ({
-        profileQuestions: state.firestore.data.currentVenue.profile_questions,
-        venue: state.firestore.ordered.currentVenue[0],
-      } as {
-        venue: Venue;
-        profileQuestions: QuestionType[];
-      })
-  );
+  const { venue, profileQuestions } = useSelector((state) => ({
+    profileQuestions: state.firestore.data.currentVenue.profile_questions,
+    venue: state.firestore.ordered.currentVenue[0],
+  }));
 
   const history = useHistory();
   const firebase = useFirebase();

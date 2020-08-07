@@ -5,9 +5,7 @@ import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import "./RoomModal.scss";
-import { User } from "types/User";
-import { User as FUser } from "firebase";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { isPartyMapVenue } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
@@ -24,7 +22,11 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
-  })) as { users: User[]; user: FUser; venue: PartyMapVenue };
+  }));
+
+  if (!isPartyMapVenue(venue)) {
+    return <></>;
+  }
 
   const usersToDisplay =
     users?.filter((user) => user.room === room?.title) ?? [];

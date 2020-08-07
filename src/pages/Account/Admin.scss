@@ -85,7 +85,7 @@ $page-max-width: 1240px;
             }
             ul.page-container-adminsidebar-subvenueslist {
               list-style-type: none;
-              display: none;
+              display: block;
               li {
                 text-indent: 20px;
                 opacity: 0.5;
@@ -95,9 +95,9 @@ $page-max-width: 1240px;
               &:after {
                 transform: rotate(180deg);
               }
-              ul.page-container-adminsidebar-subvenueslist {
-                display: block;
-              }
+              // ul.page-container-adminsidebar-subvenueslist {
+              //   display: block;
+              // }
             }
           }
         }
