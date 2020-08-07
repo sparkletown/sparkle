@@ -33,32 +33,9 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           width: `${table.columns && (table.columns + 1) * 55}px`,
         }}
       >
-        <div
-          className={`table-occupancy-information ${
-            locked || full ? "red-text" : "green-text"
-          }`}
-        >
-          {locked ? (
-            "locked"
-          ) : full ? (
-            "full"
-          ) : (
-            <div
-              className="join-text"
-              onClick={() =>
-                onJoinClicked(table.reference, locked, nameOfVideoRoom)
-              }
-            >
-              open
-            </div>
-          )}
+        <div className="table-occupancy-information red-text">
+          {locked ? "locked" : full ? "full" : ""}
         </div>
-        {numberOfSeatsLeft && numberOfSeatsLeft > 0 && (
-          <div className="remaining-seats">
-            {numberOfSeatsLeft} {numberOfSeatsLeft === 1 ? "seat" : "seats"}{" "}
-            left
-          </div>
-        )}
         <div className="table-number">{table.title}</div>
 
         {usersSeatedAtTable &&
