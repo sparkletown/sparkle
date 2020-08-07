@@ -1,11 +1,14 @@
-import React, { useMemo, useCallback, useReducer } from "react";
+import React, { useMemo, useCallback, useReducer, useEffect } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import "./Venue.scss";
 import { TemplateForm } from "./TemplateForm";
 import { DetailsForm } from "./DetailsForm";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
-import { Template } from "settings";
+import { Template, VENUE_TEMPLATES } from "settings";
+import { useFirestore } from "react-redux-firebase";
+import { Venue } from "types/Venue";
+import { venueTemplateToTemplateType } from "types/VenueTemplate";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -17,11 +20,19 @@ interface WizardFormState {
   templatePage?: {
     template: Template;
   };
+  detailsPage?: {
+    venue: Venue;
+  };
 }
-type WizardActions = {
-  type: "SUBMIT_TEMPLATE_PAGE";
-  payload: Template;
-};
+type WizardActions =
+  | {
+      type: "SUBMIT_TEMPLATE_PAGE";
+      payload: Template;
+    }
+  | {
+      type: "SUBMIT_DETAILS_PAGE";
+      payload: Venue;
+    };
 
 const initialState = {};
 
@@ -32,12 +43,58 @@ const reducer = (
   switch (action.type) {
     case "SUBMIT_TEMPLATE_PAGE":
       return { ...state, templatePage: { template: action.payload } };
+    case "SUBMIT_DETAILS_PAGE":
+      return { ...state, detailsPage: { venue: action.payload } };
     default:
       throw new Error();
   }
 };
 
 export const VenueWizard: React.FC = () => {
+  const { venueId } = useParams();
+
+  return venueId ? (
+    <VenueWizardEdit venueId={venueId} />
+  ) : (
+    <VenueWizardCreate />
+  );
+};
+
+interface VenueWizardEditProps {
+  venueId: string;
+}
+
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
+  // get the venue
+  const firestore = useFirestore();
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(() => {
+    const f = async () => {
+      const venueSnapshot = await firestore
+        .collection("venues")
+        .doc(venueId)
+        .get();
+      if (!venueSnapshot.exists) return;
+      const data = venueSnapshot.data() as Venue;
+      //find the template
+      const template = VENUE_TEMPLATES.find(
+        (template) =>
+          venueTemplateToTemplateType[data.template] === template.type
+      );
+      if (!template) return;
+
+      // ensure reducer is synchronised with API data
+      dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
+      dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: data });
+    };
+    f();
+  }, [firestore, venueId]);
+
+  if (!state.detailsPage) return <div>Loading...</div>;
+  return <DetailsForm editing state={state} />;
+};
+const VenueWizardCreate: React.FC = () => {
   const history = useHistory();
   const queryParams = useQuery();
   const [state, dispatch] = useReducer(reducer, initialState);

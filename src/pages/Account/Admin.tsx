@@ -102,7 +102,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
   const venue = venues[venueId];
 
   if (!venue) {
-    return <>Oops, seems we can't find your venue!</>;
+    return <>{`Oops, seems we can't find your venue!`}</>;
   }
 
   return (
@@ -181,7 +181,10 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         >
           Visit preview page
         </Link>
-        <Link to="#" className="btn btn-block">
+        <Link
+          to={`/admin/venue/edit/${createUrlSafeName(venue.name)}`}
+          className="btn btn-block"
+        >
           Edit venue
         </Link>
         {canHaveSubvenues(venue) && (
