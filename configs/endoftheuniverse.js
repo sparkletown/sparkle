@@ -8,13 +8,14 @@ const midnight_event = {
   interactivity: "high",
 };
 
-const TODO_events = [
+const default_events = [
   {
     start_minute: 0,
     duration_minutes: 240,
     host: "Co-reality Collective",
     name: "First half of the party",
-    text: "TODO",
+    text:
+      "This room doesn't have an events program. Why not jump in and see what you find!",
     interactivity: "high",
   },
   midnight_event,
@@ -23,10 +24,27 @@ const TODO_events = [
     duration_minutes: 210,
     host: "Co-reality Collective",
     name: "Second half of the party",
-    text: "TODO",
+    text:
+      "This room doesn't have an events program. Why not jump in and see what you find!",
     interactivity: "high",
   },
 ];
+
+const generateEvent = (
+  start_minute,
+  duration_minutes,
+  host,
+  name,
+  text,
+  interactivity
+) => ({
+  start_minute,
+  duration_minutes,
+  host: host || "Co-reality Collective",
+  name,
+  text,
+  interactivity: interactivity || "high",
+});
 
 const generateEvents = (title) => [
   {
@@ -54,8 +72,7 @@ module.exports = {
   description: {
     text: "The last party you'll ever go to; just not chronologically",
   },
-  // start_utc_seconds: 1596913200,
-  start_utc_seconds: 1596803110,
+  start_utc_seconds: 1596913200,
   duration_hours: 8,
   entrance_hosted_hours: 3,
   party_name: "Party at the End of the Universe",
@@ -146,7 +163,8 @@ module.exports = {
   rooms: [
     {
       title: "BYO Party: Space Loo",
-      subtitle: "An unhosted space where screenshare is permitted",
+      subtitle:
+        "NOTHING HAPPENS HERE UNLESS YOU MAKE IT HAPPEN (Screen Share Is Permitted Here!)",
       external_url:
         "https://us02web.zoom.us/j/86238134181?pwd=UExXUldBalBZbzdwVzRQYTBrY1VWdz09",
       on_map: true,
@@ -156,11 +174,56 @@ module.exports = {
       attendance_x: "13%",
       attendance_y: "5%",
       image: "CRC_EndOfUniverse_Room_SpaceLoo.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          0,
+          60,
+          "you!",
+          "Be Your Own Party",
+          "DIS-KAUS-TANG which one of you’s didn’t flush?"
+        ),
+        generateEvent(
+          60,
+          60,
+          "you!",
+          "I’m Trapped!",
+          "The lock is broken, please send help..."
+        ),
+        generateEvent(
+          120,
+          60,
+          "you!",
+          "Strange Noises",
+          "What strange noises can you hear? What noises will you make? Make them as loud and obnoxious as possible."
+        ),
+        generateEvent(
+          180,
+          60,
+          "you!",
+          "My keys and my phone have been sucked in to the Space Loo",
+          "TI reached in to get them now there’s all these insects crawling over my arms. Can you help me pick them off?"
+        ),
+        midnight_event,
+        generateEvent(
+          270,
+          90,
+          "you!",
+          "Stay Away From The Toilet",
+          "People are starting to disappear."
+        ),
+        generateEvent(360, 60, "you!", "Add Bleach", "This is so much worse."),
+        generateEvent(
+          420,
+          60,
+          "you!",
+          "Singing in Utter Despair",
+          "Is that all there is?"
+        ),
+      ],
     },
     {
       title: "Conversation, Q&A: Worm Whole",
-      subtitle: "A healing space",
+      subtitle: "WHOLESOME INVERTEBRATE FRIENDLY IMMERSIVE EXPERIENCES",
       external_url:
         "https://us02web.zoom.us/j/87418882738?pwd=MGNIZDJCbk9jSDRaM0V5aFlFSGxaUT09",
       on_map: true,
@@ -170,7 +233,23 @@ module.exports = {
       attendance_x: "33%",
       attendance_y: "18%",
       image: "CRC_EndOfUniverse_Room_WormWhole.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          30,
+          120,
+          "Intergalactic Centipede Crew",
+          "The Intergalactic Centipede",
+          "Join us for an hour-long journey of self-discovery to explore the far edge of your comfort zone and beyond!\n\nThe intergalactic centipede will be leaving on its voyage through the wormhole every 10 minutes...only one will be chosen - be The One!\n\n(Last centipede departs at 10.30pm UK time/ 2.30pm PST)"
+        ),
+        generateEvent(
+          150,
+          90,
+          "Space Grandma",
+          "Space Grandma’s Tea Room",
+          "Come experience worm love with Space Grandma! Everyone is welcome at Grandma’s Tea Time!"
+        ),
+        midnight_event,
+      ],
     },
     {
       title: "Dancing & DJs: Shake Your Asteroid",
@@ -185,7 +264,51 @@ module.exports = {
       attendance_x: "22%",
       attendance_y: "31%",
       image: "CRC_EndOfUniverse_Room_Asteroid.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          30,
+          90,
+          "Maximitosis",
+          "Come shake your Asteroids on the dancefloor",
+          "Maximitosis commences launch with some star killer Bass"
+        ),
+        generateEvent(
+          120,
+          60,
+          "Behindthebeats",
+          "Party like there's no tomorrow with Behindthebeats",
+          "Because there isn't..."
+        ),
+        generateEvent(
+          180,
+          60,
+          "DJ Affinity",
+          "Take us to your DJ it's Code Affinity",
+          "With alien sounds & galaxy music."
+        ),
+        midnight_event,
+        generateEvent(
+          270,
+          90,
+          "Anonemau5",
+          "Anonymau5 will rebirth the music",
+          "The music will be the last sounds of the universe."
+        ),
+        generateEvent(
+          360,
+          120,
+          "Shake Your Asteroid DJs",
+          "The DJ plays the Universe out before the end of the Universe.",
+          "Save the last dance for me!"
+        ),
+        generateEvent(
+          480,
+          90,
+          "Shake Your Asteroid DJs",
+          "Closing Ceremony",
+          "Closing Ceremony for the End of the Universe"
+        ),
+      ],
     },
     {
       title: "Live Cabaret: Apocalyse Meow Cabaret",
@@ -199,7 +322,129 @@ module.exports = {
       attendance_x: "17%",
       attendance_y: "46%",
       image: "CRC_EndOfUniverse_Room_ApocalypseMeowCabaret.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          90,
+          30,
+          "Apocalyse Meow UK Crew",
+          "UK Takeover",
+          [
+            "Ben of the Green: Comedy and Musical Madness",
+            "Tinika Belle: LED Ninja",
+            "Ludoler of the North: Beatboxing Genre - Fluid Mistro of Bass",
+          ].join("\n")
+        ),
+        generateEvent(
+          120,
+          30,
+          "Apocalyse Meow UK Crew",
+          "UK Takeover",
+          [
+            "The Queen of Heartbreak: Comedy Poet",
+            "Betty Hayes: Planet D.I.S.C.O Space Captain",
+            "Matt Mooks: Fire Starting Juggling Master of the Universe",
+          ].join("\n")
+        ),
+        generateEvent(
+          150,
+          30,
+          "Apocalyse Meow UK Crew",
+          "UK Takeover",
+          [
+            "Shelly Skye: LED Hoop Lessons of Consciousness",
+            "Thomas Florence: Psychological Illusionist and Escapologist",
+          ].join("\n")
+        ),
+        generateEvent(
+          180,
+          60,
+          "Apocalyse Meow UK Crew",
+          "UK Takeover",
+          ["Open Stage Renegade Style:", "Anything Could Happen..."].join("\n")
+        ),
+        midnight_event,
+        generateEvent(
+          300,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Opening Ceremony: Dance w/ Space Cats",
+            "JVILL: Hip Hop Flow Artist",
+            "Cybil Unrest: California’s Darling of Discord",
+          ].join("\n")
+        ),
+        generateEvent(
+          330,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Star Maiden: Storytelling Through Dance",
+            "Guy Vigor: The BBoy of Boylesque",
+            "Julia Muse: Witch Craft Dance for Collective Liberation",
+            "Qu’in De La Noche: Professional Tease & Queen the Damned",
+          ].join("\n")
+        ),
+        generateEvent(
+          360,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Chris Marcum: Boylesque & Hip Hop Brat",
+            "Miss Amber Lust: The Goth Gata From Panama",
+            "Elektra Gray: The Bandit of Burlesque",
+            "Morticia LaMarr: Our Sultry Spectre",
+            "Diamond Reign Purr - forming Polesque",
+          ].join("\n")
+        ),
+        generateEvent(
+          390,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Your Favorite Feral Showgirl Vixi Vale",
+            "Knaughty Nebula Our Ethereal Burlesque Beauty",
+            "HoolaHoop Burlesque Purrr - formance w / Planetary Hues",
+            "Cybil Unrest sharing some Rawwwrr Expert - Tease",
+          ].join("\n")
+        ),
+        generateEvent(
+          420,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Hip Hop Dances",
+            "Bare Elegance Burlesque Babes",
+            "Purrr - Formance by Truth or Dare Productions",
+            "Acapella Song & Dance w / Star Maiden and",
+            "Get Cosmic w / Planetary Hues",
+          ].join("\n")
+        ),
+        generateEvent(
+          450,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "Fire Purr-formances w/ Diamond  Julia & Qu’in",
+            "DJ & Free Style Dance W / Puurr - fomers",
+          ].join("\n")
+        ),
+        generateEvent(
+          480,
+          30,
+          "Apocalyse Meow US Crew",
+          "US Takeover",
+          [
+            "AFTERPARTY!!!",
+            "Music by MR RAD | Josh is Your Guide | Eluid",
+          ].join("\n")
+        ),
+      ],
     },
     {
       title: "Salon & Q&A: The Oat Milky Way",
@@ -214,7 +459,16 @@ module.exports = {
       attendance_x: "35%",
       attendance_y: "56%",
       image: "CRC_EndOfUniverse_Room_OatMilkyWay.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          30,
+          210,
+          "Ed Cooke",
+          "Online Burn vs Regular Burn?",
+          'Join us in the Oat Millky Way to learn and contribute as we discuss the ups and downs of an online answer to "That Thing in the Desert". Can an online burn really be better than a dusty week with strangers?'
+        ),
+        midnight_event,
+      ],
     },
     {
       title: "Midnight Ritual, Q&A: Stardust",
@@ -228,7 +482,43 @@ module.exports = {
       attendance_x: "53%",
       attendance_y: "18%",
       image: "CRC_EndOfUniverse_Room_Stardust.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          30,
+          90,
+          "Nagle",
+          "The Serenade",
+          "Let Nagle Bone take you away to another place."
+        ),
+        generateEvent(
+          120,
+          60,
+          "Mara d’Or & Lindy Larsson",
+          "The Space Vaudeville",
+          "Mara d’Or & Lindy Larsson, Sweden’s premier talent will dazzle you."
+        ),
+        generateEvent(
+          180,
+          60,
+          "Michael Ronen",
+          "Space Odyssey",
+          "Michael Ronen bring back your memories from EARTH"
+        ),
+        generateEvent(
+          240,
+          30,
+          null,
+          "MIDNIGHT RITUAL",
+          "Join us at midnight UK time for our traditional midnight ritual."
+        ),
+        generateEvent(
+          300,
+          180,
+          null,
+          "The Quintessential Wonder Nasty",
+          "A cabaret presentation"
+        ),
+      ],
     },
     {
       title: "Immersive Theatre: XNN Colony Fantasea Rocket",
@@ -243,12 +533,56 @@ module.exports = {
       attendance_x: "63%",
       attendance_y: "40%",
       image: "CRC_EndOfUniverse_Room_FantaSea.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          0,
+          60,
+          "XNN Fantasea Crew",
+          "XNN Afterlife Services",
+          "Join the office of Afterlife Processing. Meet Grim Rita. What lies beyond? An intimate look of our lust for life."
+        ),
+        generateEvent(
+          60,
+          60,
+          "XNN Fantasea Crew",
+          "Post Stasis Exercise",
+          "Defeat muscle wastage! Shake your booty, your mind and your face in zero G with the XNN Fantasea Crew."
+        ),
+        generateEvent(
+          120,
+          60,
+          "XNN Fantasea Crew",
+          "Mess Hall Hell Yeah",
+          "Someone came into the airlock with a strange new friend. It is adorable but it hurts to be around it. What’s going on?"
+        ),
+        generateEvent(
+          180,
+          60,
+          "XNN Fantasea Crew",
+          "Apocalyptic Admin Dance Off & Panic",
+          "The universe is ending. Come get a cup of tea, sit back and bathe in the existential dread that is now upon us. Shit."
+        ),
+        midnight_event,
+        generateEvent(
+          270,
+          90,
+          "XNN Fantasea Crew",
+          "DARK MATTERS",
+          "Explore your DARK SIDE in a secret occult art museum! 💀ARK"
+        ),
+        generateEvent(
+          360,
+          180,
+          "XNN Fantasea Crew",
+          "DARK MATTERS - Continued",
+          "Plumb the depths of your soul in a chamber of black magic💀"
+        ),
+      ],
     },
     {
       title: "DDP Disco Space Barge",
       subtitle:
-        "With love to the Distributed Dance Party, a space journey like no other.",
+        "An Interstellar Disco Barge that perambulates all Zoom realms. Commences as a Virtual Art Car, followed by an acceleration into virtual / terrestrial afterparty dimensions!",
       external_url: "https://bit.ly/virtualddp",
       on_map: true,
       on_list: true,
@@ -257,7 +591,30 @@ module.exports = {
       attendance_x: "51%",
       attendance_y: "84%",
       image: "CRC_EndOfUniverse_Room_DDP.png",
-      events: TODO_events,
+      events: [
+        midnight_event,
+        generateEvent(
+          330,
+          30,
+          "Distributed Dance Party",
+          "PRE-PARTY TIME",
+          "We begin calibrating our warp drive(s) and banana boosters and may or may not let you aboard!"
+        ),
+        generateEvent(
+          360,
+          120,
+          "Distributed Dance Party",
+          "PARTY TIME",
+          "DDP Disco Barge Virtual Art Car perambulates across all Zoom Realms. All are welcome aboard!"
+        ),
+        generateEvent(
+          480,
+          180,
+          "Distributed Dance Party",
+          "DDP AFTERPARTY",
+          "The 100% Open family-friendly hybrid virtual/terrestrial Party commences! 3+ hours of mirth and merriment!"
+        ),
+      ],
     },
     {
       title: "Wish Upon A Star",
@@ -272,7 +629,30 @@ module.exports = {
       attendance_x: "63%",
       attendance_y: "10%",
       image: "CRC_EndOfUniverse_Room_WishUponAStar.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          0,
+          60,
+          null,
+          "Inner Space",
+          "Deep Dive Into Our Multidimensional Innerverse & Potent Limitless Potentials As Eternal Star Beings."
+        ),
+        generateEvent(
+          60,
+          60,
+          null,
+          "Outer Space",
+          "Intentioning in our manifestations into the physical reality."
+        ),
+        generateEvent(
+          120,
+          60,
+          null,
+          "The Space Around the Corner",
+          "What will you create? With whom will you co-create?"
+        ),
+        midnight_event,
+      ],
     },
     {
       title: "Games and Fun: Escape Pod",
@@ -286,7 +666,23 @@ module.exports = {
       attendance_x: "90%",
       attendance_y: "6%",
       image: "CRC_EndOfUniverse_Room_EscapePod.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          60,
+          120,
+          null,
+          "Universal Complaints Department",
+          "Has the Universe refused to meet your expectations? Do you need to formalise your dissatisfaction with someone? Come and file a complaint with the (un)Official Complaints Department. Silly bureaucracy and red tape aplenty. Frustration guaranteed."
+        ),
+        midnight_event,
+        generateEvent(
+          300,
+          60,
+          null,
+          "Escape To The Intergalactic Mystery Game Show",
+          "OH NO! You need to escape! From what? That’s up to you, but there isn’t enough SPACE in the escape pod for everyone! Do you and your space crew have what it takes to come aboard? Compete against crews from across the galaxy to gain entry to a different dimension!"
+        ),
+      ],
     },
     {
       title: "Women's Space: Goddess Galaxy",
@@ -300,7 +696,58 @@ module.exports = {
       attendance_x: "88%",
       attendance_y: "32%",
       image: "CRC_EndOfUniverse_Room_GoddessGalaxy.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          120,
+          60,
+          "CRC Women",
+          "Womb Clearing & Activation Ceremony",
+          "Guided Visual Embodiment Practice w/ Creatrix of Awakening  the Womb, Healing Arts Teacher, Initiated Magdalena Rose Womb Priestess & Guide Cherezade."
+        ),
+        generateEvent(
+          180,
+          60,
+          "CRC Women",
+          "Awakening Your Divine Femininity",
+          "Ella Alexandria Love is a transformation Midwife & Women’s Empowerment Leader. She deeply understands a woman’s duty to awaken themselves as sovereign beings and devotes her life to support us in doing so."
+        ),
+        midnight_event,
+        generateEvent(
+          300,
+          60,
+          "CRC Women",
+          "Moving Heavy in to Light",
+          "Prayerformer and Healer Alesha Howard extends an invitation to come together in sisterhood to recognize, observe, actively listen and possibly release heavy emotions."
+        ),
+        generateEvent(
+          360,
+          60,
+          "CRC Women",
+          "Spaceholding for Space Holders",
+          "How to gracefully show up for tribe whilst honoring your energetic life force. Lisa Dang invites hearts to discuss tools, offer suggestions & consider sustainability in the practice of Spaceholding."
+        ),
+        generateEvent(
+          420,
+          60,
+          "CRC Women",
+          "Living Life More Golden: Women’s Circle",
+          [
+            "Coming more deeply into your own. Honoring & governing your unique sacral life energy from the heart. Empowering your creative, sexual sovereignty.",
+            "",
+            "W/ Visionary Artist, DJ, Dancer and Facilitator of conscious (womens) events Anthe Aelea",
+          ].join("\n")
+        ),
+        generateEvent(
+          540,
+          60,
+          "CRC Women",
+          "Movement is Medicine Dance",
+          [
+            "Musical Journey by MR RAD & Josh is Your Guide",
+            "Open to All. Feel into the FREEquency.",
+          ].join("\n")
+        ),
+      ],
     },
     {
       title: "International Donation Station",
@@ -311,7 +758,15 @@ module.exports = {
       path:
         "M 2811.664 1499.392 C 2836.556 1437.164 2790.471 1409.886 2772.782 1356.825 C 2764.248 1331.224 2792.373 1311.162 2801.944 1292.021 C 2817.795 1260.319 2822.95 1224.015 2857.027 1201.296 C 2936.761 1148.139 3065.524 1137.055 3155.123 1181.855 C 3170.746 1189.666 3214.454 1183.367 3226.407 1201.296 C 3266.118 1260.861 3266.012 1361.132 3242.608 1431.349 C 3226.59 1479.406 3201.983 1578.9 3164.844 1616.039 C 3052.342 1728.539 2863.17 1719.037 2788.983 1570.676 C 2775.846 1544.404 2818.145 1513.135 2818.145 1492.912",
       image: "CRC_EndOfUniverse_Room_IDS.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          0,
+          480,
+          null,
+          "Donations open",
+          "Donations will go to supporting the artists who create the wondrous experiences you are enjoying tonight."
+        ),
+      ],
     },
     {
       title: "Powered By SparkleVerse",
@@ -326,7 +781,23 @@ module.exports = {
       attendance_x: "87%",
       attendance_y: "79%",
       image: "CRC_EndOfUniverse_Room_SparkleVerse.png",
-      events: TODO_events,
+      events: [
+        generateEvent(
+          120,
+          120,
+          "Jess & the SparkleVerse Team",
+          "Webinar",
+          "Join us to find out more about co-creating with us in the SparkleVerse, one of the universes in the online burn multiverse. Find out how to bring your camp, art car, performances and art installations to the online burn, including demos, walkthroughs, Q&A and more."
+        ),
+        midnight_event,
+        generateEvent(
+          300,
+          120,
+          "Jess, Thomas & the SparkleVerse Team",
+          "Webinar",
+          "Join us to find out more about co-creating with us in the SparkleVerse, one of the universes in the online burn multiverse. Find out how to bring your camp, art car, performances and art installations to the online burn, including demos, walkthroughs, Q&A and more."
+        ),
+      ],
     },
     {
       title: "Co-reality Collective",
@@ -336,7 +807,7 @@ module.exports = {
       on_list: false,
       path:
         "M 1042.527018929285 1471.0404914277135 C 1035.9019317514092 1437.9135511626034 1039.4167048394663 1385.2403482708153 1003.6449584960938 1367.35498046875 C 951.3499012144292 1341.2081906325884 829.1640055766802 1348.8307450724797 773.5923461914062 1367.35498046875 C 728.5245983833549 1382.3778460518736 610.5795087433229 1364.8598175280722 569.461181640625 1351.154052734375 C 535.2069395211914 1339.7362588026633 483.5901470011408 1342.6500220603166 449.5745849609375 1351.154052734375 C 412.88172903610604 1360.327417911607 350.1400013269086 1347.913818359375 310.2469787597656 1347.913818359375 C 248.3069122015262 1347.913818359375 190.14233194811825 1361.0200410055536 141.7577667236328 1393.2763671875 C 129.95787331153292 1401.1429504469952 90.49071423257209 1424.1652718349953 96.395263671875 1441.87890625 C 113.78456060260015 1494.046756097184 214.848947601336 1510.4005780231723 264.8844909667969 1493.7218017578125 C 313.86287611160384 1477.395417097568 385.35603157855985 1493.7218017578125 436.6139221191406 1493.7218017578125 C 570.7086375141512 1493.7218017578125 702.7750332360697 1503.4423828125 841.6360473632812 1503.4423828125 C 890.5813923671703 1503.4423828125 962.8482329399104 1506.0203228178495 1006.8851928710938 1484.001220703125 C 1028.936913466822 1472.9750488610746 1055.48779296875 1495.8416554097653 1055.48779296875 1467.80029296875",
-      events: TODO_events,
+      events: default_events,
     },
     {
       title: "What does the future hold?",

@@ -40,7 +40,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             by <b>{event.host}</b>
           </div>
         </div>
-        <div className="event-description">{event.text}</div>
+        <div className="event-description">
+          {(event.text || "").split("\n").map((p: any) => (
+            <p>{p}</p>
+          ))}
+        </div>
       </div>
       {isCurrentEvent && (
         <div className="entry-room-button">
