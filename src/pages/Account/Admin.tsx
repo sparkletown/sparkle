@@ -17,7 +17,6 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector, useKeyedSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
-import { createUrlSafeName } from "api/admin";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -174,17 +173,14 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={`/v/${createUrlSafeName(venue.name)}`}
+          to={`/v/${venue.id}`}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"
         >
           Visit preview page
         </Link>
-        <Link
-          to={`/admin/venue/edit/${createUrlSafeName(venue.name)}`}
-          className="btn btn-block"
-        >
+        <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
           Edit venue
         </Link>
         {canHaveSubvenues(venue) && (

@@ -70,7 +70,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    const f = async () => {
+    const fetchVenueFromAPI = async () => {
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
@@ -88,7 +88,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
       dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
       dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: data });
     };
-    f();
+    fetchVenueFromAPI();
   }, [firestore, venueId]);
 
   if (!state.detailsPage) return <div>Loading...</div>;

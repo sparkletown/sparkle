@@ -68,6 +68,7 @@ export const validationSchema = Yup.object()
 
 type EditVenueInputs = Pick<
   VenueInputEdit,
+  | "name"
   | "bannerImageFile"
   | "logoImageFile"
   | "mapIconImageFile"
@@ -79,6 +80,7 @@ type EditVenueInputs = Pick<
 export const editVenueValidationSchema = validationSchema.shape<
   EditVenueInputs
 >({
+  name: Yup.string().required(),
   bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
   logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
   mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),

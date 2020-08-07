@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
+const { checkAuth } = require("./auth");
 const PROJECT_ID = functions.config().project.id;
 
 // interface Question {
@@ -57,7 +58,6 @@ const createVenueData = (data, context) => ({
     landingPageConfig: {
       checkList: ["Enjoy our amazing venue"],
       coverImageUrl: data.bannerImageUrl,
-      eventbriteEventId: "00000000000",
       joinButtonText: "Enter our venue",
       subtitle: data.tagline,
       description: data.longDescription,
@@ -82,13 +82,7 @@ const createVenueData = (data, context) => ({
 });
 
 exports.createVenue = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
+  checkAuth(context);
 
   // @debt this should be typed
   const venueData = createVenueData(data, context);
@@ -103,13 +97,8 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
+  console.log("HELLO");
+  checkAuth(context);
 
   // @debt this should be typed
   const venueData = createVenueData(data, context);
