@@ -17,4 +17,5 @@ export const venueTemplateToTemplateType: Record<
   [VenueTemplate.friendship]: "ZOOM_ROOM",
   [VenueTemplate.partymap]: "THEME_CAMP",
   [VenueTemplate.artPiece]: "ZOOM_ROOM",
+  [VenueTemplate.camp]: "THEME_CAMP",
 };
