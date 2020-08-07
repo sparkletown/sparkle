@@ -8,3 +8,15 @@
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+.rooms-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: auto;
+  padding: 30px;
+}
+
+.rooms-container {
+  display: flex;
+  flex-wrap: wrap;
+}
