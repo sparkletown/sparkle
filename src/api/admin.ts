@@ -40,7 +40,8 @@ type FirestoreVenueInput = Omit<
   mapIconImageUrl?: string;
 };
 
-export const createUrlSafeName = (name: string) => name.replace(/\W/g, "");
+export const createUrlSafeName = (name: string) =>
+  name.replace(/\W/g, "").toLowerCase();
 
 export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();

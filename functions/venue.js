@@ -94,7 +94,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
   await admin
     .firestore()
     .collection("venues")
-    .doc(data.name.replace(/\W/g, ""))
+    .doc(data.name.replace(/\W/g, "").toLowerCase())
     .set(venueData);
 
   return venueData;
