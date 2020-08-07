@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useForm, FieldErrors } from "react-hook-form";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
@@ -16,7 +16,6 @@ import { EntranceExperiencePreviewProvider } from "components/templates/Entrance
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { venueDefaults } from "./defaults";
-import { InvalidVenueName } from "errors";
 
 const LONG_DESCRIPTION_PLACEHOLDER =
   "Describe what is unique and wonderful and sparkling about your venue";
@@ -34,7 +33,6 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
   const { user } = useUser();
   const { isSubmitting } = formState;
   const values = watch();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
   const onSubmit = useCallback(
     async (vals: Partial<VenueInput>) => {
       if (!user) return;
@@ -42,11 +40,7 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
       try {
         await createVenue(values, user);
       } catch (e) {
-        if (e instanceof InvalidVenueName) {
-          setSubmissionError(e.message);
-        } else {
-          console.error(e);
-        }
+        console.error(e);
       }
     },
     [user]
@@ -69,7 +63,6 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
               previous={previous}
               values={values}
               isSubmitting={isSubmitting}
-              submissionError={submissionError}
               {...rest}
               onSubmit={onFormSubmit}
             />
@@ -145,7 +138,6 @@ interface DetailsFormLeftProps {
   control: ReturnType<typeof useForm>["control"];
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
-  submissionError: string | undefined;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
@@ -158,7 +150,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     control,
     previous,
     onSubmit,
-    submissionError,
   } = props;
   // would be nice to access this from the form context but can't find a way
   const isNonMapTemplate =
@@ -184,10 +175,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             name="name"
             ref={register}
-            className="align-left no-margin-bottom"
+            className="align-left"
             placeholder={`My ${templateType} name`}
           />
-          <div className="input-error submission-error">{submissionError}</div>
           {errors.name ? (
             <span className="input-error">{errors.name.message}</span>
           ) : urlSafeName ? (
