@@ -12,12 +12,14 @@ interface RoomProps {
   roomName: string;
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
+  hasChairs?: boolean;
 }
 
 const Room: React.FC<RoomProps> = ({
   roomName,
   setUserList,
   setParticipantCount,
+  hasChairs = true,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
@@ -169,20 +171,20 @@ const Room: React.FC<RoomProps> = ({
     );
   });
 
-  const emptyComponents = [...Array(participants.length % 2)].map(
-    (e, index) => (
-      <div
-        key={`empty-participant-${index}`}
-        className={`participant-container-${capacity}`}
-      >
-        <img
-          className="empty-chair-image"
-          src="/empty-chair.png"
-          alt="empty chair"
-        />
-      </div>
-    )
-  );
+  const emptyComponents = hasChairs
+    ? [...Array(participants.length % 2)].map((e, index) => (
+        <div
+          key={`empty-participant-${index}`}
+          className={`participant-container-${capacity}`}
+        >
+          <img
+            className="empty-chair-image"
+            src="/empty-chair.png"
+            alt="empty chair"
+          />
+        </div>
+      ))
+    : [];
 
   return <>{[meComponent, ...othersComponents, ...emptyComponents]}</>;
 };

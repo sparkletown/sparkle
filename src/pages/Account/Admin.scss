@@ -1,0 +1,183 @@
+@import "scss/constants";
+
+$page-max-width: 1240px;
+
+.admin-dashboard {
+  // cancel navbar bottom padding
+  margin-top: -50px;
+
+  .navbar {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 48px;
+    background-color: $black;
+    border-bottom: 1px solid rgba($white, 0.2);
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.62);
+    .navbar-container {
+      position: relative;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: $page-max-width;
+      padding: 0 20px;
+    }
+    .sparkleverse-logo_navbar {
+      width: 200px;
+      height: 48px;
+      background-image: url("./img/sparkleverse-logo_navbar.png");
+      background-size: 200px 48px;
+      cursor: pointer;
+    }
+  }
+
+  // ADMIN PANEL - WITH SIDEBAR
+
+  .page-container_adminview {
+    position: relative;
+    width: 100%;
+    padding: 48px 0 0 0;
+    display: grid;
+    grid-template-columns: 240px 2fr;
+    grid-gap: 0;
+    height: calc(100vh - 48px);
+    overflow: hidden;
+    .page-container-adminsidebar {
+      position: relative;
+      background-image: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+      .page-container-adminsidebar-title {
+        background: rgba($black, 0.15);
+        padding: 14px;
+      }
+      .page-container-adminsidebar-top {
+        padding: 14px;
+        text-align: center;
+        width: 100%;
+        .btn {
+          width: 100%;
+        }
+      }
+      ul.page-container-adminsidebar-venueslist {
+        list-style-type: none;
+        li {
+          position: relative;
+          padding: 14px;
+          cursor: pointer;
+          &:hover {
+            background: rgba($black, 0.15);
+          }
+          &.selected {
+            background: rgba($black, 0.3);
+          }
+          &.camp {
+            &:after {
+              position: absolute;
+              right: 20px;
+              top: 14px;
+              content: "";
+              height: 20px;
+              width: 20px;
+              background-image: url("./img/list-arrow-down-white.png");
+              background-size: 20px 20px;
+              transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            }
+            ul.page-container-adminsidebar-subvenueslist {
+              list-style-type: none;
+              display: block;
+              li {
+                text-indent: 20px;
+                opacity: 0.5;
+              }
+            }
+            &.selected {
+              &:after {
+                transform: rotate(180deg);
+              }
+              // ul.page-container-adminsidebar-subvenueslist {
+              //   display: block;
+              // }
+            }
+          }
+        }
+      }
+    }
+    .page-container-adminpanel {
+      background-color: $black;
+
+      .page-container-adminpanel-tabs {
+        background: rgba($white, 0.15);
+        display: flex;
+        margin-bottom: 20px;
+        .page-container-adminpanel-tab {
+          position: relative;
+          padding: 14px 40px;
+          cursor: pointer;
+          opacity: 0.7;
+
+          &:hover {
+            opacity: 1;
+          }
+          &.selected {
+            opacity: 1;
+            &:after {
+              content: "";
+              position: absolute;
+              left: 0;
+              width: 100%;
+              bottom: 0;
+              height: 2px;
+              background-color: $white;
+              border-radius: 1px;
+            }
+          }
+        }
+      }
+      .page-container-adminpanel-venuepage {
+        display: grid;
+        grid-template-columns: 2fr 260px;
+        grid-gap: 0;
+        .page-container-adminpanel-content {
+          position: relative;
+          margin-right: 40px;
+          z-index: 10;
+          .venue-header {
+            position: absolute;
+            top: 0;
+            z-index: -1;
+            background-color: $black;
+            width: 100%;
+            height: 500px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            &:after {
+              content: "";
+              position: absolute;
+              z-index: 2;
+              left: 0;
+              width: 100%;
+              height: 500px;
+              background-image: linear-gradient(
+                -180deg,
+                rgba(0, 0, 0, 0.4) 0%,
+                rgba(0, 0, 0, 0) 20%,
+                rgba(0, 0, 0, 0) 57%,
+                #000000 81%
+              );
+            }
+          }
+        }
+        .page-container-adminpanel-actions {
+          padding-right: 40px;
+          padding-top: 20px;
+        }
+      }
+    }
+  }
+
+  .information-card-container {
+    margin-bottom: 20px;
+  }
+}

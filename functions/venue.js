@@ -2,12 +2,19 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const PROJECT_ID = functions.config().project.id;
 
+// interface Question {
+//   name: string;
+//   text: string;
+// }
+
 // interface CreateVenueData {
 //   name: string;
-//   bannerImageUrl: FileList;
-//   logoImageUrl: FileList;
+//   mapIconImageUrl?: string;
+//   bannerImageUrl: string;
+//   logoImageUrl: string;
 //   tagline: string;
 //   longDescription: string;
+//   profileQuestions: Array<Question>
 // }
 
 // interface Venue {
@@ -62,6 +69,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
         coverImageUrl: data.bannerImageUrl,
         eventbriteEventId: "00000000000",
         joinButtonText: "Enter our venue",
+        description: data.longDescription,
       },
     },
     presentation: [data.longDescription],
@@ -79,11 +87,15 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
     profile_questions: [{ name: "Dance", text: "Do you dance?" }],
     template: "jazzbar",
     owners: [context.auth.token.user_id],
+    profile_questions: data.profileQuestions,
+    //@debt need to do something with mapIconUrl
   };
 
-  return await admin
+  await admin
     .firestore()
     .collection("venues")
-    .doc(data.name.replace(/\W/g, ""))
+    .doc(data.name.replace(/\W/g, "").toLowerCase())
     .set(venueData);
+
+  return venueData;
 });

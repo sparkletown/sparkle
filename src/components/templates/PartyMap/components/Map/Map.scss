@@ -1,0 +1,15 @@
+@import "scss/constants.scss";
+
+.map-image {
+  border-radius: 30px;
+  margin-bottom: 20px;
+}
+
+.map-container {
+  margin-top: 20px;
+
+  .map-clickable-area {
+    cursor: pointer;
+    fill: $clickable-area-color;
+  }
+}
