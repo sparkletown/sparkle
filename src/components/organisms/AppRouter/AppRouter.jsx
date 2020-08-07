@@ -13,13 +13,13 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Account/Admin";
-import SparkleSpaceMarketingPage from "pages/SparkleSpaceMarketingPage";
 import VenuePage from "pages/VenuePage";
 import TemplateRouter from "components/organisms/TemplateRouter";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Account/Venue/VenueWizard";
+import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -57,7 +57,13 @@ const AppRouter = () => {
   return (
     <Router basename="/">
       <Switch>
-        <Route path="/SparkleVerse" component={SparkleSpaceMarketingPage} />
+        <Route
+          path="/sparkleverse"
+          component={() => {
+            window.location.href = SPARKLEVERSE_MARKETING_URL;
+            return null;
+          }}
+        />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
