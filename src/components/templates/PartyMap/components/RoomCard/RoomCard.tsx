@@ -30,11 +30,13 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       onClick={onClick}
       id={`room-card-${room.title}`}
     >
-      <img
-        src={`/room-images/${room.image}`}
-        className="room-img"
-        alt={room.title}
-      />
+      {room.image && (
+        <img
+          src={`/room-images/${room.image}`}
+          className="room-img"
+          alt={room.title}
+        />
+      )}
       <h4 className="room-title">{room.title}</h4>
       <RoomAttendance room={room} attendance={attendance} />
       {eventToDisplay && (

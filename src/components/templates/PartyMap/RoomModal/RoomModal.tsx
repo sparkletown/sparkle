@@ -47,11 +47,14 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
             <div className="room-modal-subtitle">{room.subtitle}</div>
             <div className="row ongoing-event-row">
               <div className="col">
-                <img
-                  src={`/room-images/${room.image}`}
-                  className="room-page-image"
-                  alt={room.title}
-                />
+                {room.image && (
+                  <img
+                    src={`/room-images/${room.image}`}
+                    className="room-page-image"
+                    alt={room.title}
+                  />
+                )}
+                {!room.image && room.title}
               </div>
               <div className="col">
                 <RoomModalOngoingEvent
