@@ -25,6 +25,12 @@ export interface AdvancedVenueInput {
 type ImageFileKeys = "bannerImageFile" | "logoImageFile" | "mapIconImageFile";
 type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapIconImageUrl";
 
+interface VenueUpdateImageUrls {
+  bannerImageUrl: string;
+  logoImageUrl: string;
+  mapIconImageUrl?: string;
+}
+
 export interface VenueInput extends AdvancedVenueInput {
   name: string;
   bannerImageFile: FileList;
@@ -35,17 +41,11 @@ export interface VenueInput extends AdvancedVenueInput {
 }
 
 export type VenueInputEdit = Omit<VenueInput, ImageFileKeys> &
-  Partial<Pick<VenueInput, ImageFileKeys>> & {
-    bannerImageUrl: string;
-    logoImageUrl: string;
-    mapIconImageUrl?: string;
-  };
+  Partial<Pick<VenueInput, ImageFileKeys>> &
+  VenueUpdateImageUrls;
 
-type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & {
-  bannerImageUrl: string;
-  logoImageUrl: string;
-  mapIconImageUrl?: string;
-};
+type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> &
+  VenueUpdateImageUrls;
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
