@@ -31,7 +31,7 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
       case "private":
         return chat.to === user.uid
           ? "you"
-          : chat.to && users[chat.to].partyName;
+          : chat.to && (users[chat.to]?.partyName || "unknown user");
       case "room":
         return `${chat.to} room`;
       case "table":
@@ -41,7 +41,10 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  const sender = user.uid === chat.from ? "you" : users[chat.from].partyName;
+  const sender =
+    user.uid === chat.from
+      ? "you"
+      : users[chat.from]?.partyName || "unknown user";
 
   return (
     <div className="chat-message">

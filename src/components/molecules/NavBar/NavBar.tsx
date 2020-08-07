@@ -6,7 +6,7 @@ import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import PrivateChatModal from "components/organisms/PrivateChatModal";
+// import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
@@ -44,13 +44,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  const chatPopover = (
-    <Popover id="popover-basic">
-      <Popover.Content>
-        <PrivateChatModal />
-      </Popover.Content>
-    </Popover>
-  );
+  // const chatPopover = (
+  //   <Popover id="popover-basic">
+  //     <Popover.Content>
+  //       <PrivateChatModal />
+  //     </Popover.Content>
+  //   </Popover>
+  // );
 
   const numberOfUnreadMessages =
     privateChats &&
@@ -86,7 +86,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </span>
                 </OverlayTrigger>
               )}
-              {profile && (
+              {/*profile && (
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"
@@ -102,7 +102,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     <FontAwesomeIcon icon={faCommentAlt} />
                   </span>
                 </OverlayTrigger>
-              )}
+              )*/}
               <div
                 className="profile-icon-container"
                 onClick={() => setIsProfileModalOpen(true)}
