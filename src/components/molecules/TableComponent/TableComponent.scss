@@ -65,20 +65,21 @@
     padding: 40px 25px 10px 25px;
     position: relative;
     margin: 5px 5px;
+    &:hover {
+      background-color: lighten($dark, 10%);
+      transform: scale(1.05);
+    }
   }
 
   .table-occupancy-information {
+    top: 5px;
+    right: 7px;
     position: absolute;
-    top: 14px;
-    font-size: 13px;
+    font-size: 10px;
   }
 
   .red-text {
     color: $primaryColor;
-  }
-
-  .green-text {
-    color: $green;
   }
 
   .table-participant-picture {
@@ -90,31 +91,38 @@
     cursor: pointer;
   }
 
-  .remaining-seats {
-    top: 5px;
-    right: 7px;
-    position: absolute;
-    font-size: 10px;
-  }
-
   .table-number {
-    top: 5px;
-    left: 7px;
+    top: 12px;
     position: absolute;
-    font-size: 10px;
+    text-align: center;
+    font-style: italic;
+    font-weight: 600;
   }
 
   .add-participant-button {
     width: 50px;
     height: 50px;
     display: flex;
-    background: $black;
-    color: $concrete;
     font-size: 25px;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
+    text-align: center;
     margin-bottom: 3px;
     margin-right: 5px;
+    background-color: rgba(black, 0.4);
+    color: rgba(black, 0);
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    font-size: 2rem;
+    &:hover {
+      background-color: white;
+      transform: scale(1.05) rotate(90deg);
+      color: rgba(black, 0.7);
+      box-shadow: 2px 0px 10px rgba($white, 0.6);
+    }
+    &:active {
+      transform: scale(0.95) rotate(90deg);
+      box-shadow: 2px 0px 10px rgba($white, 0.2);
+    }
   }
 }
