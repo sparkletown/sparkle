@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useForm, FieldErrors } from "react-hook-form";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
@@ -60,7 +60,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
-  const [submissionError, setSubmissionError] = useState<string | undefined>();
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -70,11 +69,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         else await createVenue(vals as VenueInput, user);
         history.push("/admin");
       } catch (e) {
-        if (e instanceof InvalidVenueName) {
-          setSubmissionError(e.message);
-        } else {
-          console.error(e);
-        }
+        console.error(e);
       }
     },
     [user, editing, history]
@@ -97,7 +92,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               previous={previous}
               values={values}
               isSubmitting={isSubmitting}
-              submissionError={submissionError}
               {...rest}
               onSubmit={onFormSubmit}
               editing={editing}
@@ -135,7 +129,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     errors,
     previous,
     onSubmit,
-    submissionError,
   } = props;
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -160,10 +153,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             name="name"
             ref={register}
-            className="align-left no-margin-bottom"
+            className="align-left"
             placeholder={`My ${templateType} name`}
           />
-          <div className="input-error submission-error">{submissionError}</div>
           {errors.name ? (
             <span className="input-error">{errors.name.message}</span>
           ) : urlSafeName ? (
