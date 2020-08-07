@@ -5,6 +5,8 @@ import "firebase/functions";
 interface ImageInputProps {
   disabled: boolean;
   name: string;
+  remoteUrlInputName?: string;
+  remoteImageUrl?: string;
   image?: FileList;
   containerClassName?: string;
   imageClassName?: string;
@@ -16,6 +18,8 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
   (props, ref) => {
     const {
       image,
+      remoteUrlInputName,
+      remoteImageUrl,
       containerClassName,
       imageClassName,
       name,
@@ -24,8 +28,10 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
     } = props;
 
     const imageUrl = useMemo(
-      () => image && image.length > 0 && URL.createObjectURL(image[0]),
-      [image]
+      () =>
+        (image && image.length > 0 && URL.createObjectURL(image[0])) ||
+        remoteImageUrl,
+      [image, remoteImageUrl]
     );
 
     return (
@@ -50,6 +56,14 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             accept="image/x-png,image/gif,image/jpeg"
             className="default-input"
           />
+          {remoteUrlInputName && (
+            <input
+              type="hidden"
+              ref={ref}
+              name={remoteUrlInputName}
+              value={remoteImageUrl}
+            />
+          )}
         </div>
         {error?.message && <span className="input-error">{error.message}</span>}
       </>

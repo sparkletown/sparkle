@@ -26,41 +26,33 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
 
   return (
     <div
-      className="room-card-container"
+      className="card card_room"
       onClick={onClick}
       id={`room-card-${room.title}`}
     >
+      <div className="card-animation card-animation_music">
+        <span className="icon-1"></span>
+        <span className="icon-2"></span>
+        <span className="icon-3"></span>
+      </div>
       {room.image && (
         <img
           src={`/room-images/${room.image}`}
-          className="room-img"
+          className="card_room-pic"
           alt={room.title}
         />
       )}
-      <h4 className="room-title">{room.title}</h4>
-      <RoomAttendance room={room} attendance={attendance} />
-      {eventToDisplay && (
-        <div className="artist-playing">
-          <div className="event-name-container">
-            <img
-              className="sparkle-icon"
-              alt="sparkles"
-              src="/sparkle-icon.png"
-            />
-            <h5 className="event-name">{eventToDisplay.name}</h5>
-          </div>
-          {eventToDisplay.host && (
-            <div>
-              by <span className="host-name">{eventToDisplay.host}</span>
-            </div>
-          )}
-          <div>
-            <small>
-              {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
-            </small>
-          </div>
-        </div>
-      )}
+      <h5 className="italic">{room.title}</h5>
+      <div className="room-attendance-container">
+        <RoomAttendance room={room} attendance={attendance} />
+      </div>
+      <div className="card_room-now">
+        <h6 className="primary">{eventToDisplay.name}</h6>
+        <p className="small primary">by {eventToDisplay.host}</p>
+        <p className="small primary">
+          {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
+        </p>
+      </div>
     </div>
   );
 };

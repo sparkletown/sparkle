@@ -11,6 +11,7 @@ import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
 import { useKeyedSelector } from "hooks/useSelector";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -38,6 +39,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     room ? "room" : "global"
   );
 
+  useFirestoreConnect("users");
+
   const { user } = useUser();
   const { users, userArray, chats, privateChats } = useKeyedSelector(
     (state) => ({
@@ -48,6 +51,13 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     }),
     ["users"]
   );
+
+  useFirestoreConnect({
+    collection: "privatechats",
+    doc: user?.uid,
+    subcollections: [{ collection: "chats" }],
+    storeAs: "privatechats",
+  });
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
@@ -66,7 +76,6 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         room
           ? //@ts-ignore
             chat.type === "global" || //@debt can privateChats or venueChats ever be global?
-            chat.type === "private" ||
             (chat.type === "room" && chat.to === room)
           : true
       )

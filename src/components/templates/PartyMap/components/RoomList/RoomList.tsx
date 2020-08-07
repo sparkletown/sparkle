@@ -31,8 +31,8 @@ const RoomList: React.FunctionComponent<PropsType> = ({
 
   return (
     <>
-      <div className="room-list-title">
-        {`What's on now: ${rooms.length} rooms open`}
+      <div>
+        <h5>{`What's on now: ${rooms.length} rooms open`}</h5>
       </div>
       <div className="rooms-container">
         {rooms.map((room) => (

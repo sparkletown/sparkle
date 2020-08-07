@@ -2,12 +2,22 @@ import React, { useCallback, useMemo } from "react";
 import { useForm, FieldErrors } from "react-hook-form";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
-import { VenueInput, createUrlSafeName, createVenue } from "api/admin";
+import {
+  VenueInput,
+  VenueInputEdit,
+  createUrlSafeName,
+  createVenue,
+  updateVenue,
+} from "api/admin";
 import { WizardPage } from "./VenueWizard";
 import "./Venue.scss";
 import * as Yup from "yup";
 import { ImageInput } from "components/molecules/ImageInput";
-import { validationSchema } from "./DetailsValidationSchema";
+import {
+  validationSchema,
+  editVenueCastSchema,
+  editVenueValidationSchema,
+} from "./DetailsValidationSchema";
 import { Accordion, useAccordionToggle } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
@@ -18,33 +28,50 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { venueDefaults } from "./defaults";
 import { useHistory } from "react-router-dom";
 
-type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
-export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
+type FormValues = CreateFormValues | EditFormValues;
+
+interface DetailsFormProps extends WizardPage {
+  editing?: boolean;
+}
+
+export const DetailsForm: React.FC<DetailsFormProps> = ({
+  previous,
+  state,
+  editing,
+}) => {
+  const defaultValues = useMemo(
+    () => editVenueCastSchema.cast(state.detailsPage?.venue),
+    [state.detailsPage]
+  );
+
   const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: editing ? editVenueValidationSchema : validationSchema,
     validationContext: state.templatePage,
-    defaultValues: {},
+    defaultValues,
   });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
   const onSubmit = useCallback(
-    async (vals: Partial<VenueInput>) => {
+    async (vals: Partial<FormValues>) => {
+      console.log("vals", vals);
       if (!user) return;
-      const values = vals as VenueInput; // unfortunately the typing is off for react-hook-forms.
       try {
-        await createVenue(values, user);
-        // redirect to admin page
+        // unfortunately the typing is off for react-hook-forms.
+        if (editing) await updateVenue(vals as VenueInputEdit, user);
+        else await createVenue(vals as VenueInput, user);
         history.push("/admin");
       } catch (e) {
         console.error(e);
       }
     },
-    [user, history]
+    [user, editing, history]
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
@@ -66,6 +93,7 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
               isSubmitting={isSubmitting}
               {...rest}
               onSubmit={onFormSubmit}
+              editing={editing}
             />
           </div>
         </div>
@@ -74,6 +102,7 @@ export const DetailsForm: React.FC<WizardPage> = ({ previous, state }) => {
         <VenuePreview
           values={values}
           templateName={state.templatePage?.template.name}
+          state={state}
         />
       </div>
     </div>
@@ -85,17 +114,24 @@ type Venue = ExtractProps<typeof EntranceExperiencePreviewProvider>["venue"];
 interface VenuePreviewProps {
   values: FormValues;
   templateName?: string;
+  state: WizardPage["state"];
 }
 
 const VenuePreview: React.FC<VenuePreviewProps> = ({
   values,
+  state,
   templateName,
 }) => {
-  const urlFromImage = useCallback(
-    (files?: FileList) =>
-      files && files.length > 0 ? URL.createObjectURL(files[0]) : undefined,
-    []
-  );
+  const urlFromImage = useCallback((filesOrUrl?: FileList | string) => {
+    if (typeof filesOrUrl === "string") return filesOrUrl;
+    return filesOrUrl && filesOrUrl.length > 0
+      ? URL.createObjectURL(filesOrUrl[0])
+      : undefined;
+  }, []);
+
+  const remoteBannerImageUrl =
+    state.detailsPage?.venue.config.landingPageConfig.coverImageUrl;
+  const remoteLogoImageUrl = state.detailsPage?.venue.host.icon;
 
   const previewVenue: Venue = useMemo(
     () => ({
@@ -106,6 +142,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         landingPageConfig: {
           coverImageUrl:
             urlFromImage(values.bannerImageFile) ??
+            remoteBannerImageUrl ??
             venueDefaults.config.landingPageConfig.coverImageUrl,
           subtitle:
             values.tagline || venueDefaults.config.landingPageConfig.subtitle,
@@ -119,14 +156,23 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         },
       },
       host: {
-        icon: urlFromImage(values.logoImageFile) ?? venueDefaults.host.icon,
+        icon:
+          urlFromImage(values.logoImageFile) ??
+          remoteLogoImageUrl ??
+          venueDefaults.host.icon,
       },
       owners: [],
       profile_questions:
         values.profileQuestions ?? venueDefaults.profile_questions,
       code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
     }),
-    [values, urlFromImage, templateName]
+    [
+      values,
+      urlFromImage,
+      remoteBannerImageUrl,
+      remoteLogoImageUrl,
+      templateName,
+    ]
   );
 
   return (
@@ -148,10 +194,12 @@ interface DetailsFormLeftProps {
   control: ReturnType<typeof useForm>["control"];
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
+  editing?: boolean;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
   const {
+    editing,
     state,
     values,
     isSubmitting,
@@ -204,6 +252,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <ImageInput
               disabled={disable}
               name={"mapIconImageFile"}
+              remoteUrlInputName={"mapIconImageUrl"}
               containerClassName="input-square-container"
               imageClassName="input-square-image"
               image={values.mapIconImageFile}
@@ -218,6 +267,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             name={"bannerImageFile"}
             image={values.bannerImageFile}
+            remoteUrlInputName={"bannerImageUrl"}
+            remoteImageUrl={
+              "bannerImageUrl" in values ? values.bannerImageUrl : undefined // true if editing
+            }
             ref={register}
             error={errors.bannerImageFile}
           />
@@ -228,6 +281,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             ref={register}
             image={values.logoImageFile}
+            remoteUrlInputName={"logoImageUrl"}
+            remoteImageUrl={
+              "logoImageUrl" in values ? values.logoImageUrl : undefined // true if editing
+            }
             name={"logoImageFile"}
             containerClassName="input-square-container"
             imageClassName="input-square-image"
@@ -275,11 +332,15 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </Accordion>
       </div>
       <div className="page-container-left-bottombar">
-        <button className="btn btn-primary nav-btn" onClick={previous}>
-          Go Back
-        </button>
+        {previous ? (
+          <button className="btn btn-primary nav-btn" onClick={previous}>
+            Go Back
+          </button>
+        ) : (
+          <div />
+        )}
         <div>
-          <SubmitButton isSubmitting={isSubmitting} />
+          <SubmitButton editing={editing} isSubmitting={isSubmitting} />
         </div>
       </div>
     </form>
@@ -302,14 +363,22 @@ const AccordionButton: React.FC<AccordionButtonProps> = ({ eventKey }) => {
 
 interface SubmitButtonProps {
   isSubmitting: boolean;
+  editing?: boolean;
 }
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({ isSubmitting }) => {
+const SubmitButton: React.FC<SubmitButtonProps> = ({
+  isSubmitting,
+  editing,
+}) => {
   return isSubmitting ? (
     <div className="spinner-border">
       <span className="sr-only">Loading...</span>
     </div>
   ) : (
-    <input className="btn btn-primary" type="submit" value="Create venue" />
+    <input
+      className="btn btn-primary"
+      type="submit"
+      value={editing ? "Update venue" : "Create venue"}
+    />
   );
 };
