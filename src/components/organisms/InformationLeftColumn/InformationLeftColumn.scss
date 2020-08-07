@@ -5,11 +5,14 @@
   position: relative;
 
   .band-logo {
-    max-width: 100%;
-    max-height: 100%;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 
     &.expanded {
       width: 100px;
+      height: 100px;
     }
   }
   .chevron-icon {

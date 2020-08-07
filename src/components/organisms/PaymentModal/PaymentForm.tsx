@@ -9,6 +9,7 @@ import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";
 import { Stripe, StripeElements } from "@stripe/stripe-js";
+import { WithId } from "utils/id";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
@@ -16,7 +17,7 @@ interface PropsType {
   setIsCardBeingSaved: (value: boolean) => void;
   isPaymentProceeding: boolean;
   isCardBeingSaved: boolean;
-  event: VenueEvent;
+  event: WithId<VenueEvent>;
 }
 
 const PaymentForm: React.FunctionComponent<PropsType> = ({
@@ -33,6 +34,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState<string | undefined>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [paymentIntentId, setPaymentIntentId] = useState<string | undefined>();
   const { user } = useUser();
 
   const ticketPrice =
@@ -46,16 +48,19 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
     setClientSecret(undefined);
     async function getPaymentIntent() {
       if (!user) return;
-      const { client_secret: clientSecretToken } = (
+      const {
+        client_secret: clientSecretToken,
+        payment_intent_id: newPaymentIntentId,
+      } = (
         await firebase.functions().httpsCallable("payment-createPaymentIntent")(
           {
             venueId: venueId,
             eventId: event.id,
-            price: ticketPrice,
           }
         )
       ).data;
       setClientSecret(clientSecretToken);
+      setPaymentIntentId(newPaymentIntentId);
     }
     try {
       getPaymentIntent();
@@ -91,6 +96,11 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       setErrorMessage("Oops something wrong happened");
       return;
     }
+    await firebase
+      .functions()
+      .httpsCallable("payment-setPaymentIntentProcessing")({
+      paymentIntentId,
+    });
     const result = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement) || { token: "" },
@@ -101,12 +111,20 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       receipt_email: user.email,
     });
 
-    if (result.error) {
-      setErrorMessage(result.error.message);
-    } else if (result.paymentIntent?.status === "succeeded") {
+    if (result.paymentIntent?.status === "succeeded") {
       setIsPaymentSuccess(true);
+      await firebase.functions().httpsCallable("payment-confirmPaymentIntent")({
+        paymentIntentId: result.paymentIntent.id,
+      });
     } else {
-      setErrorMessage("Payment didn't work, try again");
+      setErrorMessage(
+        result.error?.message || "Payment didn't work, try again"
+      );
+      await firebase
+        .functions()
+        .httpsCallable("payment-setPaymentIntentFailed")({
+        paymentIntentId,
+      });
     }
   };
 
@@ -121,12 +139,18 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       if (error) {
         setErrorMessage(error.message);
       } else if (paymentMethod) {
-        await firebase
-          .functions()
-          .httpsCallable("payment-createCustomerWithPaymentMethod")({
-          paymentMethodId: paymentMethod.id,
-        });
-        await pay(stripe, elements);
+        const result = (
+          await firebase
+            .functions()
+            .httpsCallable("payment-createCustomerWithPaymentMethod")({
+            paymentMethodId: paymentMethod.id,
+          })
+        ).data;
+        if (result.error) {
+          setErrorMessage(result.error.raw.message);
+        } else {
+          await pay(stripe, elements);
+        }
       }
     }
   };
@@ -152,7 +176,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
           <div className="button-container">
             <button
               disabled={!stripe || isPaymentProceeding || isCardBeingSaved}
-              className="btn btn-primary btn-block submit-button hidden"
+              className="btn btn-primary btn-block submit-button"
               type="submit"
               onClick={handleSaveCard}
             >

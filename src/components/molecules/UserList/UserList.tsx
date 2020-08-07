@@ -24,11 +24,13 @@ const UserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
-  users = users.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
-  const usersToDisplay = isExpanded ? users : users.slice(0, limit);
+  users = users?.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
+  const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
+
+  if (!users) return <></>;
 
   return (
     <>

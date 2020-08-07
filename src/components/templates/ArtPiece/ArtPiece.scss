@@ -1,0 +1,21 @@
+.full-page-container.art-piece-container {
+  padding: 0;
+
+  .content {
+    display: flex;
+    padding-left: 70px;
+    flex-grow: 1;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .youtube-video {
+    width: 100%;
+    min-height: 500px;
+  }
+
+  .video-chat-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}

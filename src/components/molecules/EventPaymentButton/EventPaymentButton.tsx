@@ -9,12 +9,15 @@ import { canUserJoinTheEvent } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  event: VenueEvent;
+  event: WithId<VenueEvent>;
   venueId: string;
   setIsPaymentModalOpen: (value: boolean) => void;
   selectEvent: () => void;
+  paymentConfirmationPending: boolean;
+  isUserVenueOwner: boolean;
 }
 
 const EventPaymentButton: React.FunctionComponent<PropsType> = ({
@@ -22,6 +25,8 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   venueId,
   setIsPaymentModalOpen,
   selectEvent,
+  paymentConfirmationPending,
+  isUserVenueOwner,
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
@@ -41,7 +46,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="event-payment-button-container">
-      {hasUserAlreadyBoughtTicket ? (
+      {hasUserAlreadyBoughtTicket || isUserVenueOwner ? (
         <Link to={`/v/${venueId}/live`}>
           <button
             role="link"
@@ -57,8 +62,15 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
             role="link"
             className="btn btn-primary buy-tickets-button"
             onClick={handleClick}
+            disabled={paymentConfirmationPending}
           >
-            Buy tickets
+            {paymentConfirmationPending ? (
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            ) : (
+              "Buy tickets"
+            )}
           </button>
         </div>
       )}

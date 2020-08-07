@@ -13,7 +13,7 @@ if [ "$#" -ne 3 ]; then
   exit 1
 fi
 
-API_KEY=$(grep API_KEY $(dirname $0)/../src/secrets.js|head -n1|cut -d\" -f2)
+API_KEY=$(grep API_KEY $(dirname $0)/../.env|head -n1|cut -d= -f2)
 VENUE=$1
 USERNAME=$2
 PASSWORD=$3

@@ -9,7 +9,7 @@ interface Question {
 }
 
 export interface Venue {
-  id?: string;
+  parentId?: string;
   template: VenueTemplate;
   name: string;
   config: {
@@ -20,9 +20,10 @@ export interface Venue {
     landingPageConfig: {
       coverImageUrl: string;
       subtitle: string;
+      description?: string;
       presentation: string[];
       checkList: string[];
-      videoIframeUrl: string;
+      videoIframeUrl?: string;
       joinButtonText: string;
       quotations?: Quotation[];
     };
@@ -33,6 +34,7 @@ export interface Venue {
   };
   profile_questions: Question[];
   code_of_conduct_questions: Question[];
+  owners?: string[];
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
 }

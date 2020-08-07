@@ -38,7 +38,7 @@ export interface Firestore {
   };
   data: {
     currentVenue: Venue | PartyMapVenue;
-    currentEvent: VenueEvent;
+    currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
@@ -48,6 +48,8 @@ export interface Firestore {
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;
     reactions: Record<string, Reaction>;
+    venues?: Record<string, Venue>;
+    events?: Record<string, VenueEvent>;
   };
   ordered: {
     currentVenue: Array<WithId<Venue | PartyMapVenue>>;
@@ -61,5 +63,7 @@ export interface Firestore {
     experiences: Array<WithId<Experience>>;
     eventPurchase: Array<WithId<Purchase>>;
     reactions: Array<WithId<Reaction>>;
+    venues?: Array<WithId<Venue>>;
+    events?: Array<WithId<VenueEvent>>;
   };
 }

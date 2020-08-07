@@ -16,9 +16,12 @@ interface ChatOutDataType {
   messageToTheBand: string;
 }
 
-const roomName = "jazz";
+interface PropsType {
+  roomName: string;
+  chatInputPlaceholder: string;
+}
 
-const ChatDrawer = () => {
+const ChatDrawer = ({ roomName, chatInputPlaceholder }: PropsType) => {
   const { user } = useUser();
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
@@ -51,7 +54,7 @@ const ChatDrawer = () => {
       chats
         .filter((message) => message.type === "room" && message.to === roomName)
         .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
-    [chats]
+    [chats, roomName]
   );
 
   return (
@@ -84,7 +87,7 @@ const ChatDrawer = () => {
             <CallOutMessageForm
               onSubmit={handleSubmit(onBarMessageSubmit)}
               ref={register({ required: true })}
-              placeholder="Chat to the bar"
+              placeholder={chatInputPlaceholder}
               isMessageToTheBandSent={isMessageToTheBarSent}
             />
             <div>
