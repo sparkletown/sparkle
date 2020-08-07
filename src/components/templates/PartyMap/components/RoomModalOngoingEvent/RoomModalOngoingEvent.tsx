@@ -37,7 +37,11 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               by <span className="artist-name">{eventToDisplay.host}</span>
             </div>
           </div>
-          <div className="event-description">{eventToDisplay.text}</div>
+          <div className="event-description">
+            {(eventToDisplay.text || "").split("\n").map((p: any) => (
+              <p>{p}</p>
+            ))}
+          </div>
           <a
             className="btn btn-primary room-entry-button"
             onClick={() => enterRoom()}

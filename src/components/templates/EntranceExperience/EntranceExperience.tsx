@@ -118,17 +118,12 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
           </div>
           {venue.template === VenueTemplate.partymap && (
             <div className="secret-password-form-wrapper">
-              <SecretPasswordForm />
+              <SecretPasswordForm
+                buttonText={venue.config.landingPageConfig.joinButtonText}
+              />
             </div>
           )}
         </div>
-        {venue.template === VenueTemplate.partymap && (
-          <div className="secret-password-form-wrapper">
-            <SecretPasswordForm
-              buttonText={venue.config.landingPageConfig.joinButtonText}
-            />
-          </div>
-        )}
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
             <div>
