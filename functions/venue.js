@@ -78,6 +78,7 @@ const createVenueData = (data, context) => ({
   template: "jazzbar",
   owners: [context.auth.token.user_id],
   profile_questions: data.profileQuestions,
+  mapIconImageUrl: data.mapIconImageUrl,
   //@debt need to do something with mapIconUrl
 });
 

@@ -155,7 +155,7 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
             <div className="playa-abs-container">
               <div style={{ marginLeft: -500, position: "relative" }}>
                 <img
-                  src={venue.host.icon}
+                  src={venue.mapIconImageUrl ?? venue.host.icon}
                   alt={"host icon"}
                   className="playa-icon"
                 />
