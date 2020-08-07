@@ -12,6 +12,7 @@ import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
 import { useKeyedSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
+import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -39,7 +40,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     room ? "room" : "global"
   );
 
-  useFirestoreConnect("users");
+  useConnectRecentUsers();
 
   const { user } = useUser();
   const { users, userArray, chats, privateChats } = useKeyedSelector(
