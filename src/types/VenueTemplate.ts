@@ -4,4 +4,5 @@ export enum VenueTemplate {
   friendship = "friendship",
   partymap = "partymap",
   artPiece = "artpiece",
+  camp = "camp",
 }

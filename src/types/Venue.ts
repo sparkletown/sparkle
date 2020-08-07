@@ -9,7 +9,8 @@ interface Question {
 }
 
 export interface Venue {
-  id?: string;
+  id?: string; // @debt remove this
+  parentId?: string;
   template: VenueTemplate;
   name: string;
   config: {

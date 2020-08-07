@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "firebase/storage";
 import "./Admin.scss";
 import { useUser } from "hooks/useUser";
@@ -22,6 +22,7 @@ import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { VenueEvent } from "types/VenueEvent";
+import { canHaveSubvenues } from "utils/venue";
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -29,7 +30,15 @@ type VenueListProps = {
 };
 
 const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const { venues } = useSelector((state) => ({
+    venues: state.firestore.ordered.venues,
+  }));
+
+  const topLevelVenues = useMemo(
+    () => venues?.filter((v) => v.parentId === undefined) ?? [],
+    [venues]
+  );
+
   return (
     <>
       <div className="page-container-adminsidebar-title">My Venues</div>
@@ -39,12 +48,32 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {venues?.map((venue) => (
+        {topLevelVenues.map((venue) => (
           <li
             key={venue.id}
-            className={`${selectedVenueId === venue.id ? "selected" : ""}`}
+            className={`${selectedVenueId === venue.id ? "selected" : ""} ${
+              canHaveSubvenues(venue) ? "camp" : ""
+            }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
+            {canHaveSubvenues(venue) && (
+              <ul className="page-container-adminsidebar-subvenueslist">
+                {venues
+                  ?.filter((subVenue) => subVenue.parentId === venue.id)
+                  .map((subVenue) => (
+                    <li
+                      key={`${venue.id}-${subVenue.id}`}
+                      className={`${
+                        selectedVenueId === subVenue.id ? "selected" : ""
+                      }`}
+                    >
+                      <Link to={`/admin/venue/${subVenue.id}`}>
+                        {subVenue.name}
+                      </Link>
+                    </li>
+                  ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>
@@ -155,6 +184,11 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         <Link to="#" className="btn btn-block">
           Edit venue
         </Link>
+        {canHaveSubvenues(venue) && (
+          <Link to="#" className="btn btn-block">
+            Add a subvenue
+          </Link>
+        )}
       </div>
     </>
   );
