@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { VenueEvent } from "types/VenueEvent";
 import { canHaveSubvenues } from "utils/venue";
+import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -108,8 +109,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
     <>
       <div className="page-container-adminpanel-tabs">
         {[
-          { url: `${match.url}`, label: "Venue Infos" },
-          // { url: `${match.url}/appearance`, label: "Appearance" },
+          { url: `${match.url}`, label: "Venue Info" },
           { url: `${match.url}/events`, label: "Events" },
         ].map((tab) => (
           <div
@@ -147,27 +147,35 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   return (
     <>
       <div className="page-container-adminpanel-content">
+        <h3 style={{ textAlign: "center" }}>
+          How your camp appears on the Playa
+        </h3>
         <div className="container venue-entrance-experience-container">
-          <div
-            className="header"
-            style={{
-              background: `linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.8) 2%,
-            rgba(0, 0, 0, 0) 98%
-          ), url(${venue.config.landingPageConfig.coverImageUrl}`,
-              backgroundSize: "cover",
-            }}
-          >
-            <div className="venue-host">
-              <div className="host-icon-container">
-                <img className="host-icon" src={venue.host.icon} alt="host" />
-              </div>
-              <div className="title">{venue.name}</div>
-              <div className="subtitle">
-                {venue.config.landingPageConfig.subtitle}
+          <div className="playa-container">
+            <div className="playa-abs-container">
+              <div style={{ marginLeft: -500, position: "relative" }}>
+                <img
+                  src={venue.mapIconImageUrl ?? venue.host.icon}
+                  alt={"host icon"}
+                  className="playa-icon"
+                />
+                <div className="playa-marketing-preview">
+                  <EntranceExperiencePreviewProvider
+                    venueRequestStatus
+                    venue={venue}
+                  />
+                </div>
               </div>
             </div>
+            <img
+              src={"/burn/playa3d.jpeg"}
+              alt="playa"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "100%",
+                objectFit: "cover",
+              }}
+            />
           </div>
         </div>
       </div>

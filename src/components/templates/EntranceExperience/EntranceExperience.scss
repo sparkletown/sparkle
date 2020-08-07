@@ -5,6 +5,43 @@
     font-size: 15px;
   }
 
+  .playa-container {
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    position: relative;
+
+    .playa-abs-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .playa-icon {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 75px;
+        overflow: hidden;
+      }
+
+      .playa-marketing-preview {
+        position: absolute;
+        top: -200px;
+        right: -600px;
+        width: 550px;
+        height: 600px;
+        background-color: black;
+        overflow: auto;
+        border-radius: 20px;
+      }
+    }
+  }
+
   .login-invitation {
     font-size: 14px;
     margin-top: 8px;
