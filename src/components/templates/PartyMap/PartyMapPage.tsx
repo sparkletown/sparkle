@@ -6,7 +6,9 @@ import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { updateTheme } from "pages/VenuePage/helpers";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import useUpdateLocationEffect, {
+  updateLocationData,
+} from "utils/useLocationUpdateEffect";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
@@ -40,6 +42,13 @@ const PartyMap = () => {
         return acc;
       }, {})
     : {};
+
+  const modalHidden = () => {
+    setIsRoomModalOpen(false);
+    if (user) {
+      updateLocationData(user, "Map");
+    }
+  };
 
   const combinedAttendanceRoomTitles = [
     [
@@ -123,7 +132,7 @@ const PartyMap = () => {
       <RoomModal
         show={isRoomModalOpen}
         room={selectedRoom}
-        onHide={() => setIsRoomModalOpen(false)}
+        onHide={modalHidden}
       />
     </WithNavigationBar>
   );
