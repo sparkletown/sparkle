@@ -3,6 +3,7 @@ import "firebase/functions";
 import { VenueInput } from "api/admin";
 import { TemplateType } from "settings";
 import firebase from "firebase/app";
+import { createUrlSafeName } from "api/admin";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -18,14 +19,14 @@ export const validationSchema = Yup.object()
             await firebase
               .firestore()
               .collection("venues")
-              .doc(val.replace(/\W/g, ""))
+              .doc(createUrlSafeName(val))
               .get()
           ).exists
       )
       .test(
         "dfsd",
         "Must have alphanumeric characters",
-        (val: string) => val.replace(/\W/g, "").length > 0
+        (val: string) => createUrlSafeName(val).length > 0
       ),
     bannerImageFile: Yup.mixed<FileList>()
       .required("Required")
