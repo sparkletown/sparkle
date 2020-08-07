@@ -2,8 +2,8 @@ import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
 import { RoomData } from "./RoomData";
 
-export const isPartyMapVenue = (val: Venue): val is PartyMapVenue =>
-  "template" in val && val.template === VenueTemplate.partymap;
+export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+  venue.template === VenueTemplate.partymap;
 
 export interface PartyMapVenue extends Venue {
   template: VenueTemplate.partymap;
