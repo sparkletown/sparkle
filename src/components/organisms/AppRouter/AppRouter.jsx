@@ -60,11 +60,8 @@ const AppRouter = () => {
     <Router basename="/">
       <Switch>
         <Route
-          path="/sparkleverse"
-          component={() => {
-            window.location.href = SPARKLEVERSE_MARKETING_URL;
-            return null;
-          }}
+          path="/SparkleVerse"
+          component={() => <Redirect to={SPARKLEVERSE_MARKETING_URL} />}
         />
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
