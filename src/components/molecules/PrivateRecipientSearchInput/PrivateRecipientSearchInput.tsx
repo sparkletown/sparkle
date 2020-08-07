@@ -4,7 +4,7 @@ import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 import "./PrivateRecipientSearchInput.scss";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 
 interface PropsType {
   setSelectedUser: (user: User) => void;
@@ -24,7 +24,8 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
   const { userArray } = useSelector((state) => ({
     userArray: state.firestore.ordered.users,
   }));
-  useFirestoreConnect("users");
+
+  useConnectRecentUsers();
 
   return (
     <div className="private-recipient-search-input-container">

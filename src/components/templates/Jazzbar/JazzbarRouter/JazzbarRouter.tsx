@@ -8,11 +8,12 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
-  useFirestoreConnect("users");
+  useConnectRecentUsers();
 
   const { user } = useUser();
   useFirestoreConnect({

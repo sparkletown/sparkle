@@ -4,7 +4,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { Message } from "components/molecules/Message";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 
 interface MessageListProps {
   messages: RestrictedChatMessage[];
@@ -12,7 +12,7 @@ interface MessageListProps {
 
 export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
   const usersById = useSelector((state) => state.firestore.data.users);
-  useFirestoreConnect("users");
+  useConnectRecentUsers();
   const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
 
   return (
