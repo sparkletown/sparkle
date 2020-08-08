@@ -17,6 +17,8 @@ import { useUser } from "hooks/useUser";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
+import { isUserAMember } from "utils/isUserAMember";
+
 import "./VenuePage.scss";
 
 const VenuePage = () => {
@@ -58,6 +60,7 @@ const VenuePage = () => {
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const isMember = user && isUserAMember(user.email, venue.config.memberEmails);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
@@ -81,10 +84,11 @@ const VenuePage = () => {
     }
 
     if (
-      (event.price > 0 &&
+      !isMember &&
+      ((event.price > 0 &&
         userPurchaseHistoryRequestStatus &&
         !hasUserBoughtTicket) ||
-      isEventFinished
+        isEventFinished)
     ) {
       return <>Forbidden</>;
     }
