@@ -157,7 +157,7 @@ module.exports = {
   ],
   description: {
     program_url:
-      "https://docs.google.com/presentation/d/1k8F-AEfL5c0G_xVT_cJdeaIZZZVX6o4mygU42JGW1Cg/",
+      "https://docs.google.com/presentation/d/e/2PACX-1vQCC-lRX9axXHLGpW1WmA4rWng6e0BOA3jhaemRvqeJbWx3RwQ4RYEnElgTiIt_z7Q0XTWwc4uYw0D_/pub?start=false&loop=true&delayms=60000&slide=id.g81ea402f3e_20_14",
     text: "Welcome to the party. We recommend starting at Wish Upon A Star.",
   },
   rooms: [
@@ -580,7 +580,7 @@ module.exports = {
       ],
     },
     {
-      title: "DDP Disco Space Barge",
+      title: "DDP Disco Barge",
       subtitle:
         "An Interstellar Disco Barge that perambulates all Zoom realms. Commences as a Virtual Art Car, followed by an acceleration into virtual / terrestrial afterparty dimensions!",
       external_url: "https://bit.ly/virtualddp",
@@ -752,7 +752,7 @@ module.exports = {
     {
       title: "International Donation Station",
       subtitle: "Give generously to the artists",
-      external_url: "https://paypal.me/corealitycollective",
+      external_url: "https://donorbox.org/interdependence-day-bury-treasure",
       on_map: true,
       on_list: false,
       path:
