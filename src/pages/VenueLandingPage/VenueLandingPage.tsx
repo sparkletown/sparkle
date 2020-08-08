@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import InformationCard from "components/molecules/InformationCard";
 import dayjs from "dayjs";
@@ -18,10 +17,15 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { Firestore } from "types/Firestore";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { WithId } from "utils/id";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { useSelector } from "hooks/useSelector";
 
-export interface EntranceExperienceProps {
+import "./VenueLandingPage.scss";
+
+export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
   venueEvents?: Firestore["ordered"]["venueEvents"];
   venueRequestStatus: Firestore["status"]["requested"]["currentVenue"];
@@ -29,16 +33,30 @@ export interface EntranceExperienceProps {
   venueId?: string;
 }
 
-export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps> = (
-  props
-) => {
+export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
+  const { venueId } = useParams();
+  useConnectCurrentVenue();
+
   const {
     venue,
     venueEvents,
     venueRequestStatus,
     purchaseHistory,
-    venueId,
-  } = props;
+  } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    venueRequestStatus: state.firestore.status.requested.currentVenue,
+    venueEvents: state.firestore.ordered.venueEvents,
+    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+  }));
+
+  useFirestoreConnect({
+    collection: "venues",
+    doc: venueId,
+    subcollections: [{ collection: "events" }],
+    storeAs: "venueEvents",
+    orderBy: ["start_utc_seconds", "asc"],
+  });
+
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<
@@ -285,7 +303,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
               <InformationCard title="Check how an event looks like in your venue">
                 <div className="button-container">
                   <div>This is a fake event. Only you can see it.</div>
-                  <Link to={`/v/${venueId}/live`}>
+                  <Link to={`/in/${venueId}`}>
                     <button role="link" className="btn btn-primary">
                       Enter as an admin
                     </button>

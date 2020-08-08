@@ -13,8 +13,7 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Account/Admin";
-import VenuePage from "pages/VenuePage";
-import TemplateRouter from "components/organisms/TemplateRouter";
+import { VenueLandingPage } from "pages/VenueLandingPage";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
@@ -72,8 +71,8 @@ const AppRouter = () => {
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
         <Route path="/admin/venue/:venueId" component={Admin} />
         <Route path="/admin" component={Admin} />
-        <Route path="/v/:venueId/live" component={VenuePage} />
-        <Route path="/v/:venueId" component={TemplateRouter} />
+        <Route path="/v/:venueId" component={VenueLandingPage} />
+        <Route path="/in/:venueId" component={VenuePage} />
         <Route
           path="/venue/*"
           render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}

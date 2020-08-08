@@ -47,7 +47,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   return (
     <div className="event-payment-button-container">
       {hasUserAlreadyBoughtTicket || isUserVenueOwner ? (
-        <Link to={`/v/${venueId}/live`}>
+        <Link to={`/in/${venueId}`}>
           <button
             role="link"
             className="btn btn-primary buy-tickets-button"

@@ -43,7 +43,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: CodeOfConductFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(venueId ? `/v/${venueId}/live` : "");
+    history.push(venueId ? `/in/${venueId}` : "");
   };
 
   if (!venue?.code_of_conduct_questions) {

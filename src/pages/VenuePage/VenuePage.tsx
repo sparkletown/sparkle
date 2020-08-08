@@ -8,7 +8,7 @@ import { ChatContextWrapper } from "components/context/ChatContext";
 import { updateTheme } from "./helpers";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useHistory, Redirect } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
@@ -17,6 +17,7 @@ import { useUser } from "hooks/useUser";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { isUserAMember } from "utils/isUserAMember";
 
 import "./VenuePage.scss";
@@ -71,6 +72,10 @@ const VenuePage = () => {
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
 
+  if (!user) {
+    return <Redirect to={`/v/${venueId}`} />;
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -85,11 +90,11 @@ const VenuePage = () => {
     }
 
     if (
-      !isMember &&
-      ((event.price > 0 &&
+      (!isMember &&
+        event.price > 0 &&
         userPurchaseHistoryRequestStatus &&
         !hasUserBoughtTicket) ||
-        isEventFinished)
+      isEventFinished
     ) {
       return <>Forbidden</>;
     }
@@ -123,17 +128,21 @@ const VenuePage = () => {
     case VenueTemplate.partymap:
       template = <PartyMap />;
       break;
-    case VenueTemplate.artPiece:
+    case VenueTemplate.artpiece:
       template = <ArtPiece />;
       break;
   }
 
   return (
     <ChatContextWrapper>
-      {isUserVenueOwner && (
-        <div className="preview-indication">This is a preview of an event</div>
-      )}
-      {template}
+      <WithNavigationBar>
+        {isUserVenueOwner && (
+          <div className="preview-indication">
+            This is a preview of an event
+          </div>
+        )}
+        {template}
+      </WithNavigationBar>
     </ChatContextWrapper>
   );
 };

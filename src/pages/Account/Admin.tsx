@@ -22,7 +22,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { VenueEvent } from "types/VenueEvent";
 import { canHaveSubvenues } from "utils/venue";
-import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
+import { VenuePreview } from "components/organisms/VenuePreview/VenuePreview";
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -160,10 +160,7 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                   className="playa-icon"
                 />
                 <div className="playa-marketing-preview">
-                  <EntranceExperiencePreviewProvider
-                    venueRequestStatus
-                    venue={venue}
-                  />
+                  <VenuePreview venueRequestStatus venue={venue} />
                 </div>
               </div>
             </div>
@@ -181,7 +178,7 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={`/v/${venue.id}`}
+          to={`/ v / ${venue.id}`}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"

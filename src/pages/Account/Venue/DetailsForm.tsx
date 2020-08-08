@@ -18,11 +18,10 @@ import {
   editVenueCastSchema,
   editVenueValidationSchema,
 } from "./DetailsValidationSchema";
-import { Accordion, useAccordionToggle } from "react-bootstrap";
+import { useAccordionToggle } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { AdvancedDetailsForm } from "./AdvancedDetailsForm";
-import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
+import { VenuePreview } from "../../../components/organisms/VenuePreview/VenuePreview";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { venueDefaults } from "./defaults";
@@ -105,82 +104,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           state={state}
         />
       </div>
-    </div>
-  );
-};
-
-type Venue = ExtractProps<typeof EntranceExperiencePreviewProvider>["venue"];
-
-interface VenuePreviewProps {
-  values: FormValues;
-  templateName?: string;
-  state: WizardPage["state"];
-}
-
-const VenuePreview: React.FC<VenuePreviewProps> = ({
-  values,
-  state,
-  templateName,
-}) => {
-  const urlFromImage = useCallback((filesOrUrl?: FileList | string) => {
-    if (typeof filesOrUrl === "string") return filesOrUrl;
-    return filesOrUrl && filesOrUrl.length > 0
-      ? URL.createObjectURL(filesOrUrl[0])
-      : undefined;
-  }, []);
-
-  const remoteBannerImageUrl =
-    state.detailsPage?.venue.config.landingPageConfig.coverImageUrl;
-  const remoteLogoImageUrl = state.detailsPage?.venue.host.icon;
-
-  const previewVenue: Venue = useMemo(
-    () => ({
-      template: VenueTemplate.jazzbar,
-      name: values.name || `My ${templateName} name`,
-      config: {
-        theme: venueDefaults.config.theme,
-        landingPageConfig: {
-          coverImageUrl:
-            urlFromImage(values.bannerImageFile) ??
-            remoteBannerImageUrl ??
-            venueDefaults.config.landingPageConfig.coverImageUrl,
-          subtitle:
-            values.tagline || venueDefaults.config.landingPageConfig.subtitle,
-          description:
-            values.longDescription ||
-            venueDefaults.config.landingPageConfig.description,
-          presentation: [],
-          checkList: [],
-          joinButtonText: venueDefaults.config.landingPageConfig.joinButtonText,
-          quotations: [],
-        },
-      },
-      host: {
-        icon:
-          urlFromImage(values.logoImageFile) ??
-          remoteLogoImageUrl ??
-          venueDefaults.host.icon,
-      },
-      owners: [],
-      profile_questions:
-        values.profileQuestions ?? venueDefaults.profile_questions,
-      code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
-    }),
-    [
-      values,
-      urlFromImage,
-      remoteBannerImageUrl,
-      remoteLogoImageUrl,
-      templateName,
-    ]
-  );
-
-  return (
-    <div className="venue-preview">
-      <EntranceExperiencePreviewProvider
-        venueRequestStatus
-        venue={previewVenue}
-      />
     </div>
   );
 };
@@ -319,17 +242,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </span>
           )}
         </div>
-        <Accordion>
-          <AccordionButton eventKey="0" />
-          <Accordion.Collapse eventKey="0">
-            <AdvancedDetailsForm
-              register={register}
-              control={control}
-              values={values}
-              errors={errors}
-            />
-          </Accordion.Collapse>
-        </Accordion>
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (
