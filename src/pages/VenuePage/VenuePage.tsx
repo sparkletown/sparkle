@@ -57,10 +57,10 @@ const VenuePage = () => {
   const isEventFinished =
     event &&
     currentTimestamp >
-    event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
-  const isMember = isUserAMember(user.email, venue.config.memberEmails);
+  const isMember = user && isUserAMember(user.email, venue.config.memberEmails);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
@@ -85,10 +85,10 @@ const VenuePage = () => {
 
     if (
       !isMember &&
-      (event.price > 0 &&
+      ((event.price > 0 &&
         userPurchaseHistoryRequestStatus &&
         !hasUserBoughtTicket) ||
-      isEventFinished
+        isEventFinished)
     ) {
       return <>Forbidden</>;
     }
