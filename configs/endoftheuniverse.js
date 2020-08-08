@@ -700,36 +700,22 @@ module.exports = {
         generateEvent(
           120,
           60,
-          "CRC Women",
+          "Leah Emmott",
           "Womb Clearing & Activation Ceremony",
-          "Guided Visual Embodiment Practice w/ Creatrix of Awakening  the Womb, Healing Arts Teacher, Initiated Magdalena Rose Womb Priestess & Guide Cherezade."
+          "Guided Visual Embodiment Practice w/ Creatrix of Awakening the Womb, Healing Arts Teacher, Initiated Magdalena Rose Womb Priestess & Guide Cherezade."
         ),
         generateEvent(
           180,
           60,
-          "CRC Women",
+          "Ella Love",
           "Awakening Your Divine Femininity",
           "Ella Alexandria Love is a transformation Midwife & Women’s Empowerment Leader. She deeply understands a woman’s duty to awaken themselves as sovereign beings and devotes her life to support us in doing so."
         ),
         midnight_event,
         generateEvent(
           300,
-          60,
-          "CRC Women",
-          "Moving Heavy in to Light",
-          "Prayerformer and Healer Alesha Howard extends an invitation to come together in sisterhood to recognize, observe, actively listen and possibly release heavy emotions."
-        ),
-        generateEvent(
-          360,
-          60,
-          "CRC Women",
-          "Spaceholding for Space Holders",
-          "How to gracefully show up for tribe whilst honoring your energetic life force. Lisa Dang invites hearts to discuss tools, offer suggestions & consider sustainability in the practice of Spaceholding."
-        ),
-        generateEvent(
-          420,
-          60,
-          "CRC Women",
+          120,
+          "Anthe Aelea",
           "Living Life More Golden: Women’s Circle",
           [
             "Coming more deeply into your own. Honoring & governing your unique sacral life energy from the heart. Empowering your creative, sexual sovereignty.",
@@ -738,12 +724,26 @@ module.exports = {
           ].join("\n")
         ),
         generateEvent(
+          420,
+          60,
+          "Alesha Howard",
+          "Moving Heavy in to Light",
+          "Prayerformer and Healer Alesha Howard extends an invitation to come together in sisterhood to recognize, observe, actively listen and possibly release heavy emotions."
+        ),
+        generateEvent(
+          480,
+          60,
+          "Lisa Dang",
+          "Spaceholding for Space Holders",
+          "How to gracefully show up for tribe whilst honoring your energetic life force. Lisa Dang invites hearts to discuss tools, offer suggestions & consider sustainability in the practice of Spaceholding."
+        ),
+        generateEvent(
           540,
           60,
-          "CRC Women",
+          "MR RAD & Josh is Your Tour Guide",
           "Movement is Medicine Dance",
           [
-            "Musical Journey by MR RAD & Josh is Your Guide",
+            "Musical Journey by MR RAD & Josh is Your Tour Guide",
             "Open to All. Feel into the FREEquency.",
           ].join("\n")
         ),
