@@ -21,6 +21,10 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 
+const hasPaidEvents = (template: VenueTemplate) => {
+  return template === VenueTemplate.jazzbar;
+};
+
 const VenuePage = () => {
   const { venueId } = useParams();
   const history = useHistory();
@@ -75,11 +79,15 @@ const VenuePage = () => {
     return <Redirect to={`/v/${venueId}`} />;
   }
 
+  if (!venue) {
+    return "Loading...";
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!isUserVenueOwner) {
+  if (hasPaidEvents(venue.template) && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
