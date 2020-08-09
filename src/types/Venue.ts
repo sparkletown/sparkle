@@ -1,3 +1,4 @@
+import { FormValues } from "pages/Account/Venue/DetailsForm";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
@@ -48,4 +49,38 @@ export const urlFromImage = (
   return filesOrUrl && filesOrUrl.length > 0
     ? URL.createObjectURL(filesOrUrl[0])
     : defaultValue;
+};
+
+export const createJazzbar = (values: FormValues): Venue => {
+  return {
+    template: VenueTemplate.jazzbar,
+    name: values.name || "Your Jazz Bar",
+    mapIconImageUrl: urlFromImage(
+      "/default-profile-pic.png",
+      values.mapIconImageFile
+    ),
+    config: {
+      theme: {
+        primaryColor: "yellow",
+        backgroundColor: "red",
+      },
+      landingPageConfig: {
+        coverImageUrl: urlFromImage(
+          "/default-profile-pic.png",
+          values.bannerImageFile
+        ),
+        subtitle: values.subtitle || "Subtitle for your venue",
+        description: values.description || "Description of your venue",
+        presentation: [],
+        checkList: [],
+        quotations: [],
+      },
+    },
+    host: {
+      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
+    },
+    owners: [],
+    profile_questions: values.profileQuestions ?? [],
+    code_of_conduct_questions: [],
+  };
 };

@@ -1,7 +1,3 @@
-import React, { useCallback, useMemo } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import {
   createUrlSafeName,
   createVenue,
@@ -11,8 +7,11 @@ import {
 } from "api/admin";
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
+import { useUser } from "hooks/useUser";
+import React, { useCallback, useMemo } from "react";
+import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar } from "types/JazzbarVenue";
+import { createJazzbar } from "types/Venue";
 import * as Yup from "yup";
 import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
@@ -28,7 +27,7 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
 } from "settings";
-import { InvalidVenueName } from "errors";
+import "./Venue.scss";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -116,7 +115,6 @@ interface DetailsFormLeftProps {
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
   editing?: boolean;
-  submissionError: string | undefined;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
