@@ -8,6 +8,7 @@ import PartyMapRouter from "components/templates/PartyMap";
 import { ChatContextWrapper } from "components/context/ChatContext";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WalkerRouter } from "components/templates/Walker/Router";
 
 const TemplateRouter = () => {
   useConnectCurrentVenue();
@@ -24,18 +25,25 @@ const TemplateRouter = () => {
     return <>Loading...</>;
   }
 
+  if (!user) {
+    return <EntranceExperience />;
+  }
+
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       return <EntranceExperience />;
     case VenueTemplate.partymap:
-      if (user) {
-        return (
-          <ChatContextWrapper>
-            <PartyMapRouter />
-          </ChatContextWrapper>
-        );
-      }
-      return <EntranceExperience />;
+      return (
+        <ChatContextWrapper>
+          <PartyMapRouter />
+        </ChatContextWrapper>
+      );
+    case VenueTemplate.walker:
+      return (
+        <ChatContextWrapper>
+          <WalkerRouter />
+        </ChatContextWrapper>
+      );
   }
   return <>Error loading venue {venueId}</>;
 };

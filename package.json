@@ -41,6 +41,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-firestore": "^0.13.0",
     "redux-thunk": "^2.3.0",
+    "three": "^0.119.1",
+    "three-obj-mtl-loader": "^1.0.3",
     "twilio-video": "^2.5.1",
     "yup": "^0.29.2"
   },
