@@ -62,6 +62,11 @@ jobs:
                     ENV=prod
                     TARGET=co-reality-map
                   fi
+                  if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
+                    PREFIX=SPARKLEVERSE_
+                    ENV=sparkleverse
+                    TARGET=sparkleverse
+                  fi
                   ./scripts/init-env.sh $PREFIX
                   npm run build
                   ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
@@ -78,6 +83,7 @@ workflows:
               only:
                 - master
                 - staging
+                - sparkleverse
       - deploy-hosting:
           requires:
             - build-and-test
@@ -86,6 +92,7 @@ workflows:
               only:
                 - master
                 - staging
+                - sparkleverse
       - smoke-test:
           requires:
             - deploy-functions

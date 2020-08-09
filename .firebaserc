@@ -31,6 +31,13 @@
           "co-reality-staging"
         ]
       }
+    },
+    "sparkleverse": {
+      "hosting": {
+        "sparkleverse": [
+          "sparkle-verse"
+        ]
+      }
     }
   }
 }
