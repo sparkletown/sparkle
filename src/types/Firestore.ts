@@ -9,8 +9,7 @@ import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
-import { WithId, WithoutId } from "utils/id";
-import { Tidy } from "./Tidy";
+import { WithId } from "utils/id";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -28,8 +27,6 @@ interface Experience {
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
 
-type UserWithoutId = Tidy<WithoutId<User>>;
-
 export interface Firestore {
   status: {
     requesting: VenueStatus;
@@ -42,8 +39,8 @@ export interface Firestore {
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
-    partygoers: Record<string, UserWithoutId>;
-    users: Record<string, UserWithoutId>;
+    partygoers: Record<string, User>;
+    users: Record<string, User>;
     privatechats: Record<string, PrivateChatMessage>;
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;

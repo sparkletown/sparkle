@@ -13,6 +13,7 @@ import { useUser } from "hooks/useUser";
 import { useKeyedSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import useConnectRecentUsers from "hooks/useConnectRecentUsers";
+import { WithId } from "utils/id";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -21,7 +22,7 @@ const RECENT_MESSAGE_COUNT = 200;
 interface PropsType {
   isInProfileModal?: boolean;
   displayNameOfDiscussionPartnerAsTitle?: boolean;
-  discussionPartner?: User;
+  discussionPartner?: WithId<User>;
   room?: string;
 }
 
@@ -34,8 +35,10 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const [isRecipientChangeBlocked, setIsRecipientChangeBlocked] = useState(
     false
   );
-  const [privateRecipient, setPrivateRecipient] = useState<User>();
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [privateRecipient, setPrivateRecipient] = useState<WithId<User>>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [chatboxMessageType, setChatboxMessageType] = useState(
     room ? "room" : "global"
   );

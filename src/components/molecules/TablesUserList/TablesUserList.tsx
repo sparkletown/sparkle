@@ -10,6 +10,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
   venueName: string;
@@ -53,7 +54,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   TableComponent,
   joinMessage,
 }) => {
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
   const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [joiningTable, setJoiningTable] = useState("");
