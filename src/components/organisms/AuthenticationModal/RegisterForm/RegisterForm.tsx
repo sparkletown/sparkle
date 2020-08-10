@@ -1,9 +1,10 @@
+import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
 
 interface PropsType {
   displayLoginForm: () => void;
+  displayPasswordResetForm: () => void;
   afterUserIsLoggedIn?: () => void;
   closeAuthenticationModal: () => void;
 }
@@ -15,6 +16,7 @@ interface RegisterFormData {
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
+  displayPasswordResetForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
@@ -93,6 +95,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
+      <div className="secondary-action">
+        {`Forgot your password?`}
+        <br />
+        <span className="link" onClick={displayPasswordResetForm}>
+          Reset your password
+        </span>
+      </div>
     </div>
   );
 };

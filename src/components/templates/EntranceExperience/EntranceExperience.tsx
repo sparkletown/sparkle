@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 import "./EntranceExperience.scss";
 import { updateTheme } from "pages/VenuePage/helpers";
 import InformationCard from "components/molecules/InformationCard";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PaymentModal from "components/organisms/PaymentModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { VenueTemplate } from "types/VenueTemplate";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { VenueEvent } from "types/VenueEvent";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
-import PaymentModal from "components/organisms/PaymentModal";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import CountDown from "components/molecules/CountDown";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { Firestore } from "types/Firestore";
@@ -94,7 +95,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
   };
 
   return (
-    <>
+    <WithNavigationBar>
       <div className="container venue-entrance-experience-container">
         <div
           className="header"
@@ -311,6 +312,6 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
         showAuth="register"
       />
-    </>
+    </WithNavigationBar>
   );
 };

@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
-import LoginForm from "./LoginForm";
-import RegisterForm from "./RegisterForm";
 import "./AuthenticationModal.scss";
+import LoginForm from "./LoginForm";
+import PasswordResetForm from "./PasswordResetForm";
+import RegisterForm from "./RegisterForm";
 
 interface PropsType {
   show: boolean;
   onHide: () => void;
   afterUserIsLoggedIn?: () => void;
-  showAuth: "login" | "register";
+  showAuth: "login" | "register" | "passwordReset";
 }
 
 const AuthenticationModal: React.FunctionComponent<PropsType> = ({
@@ -27,6 +28,10 @@ const AuthenticationModal: React.FunctionComponent<PropsType> = ({
     setFormToDisplay("register");
   };
 
+  const displayPasswordResetForm = () => {
+    setFormToDisplay("passwordReset");
+  };
+
   const closeAuthenticationModal = () => {
     setFormToDisplay(showAuth);
     onHide();
@@ -38,6 +43,7 @@ const AuthenticationModal: React.FunctionComponent<PropsType> = ({
         {formToDisplay === "register" && (
           <RegisterForm
             displayLoginForm={displayLoginForm}
+            displayPasswordResetForm={displayPasswordResetForm}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
             closeAuthenticationModal={closeAuthenticationModal}
           />
@@ -45,8 +51,15 @@ const AuthenticationModal: React.FunctionComponent<PropsType> = ({
         {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
+            displayPasswordResetForm={displayPasswordResetForm}
             closeAuthenticationModal={closeAuthenticationModal}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
+          />
+        )}
+        {formToDisplay === "passwordReset" && (
+          <PasswordResetForm
+            displayLoginForm={displayLoginForm}
+            closeAuthenticationModal={closeAuthenticationModal}
           />
         )}
       </div>
