@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
 import { User } from "types/User";
@@ -24,10 +23,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       state.firestore.data.experiences[venueName],
     users: state.firestore.ordered.partygoers,
   }));
-  // useFirestoreConnect({
-  //   collection: "experiences",
-  //   doc: venueName,
-  // });
 
   const tableOfUser = seatedAtTable
     ? JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable)

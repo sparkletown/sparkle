@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 

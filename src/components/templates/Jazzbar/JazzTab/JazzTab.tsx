@@ -16,7 +16,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 import { JAZZBAR_TABLES } from "./constants";
@@ -44,16 +43,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   }));
 
   const venueToUse = venue ? venue : firestoreVenue;
-
-  // useFirestoreConnect([
-  //   {
-  //     collection: "experiences",
-  //     doc: venueToUse.name,
-  //     subcollections: [{ collection: "reactions" }],
-  //     storeAs: "reactions",
-  //     orderBy: ["created_at", "desc"],
-  //   },
-  // ]);
 
   const experienceContext = useContext(ExperienceContext);
 
