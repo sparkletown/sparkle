@@ -4,6 +4,18 @@ export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 
+export const ZOOM_URL_TEMPLATES = [
+  VenueTemplate.zoomroom,
+  VenueTemplate.artcar,
+];
+
+export const VIDEO_IFRAME_TEMPLATES = [
+  VenueTemplate.jazzbar,
+  VenueTemplate.performancevenue,
+];
+
+export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
+
 export interface Template {
   template: VenueTemplate;
   name: string;

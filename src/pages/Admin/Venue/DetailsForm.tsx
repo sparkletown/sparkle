@@ -22,6 +22,11 @@ import {
 import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
 import { venueLandingUrl } from "utils/url";
+import {
+  ZOOM_URL_TEMPLATES,
+  VIDEO_IFRAME_TEMPLATES,
+  EMBED_IFRAME_TEMPLATES,
+} from "settings";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -227,6 +232,71 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="input-error">{errors.description.message}</span>
           )}
         </div>
+        {state.templatePage?.template.template && (
+          <>
+            {ZOOM_URL_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">Zoom URL</div>
+                <textarea
+                  disabled={disable}
+                  name={"zoomUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://us02web.zoom.us/j/654123654123"
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+            {VIDEO_IFRAME_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">
+                  Livestream URL, for people to view in your venue
+                </div>
+                <textarea
+                  disabled={disable}
+                  name={"videoIframeUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://youtu.be/embed/abcDEF987w"
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+            {EMBED_IFRAME_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">
+                  URL to your artwork, to embed in the experience as an iframe
+                </div>
+                <textarea
+                  disabled={disable}
+                  name={"embedIframeUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://3dwarehouse.sketchup.com/embed.html?mid=..."
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (

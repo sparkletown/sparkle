@@ -37,6 +37,9 @@ export interface VenueInput extends AdvancedVenueInput {
   subtitle: string;
   description: string;
   mapIconImageFile?: FileList;
+  zoomUrl?: string;
+  videoIframeUrl?: string;
+  embedIframeUrl?: string;
 }
 
 export type VenueInputEdit = Omit<VenueInput, ImageFileKeys> &
@@ -97,6 +100,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
     firestoreVenueInput
   );
 };
+
 export const updateVenue = async (input: VenueInputEdit, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 

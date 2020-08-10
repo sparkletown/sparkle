@@ -3,6 +3,11 @@ import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
 import { VenueTemplate } from "types/VenueTemplate";
+import {
+  ZOOM_URL_TEMPLATES,
+  VIDEO_IFRAME_TEMPLATES,
+  EMBED_IFRAME_TEMPLATES,
+} from "settings";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -40,17 +45,41 @@ export const validationSchema = Yup.object()
     logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
     description: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
-    mapIconImageFile: Yup.mixed<FileList>().when(
-      "$template.type",
+    mapIconImageFile: createFileSchema("mapIconImage", true).required(
+      "Required"
+    ),
+    zoomUrl: Yup.string().when(
+      "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        template === VenueTemplate.performancevenue ||
-        template === VenueTemplate.zoomroom
+        ZOOM_URL_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test("zoomUrl", "URL required", (val: string) => val.length > 0)
+          : schema.notRequired()
+    ),
+    videoIframeUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        VIDEO_IFRAME_TEMPLATES.includes(template)
           ? schema
               .required("Required")
               .test(
-                "mapIconImage",
-                "Image required",
-                (val: FileList) => val.length > 0
+                "videoIframeUrl",
+                "Video URL required",
+                (val: string) => val.length > 0
+              )
+          : schema.notRequired()
+    ),
+    embedIframeUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        EMBED_IFRAME_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test(
+                "embedIframeUrl",
+                "Embedded object URL required",
+                (val: string) => val.length > 0
               )
           : schema.notRequired()
     ),
@@ -86,7 +115,7 @@ export const editVenueValidationSchema = validationSchema.shape<
   mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
   bannerImageUrl: Yup.string().required(),
   logoImageUrl: Yup.string().required(),
-  mapIconImageUrl: Yup.string(),
+  mapIconImageUrl: Yup.string().required(),
 });
 
 // this is used to transform the api data to conform to the yup schema
@@ -97,4 +126,5 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.description", "description")
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
-  .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl");
+  .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
+  .from("config.mapIconImageUrl", "mapIconImageUrl");
