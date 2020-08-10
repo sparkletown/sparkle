@@ -9,6 +9,7 @@ import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "hooks/useSelector";
+import { venueLandingUrl } from "utils/url";
 
 interface LoginFormData {
   email: string;
@@ -38,7 +39,11 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
-      history.push(venueId ? `/v/${venueId}${location.search}` : "");
+      history.push(
+        venueId
+          ? `${venueLandingUrl(venueId.toString())}${location.search}`
+          : ""
+      );
     } catch (error) {
       setError("email", "firebase", error.message);
     }

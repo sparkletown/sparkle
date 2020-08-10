@@ -72,7 +72,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={() => setIsAuthenticationModalOpen(false)}
-        afterUserIsLoggedIn={() => history.push(`/in/${venueId}`)}
+        afterUserIsLoggedIn={() => history.push(venueInsideUrl(venueId))}
         showAuth="register"
       />
     </>

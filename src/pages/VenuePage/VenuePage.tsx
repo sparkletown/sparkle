@@ -20,6 +20,7 @@ import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
+import { venueLandingUrl } from "utils/url";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -76,7 +77,7 @@ const VenuePage = () => {
   useConnectUserPurchaseHistory();
 
   if (!user) {
-    return <Redirect to={`/v/${venueId}`} />;
+    return <Redirect to={venueLandingUrl(venueId)} />;
   }
 
   if (!venue) {

@@ -21,6 +21,7 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
+import { venueLandingUrl } from "utils/url";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -77,9 +78,14 @@ const AppRouter = () => {
         <Route path="/in/:venueId" component={VenuePage} />
         <Route
           path="/venue/*"
-          render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}
+          render={(props) => (
+            <Redirect to={venueLandingUrl(props.match.params[0])} />
+          )}
         />
-        <Route path="/" component={() => <Redirect to="/v/kansassmittys" />} />
+        <Route
+          path="/"
+          component={() => <Redirect to={venueLandingUrl("kansassmittys")} />}
+        />
       </Switch>
     </Router>
   );

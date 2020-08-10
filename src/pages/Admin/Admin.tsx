@@ -24,6 +24,7 @@ import { canHaveSubvenues } from "utils/venue";
 import "./Admin.scss";
 import AdminEvent from "./AdminEvent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import { venueInsideUrl } from "utils/url";
 
 dayjs.extend(advancedFormat);
 
@@ -180,7 +181,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={`/in/${venue.id}`}
+          to={venueInsideUrl(venue.id)}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"

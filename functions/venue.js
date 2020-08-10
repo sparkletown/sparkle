@@ -82,8 +82,8 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
-  checkAuth(venueId, context);
   const venueId = getVenueId(data.name);
+  checkAuth(venueId, context);
 
   checkUserIsOwner(venueId, context.auth.token.user_id);
 

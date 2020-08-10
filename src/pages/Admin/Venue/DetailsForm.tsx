@@ -21,6 +21,7 @@ import {
 } from "./DetailsValidationSchema";
 import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
+import { venueLandingUrl } from "utils/url";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -122,7 +123,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     onSubmit,
   } = props;
   const urlSafeName = values.name
-    ? `${window.location.host}/v/${createUrlSafeName(values.name)}`
+    ? `${window.location.host}${venueLandingUrl(
+        createUrlSafeName(values.name)
+      )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;

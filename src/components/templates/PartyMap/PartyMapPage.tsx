@@ -18,6 +18,7 @@ import { useSelector } from "hooks/useSelector";
 import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
+import { venueLandingUrl } from "utils/url";
 
 const PartyMap = () => {
   useConnectPartyGoers();
@@ -78,7 +79,7 @@ const PartyMap = () => {
   if (!isPartyMapVenue(venue)) return null;
 
   return (
-    <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
+    <WithNavigationBar redirectionUrl={venueLandingUrl(venue.id)}>
       <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle

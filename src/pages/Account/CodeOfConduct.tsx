@@ -9,6 +9,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   location: RouterLocation;
@@ -43,7 +44,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: CodeOfConductFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(venueId ? `/in/${venueId}` : "");
+    history.push(venueId ? venueInsideUrl(venueId.toString()) : "");
   };
 
   if (!venue?.code_of_conduct_questions) {

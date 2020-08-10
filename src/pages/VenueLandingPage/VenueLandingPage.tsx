@@ -24,6 +24,7 @@ import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
+import { venueInsideUrl } from "utils/url";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -303,7 +304,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               <InformationCard title="Check how an event looks like in your venue">
                 <div className="button-container">
                   <div>This is a fake event. Only you can see it.</div>
-                  <Link to={`/in/${venueId}`}>
+                  <Link to={venueInsideUrl(venueId)}>
                     <button role="link" className="btn btn-primary">
                       Enter as an admin
                     </button>
