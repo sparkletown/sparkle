@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
@@ -24,10 +24,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       state.firestore.data.experiences[venueName],
     users: state.firestore.ordered.partygoers,
   }));
-  useFirestoreConnect({
-    collection: "experiences",
-    doc: venueName,
-  });
+  // useFirestoreConnect({
+  //   collection: "experiences",
+  //   doc: venueName,
+  // });
 
   const tableOfUser = seatedAtTable
     ? JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable)
@@ -51,7 +51,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  window.onbeforeunload = () => leaveSeat();
+  useEffect(() => {
+    window.addEventListener("onbeforeunload", () => leaveSeat());
+  });
 
   const tableLocked = (table: string) => {
     // Empty tables are never locked
@@ -73,8 +75,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
     firestoreUpdate(doc, update);
   };
-
-  // useWindowUnloadEffect(() => leaveSeat(), true);
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;

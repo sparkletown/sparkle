@@ -66,7 +66,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return `${venueName}-table${i + 1}`;
   };
 
-  useFirestoreConnect({ collection: "experiences", doc: venueName });
   const { user, profile } = useUser();
   const { users, experience, usersById } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,

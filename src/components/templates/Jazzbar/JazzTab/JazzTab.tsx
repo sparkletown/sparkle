@@ -45,17 +45,16 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
-  useFirestoreConnect([
-    {
-      collection: "experiences",
-      doc: venueToUse.name,
-      subcollections: [{ collection: "reactions" }],
-      storeAs: "reactions",
-      orderBy: ["created_at", "desc"],
-    },
-  ]);
+  // useFirestoreConnect([
+  //   {
+  //     collection: "experiences",
+  //     doc: venueToUse.name,
+  //     subcollections: [{ collection: "reactions" }],
+  //     storeAs: "reactions",
+  //     orderBy: ["created_at", "desc"],
+  //   },
+  // ]);
 
-  // const [isVideoFocused, setIsVideoFocused] = useState(false);
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -152,14 +151,21 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                     height: seatedAtTable ? "calc(100% - 55px)" : "500px",
                   }}
                 >
-                  <iframe
-                    key="main-event"
-                    title="main event"
-                    className="youtube-video"
-                    src={`${venueToUse.iframeUrl}?autoplay=1`}
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-                  />
+                  {venueToUse.iframeUrl && (
+                    <iframe
+                      key="main-event"
+                      title="main event"
+                      className="youtube-video"
+                      src={`${venueToUse.iframeUrl}?autoplay=1`}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                    />
+                  )}
+                  {!venueToUse.iframeUrl && (
+                    <div className="youtube-video">
+                      Embedded Video URL not yet set up
+                    </div>
+                  )}
                 </div>
                 <div className="call-out-band-container">
                   <div className="emoji-container">
