@@ -3,7 +3,6 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { VenueEvent } from "types/VenueEvent";
 import dayjs from "dayjs";
-import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { deleteEvent, EventInput } from "api/admin";
 import { WithId } from "utils/id";
 
@@ -39,24 +38,12 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
     }
   }, [event, reset]);
 
-  const onSubmit = useCallback(
-    async (data: EventInput) => {
-      const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: VenueEvent = {
-        name: data.name,
-        description: data.description,
-        start_utc_seconds: start.unix(),
-        duration_minutes: data.duration_hours * 60,
-        price: 0,
-        collective_price: 0,
-      };
-      if (event) {
-        await deleteEvent(venueId, event.id);
-      }
-      onHide();
-    },
-    [event, onHide, venueId]
-  );
+  const onSubmit = useCallback(async () => {
+    if (event) {
+      await deleteEvent(venueId, event.id);
+    }
+    onHide();
+  }, [event, onHide, venueId]);
 
   return (
     <Modal show={show} onHide={onHide}>

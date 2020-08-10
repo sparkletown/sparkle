@@ -11,7 +11,7 @@ import { useUser } from "hooks/useUser";
 import React, { useCallback, useMemo } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar } from "types/Venue";
+import { createJazzbar } from "types/JazzbarVenue";
 import * as Yup from "yup";
 import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
@@ -54,7 +54,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const values = watch();
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
-      console.log("vals", vals);
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
@@ -122,11 +121,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     previous,
     onSubmit,
   } = props;
-  // would be nice to access this from the form context but can't find a way
-  const isNonMapTemplate =
-    state.templatePage?.template.type === "ZOOM_ROOM" ||
-    state.templatePage?.template.type === "PERFORMANCE_VENUE";
-
   const urlSafeName = values.name
     ? `${window.location.host}/v/${createUrlSafeName(values.name)}`
     : undefined;
@@ -159,23 +153,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </span>
           ) : null}
         </div>
-        {isNonMapTemplate && (
-          <div className="input-container">
-            <div className="input-title">
-              {`Choose how you'd like your venue to appear on the map`}
-            </div>
-            <ImageInput
-              disabled={disable}
-              name={"mapIconImageFile"}
-              remoteUrlInputName={"mapIconImageUrl"}
-              containerClassName="input-square-container"
-              imageClassName="input-square-image"
-              image={values.mapIconImageFile}
-              ref={register}
-              error={errors.mapIconImageFile}
-            />
+        <div className="input-container">
+          <div className="input-title">
+            {`Choose how you'd like your venue to appear on the map`}
           </div>
-        )}
+          <ImageInput
+            disabled={disable}
+            name={"mapIconImageFile"}
+            remoteUrlInputName={"mapIconImageUrl"}
+            containerClassName="input-square-container"
+            imageClassName="input-square-image"
+            image={values.mapIconImageFile}
+            ref={register}
+            error={errors.mapIconImageFile}
+          />
+        </div>
         <div className="input-container">
           <div className="input-title">Upload a banner photo</div>
           <ImageInput

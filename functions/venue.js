@@ -4,50 +4,6 @@ const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
 
-// interface Question {
-//   name: string;
-//   text: string;
-// }
-
-// interface CreateVenueData {
-//   name: string;
-//   mapIconImageUrl?: string;
-//   bannerImageUrl: string;
-//   logoImageUrl: string;
-//   tagline: string;
-//   longDescription: string;
-//   profileQuestions: Array<Question>
-// }
-
-// interface Venue {
-//   id?: string;
-//   template: VenueTemplate;
-//   name: string;
-//   config: {
-//     theme: {
-//       primaryColor: string;
-//       backgroundColor?: string;
-//     };
-//     landingPageConfig: {
-//       coverImageUrl: string;
-//       subtitle: string;
-//       presentation: string[];
-//       checkList: string[];
-//       videoIframeUrl: string;
-//       joinButtonText: string;
-//       quotations?: Quotation[];
-//     };
-//     memberEmails?: string[];
-//   };
-//   host: {
-//     icon: string;
-//   };
-//   profile_questions: Question[];
-//   code_of_conduct_questions: Question[];
-//   iframeUrl?: string;
-//   events?: Array<UpcomingEvent>;
-// }
-
 const createVenueData = (data, context) => ({
   code_of_conduct_questions: [
     {

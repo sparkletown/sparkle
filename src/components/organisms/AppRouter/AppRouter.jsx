@@ -12,12 +12,12 @@ import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
-import Admin from "pages/Account/Admin";
+import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
-import { VenueWizard } from "pages/Account/Venue/VenueWizard";
+import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";

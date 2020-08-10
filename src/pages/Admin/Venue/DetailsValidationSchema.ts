@@ -1,8 +1,8 @@
 import { createUrlSafeName, VenueInput, VenueInputEdit } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
-import { TemplateType } from "settings";
 import * as Yup from "yup";
+import { VenueTemplate } from "types/VenueTemplate";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -18,7 +18,7 @@ export const validationSchema = Yup.object()
     name: Yup.string()
       .required("Display name required")
       .test(
-        "dfsd",
+        "name",
         "This venue name is already taken",
         async (val: string) =>
           !(
@@ -30,7 +30,7 @@ export const validationSchema = Yup.object()
           ).exists
       )
       .test(
-        "dfsd",
+        "name",
         "Must have alphanumeric characters",
         (val: string) => createUrlSafeName(val).length > 0
       ),
@@ -38,12 +38,13 @@ export const validationSchema = Yup.object()
       "Required"
     ),
     logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
-    subtitle: Yup.string().required("Required"),
     description: Yup.string().required("Required"),
+    subtitle: Yup.string().required("Required"),
     mapIconImageFile: Yup.mixed<FileList>().when(
       "$template.type",
-      (type: TemplateType, schema: Yup.MixedSchema<FileList>) =>
-        type === "PERFORMANCE_VENUE" || type === "ZOOM_ROOM"
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        template === VenueTemplate.performancevenue ||
+        template === VenueTemplate.zoomroom
           ? schema
               .required("Required")
               .test(

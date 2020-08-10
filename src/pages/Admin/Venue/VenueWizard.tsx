@@ -8,7 +8,6 @@ import { useQuery } from "hooks/useQuery";
 import { Template, VENUE_TEMPLATES } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
-import { venueTemplateToTemplateType } from "types/VenueTemplate";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -79,8 +78,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
       const data = venueSnapshot.data() as Venue;
       //find the template
       const template = VENUE_TEMPLATES.find(
-        (template) =>
-          venueTemplateToTemplateType[data.template] === template.type
+        (template) => data.template === template.template
       );
       if (!template) return;
 
@@ -94,6 +92,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   if (!state.detailsPage) return <div>Loading...</div>;
   return <DetailsForm editing state={state} />;
 };
+
 const VenueWizardCreate: React.FC = () => {
   const history = useHistory();
   const queryParams = useQuery();

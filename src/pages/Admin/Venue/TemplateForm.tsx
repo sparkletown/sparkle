@@ -1,22 +1,30 @@
 import React, { useState } from "react";
 import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
-import { VENUE_TEMPLATES, Template, TemplateType } from "settings";
+import { VENUE_TEMPLATES, Template } from "settings";
+import { VenueTemplate } from "types/VenueTemplate";
 
-const templateImageMap: Record<TemplateType, string> = {
-  ZOOM_ROOM: "/venues/venue-zoom.jpg",
-  ART_PIECE: "/venues/venue-art.jpg",
-  PERFORMANCE_VENUE: "/venues/venue-performance.jpg",
-  THEME_CAMP: "/venues/venue-camp.jpg",
-  ART_CAR: "/venues/venue-artcar.jpg",
+const templateImageMap: Record<VenueTemplate, string | undefined> = {
+  [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",
+  [VenueTemplate.artpiece]: "/venues/venue-art.jpg",
+  [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
+  [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
+  [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
+  [VenueTemplate.jazzbar]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.partymap]: undefined,
 };
 
-const templateThumbImageMap: Record<TemplateType, string> = {
-  ZOOM_ROOM: "/venues/pickspace-thumbnail_zoom.png",
-  ART_PIECE: "/venues/pickspace-thumbnail_art.png",
-  PERFORMANCE_VENUE: "/venues/pickspace-thumbnail_performance.png",
-  THEME_CAMP: "/venues/pickspace-thumbnail_camp.png",
-  ART_CAR: "/venues/pickspace-thumbnail_artcar.png",
+const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
+  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
+  [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
+  [VenueTemplate.performancevenue]:
+    "/venues/pickspace-thumbnail_performance.png",
+  [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
+  [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
+  [VenueTemplate.jazzbar]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.partymap]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -39,7 +47,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
       <div className="page-side">
         {selectedTemplate && (
           <img
-            src={templateImageMap[selectedTemplate.type]}
+            src={templateImageMap[selectedTemplate.template]}
             alt="venue"
             className="venue-art"
           />
@@ -98,7 +106,7 @@ interface TemplateCardProps {
 
 const TemplateCard: React.FC<TemplateCardProps> = (props) => {
   const {
-    template: { type, name, description },
+    template: { template, name, description },
     onClick,
     selected,
   } = props;
@@ -111,7 +119,7 @@ const TemplateCard: React.FC<TemplateCardProps> = (props) => {
     >
       <div className="centered-flex">
         <div className="pickspace-thumbnail">
-          <img src={templateThumbImageMap[type]} alt="venue thumb" />
+          <img src={templateThumbImageMap[template]} alt="venue thumb" />
         </div>
         <div className="flex-one">
           <h3>{name}</h3>
