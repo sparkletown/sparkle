@@ -5,8 +5,25 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
+const VALID_TEMPLATES = [
+  "jazzbar",
+  "friendship",
+  "partymap",
+  "zoomroom",
+  "themecamp",
+  "artpiece",
+  "artcar",
+  "performancevenue",
+];
 
 const createVenueData = (data, context) => {
+  if (!VALID_TEMPLATES.includes(data.template)) {
+    throw new HttpsError(
+      "invalid-argument",
+      `Template ${data.template} unknown`
+    );
+  }
+
   const venueData = {
     template: data.template,
     name: data.name,
