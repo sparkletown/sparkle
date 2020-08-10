@@ -46,13 +46,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  useEffect(() => {
-    window.addEventListener("onbeforeunload", leaveSeat);
-    return () => {
-      window.removeEventListener("onbeforeunload", leaveSeat, false);
-    };
-  }, []);
-
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
@@ -90,6 +83,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     await firestoreUpdate(doc, update);
     setSeatedAtTable("");
   }, [user, profile, venueName, setSeatedAtTable]);
+
+  useEffect(() => {
+    window.addEventListener("onbeforeunload", leaveSeat);
+    return () => {
+      window.removeEventListener("onbeforeunload", leaveSeat, false);
+    };
+  }, [leaveSeat]);
 
   return (
     <div className="row no-margin at-table table-header">
