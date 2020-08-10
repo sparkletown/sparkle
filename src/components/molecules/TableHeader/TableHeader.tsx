@@ -51,7 +51,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     return () => {
       window.removeEventListener("onbeforeunload", leaveSeat, false);
     };
-  });
+  }, []);
 
   const tableLocked = (table: string) => {
     // Empty tables are never locked
