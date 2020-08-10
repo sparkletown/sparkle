@@ -156,13 +156,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
             <div className="playa-abs-container">
-              <div style={{ marginLeft: -500, position: "relative" }}>
+              <div className="playa-icon-container">
                 <img
                   src={venue.mapIconImageUrl ?? venue.host.icon}
                   alt={"host icon"}
                   className="playa-icon"
                 />
-                <div className="playa-marketing-preview">
+                <div className="playa-venue-preview">
                   <VenuePreview values={venue} />
                 </div>
               </div>
