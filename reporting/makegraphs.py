@@ -58,7 +58,7 @@ class TimeRange(object):
 class Config():
 	# REVISIT: move to command-line args
 	# Party start/duration/end
-	START = datetime(2020,7,11,12,0,0,0)
+	START = datetime(2020,8,8,12,0,0,0)
 	END = START + timedelta(hours=12)
 	SEGMENTS = {
 		'Whole party': TimeRange(START, START + timedelta(hours=8)),
@@ -131,6 +131,17 @@ class Config():
 		'Journey to the Center of the Earth 10': 'The Last Campfire',
 		'Journey to the Center of the Earth 11': 'The Landfill / Sedi Mental / Meta More Peak',
 		'Journey to the Center of the Earth 12': 'The International Grace Station',
+		'End of the Universe 1': 'Apocalyse Meow Cabaret',
+		'End of the Universe 2': 'Worm Whole',
+		'End of the Universe 3': 'Wish Upon A Star',
+		'End of the Universe 4': 'XNN Colony Fantasea Rocket',
+		'End of the Universe 5': 'Stardust',
+		'End of the Universe 6': 'Space Loo',
+		'End of the Universe 7': 'Goddess Galaxy',
+		'End of the Universe 8': 'Shake Your Assteroid',
+		'End of the Universe 10': 'The Oat Milky Way',
+		'End of the Universe 11': 'Powered By SparkleVerse',
+		'End of the Universe 12': 'Escape Pod',
 	}
 	ROOM_TIMEZONE_OFFSETS = {
 		'Moon Rock Room- Live performers and deep space hitchhikers': timedelta(hours=-1),

@@ -15,13 +15,17 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "07/10/2020";
-const to = "07/12/2020";
+const from = "08/07/2020";
+const to = "08/09/2020";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = true;
+const newLogin = false;
+
+// If the process crashes halfway through, set this to the page it was on to skip
+// some pages - and hopefully avoid another crash.
+const resumeFromPage = 1;
 
 // Login credentials (only needed if newLogin is true)
 const username = "";
@@ -82,43 +86,46 @@ const password = "";
 
     await page.waitFor(2000);
 
-    let i = 1;
+    if (pageNum >= resumeFromPage) {
 
-    while (i <= numberOfReports) {
-      console.log(`Page ${pageNum}: exporting report ${i}...`);
+      let i = 1;
 
-      await page.waitForSelector(`#meeting_list > tbody > tr`, {
-        visible: true,
-      });
+      while (i <= numberOfReports) {
+        console.log(`Page ${pageNum}: exporting report ${i}...`);
 
-      await page.waitForSelector(
-        `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`,
-        { visible: true }
-      );
-      await page.click(
-        `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`
-      );
+        await page.waitForSelector(`#meeting_list > tbody > tr`, {
+          visible: true,
+        });
 
-      await page.waitForSelector(
-        "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input",
-        { visible: true }
-      );
-      await page.click(
-        "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input"
-      );
+        await page.waitForSelector(
+          `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`,
+          { visible: true }
+        );
+        await page.click(
+          `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`
+        );
 
-      await page.waitFor(100);
+        await page.waitForSelector(
+          "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input",
+          { visible: true }
+        );
+        await page.click(
+          "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input"
+        );
 
-      await page.waitForSelector(
-        ".modal-body > #contentDiv #btnExportParticipants"
-      );
-      await page.click(".modal-body > #contentDiv #btnExportParticipants");
+        await page.waitFor(100);
 
-      await page.mouse.click(10, 10);
+        await page.waitForSelector(
+          ".modal-body > #contentDiv #btnExportParticipants"
+        );
+        await page.click(".modal-body > #contentDiv #btnExportParticipants");
 
-      await page.waitFor(1000);
+        await page.mouse.click(10, 10);
 
-      i += 1;
+        await page.waitFor(1000);
+
+        i += 1;
+      }
     }
 
     console.log("Moving on to next page...");
