@@ -54,6 +54,7 @@ $border-radius: 28px;
   }
   &.preview {
     background-color: $dark;
+    overflow: scroll;
   }
 
   .venue-preview {
