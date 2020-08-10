@@ -6,6 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -111,7 +112,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   };
 
   return (
-    <>
+    <WithNavigationBar>
       <div className="container venue-entrance-experience-container">
         <div
           className="header"
@@ -328,6 +329,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
         showAuth="register"
       />
-    </>
+    </WithNavigationBar>
   );
 };
