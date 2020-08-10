@@ -8,6 +8,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -21,7 +22,9 @@ const ReactionList: React.FC<ReactionListProps> = ({
   const { usersById } = useSelector((state) => ({
     usersById: state.firestore.data.users,
   }));
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
 
   const profileImageSize = small ? 40 : 50;
   return (

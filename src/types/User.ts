@@ -7,7 +7,6 @@ interface Experience {
 type UserExperienceData = Record<string, Experience>;
 
 export interface User {
-  id: string;
   drinkOfChoice?: string;
   favouriteRecord?: string;
   doYouDance?: string;
@@ -16,4 +15,7 @@ export interface User {
   data?: UserExperienceData;
   lastSeenIn: string;
   room?: string;
+  // @debt typing - user also has a dynamic set of attributes for the question answers
+  // currently not possible to type them properly
+  // [question: string]: string;
 }

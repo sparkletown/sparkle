@@ -4,13 +4,14 @@ import "./ChatMessage.scss";
 import { User } from "types/User";
 import { UserInfo } from "firebase";
 import { ChatMessage } from "components/context/ChatContext";
+import { WithId } from "utils/id";
 
 interface PropsType {
   chat: ChatMessage;
   users: Record<string, User>;
   isInProfileModal: boolean;
   setSelectedUserProfile: (
-    value: React.SetStateAction<User | undefined>
+    value: React.SetStateAction<WithId<User> | undefined>
   ) => void;
   user: UserInfo;
   withoutSenderInformation?: boolean;
