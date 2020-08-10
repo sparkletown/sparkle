@@ -6,5 +6,5 @@ export enum VenueTemplate {
   themecamp = "themecamp",
   artpiece = "artpiece",
   artcar = "artcar",
-  performancevenue = "performancespace",
+  performancevenue = "performancevenue",
 }
