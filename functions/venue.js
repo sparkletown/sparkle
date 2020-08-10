@@ -163,6 +163,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
             doc.embedIframeUrl = data.embedIframeUrl;
           }
       }
+
+      admin.firestore().collection("venues").doc(venueId).update(doc);
     });
 
   return new HttpsError("ok", "Success");
