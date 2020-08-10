@@ -47,7 +47,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   };
 
   useEffect(() => {
-    window.addEventListener("onbeforeunload", () => leaveSeat());
+    window.addEventListener("onbeforeunload", leaveSeat);
+    return () => {
+      window.removeEventListener("onbeforeunload", leaveSeat, false);
+    };
   });
 
   const tableLocked = (table: string) => {
