@@ -149,7 +149,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
     <>
       <div className="page-container-adminpanel-content">
         <h3 style={{ textAlign: "center" }}>
-          How your camp appears on the Playa
+          How your space appears on the playa
         </h3>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
