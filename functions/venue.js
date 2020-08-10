@@ -32,7 +32,7 @@ const createVenueData = (data, context) => ({
   iframeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   name: data.name,
   profile_questions: [{ name: "Dance", text: "Do you dance?" }],
-  template: "jazzbar",
+  template: "performancevenue",
   owners: [context.auth.token.user_id],
   profile_questions: data.profileQuestions,
   mapIconImageUrl: data.mapIconImageUrl,
@@ -50,7 +50,7 @@ const checkUserIsOwner = async (venueId, uid) => {
     .doc(venueId)
     .get()
     .then((doc) => {
-      if (!doc.exists()) {
+      if (!doc.exists) {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
