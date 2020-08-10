@@ -33,15 +33,13 @@ const validationSchema = Yup.object().shape<EventInput>({
       }
     ),
   start_time: Yup.string().required("Start time required"),
-  end_date: Yup.string()
-    .required("End date required")
-    .test("end_date_future", "End date must be in the futur", (end_date) => {
-      return dayjs(end_date).isSameOrAfter(dayjs(), "day");
-    }),
-  end_time: Yup.string().required("End time required"),
+  duration_hours: Yup.number()
+    .typeError("Duration must be a number")
+    .required("Duration required"),
   price: Yup.number()
     .typeError("Price must be a number")
-    .required("Price is required"),
+    .required("Price is required")
+    .default(0),
 });
 
 const AdminEvent: React.FunctionComponent<PropsType> = ({
@@ -67,15 +65,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
         description: event.description,
         start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
         start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
-        end_date: dayjs
-          .unix(event.start_utc_seconds)
-          .add(event.duration_minutes, "minute")
-          .format("YYYY-MM-DD"),
-        end_time: dayjs
-          .unix(event.start_utc_seconds)
-          .add(event.duration_minutes, "minute")
-          .format("HH:mm"),
-        price: event.price / 100,
+        duration_hours: event.duration_minutes / 60,
       });
     }
   }, [event, reset]);
@@ -83,13 +73,12 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   const onSubmit = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const end = dayjs(`${data.end_date} ${data.end_time}`);
       const formEvent: VenueEvent = {
         name: data.name,
         description: data.description,
         start_utc_seconds: start.unix(),
-        duration_minutes: end.diff(start, "minute"),
-        price: Math.floor(data.price * 100),
+        duration_minutes: data.duration_hours * 60,
+        price: 0,
         collective_price: 0,
       };
       if (event) {
@@ -154,39 +143,18 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
             )}
           </div>
           <div className="input-group">
-            <label>End Time</label>
+            <label htmlFor="duration_hours">Duration (hours)</label>
             <input
-              type="date"
-              min={dayjs().format("YYYY-MM-DD")}
-              name="end_date"
+              id="duration_hours"
+              name="duration_hours"
               className="input-block input-centered"
+              placeholder="1"
               ref={register}
             />
-            {errors.end_date && (
-              <span className="input-error">{errors.end_date.message}</span>
-            )}
-            <input
-              type="time"
-              name="end_time"
-              className="input-block input-centered"
-              placeholder="Time"
-              ref={register}
-            />
-            {errors.end_time && (
-              <span className="input-error">{errors.end_time.message}</span>
-            )}
-          </div>
-          <div className="input-group">
-            <label htmlFor="price">Price</label>
-            <input
-              id="price"
-              name="price"
-              className="input-block input-centered"
-              placeholder="£20"
-              ref={register}
-            />
-            {errors.price && (
-              <span className="input-error">{errors.price.message}</span>
+            {errors.duration_hours && (
+              <span className="input-error">
+                {errors.duration_hours.message}
+              </span>
             )}
           </div>
           <input

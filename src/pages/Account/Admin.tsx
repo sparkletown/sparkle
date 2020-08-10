@@ -23,6 +23,7 @@ import { WithId } from "utils/id";
 import { canHaveSubvenues } from "utils/venue";
 import "./Admin.scss";
 import AdminEvent from "./AdminEvent";
+import AdminDeleteEvent from "./AdminDeleteEvent";
 
 dayjs.extend(advancedFormat);
 
@@ -212,6 +213,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
 
   const events = useSelector((state) => state.firestore.ordered.events);
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
@@ -246,7 +248,9 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                     </div>
                     <div className="button-container">
                       <div className="price-container">
-                        Individual tickets £{venueEvent.price / 100}
+                        {venueEvent.price > 0 && (
+                          <>Individual tickets £{venueEvent.price / 100}</>
+                        )}
                       </div>
                       <div className="event-payment-button-container">
                         <div>
@@ -254,11 +258,21 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setShowCreateEventModal(true);
                               setEditedEvent(venueEvent);
+                              setShowCreateEventModal(true);
                             }}
                           >
                             Edit
+                          </button>
+                          <button
+                            role="link"
+                            className="btn btn-primary buy-tickets-button"
+                            onClick={() => {
+                              setEditedEvent(venueEvent);
+                              setShowDeleteEventModal(true);
+                            }}
+                          >
+                            Delete
                           </button>
                         </div>
                       </div>
@@ -282,6 +296,15 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+      />
+      <AdminDeleteEvent
+        show={showDeleteEventModal}
+        onHide={() => {
+          setShowDeleteEventModal(false);
           setEditedEvent(undefined);
         }}
         venueId={venue.id}

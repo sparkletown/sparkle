@@ -8,8 +8,7 @@ export interface EventInput {
   description: string;
   start_date: string;
   start_time: string;
-  end_date: string;
-  end_time: string;
+  duration_hours: number;
   price: number;
 }
 
@@ -153,4 +152,12 @@ export const updateEvent = async (
     .firestore()
     .doc(`venues/${venueId}/events/${eventId}`)
     .update(event);
+};
+
+export const deleteEvent = async (venueId: string, eventId: string) => {
+  await firebase
+    .firestore()
+    .collection(`venues/${venueId}/events`)
+    .doc(eventId)
+    .delete();
 };
