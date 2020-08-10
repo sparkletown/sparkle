@@ -2,13 +2,14 @@ import React, { useContext, useState } from "react";
 
 import { User } from "types/User";
 import { ChatContext } from "components/context/ChatContext";
+import { WithId } from "utils/id";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
 
 interface PropsType {
   currentUserUID?: string;
-  discussionPartner?: User;
+  discussionPartner?: WithId<User>;
   type: string;
   room?: string;
   table?: string;
@@ -44,7 +45,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
   const sendMessage = (
     type: string,
     currentUserUID: string | undefined,
-    discussionPartner: User | undefined,
+    discussionPartner: WithId<User> | undefined,
     text: string
   ) => {
     if (!currentUserUID) return;

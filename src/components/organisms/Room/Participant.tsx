@@ -5,10 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 import { User } from "types/User";
+import { WithId } from "utils/id";
 
 interface ParticipantProps {
   participant: Video.Participant;
-  profileData: User;
+  profileData: WithId<User>;
   bartender?: User;
 }
 

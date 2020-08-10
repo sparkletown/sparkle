@@ -2,9 +2,10 @@ import React from "react";
 import { User } from "types/User";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { WithId } from "utils/id";
 
 interface MessageProps {
-  sender: User;
+  sender: WithId<User>;
   message: RestrictedChatMessage;
   onClick: () => void;
 }

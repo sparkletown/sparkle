@@ -4,9 +4,10 @@ import { User } from "types/User";
 import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  users: User[];
+  users: Array<WithId<User>>;
   limit?: number;
   imageSize?: number;
   activity?: string;
@@ -23,7 +24,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isAudioEffectDisabled,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   users = users?.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
   const { venue } = useSelector((state) => ({

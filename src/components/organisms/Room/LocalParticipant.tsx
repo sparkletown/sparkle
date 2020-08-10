@@ -7,10 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Video from "twilio-video";
 import { User } from "types/User";
 import Participant from "./Participant";
+import { WithId } from "utils/id";
 
 interface LocalParticipantProps {
   participant: Video.Participant;
-  profileData: User;
+  profileData: WithId<User>;
   bartender?: User;
 }
 

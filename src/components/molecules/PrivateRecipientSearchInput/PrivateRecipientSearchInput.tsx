@@ -5,9 +5,10 @@ import { debounce } from "lodash";
 import "./PrivateRecipientSearchInput.scss";
 import { useSelector } from "hooks/useSelector";
 import useConnectRecentUsers from "hooks/useConnectRecentUsers";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  setSelectedUser: (user: User) => void;
+  setSelectedUser: (user: WithId<User>) => void;
 }
 
 const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
@@ -16,7 +17,7 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState<string>("");
-  const onClickOnUserInSearchInput = (user: User) => {
+  const onClickOnUserInSearchInput = (user: WithId<User>) => {
     setSearchValue("");
     setSelectedUser(user);
   };

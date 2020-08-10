@@ -9,10 +9,11 @@ import {
 import "./UserProfilePicture.scss";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 type UserProfilePictureProp = {
-  user: User;
-  setSelectedUserProfile: (user: User) => void;
+  user: WithId<User>;
+  setSelectedUserProfile: (user: WithId<User>) => void;
   imageSize: number;
   isAudioEffectDisabled?: boolean;
 };

@@ -6,9 +6,10 @@ import "./UserProfileModal.scss";
 import Chatbox from "../Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropTypes {
-  userProfile?: User;
+  userProfile?: WithId<User>;
   show: boolean;
   onHide: () => void;
 }
@@ -61,7 +62,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 <React.Fragment key="question.text">
                   <p className="light question">{question.text}</p>
                   <h6>
-                    {userProfile.data?.[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {/*
+                    // @debt typing - need to support known User interface with unknown question keys
+                    // @ts-ignore */}
+                    {userProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </React.Fragment>

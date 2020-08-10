@@ -12,6 +12,7 @@ import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSe
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import useConnectRecentUsers from "hooks/useConnectRecentUsers";
+import { WithId } from "utils/id";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -26,7 +27,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
     users: state.firestore.data.users,
   }));
 
-  const [selectedUser, setSelectedUser] = useState<User>();
+  const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
   const discussionPartnerWithLastMessageExchanged =
     privateChats &&
@@ -49,7 +50,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
       return agg;
     }, {});
 
-  const onClickOnSender = (sender: User) => {
+  const onClickOnSender = (sender: WithId<User>) => {
     const chatsToUpdate = privateChats.filter(
       (chat) => !chat.isRead && chat.from === sender.id
     );
