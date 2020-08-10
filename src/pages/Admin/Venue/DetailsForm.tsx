@@ -205,7 +205,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div className="input-title">The venue tagline</div>
           <input
             disabled={disable}
-            name={"tagline"}
+            name={"subtitle"}
             ref={register}
             className="wide-input-block align-left"
             placeholder={defaultVenue.config.landingPageConfig.subtitle}
@@ -218,7 +218,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div className="input-title">Long description</div>
           <textarea
             disabled={disable}
-            name={"longDescription"}
+            name={"description"}
             ref={register}
             className="wide-input-block input-centered align-left"
             placeholder={defaultVenue.config.landingPageConfig.description}
