@@ -43,14 +43,12 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
     users: state.firestore.ordered.partygoers,
   }));
 
-  if (!venue) {
-    venue = firestoreVenue;
-  }
+  const venueToUse = venue ? venue : firestoreVenue;
 
   useFirestoreConnect([
     {
       collection: "experiences",
-      doc: venue.name,
+      doc: venueToUse.name,
       subcollections: [{ collection: "reactions" }],
       storeAs: "reactions",
       orderBy: ["created_at", "desc"],
@@ -133,7 +131,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
               <TableHeader
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
-                venueName={venue.name}
+                venueName={venueToUse.name}
               />
             )}
             <div
@@ -158,7 +156,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                     key="main-event"
                     title="main event"
                     className="youtube-video"
-                    src={`${venue.iframeUrl}?autoplay=1`}
+                    src={`${venueToUse.iframeUrl}?autoplay=1`}
                     frameBorder="0"
                     allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
                   />
@@ -212,7 +210,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
-            venueName={venue.name}
+            venueName={venueToUse.name}
             TableComponent={TableComponent}
             joinMessage={true}
             customTables={JAZZBAR_TABLES}
@@ -220,7 +218,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
         </div>
       </div>
       <ChatDrawer
-        roomName={venue.name}
+        roomName={venueToUse.name}
         chatInputPlaceholder="Chat to the bar"
       />
     </>
