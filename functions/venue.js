@@ -4,40 +4,49 @@ const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
 
-const createVenueData = (data, context) => ({
-  code_of_conduct_questions: [
-    {
-      name: "contributeToExperience",
-      text: "Are you willing to contribute to the experience?",
+const DEFAULT_PRIMARY_COLOR = "#bc271a";
+
+const createVenueData = (data, context) => {
+  const venueData = {
+    template: data.template,
+    name: data.name,
+    config: {
+      landingPageConfig: {
+        checkList: [],
+        coverImageUrl: data.bannerImageUrl,
+        subtitle: data.subtitle,
+        description: data.description,
+      },
     },
-  ],
-  config: {
-    landingPageConfig: {
-      checkList: [],
-      coverImageUrl: data.bannerImageUrl,
-      joinButtonText: "Enter our venue",
-      subtitle: data.tagline,
-      description: data.longDescription,
+    presentation: [],
+    quotations: [],
+    theme: {
+      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
     },
-  },
-  presentation: [data.longDescription],
-  quotations: [],
-  videoIframeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  theme: {
-    primaryColor: "#bc271a",
-  },
-  host: {
-    icon: data.logoImageUrl,
-  },
-  iframeUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-  name: data.name,
-  profile_questions: [{ name: "Dance", text: "Do you dance?" }],
-  template: "performancevenue",
-  owners: [context.auth.token.user_id],
-  profile_questions: data.profileQuestions,
-  mapIconImageUrl: data.mapIconImageUrl,
-  //@debt need to do something with mapIconUrl
-});
+    host: {
+      icon: data.logoImageUrl,
+    },
+    code_of_conduct_questions: [],
+    owners: [context.auth.token.user_id],
+    profile_questions: data.profileQuestions,
+    mapIconImageUrl: data.mapIconImageUrl,
+  };
+
+  switch (data.template) {
+    case "jazzbar":
+    case "performancevenue":
+      venueData.iframeUrl = data.videoIframeUrl;
+    case "partymap":
+    case "themecamp":
+      venueData.rooms = data.rooms;
+    case "zoomroom":
+    case "artcar":
+      venueData.zoomUrl = data.zoomUrl;
+    case "artpiece":
+      venueData.embedIframeUrl;
+  }
+  return venueData;
+};
 
 const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
@@ -87,10 +96,74 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   checkUserIsOwner(venueId, context.auth.token.user_id);
 
-  // @debt this should be typed
-  const venueData = createVenueData(data, context);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const updated = doc.data();
+      if (data.bannerImageUrl || data.subtitle || data.description) {
+        if (!doc.config) {
+          doc.config = {};
+        }
+        if (!doc.config.landingPageConfig) {
+          doc.config.landingPageConfig = {};
+        }
+      }
+      if (data.bannerImageUrl) {
+        doc.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
+      }
+      if (data.subtitle) {
+        doc.config.landingPageConfig.subtitle = data.subtitle;
+      }
+      if (data.description) {
+        doc.config.landingPageConfig.description = data.description;
+      }
+      if (data.primaryColor) {
+        if (!doc.theme) {
+          doc.theme = {};
+        }
+        doc.theme.primaryColor = data.primaryColor;
+      }
+      if (data.logoImageUrl) {
+        if (!doc.host) {
+          doc.host = {};
+        }
+        doc.host.icon = data.logoImageUrl;
+      }
+      if (data.profileQuestions) {
+        doc.profileQuestions = data.profileQuestions;
+      }
+      if (data.mapIconImageUrl) {
+        doc.mapIconImageUrl = data.mapIconImageUrl;
+      }
 
-  await admin.firestore().collection("venues").doc(venueId).update(venueData);
+      switch (doc.template) {
+        case "jazzbar":
+        case "performancevenue":
+          if (data.videoIframeUrl) {
+            doc.iframeUrl = data.videoIframeUrl;
+          }
+        case "partymap":
+        case "themecamp":
+          if (data.rooms) {
+            doc.rooms = data.rooms;
+          }
+        case "zoomroom":
+        case "artcar":
+          if (data.zoomUrl) {
+            doc.zoomUrl = data.zoomUrl;
+          }
+        case "artpiece":
+          if (data.embedIframeUrl) {
+            doc.embedIframeUrl = data.embedIframeUrl;
+          }
+      }
+    });
 
-  return venueData;
+  return new HttpsError("ok", "Success");
 });
