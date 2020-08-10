@@ -1,7 +1,7 @@
+import React, { useMemo } from "react";
 import JazzBar from "components/templates/Jazzbar";
 import { FormValues } from "pages/Account/Venue/DetailsForm";
-import React from "react";
-import { createJazzbar, Venue } from "types/Venue";
+import { createJazzbar } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
@@ -9,7 +9,7 @@ interface PropsType {
 }
 
 const VenuePreview: React.FunctionComponent<PropsType> = ({ values }) => {
-  const venue: Venue = createJazzbar(values);
+  const venue = useMemo(() => createJazzbar(values), [values]);
 
   let venueComponent;
   switch (venue.template) {
