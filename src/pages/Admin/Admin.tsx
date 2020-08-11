@@ -1,28 +1,31 @@
-import React, { useMemo, useState } from "react";
-import "firebase/storage";
-import "./Admin.scss";
-import { useUser } from "hooks/useUser";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import AdminEvent from "./AdminEvent";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import {
-  Link,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  useLocation,
-} from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useSelector, useKeyedSelector } from "hooks/useSelector";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import VenuePreview from "components/organisms/VenuePreview";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import "firebase/storage";
+import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import React, { useMemo, useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
+import {
+  Link,
+  Route,
+  Switch,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
+import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
+import { WithId } from "utils/id";
 import { canHaveSubvenues } from "utils/venue";
-import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
+import "./Admin.scss";
+import AdminEvent from "./AdminEvent";
+import AdminDeleteEvent from "./AdminDeleteEvent";
+import { venueInsideUrl } from "utils/url";
+
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -135,7 +138,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           />
           <Route
             path={`${match.url}`}
-            component={() => <VenueInfosComponent venue={venue} />}
+            component={() => <VenueInfoComponent venue={venue} />}
           />
         </Switch>
       </div>
@@ -143,12 +146,12 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
   );
 };
 
-const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
+const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   return (
     <>
       <div className="page-container-adminpanel-content">
         <h3 style={{ textAlign: "center" }}>
-          How your camp appears on the Playa
+          How your space appears on the playa
         </h3>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
@@ -160,10 +163,7 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                   className="playa-icon"
                 />
                 <div className="playa-marketing-preview">
-                  <EntranceExperiencePreviewProvider
-                    venueRequestStatus
-                    venue={venue}
-                  />
+                  <VenuePreview values={venue} />
                 </div>
               </div>
             </div>
@@ -181,12 +181,12 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={`/v/${venue.id}`}
+          to={venueInsideUrl(venue.id)}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"
         >
-          Visit preview page
+          Visit venue
         </Link>
         <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
           Edit venue
@@ -214,6 +214,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
 
   const events = useSelector((state) => state.firestore.ordered.events);
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
@@ -248,7 +249,9 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                     </div>
                     <div className="button-container">
                       <div className="price-container">
-                        Individual tickets £{venueEvent.price / 100}
+                        {venueEvent.price > 0 && (
+                          <>Individual tickets £{venueEvent.price / 100}</>
+                        )}
                       </div>
                       <div className="event-payment-button-container">
                         <div>
@@ -256,11 +259,21 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setShowCreateEventModal(true);
                               setEditedEvent(venueEvent);
+                              setShowCreateEventModal(true);
                             }}
                           >
                             Edit
+                          </button>
+                          <button
+                            role="link"
+                            className="btn btn-primary buy-tickets-button"
+                            onClick={() => {
+                              setEditedEvent(venueEvent);
+                              setShowDeleteEventModal(true);
+                            }}
+                          >
+                            Delete
                           </button>
                         </div>
                       </div>
@@ -284,6 +297,15 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+      />
+      <AdminDeleteEvent
+        show={showDeleteEventModal}
+        onHide={() => {
+          setShowDeleteEventModal(false);
           setEditedEvent(undefined);
         }}
         venueId={venue.id}

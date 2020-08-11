@@ -12,14 +12,16 @@ import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
-import Admin from "pages/Account/Admin";
-import VenuePage from "pages/VenuePage";
-import TemplateRouter from "components/organisms/TemplateRouter";
+import Admin from "pages/Admin/Admin";
+import { VenueLandingPage } from "pages/VenueLandingPage";
 
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
-import { VenueWizard } from "pages/Account/Venue/VenueWizard";
+import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
+
+import VenuePage from "pages/VenuePage";
+import { venueLandingUrl } from "utils/url";
 
 const AppRouter = () => {
   const firebase = useFirebase();
@@ -72,13 +74,18 @@ const AppRouter = () => {
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
         <Route path="/admin/venue/:venueId" component={Admin} />
         <Route path="/admin" component={Admin} />
-        <Route path="/v/:venueId/live" component={VenuePage} />
-        <Route path="/v/:venueId" component={TemplateRouter} />
+        <Route path="/v/:venueId" component={VenueLandingPage} />
+        <Route path="/in/:venueId" component={VenuePage} />
         <Route
           path="/venue/*"
-          render={(props) => <Redirect to={`/v/${props.match.params[0]}`} />}
+          render={(props) => (
+            <Redirect to={venueLandingUrl(props.match.params[0])} />
+          )}
         />
-        <Route path="/" component={() => <Redirect to="/v/kansassmittys" />} />
+        <Route
+          path="/"
+          component={() => <Redirect to={venueLandingUrl("kansassmittys")} />}
+        />
       </Switch>
     </Router>
   );

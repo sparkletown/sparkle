@@ -1,6 +1,6 @@
-import { VenueTemplate } from "./VenueTemplate";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { VenueTemplate } from "./VenueTemplate";
 
 interface Question {
   name: string;
@@ -24,7 +24,7 @@ export interface Venue {
       presentation: string[];
       checkList: string[];
       videoIframeUrl?: string;
-      joinButtonText: string;
+      joinButtonText?: string;
       quotations?: Quotation[];
     };
     memberEmails?: string[];
@@ -39,3 +39,13 @@ export interface Venue {
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
 }
+
+export const urlFromImage = (
+  defaultValue: string,
+  filesOrUrl?: FileList | string
+) => {
+  if (typeof filesOrUrl === "string") return filesOrUrl;
+  return filesOrUrl && filesOrUrl.length > 0
+    ? URL.createObjectURL(filesOrUrl[0])
+    : defaultValue;
+};

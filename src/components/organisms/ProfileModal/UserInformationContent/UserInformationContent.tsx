@@ -1,11 +1,12 @@
-import React from "react";
-import { QuestionType } from "types/Question";
-import { useHistory } from "react-router-dom";
-import { useFirebase } from "react-redux-firebase";
-import { DEFAULT_PROFILE_VALUES } from "../constants";
-import { useUser } from "hooks/useUser";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import React from "react";
+import { useFirebase } from "react-redux-firebase";
+import { useHistory } from "react-router-dom";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { QuestionType } from "types/Question";
+import { DEFAULT_PROFILE_VALUES } from "../constants";
+import { venueLandingUrl } from "utils/url";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -30,7 +31,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
-    history.push(`/v/${venue?.id}`);
+    history.push(venueLandingUrl(venue?.id));
   };
 
   if (!user) return <></>;

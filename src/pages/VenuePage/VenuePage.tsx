@@ -1,25 +1,30 @@
-import React, { useState } from "react";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import { ChatContextWrapper } from "components/context/ChatContext";
+import CountDown from "components/molecules/CountDown";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import ArtPiece from "components/templates/ArtPiece";
 import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
 import PartyMap from "components/templates/PartyMap";
-import FriendShipPage from "pages/FriendShipPage";
-import ArtPiece from "components/templates/ArtPiece";
-import { ChatContextWrapper } from "components/context/ChatContext";
-import { updateTheme } from "./helpers";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useParams, useHistory } from "react-router-dom";
-import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import CountDown from "components/molecules/CountDown";
-import { useUser } from "hooks/useUser";
-import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import FriendShipPage from "pages/FriendShipPage";
+import React, { useState } from "react";
+import { Redirect, useHistory, useParams } from "react-router-dom";
+import { VenueTemplate } from "types/VenueTemplate";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
-
+import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
+import { venueLandingUrl } from "utils/url";
+
+const hasPaidEvents = (template: VenueTemplate) => {
+  return template === VenueTemplate.jazzbar;
+};
 
 const VenuePage = () => {
   const { venueId } = useParams();
@@ -61,7 +66,7 @@ const VenuePage = () => {
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
-    user && isUserAMember(user.email, venue?.config?.memberEmails);
+    user && venue && isUserAMember(user.email, venue.config.memberEmails);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);
@@ -71,11 +76,19 @@ const VenuePage = () => {
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
 
+  if (!user) {
+    return <Redirect to={venueLandingUrl(venueId)} />;
+  }
+
+  if (!venue) {
+    return "Loading...";
+  }
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!isUserVenueOwner) {
+  if (hasPaidEvents(venue.template) && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
@@ -85,11 +98,11 @@ const VenuePage = () => {
     }
 
     if (
-      !isMember &&
-      ((event.price > 0 &&
+      (!isMember &&
+        event.price > 0 &&
         userPurchaseHistoryRequestStatus &&
         !hasUserBoughtTicket) ||
-        isEventFinished)
+      isEventFinished
     ) {
       return <>Forbidden</>;
     }
@@ -123,17 +136,21 @@ const VenuePage = () => {
     case VenueTemplate.partymap:
       template = <PartyMap />;
       break;
-    case VenueTemplate.artPiece:
+    case VenueTemplate.artpiece:
       template = <ArtPiece />;
       break;
   }
 
   return (
     <ChatContextWrapper>
-      {isUserVenueOwner && (
-        <div className="preview-indication">This is a preview of an event</div>
-      )}
-      {template}
+      <WithNavigationBar>
+        {isUserVenueOwner && (
+          <div className="preview-indication">
+            This is a preview of an event
+          </div>
+        )}
+        {template}
+      </WithNavigationBar>
     </ChatContextWrapper>
   );
 };

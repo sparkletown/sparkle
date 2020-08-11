@@ -1,6 +1,5 @@
 "use strict";
 
-var fs = require("fs");
 var firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/firestore");
@@ -18,21 +17,21 @@ ${process.argv[1]}: Upload event config
 Config will be validated using schema.json in the script directory,
 then uploaded to the config collection in the co-reality-map firestore.
 
-Usage: node ${process.argv[1]} API_KEY EVENT_NAME CONFIG_PATH [USERNAME] [PASSWORD]
+Usage: node ${process.argv[1]} PROJECT_ID API_KEY EVENT_NAME CONFIG_PATH [USERNAME] [PASSWORD]
 
-Example: node ${process.argv[1]} aaazzz111222333 example example.js
-Example: node ${process.argv[1]} aaazzz111222333 example example.js user@name.com password
+Example: node ${process.argv[1]} co-reality-map aaazzz111222333 example example.js
+Example: node ${process.argv[1]} co-reality-map aaazzz111222333 example example.js user@name.com password
 `);
   process.exit(1);
 }
 
-function uploadConfig(username, password, apiKey, venueId, doc) {
+function uploadConfig(username, password, projectId, apiKey, venueId, doc) {
   const path = `venues/${venueId}`;
   console.log(`Uploading "${venueId}" to venues: ${path}...`);
 
   const firebaseConfig = {
-    apiKey: apiKey,
-    projectId: "co-reality-map",
+    apiKey,
+    projectId,
   };
   firebase.initializeApp(firebaseConfig);
   firebase
@@ -58,19 +57,20 @@ function uploadConfig(username, password, apiKey, venueId, doc) {
 }
 
 const argv = process.argv.slice(2);
-if (argv.length < 3) {
+if (argv.length < 4) {
   usage();
 }
-var apiKey = argv[0];
-var venueId = argv[1];
-var path = argv[2];
+var projectId = argv[0];
+var apiKey = argv[1];
+var venueId = argv[2];
+var path = argv[3];
 var doc = require(path);
 
 var username;
 var password;
-if (argv.length >= 5) {
-  username = argv[3];
-  password = argv[4];
+if (argv.length >= 6) {
+  username = argv[4];
+  password = argv[5];
 }
 var validateResult = validate(doc, schema);
 if (!validateResult.valid) {
@@ -81,7 +81,7 @@ if (!validateResult.valid) {
 } else {
   console.log(`Validation of ${path} succeeded!`);
   if (username && password) {
-    uploadConfig(username, password, apiKey, venueId, doc);
+    uploadConfig(username, password, projectId, apiKey, venueId, doc);
   } else {
     console.log(`log in to upload.`);
     read({ prompt: "Username:" }, function (err, username) {
@@ -96,7 +96,7 @@ if (!validateResult.valid) {
         }
 
         console.log("Login succeeded!");
-        uploadConfig(username, password, apiKey, venueId, doc);
+        uploadConfig(username, password, projectId, apiKey, venueId, doc);
       });
     });
   }

@@ -27,7 +27,7 @@ $page-max-width: 1240px;
     .sparkleverse-logo_navbar {
       width: 200px;
       height: 48px;
-      background-image: url("./img/sparkleverse-logo_navbar.png");
+      background-image: url("../Account/img/sparkleverse-logo_navbar.png");
       background-size: 200px 48px;
       cursor: pointer;
     }
@@ -79,7 +79,7 @@ $page-max-width: 1240px;
               content: "";
               height: 20px;
               width: 20px;
-              background-image: url("./img/list-arrow-down-white.png");
+              background-image: url("../Account/img/list-arrow-down-white.png");
               background-size: 20px 20px;
               transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
             }

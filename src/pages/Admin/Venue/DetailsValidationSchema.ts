@@ -1,9 +1,13 @@
-import * as Yup from "yup";
-import "firebase/functions";
-import { VenueInput, VenueInputEdit } from "api/admin";
-import { TemplateType } from "settings";
+import { createUrlSafeName, VenueInput, VenueInputEdit } from "api/admin";
 import firebase from "firebase/app";
-import { createUrlSafeName } from "api/admin";
+import "firebase/functions";
+import * as Yup from "yup";
+import { VenueTemplate } from "types/VenueTemplate";
+import {
+  ZOOM_URL_TEMPLATES,
+  VIDEO_IFRAME_TEMPLATES,
+  EMBED_IFRAME_TEMPLATES,
+} from "settings";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -19,7 +23,7 @@ export const validationSchema = Yup.object()
     name: Yup.string()
       .required("Display name required")
       .test(
-        "dfsd",
+        "name",
         "This venue name is already taken",
         async (val: string) =>
           !(
@@ -31,7 +35,7 @@ export const validationSchema = Yup.object()
           ).exists
       )
       .test(
-        "dfsd",
+        "name",
         "Must have alphanumeric characters",
         (val: string) => createUrlSafeName(val).length > 0
       ),
@@ -39,18 +43,43 @@ export const validationSchema = Yup.object()
       "Required"
     ),
     logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
-    tagline: Yup.string().required("Required"),
-    longDescription: Yup.string().required("Required"),
-    mapIconImageFile: Yup.mixed<FileList>().when(
-      "$template.type",
-      (type: TemplateType, schema: Yup.MixedSchema<FileList>) =>
-        type === "PERFORMANCE_VENUE" || type === "ZOOM_ROOM"
+    description: Yup.string().required("Required"),
+    subtitle: Yup.string().required("Required"),
+    mapIconImageFile: createFileSchema("mapIconImage", true).required(
+      "Required"
+    ),
+    zoomUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        ZOOM_URL_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test("zoomUrl", "URL required", (val: string) => val.length > 0)
+          : schema.notRequired()
+    ),
+    videoIframeUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        VIDEO_IFRAME_TEMPLATES.includes(template)
           ? schema
               .required("Required")
               .test(
-                "mapIconImage",
-                "Image required",
-                (val: FileList) => val.length > 0
+                "videoIframeUrl",
+                "Video URL required",
+                (val: string) => val.length > 0
+              )
+          : schema.notRequired()
+    ),
+    embedIframeUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        EMBED_IFRAME_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test(
+                "embedIframeUrl",
+                "Embedded object URL required",
+                (val: string) => val.length > 0
               )
           : schema.notRequired()
     ),
@@ -86,15 +115,16 @@ export const editVenueValidationSchema = validationSchema.shape<
   mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
   bannerImageUrl: Yup.string().required(),
   logoImageUrl: Yup.string().required(),
-  mapIconImageUrl: Yup.string(),
+  mapIconImageUrl: Yup.string().required(),
 });
 
 // this is used to transform the api data to conform to the yup schema
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
-  .from("subtitle", "tagline")
-  .from("config.landingPageConfig.subtitle", "tagline")
-  .from("config.landingPageConfig.description", "longDescription")
+  .from("subtitle", "subtitle")
+  .from("config.landingPageConfig.subtitle", "subtitle")
+  .from("config.landingPageConfig.description", "description")
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
-  .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl");
+  .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
+  .from("config.mapIconImageUrl", "mapIconImageUrl");

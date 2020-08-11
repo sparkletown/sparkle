@@ -1,27 +1,32 @@
-import React, { useState, useEffect } from "react";
-import "./EntranceExperience.scss";
-import { updateTheme } from "pages/VenuePage/helpers";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CountDown from "components/molecules/CountDown";
+import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PaymentModal from "components/organisms/PaymentModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { VenueTemplate } from "types/VenueTemplate";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { VenueEvent } from "types/VenueEvent";
-import EventPaymentButton from "components/molecules/EventPaymentButton";
-import PaymentModal from "components/organisms/PaymentModal";
-import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
-import { isUserAMember } from "utils/isUserAMember";
-import CountDown from "components/molecules/CountDown";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { updateTheme } from "pages/VenuePage/helpers";
+import React, { useEffect, useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { Link, useParams } from "react-router-dom";
 import { Firestore } from "types/Firestore";
-import { Link } from "react-router-dom";
+import { VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
+import { isUserAMember } from "utils/isUserAMember";
+import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import "./VenueLandingPage.scss";
+import { venueInsideUrl } from "utils/url";
 
-export interface EntranceExperienceProps {
+export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
   venueEvents?: Firestore["ordered"]["venueEvents"];
   venueRequestStatus: Firestore["status"]["requested"]["currentVenue"];
@@ -29,16 +34,30 @@ export interface EntranceExperienceProps {
   venueId?: string;
 }
 
-export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps> = (
-  props
-) => {
+export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
+  const { venueId } = useParams();
+  useConnectCurrentVenue();
+
   const {
     venue,
     venueEvents,
     venueRequestStatus,
     purchaseHistory,
-    venueId,
-  } = props;
+  } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    venueRequestStatus: state.firestore.status.requested.currentVenue,
+    venueEvents: state.firestore.ordered.venueEvents,
+    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+  }));
+
+  useFirestoreConnect({
+    collection: "venues",
+    doc: venueId,
+    subcollections: [{ collection: "events" }],
+    storeAs: "venueEvents",
+    orderBy: ["start_utc_seconds", "asc"],
+  });
+
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<
@@ -60,8 +79,6 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
       Date.now() / 1000
   );
 
-  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
-
   venue && updateTheme(venue);
 
   useEffect(() => {
@@ -79,6 +96,8 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
     return <>Loading...</>;
   }
 
+  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
+
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 
   const closePaymentModal = () => {
@@ -94,7 +113,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
   };
 
   return (
-    <>
+    <WithNavigationBar>
       <div className="container venue-entrance-experience-container">
         <div
           className="header"
@@ -285,7 +304,7 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
               <InformationCard title="Check how an event looks like in your venue">
                 <div className="button-container">
                   <div>This is a fake event. Only you can see it.</div>
-                  <Link to={`/v/${venueId}/live`}>
+                  <Link to={venueInsideUrl(venueId)}>
                     <button role="link" className="btn btn-primary">
                       Enter as an admin
                     </button>
@@ -311,6 +330,6 @@ export const EntranceExperience: React.FunctionComponent<EntranceExperienceProps
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
         showAuth="register"
       />
-    </>
+    </WithNavigationBar>
   );
 };

@@ -1,5 +1,5 @@
-import firebase from "firebase/app";
 import { UserInfo } from "firebase";
+import firebase from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 
@@ -8,8 +8,7 @@ export interface EventInput {
   description: string;
   start_date: string;
   start_time: string;
-  end_date: string;
-  end_time: string;
+  duration_hours: number;
   price: number;
 }
 
@@ -35,9 +34,12 @@ export interface VenueInput extends AdvancedVenueInput {
   name: string;
   bannerImageFile: FileList;
   logoImageFile: FileList;
-  tagline: string;
-  longDescription: string;
+  subtitle: string;
+  description: string;
   mapIconImageFile?: FileList;
+  zoomUrl?: string;
+  videoIframeUrl?: string;
+  embedIframeUrl?: string;
 }
 
 export type VenueInputEdit = Omit<VenueInput, ImageFileKeys> &
@@ -98,6 +100,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
     firestoreVenueInput
   );
 };
+
 export const updateVenue = async (input: VenueInputEdit, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 
@@ -153,4 +156,12 @@ export const updateEvent = async (
     .firestore()
     .doc(`venues/${venueId}/events/${eventId}`)
     .update(event);
+};
+
+export const deleteEvent = async (venueId: string, eventId: string) => {
+  await firebase
+    .firestore()
+    .collection(`venues/${venueId}/events`)
+    .doc(eventId)
+    .delete();
 };

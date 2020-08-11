@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
@@ -66,7 +65,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return `${venueName}-table${i + 1}`;
   };
 
-  useFirestoreConnect({ collection: "experiences", doc: venueName });
   const { user, profile } = useUser();
   const { users, experience, usersById } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,

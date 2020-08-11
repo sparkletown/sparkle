@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 import "./SecretPasswordForm.scss";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { venueInsideUrl } from "utils/url";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
+  const history = useHistory();
   const { venueId } = useParams();
 
   const [invalidPassword, setInvalidPassword] = useState();
@@ -71,6 +73,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={() => setIsAuthenticationModalOpen(false)}
+        afterUserIsLoggedIn={() => history.push(venueInsideUrl(venueId))}
         showAuth="register"
       />
     </>

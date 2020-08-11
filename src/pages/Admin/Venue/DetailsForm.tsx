@@ -1,37 +1,37 @@
-import React, { useCallback, useMemo } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import {
-  VenueInput,
-  VenueInputEdit,
   createUrlSafeName,
   createVenue,
   updateVenue,
+  VenueInput,
+  VenueInputEdit,
 } from "api/admin";
-import { WizardPage } from "./VenueWizard";
-import "./Venue.scss";
-import * as Yup from "yup";
 import { ImageInput } from "components/molecules/ImageInput";
+import "firebase/functions";
+import { useUser } from "hooks/useUser";
+import React, { useCallback, useMemo } from "react";
+import { FieldErrors, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+import { createJazzbar } from "types/JazzbarVenue";
+import * as Yup from "yup";
+import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
-  validationSchema,
   editVenueCastSchema,
   editVenueValidationSchema,
+  validationSchema,
 } from "./DetailsValidationSchema";
-import { Accordion, useAccordionToggle } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { AdvancedDetailsForm } from "./AdvancedDetailsForm";
-import { EntranceExperiencePreviewProvider } from "components/templates/EntranceExperienceProvider";
-import { ExtractProps } from "types/utility";
-import { VenueTemplate } from "types/VenueTemplate";
-import { venueDefaults } from "./defaults";
-import { useHistory } from "react-router-dom";
+import "./Venue.scss";
+import { WizardPage } from "./VenueWizard";
+import { venueLandingUrl } from "utils/url";
+import {
+  ZOOM_URL_TEMPLATES,
+  VIDEO_IFRAME_TEMPLATES,
+  EMBED_IFRAME_TEMPLATES,
+} from "settings";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
-type FormValues = CreateFormValues | EditFormValues;
+export type FormValues = CreateFormValues | EditFormValues;
 
 interface DetailsFormProps extends WizardPage {
   editing?: boolean;
@@ -60,7 +60,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const values = watch();
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
-      console.log("vals", vals);
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
@@ -99,88 +98,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         </div>
       </div>
       <div className="page-side preview">
-        <VenuePreview
-          values={values}
-          templateName={state.templatePage?.template.name}
-          state={state}
-        />
+        <VenuePreview values={values} />
       </div>
-    </div>
-  );
-};
-
-type Venue = ExtractProps<typeof EntranceExperiencePreviewProvider>["venue"];
-
-interface VenuePreviewProps {
-  values: FormValues;
-  templateName?: string;
-  state: WizardPage["state"];
-}
-
-const VenuePreview: React.FC<VenuePreviewProps> = ({
-  values,
-  state,
-  templateName,
-}) => {
-  const urlFromImage = useCallback((filesOrUrl?: FileList | string) => {
-    if (typeof filesOrUrl === "string") return filesOrUrl;
-    return filesOrUrl && filesOrUrl.length > 0
-      ? URL.createObjectURL(filesOrUrl[0])
-      : undefined;
-  }, []);
-
-  const remoteBannerImageUrl =
-    state.detailsPage?.venue.config.landingPageConfig.coverImageUrl;
-  const remoteLogoImageUrl = state.detailsPage?.venue.host.icon;
-
-  const previewVenue: Venue = useMemo(
-    () => ({
-      template: VenueTemplate.jazzbar,
-      name: values.name || `My ${templateName} name`,
-      config: {
-        theme: venueDefaults.config.theme,
-        landingPageConfig: {
-          coverImageUrl:
-            urlFromImage(values.bannerImageFile) ??
-            remoteBannerImageUrl ??
-            venueDefaults.config.landingPageConfig.coverImageUrl,
-          subtitle:
-            values.tagline || venueDefaults.config.landingPageConfig.subtitle,
-          description:
-            values.longDescription ||
-            venueDefaults.config.landingPageConfig.description,
-          presentation: [],
-          checkList: [],
-          joinButtonText: venueDefaults.config.landingPageConfig.joinButtonText,
-          quotations: [],
-        },
-      },
-      host: {
-        icon:
-          urlFromImage(values.logoImageFile) ??
-          remoteLogoImageUrl ??
-          venueDefaults.host.icon,
-      },
-      owners: [],
-      profile_questions:
-        values.profileQuestions ?? venueDefaults.profile_questions,
-      code_of_conduct_questions: venueDefaults.code_of_conduct_questions,
-    }),
-    [
-      values,
-      urlFromImage,
-      remoteBannerImageUrl,
-      remoteLogoImageUrl,
-      templateName,
-    ]
-  );
-
-  return (
-    <div className="venue-preview">
-      <EntranceExperiencePreviewProvider
-        venueRequestStatus
-        venue={previewVenue}
-      />
     </div>
   );
 };
@@ -205,20 +124,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     isSubmitting,
     register,
     errors,
-    control,
     previous,
     onSubmit,
   } = props;
-  // would be nice to access this from the form context but can't find a way
-  const isNonMapTemplate =
-    state.templatePage?.template.type === "ZOOM_ROOM" ||
-    state.templatePage?.template.type === "PERFORMANCE_VENUE";
-
   const urlSafeName = values.name
-    ? `${window.location.host}/v/${createUrlSafeName(values.name)}`
+    ? `${window.location.host}${venueLandingUrl(
+        createUrlSafeName(values.name)
+      )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
+
+  const defaultVenue = createJazzbar({});
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
@@ -244,23 +161,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </span>
           ) : null}
         </div>
-        {isNonMapTemplate && (
-          <div className="input-container">
-            <div className="input-title">
-              {`Choose how you'd like your venue to appear on the map`}
-            </div>
-            <ImageInput
-              disabled={disable}
-              name={"mapIconImageFile"}
-              remoteUrlInputName={"mapIconImageUrl"}
-              containerClassName="input-square-container"
-              imageClassName="input-square-image"
-              image={values.mapIconImageFile}
-              ref={register}
-              error={errors.mapIconImageFile}
-            />
+        <div className="input-container">
+          <div className="input-title">
+            {`Choose how you'd like your venue to appear on the map`}
           </div>
-        )}
+          <ImageInput
+            disabled={disable}
+            name={"mapIconImageFile"}
+            remoteUrlInputName={"mapIconImageUrl"}
+            containerClassName="input-square-container"
+            imageClassName="input-square-image"
+            image={values.mapIconImageFile}
+            ref={register}
+            error={errors.mapIconImageFile}
+          />
+        </div>
         <div className="input-container">
           <div className="input-title">Upload a banner photo</div>
           <ImageInput
@@ -295,41 +210,93 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div className="input-title">The venue tagline</div>
           <input
             disabled={disable}
-            name={"tagline"}
+            name={"subtitle"}
             ref={register}
             className="wide-input-block align-left"
-            placeholder={venueDefaults.config.landingPageConfig.subtitle}
+            placeholder={defaultVenue.config.landingPageConfig.subtitle}
           />
-          {errors.tagline && (
-            <span className="input-error">{errors.tagline.message}</span>
+          {errors.subtitle && (
+            <span className="input-error">{errors.subtitle.message}</span>
           )}
         </div>
         <div className="input-container">
           <div className="input-title">Long description</div>
           <textarea
             disabled={disable}
-            name={"longDescription"}
+            name={"description"}
             ref={register}
             className="wide-input-block input-centered align-left"
-            placeholder={venueDefaults.config.landingPageConfig.description}
+            placeholder={defaultVenue.config.landingPageConfig.description}
           />
-          {errors.longDescription && (
-            <span className="input-error">
-              {errors.longDescription.message}
-            </span>
+          {errors.description && (
+            <span className="input-error">{errors.description.message}</span>
           )}
         </div>
-        <Accordion>
-          <AccordionButton eventKey="0" />
-          <Accordion.Collapse eventKey="0">
-            <AdvancedDetailsForm
-              register={register}
-              control={control}
-              values={values}
-              errors={errors}
-            />
-          </Accordion.Collapse>
-        </Accordion>
+        {state.templatePage?.template.template && (
+          <>
+            {ZOOM_URL_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">Zoom URL</div>
+                <textarea
+                  disabled={disable}
+                  name={"zoomUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://us02web.zoom.us/j/654123654123"
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+            {VIDEO_IFRAME_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">
+                  Livestream URL, for people to view in your venue
+                </div>
+                <textarea
+                  disabled={disable}
+                  name={"videoIframeUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://youtu.be/embed/abcDEF987w"
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+            {EMBED_IFRAME_TEMPLATES.includes(
+              state.templatePage?.template.template
+            ) && (
+              <div className="input-container">
+                <div className="input-title">
+                  URL to your artwork, to embed in the experience as an iframe
+                </div>
+                <textarea
+                  disabled={disable}
+                  name={"embedIframeUrl"}
+                  ref={register}
+                  className="wide-input-block input-centered align-left"
+                  placeholder="https://3dwarehouse.sketchup.com/embed.html?mid=..."
+                />
+                {errors.description && (
+                  <span className="input-error">
+                    {errors.description.message}
+                  </span>
+                )}
+              </div>
+            )}
+          </>
+        )}
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (
@@ -350,16 +317,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 interface AccordionButtonProps {
   eventKey: string;
 }
-
-const AccordionButton: React.FC<AccordionButtonProps> = ({ eventKey }) => {
-  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
-  return (
-    <div className="advanced-toggle centered-flex" onClick={decoratedOnClick}>
-      <FontAwesomeIcon icon={faCaretDown} size="lg" />
-      <span className="toggle-title">Advanced Options</span>
-    </div>
-  );
-};
 
 interface SubmitButtonProps {
   isSubmitting: boolean;
