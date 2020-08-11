@@ -28,6 +28,7 @@ import {
   EMBED_IFRAME_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
+import { CustomDragLayer, Container } from "./VenueMapEdition";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -75,6 +76,22 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
+  const mapIconUrl = useMemo(() => {
+    const file = values.mapIconImageFile;
+    if (file && file.length > 0) return URL.createObjectURL(file[0]);
+    return undefined;
+  }, [values.mapIconImageFile]);
+
+  const iconsMap = useMemo(
+    () =>
+      mapIconUrl
+        ? {
+            mapIconUrl: { top: 20, left: 20, url: mapIconUrl },
+          }
+        : undefined,
+    [mapIconUrl]
+  );
+  console.log("iconsMap", iconsMap);
 
   if (!state.templatePage) {
     previous && previous();
@@ -99,6 +116,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         </div>
       </div>
       <div className="page-side preview">
+        <div className="playa">
+          <Container snapToGrid={false} iconsMap={iconsMap ?? {}} />
+          <CustomDragLayer snapToGrid />
+        </div>
         <VenuePreview values={values} />
       </div>
     </div>

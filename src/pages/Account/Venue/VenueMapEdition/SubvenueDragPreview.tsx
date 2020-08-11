@@ -1,10 +1,10 @@
-import React, { useEffect, useState, memo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 export interface PropsType {
   url: string;
 }
 
-export const SubvenueDragPreview: React.FC<PropsType> = memo(({ url }) => {
+export const SubvenueDragPreview: React.FC<PropsType> = ({ url }) => {
   const [tickTock, setTickTock] = useState(false);
 
   useEffect(() => {
@@ -12,9 +12,12 @@ export const SubvenueDragPreview: React.FC<PropsType> = memo(({ url }) => {
     return () => clearInterval(interval);
   }, [tickTock]);
 
-  return (
-    <div className="subvenue-drag-preview">
-      <img src={url} alt="subvenue-icon" />
-    </div>
+  return useMemo(
+    () => (
+      <div className="subvenue-drag-preview">
+        <img src={url} alt="subvenue-icon" />
+      </div>
+    ),
+    [url]
   );
-});
+};

@@ -4,6 +4,7 @@ $top-margin: 20px;
 $vertical-padding: 20px;
 $side-padding: 30px;
 $border-radius: 28px;
+$preview-margin: 30px;
 
 .page {
   display: flex;
@@ -55,10 +56,20 @@ $border-radius: 28px;
   &.preview {
     background-color: $dark;
     overflow: scroll;
+    flex-direction: column;
+
+    .playa {
+      flex: 1;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: $preview-margin;
+      margin-bottom: 0;
+    }
   }
 
   .venue-preview {
-    margin: 30px;
+    flex: 1;
+    margin: $preview-margin;
     background-color: $black;
     border-radius: 20px;
     overflow: auto;
