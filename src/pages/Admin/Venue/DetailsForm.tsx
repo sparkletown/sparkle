@@ -32,6 +32,7 @@ import {
   Container,
   CustomDragLayer,
 } from "pages/Account/Venue/VenueMapEdition";
+import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 
 export type FormValues = Partial<
   Yup.InferType<typeof editVenueValidationSchema>
@@ -50,7 +51,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () => editVenueCastSchema.cast(state.detailsPage?.venue),
     [state.detailsPage]
   );
-  console.log("defaultValues", defaultValues);
 
   const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
@@ -63,7 +63,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
-  console.log("values", values);
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -82,6 +81,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const onFormSubmit = rest.handleSubmit(onSubmit);
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
+    console.log("mapIconUrl -> file", file);
     if (file && file.length > 0) return URL.createObjectURL(file[0]);
     return values.mapIconImageUrl;
   }, [values.mapIconImageFile, values.mapIconImageUrl]);
@@ -139,16 +139,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
 const styles: Record<string, CSSProperties> = {
   iconImage: {
-    width: 35,
-    height: 35,
+    width: 60,
+    height: 60,
     overflow: "hidden",
-    borderRadius: 20,
+    borderRadius: 30,
   },
   draggableIconImage: {
-    width: 45,
-    height: 45,
+    width: 70,
+    height: 70,
     overflow: "hidden",
-    borderRadius: 20,
+    borderRadius: 35,
   },
 };
 
@@ -162,6 +162,7 @@ interface DetailsFormLeftProps {
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
   editing?: boolean;
+  setValue: ReturnType<typeof useForm>["setValue"];
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
@@ -174,13 +175,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     errors,
     previous,
     onSubmit,
+    setValue,
   } = props;
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
       )}`
     : undefined;
-  console.log("errors", errors);
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
 
@@ -214,16 +215,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div className="input-title">
             {`Choose how you'd like your venue to appear on the map`}
           </div>
-          <ImageInput
+          <ImageCollectionInput
+            collectionPath={"assets/mapIcons"}
             disabled={disable}
-            name={"mapIconImageFile"}
-            remoteUrlInputName={"mapIconImageUrl"}
-            remoteImageUrl={values.mapIconImageUrl}
+            fieldName={"mapIconImage"}
+            register={register}
+            imageUrl={values.mapIconImageUrl}
             containerClassName="input-square-container"
             imageClassName="input-square-image"
             image={values.mapIconImageFile}
-            ref={register}
             error={errors.mapIconImageFile || errors.mapIconImageUrl}
+            setImageFile={(file) => setValue("mapIconImageFile", file, true)}
+            setImageUrl={(url) => setValue("mapIconImageUrl", url, true)}
           />
         </div>
         <div className="input-container">

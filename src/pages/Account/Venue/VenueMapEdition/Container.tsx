@@ -26,7 +26,6 @@ interface PropsType {
 export const Container: React.FC<PropsType> = (props) => {
   const { snapToGrid, iconsMap, backgroundImage, iconImageStyle } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
-  console.log("boxes", boxes);
 
   useMemo(() => {
     setBoxes(iconsMap);

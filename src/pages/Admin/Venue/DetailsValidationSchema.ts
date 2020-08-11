@@ -54,7 +54,7 @@ export const validationSchema = Yup.object()
     logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
     description: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
-    mapIconImageFile: createFileSchema("mapIconImage", true).required(
+    mapIconImageFile: createFileSchema("mapIconImageFile", true).required(
       "Required"
     ),
     zoomUrl: Yup.string().when(
