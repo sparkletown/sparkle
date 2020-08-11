@@ -84,10 +84,14 @@ const PartyMap = () => {
     <WithNavigationBar redirectionUrl={`/v/${venue.id}`}>
       <div className="container-fluid">
         <div className="small-right-margin">
-          <PartyTitle
-            startUtcSeconds={event?.start_utc_seconds}
-            withCountDown={false}
-          />
+          {event ? (
+            <PartyTitle
+              startUtcSeconds={event.start_utc_seconds}
+              withCountDown={false}
+            />
+          ) : (
+            <>No Event Currently Happening</>
+          )}
         </div>
         {partygoers && (
           <div className="col">
