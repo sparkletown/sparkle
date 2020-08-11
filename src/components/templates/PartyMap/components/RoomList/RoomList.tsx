@@ -4,6 +4,7 @@ import "./RoomList.scss";
 import { RoomData } from "types/RoomData";
 import RoomCard from "../RoomCard";
 import { eventHappeningNow } from "utils/time";
+import { SubVenue } from "types/PartyMapVenue";
 
 interface PropsType {
   startUtcSeconds: number;

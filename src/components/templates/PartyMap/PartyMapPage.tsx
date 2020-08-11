@@ -15,10 +15,11 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { Map, PartyTitle } from "./components";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { isPartyMapVenue } from "types/PartyMapVenue";
+import { isPartyMapVenue, SubVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
+import { WithId } from "utils/id";
 
 const PartyMap = () => {
   useConnectPartyGoers();
@@ -26,14 +27,18 @@ const PartyMap = () => {
   useConnectCurrentEvent();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<RoomData>();
+  const [selectedRoom, setSelectedRoom] = useState<string>();
 
   const { user } = useUser();
-  const { event, partygoers, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0],
-    event: state.firestore.ordered.currentEvent?.[0],
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+  const { event, partygoers, venue, subVenues, childVenues } = useSelector(
+    (state) => ({
+      venue: state.firestore.ordered.currentVenue?.[0],
+      event: state.firestore.ordered.currentEvent?.[0],
+      subVenues: state.firestore.ordered.currentSubVenues ?? [],
+      childVenues: state.firestore.ordered.currentChildVenues ?? [],
+      partygoers: state.firestore.ordered.partygoers,
+    })
+  );
 
   useUpdateLocationEffect(user, "Map");
 
@@ -115,7 +120,8 @@ const PartyMap = () => {
         </div>
         <div className="row">
           <Map
-            config={venue}
+            venue={venue}
+            subVenues={subVenues}
             attendances={attendances}
             setSelectedRoom={setSelectedRoom}
             setIsRoomModalOpen={setIsRoomModalOpen}
@@ -125,7 +131,7 @@ const PartyMap = () => {
           <div className="col">
             {/* <RoomList
               startUtcSeconds={event?.start_utc_seconds}
-              rooms={venue.rooms}
+              rooms={subVenues}
               attendances={attendances}
               setSelectedRoom={setSelectedRoom}
               setIsRoomModalOpen={setIsRoomModalOpen}
@@ -136,7 +142,7 @@ const PartyMap = () => {
       </div>
       <RoomModal
         show={isRoomModalOpen}
-        room={selectedRoom}
+        venue={childVenues.find((v) => v.id === selectedRoom)}
         onHide={modalHidden}
       />
     </WithNavigationBar>

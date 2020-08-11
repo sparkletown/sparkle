@@ -10,67 +10,74 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { RoomData } from "types/RoomData";
+import { Venue } from "types/Venue";
 
 interface PropsType {
   show: boolean;
   onHide: () => void;
-  room: RoomData | undefined;
+  venue: Venue | undefined;
 }
 
-const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
+const RoomModal: React.FC<PropsType> = ({ show, onHide, venue }) => {
   const { user } = useUser();
-  const { event, users, venue } = useSelector((state) => ({
+  const { event, users, parentVenue } = useSelector((state) => ({
     event: state.firestore.ordered.currentEvent?.[0],
-    venue: state.firestore.ordered.currentVenue?.[0],
+    parentVenue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
   }));
 
-  if (!isPartyMapVenue(venue)) {
+  if (!isPartyMapVenue(parentVenue)) {
     return <></>;
   }
 
+  if (!venue) return <></>;
+
   const usersToDisplay =
-    users?.filter((user) => user.room === room?.title) ?? [];
+    users?.filter((user) => user.room === venue.name) ?? [];
 
   function enter() {
-    room && user && enterRoom(user, room.title);
+    venue && user && enterRoom(user, venue.name);
   }
 
-  if (!room) return <></>;
-
-  const currentEvent =
-    room.events && getCurrentEvent(room, event?.start_utc_seconds);
+  // this will be the schedule, not yet implemented
+  // const currentEvent =
+  //   room.events && getCurrentEvent(room, event?.start_utc_seconds);
 
   return (
     <Modal show={show} onHide={onHide}>
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">
-            <h2 className="room-modal-title">{room.title}</h2>
-            <div className="room-modal-subtitle">{room.subtitle}</div>
+            <h2 className="room-modal-title">{venue.name}</h2>
+            <div className="room-modal-subtitle">
+              This is a harcoded subtitle because it is not part of the Venue
+              Model
+            </div>
             <div className="row ongoing-event-row">
               <div className="col">
-                {room.image && (
+                {venue.mapIconImageUrl && (
                   <img
-                    src={`/room-images/${room.image}`}
+                    src={venue.mapIconImageUrl}
                     className="room-page-image"
-                    alt={room.title}
+                    alt={venue.name}
                   />
                 )}
-                {!room.image && room.title}
               </div>
               <div className="col">
-                <RoomModalOngoingEvent
+                {/* <RoomModalOngoingEvent
                   room={room}
                   enterRoom={enter}
                   startUtcSeconds={event?.start_utc_seconds}
-                />
+                /> */}
               </div>
             </div>
           </div>
         </div>
         <UserList users={usersToDisplay} limit={11} activity="in this room" />
-        {room.about && <div className="about-this-room">{room.about}</div>}
+        <div className="about-this-room">
+          This is a harcoded description because it is not part of the Venue
+          Model
+        </div>
         <div className="row">
           {/* {event.schedule && event.schedule.length > 0 && (
             <div className="col schedule-container">

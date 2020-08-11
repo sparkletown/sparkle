@@ -7,7 +7,7 @@ import {
 } from "components/context/ChatContext";
 import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
-import { PartyMapVenue } from "./PartyMapVenue";
+import { PartyMapVenue, SubVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
 
@@ -36,6 +36,8 @@ export interface Firestore {
   data: {
     currentVenue: Venue | PartyMapVenue;
     currentEvent: Record<string, VenueEvent>;
+    currentSubVenues?: Record<string, SubVenue>;
+    currentChildVenues?: Record<string, Venue>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
@@ -51,6 +53,8 @@ export interface Firestore {
   ordered: {
     currentVenue: Array<WithId<Venue | PartyMapVenue>>;
     currentEvent: Array<WithId<VenueEvent>>;
+    currentSubVenues?: Array<WithId<SubVenue>>;
+    currentChildVenues?: Array<WithId<Venue>>;
     venueChats: Array<WithId<RestrictedChatMessage>>;
     venueEvents: Array<WithId<VenueEvent>>;
     userPurchaseHistory: Array<WithId<Purchase>>;

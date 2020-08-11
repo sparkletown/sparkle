@@ -30,11 +30,9 @@ export function isChatValid(chat) {
 
 export function isRoomValid(room) {
   return (
-    room !== undefined &&
-    validBool(room.on_list) &&
-    validBool(room.on_map) &&
-    room.path !== undefined &&
-    (room.url !== undefined || room.external_url !== undefined) &&
-    room.title !== undefined
+    room !== undefined && validBool(room.on_list) && validBool(room.on_map) // &&
+    // room.path !== undefined && // does not exist any more, replaced with an image
+    // (room.url !== undefined || room.external_url !== undefined) && // becomes a Venue, more complex than this
+    // room.title !== undefined // does not exist anymore, is of the subVenue has the name of the Venue
   );
 }

@@ -44,7 +44,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       )}
       <h5 className="italic">{room.title}</h5>
       <div className="room-attendance-container">
-        <RoomAttendance room={room} attendance={attendance} />
+        {/* <RoomAttendance room={room} attendance={attendance} /> */}
       </div>
       <div className="card_room-now">
         <h6 className="primary">{eventToDisplay.name}</h6>

@@ -14,6 +14,23 @@ const useConnectCurrentVenue = () => {
       storeAs: "currentVenue",
     },
   ]);
+
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      doc: venueId,
+      subcollections: [{ collection: "subvenues" }],
+      storeAs: "currentSubVenues",
+    },
+  ]);
+
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      where: [["parentId", "==", venueId]],
+      storeAs: "currentChildVenues",
+    },
+  ]);
 };
 
 export default useConnectCurrentVenue;

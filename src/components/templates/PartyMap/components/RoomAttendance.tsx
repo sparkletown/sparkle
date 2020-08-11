@@ -2,10 +2,11 @@ import React from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { RoomData } from "types/RoomData";
+import { SubVenue } from "types/PartyMapVenue";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  room: RoomData;
+  room: WithId<SubVenue>;
   attendance?: number;
   positioned?: boolean;
   onClick?: () => void;
@@ -18,8 +19,8 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
   onClick,
 }) => {
   attendance = attendance || 0;
-  const singularTitle = `${attendance} person in ${room.title}`;
-  const pluralTitle = `${attendance} people in ${room.title}`;
+  const singularTitle = `${attendance} person in ${room.id}`;
+  const pluralTitle = `${attendance} people in ${room.id}`;
   const title = attendance === 1 ? singularTitle : pluralTitle;
 
   const className =

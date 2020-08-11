@@ -1,30 +1,33 @@
 import React from "react";
 import { isRoomValid } from "validation";
 import RoomAttendance from "../RoomAttendance";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { PartyMapVenue, SubVenue } from "types/PartyMapVenue";
 
 import "./Map.scss";
 import { RoomData } from "types/RoomData";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  config: PartyMapVenue;
+  venue: PartyMapVenue;
+  subVenues: Array<WithId<SubVenue>>;
   attendances: { [location: string]: number };
-  setSelectedRoom: (room: RoomData) => void;
+  setSelectedRoom: (venueId: string) => void;
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
 const Map: React.FC<PropsType> = ({
-  config,
+  venue,
+  subVenues,
   attendances,
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  if (!config) {
+  if (!venue) {
     return <>{`"Loading map..."`}</>;
   }
 
-  const openRoomModal = (room: RoomData) => {
-    setSelectedRoom(room);
+  const openRoomModal = (room: WithId<SubVenue>) => {
+    setSelectedRoom(room.id);
     setIsRoomModalOpen(true);
   };
 
@@ -32,8 +35,8 @@ const Map: React.FC<PropsType> = ({
     <>
       <div id="map" className="map-container">
         <div className="position-relative">
-          <svg className="position-absolute" viewBox={config.map_viewbox}>
-            {/* {config.rooms
+          <svg className="position-absolute" viewBox={venue.map_viewbox}>
+            {/* {venue.rooms
               .filter(isRoomValid)
               .filter((r) => r.on_map)
               .map((room, idx) => {
@@ -49,7 +52,7 @@ const Map: React.FC<PropsType> = ({
                 );
               })} */}
           </svg>
-          {/* {config.rooms
+          {subVenues
             .filter(isRoomValid)
             .filter((r) => r.on_map)
             .filter((r) => r.attendance_x && r.attendance_y)
@@ -57,14 +60,14 @@ const Map: React.FC<PropsType> = ({
               <RoomAttendance
                 room={room}
                 positioned={true}
-                attendance={attendances[room.title]}
+                attendance={attendances[room.id]}
                 key={idx}
                 onClick={() => openRoomModal(room)}
               />
-            ))} */}
+            ))}
           <img
             className="img-fluid map-image"
-            src={config.map_url}
+            src={venue.map_url}
             title="Clickable Map"
             alt="Clickable Map"
           />

@@ -40,6 +40,12 @@ export interface PartyMapVenue extends Venue {
   // }[];
 }
 
+export interface SubVenue {
+  on_map: boolean;
+  attendance_x?: string;
+  attendance_y?: string;
+}
+
 // will be a subcollection of PartyMapVenue, same as current Events
 export interface PartyMapEvent {
   name: string;
