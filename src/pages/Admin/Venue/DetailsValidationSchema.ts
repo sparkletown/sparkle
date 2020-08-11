@@ -1,4 +1,4 @@
-import { createUrlSafeName, VenueInput, VenueInputEdit } from "api/admin";
+import { createUrlSafeName, VenueInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
@@ -29,34 +29,42 @@ const urlIfNoFileValidation = (fieldName: string) =>
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
+    template: Yup.string().required(),
     name: Yup.string()
-      .required("Display name required")
-      .test(
-        "name",
-        "This venue name is already taken",
-        async (val: string) =>
-          !(
-            await firebase
-              .firestore()
-              .collection("venues")
-              .doc(createUrlSafeName(val))
-              .get()
-          ).exists
-      )
-      .test(
-        "name",
-        "Must have alphanumeric characters",
-        (val: string) => createUrlSafeName(val).length > 0
+      .required("Required")
+      .min(1, "Required")
+      .when(
+        "$editing",
+        (editing: boolean, schema: Yup.StringSchema) =>
+          !editing
+            ? schema
+                .test(
+                  "name",
+                  "This venue name is already taken",
+                  async (val: string) =>
+                    !(
+                      await firebase
+                        .firestore()
+                        .collection("venues")
+                        .doc(createUrlSafeName(val))
+                        .get()
+                    ).exists
+                )
+                .test(
+                  "name",
+                  "Must have alphanumeric characters",
+                  (val: string) => createUrlSafeName(val).length > 0
+                )
+            : schema //will be set from the data from the api. Does not need to be unique
       ),
-    bannerImageFile: createFileSchema("bannerImageFile", true).required(
-      "Required"
-    ),
-    logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
+    bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
+    logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
+    mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
+    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
+    logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
     description: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
-    mapIconImageFile: createFileSchema("mapIconImageFile", true).required(
-      "Required"
-    ),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
@@ -103,29 +111,6 @@ export const validationSchema = Yup.object()
       ), // ensure questions are not empty strings
   })
   .required();
-
-type EditVenueInputs = Pick<
-  VenueInputEdit,
-  | "name"
-  | "bannerImageFile"
-  | "logoImageFile"
-  | "mapIconImageFile"
-  | "bannerImageUrl"
-  | "logoImageUrl"
-  | "mapIconImageUrl"
->;
-
-export const editVenueValidationSchema = validationSchema.shape<
-  EditVenueInputs
->({
-  name: Yup.string().required(),
-  bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
-  logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
-  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
-  logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
-});
 
 // this is used to transform the api data to conform to the yup schema
 export const editVenueCastSchema = Yup.object()

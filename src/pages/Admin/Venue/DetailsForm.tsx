@@ -3,7 +3,6 @@ import {
   createVenue,
   updateVenue,
   VenueInput,
-  VenueInputEdit,
 } from "api/admin";
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
@@ -16,7 +15,6 @@ import * as Yup from "yup";
 import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
   editVenueCastSchema,
-  editVenueValidationSchema,
   validationSchema,
 } from "./DetailsValidationSchema";
 import "./Venue.scss";
@@ -34,9 +32,7 @@ import {
 } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 
-export type FormValues = Partial<
-  Yup.InferType<typeof editVenueValidationSchema>
->; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
 interface DetailsFormProps extends WizardPage {
   editing?: boolean;
@@ -51,12 +47,13 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () => editVenueCastSchema.cast(state.detailsPage?.venue),
     [state.detailsPage]
   );
+  console.log("defaultValues", defaultValues);
 
   const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: editing ? editVenueValidationSchema : validationSchema,
-    validationContext: state.templatePage,
+    validationSchema: validationSchema,
+    validationContext: { template: state.templatePage?.template, editing },
     defaultValues,
   });
   const { user } = useUser();
@@ -68,7 +65,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (editing) await updateVenue(vals as VenueInputEdit, user);
+        if (editing) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
         history.push("/admin");
       } catch (e) {
@@ -81,7 +78,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const onFormSubmit = rest.handleSubmit(onSubmit);
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
-    console.log("mapIconUrl -> file", file);
     if (file && file.length > 0) return URL.createObjectURL(file[0]);
     return values.mapIconImageUrl;
   }, [values.mapIconImageFile, values.mapIconImageUrl]);
@@ -123,7 +119,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           <Container
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
-            backgroundImage={"/burn/playa3d.jpeg"}
+            backgroundImage={"/burn/playa.jpeg"}
             iconImageStyle={styles.iconImage}
           />
           <CustomDragLayer
@@ -189,28 +185,40 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
+      <input
+        type="hidden"
+        name="template"
+        value={state.templatePage?.template.template}
+        ref={register}
+      />
       <div className="scrollable-content">
-        <h4 className="italic">{`Create your ${templateType}`}</h4>
+        <h4 className="italic">{`${
+          editing ? "Edit" : "Create"
+        } your ${templateType}`}</h4>
         <p className="small light" style={{ marginBottom: "2rem" }}>
           You can change anything except for the name of your venue later
         </p>
-        <div className="input-container">
-          <div className="input-title">Name your venue</div>
-          <input
-            disabled={disable}
-            name="name"
-            ref={register}
-            className="align-left"
-            placeholder={`My ${templateType} name`}
-          />
-          {errors.name ? (
-            <span className="input-error">{errors.name.message}</span>
-          ) : urlSafeName ? (
-            <span className="input-info">
-              The URL of your venue will be: <b>{urlSafeName}</b>
-            </span>
-          ) : null}
-        </div>
+        {!editing ? (
+          <div className="input-container">
+            <div className="input-title">Name your venue</div>
+            <input
+              disabled={disable}
+              name="name"
+              ref={register}
+              className="align-left"
+              placeholder={`My ${templateType} name`}
+            />
+            {errors.name ? (
+              <span className="input-error">{errors.name.message}</span>
+            ) : urlSafeName ? (
+              <span className="input-info">
+                The URL of your venue will be: <b>{urlSafeName}</b>
+              </span>
+            ) : null}
+          </div>
+        ) : (
+          <input type="hidden" name="name" ref={register} value={values.name} />
+        )}
         <div className="input-container">
           <div className="input-title">
             {`Choose how you'd like your venue to appear on the map`}
