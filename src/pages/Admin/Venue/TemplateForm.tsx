@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
-import { VENUE_TEMPLATES, Template } from "settings";
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
 import { VenueTemplate } from "types/VenueTemplate";
 
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
@@ -70,7 +70,7 @@ const TemplateFormLeft: React.FC<TemplateFormLeftProps> = (props) => {
       <div className="scrollable-content">
         <h4 className="italic">What kind of space would you like to create?</h4>
         <div className="templates-container">
-          {VENUE_TEMPLATES.map((template) => (
+          {BURN_VENUE_TEMPLATES.map((template) => (
             <TemplateCard
               selected={template.name === selectedTemplate?.name}
               key={template.name}
