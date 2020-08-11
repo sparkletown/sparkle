@@ -28,7 +28,10 @@ import {
   EMBED_IFRAME_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
-import { CustomDragLayer, Container } from "./VenueMapEdition";
+import {
+  Container,
+  CustomDragLayer,
+} from "pages/Account/Venue/VenueMapEdition";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't

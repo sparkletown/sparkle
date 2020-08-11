@@ -1,7 +1,7 @@
-import { FormValues } from "pages/Account/Venue/DetailsForm";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 interface Question {
   name: string;
