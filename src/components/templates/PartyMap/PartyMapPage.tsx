@@ -18,17 +18,20 @@ import { useSelector } from "hooks/useSelector";
 import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
+import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 
 const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
+  useConnectCurrentEvent();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<RoomData>();
 
   const { user } = useUser();
-  const { partygoers, venue } = useSelector((state) => ({
+  const { event, partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
+    event: state.firestore.ordered.currentEvent?.[0],
     partygoers: state.firestore.ordered.partygoers,
   }));
 
@@ -82,7 +85,7 @@ const PartyMap = () => {
       <div className="container-fluid">
         <div className="small-right-margin">
           <PartyTitle
-            startUtcSeconds={venue.start_utc_seconds}
+            startUtcSeconds={event?.start_utc_seconds}
             withCountDown={false}
           />
         </div>
@@ -104,7 +107,7 @@ const PartyMap = () => {
               </a>
             )}
           </div>
-          <CountDown startUtcSeconds={venue.start_utc_seconds} />
+          <CountDown startUtcSeconds={event?.start_utc_seconds} />
         </div>
         <div className="row">
           <Map
@@ -116,17 +119,15 @@ const PartyMap = () => {
         </div>
         <div className="row">
           <div className="col">
-            <RoomList
-              startUtcSeconds={venue.start_utc_seconds}
+            {/* <RoomList
+              startUtcSeconds={event?.start_utc_seconds}
               rooms={venue.rooms}
               attendances={attendances}
               setSelectedRoom={setSelectedRoom}
               setIsRoomModalOpen={setIsRoomModalOpen}
-            />
+            /> */}
           </div>
-          <div className="col-5 chat-wrapper">
-            <Chatbox />
-          </div>
+          <div className="col-5 chat-wrapper">{/* <Chatbox /> */}</div>
         </div>
       </div>
       <RoomModal

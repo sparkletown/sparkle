@@ -19,7 +19,8 @@ interface PropsType {
 
 const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { user } = useUser();
-  const { users, venue } = useSelector((state) => ({
+  const { event, users, venue } = useSelector((state) => ({
+    event: state.firestore.ordered.currentEvent?.[0],
     venue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
   }));
@@ -38,7 +39,7 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   if (!room) return <></>;
 
   const currentEvent =
-    room.events && getCurrentEvent(room, venue.start_utc_seconds);
+    room.events && getCurrentEvent(room, event?.start_utc_seconds);
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -62,7 +63,7 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
                 <RoomModalOngoingEvent
                   room={room}
                   enterRoom={enter}
-                  startUtcSeconds={venue.start_utc_seconds}
+                  startUtcSeconds={event?.start_utc_seconds}
                 />
               </div>
             </div>
@@ -71,13 +72,13 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
         <UserList users={usersToDisplay} limit={11} activity="in this room" />
         {room.about && <div className="about-this-room">{room.about}</div>}
         <div className="row">
-          {room.events && room.events.length > 0 && (
+          {/* {event.schedule && event.schedule.length > 0 && (
             <div className="col schedule-container">
               <div className="schedule-title">Room Schedule</div>
-              {room.events.map((event, idx: number) => (
+              {event.schedule.map((scheduleItem, idx: number) => (
                 <ScheduleItem
                   key={idx}
-                  startUtcSeconds={venue.start_utc_seconds}
+                  startUtcSeconds={scheduleItem.start_utc_seconds}
                   event={event}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
@@ -87,7 +88,7 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
                 />
               ))}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </Modal>

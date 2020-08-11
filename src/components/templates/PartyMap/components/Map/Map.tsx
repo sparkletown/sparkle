@@ -33,7 +33,7 @@ const Map: React.FC<PropsType> = ({
       <div id="map" className="map-container">
         <div className="position-relative">
           <svg className="position-absolute" viewBox={config.map_viewbox}>
-            {config.rooms
+            {/* {config.rooms
               .filter(isRoomValid)
               .filter((r) => r.on_map)
               .map((room, idx) => {
@@ -47,9 +47,9 @@ const Map: React.FC<PropsType> = ({
                     <title>{room.title}</title>
                   </path>
                 );
-              })}
+              })} */}
           </svg>
-          {config.rooms
+          {/* {config.rooms
             .filter(isRoomValid)
             .filter((r) => r.on_map)
             .filter((r) => r.attendance_x && r.attendance_y)
@@ -61,7 +61,7 @@ const Map: React.FC<PropsType> = ({
                 key={idx}
                 onClick={() => openRoomModal(room)}
               />
-            ))}
+            ))} */}
           <img
             className="img-fluid map-image"
             src={config.map_url}

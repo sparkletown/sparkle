@@ -32,12 +32,12 @@ export interface PartyMapVenue extends Venue {
   // rooms: RoomData[];
   // subvenues replaces rooms
   // Should this be a subcollection?
-  subVenues: {
-    id: string;
-    on_map: boolean;
-    attendance_x?: string;
-    attendance_y?: string;
-  };
+  // sub_venues: {
+  //   id: string;
+  //   on_map: boolean;
+  //   attendance_x?: string;
+  //   attendance_y?: string;
+  // }[];
 }
 
 // will be a subcollection of PartyMapVenue, same as current Events
@@ -48,10 +48,10 @@ export interface PartyMapEvent {
   descriptions?: string[];
   duration_minutes: number;
   // Should this be a subcollection?
-  subVenues: {
-    id: string;
-    schedule: PartyMapScheduleItem[];
-  };
+  // sub_venues: {
+  //   id: string;
+  //   schedule: PartyMapScheduleItem[];
+  // };
 }
 
 // this is roughlt EventData
