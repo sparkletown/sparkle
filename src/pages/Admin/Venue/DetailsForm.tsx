@@ -8,7 +8,7 @@ import {
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, CSSProperties } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/Venue";
@@ -33,10 +33,9 @@ import {
   CustomDragLayer,
 } from "pages/Account/Venue/VenueMapEdition";
 
-type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
-type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
-
-export type FormValues = EditFormValues | CreateFormValues;
+export type FormValues = Partial<
+  Yup.InferType<typeof editVenueValidationSchema>
+>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
 interface DetailsFormProps extends WizardPage {
   editing?: boolean;
@@ -84,8 +83,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
     if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return undefined;
-  }, [values.mapIconImageFile]);
+    return values.mapIconImageUrl;
+  }, [values.mapIconImageFile, values.mapIconImageUrl]);
 
   const iconsMap = useMemo(
     () =>
@@ -121,8 +120,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       </div>
       <div className="page-side preview">
         <div className="playa">
-          <Container snapToGrid={false} iconsMap={iconsMap ?? {}} />
-          <CustomDragLayer snapToGrid />
+          <Container
+            snapToGrid={false}
+            iconsMap={iconsMap ?? {}}
+            backgroundImage={"/burn/playa3d.jpeg"}
+            iconImageStyle={styles.iconImage}
+          />
+          <CustomDragLayer
+            snapToGrid={false}
+            iconImageStyle={styles.draggableIconImage}
+          />
         </div>
         <VenuePreview values={values} />
       </div>
@@ -130,15 +137,30 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 };
 
+const styles: Record<string, CSSProperties> = {
+  iconImage: {
+    width: 35,
+    height: 35,
+    overflow: "hidden",
+    borderRadius: 20,
+  },
+  draggableIconImage: {
+    width: 45,
+    height: 45,
+    overflow: "hidden",
+    borderRadius: 20,
+  },
+};
+
 interface DetailsFormLeftProps {
   state: WizardPage["state"];
   previous: WizardPage["previous"];
-  values: EditFormValues;
+  values: FormValues;
   isSubmitting: boolean;
   register: ReturnType<typeof useForm>["register"];
   control: ReturnType<typeof useForm>["control"];
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
-  errors: FieldErrors<EditFormValues>;
+  errors: FieldErrors<FormValues>;
   editing?: boolean;
 }
 
