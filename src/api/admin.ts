@@ -24,84 +24,32 @@ export interface AdvancedVenueInput {
 type ImageFileKeys = "bannerImageFile" | "logoImageFile" | "mapIconImageFile";
 type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapIconImageUrl";
 
-interface VenueUpdateImageUrls {
+interface VenueImageUrls {
   bannerImageUrl?: string;
   logoImageUrl?: string;
   mapIconImageUrl?: string;
 }
 
-export interface VenueInput extends AdvancedVenueInput {
-  name: string;
-  bannerImageFile: FileList;
-  logoImageFile: FileList;
-  subtitle: string;
-  description: string;
-  mapIconImageFile?: FileList;
-  zoomUrl?: string;
-  videoIframeUrl?: string;
-  embedIframeUrl?: string;
-}
+export type VenueInput = AdvancedVenueInput &
+  VenueImageUrls & {
+    name: string;
+    bannerImageFile?: FileList;
+    logoImageFile?: FileList;
+    mapIconImageFile?: FileList;
+    subtitle: string;
+    description: string;
+    zoomUrl?: string;
+    videoIframeUrl?: string;
+    embedIframeUrl?: string;
+    template: any;
+  };
 
-export type VenueInputEdit = Omit<VenueInput, ImageFileKeys> &
-  Partial<Pick<VenueInput, ImageFileKeys>> &
-  VenueUpdateImageUrls;
-
-type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> &
-  VenueUpdateImageUrls;
+type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & VenueImageUrls;
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-export const createVenue = async (input: VenueInput, user: UserInfo) => {
-  const storageRef = firebase.storage().ref();
-
-  const logoFile = input.logoImageFile[0];
-  const bannerFile = input.bannerImageFile[0];
-  const mapIconFile = input.mapIconImageFile
-    ? input.mapIconImageFile[0]
-    : undefined;
-
-  const urlVenueName = createUrlSafeName(input.name);
-
-  // upload logo file
-  const uploadLogoRef = storageRef.child(
-    `users/${user.uid}/venues/${urlVenueName}/${logoFile.name}`
-  );
-  await uploadLogoRef.put(logoFile);
-
-  // upload banner file
-  const uploadBannerRef = storageRef.child(
-    `users/${user.uid}/venues/${urlVenueName}/${bannerFile.name}`
-  );
-  await uploadBannerRef.put(bannerFile);
-
-  let mapIconDownloadUrl: string | undefined = undefined;
-
-  // upload MapIcon file
-  if (mapIconFile) {
-    const uploadBannerRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${mapIconFile.name}`
-    );
-    await uploadBannerRef.put(mapIconFile);
-    mapIconDownloadUrl = await uploadBannerRef.getDownloadURL();
-  }
-
-  const logoDownloadUrl: string = await uploadLogoRef.getDownloadURL();
-  const bannerDownloadUrl: string = await uploadBannerRef.getDownloadURL();
-
-  const firestoreVenueInput: FirestoreVenueInput = {
-    ..._.omit(input, ["bannerImageFile", "logoImageFile", "mapIconImageFile"]),
-    bannerImageUrl: bannerDownloadUrl,
-    logoImageUrl: logoDownloadUrl,
-    mapIconImageUrl: mapIconDownloadUrl,
-  };
-
-  return await firebase.functions().httpsCallable("venue-createVenue")(
-    firestoreVenueInput
-  );
-};
-
-export const updateVenue = async (input: VenueInputEdit, user: UserInfo) => {
+const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 
   const urlVenueName = createUrlSafeName(input.name);
@@ -137,6 +85,18 @@ export const updateVenue = async (input: VenueInputEdit, user: UserInfo) => {
     ),
     ...imageInputData,
   };
+  return firestoreVenueInput;
+};
+
+export const createVenue = async (input: VenueInput, user: UserInfo) => {
+  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
+  return await firebase.functions().httpsCallable("venue-createVenue")(
+    firestoreVenueInput
+  );
+};
+
+export const updateVenue = async (input: VenueInput, user: UserInfo) => {
+  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
   return await firebase.functions().httpsCallable("venue-updateVenue")(
     firestoreVenueInput
