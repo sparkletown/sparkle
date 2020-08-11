@@ -1,11 +1,12 @@
 import React from "react";
-import { EventData } from "types/EventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
+import { VenueEvent } from "types/VenueEvent";
+import { WithId } from "utils/id";
 
 interface PropsType {
   startUtcSeconds: number;
-  event: EventData[0];
+  event: WithId<VenueEvent>;
   isCurrentEvent: boolean;
   enterRoom: () => void;
   roomUrl: string;
@@ -21,11 +22,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   <div className="shedule-item-container">
     <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
       <div>
-        <b>{formatMinute(event.start_minute, startUtcSeconds)}</b>
+        <b>{formatMinute(event.start_utc_seconds, startUtcSeconds)}</b>
       </div>
       <div>
         {formatMinute(
-          event.start_minute + event.duration_minutes,
+          event.start_utc_seconds + event.duration_minutes,
           startUtcSeconds
         )}
       </div>
@@ -37,11 +38,14 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             <b>{event.name}</b>
           </div>
           <div>
-            by <b>{event.host}</b>
+            by <b>{"event.host HARDCODED"}</b>
           </div>
         </div>
         <div className="event-description">
-          {(event.text || "").split("\n").map((p: any) => (
+          {(event.description || "").split("\n").map((p: any) => (
+            <p>{p}</p>
+          ))}
+          {(event.descriptions || []).map((p: any) => (
             <p>{p}</p>
           ))}
         </div>

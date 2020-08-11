@@ -1,16 +1,16 @@
 import React from "react";
-import { getCurrentEvent } from "utils/time";
 import RoomModalOngoingEvent from "components/templates/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import "./RoomModal.scss";
-import { isPartyMapVenue } from "types/PartyMapVenue";
+import { isPartyMapVenue, isPartyMapEvent } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { RoomData } from "types/RoomData";
 import { Venue } from "types/Venue";
+import { getCurrentEvent } from "../components/RoomList/RoomList";
 
 interface PropsType {
   show: boolean;
@@ -39,9 +39,13 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, venue }) => {
     venue && user && enterRoom(user, venue.name);
   }
 
-  // this will be the schedule, not yet implemented
-  // const currentEvent =
-  //   room.events && getCurrentEvent(room, event?.start_utc_seconds);
+  const partyMapSubVenue =
+    isPartyMapEvent(event) &&
+    (event.sub_venues.find((v) => v.id === venue.name) ?? false);
+  const currentEvent =
+    (partyMapSubVenue &&
+      getCurrentEvent(partyMapSubVenue, event.start_utc_seconds)) ||
+    false;
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -79,23 +83,23 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, venue }) => {
           Model
         </div>
         <div className="row">
-          {/* {event.schedule && event.schedule.length > 0 && (
+          {partyMapSubVenue && partyMapSubVenue.schedule.length > 0 && (
             <div className="col schedule-container">
               <div className="schedule-title">Room Schedule</div>
-              {event.schedule.map((scheduleItem, idx: number) => (
+              {partyMapSubVenue.schedule.map((scheduleItem, idx: number) => (
                 <ScheduleItem
                   key={idx}
-                  startUtcSeconds={scheduleItem.start_utc_seconds}
+                  startUtcSeconds={scheduleItem.start_minute} // @debt - ???
                   event={event}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
                   }
                   enterRoom={enter}
-                  roomUrl={room.external_url}
+                  roomUrl={"createVenueUrl(venue)"}
                 />
               ))}
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </Modal>
