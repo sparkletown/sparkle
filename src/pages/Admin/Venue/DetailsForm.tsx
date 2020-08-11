@@ -11,7 +11,7 @@ import { useUser } from "hooks/useUser";
 import React, { useCallback, useMemo } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar } from "types/JazzbarVenue";
+import { createJazzbar } from "types/Venue";
 import * as Yup from "yup";
 import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
@@ -27,11 +27,16 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
 } from "settings";
+import "./Venue.scss";
+import {
+  Container,
+  CustomDragLayer,
+} from "pages/Account/Venue/VenueMapEdition";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
-export type FormValues = CreateFormValues | EditFormValues;
+export type FormValues = EditFormValues | CreateFormValues;
 
 interface DetailsFormProps extends WizardPage {
   editing?: boolean;
@@ -46,6 +51,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () => editVenueCastSchema.cast(state.detailsPage?.venue),
     [state.detailsPage]
   );
+  console.log("defaultValues", defaultValues);
 
   const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
@@ -58,6 +64,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+  console.log("values", values);
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -74,6 +81,21 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
+  const mapIconUrl = useMemo(() => {
+    const file = values.mapIconImageFile;
+    if (file && file.length > 0) return URL.createObjectURL(file[0]);
+    return undefined;
+  }, [values.mapIconImageFile]);
+
+  const iconsMap = useMemo(
+    () =>
+      mapIconUrl
+        ? {
+            mapIconUrl: { top: 20, left: 20, url: mapIconUrl },
+          }
+        : undefined,
+    [mapIconUrl]
+  );
 
   if (!state.templatePage) {
     previous && previous();
@@ -98,6 +120,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         </div>
       </div>
       <div className="page-side preview">
+        <div className="playa">
+          <Container snapToGrid={false} iconsMap={iconsMap ?? {}} />
+          <CustomDragLayer snapToGrid />
+        </div>
         <VenuePreview values={values} />
       </div>
     </div>
@@ -107,12 +133,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 interface DetailsFormLeftProps {
   state: WizardPage["state"];
   previous: WizardPage["previous"];
-  values: FormValues;
+  values: EditFormValues;
   isSubmitting: boolean;
   register: ReturnType<typeof useForm>["register"];
   control: ReturnType<typeof useForm>["control"];
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
-  errors: FieldErrors<FormValues>;
+  errors: FieldErrors<EditFormValues>;
   editing?: boolean;
 }
 
@@ -132,6 +158,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         createUrlSafeName(values.name)
       )}`
     : undefined;
+  console.log("errors", errors);
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
 
@@ -169,11 +196,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             name={"mapIconImageFile"}
             remoteUrlInputName={"mapIconImageUrl"}
+            remoteImageUrl={values.mapIconImageUrl}
             containerClassName="input-square-container"
             imageClassName="input-square-image"
             image={values.mapIconImageFile}
             ref={register}
-            error={errors.mapIconImageFile}
+            error={errors.mapIconImageFile || errors.mapIconImageUrl}
           />
         </div>
         <div className="input-container">
@@ -183,11 +211,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"bannerImageFile"}
             image={values.bannerImageFile}
             remoteUrlInputName={"bannerImageUrl"}
-            remoteImageUrl={
-              "bannerImageUrl" in values ? values.bannerImageUrl : undefined // true if editing
-            }
+            remoteImageUrl={values.bannerImageUrl}
             ref={register}
-            error={errors.bannerImageFile}
+            error={errors.bannerImageFile || errors.bannerImageUrl}
           />
         </div>
         <div className="input-container">
@@ -197,13 +223,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             ref={register}
             image={values.logoImageFile}
             remoteUrlInputName={"logoImageUrl"}
-            remoteImageUrl={
-              "logoImageUrl" in values ? values.logoImageUrl : undefined // true if editing
-            }
+            remoteImageUrl={values.logoImageUrl}
             name={"logoImageFile"}
             containerClassName="input-square-container"
             imageClassName="input-square-image"
-            error={errors.logoImageFile}
+            error={errors.logoImageFile || errors.logoImageUrl}
           />
         </div>
         <div className="input-container">
@@ -313,10 +337,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     </form>
   );
 };
-
-interface AccordionButtonProps {
-  eventKey: string;
-}
 
 interface SubmitButtonProps {
   isSubmitting: boolean;

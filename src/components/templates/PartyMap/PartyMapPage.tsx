@@ -12,13 +12,14 @@ import useUpdateLocationEffect, {
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { Map, PartyTitle } from "./components";
+import { PartyTitle } from "./components";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
 import { venueLandingUrl } from "utils/url";
+import { Map } from "./components/Map/Map";
 
 const PartyMap = () => {
   useConnectPartyGoers();

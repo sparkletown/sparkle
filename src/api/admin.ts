@@ -25,8 +25,8 @@ type ImageFileKeys = "bannerImageFile" | "logoImageFile" | "mapIconImageFile";
 type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapIconImageUrl";
 
 interface VenueUpdateImageUrls {
-  bannerImageUrl: string;
-  logoImageUrl: string;
+  bannerImageUrl?: string;
+  logoImageUrl?: string;
   mapIconImageUrl?: string;
 }
 

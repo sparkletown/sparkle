@@ -13,7 +13,7 @@ interface PropsType {
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
-const Map: React.FC<PropsType> = ({
+export const Map: React.FC<PropsType> = ({
   config,
   attendances,
   setSelectedRoom,
@@ -73,5 +73,3 @@ const Map: React.FC<PropsType> = ({
     </>
   );
 };
-
-export default Map;

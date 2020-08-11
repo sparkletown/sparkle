@@ -5,7 +5,7 @@ import { TemplateForm } from "./TemplateForm";
 import { DetailsForm } from "./DetailsForm";
 import { useHistory, useParams } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
-import { Template, VENUE_TEMPLATES } from "settings";
+import { Template, ALL_VENUE_TEMPLATES } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 
@@ -77,7 +77,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
       if (!venueSnapshot.exists) return;
       const data = venueSnapshot.data() as Venue;
       //find the template
-      const template = VENUE_TEMPLATES.find(
+      const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
       if (!template) return;

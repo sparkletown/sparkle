@@ -18,6 +18,15 @@ const createFileSchema = (name: string, required: boolean) =>
     (val: FileList) => !required || val.length > 0
   );
 
+const urlIfNoFileValidation = (fieldName: string) =>
+  Yup.string().when(
+    fieldName,
+    (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
+      file && file.length > 0
+        ? schema.notRequired()
+        : schema.required("Required")
+  );
+
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     name: Yup.string()
@@ -113,18 +122,26 @@ export const editVenueValidationSchema = validationSchema.shape<
   bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
   logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
   mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  bannerImageUrl: Yup.string().required(),
-  logoImageUrl: Yup.string().required(),
-  mapIconImageUrl: Yup.string().required(),
+  bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
+  logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
 });
 
 // this is used to transform the api data to conform to the yup schema
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
+  // possible locations for the subtitle
   .from("subtitle", "subtitle")
   .from("config.landingPageConfig.subtitle", "subtitle")
+
   .from("config.landingPageConfig.description", "description")
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
+
+  // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
-  .from("config.mapIconImageUrl", "mapIconImageUrl");
+  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
+
+  // possible locations for the map icon
+  .from("config.mapIconImageUrl", "mapIconImageUrl")
+  .from("mapIconImageUrl", "mapIconImageUrl");

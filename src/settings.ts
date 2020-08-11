@@ -22,7 +22,7 @@ export interface Template {
   description: Array<string>;
 }
 
-export const VENUE_TEMPLATES: Array<Template> = [
+export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.zoomroom,
     name: "Zoom Room",
@@ -57,5 +57,14 @@ export const VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.artcar,
     name: "Art Car",
     description: ["Create a space on the Playa that moves around."],
+  },
+];
+
+export const ALL_VENUE_TEMPLATES: Array<Template> = [
+  ...BURN_VENUE_TEMPLATES,
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Jazz Bar",
+    description: ["Create a jazzbar."],
   },
 ];

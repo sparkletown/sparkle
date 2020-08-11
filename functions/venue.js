@@ -80,7 +80,7 @@ const checkUserIsOwner = async (venueId, uid) => {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
-      if (!doc.owners || !doc.owners.includes(uid)) {
+      if (!venue.owners || !venue.owners.includes(uid)) {
         throw new HttpsError(
           "permission-denied",
           `User is not an owner of ${venueId}`
@@ -124,64 +124,64 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       }
       const updated = doc.data();
       if (data.bannerImageUrl || data.subtitle || data.description) {
-        if (!doc.config) {
-          doc.config = {};
+        if (!updated.config) {
+          updated.config = {};
         }
-        if (!doc.config.landingPageConfig) {
-          doc.config.landingPageConfig = {};
+        if (!updated.config.landingPageConfig) {
+          updated.config.landingPageConfig = {};
         }
       }
       if (data.bannerImageUrl) {
-        doc.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
+        updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
       }
       if (data.subtitle) {
-        doc.config.landingPageConfig.subtitle = data.subtitle;
+        updated.config.landingPageConfig.subtitle = data.subtitle;
       }
       if (data.description) {
-        doc.config.landingPageConfig.description = data.description;
+        updated.config.landingPageConfig.description = data.description;
       }
       if (data.primaryColor) {
-        if (!doc.theme) {
-          doc.theme = {};
+        if (!updated.theme) {
+          updated.theme = {};
         }
-        doc.theme.primaryColor = data.primaryColor;
+        updated.theme.primaryColor = data.primaryColor;
       }
       if (data.logoImageUrl) {
-        if (!doc.host) {
-          doc.host = {};
+        if (!updated.host) {
+          updated.host = {};
         }
-        doc.host.icon = data.logoImageUrl;
+        updated.host.icon = data.logoImageUrl;
       }
       if (data.profileQuestions) {
-        doc.profileQuestions = data.profileQuestions;
+        updated.profileQuestions = data.profileQuestions;
       }
       if (data.mapIconImageUrl) {
-        doc.mapIconImageUrl = data.mapIconImageUrl;
+        updated.mapIconImageUrl = data.mapIconImageUrl;
       }
 
-      switch (doc.template) {
+      switch (updated.template) {
         case "jazzbar":
         case "performancevenue":
           if (data.videoIframeUrl) {
-            doc.iframeUrl = data.videoIframeUrl;
+            updated.iframeUrl = data.videoIframeUrl;
           }
         case "partymap":
         case "themecamp":
           if (data.rooms) {
-            doc.rooms = data.rooms;
+            updated.rooms = data.rooms;
           }
         case "zoomroom":
         case "artcar":
           if (data.zoomUrl) {
-            doc.zoomUrl = data.zoomUrl;
+            updated.zoomUrl = data.zoomUrl;
           }
         case "artpiece":
           if (data.embedIframeUrl) {
-            doc.embedIframeUrl = data.embedIframeUrl;
+            updated.embedIframeUrl = data.embedIframeUrl;
           }
       }
 
-      admin.firestore().collection("venues").doc(venueId).update(doc);
+      admin.firestore().collection("venues").doc(venueId).update(updated);
     });
 
   return new HttpsError("ok", "Success");
