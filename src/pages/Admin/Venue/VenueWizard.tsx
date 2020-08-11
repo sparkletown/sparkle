@@ -20,7 +20,7 @@ interface WizardFormState {
     template: Template;
   };
   detailsPage?: {
-    venue?: Venue;
+    venue: Venue;
   };
 }
 type WizardActions =
@@ -30,7 +30,7 @@ type WizardActions =
     }
   | {
       type: "SUBMIT_DETAILS_PAGE";
-      payload?: Venue;
+      payload: Venue;
     };
 
 const initialState = {};
