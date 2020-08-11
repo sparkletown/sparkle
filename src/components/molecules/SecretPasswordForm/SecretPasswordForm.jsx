@@ -3,6 +3,7 @@ import { useParams, useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 import "./SecretPasswordForm.scss";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { venueInsideUrl } from "utils/url";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
