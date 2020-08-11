@@ -1,28 +1,29 @@
-import React, { useMemo, useState } from "react";
-import "firebase/storage";
-import "./Admin.scss";
-import { useUser } from "hooks/useUser";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import AdminEvent from "./AdminEvent";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import {
-  Link,
-  useParams,
-  Switch,
-  Route,
-  useRouteMatch,
-  useLocation,
-} from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useSelector, useKeyedSelector } from "hooks/useSelector";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import VenuePreview from "components/organisms/VenuePreview";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+import "firebase/storage";
+import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import React, { useMemo, useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
+import {
+  Link,
+  Route,
+  Switch,
+  useLocation,
+  useParams,
+  useRouteMatch,
+} from "react-router-dom";
+import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
+import { WithId } from "utils/id";
 import { canHaveSubvenues } from "utils/venue";
-import { VenuePreview } from "components/organisms/VenuePreview/VenuePreview";
+import "./Admin.scss";
+import AdminEvent from "./AdminEvent";
+
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
@@ -135,7 +136,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           />
           <Route
             path={`${match.url}`}
-            component={() => <VenueInfosComponent venue={venue} />}
+            component={() => <VenueInfoComponent venue={venue} />}
           />
         </Switch>
       </div>
@@ -143,7 +144,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
   );
 };
 
-const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
+const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   return (
     <>
       <div className="page-container-adminpanel-content">
@@ -160,7 +161,7 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                   className="playa-icon"
                 />
                 <div className="playa-marketing-preview">
-                  <VenuePreview venueRequestStatus venue={venue} />
+                  <VenuePreview values={venue} />
                 </div>
               </div>
             </div>
@@ -178,12 +179,12 @@ const VenueInfosComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={`/ v / ${venue.id}`}
+          to={`/in/${venue.id}`}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"
         >
-          Visit preview page
+          Visit venue
         </Link>
         <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
           Edit venue

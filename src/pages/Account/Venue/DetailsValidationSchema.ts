@@ -1,9 +1,8 @@
-import * as Yup from "yup";
-import "firebase/functions";
-import { VenueInput, VenueInputEdit } from "api/admin";
-import { TemplateType } from "settings";
+import { createUrlSafeName, VenueInput, VenueInputEdit } from "api/admin";
 import firebase from "firebase/app";
-import { createUrlSafeName } from "api/admin";
+import "firebase/functions";
+import { TemplateType } from "settings";
+import * as Yup from "yup";
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -39,8 +38,8 @@ export const validationSchema = Yup.object()
       "Required"
     ),
     logoImageFile: createFileSchema("logoImageFile", true).required("Required"),
-    tagline: Yup.string().required("Required"),
-    longDescription: Yup.string().required("Required"),
+    subtitle: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
     mapIconImageFile: Yup.mixed<FileList>().when(
       "$template.type",
       (type: TemplateType, schema: Yup.MixedSchema<FileList>) =>
@@ -92,9 +91,9 @@ export const editVenueValidationSchema = validationSchema.shape<
 // this is used to transform the api data to conform to the yup schema
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
-  .from("subtitle", "tagline")
-  .from("config.landingPageConfig.subtitle", "tagline")
-  .from("config.landingPageConfig.description", "longDescription")
+  .from("subtitle", "subtitle")
+  .from("config.landingPageConfig.subtitle", "subtitle")
+  .from("config.landingPageConfig.description", "description")
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl");

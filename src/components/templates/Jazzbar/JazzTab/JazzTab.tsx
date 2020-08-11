@@ -1,29 +1,31 @@
-import React, { useContext, useState, useEffect } from "react";
-import { UserInfo } from "firebase";
-import { useForm } from "react-hook-form";
-import "./JazzTab.scss";
-import "./TableHeader.scss";
-import TablesUserList from "components/molecules/TablesUserList";
-import TableComponent from "components/molecules/TableComponent";
-import UserList from "components/molecules/UserList";
-import Room from "components/organisms/Room";
-import { User } from "types/User";
-import { JAZZBAR_TABLES } from "./constants";
 import {
+  EmojiReactionType,
   ExperienceContext,
   Reactions,
-  EmojiReactionType,
   TextReactionType,
 } from "components/context/ExperienceContext";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
+import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import TablesUserList from "components/molecules/TablesUserList";
+import UserList from "components/molecules/UserList";
 import ChatDrawer from "components/organisms/ChatDrawer";
+import Room from "components/organisms/Room";
+import { UserInfo } from "firebase";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import React, { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { User } from "types/User";
+import { Venue } from "types/Venue";
+import { JAZZBAR_TABLES } from "./constants";
+import "./JazzTab.scss";
+import "./TableHeader.scss";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
+  venue?: Venue;
 }
 
 interface ChatOutDataType {
@@ -34,12 +36,16 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
-const Jazz: React.FunctionComponent<PropsType> = ({ setUserList }) => {
+const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   const { user } = useUser();
-  const { venue, users } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
+  const { firestoreVenue, users } = useSelector((state) => ({
+    firestoreVenue: state.firestore.data.currentVenue,
     users: state.firestore.ordered.partygoers,
   }));
+
+  if (!venue) {
+    venue = firestoreVenue;
+  }
 
   useFirestoreConnect([
     {

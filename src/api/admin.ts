@@ -1,5 +1,5 @@
-import firebase from "firebase/app";
 import { UserInfo } from "firebase";
+import firebase from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 
@@ -35,8 +35,8 @@ export interface VenueInput extends AdvancedVenueInput {
   name: string;
   bannerImageFile: FileList;
   logoImageFile: FileList;
-  tagline: string;
-  longDescription: string;
+  subtitle: string;
+  description: string;
   mapIconImageFile?: FileList;
 }
 

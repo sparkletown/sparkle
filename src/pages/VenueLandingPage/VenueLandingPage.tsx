@@ -1,28 +1,27 @@
-import React, { useState, useEffect } from "react";
-import { updateTheme } from "pages/VenuePage/helpers";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CountDown from "components/molecules/CountDown";
+import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PaymentModal from "components/organisms/PaymentModal";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { VenueTemplate } from "types/VenueTemplate";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
-import { VenueEvent } from "types/VenueEvent";
-import EventPaymentButton from "components/molecules/EventPaymentButton";
-import PaymentModal from "components/organisms/PaymentModal";
-import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
-import { isUserAMember } from "utils/isUserAMember";
-import CountDown from "components/molecules/CountDown";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { useUser } from "hooks/useUser";
-import { ONE_MINUTE_IN_SECONDS } from "utils/time";
-import { Firestore } from "types/Firestore";
-import { Link, useParams } from "react-router-dom";
-import { WithId } from "utils/id";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
-
+import { useUser } from "hooks/useUser";
+import { updateTheme } from "pages/VenuePage/helpers";
+import React, { useEffect, useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { Link, useParams } from "react-router-dom";
+import { Firestore } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import { WithId } from "utils/id";
+import { isUserAMember } from "utils/isUserAMember";
+import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
 
 export interface VenueLandingPageProps {
@@ -78,8 +77,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
       Date.now() / 1000
   );
 
-  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
-
   venue && updateTheme(venue);
 
   useEffect(() => {
@@ -96,6 +93,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   if (!venue) {
     return <>Loading...</>;
   }
+
+  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
 
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 

@@ -1,36 +1,31 @@
-import React, { useCallback, useMemo } from "react";
-import { useForm, FieldErrors } from "react-hook-form";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import {
-  VenueInput,
-  VenueInputEdit,
   createUrlSafeName,
   createVenue,
   updateVenue,
+  VenueInput,
+  VenueInputEdit,
 } from "api/admin";
-import { WizardPage } from "./VenueWizard";
-import "./Venue.scss";
-import * as Yup from "yup";
 import { ImageInput } from "components/molecules/ImageInput";
+import "firebase/functions";
+import { useUser } from "hooks/useUser";
+import React, { useCallback, useMemo } from "react";
+import { FieldErrors, useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+import { createJazzbar } from "types/Venue";
+import * as Yup from "yup";
+import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
-  validationSchema,
   editVenueCastSchema,
   editVenueValidationSchema,
+  validationSchema,
 } from "./DetailsValidationSchema";
-import { useAccordionToggle } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
-import { VenuePreview } from "../../../components/organisms/VenuePreview/VenuePreview";
-import { ExtractProps } from "types/utility";
-import { VenueTemplate } from "types/VenueTemplate";
-import { venueDefaults } from "./defaults";
-import { useHistory } from "react-router-dom";
+import "./Venue.scss";
+import { WizardPage } from "./VenueWizard";
 
 type CreateFormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 type EditFormValues = Partial<Yup.InferType<typeof editVenueValidationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
-type FormValues = CreateFormValues | EditFormValues;
+export type FormValues = CreateFormValues | EditFormValues;
 
 interface DetailsFormProps extends WizardPage {
   editing?: boolean;
@@ -98,11 +93,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         </div>
       </div>
       <div className="page-side preview">
-        <VenuePreview
-          values={values}
-          templateName={state.templatePage?.template.name}
-          state={state}
-        />
+        <VenuePreview values={values} />
       </div>
     </div>
   );
@@ -128,7 +119,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     isSubmitting,
     register,
     errors,
-    control,
     previous,
     onSubmit,
   } = props;
@@ -142,6 +132,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
+
+  const defaultVenue = createJazzbar({});
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
@@ -221,10 +213,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"tagline"}
             ref={register}
             className="wide-input-block align-left"
-            placeholder={venueDefaults.config.landingPageConfig.subtitle}
+            placeholder={defaultVenue.config.landingPageConfig.subtitle}
           />
-          {errors.tagline && (
-            <span className="input-error">{errors.tagline.message}</span>
+          {errors.subtitle && (
+            <span className="input-error">{errors.subtitle.message}</span>
           )}
         </div>
         <div className="input-container">
@@ -234,12 +226,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"longDescription"}
             ref={register}
             className="wide-input-block input-centered align-left"
-            placeholder={venueDefaults.config.landingPageConfig.description}
+            placeholder={defaultVenue.config.landingPageConfig.description}
           />
-          {errors.longDescription && (
-            <span className="input-error">
-              {errors.longDescription.message}
-            </span>
+          {errors.description && (
+            <span className="input-error">{errors.description.message}</span>
           )}
         </div>
       </div>
@@ -262,16 +252,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 interface AccordionButtonProps {
   eventKey: string;
 }
-
-const AccordionButton: React.FC<AccordionButtonProps> = ({ eventKey }) => {
-  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
-  return (
-    <div className="advanced-toggle centered-flex" onClick={decoratedOnClick}>
-      <FontAwesomeIcon icon={faCaretDown} size="lg" />
-      <span className="toggle-title">Advanced Options</span>
-    </div>
-  );
-};
 
 interface SubmitButtonProps {
   isSubmitting: boolean;

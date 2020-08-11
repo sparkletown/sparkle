@@ -20,6 +20,8 @@ import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Account/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
+import VenuePage from "pages/VenuePage";
+
 const AppRouter = () => {
   const firebase = useFirebase();
   const analytics = firebase.analytics();

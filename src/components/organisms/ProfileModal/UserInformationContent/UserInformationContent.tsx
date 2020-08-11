@@ -1,11 +1,11 @@
-import React from "react";
-import { QuestionType } from "types/Question";
-import { useHistory } from "react-router-dom";
-import { useFirebase } from "react-redux-firebase";
-import { DEFAULT_PROFILE_VALUES } from "../constants";
-import { useUser } from "hooks/useUser";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import React from "react";
+import { useFirebase } from "react-redux-firebase";
+import { useHistory } from "react-router-dom";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { QuestionType } from "types/Question";
+import { DEFAULT_PROFILE_VALUES } from "../constants";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
