@@ -2,57 +2,58 @@ import React from "react";
 import "./RoomCard.scss";
 import RoomAttendance from "../RoomAttendance";
 import { formatMinute } from "utils/time";
-import { RoomData } from "types/RoomData";
-import { getCurrentEvent } from "utils/time";
+import { WithId } from "utils/id";
+import { SubVenue, PartyMapScheduleItem } from "types/PartyMapVenue";
+import { Venue } from "types/Venue";
 
 interface PropsType {
   startUtcSeconds: number;
-  room: RoomData;
+  subVenue: WithId<SubVenue>;
+  childVenue?: WithId<Venue>;
+  displayedEvent?: PartyMapScheduleItem;
   attendance?: number;
   onClick: () => void;
 }
 
 const RoomCard: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
-  room,
+  subVenue,
+  childVenue,
+  displayedEvent,
   attendance,
   onClick,
 }) => {
-  const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
-  const eventToDisplay =
-    room.events &&
-    room.events.length > 0 &&
-    (currentEvent ? currentEvent : room.events[0]);
-
   return (
     <div
       className="card card_room"
       onClick={onClick}
-      id={`room-card-${room.title}`}
+      id={`room-card-${subVenue.id}`}
     >
       <div className="card-animation card-animation_music">
         <span className="icon-1"></span>
         <span className="icon-2"></span>
         <span className="icon-3"></span>
       </div>
-      {room.image && (
+      {childVenue?.mapIconImageUrl && (
         <img
-          src={`/room-images/${room.image}`}
+          src={childVenue.mapIconImageUrl}
           className="card_room-pic"
-          alt={room.title}
+          alt={subVenue.id}
         />
       )}
-      <h5 className="italic">{room.title}</h5>
+      <h5 className="italic">{subVenue.id}</h5>
       <div className="room-attendance-container">
-        {/* <RoomAttendance room={room} attendance={attendance} /> */}
+        <RoomAttendance room={subVenue} attendance={attendance} />
       </div>
-      <div className="card_room-now">
-        <h6 className="primary">{eventToDisplay.name}</h6>
-        <p className="small primary">by {eventToDisplay.host}</p>
-        <p className="small primary">
-          {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
-        </p>
-      </div>
+      {displayedEvent && (
+        <div className="card_room-now">
+          <h6 className="primary">{displayedEvent.name}</h6>
+          <p className="small primary">by {displayedEvent.host}</p>
+          <p className="small primary">
+            {formatMinute(displayedEvent.start_minute, startUtcSeconds)}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

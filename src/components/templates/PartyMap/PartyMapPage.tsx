@@ -15,8 +15,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { Map, PartyTitle } from "./components";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { isPartyMapVenue, SubVenue } from "types/PartyMapVenue";
-import { RoomData } from "types/RoomData";
+import { isPartyMapVenue, PartyMapEvent } from "types/PartyMapVenue";
 import RoomModal from "./RoomModal";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 import { WithId } from "utils/id";
@@ -129,13 +128,15 @@ const PartyMap = () => {
         </div>
         <div className="row">
           <div className="col">
-            {/* <RoomList
+            <RoomList
               startUtcSeconds={event?.start_utc_seconds}
-              rooms={subVenues}
+              subVenues={subVenues}
+              childVenues={childVenues}
               attendances={attendances}
               setSelectedRoom={setSelectedRoom}
               setIsRoomModalOpen={setIsRoomModalOpen}
-            /> */}
+              currentEvent={event}
+            />
           </div>
           <div className="col-5 chat-wrapper">{/* <Chatbox /> */}</div>
         </div>

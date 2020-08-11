@@ -1,5 +1,6 @@
 import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
+import { VenueEvent } from "./VenueEvent";
 // import { RoomData } from "./RoomData";
 // import { EventData } from "./EventData";
 
@@ -46,18 +47,18 @@ export interface SubVenue {
   attendance_y?: string;
 }
 
-// will be a subcollection of PartyMapVenue, same as current Events
-export interface PartyMapEvent {
-  name: string;
-  start_utc_seconds: number;
-  description: string;
-  descriptions?: string[];
-  duration_minutes: number;
+export interface PartyMapEventSubVenue {
+  id: string;
+  schedule: PartyMapScheduleItem[];
+}
+
+export const isPartyMapEvent = (event: VenueEvent): event is PartyMapEvent => {
+  return "sub_venues" in event;
+};
+
+export interface PartyMapEvent extends VenueEvent {
   // Should this be a subcollection?
-  // sub_venues: {
-  //   id: string;
-  //   schedule: PartyMapScheduleItem[];
-  // };
+  sub_venues: PartyMapEventSubVenue[];
 }
 
 // this is roughlt EventData
