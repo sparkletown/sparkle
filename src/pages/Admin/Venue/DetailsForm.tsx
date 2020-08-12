@@ -188,12 +188,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
-      <input
-        type="hidden"
-        name="template"
-        value={state.templatePage?.template.template}
-        ref={register}
-      />
+      <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic">{`${
           editing ? "Edit" : "Create"
@@ -240,32 +235,27 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             setImageUrl={(url) => setValue("mapIconImageUrl", url, true)}
             imageType="icons"
           />
-          {templateID && (
-            <>
-              {BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
-                <ImageCollectionInput
-                  collectionPath={"assets/mapBackgrounds"}
-                  disabled={disable}
-                  fieldName={"mapBackgroundImage"}
-                  register={register}
-                  imageUrl={values.mapBackgroundImageUrl}
-                  containerClassName="input-square-container"
-                  imageClassName="input-square-image"
-                  image={values.mapBackgroundImageFile}
-                  error={
-                    errors.mapBackgroundImageFile ||
-                    errors.mapBackgroundImageUrl
-                  }
-                  setImageFile={(file) =>
-                    setValue("mapBackgroundImageFile", file, true)
-                  }
-                  setImageUrl={(url) =>
-                    setValue("mapBackgroundImageUrl", url, true)
-                  }
-                  imageType="backgrounds"
-                />
-              )}
-            </>
+          {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
+            <ImageCollectionInput
+              collectionPath={"assets/mapBackgrounds"}
+              disabled={disable}
+              fieldName={"mapBackgroundImage"}
+              register={register}
+              imageUrl={values.mapBackgroundImageUrl}
+              containerClassName="input-square-container"
+              imageClassName="input-square-image"
+              image={values.mapBackgroundImageFile}
+              error={
+                errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
+              }
+              setImageFile={(file) =>
+                setValue("mapBackgroundImageFile", file, true)
+              }
+              setImageUrl={(url) =>
+                setValue("mapBackgroundImageUrl", url, true)
+              }
+              imageType="backgrounds"
+            />
           )}
         </div>
         <div className="input-container">
@@ -320,11 +310,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="input-error">{errors.description.message}</span>
           )}
         </div>
-        {state.templatePage?.template.template && (
+        {templateID && (
           <>
-            {ZOOM_URL_TEMPLATES.includes(
-              state.templatePage?.template.template
-            ) && (
+            {ZOOM_URL_TEMPLATES.includes(templateID) && (
               <div className="input-container">
                 <div className="input-title">Zoom URL</div>
                 <textarea
@@ -341,9 +329,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 )}
               </div>
             )}
-            {VIDEO_IFRAME_TEMPLATES.includes(
-              state.templatePage?.template.template
-            ) && (
+            {VIDEO_IFRAME_TEMPLATES.includes(templateID) && (
               <div className="input-container">
                 <div className="input-title">
                   Livestream URL, for people to view in your venue
@@ -362,9 +348,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 )}
               </div>
             )}
-            {EMBED_IFRAME_TEMPLATES.includes(
-              state.templatePage?.template.template
-            ) && (
+            {EMBED_IFRAME_TEMPLATES.includes(templateID) && (
               <div className="input-container">
                 <div className="input-title">
                   URL to your artwork, to embed in the experience as an iframe
