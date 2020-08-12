@@ -103,7 +103,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 };
 
 const defaultVenue =
-  firebaseConfig.projectId === "sparkle-verse" ? "playa" : "kansassmittys";
+  firebaseConfig.projectId === "co-reality-map" ? "kansassmittys" : "playa";
 
 render(
   <Elements stripe={stripePromise}>
