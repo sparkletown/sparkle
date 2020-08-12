@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
+import { DEFAULT_MAP_ICON_URL } from "settings";
 
 import "./Preplaya.scss";
 
