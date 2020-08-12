@@ -6,8 +6,6 @@
   }
 
   .playa-container {
-    max-width: 100%;
-    max-height: 100%;
     overflow: hidden;
     position: relative;
 
@@ -31,7 +29,6 @@
 
       .playa-icon-container {
         position: relative;
-        margin-left: -500px;
       }
 
       .playa-venue-preview {

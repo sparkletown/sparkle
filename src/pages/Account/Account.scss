@@ -41,8 +41,8 @@ $login-max-width: 540px;
 
 .page-container {
   background-color: $dark;
-  min-height: 100vh;
-  padding: 0 0 80px;
+  max-height: 100%;
+  overflow: hidden;
 }
 
 .code-of-conduct-container {
