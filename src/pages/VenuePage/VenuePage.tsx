@@ -147,6 +147,19 @@ const VenuePage = () => {
     case VenueTemplate.playa:
       template = <PlayaRouter />;
       break;
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.performancevenue:
+      if (venue.zoomUrl) {
+        history.push(venue.zoomUrl);
+      }
+      template = (
+        <p>
+          Venue {venue.name} should redirect you to a URL, but none was set.
+          <br />
+          <a onClick={() => history.goBack()}>Go Back</a>
+        </p>
+      );
+      break;
   }
 
   return (

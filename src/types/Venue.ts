@@ -40,6 +40,7 @@ export interface Venue {
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
   placement?: VenuePlacement;
+  zoomUrl?: string;
 }
 
 export interface VenuePlacement {
