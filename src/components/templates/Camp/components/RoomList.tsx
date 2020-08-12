@@ -6,6 +6,8 @@ import { eventHappeningNow } from "utils/event";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 
+import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
+
 interface PropsType {
   rooms: CampRoomData[];
   attendances: Record<string, number>;
