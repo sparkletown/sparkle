@@ -22,7 +22,7 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
 import Preplaya from "components/templates/Preplaya";
-import Playa from "components/templates/Playa";
+import { PlayaRouter } from "components/templates/Playa/Router";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -145,7 +145,7 @@ const VenuePage = () => {
       template = <Preplaya />;
       break;
     case VenueTemplate.playa:
-      template = <Playa />;
+      template = <PlayaRouter />;
       break;
   }
 

@@ -1,12 +1,12 @@
 import React, { useRef, useEffect, useContext } from "react";
 import * as THREE from "three";
 import { MTLLoader, OBJLoader } from "three-obj-mtl-loader";
-import { WalkerContext } from "../Context";
+import { PlayaContext } from "../Context";
 
 export const Map = () => {
   const mapRef = useRef();
   const stateRef = useRef();
-  const { state } = useContext(WalkerContext);
+  const { state } = useContext(PlayaContext);
   stateRef.current = state;
 
   useEffect(() => {

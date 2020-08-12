@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { WalkerContext } from "../Context";
+import { PlayaContext } from "../Context";
 import { ActionType } from "../Types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 export const UI = () => {
-  const { dispatch } = useContext(WalkerContext);
+  const { dispatch } = useContext(PlayaContext);
   return (
     <>
       <div className="button-bar">

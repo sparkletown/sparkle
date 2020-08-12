@@ -1,5 +1,5 @@
 import React from "react";
 
 export const Container = (props) => {
-  return <div className="walker-container">{props.children}</div>;
+  return <div className="playa-container">{props.children}</div>;
 };
