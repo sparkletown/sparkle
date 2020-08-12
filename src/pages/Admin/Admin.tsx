@@ -146,11 +146,16 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
 };
 
 const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
+  console.log("venue", venue);
+  console.log(
+    "venue.config.landingPageConfig.coverImageUrl",
+    venue.config.landingPageConfig.coverImageUrl
+  );
   return (
     <>
       <div className="page-container-adminpanel-content">
         <h3 style={{ textAlign: "center" }}>
-          How your space appears on the playa
+          How your Experience appears on the playa
         </h3>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
@@ -164,7 +169,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
               </div>
             </div>
             <img
-              src={"/burn/playa3d.jpeg"}
+              src={"/burn/Playa.jpeg"}
               alt="playa"
               style={{
                 maxWidth: "100%",
@@ -172,6 +177,65 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                 objectFit: "cover",
               }}
             />
+          </div>
+        </div>
+        <div className="venue-preview" style={{ marginTop: 20 }}>
+          <h3 style={{ textAlign: "center" }}>
+            Your <b>Experience</b> Info
+          </h3>
+          <div className="heading-group">
+            <div>
+              <span className="title">Name:</span>
+              <span className="content">{venue.name}</span>
+            </div>
+            <div>
+              <span className="title">Short description:</span>
+              <span className="content">
+                {venue.config.landingPageConfig.subtitle}
+              </span>
+            </div>
+            <div>
+              <span className="title">Long description:</span>
+              <span className="content">
+                {venue.config.landingPageConfig.description}
+              </span>
+            </div>
+          </div>
+          <div className="content-group">
+            <div>
+              <span className="title">Banner photo</span>
+              <img
+                className="banner"
+                src={venue.config.landingPageConfig.coverImageUrl}
+                alt="cover"
+              />
+            </div>
+            <div>
+              <span className="title">Playa icon</span>
+              <span className="content">
+                <img
+                  className="icon"
+                  src={venue.mapIconImageUrl ?? venue.host.icon}
+                  alt="icon"
+                />
+              </span>
+            </div>
+            <div>
+              <span className="title">Camp logo</span>
+              <span className="content">
+                <img
+                  className="icon"
+                  src={venue.mapIconImageUrl ?? venue.host.icon}
+                  alt="icon"
+                />
+              </span>
+            </div>
+            <div>
+              <span className="title">Zoom url</span>
+              <span className="content">
+                {venue.zoomUrl ?? "NOT A ZOOM ROOM"}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -323,7 +387,7 @@ const Admin: React.FC = () => {
   ]);
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
         <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">

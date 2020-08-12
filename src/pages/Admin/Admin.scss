@@ -178,6 +178,36 @@ $page-max-width: 1240px;
               );
             }
           }
+          .venue-preview {
+            margin: 15px;
+            border: 4px solid rgba($white, 0.2);
+            background-color: rgba($white, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+
+            .heading-group {
+              margin-top: 20px;
+              .title {
+                margin-right: 10px;
+              }
+            }
+            .content-group {
+              margin-top: 20px;
+              div {
+                margin-top: 10px;
+              }
+              .title {
+                margin-right: 20px;
+                width: 100px;
+              }
+              .banner {
+                width: 100%;
+              }
+              .icon {
+                width: 100px;
+              }
+            }
+          }
         }
         .page-container-adminpanel-actions {
           padding-right: 40px;
