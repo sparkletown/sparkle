@@ -74,7 +74,7 @@ export const validationSchema = Yup.object()
 
     mapBackgroundImageUrl: Yup.string().when(
       "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
         BACKGROUND_IMG_TEMPLATES.includes(template)
           ? urlIfNoFileValidation("mapBackgroundImageFile")
           : schema.notRequired()

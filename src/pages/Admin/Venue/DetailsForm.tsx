@@ -182,6 +182,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
+  const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});
 
@@ -239,11 +240,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             setImageUrl={(url) => setValue("mapIconImageUrl", url, true)}
             imageType="icons"
           />
-          {state.templatePage?.template.template && (
+          {templateID && (
             <>
-              {BACKGROUND_IMG_TEMPLATES.includes(
-                state.templatePage?.template.template
-              ) && (
+              {BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
                 <ImageCollectionInput
                   collectionPath={"assets/mapBackgrounds"}
                   disabled={disable}
@@ -256,7 +255,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   error={
                     errors.mapBackgroundImageFile ||
                     errors.mapBackgroundImageUrl
-                  } // what is this? the prop error is an empty object
+                  }
                   setImageFile={(file) =>
                     setValue("mapBackgroundImageFile", file, true)
                   }
