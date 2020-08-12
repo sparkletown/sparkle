@@ -48,9 +48,10 @@ export const getCurrentEvent = (
   const currentTimeInSeconds = new Date().getTime() / 1000;
   return subVenue.schedule.find(
     (event) =>
-      getEventStartingTimeInSeconds(event, startUtcSeconds) <
+      getEventStartingTimeInSeconds(event, startUtcSeconds) <=
         currentTimeInSeconds &&
-      getEventEndingTimeInSeconds(event, startUtcSeconds) > currentTimeInSeconds
+      getEventEndingTimeInSeconds(event, startUtcSeconds) >=
+        currentTimeInSeconds
   );
 };
 
@@ -85,10 +86,11 @@ const RoomList: React.FunctionComponent<PropsType> = ({
   if (!isPartyMapEvent(currentEvent)) {
     return <></>;
   }
+
   const toDisplaySubVenueIds = currentEvent.sub_venues
-    .filter((partyMapEventSubVenue) => {
-      eventHappeningNow(partyMapEventSubVenue, startUtcSeconds);
-    })
+    .filter((partyMapEventSubVenue) =>
+      eventHappeningNow(partyMapEventSubVenue, startUtcSeconds)
+    )
     .map((v) => v.id);
   const displayedSubVenues = subVenues.filter((v) =>
     toDisplaySubVenueIds.includes(v.id)

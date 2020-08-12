@@ -4,7 +4,6 @@ import RoomAttendance from "../RoomAttendance";
 import { PartyMapVenue, SubVenue } from "types/PartyMapVenue";
 
 import "./Map.scss";
-import { RoomData } from "types/RoomData";
 import { WithId } from "utils/id";
 
 interface PropsType {

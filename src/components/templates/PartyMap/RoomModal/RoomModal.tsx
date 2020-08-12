@@ -8,7 +8,6 @@ import { isPartyMapVenue, isPartyMapEvent } from "types/PartyMapVenue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
-import { RoomData } from "types/RoomData";
 import { Venue } from "types/Venue";
 import { getCurrentEvent } from "../components/RoomList/RoomList";
 
@@ -68,11 +67,12 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, venue }) => {
                 )}
               </div>
               <div className="col">
-                {/* <RoomModalOngoingEvent
-                  room={room}
+                <RoomModalOngoingEvent
+                  venue={venue}
+                  displayedEvent={currentEvent}
                   enterRoom={enter}
                   startUtcSeconds={event?.start_utc_seconds}
-                /> */}
+                />
               </div>
             </div>
           </div>
@@ -89,8 +89,8 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, venue }) => {
               {partyMapSubVenue.schedule.map((scheduleItem, idx: number) => (
                 <ScheduleItem
                   key={idx}
-                  startUtcSeconds={scheduleItem.start_minute} // @debt - ???
-                  event={event}
+                  startUtcSeconds={event.start_utc_seconds} // @debt - ???
+                  scheduleItem={scheduleItem}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
                   }

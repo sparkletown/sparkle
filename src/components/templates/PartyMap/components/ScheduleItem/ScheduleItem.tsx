@@ -3,10 +3,11 @@ import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
+import { PartyMapScheduleItem } from "types/PartyMapVenue";
 
 interface PropsType {
   startUtcSeconds: number;
-  event: WithId<VenueEvent>;
+  scheduleItem: PartyMapScheduleItem;
   isCurrentEvent: boolean;
   enterRoom: () => void;
   roomUrl: string;
@@ -14,7 +15,7 @@ interface PropsType {
 
 const ScheduleItem: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
-  event,
+  scheduleItem,
   isCurrentEvent,
   enterRoom,
   roomUrl,
@@ -22,11 +23,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   <div className="shedule-item-container">
     <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
       <div>
-        <b>{formatMinute(event.start_utc_seconds, startUtcSeconds)}</b>
+        <b>{formatMinute(scheduleItem.start_minute, startUtcSeconds)}</b>
       </div>
       <div>
         {formatMinute(
-          event.start_utc_seconds + event.duration_minutes,
+          scheduleItem.start_minute + scheduleItem.duration_minutes,
           startUtcSeconds
         )}
       </div>
@@ -35,27 +36,27 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
       <div>
         <div className={`${isCurrentEvent ? "primary" : ""}`}>
           <div>
-            <b>{event.name}</b>
+            <b>{scheduleItem.name}</b>
           </div>
           <div>
             by <b>{"event.host HARDCODED"}</b>
           </div>
         </div>
-        <div className="event-description">
-          {(event.description || "").split("\n").map((p: any) => (
+        {/* <div className="event-description">
+          {(scheduleItem.description || "").split("\n").map((p: any) => (
             <p>{p}</p>
           ))}
-          {(event.descriptions || []).map((p: any) => (
+          {(scheduleItem.descriptions || []).map((p: any) => (
             <p>{p}</p>
           ))}
-        </div>
+        </div> */}
       </div>
       {isCurrentEvent && (
         <div className="entry-room-button">
           <a
             className="btn room-entry-button"
             onClick={() => enterRoom()}
-            id={`enter-room-from-schedule-event-${event}`}
+            id={`enter-room-from-schedule-event-${scheduleItem.name}`}
             href={roomUrl}
             target="_blank"
             rel="noopener noreferrer"

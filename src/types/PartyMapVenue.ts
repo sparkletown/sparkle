@@ -18,10 +18,6 @@ export interface PartyMapVenue extends Venue {
     text: string;
     program_url?: string;
   };
-  // These fields belong to an Event
-  // start_utc_seconds: number;
-  // duration_hours: number;
-  // party_name: string;
 
   entrance_hosted_hours: number;
   unhosted_entry_video_url: string;
@@ -30,15 +26,6 @@ export interface PartyMapVenue extends Venue {
   password: string;
   admin_password?: string;
   owners: string[];
-  // rooms: RoomData[];
-  // subvenues replaces rooms
-  // Should this be a subcollection?
-  // sub_venues: {
-  //   id: string;
-  //   on_map: boolean;
-  //   attendance_x?: string;
-  //   attendance_y?: string;
-  // }[];
 }
 
 export interface SubVenue {
@@ -52,16 +39,14 @@ export interface PartyMapEventSubVenue {
   schedule: PartyMapScheduleItem[];
 }
 
-export const isPartyMapEvent = (event: VenueEvent): event is PartyMapEvent => {
-  return "sub_venues" in event;
+export const isPartyMapEvent = (event?: VenueEvent): event is PartyMapEvent => {
+  return event !== undefined && "sub_venues" in event;
 };
 
 export interface PartyMapEvent extends VenueEvent {
-  // Should this be a subcollection?
   sub_venues: PartyMapEventSubVenue[];
 }
 
-// this is roughlt EventData
 export interface PartyMapScheduleItem {
   start_minute: number;
   duration_minutes: number;
