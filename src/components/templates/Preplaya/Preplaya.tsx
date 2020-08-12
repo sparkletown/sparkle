@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
-import { DEFAULT_MAP_ICON_URL } from "settings";
+import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
 
 import "./Preplaya.scss";
 
@@ -16,6 +16,20 @@ const Preplaya = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [venue, setVenue] = useState<Venue>();
+  const [scale, setScale] = useState(
+    window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
+  );
+
+  useEffect(() => {
+    const rescale = () => {
+      setScale(window.innerWidth / PLAYA_WIDTH_AND_HEIGHT);
+    };
+
+    window.addEventListener("resize", rescale);
+    return () => {
+      window.removeEventListener("resize", rescale);
+    };
+  }, []);
 
   const { venues } = useSelector((state) => ({
     venues: state.firestore.ordered.venues,
@@ -25,8 +39,6 @@ const Preplaya = () => {
     setVenue(venue);
     setShowModal(true);
   };
-
-  const scale = window.innerWidth / 4000; // city is 4000x4000 pixels
 
   return (
     <>
