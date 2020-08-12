@@ -119,7 +119,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           <Container
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
-            backgroundImage={"/burn/playa.jpeg"}
+            backgroundImage={"/burn/Playa.jpeg"}
             iconImageStyle={styles.iconImage}
           />
           <CustomDragLayer
