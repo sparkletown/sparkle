@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, CSSProperties } from "react";
 import { useDrag, DragSourceMonitor } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { getEmptyImage } from "react-dnd-html5-backend";
@@ -25,10 +25,11 @@ export interface PropsType {
   url: string;
   left: number;
   top: number;
+  imageStyle: CSSProperties;
 }
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
-  const { id, url, left, top } = props;
+  const { id, url, left, top, imageStyle } = props;
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
     collect: (monitor: DragSourceMonitor) => ({
@@ -42,7 +43,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
 
   return (
     <div ref={drag} style={getStyles(left, top, isDragging)}>
-      <img src={url} alt="subvenue-icon" />
+      <img src={url} alt="subvenue-icon" style={imageStyle} />
     </div>
   );
 };
