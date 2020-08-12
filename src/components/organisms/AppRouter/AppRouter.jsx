@@ -81,7 +81,7 @@ const AppRouter = () => {
         />
         <Route
           path="/"
-          component={() => <Redirect to={venueLandingUrl("kansassmittys")} />}
+          component={() => <Redirect to={venueLandingUrl("playa")} />}
         />
       </Switch>
     </Router>
