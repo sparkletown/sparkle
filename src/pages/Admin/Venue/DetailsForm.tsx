@@ -24,6 +24,7 @@ import {
   ZOOM_URL_TEMPLATES,
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import {
@@ -47,7 +48,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () => editVenueCastSchema.cast(state.detailsPage?.venue),
     [state.detailsPage]
   );
-  console.log("defaultValues", defaultValues);
 
   const { watch, formState, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
@@ -60,6 +60,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -173,6 +174,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     onSubmit,
     setValue,
   } = props;
+
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -235,7 +237,37 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             error={errors.mapIconImageFile || errors.mapIconImageUrl}
             setImageFile={(file) => setValue("mapIconImageFile", file, true)}
             setImageUrl={(url) => setValue("mapIconImageUrl", url, true)}
+            imageType="icons"
           />
+          {state.templatePage?.template.template && (
+            <>
+              {BACKGROUND_IMG_TEMPLATES.includes(
+                state.templatePage?.template.template
+              ) && (
+                <ImageCollectionInput
+                  collectionPath={"assets/mapBackgrounds"}
+                  disabled={disable}
+                  fieldName={"mapBackgroundImage"}
+                  register={register}
+                  imageUrl={values.mapBackgroundImageUrl}
+                  containerClassName="input-square-container"
+                  imageClassName="input-square-image"
+                  image={values.mapBackgroundImageFile}
+                  error={
+                    errors.mapBackgroundImageFile ||
+                    errors.mapBackgroundImageUrl
+                  } // what is this? the prop error is an empty object
+                  setImageFile={(file) =>
+                    setValue("mapBackgroundImageFile", file, true)
+                  }
+                  setImageUrl={(url) =>
+                    setValue("mapBackgroundImageUrl", url, true)
+                  }
+                  imageType="backgrounds"
+                />
+              )}
+            </>
+          )}
         </div>
         <div className="input-container">
           <div className="input-title">Upload a banner photo</div>
