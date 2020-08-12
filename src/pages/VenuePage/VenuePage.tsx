@@ -22,6 +22,8 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
 import Camp from "components/templates/Camp/Camp";
+import Preplaya from "components/templates/Preplaya";
+import { PlayaRouter } from "components/templates/Playa/Router";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -142,6 +144,31 @@ const VenuePage = () => {
       break;
     case VenueTemplate.themecamp:
       template = <Camp />;
+      break;
+    case VenueTemplate.preplaya:
+      template = <Preplaya />;
+      break;
+    case VenueTemplate.playa:
+      template = <PlayaRouter />;
+      break;
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.performancevenue:
+      if (venue.zoomUrl) {
+        history.push(venue.zoomUrl);
+      }
+      template = (
+        <p>
+          Venue {venue.name} should redirect to a URL, but none was set.
+          <br />
+          <button
+            role="link"
+            className="btn btn-primary"
+            onClick={() => history.goBack()}
+          >
+            Go Back
+          </button>
+        </p>
+      );
       break;
   }
 

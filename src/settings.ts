@@ -4,6 +4,10 @@ export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
+export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+
+// playa is 4000x4000 pixels
+export const PLAYA_WIDTH_AND_HEIGHT = 4000;
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
@@ -16,6 +20,8 @@ export const VIDEO_IFRAME_TEMPLATES = [
 ];
 
 export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
+
+export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
 
 export interface Template {
   template: VenueTemplate;

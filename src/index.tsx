@@ -102,13 +102,16 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
+const defaultVenue =
+  firebaseConfig.projectId === "co-reality-map" ? "kansassmittys" : "playa";
+
 render(
   <Elements stripe={stripePromise}>
     <DndProvider backend={HTML5Backend}>
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthIsLoaded>
-            <AppRouter />
+            <AppRouter defaultVenue={defaultVenue} />
           </AuthIsLoaded>
         </ReactReduxFirebaseProvider>
       </Provider>

@@ -47,20 +47,25 @@ const createVenueData = (data, context) => {
     owners: [context.auth.token.user_id],
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
+    mapBackgroundImageUrl: data.mapBackgroundImageUrl,
   };
 
   switch (data.template) {
     case "jazzbar":
     case "performancevenue":
       venueData.iframeUrl = data.videoIframeUrl;
+      break;
     case "partymap":
     case "themecamp":
       venueData.rooms = data.rooms;
+      break;
     case "zoomroom":
     case "artcar":
       venueData.zoomUrl = data.zoomUrl;
+      break;
     case "artpiece":
       venueData.embedIframeUrl;
+      break;
   }
   return venueData;
 };
@@ -165,20 +170,24 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
           if (data.videoIframeUrl) {
             updated.iframeUrl = data.videoIframeUrl;
           }
+          break;
         case "partymap":
         case "themecamp":
           if (data.rooms) {
             updated.rooms = data.rooms;
           }
+          break;
         case "zoomroom":
         case "artcar":
           if (data.zoomUrl) {
             updated.zoomUrl = data.zoomUrl;
           }
+          break;
         case "artpiece":
           if (data.embedIframeUrl) {
             updated.embedIframeUrl = data.embedIframeUrl;
           }
+          break;
       }
 
       admin.firestore().collection("venues").doc(venueId).update(updated);

@@ -23,13 +23,22 @@ export interface AdvancedVenueInput {
   profileQuestions: Array<Question>;
 }
 
-type ImageFileKeys = "bannerImageFile" | "logoImageFile" | "mapIconImageFile";
-type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapIconImageUrl";
+type ImageFileKeys =
+  | "bannerImageFile"
+  | "logoImageFile"
+  | "mapIconImageFile"
+  | "mapBackgroundImageFile";
+type ImageUrlKeys =
+  | "bannerImageUrl"
+  | "logoImageUrl"
+  | "mapIconImageUrl"
+  | "mapBackgroundImageUrl";
 
 interface VenueImageUrls {
   bannerImageUrl?: string;
   logoImageUrl?: string;
   mapIconImageUrl?: string;
+  mapBackgroundImageUrl?: string;
 }
 
 export type VenueInput = AdvancedVenueInput &
@@ -38,12 +47,14 @@ export type VenueInput = AdvancedVenueInput &
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
     mapIconImageFile?: FileList;
+    mapBackgroundImageFile?: FileList;
     subtitle: string;
     description: string;
     zoomUrl?: string;
     videoIframeUrl?: string;
     embedIframeUrl?: string;
     template: any;
+    rooms?: Array<any>;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & VenueImageUrls;
@@ -63,6 +74,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     { fileKey: "logoImageFile", urlKey: "logoImageUrl" },
     { fileKey: "bannerImageFile", urlKey: "bannerImageUrl" },
     { fileKey: "mapIconImageFile", urlKey: "mapIconImageUrl" },
+    { fileKey: "mapBackgroundImageFile", urlKey: "mapBackgroundImageUrl" },
   ];
 
   let imageInputData = {};
@@ -86,6 +98,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
       imageKeys.map((entry) => entry.fileKey)
     ),
     ...imageInputData,
+    rooms: [], // eventually we will be getting the rooms from the form
   };
   return firestoreVenueInput;
 };
