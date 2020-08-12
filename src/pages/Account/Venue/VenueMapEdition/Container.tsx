@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, CSSProperties } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { DraggableSubvenue } from "./DraggableSubvenue";
@@ -19,9 +19,12 @@ interface SubVenueIconMap {
 interface PropsType {
   snapToGrid: boolean;
   iconsMap: SubVenueIconMap;
+  backgroundImage: string;
+  iconImageStyle: CSSProperties;
 }
 
-export const Container: React.FC<PropsType> = ({ snapToGrid, iconsMap }) => {
+export const Container: React.FC<PropsType> = (props) => {
+  const { snapToGrid, iconsMap, backgroundImage, iconImageStyle } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
 
   useMemo(() => {
@@ -66,17 +69,22 @@ export const Container: React.FC<PropsType> = ({ snapToGrid, iconsMap }) => {
         style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
       >
         <img
-          alt="playa3d"
+          alt="draggable background "
           style={{
             objectFit: "cover",
             width: "100%",
             height: "100%",
           }}
-          src={"/burn/playa3d.jpeg"}
+          src={backgroundImage}
         />
       </div>
       {Object.keys(boxes).map((key) => (
-        <DraggableSubvenue key={key} id={key} {...boxes[key]} />
+        <DraggableSubvenue
+          key={key}
+          id={key}
+          imageStyle={iconImageStyle}
+          {...boxes[key]}
+        />
       ))}
     </div>
   );
