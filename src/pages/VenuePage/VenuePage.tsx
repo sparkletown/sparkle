@@ -153,6 +153,7 @@ const VenuePage = () => {
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
+    case VenueTemplate.artcar:
       if (venue.zoomUrl) {
         history.push(venue.zoomUrl);
       }
