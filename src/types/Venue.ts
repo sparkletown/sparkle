@@ -39,6 +39,13 @@ export interface Venue {
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
+  placement?: VenuePlacement;
+}
+
+export interface VenuePlacement {
+  x: number;
+  y: number;
+  state: string;
 }
 
 export const urlFromImage = (
