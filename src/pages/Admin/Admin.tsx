@@ -1,6 +1,5 @@
 import InformationCard from "components/molecules/InformationCard";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import VenuePreview from "components/organisms/VenuePreview";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -134,11 +133,11 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           />
           <Route
             path={`${match.url}/Appearance`}
-            component={() => <>Appearance Component</>}
+            render={() => <>Appearance Component</>}
           />
           <Route
             path={`${match.url}`}
-            component={() => <VenueInfoComponent venue={venue} />}
+            render={() => <VenueInfoComponent venue={venue} />}
           />
         </Switch>
       </div>
@@ -162,9 +161,6 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                   alt={"host icon"}
                   className="playa-icon"
                 />
-                <div className="playa-venue-preview">
-                  <VenuePreview values={venue} />
-                </div>
               </div>
             </div>
             <img
