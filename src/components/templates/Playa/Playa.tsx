@@ -1,5 +1,7 @@
 import React from "react";
 
-export const Playa = () => {
+const Playa = () => {
   return <>Playa - Not yet implemented</>;
 };
+
+export default Playa;

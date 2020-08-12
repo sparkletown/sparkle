@@ -1,5 +1,7 @@
 import React from "react";
 
-export const Preplaya = () => {
+const Preplaya = () => {
   return <>Preplaya - Not yet implemented</>;
 };
+
+export default Preplaya;

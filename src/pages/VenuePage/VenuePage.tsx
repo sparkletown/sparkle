@@ -21,8 +21,8 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
-import { Preplaya } from "components/templates/Preplaya/Preplaya";
-import { Playa } from "components/templates/Playa/Playa";
+import Preplaya from "components/templates/Preplaya";
+import Playa from "components/templates/Playa";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -143,8 +143,10 @@ const VenuePage = () => {
       break;
     case VenueTemplate.preplaya:
       template = <Preplaya />;
+      break;
     case VenueTemplate.playa:
       template = <Playa />;
+      break;
   }
 
   return (
