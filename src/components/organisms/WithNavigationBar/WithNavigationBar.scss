@@ -1,6 +1,9 @@
+@import "scss/constants.scss";
+
 .navbar-margin {
-  padding-top: 50px;
+  padding-top: $navbar-height;
 }
 .navbar-margin.fullscreen {
   flex: 1;
+  overflow: hidden;
 }
