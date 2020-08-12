@@ -154,9 +154,15 @@ const VenuePage = () => {
       }
       template = (
         <p>
-          Venue {venue.name} should redirect you to a URL, but none was set.
+          Venue {venue.name} should redirect to a URL, but none was set.
           <br />
-          <a onClick={() => history.goBack()}>Go Back</a>
+          <button
+            role="link"
+            className="btn btn-primary"
+            onClick={() => history.goBack()}
+          >
+            Go Back
+          </button>
         </p>
       );
       break;
