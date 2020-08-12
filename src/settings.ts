@@ -3,6 +3,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
+export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,

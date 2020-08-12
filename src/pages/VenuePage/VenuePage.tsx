@@ -21,6 +21,7 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
+import Camp from "components/templates/Camp/Camp";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -138,6 +139,9 @@ const VenuePage = () => {
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
+      break;
+    case VenueTemplate.themecamp:
+      template = <Camp />;
       break;
   }
 

@@ -10,6 +10,8 @@ export interface EventInput {
   start_time: string;
   duration_hours: number;
   price: number;
+  host: string;
+  room?: string;
 }
 
 interface Question {
