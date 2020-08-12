@@ -7,6 +7,7 @@ import {
   ZOOM_URL_TEMPLATES,
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 
 type Question = VenueInput["profileQuestions"][number];
@@ -59,10 +60,28 @@ export const validationSchema = Yup.object()
       ),
     bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
+
     mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
+    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
+
+    mapBackgroundImageFile: Yup.mixed<FileList>().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
+          : schema.notRequired()
+    ),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
+
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
     description: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
     zoomUrl: Yup.string().when(
