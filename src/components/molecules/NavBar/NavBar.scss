@@ -53,7 +53,7 @@
 
 .navbar {
   display: flex;
-  height: 50px;
+  height: $navbar-height;
   padding: 0 15px;
   background-color: $dark;
 }

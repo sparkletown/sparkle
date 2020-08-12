@@ -1,6 +1,9 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
+    match /assets/{allPaths=**} {
+        allow read
+    }
     match /users/{uid}/{allPaths=**} {
         allow read, write, update: if request.auth.uid == uid
     }

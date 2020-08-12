@@ -11,7 +11,7 @@ $preview-margin: 30px;
   height: 100%;
   flex-direction: row;
   justify-content: center;
-  max-height: calc(100vh - 50px);
+  max-height: calc(100vh - #{$navbar-height});
 }
 
 .page-side {
@@ -25,7 +25,7 @@ $preview-margin: 30px;
   }
   .page-container-left {
     background-color: $black;
-    padding-top: 40px;
+    padding-top: $navbar-height;
     overflow-y: auto;
     .page-container-left-content {
       max-width: 560px;
@@ -57,13 +57,13 @@ $preview-margin: 30px;
     background-color: $dark;
     overflow: scroll;
     flex-direction: column;
+    margin-top: $navbar-height;
 
     .playa {
       flex: 1;
       border-radius: 20px;
       overflow: hidden;
-      margin: $preview-margin;
-      margin-bottom: 0;
+      margin: 0 $preview-margin;
     }
   }
 
