@@ -23,7 +23,7 @@ import { SPARKLEVERSE_MARKETING_URL } from "settings";
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 
-const AppRouter = () => {
+const AppRouter = ({ defaultVenue }) => {
   const firebase = useFirebase();
   const analytics = firebase.analytics();
   const { user } = useUser();
@@ -81,7 +81,7 @@ const AppRouter = () => {
         />
         <Route
           path="/"
-          component={() => <Redirect to={venueLandingUrl("kansassmittys")} />}
+          component={() => <Redirect to={venueLandingUrl(defaultVenue)} />}
         />
       </Switch>
     </Router>
