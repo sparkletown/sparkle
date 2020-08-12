@@ -15,6 +15,7 @@ interface ImageInputProps {
   error?: FieldError;
   setImageUrl: (val?: string) => void;
   setImageFile: (val?: FileList) => void;
+  imageType: string;
 }
 
 // eslint-disable-next-line
@@ -29,6 +30,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     setImageFile,
     fieldName,
     register,
+    imageType,
   } = props;
 
   // these functions should be non mutating
@@ -95,7 +97,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
   return (
     <>
       <div style={{ marginTop: 10, fontWeight: "bold" }}>
-        {`Choose one of our popular icons`}
+        {`Choose one of our popular ${imageType}`}
       </div>
       <div
         style={{

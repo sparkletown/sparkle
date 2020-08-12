@@ -20,6 +20,8 @@ export const VIDEO_IFRAME_TEMPLATES = [
 
 export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
 
+export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+
 export interface Template {
   template: VenueTemplate;
   name: string;
