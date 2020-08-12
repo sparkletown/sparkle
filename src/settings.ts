@@ -3,6 +3,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
+export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,

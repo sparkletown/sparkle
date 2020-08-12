@@ -44,7 +44,13 @@ const Preplaya = () => {
               zoom: scale,
             }}
             onClick={() => showVenue(venue)}
-          />
+          >
+            <img
+              className="venue-icon"
+              src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+              alt={`${venue.name} Icon`}
+            />
+          </div>
         ))}
       </div>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
