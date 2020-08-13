@@ -39,8 +39,8 @@ const Preplaya = () => {
     };
 
     let dragging = false;
-    let translateX = 0;
-    let translateY = 0;
+    const translateX = 0;
+    const translateY = 0;
     let dragStartX = 0;
     let dragStartY = 0;
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
