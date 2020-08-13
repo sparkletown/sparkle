@@ -43,6 +43,9 @@ const Preplaya = () => {
   return (
     <>
       <div className="preplaya-container">
+        <div className="demo-message">
+          This is a demo of what the final playa will look like.
+        </div>
         <img
           className="playa-background"
           src="/maps/playa2d.jpg"
