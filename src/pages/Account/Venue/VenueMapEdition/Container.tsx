@@ -120,19 +120,24 @@ export const Container: React.FC<PropsType> = (props) => {
           }}
           src={backgroundImage}
         />
-        {placedVenues?.map((v) => (
-          <img
-            key={v.id}
-            src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-            style={{
-              position: "absolute",
-              top: (v.placement?.x || 0) * scale,
-              left: (v.placement?.y || 0) * scale,
-              width: "50px", // @debt should be at the right scale
-              opacity: 0.4,
-            }}
-          />
-        ))}
+        {useMemo(
+          () =>
+            placedVenues?.map((v) => (
+              <img
+                key={v.id}
+                src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                style={{
+                  position: "absolute",
+                  top: (v.placement?.x || 0) * scale,
+                  left: (v.placement?.y || 0) * scale,
+                  width: "50px", // @debt should be at the right scale
+                  opacity: 0.4,
+                }}
+                alt={`${v.name} map icon`}
+              />
+            )),
+          [placedVenues, scale]
+        )}
       </div>
       {Object.keys(boxes).map((key) => (
         <DraggableSubvenue
