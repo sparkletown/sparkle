@@ -2,7 +2,6 @@ import React from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import { RoomAttendance } from "./RoomAttendance";
-import { isRoomValid } from "validation";
 
 import "./Map.scss";
 
@@ -31,34 +30,32 @@ export const Map: React.FC<PropsType> = ({
   return (
     <>
       <div id="map" className="map-container">
-        {venue.rooms.filter(isRoomValid).map((room, idx) => (
-          <>
-            <div
-              className="room position-relative"
-              style={{
-                left: room.x_percent + "%",
-                top: room.y_percent + "%",
-                width: room.width_percent + "%",
-                height: room.height_percent + "%",
-              }}
+        {venue.rooms.map((room, idx) => (
+          <div
+            className="room position-absolute"
+            style={{
+              left: room.x_percent + "%",
+              top: room.y_percent + "%",
+              width: room.width_percent + "%",
+              height: room.height_percent + "%",
+            }}
+            key={idx}
+            onClick={() => openRoomModal(room)}
+          >
+            <img
+              className="room-image"
+              src={room.image_url}
+              onClick={() => openRoomModal(room)}
+              title={room.title}
+              alt={room.title}
+            />
+            <RoomAttendance
+              roomTitle={room.title}
+              attendance={attendances[room.title]}
               key={idx}
               onClick={() => openRoomModal(room)}
-            >
-              <img
-                className="img-fluid"
-                src={room.image_url}
-                onClick={() => openRoomModal(room)}
-                title={room.title}
-                alt={room.title}
-              />
-              <RoomAttendance
-                roomTitle={room.title}
-                attendance={attendances[room.title]}
-                key={idx}
-                onClick={() => openRoomModal(room)}
-              />
-            </div>
-          </>
+            />
+          </div>
         ))}
         <img
           className="img-fluid map-image"

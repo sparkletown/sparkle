@@ -175,14 +175,7 @@ const VenuePage = () => {
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar>
-        {isUserVenueOwner && (
-          <div className="preview-indication">
-            This is a preview of an event
-          </div>
-        )}
-        {template}
-      </WithNavigationBar>
+      <WithNavigationBar>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };
