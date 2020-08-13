@@ -40,6 +40,8 @@ const validationSchema = Yup.object().shape<EventInput>({
     .typeError("Price must be a number")
     .required("Price is required")
     .default(0),
+  host: Yup.string().required(),
+  room: Yup.string(),
 });
 
 const AdminEvent: React.FunctionComponent<PropsType> = ({
@@ -80,6 +82,8 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
         duration_minutes: data.duration_hours * 60,
         price: 0,
         collective_price: 0,
+        host: data.host,
+        room: data.room,
       };
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
@@ -155,6 +159,32 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
               <span className="input-error">
                 {errors.duration_hours.message}
               </span>
+            )}
+          </div>
+          <div className="input-group">
+            <label htmlFor="host">Host (people hosting the event)</label>
+            <input
+              id="host"
+              name="host"
+              className="input-block input-centered"
+              placeholder="Dottie Longstockings"
+              ref={register}
+            />
+            {errors.host && (
+              <span className="input-error">{errors.host.message}</span>
+            )}
+          </div>
+          <div className="input-group">
+            <label htmlFor="room">Room your event is in</label>
+            <input
+              id="room"
+              name="room"
+              className="input-block input-centered"
+              placeholder="Cuddle Puddle"
+              ref={register}
+            />
+            {errors.host && (
+              <span className="input-error">{errors.host.message}</span>
             )}
           </div>
           <input

@@ -1,18 +1,17 @@
 import React from "react";
-import { EventData } from "types/EventData";
-import { formatMinute } from "utils/time";
-import "./ScheduleItem.scss";
+import { formatUtcSeconds } from "utils/time";
+import { VenueEvent } from "types/VenueEvent";
+
+import "../../../templates/PartyMap/components/ScheduleItem/ScheduleItem.scss";
 
 interface PropsType {
-  startUtcSeconds: number;
-  event: EventData[0];
-  isCurrentEvent: boolean;
+  event: VenueEvent;
+  isCurrentEvent?: boolean;
   enterRoom: () => void;
   roomUrl: string;
 }
 
-const ScheduleItem: React.FunctionComponent<PropsType> = ({
-  startUtcSeconds,
+export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
   isCurrentEvent,
   enterRoom,
@@ -21,12 +20,11 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   <div className="shedule-item-container">
     <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
       <div>
-        <b>{formatMinute(event.start_minute, startUtcSeconds)}</b>
+        <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
       </div>
       <div>
-        {formatMinute(
-          event.start_minute + event.duration_minutes,
-          startUtcSeconds
+        {formatUtcSeconds(
+          event.start_utc_seconds + (event.duration_minutes + 60)
         )}
       </div>
     </div>
@@ -40,7 +38,7 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             by <b>{event.host}</b>
           </div>
         </div>
-        <div className="event-description">{event.text}</div>
+        <div className="event-description">{event.description}</div>
       </div>
       {isCurrentEvent && (
         <div className="entry-room-button">
@@ -59,5 +57,3 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
     </div>
   </div>
 );
-
-export default ScheduleItem;
