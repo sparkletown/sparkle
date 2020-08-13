@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 import { VenueLandingPage } from "pages/VenueLandingPage";
@@ -22,15 +22,69 @@ const Preplaya = () => {
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
   const [zoom, setZoom] = useState(1.0);
+  const [translateX, setTranslateX] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const mapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const rescale = () => {
       setScale(window.innerWidth / PLAYA_WIDTH_AND_HEIGHT);
     };
 
+    let dragging = false;
+    let translateX = 0;
+    let translateY = 0;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let downListener = (event: MouseEvent) => {
+      dragging = true;
+      dragStartX = event.clientX;
+      dragStartY = event.clientY;
+    };
+    let touchStartListener = (event: TouchEvent) => {
+      dragging = true;
+      dragStartX = event.touches[0].clientX;
+      dragStartY = event.touches[0].clientY;
+    };
+    let moveListener = (event: MouseEvent) => {
+      if (dragging && mapRef.current) {
+        event.preventDefault();
+        setTranslateX(translateX + (event.clientX - dragStartX) / zoom);
+        setTranslateY(translateY + (event.clientY - dragStartY) / zoom);
+      }
+    };
+    let touchMoveListener = (event: TouchEvent) => {
+      if (dragging && mapRef.current) {
+        event.preventDefault();
+        setTranslateX(translateX + event.touches[0].clientX - dragStartX);
+        setTranslateY(translateY + event.touches[0].clientY - dragStartY);
+      }
+    };
+    let dragEndListener = () => {
+      dragging = false;
+    };
+
+    if (mapRef.current) {
+      mapRef.current.addEventListener("mousedown", downListener);
+      mapRef.current.addEventListener("touchstart", touchStartListener);
+      window.addEventListener("mousemove", moveListener);
+      window.addEventListener("touchmove", touchMoveListener);
+      window.addEventListener("mouseup", dragEndListener);
+      window.addEventListener("touchend", dragEndListener);
+    }
+    const mapRefCurrent = mapRef.current;
+
     window.addEventListener("resize", rescale);
     return () => {
       window.removeEventListener("resize", rescale);
+      if (mapRefCurrent) {
+        mapRefCurrent.removeEventListener("mousedown", downListener);
+        mapRefCurrent.removeEventListener("touchstart", touchStartListener);
+        window.removeEventListener("mousemove", moveListener);
+        window.removeEventListener("touchmove", touchMoveListener);
+        window.removeEventListener("mouseup", dragEndListener);
+        window.addEventListener("touchend", dragEndListener);
+      }
     };
   }, []);
 
@@ -46,7 +100,13 @@ const Preplaya = () => {
   return (
     <>
       <div className="preplaya-container">
-        <div className="map-container" style={{ transform: `scale(${zoom})` }}>
+        <div
+          className="map-container"
+          ref={mapRef}
+          style={{
+            transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+          }}
+        >
           <div className="demo-message">
             This is a demo of how camps look on the final, fully-interactive
             playa.
@@ -63,7 +123,6 @@ const Preplaya = () => {
                 top: (venue.placement?.x || 0) * scale,
                 left: (venue.placement?.y || 0) * scale,
                 position: "absolute",
-                transform: `scale(${zoom})`,
               }}
               onClick={() => showVenue(venue)}
               key={idx}
