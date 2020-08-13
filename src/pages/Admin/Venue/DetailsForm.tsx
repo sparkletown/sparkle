@@ -231,8 +231,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             imageClassName="input-square-image"
             image={values.mapIconImageFile}
             error={errors.mapIconImageFile || errors.mapIconImageUrl}
-            setImageFile={(file) => setValue("mapIconImageFile", file, true)}
-            setImageUrl={(url) => setValue("mapIconImageUrl", url, true)}
+            setValue={setValue}
             imageType="icons"
           />
           {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
@@ -248,12 +247,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               error={
                 errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
               }
-              setImageFile={(file) =>
-                setValue("mapBackgroundImageFile", file, true)
-              }
-              setImageUrl={(url) =>
-                setValue("mapBackgroundImageUrl", url, true)
-              }
+              setValue={setValue}
               imageType="backgrounds"
             />
           )}
