@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
-import { VenueLandingPage } from "pages/VenueLandingPage";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import VenuePreview from "./VenuePreview";
+import { WithId } from "utils/id";
+import { updateLocationData } from "utils/useLocationUpdateEffect";
+import { useUser } from "hooks/useUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
@@ -17,7 +20,7 @@ const isPlaced = (venue: Venue) => {
 const Preplaya = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [venue, setVenue] = useState<Venue>();
+  const [venue, setVenue] = useState<WithId<Venue>>();
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
@@ -25,6 +28,8 @@ const Preplaya = () => {
   const [translateX, setTranslateX] = useState(0);
   const [translateY, setTranslateY] = useState(0);
   const mapRef = useRef<HTMLDivElement>(null);
+
+  const { user } = useUser();
 
   useEffect(() => {
     const rescale = () => {
@@ -88,16 +93,22 @@ const Preplaya = () => {
         window.addEventListener("touchend", dragEndListener);
       }
     };
-  }, []);
+  });
 
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector((state) => state.firestore.ordered.venues);
 
-  const showVenue = (venue: Venue) => {
-    setVenue(venue);
-    setShowModal(true);
-  };
+  const showVenue = useCallback(
+    (venue: WithId<Venue>) => {
+      setVenue(venue);
+      setShowModal(true);
+    },
+    [setShowModal, setVenue]
+  );
+
+  const hideVenue = useCallback(() => {
+    setShowModal(false);
+    user && updateLocationData(user, "playa");
+  }, [setShowModal, user]);
 
   return (
     <>
@@ -137,11 +148,6 @@ const Preplaya = () => {
             </div>
           ))}
         </div>
-        <Modal show={showModal} onHide={() => setShowModal(false)}>
-          {venue && (
-            <VenueLandingPage venue={venue} venueRequestStatus={true} />
-          )}
-        </Modal>
         <div className="button-bar">
           <div className="button" onClick={() => setZoom(zoom + 0.1)}>
             <FontAwesomeIcon icon={faPlus} className="icon" />
@@ -151,6 +157,9 @@ const Preplaya = () => {
           </div>
         </div>
       </div>
+      <Modal show={showModal} onHide={hideVenue}>
+        {venue && <VenuePreview venue={venue} />}
+      </Modal>
     </>
   );
 };
