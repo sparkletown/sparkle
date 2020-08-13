@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { FieldError } from "react-hook-form";
 import "firebase/functions";
 import firebase from "firebase/app";
@@ -13,9 +13,8 @@ interface ImageInputProps {
   containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
-  setImageUrl: (val?: string) => void;
-  setImageFile: (val?: FileList) => void;
   imageType: string;
+  setValue: any;
 }
 
 // eslint-disable-next-line
@@ -26,17 +25,15 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     error,
     disabled,
     collectionPath,
-    setImageUrl,
-    setImageFile,
     fieldName,
     register,
     imageType,
+    setValue,
   } = props;
 
   // these functions should be non mutating
-  const setImageUrlRef = useRef(setImageUrl);
-  const setImageFileRef = useRef(setImageFile);
   const [imageCollection, setImageCollection] = useState<Array<string>>([]);
+  const [fileInputKey, setFileInputKey] = useState(0);
 
   useEffect(() => {
     register(`${fieldName}File`);
@@ -73,6 +70,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     (url: string) => () => {
       setSelectedCollectionImageUrl(url);
       setImageFiles(undefined);
+      setFileInputKey((key) => key + 1);
     },
     []
   );
@@ -80,19 +78,15 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
     if (selectedCollectionImageUrl) {
-      setImageFileRef.current(undefined);
-      setImageUrlRef.current(selectedCollectionImageUrl);
+      setValue(`${fieldName}File`, undefined, false);
+      setValue(`${fieldName}Url`, selectedCollectionImageUrl, false);
       setImageUrlForPreview(selectedCollectionImageUrl);
     } else if (imageFiles && imageFiles.length > 0) {
-      setImageUrlRef.current(undefined);
-      setImageFileRef.current(imageFiles);
+      setValue(`${fieldName}File`, imageFiles, false);
+      setValue(`${fieldName}Url`, undefined, false);
       setImageUrlForPreview(URL.createObjectURL(imageFiles[0]));
-    } else if (imageUrlFromAPI) {
-      setImageFileRef.current(undefined);
-      setImageUrlRef.current(imageUrlFromAPI);
-      setImageUrlForPreview(imageUrlFromAPI);
     }
-  }, [selectedCollectionImageUrl, imageFiles, imageUrlFromAPI]);
+  }, [selectedCollectionImageUrl, imageFiles, setValue, fieldName]);
 
   return (
     <>
@@ -145,6 +139,8 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         }}
       >
         <input
+          // trick react to recreate the file input. This is so that when a default image is selected, the file inputs forgets about the previously uploaded file
+          key={fileInputKey.toString()}
           style={{ flex: 1 }}
           disabled={disabled}
           type="file"
