@@ -1,6 +1,6 @@
 import React from "react";
 
-import "./sparkle-styling/loading.scss";
+import "./loading.scss";
 
 export const LoadingPage = () => {
   return (
