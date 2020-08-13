@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
-import { VenueLandingPage } from "pages/VenueLandingPage";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import VenuePreview from "./VenuePreview";
 
 import "./Preplaya.scss";
+import { WithId } from "utils/id";
+import { updateLocationData } from "utils/useLocationUpdateEffect";
+import { useUser } from "hooks/useUser";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement;
@@ -15,10 +18,12 @@ const isPlaced = (venue: Venue) => {
 const Preplaya = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [venue, setVenue] = useState<Venue>();
+  const [venue, setVenue] = useState<WithId<Venue>>();
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
+
+  const { user } = useUser();
 
   useEffect(() => {
     const rescale = () => {
@@ -31,14 +36,20 @@ const Preplaya = () => {
     };
   }, []);
 
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector((state) => state.firestore.ordered.venues);
 
-  const showVenue = (venue: Venue) => {
-    setVenue(venue);
-    setShowModal(true);
-  };
+  const showVenue = useCallback(
+    (venue: WithId<Venue>) => {
+      setVenue(venue);
+      setShowModal(true);
+    },
+    [setShowModal, setVenue]
+  );
+
+  const hideVenue = useCallback(() => {
+    setShowModal(false);
+    user && updateLocationData(user, "playa");
+  }, [setShowModal, user]);
 
   return (
     <>
@@ -66,8 +77,8 @@ const Preplaya = () => {
           </div>
         ))}
       </div>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        {venue && <VenueLandingPage venue={venue} venueRequestStatus={true} />}
+      <Modal show={showModal} onHide={hideVenue}>
+        {venue && <VenuePreview venue={venue} />}
       </Modal>
     </>
   );
