@@ -1,0 +1,55 @@
+.playa-venue-preview-container {
+  padding-bottom: 30px;
+
+  & > .header {
+    height: 400px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    object-fit: cover;
+    margin: 0 -15px;
+    border-radius: 22px;
+
+    .title-container {
+      display: flex;
+      width: 100%;
+      padding: 0 22px;
+      align-items: flex-end;
+
+      .host-icon {
+        width: 25%;
+        border-radius: 22px;
+        flex: 0 0 auto;
+        margin-right: 30px;
+      }
+
+      .title-text {
+        flex: 1 1 auto;
+        display: flex;
+        flex-direction: column;
+
+        .subtitle,
+        .template-name {
+          margin-bottom: 0;
+        }
+      }
+
+      .join-button {
+        flex: 0 0 auto;
+        align-self: flex-end;
+      }
+    }
+  }
+
+  & > .user-list-container {
+    margin-top: 30px;
+  }
+
+  & > .description {
+    margin-top: 30px;
+  }
+
+  & > .schedule-container {
+    margin-top: 30px;
+  }
+}
