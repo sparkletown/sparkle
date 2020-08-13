@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 import "./Preplaya.scss";
+import { throttle } from "lodash";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -41,41 +42,49 @@ const Preplaya = () => {
     let translateY = 0;
     let dragStartX = 0;
     let dragStartY = 0;
-    let downListener = (event: MouseEvent) => {
+    const dragStartListener = (event: MouseEvent | TouchEvent) => {
       event.preventDefault();
       dragging = true;
-      dragStartX = event.clientX;
-      dragStartY = event.clientY;
+      if (event instanceof TouchEvent) {
+        dragStartX = event.touches[0].clientX;
+        dragStartY = event.touches[0].clientY;
+      } else {
+        dragStartX = event.clientX;
+        dragStartY = event.clientY;
+      }
     };
-    let touchStartListener = (event: TouchEvent) => {
-      event.preventDefault();
-      dragging = true;
-      dragStartX = event.touches[0].clientX;
-      dragStartY = event.touches[0].clientY;
-    };
-    let moveListener = (event: MouseEvent) => {
-      if (dragging && mapRef.current) {
-        event.preventDefault();
+    const pan = throttle((event: MouseEvent | TouchEvent) => {
+      if (event instanceof TouchEvent) {
+        setTranslateX(
+          translateX + (event.touches[0].clientX - dragStartX) / zoom
+        );
+        setTranslateY(
+          translateY + (event.touches[0].clientY - dragStartY) / zoom
+        );
+      } else {
         setTranslateX(translateX + (event.clientX - dragStartX) / zoom);
         setTranslateY(translateY + (event.clientY - dragStartY) / zoom);
       }
-    };
-    let touchMoveListener = (event: TouchEvent) => {
+    }, 25);
+    const moveListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
         event.preventDefault();
-        setTranslateX(translateX + event.touches[0].clientX - dragStartX);
-        setTranslateY(translateY + event.touches[0].clientY - dragStartY);
+        pan(event);
       }
     };
-    let dragEndListener = () => {
+    const dragEndListener = (event: MouseEvent | TouchEvent) => {
+      if (dragging && mapRef.current) {
+        event.preventDefault();
+        pan(event);
+      }
       dragging = false;
     };
 
     if (mapRef.current) {
-      mapRef.current.addEventListener("mousedown", downListener);
-      mapRef.current.addEventListener("touchstart", touchStartListener);
+      mapRef.current.addEventListener("mousedown", dragStartListener);
+      mapRef.current.addEventListener("touchstart", dragStartListener);
       window.addEventListener("mousemove", moveListener);
-      window.addEventListener("touchmove", touchMoveListener);
+      window.addEventListener("touchmove", moveListener);
       window.addEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
     }
@@ -85,15 +94,15 @@ const Preplaya = () => {
     return () => {
       window.removeEventListener("resize", rescale);
       if (mapRefCurrent) {
-        mapRefCurrent.removeEventListener("mousedown", downListener);
-        mapRefCurrent.removeEventListener("touchstart", touchStartListener);
+        mapRefCurrent.removeEventListener("mousedown", dragStartListener);
+        mapRefCurrent.removeEventListener("touchstart", dragStartListener);
         window.removeEventListener("mousemove", moveListener);
-        window.removeEventListener("touchmove", touchMoveListener);
+        window.removeEventListener("touchmove", moveListener);
         window.removeEventListener("mouseup", dragEndListener);
         window.addEventListener("touchend", dragEndListener);
       }
     };
-  });
+  }, [zoom]);
 
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
