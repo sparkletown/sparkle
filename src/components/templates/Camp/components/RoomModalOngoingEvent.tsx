@@ -1,24 +1,26 @@
 import React from "react";
-import "./RoomModalOngoingEvent.scss";
-import { RoomData } from "types/RoomData";
-import { getCurrentEvent } from "utils/time";
+import { CampRoomData } from "types/CampRoomData";
+import { getCurrentEvent } from "utils/event";
+import { VenueEvent } from "types/VenueEvent";
+
+import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
 
 interface PropsType {
-  room: RoomData;
+  room: CampRoomData;
+  roomEvents: VenueEvent[];
   enterRoom: () => void;
-  startUtcSeconds: number;
 }
 
-const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
+export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
   room,
+  roomEvents,
   enterRoom,
-  startUtcSeconds,
 }) => {
-  const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
+  const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
-    room.events &&
-    room.events.length > 0 &&
-    (currentEvent ? currentEvent : room.events[0]);
+    roomEvents &&
+    roomEvents.length > 0 &&
+    (currentEvent ? currentEvent : roomEvents[0]);
   return (
     <div className="room-modal-ongoing-event-container">
       {eventToDisplay && (
@@ -29,7 +31,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            {`What's on now`}
+            What's on now
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>
@@ -37,16 +39,16 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               by <span className="artist-name">{eventToDisplay.host}</span>
             </div>
           </div>
-          <div className="event-description">{eventToDisplay.text}</div>
+          <div className="event-description">{eventToDisplay.description}</div>
           <a
             className="btn btn-primary room-entry-button"
             onClick={() => enterRoom()}
             id={`enter-room-in-ongoing-event-card-${room.title}`}
-            href={room.external_url}
+            href={room.url}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {room.button_text || "Join the room"}
+            Join the room
           </a>
         </>
       )}

@@ -10,6 +10,7 @@ import { Table } from "./Table";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
+import { CampVenue } from "./CampVenue";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -34,7 +35,7 @@ export interface Firestore {
     timestamps: VenueTimestamps;
   };
   data: {
-    currentVenue: Venue | PartyMapVenue;
+    currentVenue: Venue | PartyMapVenue | CampVenue;
     currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
@@ -49,7 +50,7 @@ export interface Firestore {
     events?: Record<string, VenueEvent>;
   };
   ordered: {
-    currentVenue: Array<WithId<Venue | PartyMapVenue>>;
+    currentVenue: Array<WithId<Venue | PartyMapVenue | CampVenue>>;
     currentEvent: Array<WithId<VenueEvent>>;
     venueChats: Array<WithId<RestrictedChatMessage>>;
     venueEvents: Array<WithId<VenueEvent>>;
