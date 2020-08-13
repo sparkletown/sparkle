@@ -87,8 +87,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () =>
       mapIconUrl
         ? {
-            mapIconUrl: { top: 20, left: 20, url: mapIconUrl },
-          }
+          mapIconUrl: { top: 20, left: 20, url: mapIconUrl },
+        }
         : undefined,
     [mapIconUrl]
   );
@@ -177,8 +177,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+      createUrlSafeName(values.name)
+    )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
@@ -186,13 +186,15 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   const defaultVenue = createJazzbar({});
 
+  console.log("VALUES", values);
+
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic">{`${
           editing ? "Edit" : "Create"
-        } your ${templateType}`}</h4>
+          } your ${templateType}`}</h4>
         <p className="small light" style={{ marginBottom: "2rem" }}>
           You can change anything except for the name of your venue later
         </p>
@@ -215,8 +217,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             ) : null}
           </div>
         ) : (
-          <input type="hidden" name="name" ref={register} value={values.name} />
-        )}
+            <input type="hidden" name="name" ref={register} value={values.name} />
+          )}
         <div className="input-container">
           <div className="input-title">
             {`Choose how you'd like your venue to appear on the map`}
@@ -370,8 +372,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             Go Back
           </button>
         ) : (
-          <div />
-        )}
+            <div />
+          )}
         <div>
           <SubmitButton editing={editing} isSubmitting={isSubmitting} />
         </div>
@@ -394,10 +396,10 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       <span className="sr-only">Loading...</span>
     </div>
   ) : (
-    <input
-      className="btn btn-primary"
-      type="submit"
-      value={editing ? "Update venue" : "Create venue"}
-    />
-  );
+      <input
+        className="btn btn-primary"
+        type="submit"
+        value={editing ? "Update venue" : "Create venue"}
+      />
+    );
 };
