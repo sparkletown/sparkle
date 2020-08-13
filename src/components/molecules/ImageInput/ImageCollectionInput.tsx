@@ -77,6 +77,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
 
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
+    //console.log('selectedCollectionImageUrl', selectedCollectionImageUrl)
     if (selectedCollectionImageUrl) {
       setValue(`${fieldName}File`, undefined, false);
       setValue(`${fieldName}Url`, selectedCollectionImageUrl, false);
@@ -141,12 +142,14 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         <input
           // trick react to recreate the file input. This is so that when a default image is selected, the file inputs forgets about the previously uploaded file
           key={fileInputKey.toString()}
+          name={`${fieldName}File`}
           style={{ flex: 1 }}
           disabled={disabled}
           type="file"
           onChange={handleFileChange}
           accept="image/x-png,image/gif,image/jpeg"
           className="btn btn-primary"
+          ref={register}
         />
         <div style={{ overflow: "hidden" }}>
           {imageUrlForPreview && (
