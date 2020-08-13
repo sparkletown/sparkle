@@ -9,7 +9,7 @@ import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
 import "./Preplaya.scss";
 
 const isPlaced = (venue: Venue) => {
-  return venue && venue.placement;
+  return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
 
 const Preplaya = () => {
