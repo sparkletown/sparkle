@@ -18,10 +18,13 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  const openRoomModal = useCallback((room: CampRoomData) => {
-    setSelectedRoom(room);
-    setIsRoomModalOpen(true);
-  }, []);
+  const openRoomModal = useCallback(
+    (room: CampRoomData) => {
+      setSelectedRoom(room);
+      setIsRoomModalOpen(true);
+    },
+    [setSelectedRoom, setIsRoomModalOpen]
+  );
 
   if (!venue) {
     return <>Loading map...</>;
