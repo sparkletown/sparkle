@@ -47,7 +47,6 @@ const createVenueData = (data, context) => {
     owners: [context.auth.token.user_id],
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
-    mapBackgroundImageUrl: data.mapBackgroundImageUrl,
   };
 
   switch (data.template) {
@@ -58,6 +57,7 @@ const createVenueData = (data, context) => {
     case "partymap":
     case "themecamp":
       venueData.rooms = data.rooms;
+      venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       break;
     case "zoomroom":
     case "artcar":
