@@ -20,7 +20,7 @@ export const Map: React.FC<PropsType> = ({
   setIsRoomModalOpen,
 }) => {
   if (!config) {
-    return <>{`"Loading map..."`}</>;
+    return <>Loading map...</>;
   }
 
   const openRoomModal = (room: RoomData) => {

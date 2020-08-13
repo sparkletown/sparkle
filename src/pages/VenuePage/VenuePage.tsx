@@ -21,6 +21,7 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
+import Camp from "components/templates/Camp/Camp";
 import Preplaya from "components/templates/Preplaya";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
@@ -141,6 +142,9 @@ const VenuePage = () => {
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
       break;
+    case VenueTemplate.themecamp:
+      template = <Camp />;
+      break;
     case VenueTemplate.preplaya:
       template = <Preplaya />;
       break;
@@ -149,6 +153,7 @@ const VenuePage = () => {
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
+    case VenueTemplate.artcar:
       if (venue.zoomUrl) {
         history.push(venue.zoomUrl);
       }
@@ -170,14 +175,7 @@ const VenuePage = () => {
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar>
-        {isUserVenueOwner && (
-          <div className="preview-indication">
-            This is a preview of an event
-          </div>
-        )}
-        {template}
-      </WithNavigationBar>
+      <WithNavigationBar>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };

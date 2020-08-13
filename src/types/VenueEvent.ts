@@ -6,4 +6,6 @@ export interface VenueEvent {
   duration_minutes: number;
   price: number;
   collective_price: number;
+  host: string;
+  room?: string;
 }

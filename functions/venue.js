@@ -163,6 +163,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.mapIconImageUrl) {
         updated.mapIconImageUrl = data.mapIconImageUrl;
       }
+      if (data.mapBackgroundImageUrl) {
+        updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+      }
 
       switch (updated.template) {
         case "jazzbar":
