@@ -5,6 +5,8 @@ import { VenueLandingPage } from "pages/VenueLandingPage";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 
 import "./Preplaya.scss";
 
@@ -19,6 +21,7 @@ const Preplaya = () => {
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
+  const [zoom, setZoom] = useState(1.0);
 
   useEffect(() => {
     const rescale = () => {
@@ -43,10 +46,11 @@ const Preplaya = () => {
   return (
     <>
       <div className="preplaya-container">
-        <div className="demo-message">
-          This is a demo of what the final playa will look like.
-        </div>
-        <div className="map-container">
+        <div className="map-container" style={{ transform: `scale(${zoom})` }}>
+          <div className="demo-message">
+            This is a demo of how camps look on the final, fully-interactive
+            playa.
+          </div>
           <img
             className="playa-background"
             src="/maps/playa2d.jpg"
@@ -59,6 +63,7 @@ const Preplaya = () => {
                 top: (venue.placement?.x || 0) * scale,
                 left: (venue.placement?.y || 0) * scale,
                 position: "absolute",
+                transform: `scale(${zoom})`,
               }}
               onClick={() => showVenue(venue)}
               key={idx}
@@ -76,6 +81,14 @@ const Preplaya = () => {
             <VenueLandingPage venue={venue} venueRequestStatus={true} />
           )}
         </Modal>
+        <div className="button-bar">
+          <div className="button" onClick={() => setZoom(zoom + 0.1)}>
+            <FontAwesomeIcon icon={faPlus} className="icon" />
+          </div>
+          <div className="button" onClick={() => setZoom(zoom - 0.1)}>
+            <FontAwesomeIcon icon={faMinus} className="icon" />
+          </div>
+        </div>
       </div>
     </>
   );
