@@ -46,8 +46,8 @@ module.exports = {
   mapIconImageUrl:
     "https://firebasestorage.googleapis.com/v0/b/co-reality-staging.appspot.com/o/assets%2FmapIcons%2FSparkle_SmallTent_Single_1.png?alt=media&token=e1b1fc2c-dccc-4626-b567-ae59d1c15be8",
   placement: {
-    x: 2000,
-    y: 2000,
+    x: 1800,
+    y: 1800,
     state: "placed",
   },
 };
