@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import { RoomAttendance } from "./RoomAttendance";
@@ -18,14 +18,14 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
+  const openRoomModal = useCallback((room: CampRoomData) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  }, []);
+
   if (!venue) {
     return <>Loading map...</>;
   }
-
-  const openRoomModal = (room: CampRoomData) => {
-    setSelectedRoom(room);
-    setIsRoomModalOpen(true);
-  };
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useUpdateLocationEffect, {
@@ -41,12 +41,12 @@ const Camp = () => {
       }, {})
     : {};
 
-  const modalHidden = () => {
+  const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
     if (user) {
       updateLocationData(user, campLocation);
     }
-  };
+  }, [user, campLocation]);
 
   return (
     <div className="camp-container container-fluid">

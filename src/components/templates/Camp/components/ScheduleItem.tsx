@@ -38,11 +38,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             by <b>{event.host}</b>
           </div>
         </div>
-        <div className="event-description">
-          {(event.description || "").split("\n").map((p: any) => (
-            <p>{p}</p>
-          ))}
-        </div>
+        <div className="event-description">{event.description}</div>
       </div>
       {isCurrentEvent && (
         <div className="entry-room-button">

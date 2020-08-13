@@ -17,9 +17,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
   attendance,
   onClick,
 }) => {
-  const { venueEvents } = useSelector((state) => ({
-    venueEvents: state.firestore.ordered.venueEvents,
-  }));
+  const venueEvents = useSelector(
+    (state) => state.firestore.ordered.venueEvents
+  );
 
   const roomEvents = venueEvents.filter((event) => event.room === room.title);
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
