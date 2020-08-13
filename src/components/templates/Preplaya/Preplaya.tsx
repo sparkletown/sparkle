@@ -37,11 +37,13 @@ const Preplaya = () => {
     let dragStartX = 0;
     let dragStartY = 0;
     let downListener = (event: MouseEvent) => {
+      event.preventDefault();
       dragging = true;
       dragStartX = event.clientX;
       dragStartY = event.clientY;
     };
     let touchStartListener = (event: TouchEvent) => {
+      event.preventDefault();
       dragging = true;
       dragStartX = event.touches[0].clientX;
       dragStartY = event.touches[0].clientY;
