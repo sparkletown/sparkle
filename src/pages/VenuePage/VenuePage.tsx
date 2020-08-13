@@ -24,6 +24,7 @@ import { venueLandingUrl } from "utils/url";
 import { PreplayaRouter } from "components/templates/Preplaya/Router";
 import Camp from "components/templates/Camp/Camp";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -84,7 +85,7 @@ const VenuePage = () => {
   }
 
   if (!venue) {
-    return "Loading...";
+    return <LoadingPage />;
   }
 
   if (venueRequestStatus && !venue) {
@@ -97,7 +98,7 @@ const VenuePage = () => {
     }
 
     if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
-      return <>Loading...</>;
+      return <LoadingPage />;
     }
 
     if (
@@ -121,7 +122,7 @@ const VenuePage = () => {
   }
 
   if (profile === undefined) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   if (!(profile?.partyName && profile?.pictureUrl)) {

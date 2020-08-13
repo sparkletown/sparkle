@@ -43,8 +43,7 @@ import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import "./sparkle-styling/css/loading.css";
-import Loading from "../src/sparkle-styling/loading";
+import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -101,8 +100,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const auth = useSelector((state) => state.firebase.auth);
-  //if (!isLoaded(auth)) return <div className='loading-screen'></div>;
-  if (!isLoaded(auth)) return <Loading />;
+  if (!isLoaded(auth)) return <LoadingPage />;
   return <>{children}</>;
 };
 
