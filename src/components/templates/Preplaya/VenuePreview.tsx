@@ -6,16 +6,26 @@ import UserList from "components/molecules/UserList";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { AnyVenue } from "types/Firestore";
+import { CampVenue } from "types/CampVenue";
 
 interface VenuePreviewProps {
   venue: WithId<Venue>;
 }
 
+const hasRooms = (venue: AnyVenue): venue is CampVenue => "rooms" in venue;
+
 const VenuePreview: React.FC<VenuePreviewProps> = ({ venue }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const users = useMemo(
-    () => partygoers?.filter((p) => p.lastSeenIn === venue.name),
+    () =>
+      partygoers?.filter((p) =>
+        [
+          venue.name,
+          ...(hasRooms(venue) ? venue.rooms?.map((r) => r.title) : []),
+        ].includes(p.lastSeenIn)
+      ),
     [partygoers, venue]
   );
 

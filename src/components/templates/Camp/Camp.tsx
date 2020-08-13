@@ -30,7 +30,7 @@ const Camp = () => {
     partygoers: state.firestore.ordered.partygoers,
   }));
 
-  const campLocation = `Camp: ${venue.name}`;
+  const campLocation = `${venue.name}`;
 
   useUpdateLocationEffect(user, campLocation);
 
