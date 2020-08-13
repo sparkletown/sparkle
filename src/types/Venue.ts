@@ -25,6 +25,7 @@ export interface Venue {
       presentation: string[];
       checkList: string[];
       videoIframeUrl?: string;
+      embedIframeUrl?: string;
       joinButtonText?: string;
       quotations?: Quotation[];
     };

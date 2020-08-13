@@ -64,7 +64,7 @@ const createVenueData = (data, context) => {
       venueData.zoomUrl = data.zoomUrl;
       break;
     case "artpiece":
-      venueData.embedIframeUrl;
+      venueData.embedIframeUrl = data.embedIframeUrl;
       break;
   }
   return venueData;

@@ -41,8 +41,14 @@ export const validationSchema = Yup.object()
             ? schema
                 .test(
                   "name",
+                  "Must have alphanumeric characters",
+                  (val: string) => createUrlSafeName(val).length > 0
+                )
+                .test(
+                  "name",
                   "This venue name is already taken",
                   async (val: string) =>
+                    !val ||
                     !(
                       await firebase
                         .firestore()
@@ -50,11 +56,6 @@ export const validationSchema = Yup.object()
                         .doc(createUrlSafeName(val))
                         .get()
                     ).exists
-                )
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
                 )
             : schema //will be set from the data from the api. Does not need to be unique
       ),
