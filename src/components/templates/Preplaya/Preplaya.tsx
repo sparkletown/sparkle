@@ -46,32 +46,37 @@ const Preplaya = () => {
         <div className="demo-message">
           This is a demo of what the final playa will look like.
         </div>
-        <img
-          className="playa-background"
-          src="/maps/playa2d.jpg"
-          alt="Playa Background Map"
-        />
-        {venues?.filter(isPlaced).map((venue) => (
-          <div
-            className="venue"
-            style={{
-              top: (venue.placement?.x || 0) * scale,
-              left: (venue.placement?.y || 0) * scale,
-              position: "absolute",
-            }}
-            onClick={() => showVenue(venue)}
-          >
-            <img
-              className="venue-icon"
-              src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-              alt={`${venue.name} Icon`}
-            />
-          </div>
-        ))}
+        <div className="map-container">
+          <img
+            className="playa-background"
+            src="/maps/playa2d.jpg"
+            alt="Playa Background Map"
+          />
+          {venues?.filter(isPlaced).map((venue, idx) => (
+            <div
+              className="venue"
+              style={{
+                top: (venue.placement?.x || 0) * scale,
+                left: (venue.placement?.y || 0) * scale,
+                position: "absolute",
+              }}
+              onClick={() => showVenue(venue)}
+              key={idx}
+            >
+              <img
+                className="venue-icon"
+                src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                alt={`${venue.name} Icon`}
+              />
+            </div>
+          ))}
+        </div>
+        <Modal show={showModal} onHide={() => setShowModal(false)}>
+          {venue && (
+            <VenueLandingPage venue={venue} venueRequestStatus={true} />
+          )}
+        </Modal>
       </div>
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        {venue && <VenueLandingPage venue={venue} venueRequestStatus={true} />}
-      </Modal>
     </>
   );
 };
