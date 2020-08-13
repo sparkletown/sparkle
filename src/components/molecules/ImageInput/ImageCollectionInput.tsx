@@ -139,7 +139,8 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         }}
       >
         <input
-          key={fileInputKey.toString()} // trick react to recreate the file input
+          // trick react to recreate the file input. This is so that when a default image is selected, the file inputs forgets about the previously uploaded file
+          key={fileInputKey.toString()}
           style={{ flex: 1 }}
           disabled={disabled}
           type="file"
