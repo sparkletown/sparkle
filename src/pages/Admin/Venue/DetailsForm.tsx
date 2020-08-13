@@ -12,7 +12,6 @@ import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/Venue";
 import * as Yup from "yup";
-import VenuePreview from "../../../components/organisms/VenuePreview";
 import {
   editVenueCastSchema,
   validationSchema,
@@ -128,7 +127,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             iconImageStyle={styles.draggableIconImage}
           />
         </div>
-        <VenuePreview values={values} />
       </div>
     </div>
   );
