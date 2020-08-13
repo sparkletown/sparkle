@@ -5,6 +5,7 @@ import React, {
   CSSProperties,
   useRef,
   useLayoutEffect,
+  useEffect,
 } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
@@ -12,7 +13,11 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import { PLAYA_WIDTH_AND_HEIGHT, DEFAULT_MAP_ICON_URL } from "settings";
+import {
+  PLAYA_WIDTH_AND_HEIGHT,
+  DEFAULT_MAP_ICON_URL,
+  PLAYA_ICON_SIDE,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 
@@ -31,15 +36,37 @@ interface PropsType {
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
   iconImageStyle: CSSProperties;
+  onChange: (val: SubVenueIconMap) => void;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
-  const { snapToGrid, iconsMap, backgroundImage, iconImageStyle } = props;
+  const {
+    snapToGrid,
+    iconsMap,
+    backgroundImage,
+    iconImageStyle,
+    onChange,
+  } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
-
   const [scale, setScale] = useState(1);
-
   const mapRef = useRef<HTMLDivElement>(null);
+
+  // trigger the parent callback on boxes change (as a result of movement)
+  useEffect(() => {
+    //need to return the unscaled values
+    const unscaledBoxes = Object.keys(boxes).reduce(
+      (acc, val) => ({
+        ...acc,
+        [val]: {
+          ...boxes[val],
+          top: boxes[val].top / scale,
+          left: boxes[val].left / scale,
+        },
+      }),
+      {}
+    );
+    onChange(unscaledBoxes);
+  }, [boxes, onChange, scale]);
 
   useLayoutEffect(() => {
     mapRef?.current?.getBoundingClientRect().width &&
@@ -70,8 +97,20 @@ export const Container: React.FC<PropsType> = (props) => {
   );
 
   useMemo(() => {
-    setBoxes(iconsMap);
-  }, [iconsMap]);
+    const copy = Object.keys(iconsMap).reduce(
+      (acc, val) => ({
+        ...acc,
+        [val]: {
+          ...iconsMap[val],
+          top: iconsMap[val].top * scale,
+          left: iconsMap[val].left * scale,
+        },
+      }),
+      {}
+    );
+
+    setBoxes(copy);
+  }, [iconsMap, scale]);
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
@@ -130,7 +169,7 @@ export const Container: React.FC<PropsType> = (props) => {
                   position: "absolute",
                   top: (v.placement?.x || 0) * scale,
                   left: (v.placement?.y || 0) * scale,
-                  width: "50px", // @debt should be at the right scale
+                  width: PLAYA_ICON_SIDE, // @debt should be at the right scale
                   opacity: 0.4,
                 }}
                 alt={`${v.name} map icon`}

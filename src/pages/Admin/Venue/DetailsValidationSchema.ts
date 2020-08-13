@@ -8,7 +8,16 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_ICON_SIDE,
 } from "settings";
+import { VenuePlacement } from "types/Venue";
+
+const initialMapIconPlacement: VenuePlacement = {
+  x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
+  y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
+  state: " ",
+};
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -41,8 +50,14 @@ export const validationSchema = Yup.object()
             ? schema
                 .test(
                   "name",
+                  "Must have alphanumeric characters",
+                  (val: string) => createUrlSafeName(val).length > 0
+                )
+                .test(
+                  "name",
                   "This venue name is already taken",
                   async (val: string) =>
+                    !val ||
                     !(
                       await firebase
                         .firestore()
@@ -50,11 +65,6 @@ export const validationSchema = Yup.object()
                         .doc(createUrlSafeName(val))
                         .get()
                     ).exists
-                )
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
                 )
             : schema //will be set from the data from the api. Does not need to be unique
       ),
@@ -119,6 +129,14 @@ export const validationSchema = Yup.object()
               )
           : schema.notRequired()
     ),
+
+    placement: Yup.object()
+      .shape<VenuePlacement>({
+        state: Yup.string().required("Required"),
+        x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+        y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+      })
+      .default(initialMapIconPlacement),
 
     // @debt provide some validation error messages for invalid questions
     // advanced options

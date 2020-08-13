@@ -47,7 +47,7 @@ const createVenueData = (data, context) => {
     owners: [context.auth.token.user_id],
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
-    mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+    placement: data.placement,
   };
 
   switch (data.template) {
@@ -58,13 +58,14 @@ const createVenueData = (data, context) => {
     case "partymap":
     case "themecamp":
       venueData.rooms = data.rooms;
+      venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       break;
     case "zoomroom":
     case "artcar":
       venueData.zoomUrl = data.zoomUrl;
       break;
     case "artpiece":
-      venueData.embedIframeUrl;
+      venueData.embedIframeUrl = data.embedIframeUrl;
       break;
   }
   return venueData;
@@ -165,6 +166,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       }
       if (data.mapBackgroundImageUrl) {
         updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+      }
+      if (data.placement) {
+        updated.placement = data.placement;
       }
 
       switch (updated.template) {

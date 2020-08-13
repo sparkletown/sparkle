@@ -2,6 +2,7 @@ import { UserInfo } from "firebase";
 import firebase from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
+import { VenuePlacement } from "types/Venue";
 
 export interface EventInput {
   name: string;
@@ -55,6 +56,7 @@ export type VenueInput = AdvancedVenueInput &
     embedIframeUrl?: string;
     template: any;
     rooms?: Array<any>;
+    placement?: VenuePlacement;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & VenueImageUrls;
