@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 import { VenueLandingPage } from "pages/VenueLandingPage";
@@ -40,6 +41,16 @@ const Preplaya = () => {
     setShowModal(true);
   };
 
+  const { camp } = useParams();
+  useEffect(() => {
+    if (camp) {
+      const campVenue = venues?.find((venue) => venue.id === camp);
+      if (campVenue) {
+        showVenue(campVenue);
+      }
+    }
+  }, [camp, venues]);
+
   return (
     <>
       <div className="preplaya-container">
@@ -67,7 +78,7 @@ const Preplaya = () => {
         ))}
       </div>
       <Modal show={showModal} onHide={() => setShowModal(false)}>
-        {venue && <VenueLandingPage venue={venue} venueRequestStatus={true} />}
+        Venue Modal Preview Goes Here
       </Modal>
     </>
   );
