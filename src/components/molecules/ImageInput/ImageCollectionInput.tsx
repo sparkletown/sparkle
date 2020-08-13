@@ -21,6 +21,7 @@ interface ImageInputProps {
 export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
   const {
     imageUrl: imageUrlFromAPI,
+    imageClassName,
     error,
     disabled,
     collectionPath,
@@ -151,17 +152,14 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           ref={register}
         />
         <div style={{ overflow: "hidden" }}>
-          {imageFiles && (
-            <div>You selected a custom image: {imageFiles[0].name}</div>
-          )}
-          {/* {imageUrlForPreview && !imageFiles && (
+          {imageUrlForPreview && (
             <img
               style={{ width: 200 }}
               className={`default-image ${imageClassName}`}
               src={imageUrlForPreview}
               alt="upload"
             />
-          )} */}
+          )}
         </div>
       </div>
       <input
