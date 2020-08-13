@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 import { Venue } from "types/Venue";
@@ -36,14 +36,20 @@ const Preplaya = () => {
     };
   }, []);
 
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector((state) => state.firestore.ordered.venues);
 
-  const showVenue = (venue: WithId<Venue>) => {
-    setVenue(venue);
-    setShowModal(true);
-  };
+  const showVenue = useCallback(
+    (venue: WithId<Venue>) => {
+      setVenue(venue);
+      setShowModal(true);
+    },
+    [setShowModal, setVenue]
+  );
+
+  const hideVenue = useCallback(() => {
+    setShowModal(false);
+    user && updateLocationData(user, "playa");
+  }, [setShowModal, user]);
 
   return (
     <>
@@ -71,13 +77,7 @@ const Preplaya = () => {
           </div>
         ))}
       </div>
-      <Modal
-        show={showModal}
-        onHide={() => {
-          setShowModal(false);
-          user && updateLocationData(user, "playa");
-        }}
-      >
+      <Modal show={showModal} onHide={hideVenue}>
         {venue && <VenuePreview venue={venue} />}
       </Modal>
     </>

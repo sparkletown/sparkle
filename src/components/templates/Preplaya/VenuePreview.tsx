@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Venue } from "types/Venue";
 import "./VenuePreview.scss";
 import { BURN_VENUE_TEMPLATES } from "settings";
@@ -12,11 +12,12 @@ interface VenuePreviewProps {
 }
 
 const VenuePreview: React.FC<VenuePreviewProps> = ({ venue }) => {
-  const { partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
-  const users = partygoers?.filter((p) => p.lastSeenIn === venue.name);
+  const users = useMemo(
+    () => partygoers?.filter((p) => p.lastSeenIn === venue.name),
+    [partygoers, venue]
+  );
 
   const templateName = BURN_VENUE_TEMPLATES.find(
     (t) => t.template === venue.template
