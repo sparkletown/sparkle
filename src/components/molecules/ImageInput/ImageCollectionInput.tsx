@@ -54,7 +54,6 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     string | undefined
   >(imageCollection.find((url) => url === imageUrlFromAPI));
   const [imageFiles, setImageFiles] = useState<FileList>();
-  console.log("imageFiles", imageFiles);
   const [imageUrlForPreview, setImageUrlForPreview] = useState<
     string | undefined
   >(imageUrlFromAPI);
@@ -79,12 +78,10 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
     if (selectedCollectionImageUrl) {
-      console.log(`${fieldName} 1`);
       setValue(`${fieldName}File`, undefined, false);
       setValue(`${fieldName}Url`, selectedCollectionImageUrl, false);
       setImageUrlForPreview(selectedCollectionImageUrl);
     } else if (imageFiles && imageFiles.length > 0) {
-      console.log(`${fieldName} 2`);
       setValue(`${fieldName}File`, imageFiles, false);
       setValue(`${fieldName}Url`, undefined, false);
       setImageUrlForPreview(URL.createObjectURL(imageFiles[0]));
