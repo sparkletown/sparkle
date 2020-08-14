@@ -42,7 +42,6 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
-import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 
