@@ -42,6 +42,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 
@@ -104,8 +105,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
-const defaultVenue =
-  firebaseConfig.projectId === "co-reality-map" ? "kansassmittys" : "playa";
+const defaultRedirect =
+  firebaseConfig.projectId === "co-reality-map"
+    ? venueLandingUrl("kansassmittys")
+    : venueInsideUrl("playa");
 
 render(
   <Elements stripe={stripePromise}>
@@ -113,7 +116,7 @@ render(
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthIsLoaded>
-            <AppRouter defaultVenue={defaultVenue} />
+            <AppRouter defaultRedirect={defaultRedirect} />
           </AuthIsLoaded>
         </ReactReduxFirebaseProvider>
       </Provider>
