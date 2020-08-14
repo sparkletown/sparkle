@@ -1,6 +1,7 @@
 import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
 import { CampRoomData } from "./CampRoomData";
+import { AnyVenue } from "./Firestore";
 
 export interface CampVenue extends Venue {
   template: VenueTemplate.themecamp;
@@ -19,3 +20,6 @@ export interface CampVenue extends Venue {
   owners: string[];
   rooms: CampRoomData[];
 }
+
+export const isCampVenue = (val: AnyVenue): val is CampVenue =>
+  val.template === VenueTemplate.themecamp;
