@@ -4,6 +4,7 @@ import { CampRoomData } from "./CampRoomData";
 
 export interface CampVenue extends Venue {
   template: VenueTemplate.themecamp;
+  mapBackgroundImageUrl?: string;
   host: {
     url: string;
     icon: string;

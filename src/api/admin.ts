@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";
+import { CampRoomData } from "types/CampRoomData";
 
 export interface EventInput {
   name: string;
@@ -41,6 +42,11 @@ interface VenueImageUrls {
   mapIconImageUrl?: string;
   mapBackgroundImageUrl?: string;
 }
+
+export type RoomInput = Omit<CampRoomData, "image_url"> & {
+  image_url?: string;
+  image_file?: FileList;
+};
 
 export type VenueInput = AdvancedVenueInput &
   VenueImageUrls & {
