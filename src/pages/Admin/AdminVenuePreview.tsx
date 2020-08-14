@@ -30,7 +30,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </span>
           </div>
         );
-      default:
+      case VenueTemplate.zoomroom:
         return (
           <div>
             <span className="title">Zoom URL</span>
@@ -46,6 +46,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </span>
           </div>
         );
+      default:
+        return <div></div>;
     }
   }, [venue]);
 
@@ -77,7 +79,10 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           <span className="title">Banner photo</span>
           <img
             className="banner"
-            src={venue.config.landingPageConfig.coverImageUrl}
+            src={
+              venue.config.landingPageConfig.bannerImageUrl ??
+              venue.config.landingPageConfig.coverImageUrl
+            }
             alt="cover"
           />
         </div>
@@ -96,7 +101,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           <span className="content">
             <img
               className="icon"
-              src={venue.mapIconImageUrl ?? venue.host.icon}
+              src={venue.host.icon ?? venue.mapIconImageUrl}
               alt="icon"
             />
           </span>
