@@ -22,7 +22,7 @@ const isPlaced = (venue: Venue) => {
 const Preplaya = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [venue, setVenue] = useState<WithId<Venue>>();
+  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
@@ -112,10 +112,10 @@ const Preplaya = () => {
 
   const showVenue = useCallback(
     (venue: WithId<Venue>) => {
-      setVenue(venue);
+      setSelectedVenue(venue);
       setShowModal(true);
     },
-    [setShowModal, setVenue]
+    [setShowModal, setSelectedVenue]
   );
 
   const hideVenue = useCallback(() => {
@@ -128,10 +128,13 @@ const Preplaya = () => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
       if (campVenue) {
+        const campY = (campVenue.placement?.y || 0) * scale;
+        const scrollY = campY - window.innerHeight / 2;
+        window.scrollTo(0, scrollY);
         showVenue(campVenue);
       }
     }
-  }, [camp, venues, showVenue]);
+  }, [camp, venues, showVenue, scale]);
 
   return (
     <>
@@ -168,6 +171,7 @@ const Preplaya = () => {
                 src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
                 alt={`${venue.name} Icon`}
               />
+              {selectedVenue?.id === venue.id && <div className="selected" />}
             </div>
           ))}
         </div>
@@ -181,7 +185,7 @@ const Preplaya = () => {
         </div>
       </div>
       <Modal show={showModal} onHide={hideVenue}>
-        {venue && <VenuePreview venue={venue} />}
+        {selectedVenue && <VenuePreview venue={selectedVenue} />}
       </Modal>
     </>
   );

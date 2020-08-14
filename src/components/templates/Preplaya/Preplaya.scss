@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .preplaya-container {
   width: 100%;
   position: relative;
@@ -29,10 +31,21 @@
     width: 2%;
     height: 2%;
     cursor: pointer;
+    position: relative;
 
     .venue-icon {
       max-width: 100%;
       max-height: 100%;
+    }
+
+    .selected {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      animation: ripple 4s linear infinite;
+      border-radius: 50%;
     }
   }
 
@@ -68,5 +81,18 @@
         }
       }
     }
+  }
+}
+
+@keyframes ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba($ripple-color, 0.4),
+      0 0 0 0.5em rgba($ripple-color, 0.4), 0 0 0 1.5em rgba($ripple-color, 0.4),
+      0 0 0 2.5em rgba($ripple-color, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 1em rgba($ripple-color, 0.4),
+      0 0 0 1.5em rgba($ripple-color, 0.4), 0 0 0 2.5em rgba($ripple-color, 0.4),
+      0 0 0 4em rgba($ripple-color, 0);
   }
 }
