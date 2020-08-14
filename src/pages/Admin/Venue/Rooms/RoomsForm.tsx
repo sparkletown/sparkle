@@ -126,24 +126,37 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <div className="scrollable-content">
-                <h4 className="italic">Add a room</h4>
+                <h4 className="italic">{`${
+                  editingRoom ? "Edit your" : "Add a"
+                } room`}</h4>
                 <p className="small light" style={{ marginBottom: "2rem" }}>
                   You can update everything in this form at a later date on the
                   edit page
                 </p>
-                <div className="input-container">
-                  <div className="input-title">Name your Room</div>
+                {!editingRoom ? (
+                  <div className="input-container">
+                    <div className="input-title">Name your Room</div>
+                    <input
+                      disabled={disable}
+                      name="title"
+                      ref={register}
+                      className="align-left"
+                      placeholder={`My room title`}
+                    />
+                    {errors.title && (
+                      <span className="input-error">
+                        {errors.title.message}
+                      </span>
+                    )}
+                  </div>
+                ) : (
                   <input
-                    disabled={disable}
+                    type="hidden"
                     name="title"
                     ref={register}
-                    className="align-left"
-                    placeholder={`My room title`}
+                    value={values.title}
                   />
-                  {errors.title && (
-                    <span className="input-error">{errors.title.message}</span>
-                  )}
-                </div>
+                )}
                 <div className="input-container">
                   <div className="input-title">Upload an icon photo</div>
                   <ImageInput
