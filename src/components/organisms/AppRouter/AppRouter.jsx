@@ -21,9 +21,9 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
-import { venueLandingUrl } from "utils/url";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
-const AppRouter = ({ defaultVenue }) => {
+const AppRouter = ({ projectID }) => {
   const firebase = useFirebase();
   const analytics = firebase.analytics();
   const { user } = useUser();
@@ -42,6 +42,11 @@ const AppRouter = ({ defaultVenue }) => {
       leaveRoom(user);
     }
   };
+
+  const defaultRedirect =
+    projectID === "co-reality-map"
+      ? venueLandingUrl("kansassmittys")
+      : venueInsideUrl("playa");
 
   useEffect(() => {
     window.addEventListener("click", onClickWindow, false);
@@ -79,10 +84,7 @@ const AppRouter = ({ defaultVenue }) => {
             <Redirect to={venueLandingUrl(props.match.params[0])} />
           )}
         />
-        <Route
-          path="/"
-          component={() => <Redirect to={venueLandingUrl(defaultVenue)} />}
-        />
+        <Route path="/" component={() => <Redirect to={defaultRedirect} />} />
       </Switch>
     </Router>
   );

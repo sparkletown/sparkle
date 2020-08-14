@@ -5,3 +5,7 @@ export const venueLandingUrl = (venueId: string) => {
 export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
+
+export const venuePlayaPreviewUrl = (venueId: string) => {
+  return `/in/playa/${venueId}`;
+};
