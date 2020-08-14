@@ -8,6 +8,7 @@ import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { CampVenue } from "types/CampVenue";
+import { VenueTemplate } from "types/VenueTemplate";
 
 interface VenuePreviewProps {
   venue: WithId<Venue>;
@@ -32,6 +33,16 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ venue }) => {
   const templateName = BURN_VENUE_TEMPLATES.find(
     (t) => t.template === venue.template
   )?.name;
+
+  let joinButtonText = "Enter the experience";
+  switch (venue.template) {
+    case VenueTemplate.themecamp:
+      joinButtonText = "Enter the camp";
+      break;
+    case VenueTemplate.artpiece:
+      joinButtonText = "View the art";
+      break;
+  }
 
   return (
     <>
@@ -62,10 +73,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ venue }) => {
               <a
                 className="btn btn-primary join-button"
                 href={venueInsideUrl(venue.id)}
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                Join the experience
+                {joinButtonText}
               </a>
             </div>
           </div>
