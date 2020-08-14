@@ -52,7 +52,7 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Live
+            On Now
           </a>
         </div>
       )}

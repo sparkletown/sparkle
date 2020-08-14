@@ -185,7 +185,9 @@ const Preplaya = () => {
         </div>
       </div>
       <Modal show={showModal} onHide={hideVenue}>
-        {selectedVenue && <VenuePreview venue={selectedVenue} />}
+        {selectedVenue && user && (
+          <VenuePreview user={user} venue={selectedVenue} />
+        )}
       </Modal>
     </>
   );
