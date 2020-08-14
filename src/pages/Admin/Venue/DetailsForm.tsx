@@ -27,7 +27,7 @@ import {
 } from "settings";
 import "./Venue.scss";
 import {
-  Container,
+  PlayaContainer,
   CustomDragLayer,
 } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -118,7 +118,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [mapIconUrl, defaultValues]
   );
 
-  const onBoxMove: ExtractProps<typeof Container>["onChange"] = useCallback(
+  const onBoxMove: ExtractProps<
+    typeof PlayaContainer
+  >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
@@ -156,7 +158,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       </div>
       <div className="page-side preview">
         <div className="playa">
-          <Container
+          <PlayaContainer
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
