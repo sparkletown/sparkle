@@ -16,6 +16,11 @@ const VALID_TEMPLATES = [
   "performancevenue",
 ];
 
+const PlacementState = {
+  SelfPlaced: "SELF_PLACED",
+  AdminPlaced: "ADMIN_PLACED",
+};
+
 const createVenueData = (data, context) => {
   if (!VALID_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
@@ -47,7 +52,7 @@ const createVenueData = (data, context) => {
     owners: [context.auth.token.user_id],
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
-    placement: data.placement,
+    placement: { ...data.placement, state: PlacementState.SelfPlaced },
   };
 
   switch (data.template) {
@@ -167,9 +172,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.mapBackgroundImageUrl) {
         updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       }
-      if (data.placement) {
-        updated.placement = data.placement;
-      }
+      // cannot update placement
+      // if (data.placement) {
+      //   updated.placement = data.placement;
+      // }
 
       switch (updated.template) {
         case "jazzbar":

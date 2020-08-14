@@ -119,12 +119,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
       setValue("placement", {
-        state: defaultValues?.placement?.state,
         x: iconPos.left,
         y: iconPos.top,
       });
     },
-    [defaultValues, setValue]
+    [setValue]
   );
 
   if (!state.templatePage) {

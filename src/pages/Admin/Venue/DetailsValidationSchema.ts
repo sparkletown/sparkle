@@ -11,12 +11,10 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_ICON_SIDE,
 } from "settings";
-import { VenuePlacement } from "types/Venue";
 
-const initialMapIconPlacement: VenuePlacement = {
+const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
   y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
-  state: " ",
 };
 
 type Question = VenueInput["profileQuestions"][number];
@@ -131,8 +129,7 @@ export const validationSchema = Yup.object()
     ),
 
     placement: Yup.object()
-      .shape<VenuePlacement>({
-        state: Yup.string().required("Required"),
+      .shape({
         x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
         y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
       })

@@ -56,7 +56,7 @@ export type VenueInput = AdvancedVenueInput &
     embedIframeUrl?: string;
     template: any;
     rooms?: Array<any>;
-    placement?: VenuePlacement;
+    placement?: Omit<VenuePlacement, "state">;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & VenueImageUrls;
