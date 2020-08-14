@@ -13,6 +13,8 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: undefined,
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
@@ -25,6 +27,8 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: undefined,
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -35,7 +39,10 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
     <div className="page">
       <div className="page-side">
         <div className="page-container-left">
-          <div className="page-container-left-content">
+          <div
+            className="page-container-left-content"
+            style={{ maxWidth: "680px" }}
+          >
             <TemplateFormLeft
               selectedTemplate={selectedTemplate}
               setSelectedTemplate={setSelectedTemplate}

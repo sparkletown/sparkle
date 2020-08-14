@@ -23,8 +23,10 @@ export interface Venue {
       subtitle: string;
       description?: string;
       presentation: string[];
+      bannerImageUrl?: string;
       checkList: string[];
       videoIframeUrl?: string;
+      embedIframeUrl?: string;
       joinButtonText?: string;
       quotations?: Quotation[];
     };
@@ -39,6 +41,16 @@ export interface Venue {
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
+  placement?: VenuePlacement;
+  zoomUrl?: string;
+  embedIframeUrl?: string;
+  mapBackgroundImageUrl?: string;
+}
+
+export interface VenuePlacement {
+  x: number;
+  y: number;
+  state: string;
 }
 
 export const urlFromImage = (

@@ -1,6 +1,5 @@
 import InformationCard from "components/molecules/InformationCard";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import VenuePreview from "components/organisms/VenuePreview";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -24,15 +23,22 @@ import { canHaveSubvenues } from "utils/venue";
 import "./Admin.scss";
 import AdminEvent from "./AdminEvent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import { venueInsideUrl } from "utils/url";
+import { venuePlayaPreviewUrl } from "utils/url";
+import { AdminVenuePreview } from "./AdminVenuePreview";
+import { isCampVenue } from "types/CampVenue";
+import { useQuery } from "hooks/useQuery";
 
 dayjs.extend(advancedFormat);
 
 type VenueListProps = {
   selectedVenueId?: string;
+  roomIndex?: number;
 };
 
-const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
+const VenueList: React.FC<VenueListProps> = ({
+  selectedVenueId,
+  roomIndex,
+}) => {
   const { venues } = useSelector((state) => ({
     venues: state.firestore.ordered.venues,
   }));
@@ -59,22 +65,18 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
             }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
-            {canHaveSubvenues(venue) && (
+            {isCampVenue(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venues
-                  ?.filter((subVenue) => subVenue.parentId === venue.id)
-                  .map((subVenue) => (
-                    <li
-                      key={`${venue.id}-${subVenue.id}`}
-                      className={`${
-                        selectedVenueId === subVenue.id ? "selected" : ""
-                      }`}
-                    >
-                      <Link to={`/admin/venue/${subVenue.id}`}>
-                        {subVenue.name}
-                      </Link>
-                    </li>
-                  ))}
+                {venue.rooms.map((room, idx) => (
+                  <li
+                    key={`${venue.id}-${room.title}`}
+                    className={`${idx === roomIndex ? "selected" : ""}`}
+                  >
+                    <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                      {room.title}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             )}
           </li>
@@ -86,13 +88,15 @@ const VenueList: React.FC<VenueListProps> = ({ selectedVenueId }) => {
 
 type VenueDetailsProps = {
   venueId: string;
+  roomIndex?: number;
 };
 
 type VenueDetailsPartProps = {
   venue: WithId<Venue>;
+  roomIndex?: number;
 };
 
-const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
+const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const match = useRouteMatch();
   const location = useLocation();
   const { venues } = useKeyedSelector(
@@ -134,11 +138,13 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
           />
           <Route
             path={`${match.url}/Appearance`}
-            component={() => <>Appearance Component</>}
+            render={() => <>Appearance Component</>}
           />
           <Route
             path={`${match.url}`}
-            component={() => <VenueInfoComponent venue={venue} />}
+            render={() => (
+              <VenueInfoComponent venue={venue} roomIndex={roomIndex} />
+            )}
           />
         </Switch>
       </div>
@@ -146,13 +152,25 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
   );
 };
 
-const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
+const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
+  venue,
+  roomIndex,
+}) => {
+  console.log("venue", venue);
+  console.log(
+    "venue.config.landingPageConfig.coverImageUrl",
+    venue.config.landingPageConfig.coverImageUrl
+  );
   return (
     <>
       <div className="page-container-adminpanel-content">
-        <h3 style={{ textAlign: "center" }}>
-          How your space appears on the playa
-        </h3>
+        <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
+        <h4
+          className="italic"
+          style={{ fontSize: "30px", textAlign: "center" }}
+        >
+          How your Experience appears on the playa
+        </h4>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
             <div className="playa-abs-container">
@@ -162,13 +180,10 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                   alt={"host icon"}
                   className="playa-icon"
                 />
-                <div className="playa-venue-preview">
-                  <VenuePreview values={venue} />
-                </div>
               </div>
             </div>
             <img
-              src={"/burn/playa3d.jpeg"}
+              src={"/burn/Playa.jpeg"}
               alt="playa"
               style={{
                 maxWidth: "100%",
@@ -181,7 +196,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
-          to={venueInsideUrl(venue.id)}
+          to={venuePlayaPreviewUrl(venue.id)}
           target="_blank"
           rel="noopener noreferer"
           className="btn btn-primary btn-block"
@@ -192,8 +207,16 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
           Edit venue
         </Link>
         {canHaveSubvenues(venue) && (
-          <Link to="#" className="btn btn-block">
-            Add a subvenue
+          <Link to={`/admin/venue/rooms/${venue.id}`} className="btn btn-block">
+            Add a Room
+          </Link>
+        )}
+        {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
+          <Link
+            to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+            className="btn btn-block"
+          >
+            Edit Room
           </Link>
         )}
       </div>
@@ -318,6 +341,11 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
 const Admin: React.FC = () => {
   const { user } = useUser();
   const { venueId } = useParams();
+  const queryParams = useQuery();
+  const queryRoomIndexString = queryParams.get("roomIndex");
+  const queryRoomIndex = queryRoomIndexString
+    ? parseInt(queryRoomIndexString)
+    : undefined;
 
   useFirestoreConnect([
     {
@@ -327,16 +355,16 @@ const Admin: React.FC = () => {
   ]);
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
         <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
-            <VenueList selectedVenueId={venueId} />
+            <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
           </div>
           <div className="page-container-adminpanel">
             {venueId ? (
-              <VenueDetails venueId={venueId} />
+              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
             ) : (
               <>Select a venue to see its details</>
             )}

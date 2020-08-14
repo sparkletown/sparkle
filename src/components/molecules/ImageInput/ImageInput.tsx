@@ -45,7 +45,9 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             />
           ) : (
             <div className="centered-flex empty">
-              <h6 className=" text">Click to upload an image</h6>
+              <h6 className=" text" style={{ fontWeight: "lighter" }}>
+                Click to upload an image
+              </h6>
             </div>
           )}
           <input

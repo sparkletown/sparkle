@@ -21,6 +21,10 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
+import { PreplayaRouter } from "components/templates/Preplaya/Router";
+import Camp from "components/templates/Camp/Camp";
+import { PlayaRouter } from "components/templates/Playa/Router";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -81,7 +85,7 @@ const VenuePage = () => {
   }
 
   if (!venue) {
-    return "Loading...";
+    return <LoadingPage />;
   }
 
   if (venueRequestStatus && !venue) {
@@ -94,7 +98,7 @@ const VenuePage = () => {
     }
 
     if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
-      return <>Loading...</>;
+      return <LoadingPage />;
     }
 
     if (
@@ -118,7 +122,7 @@ const VenuePage = () => {
   }
 
   if (profile === undefined) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   if (!(profile?.partyName && profile?.pictureUrl)) {
@@ -139,18 +143,40 @@ const VenuePage = () => {
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
       break;
+    case VenueTemplate.themecamp:
+      template = <Camp />;
+      break;
+    case VenueTemplate.preplaya:
+      template = <PreplayaRouter />;
+      break;
+    case VenueTemplate.playa:
+      template = <PlayaRouter />;
+      break;
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.performancevenue:
+    case VenueTemplate.artcar:
+      if (venue.zoomUrl) {
+        history.push(venue.zoomUrl);
+      }
+      template = (
+        <p>
+          Venue {venue.name} should redirect to a URL, but none was set.
+          <br />
+          <button
+            role="link"
+            className="btn btn-primary"
+            onClick={() => history.goBack()}
+          >
+            Go Back
+          </button>
+        </p>
+      );
+      break;
   }
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar>
-        {isUserVenueOwner && (
-          <div className="preview-indication">
-            This is a preview of an event
-          </div>
-        )}
-        {template}
-      </WithNavigationBar>
+      <WithNavigationBar>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };

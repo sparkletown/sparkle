@@ -22,23 +22,27 @@ $preview-margin: 30px;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
+    height: 100%;
   }
   .page-container-left {
     background-color: $black;
     padding-top: $navbar-height;
     overflow-y: auto;
+    height: 100%;
     .page-container-left-content {
       max-width: 560px;
       margin-right: 20px;
       margin-left: auto;
       padding-left: 10px;
       max-height: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       .scrollable-content {
         overflow-y: auto;
         padding-left: 10px;
         padding-right: 20px;
+        height: 100%;
       }
     }
     .page-container-left-bottombar {
@@ -54,8 +58,8 @@ $preview-margin: 30px;
     }
   }
   &.preview {
-    background-color: $dark;
-    overflow: scroll;
+    background-color: $black;
+    overflow: auto;
     flex-direction: column;
     margin-top: $navbar-height;
 

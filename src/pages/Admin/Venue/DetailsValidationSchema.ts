@@ -7,7 +7,15 @@ import {
   ZOOM_URL_TEMPLATES,
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_ICON_SIDE,
 } from "settings";
+
+const initialMapIconPlacement: VenueInput["placement"] = {
+  x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
+  y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
+};
 
 type Question = VenueInput["profileQuestions"][number];
 
@@ -40,8 +48,14 @@ export const validationSchema = Yup.object()
             ? schema
                 .test(
                   "name",
+                  "Must have alphanumeric characters",
+                  (val: string) => createUrlSafeName(val).length > 0
+                )
+                .test(
+                  "name",
                   "This venue name is already taken",
                   async (val: string) =>
+                    !val ||
                     !(
                       await firebase
                         .firestore()
@@ -50,19 +64,32 @@ export const validationSchema = Yup.object()
                         .get()
                     ).exists
                 )
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
-                )
             : schema //will be set from the data from the api. Does not need to be unique
       ),
     bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
+
     mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
+    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
+
+    mapBackgroundImageFile: Yup.mixed<FileList>().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
+          : schema.notRequired()
+    ),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
+
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
     description: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
     zoomUrl: Yup.string().when(
@@ -100,6 +127,13 @@ export const validationSchema = Yup.object()
               )
           : schema.notRequired()
     ),
+
+    placement: Yup.object()
+      .shape({
+        x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+        y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+      })
+      .default(initialMapIconPlacement),
 
     // @debt provide some validation error messages for invalid questions
     // advanced options

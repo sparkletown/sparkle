@@ -21,9 +21,10 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
-import { venueLandingUrl } from "utils/url";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
+import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 
-const AppRouter = () => {
+const AppRouter = ({ projectID }) => {
   const firebase = useFirebase();
   const analytics = firebase.analytics();
   const { user } = useUser();
@@ -42,6 +43,11 @@ const AppRouter = () => {
       leaveRoom(user);
     }
   };
+
+  const defaultRedirect =
+    projectID === "co-reality-map"
+      ? venueLandingUrl("kansassmittys")
+      : venueInsideUrl("playa");
 
   useEffect(() => {
     window.addEventListener("click", onClickWindow, false);
@@ -67,6 +73,7 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
+        <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
         <Route path="/admin/venue/:venueId" component={Admin} />
@@ -79,10 +86,7 @@ const AppRouter = () => {
             <Redirect to={venueLandingUrl(props.match.params[0])} />
           )}
         />
-        <Route
-          path="/"
-          component={() => <Redirect to={venueLandingUrl("playa")} />}
-        />
+        <Route path="/" component={() => <Redirect to={defaultRedirect} />} />
       </Switch>
     </Router>
   );
