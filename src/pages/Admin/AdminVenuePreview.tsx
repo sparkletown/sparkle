@@ -18,16 +18,24 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         return (
           <div>
             <span className="title">iFrame URL</span>
-            <span className="content">{venue.iframeUrl}</span>
+            <span className="content">
+              <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
+            </span>
           </div>
         );
-      default:
+      case VenueTemplate.zoomroom:
         return (
           <div>
             <span className="title">Zoom URL</span>
-            <span className="content">{venue.zoomUrl}</span>
+            <span className="content">
+              <a href={venue.zoomUrl} target="_blank" rel="noopener noreferrer">
+                {venue.zoomUrl}
+              </a>
+            </span>
           </div>
         );
+      default:
+        return;
     }
   }, [venue]);
 
@@ -59,28 +67,23 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           <span className="title">Banner photo</span>
           <img
             className="banner"
-            src={venue.config.landingPageConfig.coverImageUrl}
+            src={
+              venue.config.landingPageConfig.bannerImageUrl ??
+              venue.config.landingPageConfig.coverImageUrl
+            }
             alt="cover"
           />
         </div>
         <div>
           <span className="title">Playa icon</span>
           <span className="content">
-            <img
-              className="icon"
-              src={venue.mapIconImageUrl ?? venue.host.icon}
-              alt="icon"
-            />
+            <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
           </span>
         </div>
         <div>
           <span className="title">Camp logo</span>
           <span className="content">
-            <img
-              className="icon"
-              src={venue.mapIconImageUrl ?? venue.host.icon}
-              alt="icon"
-            />
+            <img className="icon" src={venue.host.icon} alt="icon" />
           </span>
         </div>
         {templateSpecificListItems}
