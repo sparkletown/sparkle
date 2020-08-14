@@ -44,7 +44,7 @@ const Preplaya = () => {
     let dragStartX = 0;
     let dragStartY = 0;
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
-      if (event.which != 1) {
+      if (event.which !== 1) {
         return;
       }
       event.preventDefault();
