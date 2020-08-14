@@ -12,7 +12,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import FriendShipPage from "pages/FriendShipPage";
 import React, { useState } from "react";
-import { Redirect, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -20,11 +20,11 @@ import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
-import { venueLandingUrl } from "utils/url";
 import { PreplayaRouter } from "components/templates/Preplaya/Router";
 import Camp from "components/templates/Camp/Camp";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -81,7 +81,11 @@ const VenuePage = () => {
   useConnectUserPurchaseHistory();
 
   if (!user) {
-    return <Redirect to={venueLandingUrl(venueId)} />;
+    return (
+      <WithNavigationBar>
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+      </WithNavigationBar>
+    );
   }
 
   if (!venue) {

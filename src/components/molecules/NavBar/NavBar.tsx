@@ -74,6 +74,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               />
             </span>
           </Link>
+          <div className="create-button-container">
+            <Link to="/admin" className="create-button">
+              Create
+            </Link>
+          </div>
           {user ? (
             <div className="icons-container">
               {hasUpcomingEvents && (
