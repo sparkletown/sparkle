@@ -171,7 +171,7 @@ export const updateVenue = async (input: VenueInput, user: UserInfo) => {
   );
 };
 
-export const createRoom = async (
+export const upsertRoom = async (
   input: RoomInput,
   venueId: string,
   user: UserInfo
@@ -182,7 +182,7 @@ export const createRoom = async (
     user
   );
 
-  return await firebase.functions().httpsCallable("venue-createRoom")({
+  return await firebase.functions().httpsCallable("venue-upsertRoom")({
     venueId,
     room: firestoreVenueInput,
   });

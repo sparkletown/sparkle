@@ -16,7 +16,7 @@ import { validationSchema } from "./RoomsValidationSchema";
 import { useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
-import { createRoom, RoomInput } from "api/admin";
+import { upsertRoom, RoomInput } from "api/admin";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -90,7 +90,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     async (vals: Partial<FormValues>) => {
       if (!user) return;
       try {
-        await createRoom(vals as RoomInput, venueId, user);
+        await upsertRoom(vals as RoomInput, venueId, user);
         history.push("/admin");
       } catch (e) {
         console.error(e);

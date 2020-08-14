@@ -118,6 +118,34 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
   return venueData;
 });
 
+exports.upsertRoom = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+  const { venueId, room } = data;
+  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const docData = doc.data();
+      const rooms = docData.rooms;
+
+      //if the room exists under the same name, find it
+      const ind = rooms.findIndex((val) => val.title === room.title);
+      if (ind === -1) {
+        docData.rooms = [...docData.rooms, room];
+      } else {
+        docData.rooms[ind] = room;
+      }
+
+      admin.firestore().collection("venues").doc(venueId).update(docData);
+    });
+});
+
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
