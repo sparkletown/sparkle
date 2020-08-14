@@ -7,7 +7,7 @@ import {
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useMemo, CSSProperties } from "react";
+import React, { useCallback, useMemo, CSSProperties, useEffect } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/Venue";
@@ -31,6 +31,7 @@ import {
   CustomDragLayer,
 } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { ExtractProps } from "types/utility";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -38,27 +39,39 @@ interface DetailsFormProps extends WizardPage {
   editing?: boolean;
 }
 
+const iconPositionFieldName = "iconPosition";
+
 export const DetailsForm: React.FC<DetailsFormProps> = ({
   previous,
   state,
   editing,
 }) => {
   const defaultValues = useMemo(
-    () => editVenueCastSchema.cast(state.detailsPage?.venue),
-    [state.detailsPage]
+    () =>
+      editing
+        ? editVenueCastSchema.cast(state.detailsPage?.venue)
+        : validationSchema.cast(),
+    [state.detailsPage, editing]
   );
 
-  const { watch, formState, ...rest } = useForm<FormValues>({
-    mode: "onSubmit",
-    reValidateMode: "onChange",
-    validationSchema: validationSchema,
-    validationContext: { template: state.templatePage?.template, editing },
-    defaultValues,
-  });
+  const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
+    {
+      mode: "onSubmit",
+      reValidateMode: "onChange",
+      validationSchema: validationSchema,
+      validationContext: { template: state.templatePage?.template, editing },
+      defaultValues,
+    }
+  );
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+
+  //register the icon position data
+  useEffect(() => {
+    register("placement");
+  }, [register]);
 
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
@@ -86,10 +99,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () =>
       mapIconUrl
         ? {
-            mapIconUrl: { top: 20, left: 20, url: mapIconUrl },
+            [iconPositionFieldName]: {
+              top: defaultValues?.placement?.y ?? 0,
+              left: defaultValues?.placement?.x ?? 0,
+              url: mapIconUrl,
+            },
           }
         : undefined,
-    [mapIconUrl]
+    [mapIconUrl, defaultValues]
+  );
+
+  const onBoxMove: ExtractProps<typeof Container>["onChange"] = useCallback(
+    (val) => {
+      if (!(iconPositionFieldName in val)) return;
+      const iconPos = val[iconPositionFieldName];
+      setValue("placement", {
+        state: defaultValues?.placement?.state,
+        x: iconPos.left,
+        y: iconPos.top,
+      });
+    },
+    [defaultValues, setValue]
   );
 
   if (!state.templatePage) {
@@ -103,10 +133,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         <div className="page-container-left">
           <div className="page-container-left-content">
             <DetailsFormLeft
+              setValue={setValue}
               state={state}
               previous={previous}
               values={values}
               isSubmitting={isSubmitting}
+              register={register}
               {...rest}
               onSubmit={onFormSubmit}
               editing={editing}
@@ -117,6 +149,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       <div className="page-side preview">
         <div className="playa">
           <Container
+            onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
             backgroundImage={"/burn/Playa.jpeg"}
@@ -183,8 +216,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
   const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});
-
-  console.log("VALUES", values);
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>

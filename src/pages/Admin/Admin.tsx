@@ -24,6 +24,7 @@ import "./Admin.scss";
 import AdminEvent from "./AdminEvent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import { venueInsideUrl } from "utils/url";
+import { AdminVenuePreview } from "./AdminVenuePreview";
 
 dayjs.extend(advancedFormat);
 
@@ -179,65 +180,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
             />
           </div>
         </div>
-        <div className="venue-preview" style={{ marginTop: 20 }}>
-          <h3 style={{ textAlign: "center" }}>
-            Your <b>Experience</b> Info
-          </h3>
-          <div className="heading-group">
-            <div>
-              <span className="title">Name:</span>
-              <span className="content">{venue.name}</span>
-            </div>
-            <div>
-              <span className="title">Short description:</span>
-              <span className="content">
-                {venue.config.landingPageConfig.subtitle}
-              </span>
-            </div>
-            <div>
-              <span className="title">Long description:</span>
-              <span className="content">
-                {venue.config.landingPageConfig.description}
-              </span>
-            </div>
-          </div>
-          <div className="content-group">
-            <div>
-              <span className="title">Banner photo</span>
-              <img
-                className="banner"
-                src={venue.config.landingPageConfig.coverImageUrl}
-                alt="cover"
-              />
-            </div>
-            <div>
-              <span className="title">Playa icon</span>
-              <span className="content">
-                <img
-                  className="icon"
-                  src={venue.mapIconImageUrl ?? venue.host.icon}
-                  alt="icon"
-                />
-              </span>
-            </div>
-            <div>
-              <span className="title">Camp logo</span>
-              <span className="content">
-                <img
-                  className="icon"
-                  src={venue.mapIconImageUrl ?? venue.host.icon}
-                  alt="icon"
-                />
-              </span>
-            </div>
-            <div>
-              <span className="title">Zoom url</span>
-              <span className="content">
-                {venue.zoomUrl ?? "NOT A ZOOM ROOM"}
-              </span>
-            </div>
-          </div>
-        </div>
+        <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
       </div>
       <div className="page-container-adminpanel-actions">
         <Link
