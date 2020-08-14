@@ -11,8 +11,8 @@ export interface CampVenue extends Venue {
     icon: string;
     name: string;
   };
-  description: {
-    text: string;
+  description?: {
+    // text: string;
     program_url?: string;
   };
   name: string;
