@@ -22,7 +22,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               <a
                 href={venue.embedIframeUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="content"
               >
                 {venue.embedIframeUrl}
@@ -38,7 +38,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               <a
                 href={venue.zoomUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="content"
               >
                 {venue.zoomUrl}
