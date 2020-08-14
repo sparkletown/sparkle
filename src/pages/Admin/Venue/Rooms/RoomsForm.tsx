@@ -130,11 +130,16 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
+      console.log("iconPos.left: ", iconPos.left);
+      console.log("iconPos.top: ", iconPos.top);
       setValue("x_percent", iconPos.left);
       setValue("y_percent", iconPos.top);
     },
     [setValue]
   );
+
+  console.log("values.x_percent: ", values.x_percent);
+  console.log("values.y_percent: ", values.y_percent);
 
   const imageUrl = useMemo(
     () =>
