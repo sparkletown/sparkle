@@ -25,23 +25,22 @@ export interface AdvancedVenueInput {
   profileQuestions: Array<Question>;
 }
 
-type ImageFileKeys =
+type VenueImageFileKeys =
   | "bannerImageFile"
   | "logoImageFile"
   | "mapIconImageFile"
   | "mapBackgroundImageFile";
-type ImageUrlKeys =
+type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
   | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
 
-interface VenueImageUrls {
-  bannerImageUrl?: string;
-  logoImageUrl?: string;
-  mapIconImageUrl?: string;
-  mapBackgroundImageUrl?: string;
-}
+type RoomImageFileKeys = "image_file";
+type RoomImageUrlKeys = "image_url";
+
+type VenueImageUrls = Partial<Record<VenueImageUrlKeys, string>>;
+type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
 export type RoomInput = Omit<CampRoomData, "image_url"> & {
   image_url?: string;
@@ -65,7 +64,10 @@ export type VenueInput = AdvancedVenueInput &
     placement?: Omit<VenuePlacement, "state">;
   };
 
-type FirestoreVenueInput = Omit<VenueInput, ImageFileKeys> & VenueImageUrls;
+type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
+  VenueImageUrls;
+
+type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -75,8 +77,8 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
 
   const urlVenueName = createUrlSafeName(input.name);
   type ImageNaming = {
-    fileKey: ImageFileKeys;
-    urlKey: ImageUrlKeys;
+    fileKey: VenueImageFileKeys;
+    urlKey: VenueImageUrlKeys;
   };
   const imageKeys: Array<ImageNaming> = [
     { fileKey: "logoImageFile", urlKey: "logoImageUrl" },
@@ -111,6 +113,49 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   return firestoreVenueInput;
 };
 
+const createFirestoreRoomInput = async (
+  input: RoomInput,
+  venueId: string,
+  user: UserInfo
+) => {
+  const storageRef = firebase.storage().ref();
+
+  const urlRoomName = createUrlSafeName(
+    input.title + Math.random().toString() //room titles are not necessarily unique
+  );
+  type ImageNaming = {
+    fileKey: RoomImageFileKeys;
+    urlKey: RoomImageUrlKeys;
+  };
+  const imageKeys: Array<ImageNaming> = [
+    { fileKey: "image_file", urlKey: "image_url" },
+  ];
+
+  let imageInputData = {};
+
+  // upload the files
+  for (const entry of imageKeys) {
+    const fileArr = input[entry.fileKey];
+    if (!fileArr || fileArr.length === 0) continue;
+    const file = fileArr[0];
+    const uploadFileRef = storageRef.child(
+      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+    );
+    await uploadFileRef.put(file);
+    const downloadUrl: string = await uploadFileRef.getDownloadURL();
+    imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
+  }
+
+  const firestoreRoomInput: FirestoreRoomInput = {
+    ..._.omit(
+      input,
+      imageKeys.map((entry) => entry.fileKey)
+    ),
+    ...imageInputData,
+  };
+  return firestoreRoomInput;
+};
+
 export const createVenue = async (input: VenueInput, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue")(
@@ -124,6 +169,23 @@ export const updateVenue = async (input: VenueInput, user: UserInfo) => {
   return await firebase.functions().httpsCallable("venue-updateVenue")(
     firestoreVenueInput
   );
+};
+
+export const createRoom = async (
+  input: RoomInput,
+  venueId: string,
+  user: UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreRoomInput(
+    input,
+    venueId,
+    user
+  );
+
+  return await firebase.functions().httpsCallable("venue-createRoom")({
+    venueId,
+    room: firestoreVenueInput,
+  });
 };
 
 export const createEvent = async (venueId: string, event: VenueEvent) => {

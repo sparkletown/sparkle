@@ -15,6 +15,8 @@ import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";
 import { useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
+import { useUser } from "hooks/useUser";
+import { createRoom, RoomInput } from "api/admin";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -46,12 +48,13 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar fullscreen>
-      <RoomInnerForm venue={venue} />
+      <RoomInnerForm venueId={venueId} venue={venue} />
     </WithNavigationBar>
   );
 };
 
 interface RoomInnerForm {
+  venueId: string;
   venue: CampVenue;
   editing?: boolean;
 }
@@ -59,7 +62,7 @@ interface RoomInnerForm {
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
-  const { venue, editing } = props;
+  const { venue, venueId, editing } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(), []);
 
@@ -77,10 +80,24 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     defaultValues,
   });
 
+  const { user } = useUser();
+  const history = useHistory();
+
   const values = watch();
   const disable = isSubmitting;
 
-  const onSubmit = useCallback(async (vals: Partial<FormValues>) => {}, []);
+  const onSubmit = useCallback(
+    async (vals: Partial<FormValues>) => {
+      if (!user) return;
+      try {
+        await createRoom(vals as RoomInput, venueId, user);
+        history.push("/admin");
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [user, history, venueId]
+  );
 
   return (
     <div className="page">
@@ -111,7 +128,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   )}
                 </div>
                 <div className="input-container">
-                  <div className="input-title">Name your venue</div>
+                  <div className="input-title">Give your room a subtitle</div>
                   <input
                     name="subtitle"
                     disabled={disable}
