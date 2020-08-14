@@ -21,7 +21,7 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
-import { venueLandingUrl } from "utils/url";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
 const AppRouter = ({ defaultRedirect }) => {
   const firebase = useFirebase();
