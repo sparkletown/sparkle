@@ -37,6 +37,7 @@ interface PropsType {
   backgroundImage: string;
   iconImageStyle: CSSProperties;
   onChange: (val: SubVenueIconMap) => void;
+  venueId?: string;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -46,6 +47,7 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImage,
     iconImageStyle,
     onChange,
+    venueId,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [scale, setScale] = useState({ x: 1, y: 1 });
@@ -170,21 +172,23 @@ export const Container: React.FC<PropsType> = (props) => {
         />
         {useMemo(
           () =>
-            placedVenues?.map((v) => (
-              <img
-                key={v.id}
-                src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                style={{
-                  position: "absolute",
-                  top: (v.placement?.x || 0) * scale.x,
-                  left: (v.placement?.y || 0) * scale.y,
-                  width: PLAYA_ICON_SIDE, // @debt should be at the right scale
-                  opacity: 0.4,
-                }}
-                alt={`${v.name} map icon`}
-              />
-            )),
-          [placedVenues, scale]
+            placedVenues
+              ?.filter((v) => v.id !== venueId)
+              .map((v) => (
+                <img
+                  key={v.id}
+                  src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                  style={{
+                    position: "absolute",
+                    top: (v.placement?.x || 0) * scale.x,
+                    left: (v.placement?.y || 0) * scale.y,
+                    width: PLAYA_ICON_SIDE, // @debt should be at the right scale
+                    opacity: 0.4,
+                  }}
+                  alt={`${v.name} map icon`}
+                />
+              )),
+          [placedVenues, scale, venueId]
         )}
       </div>
       {Object.keys(boxes).map((key) => (

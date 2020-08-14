@@ -90,7 +90,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   }, [firestore, venueId]);
 
   if (!state.detailsPage) return <div>Loading...</div>;
-  return <DetailsForm editing state={state} />;
+  return <DetailsForm venueId={venueId} state={state} />;
 };
 
 const VenueWizardCreate: React.FC = () => {

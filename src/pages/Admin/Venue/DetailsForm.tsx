@@ -36,7 +36,7 @@ import { ExtractProps } from "types/utility";
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
 interface DetailsFormProps extends WizardPage {
-  editing?: boolean;
+  venueId?: string;
 }
 
 const iconPositionFieldName = "iconPosition";
@@ -44,14 +44,14 @@ const iconPositionFieldName = "iconPosition";
 export const DetailsForm: React.FC<DetailsFormProps> = ({
   previous,
   state,
-  editing,
+  venueId,
 }) => {
   const defaultValues = useMemo(
     () =>
-      editing
+      !!venueId
         ? editVenueCastSchema.cast(state.detailsPage?.venue)
         : validationSchema.cast(),
-    [state.detailsPage, editing]
+    [state.detailsPage, venueId]
   );
 
   const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
@@ -59,7 +59,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       mode: "onSubmit",
       reValidateMode: "onChange",
       validationSchema: validationSchema,
-      validationContext: { template: state.templatePage?.template, editing },
+      validationContext: {
+        template: state.templatePage?.template,
+        editing: !!venueId,
+      },
       defaultValues,
     }
   );
@@ -78,14 +81,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (editing) await updateVenue(vals as VenueInput, user);
+        if (!!venueId) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
         history.push("/admin");
       } catch (e) {
         console.error(e);
       }
     },
-    [user, editing, history]
+    [user, venueId, history]
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
@@ -141,7 +144,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               register={register}
               {...rest}
               onSubmit={onFormSubmit}
-              editing={editing}
+              editing={!!venueId}
             />
           </div>
         </div>
@@ -154,6 +157,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             iconsMap={iconsMap ?? {}}
             backgroundImage={"/burn/Playa.jpeg"}
             iconImageStyle={styles.iconImage}
+            venueId={venueId}
           />
           <CustomDragLayer
             snapToGrid={false}
