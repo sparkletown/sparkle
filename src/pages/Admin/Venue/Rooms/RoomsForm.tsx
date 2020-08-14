@@ -136,20 +136,27 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     [setValue]
   );
 
-  const imageUrl =
-    values.image_file && values.image_file.length > 0
-      ? URL.createObjectURL(values.image_file[0])
-      : values.image_url;
+  const imageUrl = useMemo(
+    () =>
+      values.image_file && values.image_file.length > 0
+        ? URL.createObjectURL(values.image_file[0])
+        : values.image_url,
+    [values.image_file, values.image_url]
+  );
 
-  const currentRoomIcon: SubVenueIconMap = imageUrl
-    ? {
-        icon: {
-          left: values.x_percent || 0,
-          top: values.y_percent || 0,
-          url: imageUrl,
-        },
-      }
-    : {};
+  const currentRoomIcon = useMemo(
+    (): SubVenueIconMap =>
+      imageUrl
+        ? {
+            [iconPositionFieldName]: {
+              left: values.x_percent || 0,
+              top: values.y_percent || 0,
+              url: imageUrl,
+            },
+          }
+        : {},
+    [imageUrl, values.x_percent, values.y_percent]
+  );
 
   return (
     <div className="page">
