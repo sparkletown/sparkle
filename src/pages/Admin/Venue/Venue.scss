@@ -58,8 +58,8 @@ $preview-margin: 30px;
     }
   }
   &.preview {
-    background-color: $dark;
-    overflow: scroll;
+    background-color: $black;
+    overflow: auto;
     flex-direction: column;
     margin-top: $navbar-height;
 

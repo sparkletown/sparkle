@@ -44,6 +44,7 @@ export interface Venue {
   placement?: VenuePlacement;
   zoomUrl?: string;
   embedIframeUrl?: string;
+  mapBackgroundImageUrl?: string;
 }
 
 export interface VenuePlacement {

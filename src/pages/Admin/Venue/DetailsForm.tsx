@@ -89,7 +89,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         else await createVenue(vals as VenueInput, user);
 
         if (templateID === VenueTemplate.themecamp)
-          history.push(`/admin/rooms/${venueId}`);
+          history.push(`/admin/venue/${venueId}`);
         else history.push("/admin");
       } catch (e) {
         console.error(e);
@@ -109,12 +109,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () =>
       mapIconUrl
         ? {
-            [iconPositionFieldName]: {
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
+          [iconPositionFieldName]: {
+            top: defaultValues?.placement?.y ?? 0,
+            left: defaultValues?.placement?.x ?? 0,
+            url: mapIconUrl,
+          },
+        }
         : undefined,
     [mapIconUrl, defaultValues]
   );
@@ -142,7 +142,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     <div className="page">
       <div className="page-side">
         <div className="page-container-left">
-          <div className="page-container-left-content">
+          <div
+            className="page-container-left-content"
+            style={{ maxWidth: "680px" }}
+          >
             <DetailsFormLeft
               setValue={setValue}
               state={state}
@@ -157,7 +160,13 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           </div>
         </div>
       </div>
-      <div className="page-side preview">
+      <div className="page-side preview" style={{ paddingBottom: "20px" }}>
+        <h4
+          className="italic"
+          style={{ textAlign: "center", fontSize: "22px" }}
+        >
+          Position your venue on the playa
+        </h4>
         <div className="playa">
           <PlayaContainer
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
@@ -221,8 +230,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+      createUrlSafeName(values.name)
+    )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
@@ -234,15 +243,20 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
-        <h4 className="italic">{`${
+        <h4 className="italic" style={{ fontSize: "30px" }}>{`${
           editing ? "Edit" : "Create"
-        } your ${templateType}`}</h4>
-        <p className="small light" style={{ marginBottom: "2rem" }}>
+          } your ${templateType}`}</h4>
+        <p
+          className="small light"
+          style={{ marginBottom: "2rem", fontSize: "16px" }}
+        >
           You can change anything except for the name of your venue later
         </p>
         {!editing ? (
           <div className="input-container">
-            <div className="input-title">Name your venue</div>
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Name your {templateType}
+            </h4>
             <input
               disabled={disable}
               name="name"
@@ -259,45 +273,42 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             ) : null}
           </div>
         ) : (
-          <input type="hidden" name="name" ref={register} value={values.name} />
-        )}
+            <input type="hidden" name="name" ref={register} value={values.name} />
+          )}
         <div className="input-container">
-          <div className="input-title">
-            {`Choose how you'd like your venue to appear on the map`}
-          </div>
-          <ImageCollectionInput
-            collectionPath={"assets/mapIcons"}
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            The venue tagline
+          </h4>
+          <input
             disabled={disable}
-            fieldName={"mapIconImage"}
-            register={register}
-            imageUrl={values.mapIconImageUrl}
-            containerClassName="input-square-container"
-            imageClassName="input-square-image"
-            image={values.mapIconImageFile}
-            error={errors.mapIconImageFile || errors.mapIconImageUrl}
-            setValue={setValue}
-            imageType="icons"
+            name={"subtitle"}
+            ref={register}
+            className="wide-input-block align-left"
+            placeholder={defaultVenue.config.landingPageConfig.subtitle}
           />
-          {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
-            <ImageCollectionInput
-              collectionPath={"assets/mapBackgrounds"}
-              disabled={disable}
-              fieldName={"mapBackgroundImage"}
-              register={register}
-              imageUrl={values.mapBackgroundImageUrl}
-              containerClassName="input-square-container"
-              imageClassName="input-square-image"
-              image={values.mapBackgroundImageFile}
-              error={
-                errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
-              }
-              setValue={setValue}
-              imageType="backgrounds"
-            />
+          {errors.subtitle && (
+            <span className="input-error">{errors.subtitle.message}</span>
           )}
         </div>
         <div className="input-container">
-          <div className="input-title">Upload a banner photo</div>
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Long description
+          </h4>
+          <textarea
+            disabled={disable}
+            name={"description"}
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder={defaultVenue.config.landingPageConfig.description}
+          />
+          {errors.description && (
+            <span className="input-error">{errors.description.message}</span>
+          )}
+        </div>
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Upload a banner photo
+          </h4>
           <ImageInput
             disabled={disable}
             name={"bannerImageFile"}
@@ -309,7 +320,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <div className="input-title">Upload a square logo</div>
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Upload a square logo
+          </h4>
           <ImageInput
             disabled={disable}
             ref={register}
@@ -323,36 +336,56 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <div className="input-title">The venue tagline</div>
-          <input
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            {`Choose how you'd like your venue to appear on the map`}
+          </h4>
+          <ImageCollectionInput
+            collectionPath={"assets/mapIcons2"}
             disabled={disable}
-            name={"subtitle"}
-            ref={register}
-            className="wide-input-block align-left"
-            placeholder={defaultVenue.config.landingPageConfig.subtitle}
+            fieldName={"mapIconImage"}
+            register={register}
+            imageUrl={values.mapIconImageUrl}
+            containerClassName="input-square-container"
+            imageClassName="input-square-image"
+            image={values.mapIconImageFile}
+            error={errors.mapIconImageFile || errors.mapIconImageUrl}
+            setValue={setValue}
+            imageType="icons"
           />
-          {errors.subtitle && (
-            <span className="input-error">{errors.subtitle.message}</span>
-          )}
-        </div>
-        <div className="input-container">
-          <div className="input-title">Long description</div>
-          <textarea
-            disabled={disable}
-            name={"description"}
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder={defaultVenue.config.landingPageConfig.description}
-          />
-          {errors.description && (
-            <span className="input-error">{errors.description.message}</span>
+          {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
+            <>
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                {`Choose the background for your Theme Camp`}
+              </h4>
+              <ImageCollectionInput
+                collectionPath={"assets/mapBackgrounds"}
+                disabled={disable}
+                fieldName={"mapBackgroundImage"}
+                register={register}
+                imageUrl={values.mapBackgroundImageUrl}
+                containerClassName="input-square-container"
+                imageClassName="input-square-image"
+                image={values.mapBackgroundImageFile}
+                error={
+                  errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
+                }
+                setValue={setValue}
+                imageType="backgrounds"
+              />
+            </>
           )}
         </div>
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
               <div className="input-container">
-                <div className="input-title">Zoom URL</div>
+                <h4 className="italic" style={{ fontSize: "20px" }}>
+                  Zoom URL
+                </h4>
+                <div style={{ fontSize: "16px" }}>
+                  (you can edit this later so you can leave a placeholder for
+                  now)
+                </div>
                 <textarea
                   disabled={disable}
                   name={"zoomUrl"}
@@ -414,8 +447,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             Go Back
           </button>
         ) : (
-          <div />
-        )}
+            <div />
+          )}
         <div>
           <SubmitButton editing={editing} isSubmitting={isSubmitting} />
         </div>
@@ -443,10 +476,10 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       <span className="sr-only">Loading...</span>
     </div>
   ) : (
-    <input
-      className="btn btn-primary"
-      type="submit"
-      value={editing ? "Update venue" : "Create venue"}
-    />
-  );
+      <input
+        className="btn btn-primary"
+        type="submit"
+        value={editing ? "Update venue" : "Create venue"}
+      />
+    );
 };

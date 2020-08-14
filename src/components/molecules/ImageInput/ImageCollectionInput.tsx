@@ -91,8 +91,48 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
 
   return (
     <>
-      <div style={{ marginTop: 10, fontWeight: "bold" }}>
-        {`Choose one of our popular ${imageType}`}
+      <div style={{ marginTop: 10, fontSize: "16px" }}>
+        {`Upload your own file`}
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <input
+          // trick react to recreate the file input. This is so that when a default image is selected, the file inputs forgets about the previously uploaded file
+          key={fileInputKey.toString()}
+          name={`${fieldName}File`}
+          style={{ flex: 1 }}
+          disabled={disabled}
+          type="file"
+          onChange={handleFileChange}
+          accept="image/x-png,image/gif,image/jpeg"
+          className="default-input"
+          ref={register}
+        />
+        <div style={{ overflow: "hidden" }}>
+          {imageUrlForPreview && imageFiles && (
+            <img
+              style={{ width: 200 }}
+              className={`default-image ${imageClassName}`}
+              src={imageUrlForPreview}
+              alt="upload"
+            />
+          )}
+        </div>
+      </div>
+      <input
+        type="hidden"
+        name={`${fieldName}Url`}
+        ref={register}
+        value={imageUrlForPreview}
+      />
+      {error?.message && <span className="input-error">{error.message}</span>}
+      <div style={{ marginTop: 10, fontSize: "16px" }}>
+        {`Or choose one of our popular ${imageType}`}
       </div>
       <div
         style={{
@@ -124,51 +164,14 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
             <img
               alt="imageCollectionUrl"
               src={imageCollectionUrl}
-              style={{ width: 80, height: 80 }}
+              style={{
+                width: "90px",
+                height: "90px",
+              }}
             />
           </div>
         ))}
       </div>
-      <div style={{ marginTop: 10, fontWeight: "bold" }}>
-        {`Or upload your own`}
-      </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <input
-          // trick react to recreate the file input. This is so that when a default image is selected, the file inputs forgets about the previously uploaded file
-          key={fileInputKey.toString()}
-          name={`${fieldName}File`}
-          style={{ flex: 1 }}
-          disabled={disabled}
-          type="file"
-          onChange={handleFileChange}
-          accept="image/x-png,image/gif,image/jpeg"
-          className="btn btn-primary"
-          ref={register}
-        />
-        <div style={{ overflow: "hidden" }}>
-          {imageUrlForPreview && (
-            <img
-              style={{ width: 200 }}
-              className={`default-image ${imageClassName}`}
-              src={imageUrlForPreview}
-              alt="upload"
-            />
-          )}
-        </div>
-      </div>
-      <input
-        type="hidden"
-        name={`${fieldName}Url`}
-        ref={register}
-        value={imageUrlForPreview}
-      />
-      {error?.message && <span className="input-error">{error.message}</span>}
     </>
   );
 };
