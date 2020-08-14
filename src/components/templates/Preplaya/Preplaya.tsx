@@ -44,6 +44,9 @@ const Preplaya = () => {
     let dragStartX = 0;
     let dragStartY = 0;
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
+      if (event.which != 1) {
+        return;
+      }
       event.preventDefault();
       dragging = true;
       if (event instanceof TouchEvent) {
@@ -141,8 +144,8 @@ const Preplaya = () => {
           }}
         >
           <div className="demo-message">
-            This is a demo of how camps look on the final, fully-interactive
-            playa.
+            This is a demo of how camps and art will look on the final,
+            fully-interactive playa.
           </div>
           <img
             className="playa-background"
