@@ -16,6 +16,7 @@ interface PropsType {
   iconImageStyle: CSSProperties;
   onChange: (val: SubVenueIconMap) => void;
   venueId?: string;
+  coordinatesBoundary: number;
 }
 
 export const PlayaContainer: React.FC<PropsType> = (props) => {
@@ -39,7 +40,7 @@ export const PlayaContainer: React.FC<PropsType> = (props) => {
           };
         }, {}) ?? {}
     );
-  }, [venues]);
+  }, [venues, venueId]);
 
   return <Container {...rest} otherIcons={placedVenues} />;
 };

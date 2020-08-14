@@ -24,6 +24,7 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  PLAYA_WIDTH_AND_HEIGHT,
 } from "settings";
 import "./Venue.scss";
 import {
@@ -159,6 +160,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       <div className="page-side preview">
         <div className="playa">
           <PlayaContainer
+            coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}

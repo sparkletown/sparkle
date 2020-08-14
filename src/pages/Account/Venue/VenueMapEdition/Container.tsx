@@ -13,11 +13,7 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import {
-  PLAYA_WIDTH_AND_HEIGHT,
-  DEFAULT_MAP_ICON_URL,
-  PLAYA_ICON_SIDE,
-} from "settings";
+import { DEFAULT_MAP_ICON_URL, PLAYA_ICON_SIDE } from "settings";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -36,6 +32,7 @@ interface PropsType {
   iconImageStyle: CSSProperties;
   onChange: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
+  coordinatesBoundary: number;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -46,6 +43,7 @@ export const Container: React.FC<PropsType> = (props) => {
     iconImageStyle,
     onChange,
     otherIcons,
+    coordinatesBoundary,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [scale, setScale] = useState({ x: 1, y: 1 });
@@ -71,24 +69,18 @@ export const Container: React.FC<PropsType> = (props) => {
   useLayoutEffect(() => {
     mapRef?.current?.getBoundingClientRect().width &&
       setScale({
-        x:
-          mapRef.current.getBoundingClientRect().width / PLAYA_WIDTH_AND_HEIGHT,
-        y:
-          mapRef.current.getBoundingClientRect().height /
-          PLAYA_WIDTH_AND_HEIGHT,
+        x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
+        y: mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
       });
-  }, [setScale, mapRef]);
+  }, [setScale, mapRef, coordinatesBoundary]);
 
   useLayoutEffect(() => {
     const rescale = () => {
       mapRef?.current?.getBoundingClientRect().width &&
         setScale({
-          x:
-            mapRef.current.getBoundingClientRect().width /
-            PLAYA_WIDTH_AND_HEIGHT,
+          x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
           y:
-            mapRef.current.getBoundingClientRect().height /
-            PLAYA_WIDTH_AND_HEIGHT,
+            mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
         });
     };
 
@@ -96,7 +88,7 @@ export const Container: React.FC<PropsType> = (props) => {
     return () => {
       window.removeEventListener("resize", rescale);
     };
-  }, []);
+  }, [coordinatesBoundary]);
 
   useMemo(() => {
     const copy = Object.keys(iconsMap).reduce(

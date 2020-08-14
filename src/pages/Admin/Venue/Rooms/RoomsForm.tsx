@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, {
+  CSSProperties,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { ALL_VENUE_TEMPLATES } from "settings";
 import { useFirestore } from "react-redux-firebase";
@@ -8,8 +14,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import {
-  Container,
+  CampContainer,
   CustomDragLayer,
+  SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";
@@ -18,6 +25,7 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
+import { ExtractProps } from "types/utility";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -89,6 +97,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     handleSubmit,
     errors,
     formState: { isSubmitting },
+    setValue,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -115,6 +124,32 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     },
     [user, history, venueId]
   );
+
+  const iconPositionFieldName = "iconPosition";
+  const onBoxMove: ExtractProps<typeof CampContainer>["onChange"] = useCallback(
+    (val) => {
+      if (!(iconPositionFieldName in val)) return;
+      const iconPos = val[iconPositionFieldName];
+      setValue("x_percent", iconPos.left);
+      setValue("y_percent", iconPos.top);
+    },
+    [setValue]
+  );
+
+  const imageUrl =
+    values.image_file && values.image_file.length > 0
+      ? URL.createObjectURL(values.image_file[0])
+      : values.image_url;
+
+  const currentRoomIcon: SubVenueIconMap = imageUrl
+    ? {
+        icon: {
+          left: values.x_percent || 0,
+          top: values.y_percent || 0,
+          url: imageUrl,
+        },
+      }
+    : {};
 
   return (
     <div className="page">
@@ -227,18 +262,44 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       </div>
       <div className="page-side preview">
         <div className="playa">
-          <Container
-            onChange={() => {}}
-            snapToGrid={false}
-            iconsMap={{}}
-            backgroundImage={venue.mapBackgroundImageUrl ?? "/burn/Playa.jpeg"}
-            iconImageStyle={{}}
-          />
-          <CustomDragLayer snapToGrid={false} iconImageStyle={{}} />
+          {venue.mapBackgroundImageUrl && (
+            <>
+              <CampContainer
+                coordinatesBoundary={100}
+                onChange={onBoxMove}
+                snapToGrid={false}
+                iconsMap={currentRoomIcon}
+                backgroundImage={
+                  venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+                }
+                iconImageStyle={styles.iconImage}
+                venue={venue}
+              />
+              <CustomDragLayer
+                snapToGrid={false}
+                iconImageStyle={styles.draggableIconImage}
+              />
+            </>
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+const styles: Record<string, CSSProperties> = {
+  iconImage: {
+    width: 60,
+    height: 60,
+    overflow: "hidden",
+    borderRadius: 30,
+  },
+  draggableIconImage: {
+    width: 70,
+    height: 70,
+    overflow: "hidden",
+    borderRadius: 35,
+  },
 };
 
 interface SubmitButtonProps {
