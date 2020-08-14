@@ -15,6 +15,7 @@ import {
   useLocation,
   useParams,
   useRouteMatch,
+  useHistory,
 } from "react-router-dom";
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
@@ -25,6 +26,8 @@ import AdminEvent from "./AdminEvent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
+import { Modal } from "react-bootstrap";
+import { deleteVenue } from "api/admin";
 
 dayjs.extend(advancedFormat);
 
@@ -147,11 +150,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId }) => {
 };
 
 const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
-  console.log("venue", venue);
-  console.log(
-    "venue.config.landingPageConfig.coverImageUrl",
-    venue.config.landingPageConfig.coverImageUrl
-  );
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const history = useHistory();
+
   return (
     <>
       <div className="page-container-adminpanel-content">
@@ -183,22 +184,69 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
       </div>
       <div className="page-container-adminpanel-actions">
-        <Link
-          to={venuePlayaPreviewUrl(venue.id)}
-          target="_blank"
-          rel="noopener noreferer"
-          className="btn btn-primary btn-block"
-        >
-          Visit venue
-        </Link>
-        <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
-          Edit venue
-        </Link>
-        {canHaveSubvenues(venue) && (
-          <Link to="#" className="btn btn-block">
-            Add a subvenue
+        <div>
+          <Link
+            to={venuePlayaPreviewUrl(venue.id)}
+            target="_blank"
+            rel="noopener noreferer"
+            className="btn btn-primary btn-block"
+          >
+            Visit venue
           </Link>
-        )}
+          <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
+            Edit venue
+          </Link>
+          {canHaveSubvenues(venue) && (
+            <Link to="#" className="btn btn-block">
+              Add a subvenue
+            </Link>
+          )}
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={() => {
+              setShowDeletePopup(true);
+            }}
+            className="btn btn-block btn-danger"
+            style={{ justifySelf: "flex-end" }}
+          >
+            Delete venue
+          </button>
+          <Modal
+            show={showDeletePopup}
+            onHide={() => setShowDeletePopup(false)}
+          >
+            <Modal.Body>
+              <div className="modal-container modal-container_message">
+                <p>Are you sure you want to delete your venue?</p>
+                <p>This action is permanent.</p>
+                <button
+                  type="button"
+                  className="btn btn-primary btn-danger btn-block btn-centered"
+                  onClick={async () => {
+                    history.push("/admin");
+                    try {
+                      await deleteVenue(venue);
+                      // success toast
+                    } catch (e) {
+                      // error toast
+                    }
+                  }}
+                >
+                  Yes (Delete)
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-block btn-centered"
+                  onClick={() => setShowDeletePopup(false)}
+                >
+                  No (Cancel)
+                </button>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </div>
       </div>
     </>
   );

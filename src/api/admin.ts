@@ -2,7 +2,8 @@ import { UserInfo } from "firebase";
 import firebase from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
-import { VenuePlacement } from "types/Venue";
+import { VenuePlacement, Venue } from "types/Venue";
+import { WithId } from "utils/id";
 
 export interface EventInput {
   name: string;
@@ -118,6 +119,10 @@ export const updateVenue = async (input: VenueInput, user: UserInfo) => {
   return await firebase.functions().httpsCallable("venue-updateVenue")(
     firestoreVenueInput
   );
+};
+
+export const deleteVenue = async (venue: WithId<Venue>) => {
+  return await firebase.firestore().collection("venues").doc(venue.id).delete();
 };
 
 export const createEvent = async (venueId: string, event: VenueEvent) => {

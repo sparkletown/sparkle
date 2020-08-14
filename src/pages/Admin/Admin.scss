@@ -212,6 +212,10 @@ $page-max-width: 1240px;
         .page-container-adminpanel-actions {
           padding-right: 40px;
           padding-top: 20px;
+          display: flex;
+          flex: 1 1 auto;
+          flex-direction: column;
+          justify-content: space-between;
         }
       }
     }
