@@ -17,12 +17,18 @@ import { useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
+import { useQuery } from "hooks/useQuery";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
   const history = useHistory();
   const firestore = useFirestore();
   const [venue, setVenue] = useState<CampVenue>();
+  const queryParams = useQuery();
+  const queryRoomIndexString = queryParams.get("roomIndex");
+  const queryRoomIndex = queryRoomIndexString
+    ? parseInt(queryRoomIndexString)
+    : undefined;
 
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
@@ -43,12 +49,21 @@ export const RoomsForm: React.FC = () => {
     };
     fetchVenueFromAPI();
   }, [firestore, venueId, history]);
+  const room = useMemo(() => {
+    if (
+      typeof queryRoomIndex === "undefined" ||
+      !venue ||
+      venue.rooms.length - 1 < queryRoomIndex
+    )
+      return undefined;
+    return venue.rooms[queryRoomIndex];
+  }, [queryRoomIndex, venue]);
 
   if (!venue) return null;
 
   return (
     <WithNavigationBar fullscreen>
-      <RoomInnerForm venueId={venueId} venue={venue} />
+      <RoomInnerForm venueId={venueId} venue={venue} editingRoom={room} />
     </WithNavigationBar>
   );
 };
@@ -56,15 +71,17 @@ export const RoomsForm: React.FC = () => {
 interface RoomInnerForm {
   venueId: string;
   venue: CampVenue;
-  editing?: boolean;
+  editingRoom?: CampVenue["rooms"][number];
 }
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
-  const { venue, venueId, editing } = props;
+  const { venue, venueId, editingRoom } = props;
 
-  const defaultValues = useMemo(() => validationSchema.cast(), []);
+  const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
+    editingRoom,
+  ]);
 
   const {
     watch,
@@ -76,7 +93,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: validationSchema,
-    validationContext: { editing },
+    validationContext: { editing: !!editingRoom },
     defaultValues,
   });
 
@@ -128,6 +145,19 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   )}
                 </div>
                 <div className="input-container">
+                  <div className="input-title">Upload an icon photo</div>
+                  <ImageInput
+                    disabled={disable}
+                    name={"image_file"}
+                    image={values.image_file}
+                    remoteUrlInputName={"image_url"}
+                    remoteImageUrl={values.image_url}
+                    containerClassName="input-square-container"
+                    ref={register}
+                    error={errors.image_file || errors.image_url}
+                  />
+                </div>
+                <div className="input-container">
                   <div className="input-title">Give your room a subtitle</div>
                   <input
                     name="subtitle"
@@ -155,19 +185,6 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     <span className="input-error">{errors.about.message}</span>
                   )}
                 </div>
-
-                <div className="input-container">
-                  <div className="input-title">Upload a banner photo</div>
-                  <ImageInput
-                    disabled={disable}
-                    name={"image_file"}
-                    image={values.image_file}
-                    remoteUrlInputName={"image_url"}
-                    remoteImageUrl={values.image_url}
-                    ref={register}
-                    error={errors.image_file || errors.image_url}
-                  />
-                </div>
                 <div className="input-container">
                   <div className="input-title">The room url</div>
                   <input
@@ -185,7 +202,10 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               <div className="page-container-left-bottombar">
                 <div />
                 <div>
-                  <SubmitButton editing={editing} isSubmitting={isSubmitting} />
+                  <SubmitButton
+                    editing={!!editingRoom}
+                    isSubmitting={isSubmitting}
+                  />
                 </div>
               </div>
             </form>

@@ -195,8 +195,8 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
           Edit venue
         </Link>
         {canHaveSubvenues(venue) && (
-          <Link to="#" className="btn btn-block">
-            Add a subvenue
+          <Link to={`/admin/venue/rooms/${venue.id}`} className="btn btn-block">
+            Add a Room
           </Link>
         )}
       </div>
