@@ -80,7 +80,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         // unfortunately the typing is off for react-hook-forms.
         if (editing) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
-        history.push("/admin");
+        //history.push("/admin");
+        history.push(`/admin/venue/${createUrlSafeName(vals.name)}`);
       } catch (e) {
         console.error(e);
       }
