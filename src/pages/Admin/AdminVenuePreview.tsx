@@ -18,7 +18,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         return (
           <div>
             <span className="title">iFrame URL</span>
-            <span className="content">{venue.iframeUrl}</span>
+            <span className="content">{venue.embedIframeUrl}</span>
           </div>
         );
       default:
