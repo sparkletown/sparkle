@@ -35,7 +35,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
         );
       default:
-        return <div></div>;
+        return;
     }
   }, [venue]);
 
@@ -77,21 +77,13 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         <div>
           <span className="title">Playa icon</span>
           <span className="content">
-            <img
-              className="icon"
-              src={venue.mapIconImageUrl ?? venue.host.icon}
-              alt="icon"
-            />
+            <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
           </span>
         </div>
         <div>
           <span className="title">Camp logo</span>
           <span className="content">
-            <img
-              className="icon"
-              src={venue.host.icon ?? venue.mapIconImageUrl}
-              alt="icon"
-            />
+            <img className="icon" src={venue.host.icon} alt="icon" />
           </span>
         </div>
         {templateSpecificListItems}
