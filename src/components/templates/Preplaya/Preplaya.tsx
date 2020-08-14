@@ -156,8 +156,8 @@ const Preplaya = () => {
             <div
               className="venue"
               style={{
-                top: (venue.placement?.x || 0) * scale,
-                left: (venue.placement?.y || 0) * scale,
+                top: (venue.placement?.y || 0) * scale,
+                left: (venue.placement?.x || 0) * scale,
                 position: "absolute",
               }}
               onClick={() => showVenue(venue)}

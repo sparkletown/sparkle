@@ -48,7 +48,7 @@ export const Container: React.FC<PropsType> = (props) => {
     onChange,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
-  const [scale, setScale] = useState(1);
+  const [scale, setScale] = useState({ x: 1, y: 1 });
   const mapRef = useRef<HTMLDivElement>(null);
 
   // trigger the parent callback on boxes change (as a result of movement)
@@ -59,8 +59,8 @@ export const Container: React.FC<PropsType> = (props) => {
         ...acc,
         [val]: {
           ...boxes[val],
-          top: boxes[val].top / scale,
-          left: boxes[val].left / scale,
+          top: boxes[val].top / scale.y,
+          left: boxes[val].left / scale.x,
         },
       }),
       {}
@@ -70,17 +70,26 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useLayoutEffect(() => {
     mapRef?.current?.getBoundingClientRect().width &&
-      setScale(
-        mapRef.current.getBoundingClientRect().width / PLAYA_WIDTH_AND_HEIGHT
-      );
+      setScale({
+        x:
+          mapRef.current.getBoundingClientRect().width / PLAYA_WIDTH_AND_HEIGHT,
+        y:
+          mapRef.current.getBoundingClientRect().height /
+          PLAYA_WIDTH_AND_HEIGHT,
+      });
   }, [setScale, mapRef]);
 
   useLayoutEffect(() => {
     const rescale = () => {
       mapRef?.current?.getBoundingClientRect().width &&
-        setScale(
-          mapRef.current.getBoundingClientRect().width / PLAYA_WIDTH_AND_HEIGHT
-        );
+        setScale({
+          x:
+            mapRef.current.getBoundingClientRect().width /
+            PLAYA_WIDTH_AND_HEIGHT,
+          y:
+            mapRef.current.getBoundingClientRect().height /
+            PLAYA_WIDTH_AND_HEIGHT,
+        });
     };
 
     window.addEventListener("resize", rescale);
@@ -102,8 +111,8 @@ export const Container: React.FC<PropsType> = (props) => {
         ...acc,
         [val]: {
           ...iconsMap[val],
-          top: iconsMap[val].top * scale,
-          left: iconsMap[val].left * scale,
+          top: iconsMap[val].top * scale.y,
+          left: iconsMap[val].left * scale.x,
         },
       }),
       {}
@@ -167,8 +176,8 @@ export const Container: React.FC<PropsType> = (props) => {
                 src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
                 style={{
                   position: "absolute",
-                  top: (v.placement?.x || 0) * scale,
-                  left: (v.placement?.y || 0) * scale,
+                  top: (v.placement?.x || 0) * scale.x,
+                  left: (v.placement?.y || 0) * scale.y,
                   width: PLAYA_ICON_SIDE, // @debt should be at the right scale
                   opacity: 0.4,
                 }}
