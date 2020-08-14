@@ -14,7 +14,7 @@ const CountDown: React.FunctionComponent<PropsType> = ({
   const isPartyOngoing = timeBeforeParty === 0;
   return !isPartyOngoing ? (
     <div className="primary count-down-container">
-      {`${textBeforeCountdown || "Party begins in"} ${timeBeforeParty}`}
+      {`${textBeforeCountdown || "Burn week begins in"} ${timeBeforeParty}`}
     </div>
   ) : (
     <></>

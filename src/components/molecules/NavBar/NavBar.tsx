@@ -69,7 +69,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
             <span className="navbar-brand title">
               <img
                 className="sparkle-navbar-icon"
-                src="/sparkle-header.png"
+                src="/sparkleverse-header.png"
                 alt="Sparkle collective"
               />
             </span>
