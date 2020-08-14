@@ -44,6 +44,8 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
+import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
+
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const firebaseConfig = {
@@ -99,7 +101,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const auth = useSelector((state) => state.firebase.auth);
-  if (!isLoaded(auth)) return <div>Loading...</div>;
+  if (!isLoaded(auth)) return <LoadingPage />;
   return <>{children}</>;
 };
 
