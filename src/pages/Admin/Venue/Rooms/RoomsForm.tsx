@@ -125,6 +125,11 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     [user, history, venueId]
   );
 
+  useEffect(() => {
+    register("x_percent");
+    register("y_percent");
+  }, [register]);
+
   const iconPositionFieldName = "iconPosition";
   const onBoxMove: ExtractProps<typeof CampContainer>["onChange"] = useCallback(
     (val) => {
