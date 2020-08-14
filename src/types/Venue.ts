@@ -23,7 +23,7 @@ export interface Venue {
       subtitle: string;
       description?: string;
       presentation: string[];
-      bannerImageUrl: string;
+      bannerImageUrl?: string;
       checkList: string[];
       videoIframeUrl?: string;
       embedIframeUrl?: string;
