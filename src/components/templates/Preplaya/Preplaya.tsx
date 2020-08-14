@@ -8,11 +8,12 @@ import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
 import { updateLocationData } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { throttle } from "lodash";
 
 import "./Preplaya.scss";
-import { throttle } from "lodash";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -43,6 +44,9 @@ const Preplaya = () => {
     let dragStartX = 0;
     let dragStartY = 0;
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
+      if (event.which != 1) {
+        return;
+      }
       event.preventDefault();
       dragging = true;
       if (event instanceof TouchEvent) {
@@ -119,6 +123,16 @@ const Preplaya = () => {
     user && updateLocationData(user, "playa");
   }, [setShowModal, user]);
 
+  const { camp } = useParams();
+  useEffect(() => {
+    if (camp) {
+      const campVenue = venues?.find((venue) => venue.id === camp);
+      if (campVenue) {
+        showVenue(campVenue);
+      }
+    }
+  }, [camp, venues, showVenue]);
+
   return (
     <>
       <div className="preplaya-container">
@@ -130,8 +144,8 @@ const Preplaya = () => {
           }}
         >
           <div className="demo-message">
-            This is a demo of how camps look on the final, fully-interactive
-            playa.
+            This is a demo of how camps and art will look on the final,
+            fully-interactive playa.
           </div>
           <img
             className="playa-background"

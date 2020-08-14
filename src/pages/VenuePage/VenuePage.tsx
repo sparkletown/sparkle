@@ -21,8 +21,8 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { venueLandingUrl } from "utils/url";
+import { PreplayaRouter } from "components/templates/Preplaya/Router";
 import Camp from "components/templates/Camp/Camp";
-import Preplaya from "components/templates/Preplaya";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -146,7 +146,7 @@ const VenuePage = () => {
       template = <Camp />;
       break;
     case VenueTemplate.preplaya:
-      template = <Preplaya />;
+      template = <PreplayaRouter />;
       break;
     case VenueTemplate.playa:
       template = <PlayaRouter />;
