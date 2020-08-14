@@ -164,9 +164,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   return (
     <>
       <div className="page-container-adminpanel-content">
-        <h3 style={{ textAlign: "center" }}>
+        <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
+        <h4
+          className="italic"
+          style={{ fontSize: "30px", textAlign: "center" }}
+        >
           How your Experience appears on the playa
-        </h3>
+        </h4>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">
             <div className="playa-abs-container">
@@ -189,7 +193,6 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
             />
           </div>
         </div>
-        <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
       </div>
       <div className="page-container-adminpanel-actions">
         <Link

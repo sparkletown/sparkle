@@ -125,31 +125,48 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     [user, history, venueId]
   );
 
+  useEffect(() => {
+    register("x_percent");
+    register("y_percent");
+  }, [register]);
+
   const iconPositionFieldName = "iconPosition";
   const onBoxMove: ExtractProps<typeof CampContainer>["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
+      console.log("iconPos.left: ", iconPos.left);
+      console.log("iconPos.top: ", iconPos.top);
       setValue("x_percent", iconPos.left);
       setValue("y_percent", iconPos.top);
     },
     [setValue]
   );
 
-  const imageUrl =
-    values.image_file && values.image_file.length > 0
-      ? URL.createObjectURL(values.image_file[0])
-      : values.image_url;
+  console.log("values.x_percent: ", values.x_percent);
+  console.log("values.y_percent: ", values.y_percent);
 
-  const currentRoomIcon: SubVenueIconMap = imageUrl
-    ? {
-        icon: {
-          left: values.x_percent || 0,
-          top: values.y_percent || 0,
-          url: imageUrl,
-        },
-      }
-    : {};
+  const imageUrl = useMemo(
+    () =>
+      values.image_file && values.image_file.length > 0
+        ? URL.createObjectURL(values.image_file[0])
+        : values.image_url,
+    [values.image_file, values.image_url]
+  );
+
+  const currentRoomIcon = useMemo(
+    (): SubVenueIconMap =>
+      imageUrl
+        ? {
+            [iconPositionFieldName]: {
+              left: values.x_percent || 0,
+              top: values.y_percent || 0,
+              url: imageUrl,
+            },
+          }
+        : {},
+    [imageUrl, values.x_percent, values.y_percent]
+  );
 
   return (
     <div className="page">
