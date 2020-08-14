@@ -49,6 +49,27 @@
     display: flex;
     align-items: center;
   }
+
+  .create-button-container {
+    flex-grow: 1;
+
+    .create-button {
+      border: 2px solid #ebebeb;
+      border-radius: 2em;
+      padding: 0.2em 1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      vertical-align: middle;
+      transition: all 0.2s ease-in-out;
+
+      &:hover {
+        background: #ebebeb;
+        color: $dark;
+      }
+    }
+  }
 }
 
 .navbar {

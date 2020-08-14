@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
-import { venueLandingUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -31,7 +31,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
-    history.push(venueLandingUrl(venue?.id));
+    history.push(venueInsideUrl(venue?.id));
   };
 
   if (!user) return <></>;
