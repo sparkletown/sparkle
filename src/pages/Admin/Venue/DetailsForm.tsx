@@ -24,14 +24,16 @@ import {
   VIDEO_IFRAME_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  PLAYA_WIDTH_AND_HEIGHT,
 } from "settings";
 import "./Venue.scss";
 import {
-  Container,
+  PlayaContainer,
   CustomDragLayer,
 } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
+import { VenueTemplate } from "types/VenueTemplate";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -76,6 +78,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     register("placement");
   }, [register]);
 
+  const templateID = state.templatePage?.template.template;
+
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -83,14 +87,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
-        history.push(
-          `/admin/venue/${vals.name ? createUrlSafeName(vals.name) : ""}`
-        );
+
+        if (templateID === VenueTemplate.themecamp)
+          history.push(`/admin/rooms/${venueId}`);
+        else history.push("/admin");
       } catch (e) {
         console.error(e);
       }
     },
-    [user, venueId, history]
+    [user, venueId, history, templateID]
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
@@ -114,17 +119,18 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [mapIconUrl, defaultValues]
   );
 
-  const onBoxMove: ExtractProps<typeof Container>["onChange"] = useCallback(
+  const onBoxMove: ExtractProps<
+    typeof PlayaContainer
+  >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
       setValue("placement", {
-        state: defaultValues?.placement?.state,
         x: iconPos.left,
         y: iconPos.top,
       });
     },
-    [defaultValues, setValue]
+    [setValue]
   );
 
   if (!state.templatePage) {
@@ -153,7 +159,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       </div>
       <div className="page-side preview">
         <div className="playa">
-          <Container
+          <PlayaContainer
+            coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
@@ -413,6 +420,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <SubmitButton editing={editing} isSubmitting={isSubmitting} />
         </div>
       </div>
+      {templateID === VenueTemplate.themecamp && (
+        <div style={{ textAlign: "center" }}>
+          {`You'll be able to add rooms to your theme camp on the next page`}
+        </div>
+      )}
     </form>
   );
 };

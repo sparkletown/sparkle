@@ -22,6 +22,7 @@ import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl, venueInsideUrl } from "utils/url";
+import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 
 const AppRouter = ({ projectID }) => {
   const firebase = useFirebase();
@@ -72,6 +73,7 @@ const AppRouter = ({ projectID }) => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
+        <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
         <Route path="/admin/venue/:venueId" component={Admin} />

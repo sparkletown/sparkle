@@ -51,7 +51,7 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
               <div className="col">
                 {room.image_url && (
                   <img
-                    src={`/room-images/${room.image_url}`}
+                    src={room.image_url}
                     className="room-page-image"
                     alt={room.title}
                   />

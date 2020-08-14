@@ -13,13 +13,7 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import {
-  PLAYA_WIDTH_AND_HEIGHT,
-  DEFAULT_MAP_ICON_URL,
-  PLAYA_ICON_SIDE,
-} from "settings";
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { DEFAULT_MAP_ICON_URL, PLAYA_ICON_SIDE } from "settings";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -37,7 +31,8 @@ interface PropsType {
   backgroundImage: string;
   iconImageStyle: CSSProperties;
   onChange: (val: SubVenueIconMap) => void;
-  venueId?: string;
+  otherIcons: SubVenueIconMap;
+  coordinatesBoundary: number;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -47,7 +42,8 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImage,
     iconImageStyle,
     onChange,
-    venueId,
+    otherIcons,
+    coordinatesBoundary,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [scale, setScale] = useState({ x: 1, y: 1 });
@@ -73,24 +69,18 @@ export const Container: React.FC<PropsType> = (props) => {
   useLayoutEffect(() => {
     mapRef?.current?.getBoundingClientRect().width &&
       setScale({
-        x:
-          mapRef.current.getBoundingClientRect().width / PLAYA_WIDTH_AND_HEIGHT,
-        y:
-          mapRef.current.getBoundingClientRect().height /
-          PLAYA_WIDTH_AND_HEIGHT,
+        x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
+        y: mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
       });
-  }, [setScale, mapRef]);
+  }, [setScale, mapRef, coordinatesBoundary]);
 
   useLayoutEffect(() => {
     const rescale = () => {
       mapRef?.current?.getBoundingClientRect().width &&
         setScale({
-          x:
-            mapRef.current.getBoundingClientRect().width /
-            PLAYA_WIDTH_AND_HEIGHT,
+          x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
           y:
-            mapRef.current.getBoundingClientRect().height /
-            PLAYA_WIDTH_AND_HEIGHT,
+            mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
         });
     };
 
@@ -98,14 +88,7 @@ export const Container: React.FC<PropsType> = (props) => {
     return () => {
       window.removeEventListener("resize", rescale);
     };
-  }, []);
-
-  useFirestoreConnect("venues");
-  const venues = useSelector((state) => state.firestore.ordered.venues);
-  const placedVenues = useMemo(
-    () => venues?.filter((v) => v.placement?.x && v.placement?.y),
-    [venues]
-  );
+  }, [coordinatesBoundary]);
 
   useMemo(() => {
     const copy = Object.keys(iconsMap).reduce(
@@ -172,23 +155,21 @@ export const Container: React.FC<PropsType> = (props) => {
         />
         {useMemo(
           () =>
-            placedVenues
-              ?.filter((v) => v.id !== venueId)
-              .map((v) => (
-                <img
-                  key={v.id}
-                  src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                  style={{
-                    position: "absolute",
-                    top: (v.placement?.x || 0) * scale.x,
-                    left: (v.placement?.y || 0) * scale.y,
-                    width: PLAYA_ICON_SIDE, // @debt should be at the right scale
-                    opacity: 0.4,
-                  }}
-                  alt={`${v.name} map icon`}
-                />
-              )),
-          [placedVenues, scale, venueId]
+            Object.values(otherIcons).map((icon) => (
+              <img
+                key={`${icon.top}-${icon.left}-${icon.url}`}
+                src={icon.url || DEFAULT_MAP_ICON_URL}
+                style={{
+                  position: "absolute",
+                  top: icon.left * scale.x,
+                  left: icon.top * scale.y,
+                  width: PLAYA_ICON_SIDE, // @debt should be at the right scale
+                  opacity: 0.4,
+                }}
+                alt={`${icon.url} map icon`}
+              />
+            )),
+          [otherIcons, scale]
         )}
       </div>
       {Object.keys(boxes).map((key) => (
