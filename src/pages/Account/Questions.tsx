@@ -43,12 +43,12 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   };
 
-  if (!venue?.profile_questions) {
+  if (!venue) {
     return <>Loading...</>;
   }
 
   // Skip this screen if there are no profile questions for the venue
-  if (!venue.profile_questions.length) {
+  if (!venue?.profile_questions?.length) {
     proceed();
   }
 

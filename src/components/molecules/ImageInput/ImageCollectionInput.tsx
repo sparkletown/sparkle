@@ -77,7 +77,6 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
 
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
-    //console.log('selectedCollectionImageUrl', selectedCollectionImageUrl)
     if (selectedCollectionImageUrl) {
       setValue(`${fieldName}File`, undefined, false);
       setValue(`${fieldName}Url`, selectedCollectionImageUrl, false);
