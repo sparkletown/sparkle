@@ -88,9 +88,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         if (!!venueId) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
 
-        if (templateID === VenueTemplate.themecamp)
-          history.push(`/admin/venue/${venueId}`);
-        else history.push("/admin");
+        history.push(`/admin/venue/${venueId}`);
       } catch (e) {
         console.error(e);
       }
@@ -109,12 +107,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     () =>
       mapIconUrl
         ? {
-          [iconPositionFieldName]: {
-            top: defaultValues?.placement?.y ?? 0,
-            left: defaultValues?.placement?.x ?? 0,
-            url: mapIconUrl,
-          },
-        }
+            [iconPositionFieldName]: {
+              top: defaultValues?.placement?.y ?? 0,
+              left: defaultValues?.placement?.x ?? 0,
+              url: mapIconUrl,
+            },
+          }
         : undefined,
     [mapIconUrl, defaultValues]
   );
@@ -230,8 +228,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
-      createUrlSafeName(values.name)
-    )}`
+        createUrlSafeName(values.name)
+      )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
@@ -245,7 +243,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       <div className="scrollable-content">
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${
           editing ? "Edit" : "Create"
-          } your ${templateType}`}</h4>
+        } your ${templateType}`}</h4>
         <p
           className="small light"
           style={{ marginBottom: "2rem", fontSize: "16px" }}
@@ -273,8 +271,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             ) : null}
           </div>
         ) : (
-            <input type="hidden" name="name" ref={register} value={values.name} />
-          )}
+          <input type="hidden" name="name" ref={register} value={values.name} />
+        )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             The venue tagline
@@ -447,8 +445,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             Go Back
           </button>
         ) : (
-            <div />
-          )}
+          <div />
+        )}
         <div>
           <SubmitButton editing={editing} isSubmitting={isSubmitting} />
         </div>
@@ -476,10 +474,10 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       <span className="sr-only">Loading...</span>
     </div>
   ) : (
-      <input
-        className="btn btn-primary"
-        type="submit"
-        value={editing ? "Update venue" : "Create venue"}
-      />
-    );
+    <input
+      className="btn btn-primary"
+      type="submit"
+      value={editing ? "Update venue" : "Create venue"}
+    />
+  );
 };
