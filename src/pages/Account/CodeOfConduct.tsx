@@ -41,14 +41,24 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   >({
     mode: "onChange",
   });
+
+  const proceed = () => {
+    history.push(venueId ? venueInsideUrl(venueId.toString()) : "");
+  };
+
   const onSubmit = async (data: CodeOfConductFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(venueId ? venueInsideUrl(venueId.toString()) : "");
+    proceed();
   };
 
   if (!venue?.code_of_conduct_questions) {
     return <>Loading...</>;
+  }
+
+  // Skip this screen if there are no code of conduct questions for the venue
+  if (!venue.code_of_conduct_questions.length) {
+    proceed();
   }
 
   venue && updateTheme(venue);

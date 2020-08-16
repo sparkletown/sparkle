@@ -32,14 +32,24 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
-  const onSubmit = async (data: QuestionsFormData) => {
-    if (!user) return;
-    await updateUserProfile(user.uid, data);
+
+  const proceed = () => {
     history.push(`/account/code-of-conduct${location.search}`);
   };
 
-  if (!venue) {
+  const onSubmit = async (data: QuestionsFormData) => {
+    if (!user) return;
+    await updateUserProfile(user.uid, data);
+    proceed();
+  };
+
+  if (!venue?.profile_questions) {
     return <>Loading...</>;
+  }
+
+  // Skip this screen if there are no profile questions for the venue
+  if (!venue.profile_questions.length) {
+    proceed();
   }
 
   venue && updateTheme(venue);
