@@ -19,6 +19,9 @@ export interface CodeOfConductFormData {
   cheerBand: string;
   greatNight: string;
   willingToImprovise: string;
+  commonDecency: string;
+  tenPrinciples: string;
+  termsAndConditions: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -26,6 +29,25 @@ export interface CodeOfConductQuestion {
   text: string;
   link?: string;
 }
+
+const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
+  {
+    name: "commonDecency",
+    text:
+      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
+  },
+  {
+    name: "tenPrinciples",
+    text:
+      "I agree to abide by the Ten Principles of Burning Man at the online burn",
+    link: "https://burningman.org/culture/philosophical-center/10-principles/",
+  },
+  {
+    name: "termsAndConditions",
+    text: "I agree to SparkleVerse's Terms and Conditions",
+    link: "https://sparklever.se/terms-and-conditions",
+  },
+];
 
 const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
@@ -52,13 +74,8 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   };
 
-  if (!venue?.code_of_conduct_questions) {
+  if (!venue) {
     return <>Loading...</>;
-  }
-
-  // Skip this screen if there are no code of conduct questions for the venue
-  if (!venue.code_of_conduct_questions.length) {
-    proceed();
   }
 
   venue && updateTheme(venue);
@@ -69,7 +86,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {venue.code_of_conduct_questions.map((q) => (
+          {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>
               <label
                 htmlFor={q.name}
