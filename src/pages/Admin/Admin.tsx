@@ -27,6 +27,7 @@ import { venuePlayaPreviewUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
+import { VenueTemplate } from "types/VenueTemplate";
 
 dayjs.extend(advancedFormat);
 
@@ -156,6 +157,11 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   roomIndex,
 }) => {
+  const visitText =
+    venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
+  const editText =
+    venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
+
   return (
     <>
       <div className="page-container-adminpanel-content">
@@ -196,10 +202,10 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
           rel="noopener noreferer"
           className="btn btn-primary btn-block"
         >
-          Visit venue
+          {visitText}
         </Link>
         <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
-          Edit venue
+          {editText}
         </Link>
         {canHaveSubvenues(venue) && (
           <Link to={`/admin/venue/rooms/${venue.id}`} className="btn btn-block">
