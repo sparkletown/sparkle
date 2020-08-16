@@ -164,7 +164,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
           className="italic"
           style={{ fontSize: "30px", textAlign: "center" }}
         >
-          How your Experience appears on the playa
+          How your experience appears on the playa
         </h4>
         <div className="container venue-entrance-experience-container">
           <div className="playa-container">

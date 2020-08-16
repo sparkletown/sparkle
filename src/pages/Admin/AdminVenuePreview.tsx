@@ -59,7 +59,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           className="italic"
           style={{ textAlign: "center", fontSize: "30px" }}
         >
-          Your <b>Experience</b> Info
+          Experience Info: {venue.name}
         </h4>
         <div className="heading-group">
           <div style={{ padding: "5px" }}>
@@ -137,7 +137,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               className="italic"
               style={{ textAlign: "center", fontSize: "30px" }}
             >
-              Your <b>Room</b>
+              Room Info: {room.title}
             </h4>
             <div className="heading-group">
               <div style={{ padding: "5px" }}>
