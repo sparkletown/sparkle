@@ -26,10 +26,12 @@ import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
   const history = useHistory();
+  const { user } = useUser();
   const firestore = useFirestore();
   const [venue, setVenue] = useState<CampVenue>();
   const queryParams = useQuery();
@@ -68,6 +70,14 @@ export const RoomsForm: React.FC = () => {
   }, [queryRoomIndex, venue]);
 
   if (!venue) return null;
+
+  if (!user) {
+    return (
+      <WithNavigationBar fullscreen>
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+      </WithNavigationBar>
+    );
+  }
 
   return (
     <WithNavigationBar fullscreen>
