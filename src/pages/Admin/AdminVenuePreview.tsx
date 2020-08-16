@@ -139,6 +139,10 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             >
               Room Info: {room.title}
             </h4>
+            <small>
+              You can select other rooms in {venue.name} from the menu on the
+              left.
+            </small>
             <div className="heading-group">
               <div style={{ padding: "5px" }}>
                 <span className="title" style={{ fontSize: "18px" }}>
