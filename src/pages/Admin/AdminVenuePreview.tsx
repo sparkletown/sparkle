@@ -118,7 +118,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </div>
           </div>
         </div>
-        <div style={{ padding: "5px" }}>
+        <div className="content-group" style={{ padding: "5px" }}>
           <span className="title" style={{ fontSize: "20px" }}>
             This is a preview of your camp
           </span>
