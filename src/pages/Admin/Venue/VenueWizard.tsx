@@ -8,6 +8,8 @@ import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { useUser } from "hooks/useUser";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -95,6 +97,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
 
 const VenueWizardCreate: React.FC = () => {
   const history = useHistory();
+  const { user } = useUser();
   const queryParams = useQuery();
   const [state, dispatch] = useReducer(reducer, initialState);
 
@@ -123,6 +126,14 @@ const VenueWizardCreate: React.FC = () => {
         return <TemplateForm next={next} state={state} />;
     }
   }, [queryPage, next, previous, state]);
+
+  if (!user) {
+    return (
+      <WithNavigationBar fullscreen>
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+      </WithNavigationBar>
+    );
+  }
 
   return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;
 };
