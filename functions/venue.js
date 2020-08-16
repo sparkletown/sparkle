@@ -146,6 +146,36 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
     });
 });
 
+exports.deleteRoom = exports.upsertRoom = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+    const { venueId, room } = data;
+    checkUserIsOwner(venueId, context.auth.token.user_id);
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .get()
+      .then((doc) => {
+        if (!doc || !doc.exists) {
+          throw new HttpsError("not-found", `Venue ${venueId} not found`);
+        }
+        const docData = doc.data();
+        const rooms = docData.rooms;
+
+        //if the room exists under the same name, find it
+        const ind = rooms.findIndex((val) => val.title === room.title);
+        if (ind === -1) {
+          throw new HttpsError("not-found", "Room does not exist");
+        } else {
+          docData.rooms[ind] = room;
+        }
+
+        admin.firestore().collection("venues").doc(venueId).update(docData);
+      });
+  }
+);
+
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
@@ -209,12 +239,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
         case "performancevenue":
           if (data.videoIframeUrl) {
             updated.iframeUrl = data.videoIframeUrl;
-          }
-          break;
-        case "partymap":
-        case "themecamp":
-          if (data.rooms) {
-            updated.rooms = data.rooms;
           }
           break;
         case "zoomroom":
