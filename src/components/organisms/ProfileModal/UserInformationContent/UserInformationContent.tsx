@@ -21,8 +21,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const { venue, profileQuestions } = useSelector((state) => ({
-    profileQuestions: state.firestore.data.currentVenue.profile_questions,
-    venue: state.firestore.ordered.currentVenue[0],
+    profileQuestions: state.firestore.data.currentVenue?.profile_questions,
+    venue: state.firestore.ordered.currentVenue?.[0],
   }));
 
   const history = useHistory();
