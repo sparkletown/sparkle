@@ -156,11 +156,6 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   roomIndex,
 }) => {
-  console.log("venue", venue);
-  console.log(
-    "venue.config.landingPageConfig.coverImageUrl",
-    venue.config.landingPageConfig.coverImageUrl
-  );
   return (
     <>
       <div className="page-container-adminpanel-content">
