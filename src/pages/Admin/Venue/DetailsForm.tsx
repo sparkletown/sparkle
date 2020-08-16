@@ -78,8 +78,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     register("placement");
   }, [register]);
 
-  const templateID = state.templatePage?.template.template;
-
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -93,7 +91,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         console.error(e);
       }
     },
-    [user, venueId, history, templateID]
+    [user, venueId, history]
   );
 
   const onFormSubmit = rest.handleSubmit(onSubmit);
