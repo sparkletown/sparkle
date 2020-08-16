@@ -173,7 +173,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                   className="title"
                   style={{ fontSize: "20px", width: "250px" }}
                 >
-                  Image Icon photo
+                  How your room will appear on the camp map
                 </div>
                 <img
                   className="banner"
