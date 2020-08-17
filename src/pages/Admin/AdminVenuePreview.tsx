@@ -3,7 +3,8 @@ import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import { useQuery } from "hooks/useQuery";
-import { isCampVenue } from "types/CampVenue";
+import { isCampVenue, CampVenue } from "types/CampVenue";
+import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -48,15 +49,22 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
         );
       case VenueTemplate.themecamp:
+        const campVenue = venue as WithId<CampVenue>;
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>
               This is a preview of your camp
             </span>
-            <img
-              className="banner"
-              src={venue.mapBackgroundImageUrl}
-              alt="cover"
+            <CampContainer
+              interactive={false}
+              coordinatesBoundary={100}
+              iconsMap={{}}
+              backgroundImage={
+                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+              }
+              iconImageStyle={styles.iconImage}
+              draggableIconImageStyle={styles.draggableIconImage}
+              venue={campVenue}
             />
           </div>
         );
@@ -200,4 +208,19 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
       )}
     </div>
   );
+};
+
+const styles: Record<string, CSSProperties> = {
+  iconImage: {
+    width: 60,
+    height: 60,
+    overflow: "hidden",
+    borderRadius: 30,
+  },
+  draggableIconImage: {
+    width: 70,
+    height: 70,
+    overflow: "hidden",
+    borderRadius: 35,
+  },
 };

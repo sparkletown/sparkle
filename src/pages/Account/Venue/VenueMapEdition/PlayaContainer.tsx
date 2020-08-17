@@ -1,23 +1,18 @@
-import React, { CSSProperties, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 
 import { Container } from "./Container";
+import { ExtractProps } from "types/utility";
 
 interface SubVenueIconMap {
   [key: string]: { top: number; left: number; url: string };
 }
 
-interface PropsType {
-  snapToGrid: boolean;
-  iconsMap: SubVenueIconMap;
-  backgroundImage: string;
-  iconImageStyle: CSSProperties;
-  onChange: (val: SubVenueIconMap) => void;
+type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venueId?: string;
-  coordinatesBoundary: number;
-}
+};
 
 export const PlayaContainer: React.FC<PropsType> = (props) => {
   const { venueId, ...rest } = props;
