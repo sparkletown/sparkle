@@ -94,7 +94,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         if (!!venueId) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
 
-        history.push(`/admin/venue/${venueId}`);
+        history.push(`/admin/venue/${createUrlSafeName(vals.name)}`);
       } catch (e) {
         setFormError(true);
         console.error(e);
