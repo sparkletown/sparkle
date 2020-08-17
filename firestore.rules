@@ -35,7 +35,7 @@ service cloud.firestore {
     }
     match /venues/{restOfPath=**} {
       allow read: if true;
-      allow write: if false;
+      allow write: if request.auth.uid != null;
     }
     match /purchases/{restOfPath=**} {
       allow read: if request.auth.uid != null && resource.data.userId == request.auth.uid;

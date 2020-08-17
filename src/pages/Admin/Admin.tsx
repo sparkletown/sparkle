@@ -59,9 +59,9 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {topLevelVenues.map((venue) => (
+        {topLevelVenues.map((venue, index) => (
           <li
-            key={venue.id}
+            key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
               canHaveSubvenues(venue) ? "camp" : ""
             }`}
@@ -71,7 +71,7 @@ const VenueList: React.FC<VenueListProps> = ({
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms.map((room, idx) => (
                   <li
-                    key={`${venue.id}-${room.title}`}
+                    key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
                     <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
