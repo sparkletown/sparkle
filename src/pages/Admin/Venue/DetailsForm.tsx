@@ -33,10 +33,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
 } from "settings";
 import "./Venue.scss";
-import {
-  PlayaContainer,
-  CustomDragLayer,
-} from "pages/Account/Venue/VenueMapEdition";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -183,11 +180,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             iconsMap={iconsMap ?? {}}
             backgroundImage={"/burn/Playa.jpeg"}
             iconImageStyle={styles.iconImage}
+            draggableIconImageStyle={styles.draggableIconImage}
             venueId={venueId}
-          />
-          <CustomDragLayer
-            snapToGrid={false}
-            iconImageStyle={styles.draggableIconImage}
           />
         </div>
       </div>

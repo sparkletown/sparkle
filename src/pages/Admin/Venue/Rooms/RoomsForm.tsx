@@ -15,7 +15,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import {
   CampContainer,
-  CustomDragLayer,
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -293,23 +292,18 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       <div className="page-side preview">
         <div className="playa">
           {venue.mapBackgroundImageUrl && (
-            <>
-              <CampContainer
-                coordinatesBoundary={100}
-                onChange={onBoxMove}
-                snapToGrid={false}
-                iconsMap={currentRoomIcon}
-                backgroundImage={
-                  venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
-                }
-                iconImageStyle={styles.iconImage}
-                venue={venue}
-              />
-              <CustomDragLayer
-                snapToGrid={false}
-                iconImageStyle={styles.draggableIconImage}
-              />
-            </>
+            <CampContainer
+              coordinatesBoundary={100}
+              onChange={onBoxMove}
+              snapToGrid={false}
+              iconsMap={currentRoomIcon}
+              backgroundImage={
+                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+              }
+              iconImageStyle={styles.iconImage}
+              draggableIconImageStyle={styles.draggableIconImage}
+              venue={venue}
+            />
           )}
         </div>
       </div>
