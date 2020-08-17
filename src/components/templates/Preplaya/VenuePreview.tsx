@@ -104,6 +104,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
               <a
                 className="btn btn-primary join-button"
                 href={venueInsideUrl(venue.id)}
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 {joinButtonText}
               </a>
