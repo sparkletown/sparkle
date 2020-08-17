@@ -420,6 +420,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 <div className="input-title">
                   URL to your artwork, to embed in the experience as an iframe
                 </div>
+                <div className="input-title">
+                  (Please enter an embedded URL link)
+                </div>
                 <textarea
                   disabled={disable}
                   name={"embedIframeUrl"}

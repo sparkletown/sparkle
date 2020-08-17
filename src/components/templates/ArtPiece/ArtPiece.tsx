@@ -12,10 +12,12 @@ const ArtPiece = () => {
     venue: state.firestore.data.currentVenue,
   }));
 
-  const iFrameUrl = (venue.iframeUrl ?? venue.embedIframeUrl)?.replace(
-    "watch?v=",
-    "embed/"
-  );
+  let iFrameUrl = venue.iframeUrl ?? venue.embedIframeUrl;
+  if (iFrameUrl?.includes("youtube")) {
+    iFrameUrl = iFrameUrl?.replace("watch?v=", "embed/");
+  } else if (iFrameUrl?.includes("vimeo") && !iFrameUrl?.includes("player")) {
+    iFrameUrl = iFrameUrl?.replace("vimeo.com/", "player.vimeo.com/video/");
+  }
 
   return (
     <WithNavigationBar>
