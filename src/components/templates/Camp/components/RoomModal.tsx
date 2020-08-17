@@ -45,8 +45,26 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
       <div className="container room-container">
         <div className="room-description">
           <div className="title-container">
-            <h2 className="room-modal-title">{room.title}</h2>
-            <div className="room-modal-subtitle">{room.subtitle}</div>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100px",
+                flexWrap: "wrap",
+                marginTop: 10,
+              }}
+            >
+              <h2 className="room-modal-title">{room.title}</h2>
+              <div className="room-modal-subtitle">{room.subtitle}</div>
+              <a
+                className="btn btn-primary join-button"
+                href={room.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Enter the room
+              </a>
+            </div>
             <div className="row ongoing-event-row">
               <div className="col">
                 {room.image_url && (
@@ -58,15 +76,6 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
                 )}
                 {!room.image_url && room.title}
               </div>
-              <a
-                className="btn btn-primary join-button"
-                href={room.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ position: "absolute", right: 10, top: 10 }}
-              >
-                Enter the room
-              </a>
               <div className="col">
                 <RoomModalOngoingEvent
                   room={room}
