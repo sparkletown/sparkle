@@ -58,6 +58,15 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
                 )}
                 {!room.image_url && room.title}
               </div>
+              <a
+                className="btn btn-primary join-button"
+                href={room.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ position: "absolute", right: 10, top: 10 }}
+              >
+                Enter the room
+              </a>
               <div className="col">
                 <RoomModalOngoingEvent
                   room={room}
