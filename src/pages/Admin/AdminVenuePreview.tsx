@@ -52,6 +52,11 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
     }
   }, [venue]);
 
+  const venueTypeText =
+    venue.template === VenueTemplate.themecamp
+      ? "Camp Info:"
+      : "Experience Info:";
+
   return (
     <div style={containerStyle}>
       <div className="venue-preview">
@@ -59,7 +64,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           className="italic"
           style={{ textAlign: "center", fontSize: "30px" }}
         >
-          Experience Info: {venue.name}
+          {venueTypeText} {venue.name}
         </h4>
         <div className="heading-group">
           <div style={{ padding: "5px" }}>
