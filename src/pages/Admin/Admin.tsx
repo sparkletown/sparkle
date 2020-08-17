@@ -169,67 +169,86 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   return (
     <>
       <div className="page-container-adminpanel-content">
-        <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
-        <h4
-          className="italic"
-          style={{ fontSize: "30px", textAlign: "center" }}
-        >
-          How your experience appears on the playa
-        </h4>
-        <div className="container venue-entrance-experience-container">
-          <div className="playa-container">
-            <div className="playa-abs-container">
-              <div className="playa-icon-container">
+        {/* after delete venue becomes {id: string} */}
+        {venue.name && (
+          <>
+            <AdminVenuePreview
+              venue={venue}
+              containerStyle={{ marginTop: 20 }}
+            />
+            <h4
+              className="italic"
+              style={{ fontSize: "30px", textAlign: "center" }}
+            >
+              How your experience appears on the playa
+            </h4>
+            <div className="container venue-entrance-experience-container">
+              <div className="playa-container">
+                <div className="playa-abs-container">
+                  <div className="playa-icon-container">
+                    <img
+                      src={venue.mapIconImageUrl ?? venue.host?.icon}
+                      alt={"host icon"}
+                      className="playa-icon"
+                    />
+                  </div>
+                </div>
                 <img
-                  src={venue.mapIconImageUrl ?? venue.host.icon}
-                  alt={"host icon"}
-                  className="playa-icon"
+                  src={"/burn/Playa.jpeg"}
+                  alt="playa"
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "cover",
+                  }}
                 />
               </div>
             </div>
-            <img
-              src={"/burn/Playa.jpeg"}
-              alt="playa"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "cover",
-              }}
-            />
-          </div>
-        </div>
+          </>
+        )}
       </div>
       <div className="page-container-adminpanel-actions">
-        <Link
-          to={venuePlayaPreviewUrl(venue.id)}
-          target="_blank"
-          rel="noopener noreferer"
-          className="btn btn-primary btn-block"
-        >
-          {visitText}
-        </Link>
-        <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
-          {editText}
-        </Link>
-        <button
-          role="link"
-          className="btn btn-block btn-primary"
-          onClick={() => setShowDeleteModal(true)}
-        >
-          {deleteText}
-        </button>
-        {canHaveSubvenues(venue) && (
-          <Link to={`/admin/venue/rooms/${venue.id}`} className="btn btn-block">
-            Add a Room
-          </Link>
-        )}
-        {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
-          <Link
-            to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
-            className="btn btn-block"
-          >
-            Edit Room
-          </Link>
+        {/* after delete venue becomes {id: string} */}
+        {venue.name && (
+          <>
+            <Link
+              to={venuePlayaPreviewUrl(venue.id)}
+              target="_blank"
+              rel="noopener noreferer"
+              className="btn btn-primary btn-block"
+            >
+              {visitText}
+            </Link>
+            <Link
+              to={`/admin/venue/edit/${venue.id}`}
+              className="btn btn-block"
+            >
+              {editText}
+            </Link>
+            <button
+              role="link"
+              className="btn btn-block btn-primary"
+              onClick={() => setShowDeleteModal(true)}
+            >
+              {deleteText}
+            </button>
+            {canHaveSubvenues(venue) && (
+              <Link
+                to={`/admin/venue/rooms/${venue.id}`}
+                className="btn btn-block"
+              >
+                Add a Room
+              </Link>
+            )}
+            {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
+              <Link
+                to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+                className="btn btn-block"
+              >
+                Edit Room
+              </Link>
+            )}
+          </>
         )}
       </div>
       <VenueDeleteModal
