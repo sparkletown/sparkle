@@ -5,6 +5,7 @@ import { WithId } from "utils/id";
 import { Venue } from "types/Venue";
 
 import "./VenueDeleteModal.scss";
+import { useHistory } from "react-router-dom";
 
 interface PropsType {
   venue: WithId<Venue>;
@@ -19,10 +20,15 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
 }) => {
   const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string>();
+  const history = useHistory();
 
   const closeDeleteModal = () => {
-    onHide();
-    setDeleted(false);
+    if (deleted) {
+      history.push("/admin");
+    } else {
+      onHide();
+      setDeleted(false);
+    }
   };
 
   const deleteVenue = async () => {

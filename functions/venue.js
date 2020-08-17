@@ -259,7 +259,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
-  const venueId = getVenueId(data.name);
+  const venueId = getVenueId(data.id);
   checkAuth(context);
 
   checkUserIsOwner(venueId, context.auth.token.user_id);
