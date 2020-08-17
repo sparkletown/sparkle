@@ -94,9 +94,14 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     const fileArr = input[entry.fileKey];
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
+
+    // add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
+    const randomPrefix = Math.random().toString();
+
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${file.name}`
+      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
     );
+
     await uploadFileRef.put(file);
     const downloadUrl: string = await uploadFileRef.getDownloadURL();
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
