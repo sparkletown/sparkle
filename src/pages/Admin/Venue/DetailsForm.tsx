@@ -7,7 +7,13 @@ import {
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useMemo, CSSProperties, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  CSSProperties,
+  useEffect,
+  useState,
+} from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/Venue";
@@ -73,6 +79,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const { isSubmitting } = formState;
   const values = watch();
 
+  const [formError, setFormError] = useState(false);
+
   //register the icon position data
   useEffect(() => {
     register("placement");
@@ -88,6 +96,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
+        setFormError(true);
         console.error(e);
       }
     },
@@ -152,6 +161,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               {...rest}
               onSubmit={onFormSubmit}
               editing={!!venueId}
+              formError={formError}
             />
           </div>
         </div>
@@ -209,6 +219,7 @@ interface DetailsFormLeftProps {
   errors: FieldErrors<FormValues>;
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
+  formError: boolean;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
@@ -222,6 +233,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     previous,
     onSubmit,
     setValue,
+    formError,
   } = props;
 
   const urlSafeName = values.name
@@ -456,6 +468,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         <div style={{ textAlign: "center" }}>
           {`You'll be able to add rooms to your theme camp on the next page`}
         </div>
+      )}
+      {formError && (
+        <span className="input-error">
+          {"An error occured when saving your form"}
+        </span>
       )}
     </form>
   );
