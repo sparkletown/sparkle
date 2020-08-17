@@ -89,7 +89,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
-      const venueData = vals as VenueInput;
       try {
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) await updateVenue(vals as VenueInput, user);
