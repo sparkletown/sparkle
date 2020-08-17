@@ -47,10 +47,28 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </span>
           </div>
         );
+      case VenueTemplate.themecamp:
+        return (
+          <div className="content-group" style={{ padding: "5px" }}>
+            <span className="title" style={{ fontSize: "20px" }}>
+              This is a preview of your camp
+            </span>
+            <img
+              className="banner"
+              src={venue.mapBackgroundImageUrl}
+              alt="cover"
+            />
+          </div>
+        );
       default:
         return;
     }
   }, [venue]);
+
+  const venueTypeText =
+    venue.template === VenueTemplate.themecamp
+      ? "Camp Info:"
+      : "Experience Info:";
 
   return (
     <div style={containerStyle}>
@@ -59,7 +77,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           className="italic"
           style={{ textAlign: "center", fontSize: "30px" }}
         >
-          Your <b>Experience</b> Info
+          {venueTypeText} {venue.name}
         </h4>
         <div className="heading-group">
           <div style={{ padding: "5px" }}>
@@ -118,16 +136,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </div>
           </div>
         </div>
-        <div style={{ padding: "5px" }}>
-          <span className="title" style={{ fontSize: "20px" }}>
-            This is a preview of your camp
-          </span>
-          <img
-            className="banner"
-            src={venue.mapBackgroundImageUrl}
-            alt="cover"
-          />
-        </div>
         {templateSpecificListItems}
       </div>
       {room && (
@@ -137,8 +145,12 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               className="italic"
               style={{ textAlign: "center", fontSize: "30px" }}
             >
-              Your <b>Room</b>
+              Room Info: {room.title}
             </h4>
+            <small>
+              You can select other rooms in {venue.name} from the menu on the
+              left.
+            </small>
             <div className="heading-group">
               <div style={{ padding: "5px" }}>
                 <span className="title" style={{ fontSize: "18px" }}>
@@ -173,7 +185,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                   className="title"
                   style={{ fontSize: "20px", width: "250px" }}
                 >
-                  Image Icon photo
+                  How your room will appear on the camp map
                 </div>
                 <img
                   className="banner"

@@ -50,7 +50,7 @@
     align-items: center;
   }
 
-  .create-button-container {
+  .button-container {
     flex-grow: 1;
 
     .create-button {
@@ -69,6 +69,10 @@
         color: $dark;
       }
     }
+  }
+
+  .counter {
+    margin-right: 1em;
   }
 }
 

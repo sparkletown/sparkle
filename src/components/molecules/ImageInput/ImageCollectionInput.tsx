@@ -52,7 +52,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
 
   const [selectedCollectionImageUrl, setSelectedCollectionImageUrl] = useState<
     string | undefined
-  >(imageCollection.find((url) => url === imageUrlFromAPI));
+  >(imageUrlFromAPI);
   const [imageFiles, setImageFiles] = useState<FileList>();
   const [imageUrlForPreview, setImageUrlForPreview] = useState<
     string | undefined
@@ -113,14 +113,15 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           ref={register}
         />
         <div style={{ overflow: "hidden" }}>
-          {imageUrlForPreview && imageFiles && (
-            <img
-              style={{ width: 200 }}
-              className={`default-image ${imageClassName}`}
-              src={imageUrlForPreview}
-              alt="upload"
-            />
-          )}
+          {imageUrlForPreview &&
+            !imageCollection.find((url) => url === imageUrlForPreview) && (
+              <img
+                style={{ width: 200 }}
+                className={`default-image ${imageClassName}`}
+                src={imageUrlForPreview}
+                alt="upload"
+              />
+            )}
         </div>
       </div>
       <input

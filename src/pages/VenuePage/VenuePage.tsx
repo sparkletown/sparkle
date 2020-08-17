@@ -160,7 +160,7 @@ const VenuePage = () => {
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
       if (venue.zoomUrl) {
-        history.push(venue.zoomUrl);
+        window.location.replace(venue.zoomUrl);
       }
       template = (
         <p>
