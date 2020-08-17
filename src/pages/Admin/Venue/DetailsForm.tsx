@@ -174,6 +174,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         </h4>
         <div className="playa">
           <PlayaContainer
+            interactive
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
@@ -182,6 +183,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             iconImageStyle={styles.iconImage}
             draggableIconImageStyle={styles.draggableIconImage}
             venueId={venueId}
+            otherIconsStyle={{ opacity: 0.4 }}
           />
         </div>
       </div>

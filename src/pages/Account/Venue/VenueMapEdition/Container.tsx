@@ -27,14 +27,16 @@ interface SubVenueIconMap {
 }
 
 interface PropsType {
-  snapToGrid: boolean;
+  snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
   iconImageStyle: CSSProperties;
   draggableIconImageStyle: CSSProperties;
-  onChange: (val: SubVenueIconMap) => void;
+  onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   coordinatesBoundary: number;
+  interactive: boolean;
+  otherIconsStyle?: CSSProperties;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -47,6 +49,8 @@ export const Container: React.FC<PropsType> = (props) => {
     onChange,
     otherIcons,
     coordinatesBoundary,
+    interactive,
+    otherIconsStyle,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
@@ -72,7 +76,7 @@ export const Container: React.FC<PropsType> = (props) => {
       }),
       {}
     );
-    onChange(unscaledBoxes);
+    onChange && onChange(unscaledBoxes);
   }, [boxes, onChange, imageDims, coordinatesBoundary]);
 
   useMemo(() => {
@@ -108,6 +112,7 @@ export const Container: React.FC<PropsType> = (props) => {
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
     drop(item: DragItem, monitor) {
+      if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
         y: number;
@@ -120,7 +125,6 @@ export const Container: React.FC<PropsType> = (props) => {
       }
 
       moveBox(item.id, left, top);
-      return undefined;
     },
   });
 
@@ -153,12 +157,12 @@ export const Container: React.FC<PropsType> = (props) => {
                     top: `${(100 * icon.top) / coordinatesBoundary}%`,
                     left: `${(100 * icon.left) / coordinatesBoundary}%`,
                     width: PLAYA_ICON_SIDE, // @debt should be at the right scale
-                    opacity: 0.4,
+                    ...otherIconsStyle,
                   }}
                   alt={`${icon.url} map icon`}
                 />
               )),
-            [otherIcons, coordinatesBoundary]
+            [otherIcons, coordinatesBoundary, otherIconsStyle]
           )}
         </div>
         {Object.keys(boxes).map((key) => (
@@ -170,9 +174,9 @@ export const Container: React.FC<PropsType> = (props) => {
           />
         ))}
       </div>
-      {imageDims && (
+      {imageDims && interactive && (
         <CustomDragLayer
-          snapToGrid={snapToGrid}
+          snapToGrid={!!snapToGrid}
           iconImageStyle={draggableIconImageStyle}
         />
       )}

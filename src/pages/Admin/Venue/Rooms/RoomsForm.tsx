@@ -293,6 +293,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         <div className="playa">
           {venue.mapBackgroundImageUrl && (
             <CampContainer
+              interactive
               coordinatesBoundary={100}
               onChange={onBoxMove}
               snapToGrid={false}
@@ -303,6 +304,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={venue}
+              otherIconsStyle={{ opacity: 0.4 }}
             />
           )}
         </div>
