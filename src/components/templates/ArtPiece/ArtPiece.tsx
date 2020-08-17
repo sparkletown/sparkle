@@ -12,6 +12,11 @@ const ArtPiece = () => {
     venue: state.firestore.data.currentVenue,
   }));
 
+  const iFrameUrl = (venue.iframeUrl ?? venue.embedIframeUrl)?.replace(
+    "watch?v=",
+    "embed/"
+  );
+
   return (
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">
@@ -28,7 +33,7 @@ const ArtPiece = () => {
           <iframe
             className="youtube-video"
             title="art-piece-video"
-            src={venue.iframeUrl}
+            src={iFrameUrl}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
