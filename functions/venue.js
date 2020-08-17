@@ -146,35 +146,33 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
     });
 });
 
-exports.deleteRoom = exports.upsertRoom = functions.https.onCall(
-  async (data, context) => {
-    checkAuth(context);
-    const { venueId, room } = data;
-    checkUserIsOwner(venueId, context.auth.token.user_id);
-    await admin
-      .firestore()
-      .collection("venues")
-      .doc(venueId)
-      .get()
-      .then((doc) => {
-        if (!doc || !doc.exists) {
-          throw new HttpsError("not-found", `Venue ${venueId} not found`);
-        }
-        const docData = doc.data();
-        const rooms = docData.rooms;
+exports.deleteRoom = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+  const { venueId, room } = data;
+  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const docData = doc.data();
+      const rooms = docData.rooms;
 
-        //if the room exists under the same name, find it
-        const index = rooms.findIndex((val) => val.title === room.title);
-        if (index === -1) {
-          throw new HttpsError("not-found", "Room does not exist");
-        } else {
-          docData.splice(index, 1);
-        }
+      //if the room exists under the same name, find it
+      const index = rooms.findIndex((val) => val.title === room.title);
+      if (index === -1) {
+        throw new HttpsError("not-found", "Room does not exist");
+      } else {
+        docData.splice(index, 1);
+      }
 
-        admin.firestore().collection("venues").doc(venueId).update(docData);
-      });
-  }
-);
+      admin.firestore().collection("venues").doc(venueId).update(docData);
+    });
+});
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
