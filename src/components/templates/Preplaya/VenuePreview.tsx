@@ -82,7 +82,10 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
                         0deg,
                         rgba(0, 0, 0, 0.8) 2%,
                         rgba(0, 0, 0, 0) 98%
-                      ), url(${venue.config?.landingPageConfig?.coverImageUrl}`,
+                      ), url(${
+                        venue.config?.landingPageConfig?.bannerImageUrl ??
+                        venue.config?.landingPageConfig?.coverImageUrl
+                      }`,
             backgroundSize: "cover",
           }}
         >
