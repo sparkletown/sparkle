@@ -28,7 +28,7 @@ const ArtPiece = () => {
           <iframe
             className="youtube-video"
             title="art-piece-video"
-            src={venue.iframeUrl}
+            src={venue.embedIframeUrl?.replace("watch?v=", "embed/")}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
