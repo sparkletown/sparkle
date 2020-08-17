@@ -7,7 +7,13 @@ import {
 import { ImageInput } from "components/molecules/ImageInput";
 import "firebase/functions";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useMemo, CSSProperties, useEffect } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  CSSProperties,
+  useEffect,
+  useState,
+} from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar } from "types/Venue";
@@ -73,6 +79,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const { isSubmitting } = formState;
   const values = watch();
 
+  const [formError, setFormError] = useState(false);
+
   //register the icon position data
   useEffect(() => {
     register("placement");
@@ -84,10 +92,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       const venueData = vals as VenueInput;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue(venueData, user);
-        else await createVenue(venueData, user);
-        history.push(`/admin/venue/${venueId ? venueId : venueData.name}`);
+        if (!!venueId) await updateVenue(vals as VenueInput, user);
+        else await createVenue(vals as VenueInput, user);
+
+        vals.name
+          ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
+          : history.push(`/admin`);
       } catch (e) {
+        setFormError(true);
         console.error(e);
       }
     },
@@ -152,6 +164,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               {...rest}
               onSubmit={onFormSubmit}
               editing={!!venueId}
+              formError={formError}
             />
           </div>
         </div>
@@ -209,6 +222,7 @@ interface DetailsFormLeftProps {
   errors: FieldErrors<FormValues>;
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
+  formError: boolean;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
@@ -222,6 +236,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     previous,
     onSubmit,
     setValue,
+    formError,
   } = props;
 
   const urlSafeName = values.name
@@ -420,6 +435,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 <div className="input-title">
                   URL to your artwork, to embed in the experience as an iframe
                 </div>
+                <div className="input-title">
+                  (Please enter an embeddable URL link)
+                </div>
                 <textarea
                   disabled={disable}
                   name={"embedIframeUrl"}
@@ -453,6 +471,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         <div style={{ textAlign: "center" }}>
           {`You'll be able to add rooms to your theme camp on the next page`}
         </div>
+      )}
+      {formError && (
+        <span className="input-error">
+          {"An error occured when saving your form"}
+        </span>
       )}
     </form>
   );

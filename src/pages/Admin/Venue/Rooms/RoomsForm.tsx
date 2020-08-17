@@ -122,6 +122,8 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   const values = watch();
   const disable = isSubmitting;
 
+  const [formError, setFormError] = useState(false);
+
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -129,6 +131,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         await upsertRoom(vals as RoomInput, venueId, user);
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
+        setFormError(true);
         console.error(e);
       }
     },
@@ -277,6 +280,11 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     isSubmitting={isSubmitting}
                   />
                 </div>
+                {formError && (
+                  <div className="input-error">
+                    {"An error occured when saving your form"}
+                  </div>
+                )}
               </div>
             </form>
           </div>
