@@ -47,6 +47,19 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </span>
           </div>
         );
+      case VenueTemplate.themecamp:
+        return (
+          <div className="content-group" style={{ padding: "5px" }}>
+            <span className="title" style={{ fontSize: "20px" }}>
+              This is a preview of your camp
+            </span>
+            <img
+              className="banner"
+              src={venue.mapBackgroundImageUrl}
+              alt="cover"
+            />
+          </div>
+        );
       default:
         return;
     }
@@ -122,16 +135,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               <img className="icon" src={venue.host.icon} alt="icon" />
             </div>
           </div>
-        </div>
-        <div className="content-group" style={{ padding: "5px" }}>
-          <span className="title" style={{ fontSize: "20px" }}>
-            This is a preview of your camp
-          </span>
-          <img
-            className="banner"
-            src={venue.mapBackgroundImageUrl}
-            alt="cover"
-          />
         </div>
         {templateSpecificListItems}
       </div>
