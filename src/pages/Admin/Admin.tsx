@@ -28,6 +28,7 @@ import { AdminVenuePreview } from "./AdminVenuePreview";
 import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
 
 dayjs.extend(advancedFormat);
 
@@ -157,10 +158,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   roomIndex,
 }) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
   const editText =
     venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
+  const deleteText =
+    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
 
   return (
     <>
@@ -207,6 +211,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         <Link to={`/admin/venue/edit/${venue.id}`} className="btn btn-block">
           {editText}
         </Link>
+        <button
+          role="link"
+          className="btn btn-block btn-primary"
+          onClick={() => setShowDeleteModal(true)}
+        >
+          {deleteText}
+        </button>
         {canHaveSubvenues(venue) && (
           <Link to={`/admin/venue/rooms/${venue.id}`} className="btn btn-block">
             Add a Room
@@ -221,6 +232,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
           </Link>
         )}
       </div>
+      <VenueDeleteModal
+        show={showDeleteModal}
+        onHide={() => {
+          setShowDeleteModal(false);
+        }}
+        venue={venue}
+      />
     </>
   );
 };

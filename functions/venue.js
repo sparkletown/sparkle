@@ -164,11 +164,11 @@ exports.deleteRoom = exports.upsertRoom = functions.https.onCall(
         const rooms = docData.rooms;
 
         //if the room exists under the same name, find it
-        const ind = rooms.findIndex((val) => val.title === room.title);
-        if (ind === -1) {
+        const index = rooms.findIndex((val) => val.title === room.title);
+        if (index === -1) {
           throw new HttpsError("not-found", "Room does not exist");
         } else {
-          docData.rooms[ind] = room;
+          docData.splice(index, 1);
         }
 
         admin.firestore().collection("venues").doc(venueId).update(docData);
@@ -258,4 +258,13 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     });
 
   return new HttpsError("ok", "Success");
+});
+
+exports.deleteVenue = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  admin.firestore().collection("venues").doc(venueId).delete();
 });
