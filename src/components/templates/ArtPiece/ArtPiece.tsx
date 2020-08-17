@@ -7,14 +7,23 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 
+const ConvertToEmbeddableUrl = (string: string | undefined) => {
+  if (string?.includes("youtube")) {
+    return string?.replace("watch?v=", "embed/");
+  } else if (string?.includes("vimeo") && !string?.includes("player")) {
+    return string?.replace("vimeo.com/", "player.vimeo.com/video/");
+  } else {
+    return string;
+  }
+};
+
 const ArtPiece = () => {
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
 
-  const iFrameUrl = (venue.iframeUrl ?? venue.embedIframeUrl)?.replace(
-    "watch?v=",
-    "embed/"
+  const iFrameUrl = ConvertToEmbeddableUrl(
+    venue.iframeUrl ?? venue.embedIframeUrl
   );
 
   return (
