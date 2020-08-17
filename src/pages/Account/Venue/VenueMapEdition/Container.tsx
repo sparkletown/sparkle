@@ -161,8 +161,8 @@ export const Container: React.FC<PropsType> = (props) => {
                 src={icon.url || DEFAULT_MAP_ICON_URL}
                 style={{
                   position: "absolute",
-                  top: icon.left * scale.x,
-                  left: icon.top * scale.y,
+                  left: icon.left * scale.x,
+                  top: icon.top * scale.y,
                   width: PLAYA_ICON_SIDE, // @debt should be at the right scale
                   opacity: 0.4,
                 }}
