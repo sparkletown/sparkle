@@ -38,6 +38,10 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                 <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
               </span>
             </div>
+            <div className="title" style={{ marginTop: 10 }}>
+              {" "}
+              This is a preview of your video:
+            </div>
             <iframe
               className="youtube-video"
               title="art-piece-video"
