@@ -44,8 +44,8 @@ const OnlineStats: React.FC = () => {
       <Popover.Content>
         <div className="stats-modal-container">
           <div className="online-users">
-            <h1 className="title modal-title">Users Online</h1>
-            <UserList users={onlineUsers} />
+            <h1 className="title modal-title">People Online</h1>
+            <UserList users={onlineUsers} activity="online" />
           </div>
           <div className="open-venues">
             <h1 className="title modal-title">Venues Open</h1>
@@ -82,7 +82,8 @@ const OnlineStats: React.FC = () => {
           rootClose={true}
         >
           <small className="counter">
-            {onlineUsers?.length} users online, {openVenues?.length} venues open
+            {onlineUsers?.length} people online, {openVenues?.length} venues
+            open
           </small>
         </OverlayTrigger>
       )}
