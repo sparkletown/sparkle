@@ -66,7 +66,7 @@ const VenueList: React.FC<VenueListProps> = ({
             key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
               canHaveSubvenues(venue) ? "camp" : ""
-            }`}
+              }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
             {isCampVenue(venue) && (
@@ -127,7 +127,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             key={tab.url}
             className={`page-container-adminpanel-tab ${
               location.pathname === tab.url ? "selected" : ""
-            }`}
+              }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
           </div>
@@ -191,12 +191,12 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                   iconsMap={
                     venue.placement && venue.mapIconImageUrl
                       ? {
-                          icon: {
-                            top: venue.placement.y,
-                            left: venue.placement.x,
-                            url: venue.mapIconImageUrl,
-                          },
-                        }
+                        icon: {
+                          top: venue.placement.y,
+                          left: venue.placement.x,
+                          url: venue.mapIconImageUrl,
+                        },
+                      }
                       : {}
                   }
                   coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
@@ -272,7 +272,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       collection: "venues",
       doc: venue.id,
       subcollections: [{ collection: "events" }],
-      orderBy: ["start_utc_seconds", "desc"],
+      orderBy: ["start_utc_seconds", "asc"],
       storeAs: "events",
     },
   ]);
@@ -281,21 +281,26 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+  //filter out events that have already finished
+  const filteredEvents = events?.filter(
+    (ev) =>
+      (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
+  );
 
   return (
     <>
       <div className="page-container-adminpanel-content">
         <div className="col-lg-6 col-12 oncoming-events">
-          {events && (
+          {filteredEvents && (
             <>
-              {events.map((venueEvent) => {
+              {filteredEvents.map((venueEvent) => {
                 const startingDate = new Date(
                   venueEvent.start_utc_seconds * 1000
                 );
                 const endingDate = new Date(
                   (venueEvent.start_utc_seconds +
                     60 * venueEvent.duration_minutes) *
-                    1000
+                  1000
                 );
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
@@ -400,7 +405,7 @@ const Admin: React.FC = () => {
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal show={!user} onHide={() => { }} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
@@ -409,8 +414,8 @@ const Admin: React.FC = () => {
             {venueId ? (
               <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
             ) : (
-              <>Select a venue to see its details</>
-            )}
+                <>Select a venue to see its details</>
+              )}
           </div>
         </div>
       </div>
