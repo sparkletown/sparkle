@@ -14,6 +14,7 @@ interface PropsType {
   onHide: () => void;
   venueId: string;
   event?: WithId<VenueEvent>;
+  template?: string;
 }
 
 const validationSchema = Yup.object().shape<EventInput>({
@@ -49,6 +50,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   onHide,
   venueId,
   event,
+  template,
 }) => {
   const { register, handleSubmit, errors, formState, reset } = useForm<
     EventInput
@@ -174,19 +176,21 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.host.message}</span>
             )}
           </div>
-          <div className="input-group">
-            <label htmlFor="room">Room your event is in</label>
-            <input
-              id="room"
-              name="room"
-              className="input-block input-centered"
-              placeholder="Cuddle Puddle"
-              ref={register}
-            />
-            {errors.host && (
-              <span className="input-error">{errors.host.message}</span>
-            )}
-          </div>
+          {template === "themecamp" && (
+            <div className="input-group">
+              <label htmlFor="room">Room your event is in</label>
+              <input
+                id="room"
+                name="room"
+                className="input-block input-centered"
+                placeholder="Cuddle Puddle"
+                ref={register}
+              />
+              {errors.host && (
+                <span className="input-error">{errors.host.message}</span>
+              )}
+            </div>
+          )}
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"

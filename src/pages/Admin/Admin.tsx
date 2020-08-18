@@ -366,6 +366,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         }}
         venueId={venue.id}
         event={editedEvent}
+        template={venue.template}
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}
