@@ -31,8 +31,8 @@ const ArtPiece = () => {
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
           <InformationCard title="About the venue">
-            <p style={{ fontSize: 22, fontWeight: "bold" }}>{venue.name}.</p>
-            <p style={{ fontSize: 15, fontWeight: "bold" }}>
+            <p className="title-sidebar">{venue.name}.</p>
+            <p className="short-description-sidebar">
               {venue.config.landingPageConfig.subtitle}
             </p>
             <p>{venue.config.landingPageConfig.description}</p>
