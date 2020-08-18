@@ -29,6 +29,26 @@ const isOnNow = (event: VenueEvent) =>
   event.start_utc_seconds <= nowSeconds &&
   event.start_utc_seconds + event.duration_minutes * 60 <= nowSeconds;
 
+const getLink = (venue: WithId<Venue>) => {
+  let urlLink: string | undefined;
+  let targetLink: string = "";
+  switch (venue.template) {
+    case VenueTemplate.themecamp:
+      urlLink = venueInsideUrl(venue.id);
+      break;
+    case VenueTemplate.artpiece:
+      urlLink = venueInsideUrl(venue.id);
+      break;
+    case VenueTemplate.zoomroom:
+      urlLink = venue.zoomUrl?.includes("http")
+        ? venue.zoomUrl
+        : "//" + venue.zoomUrl;
+      targetLink = "_blank";
+      break;
+  }
+  return { urlLink, targetLink };
+};
+
 const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -72,22 +92,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
       break;
   }
 
-  let urlLink: string | undefined;
-  let targetLink: string = "";
-  switch (venue.template) {
-    case VenueTemplate.themecamp:
-      urlLink = venueInsideUrl(venue.id);
-      break;
-    case VenueTemplate.artpiece:
-      urlLink = venueInsideUrl(venue.id);
-      break;
-    case VenueTemplate.zoomroom:
-      urlLink = venue.zoomUrl?.includes("http")
-        ? venue.zoomUrl
-        : "//" + venue.zoomUrl;
-      targetLink = "_blank";
-      break;
-  }
+  const { urlLink, targetLink } = getLink(venue);
 
   return (
     <>
