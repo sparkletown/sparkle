@@ -34,7 +34,7 @@ const OnlineStats: React.FC = () => {
     updateStats();
     const id = setInterval(() => {
       updateStats();
-    }, 5 * 1000);
+    }, 60 * 1000);
     return () => clearInterval(id);
   }, []);
 
