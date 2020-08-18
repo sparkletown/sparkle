@@ -20,7 +20,6 @@ const styles: React.CSSProperties = {
   width: "100%",
   height: "100%",
   position: "relative",
-  overflow: "hidden",
 };
 interface SubVenueIconMap {
   [key: string]: { top: number; left: number; url: string };

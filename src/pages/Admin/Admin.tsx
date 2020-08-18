@@ -30,7 +30,7 @@ import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_IMAGE } from "settings";
 
 dayjs.extend(advancedFormat);
 
@@ -200,7 +200,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                       : {}
                   }
                   coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                  backgroundImage={"/burn/Playa.jpeg"}
+                  backgroundImage={PLAYA_IMAGE}
                   iconImageStyle={styles.iconImage}
                   draggableIconImageStyle={styles.draggableIconImage}
                   venueId={venue.id}

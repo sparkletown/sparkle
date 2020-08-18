@@ -6,6 +6,7 @@ import { useQuery } from "hooks/useQuery";
 import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "components/templates/ArtPiece/ArtPiece";
+import { PLAYA_IMAGE } from "settings";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -74,9 +75,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               interactive={false}
               coordinatesBoundary={100}
               iconsMap={{}}
-              backgroundImage={
-                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
-              }
+              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={campVenue}

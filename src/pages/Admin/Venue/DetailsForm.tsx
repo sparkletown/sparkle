@@ -31,6 +31,7 @@ import {
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_IMAGE,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -183,7 +184,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
-            backgroundImage={"/burn/Playa.jpeg"}
+            backgroundImage={PLAYA_IMAGE}
             iconImageStyle={styles.iconImage}
             draggableIconImageStyle={styles.draggableIconImage}
             venueId={venueId}

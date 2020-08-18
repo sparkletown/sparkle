@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { ALL_VENUE_TEMPLATES } from "settings";
+import { ALL_VENUE_TEMPLATES, PLAYA_IMAGE } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";
@@ -307,9 +307,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               onChange={onBoxMove}
               snapToGrid={false}
               iconsMap={currentRoomIcon}
-              backgroundImage={
-                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
-              }
+              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={venue}
