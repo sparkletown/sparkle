@@ -73,6 +73,7 @@ export type PlacementInput = {
   mapIconImageFile?: FileList;
   mapIconImageUrl?: string;
   addressText?: string;
+  notes?: string;
   placement?: Omit<VenuePlacement, "state">;
 };
 

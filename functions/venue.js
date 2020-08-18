@@ -293,6 +293,7 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
         x: data.placement?.x,
         y: data.placement?.y,
         addressText: data.placement?.addressText,
+        notes: data.placement?.notes,
         state: PlacementState.AdminPlaced,
       };
       admin.firestore().collection("venues").doc(venueId).update(updated);

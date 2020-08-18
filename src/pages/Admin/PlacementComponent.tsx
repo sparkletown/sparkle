@@ -62,6 +62,7 @@ const createFirestorePlacementInput = async (
     placement: {
       ...input.placement,
       addressText: input.addressText,
+      notes: input.notes,
     },
   };
 };
@@ -245,21 +246,40 @@ const PlacementComponent: React.FC = () => {
                   </div>
                 </div>
                 <div className="content-group">
-                  <h4 className="italic" style={{ fontSize: "20px" }}>
-                    Placement notes for this camp's owners
-                  </h4>
-                  <input
-                    disabled={disable}
-                    name="addressText"
-                    ref={register}
-                    className="align-left"
-                    placeholder={`Example: 8:00 & B`}
-                  />
-                  {errors.addressText && (
-                    <span className="input-error">
-                      {errors.addressText.message}
-                    </span>
-                  )}
+                  <div className="input-container">
+                    <h4 className="italic" style={{ fontSize: "20px" }}>
+                      Address in the city grid (shown to burners)
+                    </h4>
+                    <input
+                      disabled={disable}
+                      name="addressText"
+                      ref={register}
+                      className="align-left"
+                      placeholder={`Example: 8:00 & B`}
+                    />
+                    {errors.addressText && (
+                      <span className="input-error">
+                        {errors.addressText.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="input-container">
+                    <h4 className="italic" style={{ fontSize: "20px" }}>
+                      Placement notes (for the placement team only)
+                    </h4>
+                    <input
+                      disabled={disable}
+                      name="notes"
+                      ref={register}
+                      className="align-left"
+                      placeholder={`Example: requested a quiet area`}
+                    />
+                    {errors.notes && (
+                      <span className="input-error">
+                        {errors.notes.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div className="page-container-left-bottombar">
                   <div>
