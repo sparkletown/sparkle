@@ -34,6 +34,7 @@ interface PropsType {
   draggableIconImageStyle: CSSProperties;
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
+  onOtherIconClick?: (key: string) => void;
   coordinatesBoundary: number;
   interactive: boolean;
   otherIconsStyle?: CSSProperties;
@@ -48,6 +49,7 @@ export const Container: React.FC<PropsType> = (props) => {
     draggableIconImageStyle,
     onChange,
     otherIcons,
+    onOtherIconClick,
     coordinatesBoundary,
     interactive,
     otherIconsStyle,
@@ -148,21 +150,26 @@ export const Container: React.FC<PropsType> = (props) => {
         >
           {useMemo(
             () =>
-              Object.values(otherIcons).map((icon, index) => (
+              Object.keys(otherIcons).map((key, index) => (
                 <img
-                  key={`${icon.top}-${icon.left}-${icon.url}-${index}`}
-                  src={icon.url || DEFAULT_MAP_ICON_URL}
+                  key={`${otherIcons[key].top}-${otherIcons[key].left}-${otherIcons[key].url}-${index}`}
+                  src={otherIcons[key].url || DEFAULT_MAP_ICON_URL}
                   style={{
                     position: "absolute",
-                    top: `${(100 * icon.top) / coordinatesBoundary}%`,
-                    left: `${(100 * icon.left) / coordinatesBoundary}%`,
+                    top: `${
+                      (100 * otherIcons[key].top) / coordinatesBoundary
+                    }%`,
+                    left: `${
+                      (100 * otherIcons[key].left) / coordinatesBoundary
+                    }%`,
                     width: PLAYA_ICON_SIDE, // @debt should be at the right scale
                     ...otherIconsStyle,
                   }}
-                  alt={`${icon.url} map icon`}
+                  alt={`${otherIcons[key].url} map icon`}
+                  onClick={() => onOtherIconClick && onOtherIconClick(key)}
                 />
               )),
-            [otherIcons, coordinatesBoundary, otherIconsStyle]
+            [otherIcons, coordinatesBoundary, otherIconsStyle, onOtherIconClick]
           )}
         </div>
         {Object.keys(boxes).map((key) => (

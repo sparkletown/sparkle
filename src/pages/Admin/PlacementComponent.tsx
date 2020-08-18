@@ -78,6 +78,7 @@ const updatePlacement = async (input: PlacementInput, user: UserInfo) => {
 };
 
 const iconPositionFieldName = "iconPosition";
+const iconVenueIdFieldName = "iconVenueId";
 
 const PlacementComponent: React.FC = () => {
   const [venueId, setVenueId] = useState<string>();
@@ -175,6 +176,17 @@ const PlacementComponent: React.FC = () => {
     [setValue]
   );
 
+  const onOtherIconClick: ExtractProps<
+    typeof PlayaContainer
+  >["onOtherIconClick"] = useCallback(
+    (val) => {
+      if (!(iconVenueIdFieldName in val)) return;
+      const venueId = val[iconVenueIdFieldName];
+      setVenueId(venueId);
+    },
+    [setVenueId]
+  );
+
   return (
     <>
       <div className="page-container-adminpanel-placement">
@@ -223,6 +235,7 @@ const PlacementComponent: React.FC = () => {
                       onChange={onBoxMove}
                       snapToGrid={false}
                       iconsMap={iconsMap ?? {}}
+                      onOtherIconClick={onOtherIconClick}
                       backgroundImage={"/burn/Playa.jpeg"}
                       iconImageStyle={styles.iconImage}
                       draggableIconImageStyle={styles.draggableIconImage}
@@ -325,6 +338,7 @@ const styles: Record<string, CSSProperties> = {
     height: 70,
     overflow: "hidden",
     borderRadius: 35,
+    zIndex: 1,
   },
 };
 
