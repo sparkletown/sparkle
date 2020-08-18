@@ -5,6 +5,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { useQuery } from "hooks/useQuery";
 import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
+import { ConvertToEmbeddableUrl } from "components/templates/ArtPiece/ArtPiece";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -30,12 +31,22 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
     switch (venue.template) {
       case VenueTemplate.artpiece:
         return (
-          <div>
-            <span className="title">iFrame URL</span>
-            <span className="content">
-              <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
-            </span>
-          </div>
+          <>
+            <div>
+              <span className="title">iFrame URL</span>
+              <span className="content">
+                <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
+              </span>
+            </div>
+            <iframe
+              className="youtube-video"
+              title="art-piece-video"
+              src={ConvertToEmbeddableUrl(venue.embedIframeUrl)}
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </>
         );
       case VenueTemplate.zoomroom:
         return (
