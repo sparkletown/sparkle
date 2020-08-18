@@ -58,7 +58,7 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
               <div className="room-modal-subtitle">{room.subtitle}</div>
               <a
                 className="btn btn-primary join-button"
-                href={room.url}
+                href={room.url.includes("http") ? room.url : "//" + room.url}
                 target="_blank"
                 rel="noopener noreferrer"
               >
