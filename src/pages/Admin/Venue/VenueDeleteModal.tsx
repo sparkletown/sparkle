@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
@@ -18,6 +18,7 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
 }) => {
+  const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string>();
   const history = useHistory();
@@ -31,7 +32,8 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  const deleteVenue = async () => {
+  const deleteVenue = useCallback(async () => {
+    setDeleting(true);
     try {
       await firebase.functions().httpsCallable("venue-deleteVenue")({
         id: venue.id,
@@ -39,8 +41,10 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
       setDeleted(true);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setDeleting(false);
     }
-  };
+  }, [venue.id]);
 
   return (
     <Modal show={show} onHide={closeDeleteModal}>
@@ -57,8 +61,16 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
                 delete {venue.name}?
               </span>
             </div>
+            {deleting && (
+              <div className="centered-flex" style={{ marginBottom: 10 }}>
+                <div className="spinner-border">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            )}
             <div className="input-group">
               <button
+                disabled={deleting}
                 className="btn btn-primary btn-block btn-centered"
                 onClick={deleteVenue}
               >
@@ -66,6 +78,7 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
               </button>
               {error && <span className="input-error">{error}</span>}
               <button
+                disabled={deleting}
                 className="btn btn-primary btn-block btn-centered"
                 onClick={closeDeleteModal}
               >
