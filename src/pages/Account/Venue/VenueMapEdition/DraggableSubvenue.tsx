@@ -14,6 +14,8 @@ function getStyles(
     left,
     opacity: isDragging ? 0 : 1,
     height: isDragging ? 0 : "",
+    animation: "ripple 4s linear infinite",
+    borderRadius: "50%",
   };
 }
 
