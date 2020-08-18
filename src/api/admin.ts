@@ -69,6 +69,11 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 
+export type PlacementInput = {
+  mapIconImageFile?: FileList;
+  placement?: Omit<VenuePlacement, "state">;
+};
+
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 

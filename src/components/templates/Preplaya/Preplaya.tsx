@@ -3,7 +3,11 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
-import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import {
+  DEFAULT_MAP_ICON_URL,
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_TEMPLATES,
+} from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
 import { updateLocationData } from "utils/useLocationUpdateEffect";
@@ -127,7 +131,7 @@ const Preplaya = () => {
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
-      if (campVenue) {
+      if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
         const campY = (campVenue.placement?.y || 0) * scale;
         const scrollY = campY - window.innerHeight / 2;
         window.scrollTo(0, scrollY);

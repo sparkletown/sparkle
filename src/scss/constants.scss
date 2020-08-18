@@ -17,6 +17,13 @@ $clickable-area-color: #ffffff11;
 
 $primary: #7c46fb;
 $gradient: linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%);
+$danger-gradient: linear-gradient(
+  124deg,
+  #e15a5a 0%,
+  #e30e2f 50%,
+  #f60053 100%
+);
+$admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
 $navbar-height: 50px;
 $ripple-color: chocolate;

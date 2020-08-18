@@ -24,6 +24,23 @@ export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
 
+export const SUBVENUE_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
+
+export const PLACEABLE_VENUE_TEMPLATES = [
+  VenueTemplate.artcar,
+  VenueTemplate.artpiece,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
+];
+export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
+
 export interface Template {
   template: VenueTemplate;
   name: string;

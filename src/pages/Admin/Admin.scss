@@ -48,7 +48,7 @@ $page-max-width: 1240px;
     .page-container-adminsidebar {
       position: relative;
       overflow: auto;
-      background-image: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+      background-image: $admin-gradient;
       .page-container-adminsidebar-title {
         background: rgba($black, 0.15);
         padding: 14px;
@@ -116,7 +116,6 @@ $page-max-width: 1240px;
       .page-container-adminpanel-tabs {
         background: rgba($white, 0.15);
         display: flex;
-        margin-bottom: 20px;
         .page-container-adminpanel-tab {
           position: relative;
           padding: 14px 40px;
@@ -186,6 +185,9 @@ $page-max-width: 1240px;
             padding: 20px;
             border-radius: 10px;
 
+            .heading {
+              text-align: center;
+            }
             .heading-group {
               margin-top: 20px;
               .title {
@@ -213,6 +215,14 @@ $page-max-width: 1240px;
         .page-container-adminpanel-actions {
           padding-right: 40px;
           padding-top: 20px;
+        }
+        .page-container-adminpanel-sidebar {
+          background-image: $admin-gradient;
+
+          .title {
+            background: rgba($black, 0.15);
+            padding: 14px;
+          }
         }
       }
     }
