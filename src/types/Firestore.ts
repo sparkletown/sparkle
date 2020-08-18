@@ -66,7 +66,7 @@ export interface Firestore {
     venues?: Array<WithId<AnyVenue>>;
     events?: Array<WithId<VenueEvent>>;
     playaVenues?: Array<WithId<AnyVenue>>;
-    statsOnlineUsers: Array<WithId<User>>;
-    statsOpenVenues: Array<WithId<AnyVenue>>;
+    statsOnlineUsers?: Array<WithId<User>>;
+    statsOpenVenues?: Array<WithId<AnyVenue>>;
   };
 }

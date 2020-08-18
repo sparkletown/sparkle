@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
@@ -25,7 +25,6 @@ const OnlineStats: React.FC = () => {
       getOnlineStats()
         .then((result) => {
           const { onlineUsers, openVenues } = result.data as any;
-          console.log("result", result);
           setOnlineUsers(onlineUsers);
           setOpenVenues(openVenues);
           setLoaded(true);
@@ -37,39 +36,44 @@ const OnlineStats: React.FC = () => {
       updateStats();
     }, 5 * 1000);
     return () => clearInterval(id);
-  }, [setOnlineUsers, setOpenVenues]);
+  }, []);
 
-  const popover = loaded ? (
-    <Popover id="popover-onlinestats">
-      <Popover.Content>
-        <div className="stats-modal-container">
-          <div className="online-users">
-            <h1 className="title modal-title">People Online</h1>
-            <UserList users={onlineUsers} activity="online" />
-          </div>
-          <div className="open-venues">
-            <h1 className="title modal-title">Venues Open</h1>
-            <span className="bold">{openVenues?.length || 0}</span> venues open
-            {openVenues?.map((venue, index) => (
-              <div
-                key={index}
-                onClick={() => history.push(venueInsideUrl(venue.id))}
-              >
-                <img
-                  className="venue-icon"
-                  src={venue.host.icon}
-                  alt={venue.name}
-                  title={venue.name}
-                />
-                <span className="venue-name">{venue.name}</span>
+  const popover = useMemo(
+    () =>
+      loaded ? (
+        <Popover id="popover-onlinestats">
+          <Popover.Content>
+            <div className="stats-modal-container">
+              <div className="online-users">
+                <h1 className="title modal-title">People Online</h1>
+                <UserList users={onlineUsers} activity="online" />
               </div>
-            ))}
-          </div>
-        </div>
-      </Popover.Content>
-    </Popover>
-  ) : (
-    <></>
+              <div className="open-venues">
+                <h1 className="title modal-title">Venues Open</h1>
+                <span className="bold">{openVenues?.length || 0}</span> venues
+                open
+                {openVenues.map((venue, index) => (
+                  <div
+                    key={index}
+                    onClick={() => history.push(venueInsideUrl(venue.id))}
+                  >
+                    <img
+                      className="venue-icon"
+                      src={venue.host.icon}
+                      alt={venue.name}
+                      title={venue.name}
+                    />
+                    <span className="venue-name">{venue.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Popover.Content>
+        </Popover>
+      ) : (
+        <></>
+      ),
+    [history, loaded, onlineUsers, openVenues]
   );
 
   return (
@@ -79,11 +83,10 @@ const OnlineStats: React.FC = () => {
           trigger="click"
           placement="bottom-end"
           overlay={popover}
-          rootClose={true}
+          rootClose
         >
           <small className="counter">
-            {onlineUsers?.length} people online, {openVenues?.length} venues
-            open
+            {onlineUsers.length} people online, {openVenues.length} venues open
           </small>
         </OverlayTrigger>
       )}

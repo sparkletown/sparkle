@@ -16,12 +16,12 @@ const eventIsNow = (event, now) => {
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
   const userLastSeenLimit = (now - 24 * ONE_HOUR) / 1000;
-  const onlineUsersCollection = await admin
+  const users = await admin
     .firestore()
     .collection("users")
     .where("lastSeenAt", ">", userLastSeenLimit)
     .get();
-  const onlineUsers = onlineUsersCollection.docs.map((doc) => {
+  const onlineUsers = users.docs.map((doc) => {
     const userWithId = doc.data();
     userWithId.id = doc.id;
     return userWithId;
@@ -29,19 +29,23 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
 
   let openVenues = [];
   const venues = await admin.firestore().collection("venues").get();
-  venues.docs.forEach(async (venue) => {
+  venues.docs.forEach((venue) => {
     let venueOpen = false;
-    const events = await venue.ref.collection("events").get();
-    events.docs.forEach(async (event) => {
-      if (eventIsNow(event, now)) {
-        venueOpen = true;
-      }
-    });
-    if (venueOpen) {
-      const venueWithId = venue.data();
-      venueWithId.id = venue.id;
-      openVenues.push(venueWithId);
-    }
+    venue.ref
+      .collection("events")
+      .get()
+      .then((events) => {
+        events.docs.forEach((event) => {
+          if (eventIsNow(event, now)) {
+            venueOpen = true;
+          }
+        });
+        if (venueOpen) {
+          const venueWithId = venue.data();
+          venueWithId.id = venue.id;
+          openVenues.push(venueWithId);
+        }
+      });
   });
   return { onlineUsers, openVenues };
 });
