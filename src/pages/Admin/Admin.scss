@@ -147,11 +147,16 @@ $page-max-width: 1240px;
         display: grid;
         grid-template-columns: 2fr 260px;
         grid-gap: 0;
+
         .page-container-adminpanel-content {
-          position: relative;
           margin-right: 40px;
+        }
+
+        .page-container-adminpanel-content,
+        .page-container-adminpanel-placement {
+          position: relative;
           z-index: 10;
-          overflow-y: scroll;
+          overflow: auto;
           .venue-header {
             position: absolute;
             top: 0;
@@ -218,10 +223,24 @@ $page-max-width: 1240px;
         }
         .page-container-adminpanel-sidebar {
           background-image: $admin-gradient;
+          overflow: hidden scroll;
 
           .title {
             background: rgba($black, 0.15);
             padding: 14px;
+          }
+
+          .venuelist {
+            list-style-type: none;
+
+            li {
+              padding: 14px;
+              cursor: pointer;
+
+              &.selected {
+                background: rgba($black, 0.3);
+              }
+            }
           }
         }
       }

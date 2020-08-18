@@ -6,25 +6,33 @@ import React, {
   useCallback,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
-import { WithId } from "utils/id";
-import { Venue } from "types/Venue";
 import { PLAYA_WIDTH_AND_HEIGHT } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import {
-  editPlacementCastSchema,
-  validationSchema,
-} from "./Venue/DetailsValidationSchema";
+import { editPlacementCastSchema } from "./Venue/DetailsValidationSchema";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
-import _ from "lodash";
 import { PlacementInput } from "api/admin";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { VenuePlacementState, Venue } from "types/Venue";
+import { ExtractProps } from "types/utility";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
+
+const isUnplaced = (venue: Venue) => {
+  return !venue?.placement?.state;
+};
+
+const isSelfPlaced = (venue: Venue) => {
+  return venue?.placement?.state === VenuePlacementState.SelfPlaced;
+};
+
+const isPlaced = (venue: Venue) => {
+  return venue?.placement?.state === VenuePlacementState.AdminPlaced;
+};
 
 const createFirestorePlacementInput = async (
   input: PlacementInput,
@@ -33,20 +41,19 @@ const createFirestorePlacementInput = async (
   const storageRef = firebase.storage().ref();
 
   const fileKey = "mapIconImageFile";
-  const urlKey = "mapIconImageUrl";
 
   const fileArr = input[fileKey];
   if (!fileArr || fileArr.length === 0) {
-    return { placement: input.placement };
+    return {
+      placement: input.placement,
+    };
   }
   const file = fileArr[0];
 
   const randomPrefix = Math.random().toString();
-
   const uploadFileRef = storageRef.child(
     `users/${user.uid}/placement/${randomPrefix}-${file.name}`
   );
-
   await uploadFileRef.put(file);
   const downloadUrl: string = await uploadFileRef.getDownloadURL();
 
@@ -70,7 +77,7 @@ const updatePlacement = async (input: PlacementInput, user: UserInfo) => {
 const iconPositionFieldName = "iconPosition";
 
 const PlacementComponent: React.FC = () => {
-  const [venueId, setVenueId] = useState();
+  const [venueId, setVenueId] = useState<string>();
 
   useFirestoreConnect({
     collection: "venues",
@@ -79,6 +86,9 @@ const PlacementComponent: React.FC = () => {
 
   const venues = useSelector((state) => state.firestore.ordered.playaVenues);
   const venue = venues?.find((venue) => venue.id === venueId);
+  const unplacedVenues = venues?.filter(isUnplaced);
+  const selfPlacedVenues = venues?.filter(isSelfPlaced);
+  const placedVenues = venues?.filter(isPlaced);
 
   const defaultValues = useMemo(
     () =>
@@ -88,18 +98,18 @@ const PlacementComponent: React.FC = () => {
     [venue]
   );
 
-  const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
-    {
-      mode: "onSubmit",
-      reValidateMode: "onChange",
-      validationSchema: editPlacementCastSchema,
-      validationContext: {
-        template: venue?.template,
-        editing: !!venue,
-      },
-      defaultValues,
-    }
-  );
+  const { watch, formState, register, setValue, errors, ...rest } = useForm<
+    FormValues
+  >({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    validationSchema: editPlacementCastSchema,
+    validationContext: {
+      template: venue?.template,
+      editing: !!venue,
+    },
+    defaultValues,
+  });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
@@ -124,10 +134,10 @@ const PlacementComponent: React.FC = () => {
         console.error(e);
       }
     },
-    [user, venueId, history]
+    [user, venue]
   );
-
   const onFormSubmit = rest.handleSubmit(onSubmit);
+
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
     if (file && file.length > 0) return URL.createObjectURL(file[0]);
@@ -147,52 +157,78 @@ const PlacementComponent: React.FC = () => {
     [mapIconUrl, defaultValues]
   );
 
+  const onBoxMove: ExtractProps<
+    typeof PlayaContainer
+  >["onChange"] = useCallback(
+    (val) => {
+      if (!(iconPositionFieldName in val)) return;
+      const iconPos = val[iconPositionFieldName];
+      setValue("placement", {
+        x: iconPos.left,
+        y: iconPos.top,
+      });
+    },
+    [setValue]
+  );
+
   return (
-    <div className="page-container-adminpanel-venuepage">
-      <div className="page-container-adminpanel-content">
+    <>
+      <div className="page-container-adminpanel-placement">
         <div className="venue-preview">
           <h4 className="heading">Drag-and-Drop Playa Placement</h4>
-          <form onSubmit={onSubmit}>
-            {venueId && (
-              <div className="content-group">
-                <div className="title">Selected venue: {venue?.name}</div>
-                <h4 className="italic" style={{ fontSize: "20px" }}>
-                  Venue icon which will appear on the map
-                </h4>
-                <ImageCollectionInput
-                  collectionPath={"assets/mapIcons2"}
-                  disabled={false}
-                  fieldName={"mapIconImage"}
-                  register={register}
-                  imageUrl={mapIconImageUrl}
-                  containerClassName="input-square-container"
-                  imageClassName="input-square-image"
-                  image={mapIconImageFile}
-                  error={errors.mapIconImageFile || errors.mapIconImageUrl}
-                  setValue={setValue}
-                  imageType="icons"
-                />
+          <form onSubmit={onFormSubmit}>
+            {!venueId && (
+              <div className="heading">
+                Select a venue on the right to begin the placement process
               </div>
             )}
-            <div className="content-group">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
-                Location on the map
-              </h4>
-              <div className="playa">
-                <PlayaContainer
-                  interactive
-                  coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                  onChange={onChange}
-                  snapToGrid={false}
-                  iconsMap={iconsMap ?? {}}
-                  backgroundImage={"/burn/Playa.jpeg"}
-                  iconImageStyle={styles.iconImage}
-                  draggableIconImageStyle={styles.draggableIconImage}
-                  venueId={venueId}
-                  otherIconsStyle={{ opacity: 0.4 }}
-                />
-              </div>
-            </div>
+            {venueId && (
+              <>
+                <div className="content-group">
+                  <div className="banner">
+                    <h4 className="italic">Selected venue:</h4>
+                    {venue?.name}
+                  </div>
+                </div>
+                <div className="content-group">
+                  <h4 className="italic" style={{ fontSize: "20px" }}>
+                    Venue icon which will appear on the map
+                  </h4>
+                  <ImageCollectionInput
+                    collectionPath={"assets/mapIcons2"}
+                    disabled={false}
+                    fieldName={"mapIconImage"}
+                    register={register}
+                    imageUrl={values.mapIconImageUrl}
+                    containerClassName="input-square-container"
+                    imageClassName="input-square-image"
+                    image={values.mapIconImageFile}
+                    error={errors.mapIconImageFile || errors.mapIconImageUrl}
+                    setValue={setValue}
+                    imageType="icons"
+                  />
+                </div>
+                <div className="content-group">
+                  <h4 className="italic" style={{ fontSize: "20px" }}>
+                    Location on the map
+                  </h4>
+                  <div className="playa">
+                    <PlayaContainer
+                      interactive
+                      coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+                      onChange={onBoxMove}
+                      snapToGrid={false}
+                      iconsMap={iconsMap ?? {}}
+                      backgroundImage={"/burn/Playa.jpeg"}
+                      iconImageStyle={styles.iconImage}
+                      draggableIconImageStyle={styles.draggableIconImage}
+                      venueId={venueId}
+                      otherIconsStyle={{ opacity: 0.4 }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </form>
         </div>
       </div>
@@ -203,38 +239,43 @@ const PlacementComponent: React.FC = () => {
           {venue && <li className="selected">{venue.name}</li>}
         </ul>
         <div className="title">Unplaced Venues</div>
-        {unplacedVenues?.map((venue) => (
-          <li
-            onClick={() => setVenueId(venue.id)}
-            className={venue.id === venueId ? "selected" : ""}
-          >
-            {venue.name}
-          </li>
-        ))}
-        <div className="title">Self-placed Venues</div>
         <ul className="venuelist">
-          {selfPlacedVenues?.map((venue) => (
+          {unplacedVenues?.map((venue, index) => (
             <li
+              key={index}
               onClick={() => setVenueId(venue.id)}
               className={venue.id === venueId ? "selected" : ""}
             >
-              {venue.name}
+              <a>{venue.name}</a>
+            </li>
+          ))}
+        </ul>
+        <div className="title">Self-placed Venues</div>
+        <ul className="venuelist">
+          {selfPlacedVenues?.map((venue, index) => (
+            <li
+              key={index}
+              onClick={() => setVenueId(venue.id)}
+              className={venue.id === venueId ? "selected" : ""}
+            >
+              <a>{venue.name}</a>
             </li>
           ))}
         </ul>
         <div className="title">Formally Placed Venues</div>
         <ul className="venuelist">
-          {placedVenues?.map((venue) => (
+          {placedVenues?.map((venue, index) => (
             <li
+              key={index}
               onClick={() => setVenueId(venue.id)}
               className={venue.id === venueId ? "selected" : ""}
             >
-              {venue.name}
+              <a>{venue.name}</a>
             </li>
           ))}
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 

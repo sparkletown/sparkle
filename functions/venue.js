@@ -106,6 +106,10 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
+const checkUserIsPlayaOwner = async (uid) => {
+  return checkUserIsOwner(PLAYA_VENUE_ID, uid);
+};
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -265,4 +269,32 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   checkUserIsOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
+});
+
+exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
+  console.log("adminUpdatePlacement", data, context.auth.token.user_id);
+  const venueId = data.id;
+  checkAuth(context);
+
+  checkUserIsPlayaOwner(context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const updated = doc.data();
+      updated.mapIconImageUrl = data.mapIconImageUrl;
+      updated.placement = {
+        x: data.placement?.x,
+        y: data.placement?.y,
+        addressText: data.placement?.addressText,
+        state: PlacementState.AdminPlaced,
+      };
+      admin.firestore().collection("venues").doc(venueId).update(updated);
+    });
 });

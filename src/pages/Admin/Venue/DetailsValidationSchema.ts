@@ -1,4 +1,4 @@
-import { createUrlSafeName, VenueInput } from "api/admin";
+import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
@@ -166,7 +166,8 @@ export const editVenueCastSchema = Yup.object()
   .from("mapIconImageUrl", "mapIconImageUrl");
 
 export const editPlacementCastSchema = Yup.object()
-  .shape<Partial<VenueInput>>({})
+  .shape<Partial<PlacementInput>>({})
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("mapIconImageUrl", "mapIconImageUrl")
+  .required();
