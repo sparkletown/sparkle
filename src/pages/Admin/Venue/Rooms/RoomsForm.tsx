@@ -80,7 +80,12 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar fullscreen>
-      <RoomInnerForm venueId={venueId} venue={venue} editingRoom={room} />
+      <RoomInnerForm
+        venueId={venueId}
+        venue={venue}
+        editingRoom={room}
+        editingRoomIndex={queryRoomIndex}
+      />
     </WithNavigationBar>
   );
 };
@@ -89,12 +94,13 @@ interface RoomInnerForm {
   venueId: string;
   venue: CampVenue;
   editingRoom?: CampVenue["rooms"][number];
+  editingRoomIndex?: number;
 }
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
-  const { venue, venueId, editingRoom } = props;
+  const { venue, venueId, editingRoom, editingRoomIndex } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -127,7 +133,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     async (vals: Partial<FormValues>) => {
       if (!user) return;
       try {
-        await upsertRoom(vals as RoomInput, venueId, user);
+        await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
         setFormError(true);
@@ -192,32 +198,25 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   You can update everything in this form at a later date on the
                   edit page
                 </p>
-                {!editingRoom ? (
-                  <div className="input-container">
-                    <div className="input-title">Name your Room</div>
-                    <input
-                      disabled={disable}
-                      name="title"
-                      ref={register}
-                      className="align-left"
-                      placeholder={`My room title`}
-                    />
-                    {errors.title && (
-                      <span className="input-error">
-                        {errors.title.message}
-                      </span>
-                    )}
-                  </div>
-                ) : (
+                <div className="input-container">
+                  <div className="input-title">Name your Room</div>
                   <input
-                    type="hidden"
+                    disabled={disable}
                     name="title"
                     ref={register}
-                    value={values.title}
+                    className="align-left"
+                    placeholder={`My room title`}
                   />
-                )}
+                  {errors.title && (
+                    <span className="input-error">{errors.title.message}</span>
+                  )}
+                </div>
+
                 <div className="input-container">
-                  <div className="input-title">Upload an icon photo</div>
+                  <div className="input-title">
+                    Upload an image for how your room should appear on the camp
+                    map
+                  </div>
                   <ImageInput
                     disabled={disable}
                     name={"image_file"}
@@ -314,6 +313,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={venue}
+              currentRoomIndex={editingRoomIndex}
               otherIconsStyle={{ opacity: 0.4 }}
             />
           )}
