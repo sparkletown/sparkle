@@ -94,7 +94,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId]
+    [event, onHide, venueId, template]
   );
   return (
     <Modal show={show} onHide={onHide}>
