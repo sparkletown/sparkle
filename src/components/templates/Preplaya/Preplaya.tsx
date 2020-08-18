@@ -6,7 +6,9 @@ import { useSelector } from "hooks/useSelector";
 import { DEFAULT_MAP_ICON_URL, PLAYA_WIDTH_AND_HEIGHT } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
-import { updateLocationData } from "utils/useLocationUpdateEffect";
+import useLocationUpdateEffect, {
+  updateLocationData,
+} from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,6 +34,8 @@ const Preplaya = () => {
   const mapRef = useRef<HTMLDivElement>(null);
 
   const { user } = useUser();
+
+  useLocationUpdateEffect(user, "Playa");
 
   useEffect(() => {
     const rescale = () => {

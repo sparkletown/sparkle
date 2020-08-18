@@ -64,5 +64,7 @@ export interface Firestore {
     reactions: Array<WithId<Reaction>>;
     venues?: Array<WithId<AnyVenue>>;
     events?: Array<WithId<VenueEvent>>;
+    statsOnlineUsers: Array<WithId<User>>;
+    statsOpenVenues: Array<WithId<AnyVenue>>;
   };
 }
