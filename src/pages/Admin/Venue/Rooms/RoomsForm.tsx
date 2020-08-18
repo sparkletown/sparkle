@@ -140,7 +140,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         console.error(e);
       }
     },
-    [user, history, venueId]
+    [user, history, venueId, editingRoomIndex]
   );
 
   useEffect(() => {

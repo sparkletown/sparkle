@@ -31,7 +31,7 @@ export const CampContainer: React.FC<PropsType> = (props) => {
           };
         }, {}) ?? {}
     );
-  }, [venue]);
+  }, [venue, currentRoomIndex]);
 
   return <Container {...rest} otherIcons={otherIcons} />;
 };

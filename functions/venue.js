@@ -133,8 +133,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
       }
       const docData = doc.data();
 
-      //if the room exists under the same name, find it
-      if (!roomIndex) {
+      if (roomIndex === undefined) {
         docData.rooms = [...docData.rooms, room];
       } else {
         docData.rooms[roomIndex] = room;
