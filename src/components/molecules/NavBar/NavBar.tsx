@@ -15,6 +15,7 @@ import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import OnlineStats from "../OnlineStats";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -81,7 +82,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           </div>
           {user ? (
             <div className="icons-container">
-              <small className="counter">0 humans online, 0 venues open</small>
+              <OnlineStats />
               {hasUpcomingEvents && (
                 <OverlayTrigger
                   trigger="click"
