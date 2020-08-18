@@ -167,6 +167,8 @@ export const editVenueCastSchema = Yup.object()
 
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
+  .from("placement.addressText", "addressText")
+
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("mapIconImageUrl", "mapIconImageUrl")

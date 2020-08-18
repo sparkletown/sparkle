@@ -72,6 +72,7 @@ type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 export type PlacementInput = {
   mapIconImageFile?: FileList;
   mapIconImageUrl?: string;
+  addressText?: string;
   placement?: Omit<VenuePlacement, "state">;
 };
 

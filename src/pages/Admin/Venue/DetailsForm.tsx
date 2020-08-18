@@ -473,7 +473,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       )}
       {formError && (
         <span className="input-error">
-          {"An error occured when saving your form"}
+          {"An error occured when saving the form"}
         </span>
       )}
     </form>
@@ -485,7 +485,7 @@ interface SubmitButtonProps {
   editing?: boolean;
 }
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({
+export const SubmitButton: React.FC<SubmitButtonProps> = ({
   isSubmitting,
   editing,
 }) => {

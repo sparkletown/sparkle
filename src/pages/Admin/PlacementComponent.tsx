@@ -14,11 +14,11 @@ import { editPlacementCastSchema } from "./Venue/DetailsValidationSchema";
 import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { useUser } from "hooks/useUser";
-import { useHistory } from "react-router-dom";
 import { PlacementInput } from "api/admin";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { VenuePlacementState, Venue } from "types/Venue";
 import { ExtractProps } from "types/utility";
+import { SubmitButton } from "./Venue/DetailsForm";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 
@@ -59,7 +59,10 @@ const createFirestorePlacementInput = async (
 
   return {
     mapIconImageUrl: downloadUrl,
-    placement: input.placement,
+    placement: {
+      ...input.placement,
+      addressText: input.addressText,
+    },
   };
 };
 
@@ -111,9 +114,10 @@ const PlacementComponent: React.FC = () => {
     defaultValues,
   });
   const { user } = useUser();
-  const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+  const editing = !!venueId;
+  const disable = isSubmitting;
 
   const [formError, setFormError] = useState(false);
 
@@ -227,6 +231,36 @@ const PlacementComponent: React.FC = () => {
                     />
                   </div>
                 </div>
+                <div className="content-group">
+                  <h4 className="italic" style={{ fontSize: "20px" }}>
+                    Placement notes for this camp's owners
+                  </h4>
+                  <input
+                    disabled={disable}
+                    name="addressText"
+                    ref={register}
+                    className="align-left"
+                    placeholder={`Example: 8:00 & B`}
+                  />
+                  {errors.addressText && (
+                    <span className="input-error">
+                      {errors.addressText.message}
+                    </span>
+                  )}
+                </div>
+                <div className="page-container-left-bottombar">
+                  <div>
+                    {formError && (
+                      <span className="input-error">
+                        {"An error occured when saving the form"}
+                      </span>
+                    )}
+                    <SubmitButton
+                      editing={editing}
+                      isSubmitting={isSubmitting}
+                    />
+                  </div>
+                </div>
               </>
             )}
           </form>
@@ -246,7 +280,7 @@ const PlacementComponent: React.FC = () => {
               onClick={() => setVenueId(venue.id)}
               className={venue.id === venueId ? "selected" : ""}
             >
-              <a>{venue.name}</a>
+              {venue.name}
             </li>
           ))}
         </ul>
@@ -258,7 +292,7 @@ const PlacementComponent: React.FC = () => {
               onClick={() => setVenueId(venue.id)}
               className={venue.id === venueId ? "selected" : ""}
             >
-              <a>{venue.name}</a>
+              {venue.name}
             </li>
           ))}
         </ul>
@@ -270,7 +304,7 @@ const PlacementComponent: React.FC = () => {
               onClick={() => setVenueId(venue.id)}
               className={venue.id === venueId ? "selected" : ""}
             >
-              <a>{venue.name}</a>
+              {venue.name}
             </li>
           ))}
         </ul>
