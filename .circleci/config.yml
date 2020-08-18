@@ -46,6 +46,9 @@ jobs:
                   fi
                   ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
                   ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+                  ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+                  ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
+
   deploy-hosting:
     executor:
       name: node/default

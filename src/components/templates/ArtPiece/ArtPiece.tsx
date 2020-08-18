@@ -31,11 +31,11 @@ const ArtPiece = () => {
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
           <InformationCard title="About the venue">
-            <p>
-              {venue.name}.
-              <br />
-              {` It's a real piece of art.`}
+            <p className="title-sidebar">{venue.name}.</p>
+            <p className="short-description-sidebar">
+              {venue.config.landingPageConfig.subtitle}
             </p>
+            <p>{venue.config.landingPageConfig.description}</p>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
