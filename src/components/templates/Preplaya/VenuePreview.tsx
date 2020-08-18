@@ -29,6 +29,26 @@ const isOnNow = (event: VenueEvent) =>
   event.start_utc_seconds <= nowSeconds &&
   event.start_utc_seconds + event.duration_minutes * 60 <= nowSeconds;
 
+const getLink = (venue: WithId<Venue>) => {
+  let urlLink: string | undefined;
+  let targetLink: string = "";
+  switch (venue.template) {
+    case VenueTemplate.themecamp:
+      urlLink = venueInsideUrl(venue.id);
+      break;
+    case VenueTemplate.artpiece:
+      urlLink = venueInsideUrl(venue.id);
+      break;
+    case VenueTemplate.zoomroom:
+      urlLink = venue.zoomUrl?.includes("http")
+        ? venue.zoomUrl
+        : "//" + venue.zoomUrl;
+      targetLink = "_blank";
+      break;
+  }
+  return { urlLink, targetLink };
+};
+
 const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -72,6 +92,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
       break;
   }
 
+  const { urlLink, targetLink } = getLink(venue);
+
   return (
     <>
       <div className="container playa-venue-preview-container">
@@ -103,8 +125,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
               <p className="template-name">{templateName}</p>
               <a
                 className="btn btn-primary join-button"
-                href={venueInsideUrl(venue.id)}
-                target="_blank"
+                href={urlLink}
+                target={targetLink}
                 rel="noopener noreferrer"
               >
                 {joinButtonText}

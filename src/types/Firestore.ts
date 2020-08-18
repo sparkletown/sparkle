@@ -49,6 +49,7 @@ export interface Firestore {
     reactions: Record<string, Reaction>;
     venues?: Record<string, AnyVenue>;
     events?: Record<string, VenueEvent>;
+    playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
@@ -64,6 +65,7 @@ export interface Firestore {
     reactions: Array<WithId<Reaction>>;
     venues?: Array<WithId<AnyVenue>>;
     events?: Array<WithId<VenueEvent>>;
+    playaVenues?: Array<WithId<AnyVenue>>;
     statsOnlineUsers: Array<WithId<User>>;
     statsOpenVenues: Array<WithId<AnyVenue>>;
   };
