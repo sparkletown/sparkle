@@ -272,7 +272,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  console.log("adminUpdatePlacement", data, context.auth.token.user_id);
+  console.log("DEBUG: adminUpdatePlacement", data, context.auth.token.user_id);
   const venueId = data.id;
   checkAuth(context);
 
