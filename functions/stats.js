@@ -29,23 +29,25 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
 
   let openVenues = [];
   const venues = await admin.firestore().collection("venues").get();
-  venues.docs.forEach((venue) => {
-    let venueOpen = false;
-    venue.ref
-      .collection("events")
-      .get()
-      .then((events) => {
-        events.docs.forEach((event) => {
-          if (eventIsNow(event, now)) {
-            venueOpen = true;
+  await Promise.all(
+    venues.docs.map(async (venue) => {
+      let venueOpen = false;
+      await venue.ref
+        .collection("events")
+        .get()
+        .then((events) => {
+          events.docs.forEach((event) => {
+            if (eventIsNow(event, now)) {
+              venueOpen = true;
+            }
+          });
+          if (venueOpen) {
+            const venueWithId = venue.data();
+            venueWithId.id = venue.id;
+            openVenues.push(venueWithId);
           }
         });
-        if (venueOpen) {
-          const venueWithId = venue.data();
-          venueWithId.id = venue.id;
-          openVenues.push(venueWithId);
-        }
-      });
-  });
+    })
+  );
   return { onlineUsers, openVenues };
 });
