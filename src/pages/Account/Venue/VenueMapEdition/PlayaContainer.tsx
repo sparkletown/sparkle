@@ -16,8 +16,12 @@ type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
 
 export const PlayaContainer: React.FC<PropsType> = (props) => {
   const { venueId, ...rest } = props;
-  useFirestoreConnect("venues");
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  useFirestoreConnect({
+    collection: "venues",
+    storeAs: "playaVenues",
+  });
+
+  const venues = useSelector((state) => state.firestore.ordered.playaVenues);
 
   const placedVenues: SubVenueIconMap = useMemo(() => {
     return (
