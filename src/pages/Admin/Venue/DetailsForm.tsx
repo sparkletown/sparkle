@@ -16,7 +16,7 @@ import React, {
 } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar } from "types/Venue";
+import { createJazzbar, VenuePlacementState } from "types/Venue";
 import * as Yup from "yup";
 import {
   editVenueCastSchema,
@@ -142,6 +142,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     return null;
   }
 
+  const isAdminPlaced =
+    state.detailsPage?.venue?.placement?.state ===
+    VenuePlacementState.AdminPlaced;
+  const placementAddress = state.detailsPage?.venue?.placement?.addressText;
+
   return (
     <div className="page">
       <div className="page-side">
@@ -172,13 +177,23 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         >
           Position your venue on the playa
         </h4>
-        <p>
-          First upload or select the icon you would like to appear on the Playa,
-          then drag it around to position it
-        </p>
+        {isAdminPlaced ? (
+          <p className="warning">
+            Your venue has been placed by our placement team and cannot be
+            moved.{" "}
+            {placementAddress && (
+              <>The placement team wrote your address as: {placementAddress}</>
+            )}
+          </p>
+        ) : (
+          <p>
+            First upload or select the icon you would like to appear on the
+            Playa, then drag it around to position it
+          </p>
+        )}
         <div className="playa">
           <PlayaContainer
-            interactive
+            interactive={!isAdminPlaced}
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
