@@ -290,6 +290,16 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         </div>
       </div>
       <div className="page-side preview">
+        <h4
+          className="italic"
+          style={{ textAlign: "center", fontSize: "22px" }}
+        >
+          Position your room in the camp
+        </h4>
+        <p>
+          First upload or select the icon you would like to appear in your camp,
+          then drag it around to position it
+        </p>
         <div className="playa">
           {venue.mapBackgroundImageUrl && (
             <CampContainer

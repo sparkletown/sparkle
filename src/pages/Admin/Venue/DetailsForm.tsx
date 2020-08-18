@@ -172,6 +172,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         >
           Position your venue on the playa
         </h4>
+        <p>
+          First upload or select the icon you would like to appear on the Playa,
+          then drag it around to position it
+        </p>
         <div className="playa">
           <PlayaContainer
             interactive
