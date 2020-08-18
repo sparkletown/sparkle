@@ -21,8 +21,14 @@ const styles: React.CSSProperties = {
   height: "100%",
   position: "relative",
 };
-interface SubVenueIconMap {
-  [key: string]: { top: number; left: number; url: string };
+export interface SubVenueIconMap {
+  [key: string]: {
+    top: number;
+    left: number;
+    url: string;
+    width: number;
+    height: number;
+  };
 }
 
 interface PropsType {
@@ -35,6 +41,8 @@ interface PropsType {
   otherIcons: SubVenueIconMap;
   coordinatesBoundary: number;
   interactive: boolean;
+  resizable: boolean;
+  onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
   otherIconsStyle?: CSSProperties;
 }
 
@@ -44,11 +52,11 @@ export const Container: React.FC<PropsType> = (props) => {
     iconsMap,
     backgroundImage,
     iconImageStyle,
-    draggableIconImageStyle,
     onChange,
     otherIcons,
     coordinatesBoundary,
     interactive,
+    resizable,
     otherIconsStyle,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
@@ -69,6 +77,8 @@ export const Container: React.FC<PropsType> = (props) => {
         ...acc,
         [val]: {
           ...boxes[val],
+          width: (coordinatesBoundary * boxes[val].width) / imageDims.width,
+          height: (coordinatesBoundary * boxes[val].height) / imageDims.height,
           top: convertDisplayedCoordToIntrinsic(boxes[val].top, "height"),
           left: convertDisplayedCoordToIntrinsic(boxes[val].left, "width"),
         },
@@ -85,6 +95,9 @@ export const Container: React.FC<PropsType> = (props) => {
         ...acc,
         [val]: {
           ...iconsMap[val],
+          width: (imageDims.width * iconsMap[val].width) / coordinatesBoundary,
+          height:
+            (imageDims.height * iconsMap[val].height) / coordinatesBoundary,
           top: (imageDims.height * iconsMap[val].top) / coordinatesBoundary,
           left: (imageDims.width * iconsMap[val].left) / coordinatesBoundary,
         },
@@ -101,6 +114,19 @@ export const Container: React.FC<PropsType> = (props) => {
         update(boxes, {
           [id]: {
             $merge: { left, top },
+          },
+        })
+      );
+    },
+    [boxes]
+  );
+  const resizeBox = useCallback(
+    (id: string) => (dimensions: Dimensions) => {
+      const { width, height } = dimensions;
+      setBoxes(
+        update(boxes, {
+          [id]: {
+            $merge: { width, height },
           },
         })
       );
@@ -166,17 +192,19 @@ export const Container: React.FC<PropsType> = (props) => {
         </div>
         {Object.keys(boxes).map((key) => (
           <DraggableSubvenue
+            isResizable={resizable}
             key={key}
             id={key}
             imageStyle={iconImageStyle}
             {...boxes[key]}
+            onChangeSize={resizeBox(key)}
           />
         ))}
       </div>
       {imageDims && interactive && (
         <CustomDragLayer
           snapToGrid={!!snapToGrid}
-          iconImageStyle={draggableIconImageStyle}
+          iconSize={boxes[Object.keys(boxes)[0]]} // @debt - this gets the size from the first box
         />
       )}
     </>

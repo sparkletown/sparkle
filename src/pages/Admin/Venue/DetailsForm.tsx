@@ -32,6 +32,7 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_IMAGE,
+  PLAYA_ICON_SIDE,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -115,6 +116,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       mapIconUrl
         ? {
             [iconPositionFieldName]: {
+              width: PLAYA_ICON_SIDE,
+              height: PLAYA_ICON_SIDE,
               top: defaultValues?.placement?.y ?? 0,
               left: defaultValues?.placement?.x ?? 0,
               url: mapIconUrl,
@@ -180,6 +183,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         <div className="playa">
           <PlayaContainer
             interactive
+            resizable={false}
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}

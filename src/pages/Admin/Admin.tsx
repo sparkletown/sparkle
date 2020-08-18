@@ -30,7 +30,7 @@ import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_IMAGE } from "settings";
+import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_IMAGE, PLAYA_ICON_SIDE } from "settings";
 
 dayjs.extend(advancedFormat);
 
@@ -66,7 +66,7 @@ const VenueList: React.FC<VenueListProps> = ({
             key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
               canHaveSubvenues(venue) ? "camp" : ""
-              }`}
+            }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
             {isCampVenue(venue) && (
@@ -127,7 +127,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             key={tab.url}
             className={`page-container-adminpanel-tab ${
               location.pathname === tab.url ? "selected" : ""
-              }`}
+            }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
           </div>
@@ -188,15 +188,18 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               <div className="playa-container">
                 <PlayaContainer
                   interactive={false}
+                  resizable={false}
                   iconsMap={
                     venue.placement && venue.mapIconImageUrl
                       ? {
-                        icon: {
-                          top: venue.placement.y,
-                          left: venue.placement.x,
-                          url: venue.mapIconImageUrl,
-                        },
-                      }
+                          icon: {
+                            width: PLAYA_ICON_SIDE,
+                            height: PLAYA_ICON_SIDE,
+                            top: venue.placement.y,
+                            left: venue.placement.x,
+                            url: venue.mapIconImageUrl,
+                          },
+                        }
                       : {}
                   }
                   coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
@@ -300,7 +303,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                 const endingDate = new Date(
                   (venueEvent.start_utc_seconds +
                     60 * venueEvent.duration_minutes) *
-                  1000
+                    1000
                 );
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
@@ -405,7 +408,7 @@ const Admin: React.FC = () => {
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => { }} showAuth="login" />
+        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
@@ -414,8 +417,8 @@ const Admin: React.FC = () => {
             {venueId ? (
               <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
             ) : (
-                <>Select a venue to see its details</>
-              )}
+              <>Select a venue to see its details</>
+            )}
           </div>
         </div>
       </div>
