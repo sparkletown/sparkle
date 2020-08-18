@@ -277,12 +277,12 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
     },
   ]);
 
-  let events = useSelector((state) => state.firestore.ordered.events);
+  const events = useSelector((state) => state.firestore.ordered.events);
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   //filter out events that have already finished
-  events = events?.filter(
+  const filteredEvents = events?.filter(
     (ev) =>
       (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
   );
@@ -291,9 +291,9 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
     <>
       <div className="page-container-adminpanel-content">
         <div className="col-lg-6 col-12 oncoming-events">
-          {events && (
+          {filteredEvents && (
             <>
-              {events.map((venueEvent) => {
+              {filteredEvents.map((venueEvent) => {
                 const startingDate = new Date(
                   venueEvent.start_utc_seconds * 1000
                 );
