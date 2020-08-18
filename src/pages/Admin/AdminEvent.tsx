@@ -85,8 +85,8 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
         price: 0,
         collective_price: 0,
         host: data.host,
-        room: data.room,
       };
+      if (template === "themecamp") formEvent.room = data.room;
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
