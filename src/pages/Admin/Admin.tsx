@@ -6,7 +6,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, CSSProperties } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
@@ -29,6 +29,8 @@ import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import { PLAYA_WIDTH_AND_HEIGHT } from "settings";
 
 dayjs.extend(advancedFormat);
 
@@ -184,23 +186,25 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
             </h4>
             <div className="container venue-entrance-experience-container">
               <div className="playa-container">
-                <div className="playa-abs-container">
-                  <div className="playa-icon-container">
-                    <img
-                      src={venue.mapIconImageUrl ?? venue.host?.icon}
-                      alt={"host icon"}
-                      className="playa-icon"
-                    />
-                  </div>
-                </div>
-                <img
-                  src={"/burn/Playa.jpeg"}
-                  alt="playa"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "100%",
-                    objectFit: "cover",
-                  }}
+                <PlayaContainer
+                  interactive={false}
+                  iconsMap={
+                    venue.placement && venue.mapIconImageUrl
+                      ? {
+                          icon: {
+                            top: venue.placement.y,
+                            left: venue.placement.x,
+                            url: venue.mapIconImageUrl,
+                          },
+                        }
+                      : {}
+                  }
+                  coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+                  backgroundImage={"/burn/Playa.jpeg"}
+                  iconImageStyle={styles.iconImage}
+                  draggableIconImageStyle={styles.draggableIconImage}
+                  venueId={venue.id}
+                  otherIconsStyle={{ opacity: 0.4 }}
                 />
               </div>
             </div>
@@ -414,3 +418,18 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
+
+const styles: Record<string, CSSProperties> = {
+  iconImage: {
+    width: 60,
+    height: 60,
+    overflow: "hidden",
+    borderRadius: 30,
+  },
+  draggableIconImage: {
+    width: 70,
+    height: 70,
+    overflow: "hidden",
+    borderRadius: 35,
+  },
+};

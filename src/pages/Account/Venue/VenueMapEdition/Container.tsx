@@ -3,8 +3,6 @@ import React, {
   useState,
   useMemo,
   CSSProperties,
-  useRef,
-  useLayoutEffect,
   useEffect,
 } from "react";
 import { useDrop } from "react-dnd";
@@ -14,6 +12,9 @@ import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
 import { DEFAULT_MAP_ICON_URL, PLAYA_ICON_SIDE } from "settings";
+import { CustomDragLayer } from "./CustomDragLayer";
+import ReactResizeDetector from "react-resize-detector";
+import { Dimensions } from "types/utility";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -26,13 +27,16 @@ interface SubVenueIconMap {
 }
 
 interface PropsType {
-  snapToGrid: boolean;
+  snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
   iconImageStyle: CSSProperties;
-  onChange: (val: SubVenueIconMap) => void;
+  draggableIconImageStyle: CSSProperties;
+  onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   coordinatesBoundary: number;
+  interactive: boolean;
+  otherIconsStyle?: CSSProperties;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -41,70 +45,56 @@ export const Container: React.FC<PropsType> = (props) => {
     iconsMap,
     backgroundImage,
     iconImageStyle,
+    draggableIconImageStyle,
     onChange,
     otherIcons,
     coordinatesBoundary,
+    interactive,
+    otherIconsStyle,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
-  const [scale, setScale] = useState({ x: 1, y: 1 });
-  const mapRef = useRef<HTMLDivElement>(null);
+  const [imageDims, setImageDims] = useState<Dimensions>();
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
+    if (!imageDims) return;
+
+    const convertDisplayedCoordToIntrinsic = (
+      val: number,
+      dimension: keyof typeof imageDims
+    ) => (coordinatesBoundary * val) / imageDims[dimension];
+
     //need to return the unscaled values
     const unscaledBoxes = Object.keys(boxes).reduce(
       (acc, val) => ({
         ...acc,
         [val]: {
           ...boxes[val],
-          top: boxes[val].top / scale.y,
-          left: boxes[val].left / scale.x,
+          top: convertDisplayedCoordToIntrinsic(boxes[val].top, "height"),
+          left: convertDisplayedCoordToIntrinsic(boxes[val].left, "width"),
         },
       }),
       {}
     );
-    onChange(unscaledBoxes);
-  }, [boxes, onChange, scale]);
-
-  useLayoutEffect(() => {
-    mapRef?.current?.getBoundingClientRect().width &&
-      setScale({
-        x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
-        y: mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
-      });
-  }, [setScale, mapRef, coordinatesBoundary]);
-
-  useLayoutEffect(() => {
-    const rescale = () => {
-      mapRef?.current?.getBoundingClientRect().width &&
-        setScale({
-          x: mapRef.current.getBoundingClientRect().width / coordinatesBoundary,
-          y:
-            mapRef.current.getBoundingClientRect().height / coordinatesBoundary,
-        });
-    };
-
-    window.addEventListener("resize", rescale);
-    return () => {
-      window.removeEventListener("resize", rescale);
-    };
-  }, [coordinatesBoundary]);
+    onChange && onChange(unscaledBoxes);
+  }, [boxes, onChange, imageDims, coordinatesBoundary]);
 
   useMemo(() => {
+    if (!imageDims) return;
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,
         [val]: {
           ...iconsMap[val],
-          top: iconsMap[val].top * scale.y,
-          left: iconsMap[val].left * scale.x,
+          top: (imageDims.height * iconsMap[val].top) / coordinatesBoundary,
+          left: (imageDims.width * iconsMap[val].left) / coordinatesBoundary,
         },
       }),
       {}
     );
 
     setBoxes(copy);
-  }, [iconsMap, scale]);
+  }, [iconsMap, imageDims, coordinatesBoundary]);
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
@@ -122,6 +112,7 @@ export const Container: React.FC<PropsType> = (props) => {
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
     drop(item: DragItem, monitor) {
+      if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
         y: number;
@@ -134,52 +125,61 @@ export const Container: React.FC<PropsType> = (props) => {
       }
 
       moveBox(item.id, left, top);
-      return undefined;
     },
   });
 
   return (
-    <div ref={drop} style={styles}>
-      <div
-        style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
-        ref={mapRef}
-      >
+    <>
+      <div ref={drop} style={styles}>
+        <ReactResizeDetector
+          handleWidth
+          handleHeight
+          onResize={(width, height) => setImageDims({ width, height })}
+        />
         <img
           alt="draggable background "
           style={{
-            objectFit: "cover",
             width: "100%",
-            height: "100%",
           }}
           src={backgroundImage}
         />
-        {useMemo(
-          () =>
-            Object.values(otherIcons).map((icon) => (
-              <img
-                key={`${icon.top}-${icon.left}-${icon.url}`}
-                src={icon.url || DEFAULT_MAP_ICON_URL}
-                style={{
-                  position: "absolute",
-                  left: icon.left * scale.x,
-                  top: icon.top * scale.y,
-                  width: PLAYA_ICON_SIDE, // @debt should be at the right scale
-                  opacity: 0.4,
-                }}
-                alt={`${icon.url} map icon`}
-              />
-            )),
-          [otherIcons, scale]
-        )}
+        <div
+          style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
+        >
+          {useMemo(
+            () =>
+              Object.values(otherIcons).map((icon, index) => (
+                <img
+                  key={`${icon.top}-${icon.left}-${icon.url}-${index}`}
+                  src={icon.url || DEFAULT_MAP_ICON_URL}
+                  style={{
+                    position: "absolute",
+                    top: `${(100 * icon.top) / coordinatesBoundary}%`,
+                    left: `${(100 * icon.left) / coordinatesBoundary}%`,
+                    width: PLAYA_ICON_SIDE, // @debt should be at the right scale
+                    ...otherIconsStyle,
+                  }}
+                  alt={`${icon.url} map icon`}
+                />
+              )),
+            [otherIcons, coordinatesBoundary, otherIconsStyle]
+          )}
+        </div>
+        {Object.keys(boxes).map((key) => (
+          <DraggableSubvenue
+            key={key}
+            id={key}
+            imageStyle={iconImageStyle}
+            {...boxes[key]}
+          />
+        ))}
       </div>
-      {Object.keys(boxes).map((key) => (
-        <DraggableSubvenue
-          key={key}
-          id={key}
-          imageStyle={iconImageStyle}
-          {...boxes[key]}
+      {imageDims && interactive && (
+        <CustomDragLayer
+          snapToGrid={!!snapToGrid}
+          iconImageStyle={draggableIconImageStyle}
         />
-      ))}
-    </div>
+      )}
+    </>
   );
 };

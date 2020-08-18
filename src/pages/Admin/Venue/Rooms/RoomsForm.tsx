@@ -15,7 +15,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import {
   CampContainer,
-  CustomDragLayer,
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -291,25 +290,32 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         </div>
       </div>
       <div className="page-side preview">
+        <h4
+          className="italic"
+          style={{ textAlign: "center", fontSize: "22px" }}
+        >
+          Position your room in the camp
+        </h4>
+        <p>
+          First upload or select the icon you would like to appear in your camp,
+          then drag it around to position it
+        </p>
         <div className="playa">
           {venue.mapBackgroundImageUrl && (
-            <>
-              <CampContainer
-                coordinatesBoundary={100}
-                onChange={onBoxMove}
-                snapToGrid={false}
-                iconsMap={currentRoomIcon}
-                backgroundImage={
-                  venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
-                }
-                iconImageStyle={styles.iconImage}
-                venue={venue}
-              />
-              <CustomDragLayer
-                snapToGrid={false}
-                iconImageStyle={styles.draggableIconImage}
-              />
-            </>
+            <CampContainer
+              interactive
+              coordinatesBoundary={100}
+              onChange={onBoxMove}
+              snapToGrid={false}
+              iconsMap={currentRoomIcon}
+              backgroundImage={
+                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+              }
+              iconImageStyle={styles.iconImage}
+              draggableIconImageStyle={styles.draggableIconImage}
+              venue={venue}
+              otherIconsStyle={{ opacity: 0.4 }}
+            />
           )}
         </div>
       </div>

@@ -33,10 +33,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
 } from "settings";
 import "./Venue.scss";
-import {
-  PlayaContainer,
-  CustomDragLayer,
-} from "pages/Account/Venue/VenueMapEdition";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -175,19 +172,22 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         >
           Position your venue on the playa
         </h4>
+        <p>
+          First upload or select the icon you would like to appear on the Playa,
+          then drag it around to position it
+        </p>
         <div className="playa">
           <PlayaContainer
+            interactive
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
             backgroundImage={"/burn/Playa.jpeg"}
             iconImageStyle={styles.iconImage}
+            draggableIconImageStyle={styles.draggableIconImage}
             venueId={venueId}
-          />
-          <CustomDragLayer
-            snapToGrid={false}
-            iconImageStyle={styles.draggableIconImage}
+            otherIconsStyle={{ opacity: 0.4 }}
           />
         </div>
       </div>

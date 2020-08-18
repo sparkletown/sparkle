@@ -1,21 +1,16 @@
-import React, { CSSProperties, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import { Container } from "./Container";
 import { CampVenue } from "types/CampVenue";
+import { ExtractProps } from "types/utility";
 
 export interface SubVenueIconMap {
   [key: string]: { top: number; left: number; url: string };
 }
 
-interface PropsType {
-  coordinatesBoundary: number;
-  snapToGrid: boolean;
-  iconsMap: SubVenueIconMap;
-  backgroundImage: string;
-  iconImageStyle: CSSProperties;
-  onChange: (val: SubVenueIconMap) => void;
+type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venue: CampVenue;
-}
+};
 
 export const CampContainer: React.FC<PropsType> = (props) => {
   const { venue, ...rest } = props;
