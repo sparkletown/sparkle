@@ -232,8 +232,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.mapBackgroundImageUrl) {
         updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       }
-      if (data.placement) {
-        updated.placement = data.placement;
+      if (data.placementRequests) {
+        updated.placementRequests = data.placementRequests;
       }
 
       switch (updated.template) {

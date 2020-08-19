@@ -143,6 +143,8 @@ export const validationSchema = Yup.object()
       .transform((val: Array<Question>) =>
         val.filter((s) => !!s.name && !!s.text)
       ), // ensure questions are not empty strings
+
+    placementRequests: Yup.string().notRequired(),
   })
   .required();
 

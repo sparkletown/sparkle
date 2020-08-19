@@ -206,6 +206,14 @@ const PlacementComponent: React.FC = () => {
                     <h4 className="italic">Selected venue:</h4>
                     {venue?.name}
                   </div>
+                  {venue.placementRequests && (
+                    <div className="banner">
+                      <h4 className="italic">
+                        Camp owner's placement requests:
+                      </h4>
+                      {venue?.placementRequests}
+                    </div>
+                  )}
                 </div>
                 <div className="content-group">
                   <h4 className="italic" style={{ fontSize: "20px" }}>

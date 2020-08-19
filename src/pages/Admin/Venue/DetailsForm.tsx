@@ -188,7 +188,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         ) : (
           <p>
             First upload or select the icon you would like to appear on the
-            Playa, then drag it around to position it
+            Playa, then drag it around to position it. The placement team from
+            SparkleVerse will place your camp later, after which you will need
+            to reach out if you want it moved.
           </p>
         )}
         <div className="playa">
@@ -468,6 +470,28 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             )}
           </>
         )}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Placement Requests
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            SparkleVerse's placement team will put your venue in an appropriate
+            location before the burn. If you wish to be placed somewhere
+            specific, or give suggestions for the team, please write that here.
+          </div>
+          <textarea
+            disabled={disable}
+            name="placementRequests"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="On the Esplanade!"
+          />
+          {errors.placementRequests && (
+            <span className="input-error">
+              {errors.placementRequests.message}
+            </span>
+          )}
+        </div>
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (
