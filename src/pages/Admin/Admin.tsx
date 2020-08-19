@@ -286,6 +286,8 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [filterPastEvents, setFilterPastEvents] = useState(false);
+  const [filterText, setFilterText] = useState("");
+
   let filteredEvents = events;
   filterPastEvents
     ? (filteredEvents = events?.filter(
@@ -293,12 +295,28 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
           (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
       ))
     : (filteredEvents = events);
-  console.log(events);
+
+  if (filteredEvents && filterText) {
+    const searchOptions = {
+      keys: ["name", "description", "host"],
+    };
+    const fuse = new Fuse(filteredEvents, searchOptions);
+    const resultOfSearch: WithId<VenueEvent>[] | undefined = [];
+    fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
+    filteredEvents = resultOfSearch;
+  }
 
   return (
     <>
       <div className="page-container-adminpanel-content">
-        <div className="col-lg-6 col-12 oncoming-events">
+        <div className="filter-event-section">
+          <input
+            name="Event search bar"
+            className="input-block search-event-input"
+            placeholder="Search for en event"
+            onChange={(e) => setFilterText(e.target.value)}
+            value={filterText}
+          />
           <button
             className="btn btn-primary"
             onClick={() => setFilterPastEvents(!filterPastEvents)}
@@ -308,6 +326,8 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
               ? "Show all the events"
               : "Only show upcoming events"}
           </button>
+        </div>
+        <div className="col-lg-6 col-12 oncoming-events">
           {filteredEvents && (
             <>
               {filteredEvents.map((venueEvent) => {
