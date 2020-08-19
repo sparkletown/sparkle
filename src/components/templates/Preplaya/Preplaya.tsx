@@ -151,8 +151,10 @@ const Preplaya = () => {
           }}
         >
           <div className="demo-message">
-            This is a demo of how camps and art will look on the final,
-            fully-interactive playa.
+            <span style={{ marginLeft: "10px" }}>
+              This is a demo of how camps and art will look on the final,
+              fully-interactive playa.
+            </span>
           </div>
           <img
             className="playa-background"

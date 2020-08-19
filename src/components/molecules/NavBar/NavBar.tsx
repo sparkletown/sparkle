@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
+import "./playa.scss";
 import { Link } from "react-router-dom";
 import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -66,75 +67,73 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   return (
     <>
       <header>
-        <nav className="navbar fixed-top navbar-expand-lg navbar-dark navbar-container">
-          <Link to={redirectionUrl || "/"}>
-            <span className="navbar-brand title">
-              <img
-                className="sparkle-navbar-icon"
-                src="/sparkleverse-header.png"
-                alt="Sparkle collective"
-              />
-            </span>
-          </Link>
-          <div className="button-container">
-            <Link to="/admin" className="create-button">
-              Create
-            </Link>
-          </div>
-          {user ? (
-            <div className="icons-container">
-              <OnlineStats />
-              {hasUpcomingEvents && (
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ticketsPopover}
-                  rootClose={true}
-                >
-                  <span className="tickets-icon">
-                    <FontAwesomeIcon icon={faTicketAlt} />
-                  </span>
-                </OverlayTrigger>
-              )}
-              {profile && (
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={chatPopover}
-                  rootClose={true}
-                >
-                  <span className="private-chat-icon">
-                    {!!numberOfUnreadMessages && numberOfUnreadMessages > 0 && (
-                      <div className="notification-card">
-                        {numberOfUnreadMessages}
-                      </div>
-                    )}
-                    <FontAwesomeIcon icon={faCommentAlt} />
-                  </span>
-                </OverlayTrigger>
-              )}
-              <div
-                className="profile-icon-container"
-                onClick={() => setIsProfileModalOpen(true)}
-              >
+        <div className="navbar navbar_playa">
+          <div className="navbar-container">
+            <div className="navbar-logo" style={{ width: "500px" }}>
+              <Link to={redirectionUrl || "/"}>
                 <img
-                  src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-                  className="profile-icon"
-                  alt="avatar"
-                  width="40"
-                  height="40"
+                  src={"/sparkleverse-logo.png"}
+                  alt="Logo"
+                  className="logo-img"
                 />
+              </Link>
+              <div
+                className="button-container"
+                style={{ marginTop: "10px", width: "50px" }}
+              >
+                <Link to="/admin" className="create-button">
+                  Create
+                </Link>
               </div>
             </div>
-          ) : (
-            <div
-              className="log-in-button"
-              onClick={() => setIsAuthenticationModalOpen(true)}
-            >
-              Log in
-            </div>
-          )}
-        </nav>
+            {user ? (
+              <>
+                <div
+                  className="navbar-dropdown-middle"
+                  style={{ width: "500px", textAlign: "center" }}
+                >
+                  <OnlineStats />
+                  {hasUpcomingEvents && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom-end"
+                      overlay={ticketsPopover}
+                      rootClose={true}
+                    >
+                      <span className="tickets-icon">
+                        <FontAwesomeIcon icon={faTicketAlt} />
+                      </span>
+                    </OverlayTrigger>
+                  )}
+                </div>
+                <div className="navbar-links" style={{ width: "500px" }}>
+                  <div className="navbar-link-message"></div>
+                  <div
+                    className="navbar-link-profile"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    <img
+                      src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                      className="profile-icon"
+                      alt="avatar"
+                      width="40"
+                      height="40"
+                    />
+                  </div>
+                  <div className="navbar-link-menu"></div>
+                </div>
+              </>
+            ) : (
+                <div
+                  className="log-in-button"
+                  style={{ marginTop: "20px" }}
+                  onClick={() => setIsAuthenticationModalOpen(true)}
+                >
+                  Log in
+                </div>
+              )}
+          </div>
+        </div>
       </header>
       <ProfileModal
         show={isProfileModalOpen}
