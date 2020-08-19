@@ -90,6 +90,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   style={{ width: 500, textAlign: "center" }}
                 >
                   <OnlineStats />
+                </div>
+                <div className="navbar-links" style={{ width: 500 }}>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -102,8 +104,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                </div>
-                <div className="navbar-links" style={{ width: 500 }}>
                   {profile && (
                     <OverlayTrigger
                       trigger="click"
