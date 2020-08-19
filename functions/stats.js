@@ -15,7 +15,7 @@ const eventIsNow = (event, now) => {
 
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
-  const userLastSeenLimit = (now - 24 * ONE_HOUR) / 1000;
+  const userLastSeenLimit = (now - ONE_HOUR) / 1000;
   const users = await admin
     .firestore()
     .collection("users")
