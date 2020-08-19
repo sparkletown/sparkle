@@ -12,7 +12,6 @@ import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 import { WithId } from "utils/id";
 
 // Don't pull everything
@@ -43,15 +42,13 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     room ? "room" : "global"
   );
 
-  useConnectRecentUsers();
-
   const { user } = useUser();
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const privateChats = useSelector(
     (state) => state.firestore.ordered.privatechats
   );
-  const users = useSelector((state) => state.firestore.data.users);
-  const userArray = useSelector((state) => state.firestore.ordered.users);
+  const users = useSelector((state) => state.firestore.data.partygoers);
+  const userArray = useSelector((state) => state.firestore.ordered.partygoers);
 
   useFirestoreConnect({
     collection: "privatechats",
