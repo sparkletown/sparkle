@@ -468,7 +468,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
-          <SubmitButton editing={editing} isSubmitting={isSubmitting} />
+          <SubmitButton
+            editing={editing}
+            isSubmitting={isSubmitting}
+            templateType={templateType ?? "Venue"}
+          />
         </div>
       </div>
       {templateID === VenueTemplate.themecamp && (
@@ -488,11 +492,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 interface SubmitButtonProps {
   isSubmitting: boolean;
   editing?: boolean;
+  templateType: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   isSubmitting,
   editing,
+  templateType,
 }) => {
   return isSubmitting ? (
     <div className="spinner-border">
@@ -502,7 +508,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <input
       className="btn btn-primary"
       type="submit"
-      value={editing ? "Update venue" : "Create venue"}
+      value={editing ? `Update ${templateType}` : `Create ${templateType}`}
     />
   );
 };
