@@ -21,7 +21,9 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
       <div className="reaction-list small">
         {usersById &&
           messages.map((message) => (
-            <>
+            <React.Fragment
+              key={`${message.from}-${message.to}-${message.ts_utc}`}
+            >
               {message.from in usersById && (
                 <Message
                   sender={{ ...usersById[message.from], id: message.from }}
@@ -34,7 +36,7 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                   }
                 />
               )}
-            </>
+            </React.Fragment>
           ))}
       </div>
       <UserProfileModal
