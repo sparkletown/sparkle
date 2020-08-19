@@ -17,6 +17,7 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import JitsiMeetJS from "lib-jitsi-meet";
 import { STRIPE_PUBLISHABLE_KEY } from "secrets";
 
 import "bootstrap";
@@ -71,6 +72,8 @@ if (window.location.hostname === "localhost") {
 } else {
   firebase.functions();
 }
+
+JitsiMeetJS.init();
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
