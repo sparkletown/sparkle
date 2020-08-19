@@ -7,6 +7,7 @@ import {
   DEFAULT_MAP_ICON_URL,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_TEMPLATES,
+  PLAYA_IMAGE,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -160,7 +161,7 @@ const Preplaya = () => {
           </div>
           <img
             className="playa-background"
-            src="/maps/playa2k.jpg"
+            src={PLAYA_IMAGE}
             alt="Playa Background Map"
           />
           {venues?.filter(isPlaced).map((venue, idx) => (

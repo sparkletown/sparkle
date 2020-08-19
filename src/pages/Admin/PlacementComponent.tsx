@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
-import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_ICON_SIDE } from "settings";
+import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_ICON_SIDE, PLAYA_IMAGE } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -248,7 +248,7 @@ const PlacementComponent: React.FC = () => {
                       snapToGrid={false}
                       iconsMap={iconsMap ?? {}}
                       onOtherIconClick={onOtherIconClick}
-                      backgroundImage={"/maps/playa2k.jpg"}
+                      backgroundImage={PLAYA_IMAGE}
                       iconImageStyle={styles.iconImage}
                       draggableIconImageStyle={styles.draggableIconImage}
                       venueId={venueId}
