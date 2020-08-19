@@ -2,7 +2,6 @@ import React, { useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-// import UserList from "../UserList";
 import { useHistory } from "react-router-dom";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";

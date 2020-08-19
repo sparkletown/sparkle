@@ -77,10 +77,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   className="logo-img"
                 />
               </Link>
-              <div
-                className="button-container"
-                style={{ marginTop: 10, width: 50 }}
-              >
+              <div className="button-container create-button-container">
                 <Link to="/admin" className="create-button">
                   Create
                 </Link>
