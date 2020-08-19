@@ -24,7 +24,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
   const { user } = useUser();
   const { privateChats, users } = useSelector((state) => ({
     privateChats: state.firestore.ordered.privatechats,
-    users: state.firestore.data.users,
+    users: state.firestore.data.partygoers,
   }));
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
