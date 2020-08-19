@@ -206,7 +206,7 @@ const PlacementComponent: React.FC = () => {
                     <h4 className="italic">Selected venue:</h4>
                     {venue?.name}
                   </div>
-                  {venue.placementRequests && (
+                  {venue?.placementRequests && (
                     <div className="banner">
                       <h4 className="italic">
                         Camp owner's placement requests:
