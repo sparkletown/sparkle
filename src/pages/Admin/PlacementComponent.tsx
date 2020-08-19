@@ -91,9 +91,11 @@ const PlacementComponent: React.FC = () => {
 
   const venues = useSelector((state) => state.firestore.ordered.playaVenues);
   const venue = venues?.find((venue) => venue.id === venueId);
-  const unplacedVenues = venues?.filter(isUnplaced);
-  const selfPlacedVenues = venues?.filter(isSelfPlaced);
-  const placedVenues = venues?.filter(isPlaced);
+  const unplacedVenues = useMemo(() => venues?.filter(isUnplaced), [venues]);
+  const selfPlacedVenues = useMemo(() => venues?.filter(isSelfPlaced), [
+    venues,
+  ]);
+  const placedVenues = useMemo(() => venues?.filter(isPlaced), [venues]);
 
   const defaultValues = useMemo(
     () =>

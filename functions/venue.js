@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
+const PLAYA_VENUE_ID = "playa";
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [
@@ -106,7 +107,7 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
-const checkUserIsPlayaOwner = async (uid) => {
+const checkUserIsPlayaOwner = (uid) => {
   return checkUserIsOwner(PLAYA_VENUE_ID, uid);
 };
 
@@ -269,11 +270,10 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  console.log("DEBUG: adminUpdatePlacement", data, context.auth.token.user_id);
   const venueId = data.id;
   checkAuth(context);
 
-  checkUserIsPlayaOwner(context.auth.token.user_id);
+  await checkUserIsPlayaOwner(context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -285,12 +285,13 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
         throw new HttpsError("not-found", `Venue ${venueId} not found`);
       }
       const updated = doc.data();
-      updated.mapIconImageUrl = data.mapIconImageUrl;
+      updated.mapIconImageUrl = data.mapIconImageUrl ?? updated.mapIconImageUrl;
       updated.placement = {
-        x: data.placement?.x,
-        y: data.placement?.y,
-        addressText: data.placement?.addressText,
-        notes: data.placement?.notes,
+        x: data.placement?.x ?? updated.placement?.x,
+        y: data.placement?.y ?? updated.placement?.y,
+        addressText:
+          data.placement?.addressText ?? updated.placement?.addressText,
+        notes: data.placement?.notes ?? updated.placement?.notes,
         state: PlacementState.AdminPlaced,
       };
       admin.firestore().collection("venues").doc(venueId).update(updated);

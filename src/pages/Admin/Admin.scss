@@ -223,7 +223,8 @@ $page-max-width: 1240px;
         }
         .page-container-adminpanel-sidebar {
           background-image: $admin-gradient;
-          overflow: hidden scroll;
+          overflow-x: hidden;
+          overflow-y: scroll;
 
           .title {
             background: rgba($black, 0.15);
