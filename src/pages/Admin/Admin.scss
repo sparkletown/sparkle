@@ -156,7 +156,17 @@ $page-max-width: 1240px;
         .page-container-adminpanel-placement {
           position: relative;
           z-index: 10;
-          overflow: auto;
+          overflow-y: scroll;
+          .filter-event-section {
+            display: flex;
+            flex-direction: row;
+            margin-top: 5px;
+            justify-content: flex-start;
+            .search-event-input {
+              margin-left: 15px;
+              margin-right: 10px;
+            }
+          }
           .venue-header {
             position: absolute;
             top: 0;

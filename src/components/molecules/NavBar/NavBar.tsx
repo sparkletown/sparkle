@@ -77,10 +77,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   className="logo-img"
                 />
               </Link>
-              <div
-                className="button-container"
-                style={{ marginTop: "10px", width: "50px" }}
-              >
+              <div className="button-container create-button-container">
                 <Link to="/admin" className="create-button">
                   Create
                 </Link>
@@ -93,6 +90,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   style={{ width: 500, textAlign: "center" }}
                 >
                   <OnlineStats />
+                </div>
+                <div className="navbar-links" style={{ width: 500 }}>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -105,8 +104,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                </div>
-                <div className="navbar-links" style={{ width: 500 }}>
                   {profile && (
                     <OverlayTrigger
                       trigger="click"
