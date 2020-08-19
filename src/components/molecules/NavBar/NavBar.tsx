@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import { Link } from "react-router-dom";
@@ -52,12 +52,15 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  const numberOfUnreadMessages =
-    privateChats &&
-    user &&
-    privateChats
-      .filter(isChatValid)
-      .filter((chat) => chat.to === user.uid && chat.isRead === false).length;
+  const numberOfUnreadMessages = useMemo(() => {
+    return (
+      privateChats &&
+      user &&
+      privateChats
+        .filter(isChatValid)
+        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+    );
+  }, [privateChats, user]);
 
   return (
     <>
