@@ -1,12 +1,8 @@
 import React, { useMemo } from "react";
 
-import { Container } from "./Container";
+import { Container, SubVenueIconMap } from "./Container";
 import { CampVenue } from "types/CampVenue";
 import { ExtractProps } from "types/utility";
-
-export interface SubVenueIconMap {
-  [key: string]: { top: number; left: number; url: string };
-}
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venue: CampVenue;
@@ -24,6 +20,8 @@ export const CampContainer: React.FC<PropsType> = (props) => {
           return {
             ...acc,
             [r.title]: {
+              width: r.width_percent,
+              height: r.height_percent,
               top: r.y_percent,
               left: r.x_percent,
               url: r.image_url,

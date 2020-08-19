@@ -25,6 +25,7 @@ import Camp from "components/templates/Camp/Camp";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -79,6 +80,12 @@ const VenuePage = () => {
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
+  useFirestoreConnect({
+    collection: "privatechats",
+    doc: user?.uid,
+    subcollections: [{ collection: "chats" }],
+    storeAs: "privatechats",
+  });
 
   if (!user) {
     return (

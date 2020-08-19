@@ -31,6 +31,8 @@ import {
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_IMAGE,
+  PLAYA_ICON_SIDE,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -114,6 +116,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       mapIconUrl
         ? {
             [iconPositionFieldName]: {
+              width: PLAYA_ICON_SIDE,
+              height: PLAYA_ICON_SIDE,
               top: defaultValues?.placement?.y ?? 0,
               left: defaultValues?.placement?.x ?? 0,
               url: mapIconUrl,
@@ -179,11 +183,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         <div className="playa">
           <PlayaContainer
             interactive
+            resizable={false}
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
-            backgroundImage={"/burn/Playa.jpeg"}
+            backgroundImage={PLAYA_IMAGE}
             iconImageStyle={styles.iconImage}
             draggableIconImageStyle={styles.draggableIconImage}
             venueId={venueId}
@@ -463,7 +468,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
-          <SubmitButton editing={editing} isSubmitting={isSubmitting} />
+          <SubmitButton
+            editing={editing}
+            isSubmitting={isSubmitting}
+            templateType={templateType ?? "Venue"}
+          />
         </div>
       </div>
       {templateID === VenueTemplate.themecamp && (
@@ -483,11 +492,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 interface SubmitButtonProps {
   isSubmitting: boolean;
   editing?: boolean;
+  templateType: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
   isSubmitting,
   editing,
+  templateType,
 }) => {
   return isSubmitting ? (
     <div className="spinner-border">
@@ -497,7 +508,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     <input
       className="btn btn-primary"
       type="submit"
-      value={editing ? "Update venue" : "Create venue"}
+      value={editing ? `Update ${templateType}` : `Create ${templateType}`}
     />
   );
 };

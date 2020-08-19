@@ -4,7 +4,6 @@ import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 import "./PrivateRecipientSearchInput.scss";
 import { useSelector } from "hooks/useSelector";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 import { WithId } from "utils/id";
 
 interface PropsType {
@@ -23,10 +22,8 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
   };
 
   const { userArray } = useSelector((state) => ({
-    userArray: state.firestore.ordered.users,
+    userArray: state.firestore.ordered.partygoers,
   }));
-
-  useConnectRecentUsers();
 
   return (
     <div className="private-recipient-search-input-container">

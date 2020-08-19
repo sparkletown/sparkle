@@ -6,17 +6,18 @@ import React, {
   useCallback,
 } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { ALL_VENUE_TEMPLATES } from "settings";
+import {
+  ALL_VENUE_TEMPLATES,
+  PLAYA_IMAGE,
+  PLAYA_ICON_SIDE_PERCENTAGE,
+} from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";
 import { useParams, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
-import {
-  CampContainer,
-  SubVenueIconMap,
-} from "pages/Account/Venue/VenueMapEdition";
+import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";
 import { useForm } from "react-hook-form";
@@ -26,6 +27,7 @@ import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -146,15 +148,21 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   useEffect(() => {
     register("x_percent");
     register("y_percent");
+    register("width_percent");
+    register("height_percent");
   }, [register]);
 
   const iconPositionFieldName = "iconPosition";
-  const onBoxMove: ExtractProps<typeof CampContainer>["onChange"] = useCallback(
+  const onBoxChange: ExtractProps<
+    typeof CampContainer
+  >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
       setValue("x_percent", iconPos.left);
       setValue("y_percent", iconPos.top);
+      setValue("width_percent", iconPos.width);
+      setValue("height_percent", iconPos.height);
     },
     [setValue]
   );
@@ -172,13 +180,21 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       imageUrl
         ? {
             [iconPositionFieldName]: {
+              width: values.width_percent || PLAYA_ICON_SIDE_PERCENTAGE,
+              height: values.height_percent || PLAYA_ICON_SIDE_PERCENTAGE,
               left: values.x_percent || 0,
               top: values.y_percent || 0,
               url: imageUrl,
             },
           }
         : {},
-    [imageUrl, values.x_percent, values.y_percent]
+    [
+      imageUrl,
+      values.x_percent,
+      values.y_percent,
+      values.width_percent,
+      values.height_percent,
+    ]
   );
 
   return (
@@ -303,13 +319,12 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
           {venue.mapBackgroundImageUrl && (
             <CampContainer
               interactive
+              resizable
               coordinatesBoundary={100}
-              onChange={onBoxMove}
+              onChange={onBoxChange}
               snapToGrid={false}
               iconsMap={currentRoomIcon}
-              backgroundImage={
-                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
-              }
+              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={venue}
