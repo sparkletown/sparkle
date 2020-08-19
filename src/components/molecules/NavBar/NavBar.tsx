@@ -1,13 +1,13 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import "./playa.scss";
 import { Link } from "react-router-dom";
-import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isChatValid } from "validation";
+//import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import PrivateChatModal from "components/organisms/PrivateChatModal";
+//import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
@@ -22,7 +22,7 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue, privateChats } = useSelector((state) => ({
+  const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
   }));
@@ -46,30 +46,30 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  const chatPopover = (
-    <Popover id="popover-basic">
-      <Popover.Content>
-        <PrivateChatModal />
-      </Popover.Content>
-    </Popover>
-  );
+  // const chatPopover = (
+  //   <Popover id="popover-basic">
+  //     <Popover.Content>
+  //       <PrivateChatModal />
+  //     </Popover.Content>
+  //   </Popover>
+  // );
 
-  const numberOfUnreadMessages = useMemo(() => {
-    return (
-      privateChats &&
-      user &&
-      privateChats
-        .filter(isChatValid)
-        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
-    );
-  }, [privateChats, user]);
+  // const numberOfUnreadMessages = useMemo(() => {
+  //   return (
+  //     privateChats &&
+  //     user &&
+  //     privateChats
+  //       .filter(isChatValid)
+  //       .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+  //   );
+  // }, [privateChats, user]);
 
   return (
     <>
       <header>
         <div className="navbar navbar_playa">
           <div className="navbar-container">
-            <div className="navbar-logo" style={{ width: "500px" }}>
+            <div className="navbar-logo" style={{ width: 500 }}>
               <Link to={redirectionUrl || "/"}>
                 <img
                   src={"/sparkleverse-logo.png"}
@@ -90,7 +90,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               <>
                 <div
                   className="navbar-dropdown-middle"
-                  style={{ width: "500px", textAlign: "center" }}
+                  style={{ width: 500, textAlign: "center" }}
                 >
                   <OnlineStats />
                   {hasUpcomingEvents && (
@@ -106,7 +106,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     </OverlayTrigger>
                   )}
                 </div>
-                <div className="navbar-links" style={{ width: "500px" }}>
+                <div className="navbar-links" style={{ width: 500 }}>
                   <div className="navbar-link-message"></div>
                   <div
                     className="navbar-link-profile"
@@ -124,14 +124,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 </div>
               </>
             ) : (
-                <div
-                  className="log-in-button"
-                  style={{ marginTop: "20px" }}
-                  onClick={() => setIsAuthenticationModalOpen(true)}
-                >
-                  Log in
-                </div>
-              )}
+              <div
+                className="log-in-button"
+                style={{ marginTop: "20px" }}
+                onClick={() => setIsAuthenticationModalOpen(true)}
+              >
+                Log in
+              </div>
+            )}
           </div>
         </div>
       </header>
