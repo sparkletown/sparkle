@@ -35,7 +35,12 @@ import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { PLAYA_WIDTH_AND_HEIGHT, PLACEABLE_VENUE_TEMPLATES } from "settings";
+import {
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLACEABLE_VENUE_TEMPLATES,
+  PLAYA_IMAGE,
+  PLAYA_ICON_SIDE,
+} from "settings";
 import PlacementComponent from "./PlacementComponent";
 
 dayjs.extend(advancedFormat);
@@ -206,10 +211,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                   <div className="playa-container">
                     <PlayaContainer
                       interactive={false}
+                      resizable={false}
                       iconsMap={
                         venue.placement && venue.mapIconImageUrl
                           ? {
                               icon: {
+                                width: PLAYA_ICON_SIDE,
+                                height: PLAYA_ICON_SIDE,
                                 top: venue.placement.y,
                                 left: venue.placement.x,
                                 url: venue.mapIconImageUrl,
@@ -218,7 +226,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                           : {}
                       }
                       coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                      backgroundImage={"/maps/playa2k.jpg"}
+                      backgroundImage={PLAYA_IMAGE}
                       iconImageStyle={styles.iconImage}
                       draggableIconImageStyle={styles.draggableIconImage}
                       venueId={venue.id}
@@ -294,7 +302,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
       collection: "venues",
       doc: venue.id,
       subcollections: [{ collection: "events" }],
-      orderBy: ["start_utc_seconds", "desc"],
+      orderBy: ["start_utc_seconds", "asc"],
       storeAs: "events",
     },
   ]);
@@ -303,14 +311,19 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+  //filter out events that have already finished
+  const filteredEvents = events?.filter(
+    (ev) =>
+      (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
+  );
 
   return (
     <>
       <div className="page-container-adminpanel-content">
         <div className="col-lg-6 col-12 oncoming-events">
-          {events && (
+          {filteredEvents && (
             <>
-              {events.map((venueEvent) => {
+              {filteredEvents.map((venueEvent) => {
                 const startingDate = new Date(
                   venueEvent.start_utc_seconds * 1000
                 );
@@ -388,6 +401,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         }}
         venueId={venue.id}
         event={editedEvent}
+        template={venue.template}
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}

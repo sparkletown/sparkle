@@ -6,7 +6,7 @@ import React, {
   useCallback,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
-import { PLAYA_WIDTH_AND_HEIGHT } from "settings";
+import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_ICON_SIDE } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -154,6 +154,8 @@ const PlacementComponent: React.FC = () => {
       mapIconUrl
         ? {
             [iconPositionFieldName]: {
+              width: PLAYA_ICON_SIDE,
+              height: PLAYA_ICON_SIDE,
               top: defaultValues?.placement?.y ?? 0,
               left: defaultValues?.placement?.x ?? 0,
               url: mapIconUrl,
@@ -240,6 +242,7 @@ const PlacementComponent: React.FC = () => {
                   <div className="playa">
                     <PlayaContainer
                       interactive
+                      resizable={false}
                       coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
                       onChange={onBoxMove}
                       snapToGrid={false}
@@ -299,6 +302,7 @@ const PlacementComponent: React.FC = () => {
                     <SubmitButton
                       editing={editing}
                       isSubmitting={isSubmitting}
+                      templateType={venue?.template ?? "Venue"}
                     />
                   </div>
                 </div>

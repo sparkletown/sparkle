@@ -188,7 +188,8 @@ export const updateVenue = async (input: VenueInput, user: UserInfo) => {
 export const upsertRoom = async (
   input: RoomInput,
   venueId: string,
-  user: UserInfo
+  user: UserInfo,
+  roomIndex?: number
 ) => {
   const firestoreVenueInput = await createFirestoreRoomInput(
     input,
@@ -198,6 +199,7 @@ export const upsertRoom = async (
 
   return await firebase.functions().httpsCallable("venue-upsertRoom")({
     venueId,
+    roomIndex,
     room: firestoreVenueInput,
   });
 };

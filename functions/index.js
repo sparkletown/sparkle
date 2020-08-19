@@ -22,6 +22,7 @@ admin.initializeApp({
 const video = require("./video");
 const payment = require("./payment");
 const venue = require("./venue");
+const stats = require("./stats");
 
 // Case-insensitive first character for iDevices
 function lowercaseFirstChar(password) {
@@ -60,3 +61,4 @@ exports.checkPassword = functions.https.onCall(async (data, context) => {
 exports.video = video;
 exports.payment = payment;
 exports.venue = venue;
+exports.stats = stats;

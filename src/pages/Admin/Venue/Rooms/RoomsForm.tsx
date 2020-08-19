@@ -6,17 +6,18 @@ import React, {
   useCallback,
 } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { ALL_VENUE_TEMPLATES } from "settings";
+import {
+  ALL_VENUE_TEMPLATES,
+  PLAYA_IMAGE,
+  PLAYA_ICON_SIDE_PERCENTAGE,
+} from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";
 import { useParams, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
-import {
-  CampContainer,
-  SubVenueIconMap,
-} from "pages/Account/Venue/VenueMapEdition";
+import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";
 import { useForm } from "react-hook-form";
@@ -26,6 +27,7 @@ import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -80,7 +82,12 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar fullscreen>
-      <RoomInnerForm venueId={venueId} venue={venue} editingRoom={room} />
+      <RoomInnerForm
+        venueId={venueId}
+        venue={venue}
+        editingRoom={room}
+        editingRoomIndex={queryRoomIndex}
+      />
     </WithNavigationBar>
   );
 };
@@ -89,12 +96,13 @@ interface RoomInnerForm {
   venueId: string;
   venue: CampVenue;
   editingRoom?: CampVenue["rooms"][number];
+  editingRoomIndex?: number;
 }
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
-  const { venue, venueId, editingRoom } = props;
+  const { venue, venueId, editingRoom, editingRoomIndex } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -127,28 +135,34 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     async (vals: Partial<FormValues>) => {
       if (!user) return;
       try {
-        await upsertRoom(vals as RoomInput, venueId, user);
+        await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
         setFormError(true);
         console.error(e);
       }
     },
-    [user, history, venueId]
+    [user, history, venueId, editingRoomIndex]
   );
 
   useEffect(() => {
     register("x_percent");
     register("y_percent");
+    register("width_percent");
+    register("height_percent");
   }, [register]);
 
   const iconPositionFieldName = "iconPosition";
-  const onBoxMove: ExtractProps<typeof CampContainer>["onChange"] = useCallback(
+  const onBoxChange: ExtractProps<
+    typeof CampContainer
+  >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
       setValue("x_percent", iconPos.left);
       setValue("y_percent", iconPos.top);
+      setValue("width_percent", iconPos.width);
+      setValue("height_percent", iconPos.height);
     },
     [setValue]
   );
@@ -166,13 +180,21 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       imageUrl
         ? {
             [iconPositionFieldName]: {
+              width: values.width_percent || PLAYA_ICON_SIDE_PERCENTAGE,
+              height: values.height_percent || PLAYA_ICON_SIDE_PERCENTAGE,
               left: values.x_percent || 0,
               top: values.y_percent || 0,
               url: imageUrl,
             },
           }
         : {},
-    [imageUrl, values.x_percent, values.y_percent]
+    [
+      imageUrl,
+      values.x_percent,
+      values.y_percent,
+      values.width_percent,
+      values.height_percent,
+    ]
   );
 
   return (
@@ -192,32 +214,25 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   You can update everything in this form at a later date on the
                   edit page
                 </p>
-                {!editingRoom ? (
-                  <div className="input-container">
-                    <div className="input-title">Name your Room</div>
-                    <input
-                      disabled={disable}
-                      name="title"
-                      ref={register}
-                      className="align-left"
-                      placeholder={`My room title`}
-                    />
-                    {errors.title && (
-                      <span className="input-error">
-                        {errors.title.message}
-                      </span>
-                    )}
-                  </div>
-                ) : (
+                <div className="input-container">
+                  <div className="input-title">Name your Room</div>
                   <input
-                    type="hidden"
+                    disabled={disable}
                     name="title"
                     ref={register}
-                    value={values.title}
+                    className="align-left"
+                    placeholder={`My room title`}
                   />
-                )}
+                  {errors.title && (
+                    <span className="input-error">{errors.title.message}</span>
+                  )}
+                </div>
+
                 <div className="input-container">
-                  <div className="input-title">Upload an icon photo</div>
+                  <div className="input-title">
+                    Upload an image for how your room should appear on the camp
+                    map
+                  </div>
                   <ImageInput
                     disabled={disable}
                     name={"image_file"}
@@ -304,16 +319,16 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
           {venue.mapBackgroundImageUrl && (
             <CampContainer
               interactive
+              resizable
               coordinatesBoundary={100}
-              onChange={onBoxMove}
+              onChange={onBoxChange}
               snapToGrid={false}
               iconsMap={currentRoomIcon}
-              backgroundImage={
-                venue.mapBackgroundImageUrl || "/maps/playa2k.jpg"
-              }
+              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venue={venue}
+              currentRoomIndex={editingRoomIndex}
               otherIconsStyle={{ opacity: 0.4 }}
             />
           )}

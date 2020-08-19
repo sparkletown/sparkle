@@ -3,6 +3,7 @@ import { XYCoord, useDragLayer } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
 import { SubvenueDragPreview } from "./SubvenueDragPreview";
 import { snapToGrid } from "./snapToGrid";
+import { Dimensions } from "types/utility";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",
@@ -44,11 +45,11 @@ function getItemStyles(
 
 export interface CustomDragLayerProps {
   snapToGrid: boolean;
-  iconImageStyle: CSSProperties;
+  iconSize: Dimensions;
 }
 
 export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
-  const { iconImageStyle } = props;
+  const { iconSize } = props;
   const {
     itemType,
     isDragging,
@@ -67,7 +68,14 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
     switch (itemType) {
       case ItemTypes.SUBVENUE_ICON:
         return (
-          <SubvenueDragPreview url={item.url} imageStyle={iconImageStyle} />
+          <SubvenueDragPreview
+            url={item.url}
+            imageStyle={{
+              ...iconSize,
+              borderRadius: "50%",
+              animation: "ripple 4s linear infinite",
+            }}
+          />
         );
       default:
         return null;

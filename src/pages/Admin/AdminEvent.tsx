@@ -14,6 +14,7 @@ interface PropsType {
   onHide: () => void;
   venueId: string;
   event?: WithId<VenueEvent>;
+  template?: string;
 }
 
 const validationSchema = Yup.object().shape<EventInput>({
@@ -49,6 +50,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   onHide,
   venueId,
   event,
+  template,
 }) => {
   const { register, handleSubmit, errors, formState, reset } = useForm<
     EventInput
@@ -83,8 +85,8 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
         price: 0,
         collective_price: 0,
         host: data.host,
-        room: data.room,
       };
+      if (template === "themecamp") formEvent.room = data.room;
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
@@ -92,7 +94,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId]
+    [event, onHide, venueId, template]
   );
   return (
     <Modal show={show} onHide={onHide}>
@@ -174,19 +176,21 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.host.message}</span>
             )}
           </div>
-          <div className="input-group">
-            <label htmlFor="room">Room your event is in</label>
-            <input
-              id="room"
-              name="room"
-              className="input-block input-centered"
-              placeholder="Cuddle Puddle"
-              ref={register}
-            />
-            {errors.host && (
-              <span className="input-error">{errors.host.message}</span>
-            )}
-          </div>
+          {template === "themecamp" && (
+            <div className="input-group">
+              <label htmlFor="room">Room your event is in</label>
+              <input
+                id="room"
+                name="room"
+                className="input-block input-centered"
+                placeholder="Cuddle Puddle"
+                ref={register}
+              />
+              {errors.host && (
+                <span className="input-error">{errors.host.message}</span>
+              )}
+            </div>
+          )}
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
