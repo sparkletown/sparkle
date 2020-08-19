@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import "./playa.scss";
@@ -15,6 +15,8 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
+import { isChatValid } from "validation";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -22,7 +24,7 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue } = useSelector((state) => ({
+  const { venue, privateChats } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
   }));
@@ -46,23 +48,23 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  // const chatPopover = (
-  //   <Popover id="popover-basic">
-  //     <Popover.Content>
-  //       <PrivateChatModal />
-  //     </Popover.Content>
-  //   </Popover>
-  // );
+  const chatPopover = (
+    <Popover id="popover-basic">
+      <Popover.Content>
+        <PrivateChatModal />
+      </Popover.Content>
+    </Popover>
+  );
 
-  // const numberOfUnreadMessages = useMemo(() => {
-  //   return (
-  //     privateChats &&
-  //     user &&
-  //     privateChats
-  //       .filter(isChatValid)
-  //       .filter((chat) => chat.to === user.uid && chat.isRead === false).length
-  //   );
-  // }, [privateChats, user]);
+  const numberOfUnreadMessages = useMemo(() => {
+    return (
+      privateChats &&
+      user &&
+      privateChats
+        .filter(isChatValid)
+        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+    );
+  }, [privateChats, user]);
 
   return (
     <>
@@ -107,7 +109,24 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   )}
                 </div>
                 <div className="navbar-links" style={{ width: 500 }}>
-                  <div className="navbar-link-message"></div>
+                  {profile && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom-end"
+                      overlay={chatPopover}
+                      rootClose={true}
+                    >
+                      <span>
+                        {!!numberOfUnreadMessages &&
+                          numberOfUnreadMessages > 0 && (
+                            <div className="notification-card">
+                              {numberOfUnreadMessages}
+                            </div>
+                          )}
+                        <div className="navbar-link-message"></div>
+                      </span>
+                    </OverlayTrigger>
+                  )}
                   <div
                     className="navbar-link-profile"
                     onClick={() => setIsProfileModalOpen(true)}
