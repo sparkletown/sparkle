@@ -218,7 +218,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                           : {}
                       }
                       coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                      backgroundImage={"/burn/Playa.jpeg"}
+                      backgroundImage={"/maps/playa2k.jpg"}
                       iconImageStyle={styles.iconImage}
                       draggableIconImageStyle={styles.draggableIconImage}
                       venueId={venue.id}

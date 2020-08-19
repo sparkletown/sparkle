@@ -309,7 +309,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               snapToGrid={false}
               iconsMap={currentRoomIcon}
               backgroundImage={
-                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+                venue.mapBackgroundImageUrl || "/maps/playa2k.jpg"
               }
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}

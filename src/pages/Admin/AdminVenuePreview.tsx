@@ -75,7 +75,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               coordinatesBoundary={100}
               iconsMap={{}}
               backgroundImage={
-                venue.mapBackgroundImageUrl || "/burn/Playa.jpeg"
+                venue.mapBackgroundImageUrl || "/maps/playa2k.jpg"
               }
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}

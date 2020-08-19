@@ -237,7 +237,7 @@ const PlacementComponent: React.FC = () => {
                       snapToGrid={false}
                       iconsMap={iconsMap ?? {}}
                       onOtherIconClick={onOtherIconClick}
-                      backgroundImage={"/burn/Playa.jpeg"}
+                      backgroundImage={"/maps/playa2k.jpg"}
                       iconImageStyle={styles.iconImage}
                       draggableIconImageStyle={styles.draggableIconImage}
                       venueId={venueId}

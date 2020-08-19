@@ -156,7 +156,7 @@ const Preplaya = () => {
           </div>
           <img
             className="playa-background"
-            src="/maps/playa2d.jpg"
+            src="/maps/playa2k.jpg"
             alt="Playa Background Map"
           />
           {venues?.filter(isPlaced).map((venue, idx) => (
