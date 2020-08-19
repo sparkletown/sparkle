@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
@@ -9,6 +9,31 @@ import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
 
 import "./OnlineStats.scss";
+import { useSelector } from "hooks/useSelector";
+
+const getRandomInt = (max: number) => {
+  return Math.floor(Math.random() * Math.floor(max + 1));
+};
+
+const PotLuckButton = () => {
+  const history = useHistory();
+  const openedVenues = useSelector(
+    (state) => state.firestore.ordered.statsOpenVenues
+  );
+  const goToRandomVenue = useCallback(() => {
+    if (!openedVenues) return;
+    const randomVenue = openedVenues[getRandomInt(openedVenues?.length - 1)];
+    history.push(venueInsideUrl(randomVenue.id));
+  }, [history, openedVenues]);
+  if (!openedVenues) {
+    return <></>;
+  }
+  return (
+    <button onClick={goToRandomVenue} className="btn btn-primary">
+      Pot Luck
+    </button>
+  );
+};
 
 const OnlineStats: React.FC = () => {
   const history = useHistory();
@@ -52,7 +77,7 @@ const OnlineStats: React.FC = () => {
                   className="search-bar"
                   placeholder="Search venues"
                 />
-                <button className="btn btn-primary">{`Pot Luck`}</button>
+                <PotLuckButton />
               </div>
               <div className="venues-container">
                 {openVenues.map((venue, index) => (
