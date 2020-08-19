@@ -12,6 +12,7 @@ import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
   PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_TEMPLATES,
   PLAYA_IMAGE,
 } from "settings";
 import VenuePreview from "./VenuePreview";
@@ -142,7 +143,7 @@ const Preplaya = () => {
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
-      if (campVenue) {
+      if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
         const campY = (campVenue.placement?.y || 0) * scale;
         const scrollY = campY - window.innerHeight / 2;
         window.scrollTo(0, scrollY);

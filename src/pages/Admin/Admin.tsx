@@ -19,7 +19,12 @@ import {
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
-import { canHaveSubvenues } from "utils/venue";
+import {
+  canHaveSubvenues,
+  canBeDeleted,
+  canHaveEvents,
+  canHavePlacement,
+} from "utils/venue";
 import "./Admin.scss";
 import AdminEvent from "./AdminEvent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
@@ -30,7 +35,13 @@ import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_IMAGE, PLAYA_ICON_SIDE } from "settings";
+import {
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLACEABLE_VENUE_TEMPLATES,
+  PLAYA_IMAGE,
+  PLAYA_ICON_SIDE,
+} from "settings";
+import PlacementComponent from "./PlacementComponent";
 import Fuse from "fuse.js";
 
 dayjs.extend(advancedFormat);
@@ -55,7 +66,7 @@ const VenueList: React.FC<VenueListProps> = ({
 
   return (
     <>
-      <div className="page-container-adminsidebar-title">My Venues</div>
+      <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
@@ -117,13 +128,18 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
     return <>{`Oops, seems we can't find your venue!`}</>;
   }
 
+  const tabs = [{ url: `${match.url}`, label: "Venue Info" }];
+  if (canHaveEvents(venue)) {
+    tabs.push({ url: `${match.url}/events`, label: "Events" });
+  }
+  if (canHavePlacement(venue)) {
+    tabs.push({ url: `${match.url}/placement`, label: "Placement" });
+  }
+
   return (
     <>
       <div className="page-container-adminpanel-tabs">
-        {[
-          { url: `${match.url}`, label: "Venue Info" },
-          { url: `${match.url}/events`, label: "Events" },
-        ].map((tab) => (
+        {tabs.map((tab) => (
           <div
             key={tab.url}
             className={`page-container-adminpanel-tab ${
@@ -139,6 +155,11 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <Route
             path={`${match.url}/events`}
             render={() => <EventsComponent venue={venue} />}
+            venue={venue}
+          />
+          <Route
+            path={`${match.url}/placement`}
+            render={() => <PlacementComponent />}
             venue={venue}
           />
           <Route
@@ -179,39 +200,43 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            <h4
-              className="italic"
-              style={{ fontSize: "30px", textAlign: "center" }}
-            >
-              How your experience appears on the playa
-            </h4>
-            <div className="container venue-entrance-experience-container">
-              <div className="playa-container">
-                <PlayaContainer
-                  interactive={false}
-                  resizable={false}
-                  iconsMap={
-                    venue.placement && venue.mapIconImageUrl
-                      ? {
-                          icon: {
-                            width: PLAYA_ICON_SIDE,
-                            height: PLAYA_ICON_SIDE,
-                            top: venue.placement.y,
-                            left: venue.placement.x,
-                            url: venue.mapIconImageUrl,
-                          },
-                        }
-                      : {}
-                  }
-                  coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                  backgroundImage={PLAYA_IMAGE}
-                  iconImageStyle={styles.iconImage}
-                  draggableIconImageStyle={styles.draggableIconImage}
-                  venueId={venue.id}
-                  otherIconsStyle={{ opacity: 0.4 }}
-                />
-              </div>
-            </div>
+            {PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
+              <>
+                <h4
+                  className="italic"
+                  style={{ fontSize: "30px", textAlign: "center" }}
+                >
+                  How your experience appears on the playa
+                </h4>
+                <div className="container venue-entrance-experience-container">
+                  <div className="playa-container">
+                    <PlayaContainer
+                      interactive={false}
+                      resizable={false}
+                      iconsMap={
+                        venue.placement && venue.mapIconImageUrl
+                          ? {
+                              icon: {
+                                width: PLAYA_ICON_SIDE,
+                                height: PLAYA_ICON_SIDE,
+                                top: venue.placement.y,
+                                left: venue.placement.x,
+                                url: venue.mapIconImageUrl,
+                              },
+                            }
+                          : {}
+                      }
+                      coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+                      backgroundImage={PLAYA_IMAGE}
+                      iconImageStyle={styles.iconImage}
+                      draggableIconImageStyle={styles.draggableIconImage}
+                      venueId={venue.id}
+                      otherIconsStyle={{ opacity: 0.4 }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </>
         )}
       </div>
@@ -233,13 +258,6 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
             >
               {editText}
             </Link>
-            <button
-              role="link"
-              className="btn btn-block btn-primary"
-              onClick={() => setShowDeleteModal(true)}
-            >
-              {deleteText}
-            </button>
             {canHaveSubvenues(venue) && (
               <Link
                 to={`/admin/venue/rooms/${venue.id}`}
@@ -255,6 +273,15 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               >
                 Edit Room
               </Link>
+            )}
+            {canBeDeleted(venue) && (
+              <button
+                role="link"
+                className="btn btn-block btn-danger"
+                onClick={() => setShowDeleteModal(true)}
+              >
+                {deleteText}
+              </button>
             )}
           </>
         )}
