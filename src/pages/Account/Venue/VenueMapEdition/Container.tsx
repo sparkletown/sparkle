@@ -18,7 +18,6 @@ import { Dimensions } from "types/utility";
 
 const styles: React.CSSProperties = {
   width: "100%",
-  height: "100%",
   position: "relative",
 };
 export interface SubVenueIconMap {
@@ -61,6 +60,7 @@ export const Container: React.FC<PropsType> = (props) => {
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
+  console.log("imageDims", imageDims);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -72,21 +72,28 @@ export const Container: React.FC<PropsType> = (props) => {
     ) => (coordinatesBoundary * val) / imageDims[dimension];
 
     //need to return the unscaled values
+    console.log("boxes", boxes);
     const unscaledBoxes = Object.keys(boxes).reduce(
       (acc, val) => ({
         ...acc,
         [val]: {
           ...boxes[val],
-          width: (coordinatesBoundary * boxes[val].width) / imageDims.width,
-          height: (coordinatesBoundary * boxes[val].height) / imageDims.height,
+          // resizable expects a percentage (for rooms), whereas non-resizable expects pixels
+          width: resizable
+            ? (coordinatesBoundary * boxes[val].width) / imageDims.width
+            : boxes[val].width,
+          height: resizable
+            ? (coordinatesBoundary * boxes[val].height) / imageDims.height
+            : boxes[val].height,
           top: convertDisplayedCoordToIntrinsic(boxes[val].top, "height"),
           left: convertDisplayedCoordToIntrinsic(boxes[val].left, "width"),
         },
       }),
       {}
     );
+    console.log("unscaledBoxes", unscaledBoxes);
     onChange && onChange(unscaledBoxes);
-  }, [boxes, onChange, imageDims, coordinatesBoundary]);
+  }, [boxes, onChange, imageDims, coordinatesBoundary, resizable]);
 
   useMemo(() => {
     if (!imageDims) return;
@@ -95,9 +102,12 @@ export const Container: React.FC<PropsType> = (props) => {
         ...acc,
         [val]: {
           ...iconsMap[val],
-          width: (imageDims.width * iconsMap[val].width) / coordinatesBoundary,
-          height:
-            (imageDims.height * iconsMap[val].height) / coordinatesBoundary,
+          width: resizable
+            ? (imageDims.width * iconsMap[val].width) / coordinatesBoundary
+            : iconsMap[val].width,
+          height: resizable
+            ? (imageDims.height * iconsMap[val].height) / coordinatesBoundary
+            : iconsMap[val].height,
           top: (imageDims.height * iconsMap[val].top) / coordinatesBoundary,
           left: (imageDims.width * iconsMap[val].left) / coordinatesBoundary,
         },
@@ -106,7 +116,7 @@ export const Container: React.FC<PropsType> = (props) => {
     );
 
     setBoxes(copy);
-  }, [iconsMap, imageDims, coordinatesBoundary]);
+  }, [iconsMap, imageDims, coordinatesBoundary, resizable]);
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
