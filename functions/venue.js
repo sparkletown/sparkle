@@ -138,7 +138,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
       }
       const docData = doc.data();
 
-      if (roomIndex === undefined) {
+      if (typeof roomIndex !== "number") {
         docData.rooms = [...docData.rooms, room];
       } else {
         docData.rooms[roomIndex] = room;

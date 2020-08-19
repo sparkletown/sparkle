@@ -62,7 +62,6 @@ export const Container: React.FC<PropsType> = (props) => {
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
-  console.log("otherIcons", otherIcons);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
