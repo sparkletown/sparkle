@@ -288,23 +288,35 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 
-  let filteredEvents = events;
-  filterPastEvents
-    ? (filteredEvents = events?.filter(
-        (ev) =>
-          (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
-      ))
-    : (filteredEvents = events);
+  const filterEventsFunction = (
+    events: WithId<VenueEvent>[] | undefined = [],
+    filterPastEvents: boolean,
+    filterText: string
+  ) => {
+    let filteredEvents = filterPastEvents
+      ? events?.filter(
+          (ev) =>
+            (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 >
+            Date.now()
+        )
+      : events;
 
-  if (filteredEvents && filterText) {
-    const searchOptions = {
-      keys: ["name", "description", "host"],
-    };
-    const fuse = new Fuse(filteredEvents, searchOptions);
-    const resultOfSearch: WithId<VenueEvent>[] | undefined = [];
-    fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
-    filteredEvents = resultOfSearch;
-  }
+    if (filteredEvents && filterText) {
+      const searchOptions = {
+        keys: ["name", "description", "host"],
+      };
+      const fuse = new Fuse(filteredEvents, searchOptions);
+      const resultOfSearch: WithId<VenueEvent>[] | undefined = [];
+      fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
+      filteredEvents = resultOfSearch;
+    }
+    return filteredEvents;
+  };
+
+  const filteredEvents = useMemo(
+    () => filterEventsFunction(events, filterPastEvents, filterText),
+    [events, filterPastEvents, filterText]
+  );
 
   return (
     <>
