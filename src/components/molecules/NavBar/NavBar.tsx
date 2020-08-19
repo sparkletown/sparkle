@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import { Link } from "react-router-dom";
-import {
-  /*faCommentAlt,*/ faTicketAlt,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCommentAlt, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { isChatValid } from "validation";
+import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-// import PrivateChatModal from "components/organisms/PrivateChatModal";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
@@ -23,9 +21,9 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue /*privateChats*/ } = useSelector((state) => ({
+  const { venue, privateChats } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
-    // privateChats: state.firestore.ordered.privatechats,
+    privateChats: state.firestore.ordered.privatechats,
   }));
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -47,20 +45,23 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  // const chatPopover = (
-  //   <Popover id="popover-basic">
-  //     <Popover.Content>
-  //       <PrivateChatModal />
-  //     </Popover.Content>
-  //   </Popover>
-  // );
+  const chatPopover = (
+    <Popover id="popover-basic">
+      <Popover.Content>
+        <PrivateChatModal />
+      </Popover.Content>
+    </Popover>
+  );
 
-  // const numberOfUnreadMessages =
-  //   privateChats &&
-  //   user &&
-  //   privateChats
-  //     .filter(isChatValid)
-  //     .filter((chat) => chat.to === user.uid && chat.isRead === false).length;
+  const numberOfUnreadMessages = useMemo(() => {
+    return (
+      privateChats &&
+      user &&
+      privateChats
+        .filter(isChatValid)
+        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+    );
+  }, [privateChats, user]);
 
   return (
     <>
@@ -95,7 +96,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </span>
                 </OverlayTrigger>
               )}
-              {/*profile && (
+              {profile && (
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"
@@ -111,7 +112,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     <FontAwesomeIcon icon={faCommentAlt} />
                   </span>
                 </OverlayTrigger>
-              )*/}
+              )}
               <div
                 className="profile-icon-container"
                 onClick={() => setIsProfileModalOpen(true)}
