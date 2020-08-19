@@ -85,9 +85,10 @@ const OnlineStats: React.FC = () => {
           overlay={popover}
           rootClose
         >
-          <small className="counter">
-            {onlineUsers.length} people online, {openVenues.length} venues open
-          </small>
+          <span>
+            {openVenues.length} venues open now / {onlineUsers.length} burners
+            live
+          </span>
         </OverlayTrigger>
       )}
     </>
