@@ -270,30 +270,6 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   );
 };
 
-// const filterEventsFunction = (
-//   events: WithId<VenueEvent>[] | undefined = [],
-//   filterPastEvents: boolean,
-//   filterText: string
-// ) => {
-//   let filteredEvents = filterPastEvents
-//     ? events?.filter(
-//       (ev) =>
-//         (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
-//     )
-//     : events;
-
-//   if (filteredEvents && filterText) {
-//     const searchOptions = {
-//       keys: ["name", "description", "host"],
-//     };
-//     const fuse = new Fuse(filteredEvents, searchOptions);
-//     const resultOfSearch: WithId<VenueEvent>[] | undefined = [];
-//     fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
-//     filteredEvents = resultOfSearch;
-//   }
-//   return filteredEvents;
-// };
-
 const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   useFirestoreConnect([
     {
@@ -328,7 +304,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
     () =>
       upcomingEvents
         ? new Fuse(upcomingEvents, { keys: ["name", "description", "host"] })
-        : upcomingEvents,
+        : undefined,
     [upcomingEvents]
   );
 
