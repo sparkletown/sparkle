@@ -471,7 +471,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <SubmitButton
             editing={editing}
             isSubmitting={isSubmitting}
-            templateType={templateType}
+            templateType={templateType ?? "Venue"}
           />
         </div>
       </div>
@@ -492,7 +492,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 interface SubmitButtonProps {
   isSubmitting: boolean;
   editing?: boolean;
-  templateType?: string;
+  templateType: string;
 }
 
 const SubmitButton: React.FC<SubmitButtonProps> = ({
