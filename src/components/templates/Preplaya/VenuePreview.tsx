@@ -11,7 +11,8 @@ import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import { VenueEvent } from "types/VenueEvent";
 import { ScheduleItem } from "../Camp/components/ScheduleItem";
-import { peopleAttending, hasRooms } from "utils/venue";
+import { peopleAttending } from "utils/venue";
+import { isCampVenue } from "types/CampVenue";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -49,10 +50,8 @@ const getLink = (venue: WithId<Venue>) => {
 const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
-  const users = useMemo(
-    () =>
-      peopleAttending(partygoers, venue) ??
-      ([] as Array<typeof partygoers[number]>),
+  const users: typeof partygoers = useMemo(
+    () => peopleAttending(partygoers, venue) ?? [],
     [partygoers, venue]
   );
 
@@ -146,7 +145,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
             </p>
           )}
           {venueEvents.filter(isUpcoming).map((event, idx) => {
-            const room = hasRooms(venue)
+            const room = isCampVenue(venue)
               ? venue.rooms?.find((room) => room.title === event.room)
               : null;
 
