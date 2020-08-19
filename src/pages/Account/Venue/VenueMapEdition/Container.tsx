@@ -11,7 +11,7 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL, PLAYA_ICON_SIDE } from "settings";
+import { DEFAULT_MAP_ICON_URL } from "settings";
 import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
 import { Dimensions } from "types/utility";
@@ -60,7 +60,7 @@ export const Container: React.FC<PropsType> = (props) => {
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
-  console.log("imageDims", imageDims);
+  console.log("otherIcons", otherIcons);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -72,7 +72,6 @@ export const Container: React.FC<PropsType> = (props) => {
     ) => (coordinatesBoundary * val) / imageDims[dimension];
 
     //need to return the unscaled values
-    console.log("boxes", boxes);
     const unscaledBoxes = Object.keys(boxes).reduce(
       (acc, val) => ({
         ...acc,
@@ -91,7 +90,6 @@ export const Container: React.FC<PropsType> = (props) => {
       }),
       {}
     );
-    console.log("unscaledBoxes", unscaledBoxes);
     onChange && onChange(unscaledBoxes);
   }, [boxes, onChange, imageDims, coordinatesBoundary, resizable]);
 
@@ -191,13 +189,15 @@ export const Container: React.FC<PropsType> = (props) => {
                     position: "absolute",
                     top: `${(100 * icon.top) / coordinatesBoundary}%`,
                     left: `${(100 * icon.left) / coordinatesBoundary}%`,
-                    width: PLAYA_ICON_SIDE, // @debt should be at the right scale
+                    width: resizable ? `${icon.width}%` : icon.width, //resizable dimensions are in percentages
+                    height: resizable ? `${icon.height}%` : icon.width,
+                    borderRadius: "50%",
                     ...otherIconsStyle,
                   }}
                   alt={`${icon.url} map icon`}
                 />
               )),
-            [otherIcons, coordinatesBoundary, otherIconsStyle]
+            [otherIcons, coordinatesBoundary, otherIconsStyle, resizable]
           )}
         </div>
         {Object.keys(boxes).map((key) => (

@@ -20,6 +20,8 @@ export const CampContainer: React.FC<PropsType> = (props) => {
           return {
             ...acc,
             [r.title]: {
+              width: r.width_percent,
+              height: r.height_percent,
               top: r.y_percent,
               left: r.x_percent,
               url: r.image_url,
