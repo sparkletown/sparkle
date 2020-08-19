@@ -14,6 +14,7 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { throttle } from "lodash";
+import VideoChipLayer from "./VideoChipLayer";
 
 import "./Preplaya.scss";
 
@@ -178,6 +179,7 @@ const Preplaya = () => {
               {selectedVenue?.id === venue.id && <div className="selected" />}
             </div>
           ))}
+          <VideoChipLayer />
         </div>
         <div className="button-bar">
           <div className="button" onClick={() => setZoom(zoom + 0.1)}>
