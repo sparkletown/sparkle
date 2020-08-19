@@ -11,7 +11,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 import { WithId } from "utils/id";
 
 interface LastMessageByUser {
@@ -19,8 +18,6 @@ interface LastMessageByUser {
 }
 
 const PrivateChatModal: React.FunctionComponent = () => {
-  useConnectRecentUsers();
-
   const { user } = useUser();
   const { privateChats, users } = useSelector((state) => ({
     privateChats: state.firestore.ordered.privatechats,

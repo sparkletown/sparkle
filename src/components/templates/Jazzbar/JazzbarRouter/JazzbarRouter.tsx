@@ -6,12 +6,10 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
-  useConnectRecentUsers();
 
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
