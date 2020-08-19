@@ -31,6 +31,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_IMAGE, PLAYA_ICON_SIDE } from "settings";
+import Fuse from "fuse.js";
 
 dayjs.extend(advancedFormat);
 
@@ -284,16 +285,29 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
-  //filter out events that have already finished
-  const filteredEvents = events?.filter(
-    (ev) =>
-      (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
-  );
+  const [filterPastEvents, setFilterPastEvents] = useState(false);
+  let filteredEvents = events;
+  filterPastEvents
+    ? (filteredEvents = events?.filter(
+        (ev) =>
+          (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 > Date.now()
+      ))
+    : (filteredEvents = events);
+  console.log(events);
 
   return (
     <>
       <div className="page-container-adminpanel-content">
         <div className="col-lg-6 col-12 oncoming-events">
+          <button
+            className="btn btn-primary"
+            onClick={() => setFilterPastEvents(!filterPastEvents)}
+            style={{ marginBottom: 10 }}
+          >
+            {filterPastEvents
+              ? "Show all the events"
+              : "Only show upcoming events"}
+          </button>
           {filteredEvents && (
             <>
               {filteredEvents.map((venueEvent) => {
