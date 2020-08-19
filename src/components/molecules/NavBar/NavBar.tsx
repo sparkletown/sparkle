@@ -5,9 +5,9 @@ import "./playa.scss";
 import { Link } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-//import { isChatValid } from "validation";
+import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-//import PrivateChatModal from "components/organisms/PrivateChatModal";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
 import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
@@ -15,8 +15,6 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
-import PrivateChatModal from "components/organisms/PrivateChatModal";
-import { isChatValid } from "validation";
 
 interface PropsType {
   redirectionUrl?: string;
