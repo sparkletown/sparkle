@@ -309,11 +309,11 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   );
 
   const filteredEvents = useMemo(() => {
-    if (filterText === "") return events;
+    if (filterText === "") return upcomingEvents;
     const resultOfSearch: WithId<VenueEvent>[] | undefined = [];
     fuse && fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
-  }, [fuse, filterText, events]);
+  }, [fuse, filterText, upcomingEvents]);
 
   return (
     <>
