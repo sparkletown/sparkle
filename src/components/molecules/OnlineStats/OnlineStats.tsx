@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import UserList from "../UserList";
+// import UserList from "../UserList";
 import { useHistory } from "react-router-dom";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
@@ -44,26 +44,33 @@ const OnlineStats: React.FC = () => {
         <Popover id="popover-onlinestats">
           <Popover.Content>
             <div className="stats-modal-container">
-              <div className="online-users">
-                <h1 className="title modal-title">People Online</h1>
-                <UserList users={onlineUsers} activity="online" />
-              </div>
               <div className="open-venues">
-                <h1 className="title modal-title">Venues Open</h1>
-                <span className="bold">{openVenues?.length || 0}</span> venues
-                open
+                {openVenues?.length || 0} venues open now
+              </div>
+              <div className="search-container">
+                <input
+                  type={"text"}
+                  className="search-bar"
+                  placeholder="Search venues"
+                />
+                <button className="btn btn-primary">{`Pot Luck`}</button>
+              </div>
+              <div className="venues-container">
                 {openVenues.map((venue, index) => (
                   <div
+                    className="venue-card"
                     key={index}
                     onClick={() => history.push(venueInsideUrl(venue.id))}
                   >
-                    <img
-                      className="venue-icon"
-                      src={venue.host.icon}
-                      alt={venue.name}
-                      title={venue.name}
-                    />
                     <span className="venue-name">{venue.name}</span>
+                    <div className="img-container">
+                      <img
+                        className="venue-icon"
+                        src={venue.host.icon}
+                        alt={venue.name}
+                        title={venue.name}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -73,7 +80,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [history, loaded, onlineUsers, openVenues]
+    [history, loaded, openVenues]
   );
 
   return (

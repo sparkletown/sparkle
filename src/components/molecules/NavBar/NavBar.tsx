@@ -79,7 +79,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               </Link>
               <div
                 className="button-container"
-                style={{ marginTop: "10px", width: "50px" }}
+                style={{ marginTop: 10, width: 50 }}
               >
                 <Link to="/admin" className="create-button">
                   Create
