@@ -5,7 +5,7 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useKeyedSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
 
 interface RoomProps {
@@ -27,12 +27,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
-  const { users } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.partygoers,
-    }),
-    ["users"]
-  );
+  const users = useSelector((state) => state.firestore.data.partygoers);
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
@@ -142,6 +137,7 @@ const Room: React.FC<RoomProps> = ({
         key={room.localParticipant.sid}
         participant={room.localParticipant}
         profileData={users[room.localParticipant.identity]}
+        profileDataId={room.localParticipant.identity}
         bartender={meIsBartender}
       />
     </div>
@@ -165,6 +161,7 @@ const Room: React.FC<RoomProps> = ({
           key={`${participant.sid}-${index}`}
           participant={participant}
           profileData={users[participant.identity]}
+          profileDataId={participant.identity}
           bartender={bartender}
         />
       </div>
