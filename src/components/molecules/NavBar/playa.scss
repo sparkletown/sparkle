@@ -40,7 +40,9 @@ $sand: #937c63;
     .navbar-logo {
       padding: 14px 20px;
       display: flex;
-      width: 440px;
+      width: 500px;
+      justify-content: space-between;
+      align-items: center;
       img {
         width: 240px;
       }
@@ -83,6 +85,16 @@ $sand: #937c63;
         }
       }
       .navbar-link-menu {
+      }
+    }
+
+    .playa-link {
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      font-size: 1.3em;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
       }
     }
 
