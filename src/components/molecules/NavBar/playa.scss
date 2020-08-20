@@ -40,7 +40,9 @@ $sand: #937c63;
     .navbar-logo {
       padding: 14px 20px;
       display: flex;
-      width: 440px;
+      width: 500px;
+      justify-content: space-between;
+      align-items: center;
       img {
         width: 240px;
       }

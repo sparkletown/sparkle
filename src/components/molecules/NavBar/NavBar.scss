@@ -47,8 +47,6 @@
   }
 
   .button-container {
-    flex-grow: 1;
-
     .create-button {
       border: 2px solid #ebebeb;
       border-radius: 2em;
@@ -77,9 +75,4 @@
   height: $navbar-height;
   padding: 0 15px;
   background-color: $dark;
-}
-
-.create-button-container {
-  margin-top: 10px;
-  width: 50px;
 }
