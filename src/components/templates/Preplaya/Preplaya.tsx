@@ -14,7 +14,7 @@ import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { throttle } from "lodash";
-import VideoChipLayer from "./VideoChipLayer";
+import AvatarLayer from "./AvatarLayer";
 
 import "./Preplaya.scss";
 
@@ -91,7 +91,9 @@ const Preplaya = () => {
 
     if (mapRef.current) {
       mapRef.current.addEventListener("mousedown", dragStartListener);
-      mapRef.current.addEventListener("touchstart", dragStartListener);
+      mapRef.current.addEventListener("touchstart", dragStartListener, {
+        passive: true,
+      });
       window.addEventListener("mousemove", moveListener);
       window.addEventListener("touchmove", moveListener);
       window.addEventListener("mouseup", dragEndListener);
@@ -179,7 +181,7 @@ const Preplaya = () => {
               {selectedVenue?.id === venue.id && <div className="selected" />}
             </div>
           ))}
-          <VideoChipLayer />
+          <AvatarLayer />
         </div>
         <div className="button-bar">
           <div className="button" onClick={() => setZoom(zoom + 0.1)}>

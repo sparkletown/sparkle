@@ -78,3 +78,8 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
 ];
+
+// Trouble connecting? Run a local relay:
+// git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
+export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
+export const DEFAULT_JITSI_ROOM_NAME = "playa-local";

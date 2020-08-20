@@ -73,7 +73,8 @@ if (window.location.hostname === "localhost") {
   firebase.functions();
 }
 
-JitsiMeetJS.init();
+JitsiMeetJS.init({});
+JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.DEBUG);
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
