@@ -26,7 +26,6 @@
     "immutability-helper": "^3.1.1",
     "jquery": "^3.4.1",
     "jsonschema": "^1.2.6",
-    "lib-jitsi-meet": "^1.0.6",
     "lint-staged": "^10.2.7",
     "lodash": "^4.17.15",
     "node-sass": "^4.14.1",

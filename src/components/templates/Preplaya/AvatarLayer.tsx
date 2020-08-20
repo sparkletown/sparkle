@@ -4,7 +4,6 @@ import $ from "jquery";
 import "strophe.js";
 import "strophejs-plugin-disco";
 import "strophejs-plugin-caps";
-import JitsiMeetJS from "lib-jitsi-meet";
 import { useUser } from "hooks/useUser";
 import {
   UserStateMap,
@@ -15,6 +14,11 @@ import {
 import { DEFAULT_JITSI_ROOM_NAME, DEFAULT_WS_RELAY_URL } from "settings";
 
 (window as any).jQuery = (window as any).$ = $;
+
+// Jitsi init here for now, since this is the only place it's used currently
+const JitsiMeetJS = (window as any).JitsiMeetJS;
+JitsiMeetJS.init({});
+JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.DEBUG);
 
 interface PropsType {}
 
@@ -67,15 +71,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = () => {
   }, [user]);
 
   useEffect(() => {
-    // const connection = new JitsiMeetJS.JitsiConnection(null, null, {
-    //   serviceUrl: JITSI_URL || DEFAULT_JITSI_URL,
-    //   hosts: {
-    //     domain: JITSI_DOMAIN || DEFAULT_JITSI_DOMAIN,
-    //     muc: JITSI_DOMAIN || DEFAULT_JITSI_DOMAIN,
-    //   },
-    //   bosh: `${JITSI_DOMAIN || DEFAULT_JITSI_DOMAIN}/http-bind`,
-    //   enableLipSync: false,
-    // });
     const connection = new JitsiMeetJS.JitsiConnection(null, null, {
       hosts: {
         domain: "meet.jit.si",
