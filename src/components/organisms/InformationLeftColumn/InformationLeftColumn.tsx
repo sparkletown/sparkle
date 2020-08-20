@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import "./InformationLeftColumn.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAmbulance,
+  faAngleDoubleRight,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
   venueLogoPath: string;
@@ -28,11 +31,19 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
           </div>
         </div>
-        <img
-          src={venueLogoPath}
-          alt="experience-logo"
-          className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
-        />
+        {venueLogoPath === "ambulance" ? (
+          <FontAwesomeIcon
+            icon={faAmbulance}
+            size="2x"
+            className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
+          />
+        ) : (
+          <img
+            src={venueLogoPath}
+            alt="experience-logo"
+            className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
+          />
+        )}
         {isLeftColumnExpanded && <>{children}</>}
       </div>
     </div>

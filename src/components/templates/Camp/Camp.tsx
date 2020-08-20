@@ -16,9 +16,8 @@ import { Map } from "./components/Map";
 import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
-import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -109,9 +108,7 @@ const Camp = () => {
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
       </div>
       <div className="sparkle-fairies">
-        <SparkleFairiesPopUp>
-          <InfoCard />
-        </SparkleFairiesPopUp>
+        <SparkleFairiesPopUp />
       </div>
     </div>
   );

@@ -28,9 +28,8 @@ import { throttle } from "lodash";
 
 import "./Preplaya.scss";
 import { peopleAttending } from "utils/venue";
-import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
-import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import ChatDrawer from "components/organisms/ChatDrawer";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -254,9 +253,7 @@ const Preplaya = () => {
           <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
         </div>
         <div className="sparkle-fairies">
-          <SparkleFairiesPopUp>
-            <InfoCard />
-          </SparkleFairiesPopUp>
+          <SparkleFairiesPopUp />
         </div>
       </div>
       <Modal show={showModal} onHide={hideVenue}>

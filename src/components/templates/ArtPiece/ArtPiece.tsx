@@ -6,8 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -60,9 +59,7 @@ const ArtPiece = () => {
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
       </div>
       <div className="sparkle-fairie">
-        <SparkleFairiesPopUp>
-          <InfoCard />
-        </SparkleFairiesPopUp>
+        <SparkleFairiesPopUp />
       </div>
     </WithNavigationBar>
   );
