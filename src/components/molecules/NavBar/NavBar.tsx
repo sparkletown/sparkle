@@ -134,7 +134,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       height="40"
                     />
                   </div>
-                  <div className="navbar-link-menu"></div>
+                  {/* <div className="navbar-link-menu"></div> */}
                 </div>
               </>
             ) : (
