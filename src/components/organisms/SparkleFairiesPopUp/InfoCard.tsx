@@ -16,7 +16,6 @@ const InformationCard: React.FunctionComponent = () => (
       rel="noopener noreferrer"
       target="_blank"
       className="link-button"
-      style={{ color: "black", textDecoration: "none" }}
     >
       Go to private zoom
     </a>

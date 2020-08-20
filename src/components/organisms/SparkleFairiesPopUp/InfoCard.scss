@@ -20,8 +20,9 @@
 
 .link-button {
   display: inline-block;
-  color: black;
+  color: black !important;
   padding: 10px;
   border: solid 2px black;
   font-size: 13px;
+  text-decoration: none !important;
 }
