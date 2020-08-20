@@ -249,7 +249,7 @@ const Preplaya = () => {
             <FontAwesomeIcon icon={faMinus} className="icon" />
           </div>
         </div>
-        <div style={{ position: "fixed", top: 200, left: 27 }}>
+        <div className="sparkle-fairies">
           <SparkleFairiesPopUp>
             <InfoCard />
           </SparkleFairiesPopUp>

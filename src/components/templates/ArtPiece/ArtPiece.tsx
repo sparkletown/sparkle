@@ -59,7 +59,7 @@ const ArtPiece = () => {
         </div>
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
       </div>
-      <div style={{ position: "fixed", top: 280, left: 15 }}>
+      <div className="sparkle-fairie">
         <SparkleFairiesPopUp>
           <InfoCard />
         </SparkleFairiesPopUp>

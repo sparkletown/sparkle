@@ -3,11 +3,7 @@ import "./SparkleFairiesPopUp.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAmbulance } from "@fortawesome/free-solid-svg-icons";
 
-interface PropsType {
-  children: React.ReactNode;
-}
-
-const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
+const SparkleFairiesPopUp: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
@@ -16,7 +12,7 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
     <div className="information-left-column-container">
       <div
         className={`left-column ${isLeftColumnExpanded ? "expanded" : ""}`}
-        onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
+        onClick={() => setIsLeftColumnExpanded((prevState) => !prevState)}
         id="expand-venue-information"
       >
         <div className="icon-container">

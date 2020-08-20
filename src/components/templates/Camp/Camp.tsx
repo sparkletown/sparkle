@@ -104,7 +104,7 @@ const Camp = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
-      <div style={{ position: "fixed", top: 330, left: 27 }}>
+      <div className="sparkle-fairies">
         <SparkleFairiesPopUp>
           <InfoCard />
         </SparkleFairiesPopUp>
