@@ -1,4 +1,4 @@
-import { createUrlSafeName, VenueInput } from "api/admin";
+import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
@@ -143,6 +143,8 @@ export const validationSchema = Yup.object()
       .transform((val: Array<Question>) =>
         val.filter((s) => !!s.name && !!s.text)
       ), // ensure questions are not empty strings
+
+    placementRequests: Yup.string().notRequired(),
   })
   .required();
 
@@ -164,3 +166,13 @@ export const editVenueCastSchema = Yup.object()
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("mapIconImageUrl", "mapIconImageUrl");
+
+export const editPlacementCastSchema = Yup.object()
+  .shape<Partial<PlacementInput>>({})
+  .from("placement.addressText", "addressText")
+  .from("placement.notes", "notes")
+
+  // possible locations for the map icon
+  .from("config.mapIconImageUrl", "mapIconImageUrl")
+  .from("mapIconImageUrl", "mapIconImageUrl")
+  .required();

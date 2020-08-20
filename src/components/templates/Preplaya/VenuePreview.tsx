@@ -114,6 +114,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
               <p className="subtitle">
                 {venue.config?.landingPageConfig?.subtitle}
               </p>
+              {venue.placement?.addressText && (
+                <p className="subtitle">
+                  City address: {venue.placement?.addressText}
+                </p>
+              )}
               <p className="template-name">{templateName}</p>
               <a
                 className="btn btn-primary join-button"

@@ -1,0 +1,27 @@
+@import "scss/constants.scss";
+
+.info-card-container {
+  background: white;
+  margin: 5px 0px 0px 0px;
+  padding: 20px;
+  border: solid 2px black;
+  width: 250px;
+}
+
+.info-card-title {
+  color: black;
+  font-size: 15px;
+  font-weight: bold;
+}
+.info-card-text {
+  color: black;
+  font-size: 11px;
+}
+
+.link-button {
+  display: inline-block;
+  color: black;
+  padding: 10px;
+  border: solid 2px black;
+  font-size: 13px;
+}

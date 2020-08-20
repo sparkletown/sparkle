@@ -10,7 +10,7 @@ export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
 export const PLAYA_ICON_SIDE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/burn/new_playa.jpg";
+export const PLAYA_IMAGE = "/maps/playa2k.jpg";
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
@@ -25,6 +25,23 @@ export const VIDEO_IFRAME_TEMPLATES = [
 export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+
+export const SUBVENUE_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
+
+export const PLACEABLE_VENUE_TEMPLATES = [
+  VenueTemplate.artcar,
+  VenueTemplate.artpiece,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
+];
+export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
 export interface Template {
   template: VenueTemplate;
