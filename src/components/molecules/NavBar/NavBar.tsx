@@ -12,7 +12,12 @@ import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  SPARKLEVERSE_LOGO_URL,
+  PLAYA_VENUE_NAME,
+  DEFAULT_REDIRECT_URL,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
 
@@ -69,31 +74,36 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <header>
         <div className="navbar navbar_playa">
           <div className="navbar-container">
-            <div className="navbar-logo" style={{ width: 500 }}>
+            <div className="navbar-logo">
               <Link to={redirectionUrl || "/"}>
                 <img
-                  src={"/sparkleverse-logo.png"}
+                  src={SPARKLEVERSE_LOGO_URL}
                   alt="Logo"
                   className="logo-img"
                 />
               </Link>
-              <div
-                className="button-container"
-                style={{ marginTop: "10px", width: "50px" }}
-              >
+              <div className="button-container create-button-container">
                 <Link to="/admin" className="create-button">
-                  Create
+                  Create/Edit
                 </Link>
               </div>
             </div>
             {user ? (
               <>
-                <div
-                  className="navbar-dropdown-middle"
-                  style={{ width: 500, textAlign: "center" }}
-                >
-                  <OnlineStats />
-                </div>
+                {venue?.name === PLAYA_VENUE_NAME ? (
+                  <div className="navbar-dropdown-middle">
+                    <OnlineStats />
+                  </div>
+                ) : (
+                  <span
+                    onClick={() =>
+                      (window.location.href = DEFAULT_REDIRECT_URL)
+                    }
+                    className="playa-link"
+                  >
+                    Go to playa
+                  </span>
+                )}
                 <div className="navbar-links" style={{ width: 500 }}>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
@@ -114,7 +124,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       overlay={chatPopover}
                       rootClose={true}
                     >
-                      <span>
+                      <span className="private-chat-icon">
                         {!!numberOfUnreadMessages &&
                           numberOfUnreadMessages > 0 && (
                             <div className="notification-card">
@@ -137,7 +147,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       height="40"
                     />
                   </div>
-                  <div className="navbar-link-menu"></div>
+                  {/* <div className="navbar-link-menu"></div> */}
                 </div>
               </>
             ) : (

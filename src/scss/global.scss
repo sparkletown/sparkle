@@ -92,6 +92,15 @@ input.btn {
       background-color: darken($primary, 14%);
     }
   }
+  &.btn-danger {
+    color: $white;
+    background: $danger-gradient;
+    border-color: rgba(0, 0, 0, 0);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    &:hover {
+      background-color: darken($red, 14%);
+    }
+  }
 
   &.btn-small {
     padding: 6px 12px;

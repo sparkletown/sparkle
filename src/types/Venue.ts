@@ -13,7 +13,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
-  config: {
+  config?: {
     theme: {
       primaryColor: string;
       backgroundColor?: string;
@@ -45,12 +45,19 @@ export interface Venue {
   zoomUrl?: string;
   embedIframeUrl?: string;
   mapBackgroundImageUrl?: string;
+  placementRequests?: string;
 }
 
 export interface VenuePlacement {
   x: number;
   y: number;
-  state: string;
+  addressText?: string;
+  state?: VenuePlacementState;
+}
+
+export enum VenuePlacementState {
+  SelfPlaced = "SELF_PLACED",
+  AdminPlaced = "ADMIN_PLACED",
 }
 
 export const urlFromImage = (

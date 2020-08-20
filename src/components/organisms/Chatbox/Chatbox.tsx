@@ -219,6 +219,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                               ?.toLowerCase()
                               .includes(searchValue.toLowerCase())
                           )
+                          .filter((u) => u.id !== undefined)
                           .map((u) => (
                             <Dropdown.Item
                               onClick={() => setPrivateRecipient(u)}
@@ -258,7 +259,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                 user &&
                 chatsToDisplay.map((chat) => (
                   <ChatMessage
-                    key={chat.ts_utc.valueOf()}
+                    key={`${chat.ts_utc.valueOf()}-${chat.id}`}
                     user={user}
                     users={users}
                     setSelectedUserProfile={setSelectedUserProfile}

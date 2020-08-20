@@ -123,8 +123,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
           ), url(${
-            venue.config.landingPageConfig.bannerImageUrl ??
-            venue.config.landingPageConfig.coverImageUrl
+            venue.config?.landingPageConfig.bannerImageUrl ??
+            venue.config?.landingPageConfig.coverImageUrl
           }`,
             backgroundSize: "cover",
           }}
@@ -135,13 +135,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">
-              {venue.config.landingPageConfig.subtitle}
+              {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
           {venue.template === VenueTemplate.partymap && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
-                buttonText={venue.config.landingPageConfig.joinButtonText}
+                buttonText={venue.config?.landingPageConfig.joinButtonText}
               />
             </div>
           )}
@@ -152,11 +152,11 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               <div
                 style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}
               >
-                {venue.config.landingPageConfig.description}
+                {venue.config?.landingPageConfig.description}
               </div>
               <div>
-                {venue.config.landingPageConfig.checkList &&
-                  venue.config.landingPageConfig.checkList.map(
+                {venue.config?.landingPageConfig.checkList &&
+                  venue.config?.landingPageConfig.checkList.map(
                     (checkListItem: string, index: number) => (
                       <div
                         key={`checklist-item-${index}`}
@@ -171,19 +171,19 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   )}
               </div>
             </div>
-            {venue.config.landingPageConfig.videoIframeUrl && (
+            {venue.config?.landingPageConfig.videoIframeUrl && (
               <iframe
                 title="entrance video"
                 width="100%"
                 height="300"
                 className="youtube-video"
-                src={venue.config.landingPageConfig.videoIframeUrl}
+                src={venue.config?.landingPageConfig.videoIframeUrl}
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
               />
             )}
-            {venue.config.landingPageConfig.quotations &&
-              venue.config.landingPageConfig.quotations.map(
+            {venue.config?.landingPageConfig.quotations &&
+              venue.config?.landingPageConfig.quotations.map(
                 (quotation, index) => (
                   <div className="quotation-container" key={index}>
                     <div className="quotation">{quotation.text}</div>
@@ -191,8 +191,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   </div>
                 )
               )}
-            {venue.config.landingPageConfig.presentation &&
-              venue.config.landingPageConfig.presentation.map(
+            {venue.config?.landingPageConfig.presentation &&
+              venue.config?.landingPageConfig.presentation.map(
                 (paragraph: string, index: number) => (
                   <p
                     key={`venue-presentation-paragraph-${index}`}
@@ -225,7 +225,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                         purchaseHistory,
                         venueEvent.id
                       ) ||
-                        isUserAMember(user.email, venue.config.memberEmails));
+                        isUserAMember(user.email, venue.config?.memberEmails));
                     return (
                       <InformationCard
                         title={venueEvent.name}

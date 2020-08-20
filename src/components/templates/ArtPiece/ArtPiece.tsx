@@ -6,6 +6,7 @@ import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -33,9 +34,9 @@ const ArtPiece = () => {
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}.</p>
             <p className="short-description-sidebar">
-              {venue.config.landingPageConfig.subtitle}
+              {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p>{venue.config.landingPageConfig.description}</p>
+            <p>{venue.config?.landingPageConfig.description}</p>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
@@ -56,6 +57,9 @@ const ArtPiece = () => {
           </div>
         </div>
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+      </div>
+      <div className="sparkle-fairie">
+        <SparkleFairiesPopUp />
       </div>
     </WithNavigationBar>
   );

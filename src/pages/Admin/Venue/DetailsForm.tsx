@@ -16,7 +16,7 @@ import React, {
 } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar } from "types/Venue";
+import { createJazzbar, VenuePlacementState } from "types/Venue";
 import * as Yup from "yup";
 import {
   editVenueCastSchema,
@@ -146,6 +146,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     return null;
   }
 
+  const isAdminPlaced =
+    state.detailsPage?.venue?.placement?.state ===
+    VenuePlacementState.AdminPlaced;
+  const placementAddress = state.detailsPage?.venue?.placement?.addressText;
+
   return (
     <div className="page">
       <div className="page-side">
@@ -176,13 +181,25 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         >
           Position your venue on the playa
         </h4>
-        <p>
-          First upload or select the icon you would like to appear on the Playa,
-          then drag it around to position it
-        </p>
+        {isAdminPlaced ? (
+          <p className="warning">
+            Your venue has been placed by our placement team and cannot be
+            moved.{" "}
+            {placementAddress && (
+              <>The placement team wrote your address as: {placementAddress}</>
+            )}
+          </p>
+        ) : (
+          <p>
+            First upload or select the icon you would like to appear on the
+            Playa, then drag it around to position it. The placement team from
+            SparkleVerse will place your camp later, after which you will need
+            to reach out if you want it moved.
+          </p>
+        )}
         <div className="playa">
           <PlayaContainer
-            interactive
+            interactive={!isAdminPlaced}
             resizable={false}
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
             onChange={onBoxMove}
@@ -299,7 +316,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"subtitle"}
             ref={register}
             className="wide-input-block align-left"
-            placeholder={defaultVenue.config.landingPageConfig.subtitle}
+            placeholder={defaultVenue.config?.landingPageConfig.subtitle}
           />
           {errors.subtitle && (
             <span className="input-error">{errors.subtitle.message}</span>
@@ -314,7 +331,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"description"}
             ref={register}
             className="wide-input-block input-centered align-left"
-            placeholder={defaultVenue.config.landingPageConfig.description}
+            placeholder={defaultVenue.config?.landingPageConfig.description}
           />
           {errors.description && (
             <span className="input-error">{errors.description.message}</span>
@@ -458,6 +475,28 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             )}
           </>
         )}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Placement Requests
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            SparkleVerse's placement team will put your venue in an appropriate
+            location before the burn. If you wish to be placed somewhere
+            specific, or give suggestions for the team, please write that here.
+          </div>
+          <textarea
+            disabled={disable}
+            name="placementRequests"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="On the Esplanade!"
+          />
+          {errors.placementRequests && (
+            <span className="input-error">
+              {errors.placementRequests.message}
+            </span>
+          )}
+        </div>
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (
@@ -482,7 +521,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       )}
       {formError && (
         <span className="input-error">
-          {"An error occured when saving your form"}
+          {"An error occured when saving the form"}
         </span>
       )}
     </form>
@@ -495,7 +534,7 @@ interface SubmitButtonProps {
   templateType: string;
 }
 
-const SubmitButton: React.FC<SubmitButtonProps> = ({
+export const SubmitButton: React.FC<SubmitButtonProps> = ({
   isSubmitting,
   editing,
   templateType,

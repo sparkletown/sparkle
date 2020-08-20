@@ -1,16 +1,26 @@
 import { VenueTemplate } from "types/VenueTemplate";
+import {
+  API_KEY,
+  APP_ID,
+  MEASUREMENT_ID,
+  BUCKET_URL,
+  PROJECT_ID,
+} from "./secrets";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
+export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+export const PLAYA_VENUE_NAME = "Playa";
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
 export const PLAYA_ICON_SIDE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/burn/new_playa.jpg";
+export const PLAYA_IMAGE = "/maps/playa2k.jpg";
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
@@ -25,6 +35,23 @@ export const VIDEO_IFRAME_TEMPLATES = [
 export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+
+export const SUBVENUE_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
+
+export const PLACEABLE_VENUE_TEMPLATES = [
+  VenueTemplate.artcar,
+  VenueTemplate.artpiece,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
+];
+export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
 export interface Template {
   template: VenueTemplate;
@@ -78,3 +105,16 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
 ];
+
+export const FIREBASE_CONFIG = {
+  apiKey: API_KEY,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
+  projectId: PROJECT_ID,
+  storageBucket: BUCKET_URL,
+};
+
+export const DEFAULT_REDIRECT_URL =
+  FIREBASE_CONFIG.projectId === "co-reality-map"
+    ? venueLandingUrl("kansassmittys")
+    : venueInsideUrl("playa");

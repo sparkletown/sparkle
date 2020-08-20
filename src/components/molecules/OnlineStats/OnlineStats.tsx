@@ -1,21 +1,71 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import UserList from "../UserList";
-import { useHistory } from "react-router-dom";
-import { venueInsideUrl } from "utils/url";
+import { venuePlayaPreviewUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
-
 import "./OnlineStats.scss";
+import Fuse from "fuse.js";
+import { EventData } from "types/EventData";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+interface getOnlineStatsData {
+  onlineUsers: Array<WithId<User>>;
+  openVenues: Array<{
+    venue: WithId<AnyVenue>;
+    currentEvents: EventData;
+  }>;
+}
+
+const getRandomInt = (max: number) => {
+  return Math.floor(Math.random() * Math.floor(max + 1));
+};
+
+interface PoLuckButtonProps {
+  openVenues?: Array<WithId<AnyVenue>>;
+  afterSelect: () => void;
+}
+const PotLuckButton: React.FC<PoLuckButtonProps> = ({
+  openVenues,
+  afterSelect,
+}) => {
+  // const history = useHistory();
+  const goToRandomVenue = useCallback(() => {
+    if (!openVenues) return;
+    const randomVenue = openVenues[getRandomInt(openVenues?.length - 1)];
+    afterSelect();
+
+    // there is a bug in useConnectCurrentVenue that does not update correctly on url change
+    // history.push(venueInsideUrl(randomVenue.id));
+    window.location.href = venuePlayaPreviewUrl(randomVenue.id);
+  }, [/*history,*/ openVenues, afterSelect]);
+  if (!openVenues) {
+    return <></>;
+  }
+  return (
+    <button onClick={goToRandomVenue} className="btn btn-primary">
+      Pot Luck
+    </button>
+  );
+};
 
 const OnlineStats: React.FC = () => {
-  const history = useHistory();
-  const [onlineUsers, setOnlineUsers] = useState<WithId<User>[]>([]);
-  const [openVenues, setOpenVenues] = useState<WithId<AnyVenue>[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<
+    getOnlineStatsData["onlineUsers"]
+  >([]);
+  const [openVenues, setOpenVenues] = useState<
+    getOnlineStatsData["openVenues"]
+  >([]);
   const [loaded, setLoaded] = useState(false);
+  const [filterVenueText, setFilterVenueText] = useState("");
+  const [filterUsersText, setFilterUsersText] = useState("");
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -24,7 +74,7 @@ const OnlineStats: React.FC = () => {
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
-          const { onlineUsers, openVenues } = result.data as any;
+          const { onlineUsers, openVenues } = result.data as getOnlineStatsData;
           setOnlineUsers(onlineUsers);
           setOpenVenues(openVenues);
           setLoaded(true);
@@ -37,35 +87,159 @@ const OnlineStats: React.FC = () => {
     }, 60 * 1000);
     return () => clearInterval(id);
   }, []);
+  const fuseVenues = useMemo(
+    () =>
+      openVenues
+        ? new Fuse(openVenues, {
+            keys: [
+              "venue.name",
+              "venue.config.landingPageConfig.subtitle",
+              "venue.config.landingPageConfig.description",
+            ],
+          })
+        : undefined,
+    [openVenues]
+  );
+  const fuseUsers = useMemo(
+    () =>
+      new Fuse(onlineUsers, {
+        keys: ["partyName"],
+      }),
+    [onlineUsers]
+  );
+
+  const filteredVenues = useMemo(() => {
+    if (filterVenueText === "") return openVenues;
+    const resultOfSearch: typeof openVenues = [];
+    fuseVenues &&
+      fuseVenues
+        .search(filterVenueText)
+        .forEach((a) => resultOfSearch.push(a.item));
+    return resultOfSearch;
+  }, [fuseVenues, filterVenueText, openVenues]);
+
+  const filteredUsers = useMemo(() => {
+    if (filterUsersText === "") return onlineUsers;
+    const resultOfSearch: typeof onlineUsers = [];
+    fuseUsers &&
+      fuseUsers
+        .search(filterUsersText)
+        .forEach((a) => resultOfSearch.push(a.item));
+    return resultOfSearch;
+  }, [fuseUsers, filterUsersText, onlineUsers]);
 
   const popover = useMemo(
     () =>
       loaded ? (
         <Popover id="popover-onlinestats">
           <Popover.Content>
-            <div className="stats-modal-container">
-              <div className="online-users">
-                <h1 className="title modal-title">People Online</h1>
-                <UserList users={onlineUsers} activity="online" />
+            <div className="stats-outer-container">
+              <div className="stats-modal-container">
+                <div className="open-venues">
+                  {openVenues?.length || 0} venues open now
+                </div>
+                <div className="search-container">
+                  <input
+                    type={"text"}
+                    className="search-bar"
+                    placeholder="Search venues"
+                    onChange={(e) => setFilterVenueText(e.target.value)}
+                    value={filterVenueText}
+                  />
+                  <PotLuckButton
+                    openVenues={openVenues.map((ov) => ov.venue)}
+                    // Force popover to close
+                    afterSelect={() => document.body.click()}
+                  />
+                </div>
+                <div className="venues-container">
+                  {filteredVenues.map(({ venue, currentEvents }, index) => (
+                    <div className="venue-card" key={index}>
+                      <span className="venue-name">{venue.name}</span>
+                      <span className="venue-subtitle">
+                        {venue.config?.landingPageConfig.subtitle}
+                      </span>
+                      <div className="img-container">
+                        <img
+                          className="venue-icon"
+                          src={venue.host.icon}
+                          alt={venue.name}
+                          title={venue.name}
+                        />
+                      </div>
+                      <div className="venue-info-container">
+                        <div className="whats-on-container">
+                          <div className="title-container">
+                            <img src="/sparkle-icon.png" alt="sparkle icon" />
+                            <span className="title">{`What's on now`}</span>
+                          </div>
+                          <div className="description-container">
+                            {currentEvents.length > 0 ? (
+                              <>
+                                <span className="yellow">
+                                  {currentEvents[0].name}
+                                </span>
+                                <span> by </span>
+                                <span className="yellow">
+                                  {currentEvents[0].host}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="yellow">
+                                No events currently
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="centered-flex">
+                          <button
+                            className="btn btn-primary"
+                            // @debt would be nice not to refresh the page
+                            onClick={() =>
+                              (window.location.href = venuePlayaPreviewUrl(
+                                venue.id
+                              ))
+                            }
+                          >
+                            View on Playa
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="open-venues">
-                <h1 className="title modal-title">Venues Open</h1>
-                <span className="bold">{openVenues?.length || 0}</span> venues
-                open
-                {openVenues.map((venue, index) => (
-                  <div
-                    key={index}
-                    onClick={() => history.push(venueInsideUrl(venue.id))}
-                  >
-                    <img
-                      className="venue-icon"
-                      src={venue.host.icon}
-                      alt={venue.name}
-                      title={venue.name}
-                    />
-                    <span className="venue-name">{venue.name}</span>
-                  </div>
-                ))}
+              <div className="users-container">
+                <div className="online-users">
+                  {onlineUsers.length} burners live
+                </div>
+                <div className="search-container">
+                  <input
+                    type={"text"}
+                    className="search-bar"
+                    placeholder="Search people"
+                    onChange={(e) => setFilterUsersText(e.target.value)}
+                    value={filterUsersText}
+                  />
+                </div>
+                <div className="people">
+                  {filteredUsers.map((user) => (
+                    <div
+                      key={user.id}
+                      className="user-row"
+                      onClick={() => setSelectedUserProfile(user)}
+                    >
+                      <div>
+                        <img src={user.pictureUrl} alt="user profile pic" />
+                        <span>{user.partyName}</span>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faCommentDots}
+                        className="chat-icon"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </Popover.Content>
@@ -73,7 +247,15 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [history, loaded, onlineUsers, openVenues]
+    [
+      loaded,
+      filterVenueText,
+      filterUsersText,
+      filteredVenues,
+      openVenues,
+      onlineUsers,
+      filteredUsers,
+    ]
   );
 
   return (
@@ -83,7 +265,7 @@ const OnlineStats: React.FC = () => {
           trigger="click"
           placement="bottom-end"
           overlay={popover}
-          rootClose
+          rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
             {openVenues.length} venues open now / {onlineUsers.length} burners
@@ -91,6 +273,12 @@ const OnlineStats: React.FC = () => {
           </span>
         </OverlayTrigger>
       )}
+      <UserProfileModal
+        zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setSelectedUserProfile(undefined)}
+      />
     </>
   );
 };

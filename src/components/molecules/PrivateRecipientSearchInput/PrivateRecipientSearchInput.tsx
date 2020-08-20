@@ -53,6 +53,7 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
                 .filter((u) =>
                   u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
                 )
+                .filter((u) => u.id !== undefined)
                 .map((u) => (
                   <Dropdown.Item
                     onClick={() => onClickOnUserInSearchInput(u)}

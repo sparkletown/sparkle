@@ -85,6 +85,16 @@ $sand: #937c63;
       }
     }
   }
+  .sparkle-fairies {
+    position: fixed;
+    top: 200px;
+    left: 0px;
+  }
+  .chat-pop-up {
+    position: fixed;
+    right: 0px;
+    top: $navbar-height * 2;
+  }
 }
 
 .playa-venue-text {
@@ -167,4 +177,12 @@ $sand: #937c63;
       0 0 0 1.5em rgba($ripple-color, 0.4), 0 0 0 2.5em rgba($ripple-color, 0.4),
       0 0 0 4em rgba($ripple-color, 0);
   }
+}
+.link-button {
+  display: inline-block;
+  color: white !important;
+  padding: 10px;
+  border: solid 1px white;
+  font-size: 13px;
+  text-decoration: none !important;
 }
