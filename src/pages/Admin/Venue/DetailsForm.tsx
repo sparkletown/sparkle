@@ -316,7 +316,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"subtitle"}
             ref={register}
             className="wide-input-block align-left"
-            placeholder={defaultVenue.config.landingPageConfig.subtitle}
+            placeholder={defaultVenue.config?.landingPageConfig.subtitle}
           />
           {errors.subtitle && (
             <span className="input-error">{errors.subtitle.message}</span>
@@ -331,7 +331,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             name={"description"}
             ref={register}
             className="wide-input-block input-centered align-left"
-            placeholder={defaultVenue.config.landingPageConfig.description}
+            placeholder={defaultVenue.config?.landingPageConfig.description}
           />
           {errors.description && (
             <span className="input-error">{errors.description.message}</span>

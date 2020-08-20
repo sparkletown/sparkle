@@ -2,14 +2,22 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-// import { useHistory } from "react-router-dom";
-import { venueInsideUrl } from "utils/url";
+import { venuePlayaPreviewUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
 
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
+import { EventData } from "types/EventData";
+
+interface getOnlineStatsData {
+  onlineUsers: Array<WithId<User>>;
+  openVenues: Array<{
+    venue: WithId<AnyVenue>;
+    currentEvents: EventData;
+  }>;
+}
 
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * Math.floor(max + 1));
@@ -31,7 +39,7 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
 
     // there is a bug in useConnectCurrentVenue that does not update correctly on url change
     // history.push(venueInsideUrl(randomVenue.id));
-    window.location.href = venueInsideUrl(randomVenue.id);
+    window.location.href = venuePlayaPreviewUrl(randomVenue.id);
   }, [/*history,*/ openVenues, afterSelect]);
   if (!openVenues) {
     return <></>;
@@ -44,9 +52,12 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
 };
 
 const OnlineStats: React.FC = () => {
-  // const history = useHistory();
-  const [onlineUsers, setOnlineUsers] = useState<WithId<User>[]>([]);
-  const [openVenues, setOpenVenues] = useState<WithId<AnyVenue>[]>([]);
+  const [onlineUsers, setOnlineUsers] = useState<
+    getOnlineStatsData["onlineUsers"]
+  >([]);
+  const [openVenues, setOpenVenues] = useState<
+    getOnlineStatsData["openVenues"]
+  >([]);
   const [loaded, setLoaded] = useState(false);
   const [filterText, setFilterText] = useState("");
 
@@ -57,7 +68,7 @@ const OnlineStats: React.FC = () => {
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
-          const { onlineUsers, openVenues } = result.data as any;
+          const { onlineUsers, openVenues } = result.data as getOnlineStatsData;
           setOnlineUsers(onlineUsers);
           setOpenVenues(openVenues);
           setLoaded(true);
@@ -87,7 +98,7 @@ const OnlineStats: React.FC = () => {
 
   const filteredVenues = useMemo(() => {
     if (filterText === "") return openVenues;
-    const resultOfSearch: WithId<AnyVenue>[] = [];
+    const resultOfSearch: typeof openVenues = [];
     fuse && fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
   }, [fuse, filterText, openVenues]);
@@ -99,7 +110,7 @@ const OnlineStats: React.FC = () => {
           <Popover.Content>
             <div className="stats-modal-container">
               <div className="open-venues">
-                {openVenues?.length || 0} venues open now
+                {filteredVenues?.length || 0} venues open now
               </div>
               <div className="search-container">
                 <input
@@ -110,23 +121,18 @@ const OnlineStats: React.FC = () => {
                   value={filterText}
                 />
                 <PotLuckButton
-                  openVenues={openVenues}
+                  openVenues={filteredVenues.map((fv) => fv.venue)}
                   // Force popover to close
                   afterSelect={() => document.body.click()}
                 />
               </div>
               <div className="venues-container">
-                {filteredVenues.map((venue, index) => (
-                  <div
-                    className="venue-card"
-                    key={index}
-                    // there is a bug in useConnectCurrentVenue that does not update correctly on url change
-                    // onClick={() => history.push(venueInsideUrl(venue.id))}
-                    onClick={() =>
-                      (window.location.href = venueInsideUrl(venue.id))
-                    }
-                  >
+                {filteredVenues.map(({ venue, currentEvents }, index) => (
+                  <div className="venue-card" key={index}>
                     <span className="venue-name">{venue.name}</span>
+                    <span className="venue-subtitle">
+                      {venue.config?.landingPageConfig.subtitle}
+                    </span>
                     <div className="img-container">
                       <img
                         className="venue-icon"
@@ -134,6 +140,42 @@ const OnlineStats: React.FC = () => {
                         alt={venue.name}
                         title={venue.name}
                       />
+                    </div>
+                    <div className="venue-info-container">
+                      <div className="whats-on-container">
+                        <div className="title-container">
+                          <img src="/sparkle-icon.png" alt="sparkle icon" />
+                          <span className="title">{`What's on now`}</span>
+                        </div>
+                        <div className="description-container">
+                          {currentEvents.length > 0 ? (
+                            <>
+                              <span className="yellow">
+                                {currentEvents[0].name}
+                              </span>
+                              <span> by </span>
+                              <span className="yellow">
+                                {currentEvents[0].host}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="yellow">No events currently</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="centered-flex">
+                        <button
+                          className="btn btn-primary"
+                          // @debt would be nice not to refresh the page
+                          onClick={() =>
+                            (window.location.href = venuePlayaPreviewUrl(
+                              venue.id
+                            ))
+                          }
+                        >
+                          View on Playa
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -144,7 +186,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [/*history,*/ loaded, filteredVenues, filterText, openVenues]
+    [loaded, filterText, filteredVenues]
   );
 
   return (

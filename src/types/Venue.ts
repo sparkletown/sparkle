@@ -13,7 +13,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
-  config: {
+  config?: {
     theme: {
       primaryColor: string;
       backgroundColor?: string;

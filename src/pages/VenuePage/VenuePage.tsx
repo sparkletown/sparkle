@@ -71,7 +71,7 @@ const VenuePage = () => {
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
-    user && venue && isUserAMember(user.email, venue.config.memberEmails);
+    user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
   useUpdateLocationEffect(user, venueName);

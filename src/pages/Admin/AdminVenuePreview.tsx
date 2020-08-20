@@ -114,7 +114,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               Short description:
             </span>
             <span className="content">
-              {venue.config.landingPageConfig.subtitle}
+              {venue.config?.landingPageConfig.subtitle}
             </span>
           </div>
           <div style={{ padding: "5px" }}>
@@ -122,7 +122,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               Long description:
             </span>
             <span className="content">
-              {venue.config.landingPageConfig.description}
+              {venue.config?.landingPageConfig.description}
             </span>
           </div>
         </div>
@@ -135,8 +135,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               <img
                 className="icon"
                 src={
-                  venue.config.landingPageConfig.bannerImageUrl ??
-                  venue.config.landingPageConfig.coverImageUrl
+                  venue.config?.landingPageConfig.bannerImageUrl ??
+                  venue.config?.landingPageConfig.coverImageUrl
                 }
                 alt="icon"
               />
