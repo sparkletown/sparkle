@@ -84,11 +84,11 @@ const Camp = () => {
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
       </div>
-      {/* <RoomModal
+      <RoomModal
         show={isRoomModalOpen}
         room={selectedRoom}
         onHide={modalHidden}
-      /> */}
+      />
       <div className="chat-pop-up">
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
       </div>
