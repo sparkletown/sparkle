@@ -92,9 +92,8 @@ $sand: #937c63;
   }
   .chat-pop-up {
     position: fixed;
-    height: calc(100% - 50px);
     right: 0px;
-    top: 132px;
+    top: $navbar-height * 2;
   }
 }
 
