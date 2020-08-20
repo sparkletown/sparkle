@@ -9,12 +9,14 @@ import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
 
 import "./OnlineStats.scss";
+import Fuse from "fuse.js";
 
 const OnlineStats: React.FC = () => {
   const history = useHistory();
   const [onlineUsers, setOnlineUsers] = useState<WithId<User>[]>([]);
   const [openVenues, setOpenVenues] = useState<WithId<AnyVenue>[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -37,6 +39,27 @@ const OnlineStats: React.FC = () => {
     return () => clearInterval(id);
   }, []);
 
+  const fuse = useMemo(
+    () =>
+      openVenues
+        ? new Fuse(openVenues, {
+            keys: [
+              "name",
+              "config.landingPageConfig.subtitle",
+              "config.landingPageConfig.description",
+            ],
+          })
+        : undefined,
+    [openVenues]
+  );
+
+  const filteredVenues = useMemo(() => {
+    if (filterText === "") return openVenues;
+    const resultOfSearch: WithId<AnyVenue>[] = [];
+    fuse && fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
+    return resultOfSearch;
+  }, [fuse, filterText, openVenues]);
+
   const popover = useMemo(
     () =>
       loaded ? (
@@ -51,11 +74,13 @@ const OnlineStats: React.FC = () => {
                   type={"text"}
                   className="search-bar"
                   placeholder="Search venues"
+                  onChange={(e) => setFilterText(e.target.value)}
+                  value={filterText}
                 />
                 <button className="btn btn-primary">{`Pot Luck`}</button>
               </div>
               <div className="venues-container">
-                {openVenues.map((venue, index) => (
+                {filteredVenues.map((venue, index) => (
                   <div
                     className="venue-card"
                     key={index}
@@ -79,7 +104,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [history, loaded, openVenues]
+    [history, loaded, filteredVenues, filterText, openVenues]
   );
 
   return (
