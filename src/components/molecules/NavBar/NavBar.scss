@@ -17,10 +17,6 @@
 
   .tickets-icon,
   .private-chat-icon {
-    color: $white;
-    margin-right: 20px;
-    font-size: 25px;
-    margin-top: 5px;
     position: relative;
     cursor: pointer;
   }
@@ -33,8 +29,8 @@
     background: $red;
     color: $white;
     position: absolute;
-    top: -7px;
-    right: -7px;
+    bottom: 0;
+    right: 0;
     padding: 2px;
     border-radius: 50%;
     width: 20px;
