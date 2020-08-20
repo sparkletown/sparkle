@@ -48,7 +48,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
 
   const hasUserBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
-    (user && isUserAMember(user.email, venue.config.memberEmails));
+    (user && isUserAMember(user.email, venue.config?.memberEmails));
 
   const closePaymentModal = () => {
     if (!isPaymentProceeding && !isCardBeingSaved) {

@@ -35,9 +35,9 @@ const ArtPiece = () => {
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}.</p>
             <p className="short-description-sidebar">
-              {venue.config.landingPageConfig.subtitle}
+              {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p>{venue.config.landingPageConfig.description}</p>
+            <p>{venue.config?.landingPageConfig.description}</p>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
