@@ -11,9 +11,7 @@ import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
-import Chatbox from "components/organisms/Chatbox";
 import { Map } from "./components/Map";
-import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -85,19 +83,6 @@ const Camp = () => {
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
-      </div>
-      <div className="row">
-        <div className="col">
-          <RoomList
-            rooms={venue.rooms}
-            attendances={attendances}
-            setSelectedRoom={setSelectedRoom}
-            setIsRoomModalOpen={setIsRoomModalOpen}
-          />
-        </div>
-        <div className="col-5 chat-wrapper">
-          <Chatbox />
-        </div>
       </div>
       <RoomModal
         show={isRoomModalOpen}
