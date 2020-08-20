@@ -26,13 +26,6 @@ import AppRouter from "components/organisms/AppRouter";
 
 import { roomReducer } from "./store/reducers";
 import trackingMiddleware from "./middleware/tracking";
-import {
-  API_KEY,
-  APP_ID,
-  MEASUREMENT_ID,
-  BUCKET_URL,
-  PROJECT_ID,
-} from "./secrets";
 import * as serviceWorker from "./serviceWorker";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -44,24 +37,16 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
-import { venueLandingUrl, venueInsideUrl } from "utils/url";
+import { FIREBASE_CONFIG, DEFAULT_REDIRECT_URL } from "settings";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
-
-const firebaseConfig = {
-  apiKey: API_KEY,
-  appId: APP_ID,
-  measurementId: MEASUREMENT_ID,
-  projectId: PROJECT_ID,
-  storageBucket: BUCKET_URL,
-};
 
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(FIREBASE_CONFIG);
 const analytics = firebase.analytics();
 firebase.auth();
 firebase.firestore();
@@ -105,18 +90,13 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
-const defaultRedirect =
-  firebaseConfig.projectId === "co-reality-map"
-    ? venueLandingUrl("kansassmittys")
-    : venueInsideUrl("playa");
-
 render(
   <Elements stripe={stripePromise}>
     <DndProvider backend={HTML5Backend}>
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthIsLoaded>
-            <AppRouter defaultRedirect={defaultRedirect} />
+            <AppRouter defaultRedirect={DEFAULT_REDIRECT_URL} />
           </AuthIsLoaded>
         </ReactReduxFirebaseProvider>
       </Provider>

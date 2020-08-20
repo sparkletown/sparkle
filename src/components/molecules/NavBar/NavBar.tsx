@@ -12,7 +12,12 @@ import ProfileModal from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { DEFAULT_PROFILE_IMAGE, SPARKLEVERSE_LOGO_URL } from "settings";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  SPARKLEVERSE_LOGO_URL,
+  PLAYA_VENUE_NAME,
+  DEFAULT_REDIRECT_URL,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
 
@@ -85,12 +90,20 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
             </div>
             {user ? (
               <>
-                <div
-                  className="navbar-dropdown-middle"
-                  style={{ width: 500, textAlign: "center" }}
-                >
-                  <OnlineStats />
-                </div>
+                {venue?.name === PLAYA_VENUE_NAME ? (
+                  <div className="navbar-dropdown-middle">
+                    <OnlineStats />
+                  </div>
+                ) : (
+                  <span
+                    onClick={() =>
+                      (window.location.href = DEFAULT_REDIRECT_URL)
+                    }
+                    className="playa-link"
+                  >
+                    Go to playa
+                  </span>
+                )}
                 <div className="navbar-links" style={{ width: 500 }}>
                   {hasUpcomingEvents && (
                     <OverlayTrigger

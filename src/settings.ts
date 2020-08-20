@@ -1,4 +1,12 @@
 import { VenueTemplate } from "types/VenueTemplate";
+import {
+  API_KEY,
+  APP_ID,
+  MEASUREMENT_ID,
+  BUCKET_URL,
+  PROJECT_ID,
+} from "./secrets";
+import { venueLandingUrl, venueInsideUrl } from "utils/url";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -6,6 +14,7 @@ export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+export const PLAYA_VENUE_NAME = "Playa";
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
@@ -96,3 +105,16 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
 ];
+
+export const FIREBASE_CONFIG = {
+  apiKey: API_KEY,
+  appId: APP_ID,
+  measurementId: MEASUREMENT_ID,
+  projectId: PROJECT_ID,
+  storageBucket: BUCKET_URL,
+};
+
+export const DEFAULT_REDIRECT_URL =
+  FIREBASE_CONFIG.projectId === "co-reality-map"
+    ? venueLandingUrl("kansassmittys")
+    : venueInsideUrl("playa");

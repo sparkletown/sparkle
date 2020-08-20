@@ -88,6 +88,16 @@ $sand: #937c63;
       }
     }
 
+    .playa-link {
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      font-size: 1.3em;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
     .navbar-dropdown-middle {
       padding: 0 30px;
       position: relative;
