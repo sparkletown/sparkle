@@ -81,15 +81,14 @@ const OnlineStats: React.FC = () => {
     }, 60 * 1000);
     return () => clearInterval(id);
   }, []);
-
   const fuse = useMemo(
     () =>
       openVenues
         ? new Fuse(openVenues, {
             keys: [
-              "name",
-              "config.landingPageConfig.subtitle",
-              "config.landingPageConfig.description",
+              "venue.name",
+              "venue.config.landingPageConfig.subtitle",
+              "venue.config.landingPageConfig.description",
             ],
           })
         : undefined,
