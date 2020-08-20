@@ -79,7 +79,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               </Link>
               <div className="button-container create-button-container">
                 <Link to="/admin" className="create-button">
-                  Create
+                  Create/Edit
                 </Link>
               </div>
             </div>
