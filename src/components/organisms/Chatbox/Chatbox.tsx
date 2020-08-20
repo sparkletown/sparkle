@@ -219,6 +219,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                               ?.toLowerCase()
                               .includes(searchValue.toLowerCase())
                           )
+                          .filter((u) => u.id !== undefined)
                           .map((u) => (
                             <Dropdown.Item
                               onClick={() => setPrivateRecipient(u)}

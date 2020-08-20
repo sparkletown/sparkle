@@ -111,7 +111,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       overlay={chatPopover}
                       rootClose={true}
                     >
-                      <span>
+                      <span className="private-chat-icon">
                         {!!numberOfUnreadMessages &&
                           numberOfUnreadMessages > 0 && (
                             <div className="notification-card">
