@@ -283,6 +283,12 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                 {deleteText}
               </button>
             )}
+            {typeof roomIndex !== "number" && (
+              <div>
+                If you are looking to edit one of your rooms, please select the
+                room in the left hand menu
+              </div>
+            )}
           </>
         )}
       </div>
