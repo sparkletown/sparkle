@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
@@ -11,8 +11,40 @@ import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 
+const getRandomInt = (max: number) => {
+  return Math.floor(Math.random() * Math.floor(max + 1));
+};
+
+interface PoLuckButtonProps {
+  openVenues?: Array<WithId<AnyVenue>>;
+  afterSelect: () => void;
+}
+const PotLuckButton: React.FC<PoLuckButtonProps> = ({
+  openVenues,
+  afterSelect,
+}) => {
+  // const history = useHistory();
+  const goToRandomVenue = useCallback(() => {
+    if (!openVenues) return;
+    const randomVenue = openVenues[getRandomInt(openVenues?.length - 1)];
+    afterSelect();
+
+    // there is a bug in useConnectCurrentVenue that does not update correctly on url change
+    // history.push(venueInsideUrl(randomVenue.id));
+    window.location.href = venueInsideUrl(randomVenue.id);
+  }, [/*history,*/ openVenues, afterSelect]);
+  if (!openVenues) {
+    return <></>;
+  }
+  return (
+    <button onClick={goToRandomVenue} className="btn btn-primary">
+      Pot Luck
+    </button>
+  );
+};
+
 const OnlineStats: React.FC = () => {
-  const history = useHistory();
+  // const history = useHistory();
   const [onlineUsers, setOnlineUsers] = useState<WithId<User>[]>([]);
   const [openVenues, setOpenVenues] = useState<WithId<AnyVenue>[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -77,14 +109,22 @@ const OnlineStats: React.FC = () => {
                   onChange={(e) => setFilterText(e.target.value)}
                   value={filterText}
                 />
-                <button className="btn btn-primary">{`Pot Luck`}</button>
+                <PotLuckButton
+                  openVenues={openVenues}
+                  // Force popover to close
+                  afterSelect={() => document.body.click()}
+                />
               </div>
               <div className="venues-container">
                 {filteredVenues.map((venue, index) => (
                   <div
                     className="venue-card"
                     key={index}
-                    onClick={() => history.push(venueInsideUrl(venue.id))}
+                    // there is a bug in useConnectCurrentVenue that does not update correctly on url change
+                    // onClick={() => history.push(venueInsideUrl(venue.id))}
+                    onClick={() =>
+                      (window.location.href = venueInsideUrl(venue.id))
+                    }
                   >
                     <span className="venue-name">{venue.name}</span>
                     <div className="img-container">
@@ -104,7 +144,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [history, loaded, filteredVenues, filterText, openVenues]
+    [/*history,*/ loaded, filteredVenues, filterText, openVenues]
   );
 
   return (
