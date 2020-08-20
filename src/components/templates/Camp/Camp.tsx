@@ -16,6 +16,8 @@ import { Map } from "./components/Map";
 import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
+import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -102,6 +104,11 @@ const Camp = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
+      <div style={{ position: "fixed", top: 330, left: 27 }}>
+        <SparkleFairiesPopUp>
+          <InfoCard />
+        </SparkleFairiesPopUp>
+      </div>
     </div>
   );
 };
