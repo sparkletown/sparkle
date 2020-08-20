@@ -90,6 +90,12 @@ $sand: #937c63;
     top: 200px;
     left: 27px;
   }
+  .chat-pop-up {
+    position: fixed;
+    height: calc(100% - 50px);
+    right: 0px;
+    top: 132px;
+  }
 }
 
 .playa-venue-text {

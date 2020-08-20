@@ -5,7 +5,6 @@
   flex-direction: column;
   transition: all 0.2s linear;
   flex-basis: 0;
-  margin-top: 40px;
   background: $dark;
   height: 100px;
   padding: 10px;
@@ -13,8 +12,8 @@
   cursor: pointer;
 
   &.expanded {
-    height: calc(100% - 60px);
-    width: 500px;
+    height: calc(100% - 82px);
+    width: 280px;
     cursor: default;
   }
 

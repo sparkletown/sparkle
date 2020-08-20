@@ -30,6 +30,7 @@ import "./Preplaya.scss";
 import { peopleAttending } from "utils/venue";
 import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
 import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import ChatDrawer from "components/organisms/ChatDrawer";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -248,6 +249,9 @@ const Preplaya = () => {
           <div className="button" onClick={() => setZoom(zoom - 0.1)}>
             <FontAwesomeIcon icon={faMinus} className="icon" />
           </div>
+        </div>
+        <div className="chat-pop-up">
+          <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
         </div>
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp>

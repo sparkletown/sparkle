@@ -18,6 +18,7 @@ import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
+import ChatDrawer from "components/organisms/ChatDrawer";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -104,6 +105,9 @@ const Camp = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
+      <div className="chat-pop-up">
+        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+      </div>
       <div className="sparkle-fairies">
         <SparkleFairiesPopUp>
           <InfoCard />
