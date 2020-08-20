@@ -11,6 +11,7 @@ import Fuse from "fuse.js";
 import { EventData } from "types/EventData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import UserProfileModal from "components/organisms/UserProfileModal";
 
 interface getOnlineStatsData {
   onlineUsers: Array<WithId<User>>;
@@ -62,6 +63,9 @@ const OnlineStats: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -220,7 +224,11 @@ const OnlineStats: React.FC = () => {
                 </div>
                 <div className="people">
                   {filteredUsers.map((user) => (
-                    <div key={user.id} className="user-row">
+                    <div
+                      key={user.id}
+                      className="user-row"
+                      onClick={() => setSelectedUserProfile(user)}
+                    >
                       <div>
                         <img src={user.pictureUrl} alt="user profile pic" />
                         <span>{user.partyName}</span>
@@ -257,7 +265,7 @@ const OnlineStats: React.FC = () => {
           trigger="click"
           placement="bottom-end"
           overlay={popover}
-          rootClose
+          rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
             {openVenues.length} venues open now / {onlineUsers.length} burners
@@ -265,6 +273,12 @@ const OnlineStats: React.FC = () => {
           </span>
         </OverlayTrigger>
       )}
+      <UserProfileModal
+        zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setSelectedUserProfile(undefined)}
+      />
     </>
   );
 };

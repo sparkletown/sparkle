@@ -15,11 +15,13 @@ type fullUserProfile =
 type PropTypes = {
   show: boolean;
   onHide: () => void;
+  zIndex?: number;
 } & fullUserProfile;
 
 const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   show,
   onHide,
+  zIndex,
   ...rest
 }) => {
   const { venue } = useSelector((state) => ({
@@ -49,7 +51,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   // REVISIT: remove the hack to cast to any below
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} style={zIndex && { zIndex }}>
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
