@@ -81,7 +81,6 @@ const OnlineStats: React.FC = () => {
     }, 60 * 1000);
     return () => clearInterval(id);
   }, []);
-  console.log(openVenues);
   const fuse = useMemo(
     () =>
       openVenues
