@@ -6,10 +6,11 @@ import { venuePlayaPreviewUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
-
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 import { EventData } from "types/EventData";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 
 interface getOnlineStatsData {
   onlineUsers: Array<WithId<User>>;
@@ -107,77 +108,109 @@ const OnlineStats: React.FC = () => {
       loaded ? (
         <Popover id="popover-onlinestats">
           <Popover.Content>
-            <div className="stats-modal-container">
-              <div className="open-venues">
-                {filteredVenues?.length || 0} venues open now
+            <div className="stats-outer-container">
+              <div className="stats-modal-container">
+                <div className="open-venues">
+                  {filteredVenues?.length || 0} venues open now
+                </div>
+                <div className="search-container">
+                  <input
+                    type={"text"}
+                    className="search-bar"
+                    placeholder="Search venues"
+                    onChange={(e) => setFilterText(e.target.value)}
+                    value={filterText}
+                  />
+                  <PotLuckButton
+                    openVenues={openVenues.map((ov) => ov.venue)}
+                    // Force popover to close
+                    afterSelect={() => document.body.click()}
+                  />
+                </div>
+                <div className="venues-container">
+                  {filteredVenues.map(({ venue, currentEvents }, index) => (
+                    <div className="venue-card" key={index}>
+                      <span className="venue-name">{venue.name}</span>
+                      <span className="venue-subtitle">
+                        {venue.config?.landingPageConfig.subtitle}
+                      </span>
+                      <div className="img-container">
+                        <img
+                          className="venue-icon"
+                          src={venue.host.icon}
+                          alt={venue.name}
+                          title={venue.name}
+                        />
+                      </div>
+                      <div className="venue-info-container">
+                        <div className="whats-on-container">
+                          <div className="title-container">
+                            <img src="/sparkle-icon.png" alt="sparkle icon" />
+                            <span className="title">{`What's on now`}</span>
+                          </div>
+                          <div className="description-container">
+                            {currentEvents.length > 0 ? (
+                              <>
+                                <span className="yellow">
+                                  {currentEvents[0].name}
+                                </span>
+                                <span> by </span>
+                                <span className="yellow">
+                                  {currentEvents[0].host}
+                                </span>
+                              </>
+                            ) : (
+                              <span className="yellow">
+                                No events currently
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="centered-flex">
+                          <button
+                            className="btn btn-primary"
+                            // @debt would be nice not to refresh the page
+                            onClick={() =>
+                              (window.location.href = venuePlayaPreviewUrl(
+                                venue.id
+                              ))
+                            }
+                          >
+                            View on Playa
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="search-container">
-                <input
-                  type={"text"}
-                  className="search-bar"
-                  placeholder="Search venues"
-                  onChange={(e) => setFilterText(e.target.value)}
-                  value={filterText}
-                />
-                <PotLuckButton
-                  openVenues={openVenues.map((ov) => ov.venue)}
-                  // Force popover to close
-                  afterSelect={() => document.body.click()}
-                />
-              </div>
-              <div className="venues-container">
-                {filteredVenues.map(({ venue, currentEvents }, index) => (
-                  <div className="venue-card" key={index}>
-                    <span className="venue-name">{venue.name}</span>
-                    <span className="venue-subtitle">
-                      {venue.config?.landingPageConfig.subtitle}
-                    </span>
-                    <div className="img-container">
-                      <img
-                        className="venue-icon"
-                        src={venue.host.icon}
-                        alt={venue.name}
-                        title={venue.name}
+              <div className="users-container">
+                <div className="online-users">
+                  {onlineUsers.length} burners live
+                </div>
+                <div className="search-container">
+                  <input
+                    type={"text"}
+                    className="search-bar"
+                    placeholder="Search people"
+                    onChange={(e) => setFilterText(e.target.value)}
+                    value={filterText}
+                  />
+                </div>
+                <div className="people">
+                  {onlineUsers.map((user) => (
+                    <div key={user.id} className="user-row">
+                      <div>
+                        <img src={user.pictureUrl} alt="user profile pic" />
+                        <span>{user.partyName}</span>
+                      </div>
+                      <FontAwesomeIcon
+                        icon={faCommentDots}
+                        className="chat-icon"
                       />
                     </div>
-                    <div className="venue-info-container">
-                      <div className="whats-on-container">
-                        <div className="title-container">
-                          <img src="/sparkle-icon.png" alt="sparkle icon" />
-                          <span className="title">{`What's on now`}</span>
-                        </div>
-                        <div className="description-container">
-                          {currentEvents.length > 0 ? (
-                            <>
-                              <span className="yellow">
-                                {currentEvents[0].name}
-                              </span>
-                              <span> by </span>
-                              <span className="yellow">
-                                {currentEvents[0].host}
-                              </span>
-                            </>
-                          ) : (
-                            <span className="yellow">No events currently</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="centered-flex">
-                        <button
-                          className="btn btn-primary"
-                          // @debt would be nice not to refresh the page
-                          onClick={() =>
-                            (window.location.href = venuePlayaPreviewUrl(
-                              venue.id
-                            ))
-                          }
-                        >
-                          View on Playa
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </Popover.Content>
@@ -185,7 +218,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [loaded, filterText, filteredVenues, openVenues]
+    [loaded, filterText, filteredVenues, openVenues, onlineUsers]
   );
 
   return (
