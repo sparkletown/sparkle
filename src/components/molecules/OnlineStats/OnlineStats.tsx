@@ -60,7 +60,8 @@ const OnlineStats: React.FC = () => {
     getOnlineStatsData["openVenues"]
   >([]);
   const [loaded, setLoaded] = useState(false);
-  const [filterText, setFilterText] = useState("");
+  const [filterVenueText, setFilterVenueText] = useState("");
+  const [filterUsersText, setFilterUsersText] = useState("");
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -82,7 +83,7 @@ const OnlineStats: React.FC = () => {
     }, 60 * 1000);
     return () => clearInterval(id);
   }, []);
-  const fuse = useMemo(
+  const fuseVenues = useMemo(
     () =>
       openVenues
         ? new Fuse(openVenues, {
@@ -95,13 +96,33 @@ const OnlineStats: React.FC = () => {
         : undefined,
     [openVenues]
   );
+  const fuseUsers = useMemo(
+    () =>
+      new Fuse(onlineUsers, {
+        keys: ["partyName"],
+      }),
+    [onlineUsers]
+  );
 
   const filteredVenues = useMemo(() => {
-    if (filterText === "") return openVenues;
+    if (filterVenueText === "") return openVenues;
     const resultOfSearch: typeof openVenues = [];
-    fuse && fuse.search(filterText).forEach((a) => resultOfSearch.push(a.item));
+    fuseVenues &&
+      fuseVenues
+        .search(filterVenueText)
+        .forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
-  }, [fuse, filterText, openVenues]);
+  }, [fuseVenues, filterVenueText, openVenues]);
+
+  const filteredUsers = useMemo(() => {
+    if (filterUsersText === "") return onlineUsers;
+    const resultOfSearch: typeof onlineUsers = [];
+    fuseUsers &&
+      fuseUsers
+        .search(filterUsersText)
+        .forEach((a) => resultOfSearch.push(a.item));
+    return resultOfSearch;
+  }, [fuseUsers, filterUsersText, onlineUsers]);
 
   const popover = useMemo(
     () =>
@@ -111,15 +132,15 @@ const OnlineStats: React.FC = () => {
             <div className="stats-outer-container">
               <div className="stats-modal-container">
                 <div className="open-venues">
-                  {filteredVenues?.length || 0} venues open now
+                  {openVenues?.length || 0} venues open now
                 </div>
                 <div className="search-container">
                   <input
                     type={"text"}
                     className="search-bar"
                     placeholder="Search venues"
-                    onChange={(e) => setFilterText(e.target.value)}
-                    value={filterText}
+                    onChange={(e) => setFilterVenueText(e.target.value)}
+                    value={filterVenueText}
                   />
                   <PotLuckButton
                     openVenues={openVenues.map((ov) => ov.venue)}
@@ -193,12 +214,12 @@ const OnlineStats: React.FC = () => {
                     type={"text"}
                     className="search-bar"
                     placeholder="Search people"
-                    onChange={(e) => setFilterText(e.target.value)}
-                    value={filterText}
+                    onChange={(e) => setFilterUsersText(e.target.value)}
+                    value={filterUsersText}
                   />
                 </div>
                 <div className="people">
-                  {onlineUsers.map((user) => (
+                  {filteredUsers.map((user) => (
                     <div key={user.id} className="user-row">
                       <div>
                         <img src={user.pictureUrl} alt="user profile pic" />
@@ -218,7 +239,15 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [loaded, filterText, filteredVenues, openVenues, onlineUsers]
+    [
+      loaded,
+      filterVenueText,
+      filterUsersText,
+      filteredVenues,
+      openVenues,
+      onlineUsers,
+      filteredUsers,
+    ]
   );
 
   return (
