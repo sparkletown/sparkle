@@ -120,7 +120,7 @@ const OnlineStats: React.FC = () => {
                   value={filterText}
                 />
                 <PotLuckButton
-                  openVenues={filteredVenues.map((fv) => fv.venue)}
+                  openVenues={openVenues.map((ov) => ov.venue)}
                   // Force popover to close
                   afterSelect={() => document.body.click()}
                 />
@@ -185,7 +185,7 @@ const OnlineStats: React.FC = () => {
       ) : (
         <></>
       ),
-    [loaded, filterText, filteredVenues]
+    [loaded, filterText, filteredVenues, openVenues]
   );
 
   return (
