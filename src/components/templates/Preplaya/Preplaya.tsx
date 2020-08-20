@@ -28,6 +28,8 @@ import { throttle } from "lodash";
 
 import "./Preplaya.scss";
 import { peopleAttending } from "utils/venue";
+import InfoCard from "components/organisms/SparkleFairiesPopUp/InfoCard";
+import SparkleFairiesPopUp from "components/organisms/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -246,6 +248,11 @@ const Preplaya = () => {
           <div className="button" onClick={() => setZoom(zoom - 0.1)}>
             <FontAwesomeIcon icon={faMinus} className="icon" />
           </div>
+        </div>
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp>
+            <InfoCard />
+          </SparkleFairiesPopUp>
         </div>
       </div>
       <Modal show={showModal} onHide={hideVenue}>
