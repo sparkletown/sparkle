@@ -77,7 +77,11 @@ const OnlineStats: React.FC = () => {
                   className="search-bar"
                   placeholder="Search venues"
                 />
-                <PotLuckButton />
+                <PotLuckButton
+                  openVenues={openVenues}
+                  // Force popover to close
+                  afterSelect={() => document.body.click()}
+                />
               </div>
               <div className="venues-container">
                 {openVenues.map((venue, index) => (
