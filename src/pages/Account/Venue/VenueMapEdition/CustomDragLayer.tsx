@@ -46,10 +46,11 @@ function getItemStyles(
 export interface CustomDragLayerProps {
   snapToGrid: boolean;
   iconSize: Dimensions;
+  rounded: boolean;
 }
 
 export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
-  const { iconSize } = props;
+  const { iconSize, rounded } = props;
   const {
     itemType,
     isDragging,
@@ -72,6 +73,9 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
             url={item.url}
             imageStyle={{
               ...iconSize,
+              borderRadius: rounded ? "50%" : "none",
+            }}
+            containerStyle={{
               borderRadius: "50%",
               animation: "ripple 4s linear infinite",
             }}

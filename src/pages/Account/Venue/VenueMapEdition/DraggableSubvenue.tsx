@@ -27,6 +27,7 @@ export type PropsType = SubVenueIconMap[string] & {
   imageStyle: CSSProperties;
   onChangeSize?: (newSize: Dimensions) => void;
   isResizable?: boolean;
+  rounded: boolean;
 };
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
@@ -39,6 +40,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     height,
     onChangeSize,
     isResizable,
+    rounded,
   } = props;
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
@@ -91,7 +93,12 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
               right: 0,
             }}
           />
-          <div style={styles.resizeableImageContainer}>
+          <div
+            style={{
+              ...styles.resizeableImageContainer,
+              borderRadius: rounded ? "50%" : "none",
+            }}
+          >
             <img src={url} alt="subvenue-icon" style={styles.resizeableImage} />
           </div>
         </div>
@@ -100,9 +107,19 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
   }
 
   return (
-    <div style={{ ...getStyles(left, top, isDragging), width, height }}>
+    <div
+      style={{
+        ...getStyles(left, top, isDragging),
+        width,
+        height,
+      }}
+    >
       <div ref={drag} style={styles.imageContainer}>
-        <img src={url} alt="subvenue-icon" style={styles.image} />
+        <img
+          src={url}
+          alt="subvenue-icon"
+          style={{ ...styles.image, borderRadius: rounded ? "50%" : "none" }}
+        />
       </div>
     </div>
   );
@@ -123,7 +140,6 @@ const styles: Record<string, CSSProperties> = {
   },
   resizeableImageContainer: {
     overflow: "hidden",
-    borderRadius: "50%",
     width: "100%",
     flex: 1,
   },
@@ -139,6 +155,5 @@ const styles: Record<string, CSSProperties> = {
   image: {
     width: "100%",
     flex: 1,
-    borderRadius: "50%",
   },
 };
