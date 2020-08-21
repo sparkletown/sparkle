@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
@@ -34,12 +33,11 @@ const Camp = () => {
 
   const campLocation = `${venue.name}`;
 
-  const location = useMemo(
-    () =>
-      isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
-    [isRoomModalOpen, selectedRoom, campLocation]
-  );
-  useUpdateLocationEffect(user, location);
+  // const location = useMemo(
+  //   () =>
+  //     isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
+  //   [isRoomModalOpen, selectedRoom, campLocation]
+  // );
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),

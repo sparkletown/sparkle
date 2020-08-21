@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { UserInfo } from "firebase";
+import firebase, { UserInfo } from "firebase";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -31,6 +31,24 @@ const useLocationUpdateEffect = (
       5 * 60 * 1000
     );
 
+    return () => clearInterval(intervalId);
+  }, [user, roomName]);
+
+  useEffect(() => {
+    if (!user || !roomName) return;
+
+    const firestore = firebase.firestore();
+    const doc = `users/${user.uid}/visits/${roomName}`;
+    const increment = firebase.firestore.FieldValue.increment(1);
+
+    const intervalId = setInterval(() => {
+      return firestore
+        .doc(doc)
+        .update({ timeSpent: increment })
+        .catch(() => {
+          firestore.doc(doc).set({ timeSpent: 1 });
+        });
+    }, 5 * 1000);
     return () => clearInterval(intervalId);
   }, [user, roomName]);
 };
