@@ -31,6 +31,7 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
+const ARROW_MOVE_INCREMENT_PX = 3;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -118,6 +119,28 @@ const Preplaya = () => {
       event.preventDefault();
       setZoom((z) => z * DOUBLE_CLICK_ZOOM_INCREMENT);
     };
+    const keyboardEventListener = throttle((event: KeyboardEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      switch (event.key) {
+        case "ArrowLeft":
+          // Left pressed
+          setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoom);
+          break;
+        case "ArrowRight":
+          // Right pressed
+          setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoom);
+          break;
+        case "ArrowUp":
+          // Up pressed
+          setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoom);
+          break;
+        case "ArrowDown":
+          // Down pressed
+          setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoom);
+          break;
+      }
+    }, 1);
 
     if (mapRef.current) {
       mapRef.current.addEventListener("mousedown", dragStartListener);
@@ -127,6 +150,7 @@ const Preplaya = () => {
       window.addEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
       mapRef.current.addEventListener("dblclick", doubleClickListener);
+      window.addEventListener("keydown", keyboardEventListener);
     }
     const mapRefCurrent = mapRef.current;
 
@@ -141,6 +165,7 @@ const Preplaya = () => {
         window.removeEventListener("mouseup", dragEndListener);
         window.removeEventListener("touchend", dragEndListener);
         mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
+        window.removeEventListener("keydown", keyboardEventListener);
       }
     };
   }, [zoom]);
