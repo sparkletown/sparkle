@@ -260,8 +260,11 @@ const Preplaya = () => {
             }}
           >
             <div className="demo-message">
-              This is a demo of how camps and art will look on the final,
-              fully-interactive playa.
+              `PLAYA UNDER CONSTRUCTION. It’s build week: this is a preview of
+              the Playa as we build it together. Explorable Playa on the way.
+              <br />
+              Locations subject to alteration by placement team as it all comes
+              together.`
             </div>
             <img
               className="playa-background"
