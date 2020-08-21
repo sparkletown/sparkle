@@ -36,9 +36,9 @@ const Camp: React.FC = () => {
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
-        return acc;
-      }, {})
+      acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+      return acc;
+    }, {})
     : {};
 
   const modalHidden = useCallback(() => {
