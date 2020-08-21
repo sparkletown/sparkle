@@ -26,22 +26,19 @@ export const Map: React.FC<PropsType> = ({
   //   },
   //   [setSelectedRoom, setIsRoomModalOpen]
   // );
-  // const [index, setIndex] = useState(-1)
+  const [roomClicked, setRoomClicked] = useState("");
   const [clicked, setClicked] = useState(false);
 
   if (!venue) {
     return <>Loading map...</>;
   }
 
-  const rooms = venue.rooms;
-
-  // if (index !== -1) {
-  //   console.log(rooms)
-  //   console.log(index)
-  //   const chosenRoom = rooms.splice(0, 1)
-  //   console.log(chosenRoom)
-  //   rooms = [...rooms, chosenRoom[0]]
-  // }
+  const rooms: CampRoomData[] = JSON.parse(JSON.stringify(venue.rooms));
+  if (roomClicked !== "") {
+    const idx = rooms.findIndex((room) => room.title === roomClicked);
+    const chosenRoom = rooms.splice(idx, 1);
+    rooms.push(chosenRoom[0]);
+  }
 
   return (
     <>
@@ -55,9 +52,10 @@ export const Map: React.FC<PropsType> = ({
               width: room.width_percent + "%",
               height: room.height_percent + "%",
             }}
-            key={idx}
+            key={room.title}
             onClick={() => {
               setClicked((prev) => !prev);
+              setRoomClicked(room.title);
             }}
           >
             <div className={`playa-venue ${clicked ? "clicked" : ""}`}>
@@ -67,7 +65,9 @@ export const Map: React.FC<PropsType> = ({
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{room.title}</div>
-                  <div className="playa-venue-people">22</div>
+                  <div className="playa-venue-people">
+                    {attendances[room.title]}
+                  </div>
                 </div>
                 <div className="playa-venue-secondinfo">
                   <div className="playa-venue-desc">
@@ -88,8 +88,6 @@ export const Map: React.FC<PropsType> = ({
                     >
                       Join the room
                     </a>
-
-                    {/* <a href="#" className="btn btn-block btn-small btn-primary">Join the Room</a> */}
                   </div>
                 </div>
               </div>
