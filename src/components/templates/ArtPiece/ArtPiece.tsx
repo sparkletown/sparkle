@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ArtPiece.scss";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
@@ -27,10 +27,16 @@ const ArtPiece = () => {
     venue.iframeUrl ?? venue.embedIframeUrl
   );
 
+  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+
   return (
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
+        <InformationLeftColumn
+          venueLogoPath={venue ? venue.host.icon : ""}
+          isLeftColumnExpanded={isLeftColumnExpanded}
+          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
+        >
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}.</p>
             <p className="short-description-sidebar">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -16,10 +16,16 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     venue: state.firestore.data.currentVenue,
   }));
 
+  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+
   return (
     <WithNavigationBar>
       <div className="full-page-container jazz-bar-container">
-        <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
+        <InformationLeftColumn
+          venueLogoPath={venue ? venue.host.icon : ""}
+          isLeftColumnExpanded={isLeftColumnExpanded}
+          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
+        >
           <InformationCard title="About the venue">
             <p>
               Kansas Smitty’s.

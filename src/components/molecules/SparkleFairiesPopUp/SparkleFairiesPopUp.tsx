@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
 
 const SparkleFairiesPopUp = () => {
+  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+
   return (
-    <InformationLeftColumn venueLogoPath={"ambulance"}>
+    <InformationLeftColumn
+      venueLogoPath={"ambulance"}
+      isLeftColumnExpanded={isLeftColumnExpanded}
+      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
+    >
       <InformationCard title="Call the Sparkle Fairies">
         <p className="title-sidebar">{`It's ok to need help!`}</p>
         <p className="short-description-sidebar">
@@ -15,7 +21,8 @@ const SparkleFairiesPopUp = () => {
           href="https://www.theguardian.com"
           rel="noopener noreferrer"
           target="_blank"
-          className="link-button"
+          className="btn btn-primary join-button"
+          style={{ fontSize: 16 }}
         >
           Go to private zoom
         </a>

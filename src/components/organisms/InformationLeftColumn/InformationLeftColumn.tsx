@@ -1,26 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import "./InformationLeftColumn.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAmbulance,
   faAngleDoubleRight,
+  faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
   venueLogoPath: string;
   children: React.ReactNode;
+  isLeftColumnExpanded: boolean;
+  setIsLeftColumnExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
   venueLogoPath,
   children,
+  isLeftColumnExpanded,
+  setIsLeftColumnExpanded,
 }) => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-
   return (
     <div className="information-left-column-container">
       <div
-        className={`left-column ${isLeftColumnExpanded ? "expanded" : ""}`}
+        className={`left-column ${
+          !isLeftColumnExpanded
+            ? ""
+            : venueLogoPath === "heart"
+            ? "expanded-donation"
+            : "expanded"
+        }`}
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
         id="expand-venue-information"
       >
@@ -37,6 +46,14 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             size="2x"
             className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
           />
+        ) : venueLogoPath === "heart" && isLeftColumnExpanded ? (
+          <img
+            src="/imageDonate1.png"
+            alt="experience-logo"
+            className={`expanded`}
+          />
+        ) : venueLogoPath === "heart" && !isLeftColumnExpanded ? (
+          <FontAwesomeIcon icon={faHeart} size="2x" className={`band-logo`} />
         ) : (
           <img
             src={venueLogoPath}
