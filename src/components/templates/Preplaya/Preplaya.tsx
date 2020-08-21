@@ -30,6 +30,7 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const ZOOM_INCREMENT = 1.2;
+const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -113,6 +114,11 @@ const Preplaya = () => {
       dragging = false;
     };
 
+    const doubleClickListener = (event: MouseEvent | TouchEvent) => {
+      event.preventDefault();
+      setZoom((z) => z * DOUBLE_CLICK_ZOOM_INCREMENT);
+    };
+
     if (mapRef.current) {
       mapRef.current.addEventListener("mousedown", dragStartListener);
       mapRef.current.addEventListener("touchstart", dragStartListener);
@@ -120,6 +126,7 @@ const Preplaya = () => {
       window.addEventListener("touchmove", moveListener);
       window.addEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
+      mapRef.current.addEventListener("dblclick", doubleClickListener);
     }
     const mapRefCurrent = mapRef.current;
 
@@ -132,7 +139,8 @@ const Preplaya = () => {
         window.removeEventListener("mousemove", moveListener);
         window.removeEventListener("touchmove", moveListener);
         window.removeEventListener("mouseup", dragEndListener);
-        window.addEventListener("touchend", dragEndListener);
+        window.removeEventListener("touchend", dragEndListener);
+        mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
       }
     };
   }, [zoom]);
