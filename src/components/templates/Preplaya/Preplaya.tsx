@@ -31,7 +31,9 @@ const Preplaya = () => {
   );
   const [zoom, setZoom] = useState(1.0);
   const [translateX, setTranslateX] = useState(0);
+  const translateXRef = useRef(translateX);
   const [translateY, setTranslateY] = useState(0);
+  const translateYRef = useRef(translateY);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const { user } = useUser();
@@ -44,8 +46,6 @@ const Preplaya = () => {
     };
 
     let dragging = false;
-    const translateX = 0;
-    const translateY = 0;
     let dragStartX = 0;
     let dragStartY = 0;
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
@@ -63,17 +63,12 @@ const Preplaya = () => {
       }
     };
     const pan = throttle((event: MouseEvent | TouchEvent) => {
-      if (event instanceof TouchEvent) {
-        setTranslateX(
-          translateX + (event.touches[0].clientX - dragStartX) / zoom
-        );
-        setTranslateY(
-          translateY + (event.touches[0].clientY - dragStartY) / zoom
-        );
-      } else {
-        setTranslateX(translateX + (event.clientX - dragStartX) / zoom);
-        setTranslateY(translateY + (event.clientY - dragStartY) / zoom);
-      }
+      const clientX =
+        event instanceof TouchEvent ? event.touches[0].clientX : event.clientX;
+      const clientY =
+        event instanceof TouchEvent ? event.touches[0].clientY : event.clientY;
+      setTranslateX(translateXRef.current + clientX - dragStartX);
+      setTranslateY(translateYRef.current + clientY - dragStartY);
     }, 25);
     const moveListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
@@ -181,7 +176,12 @@ const Preplaya = () => {
               {selectedVenue?.id === venue.id && <div className="selected" />}
             </div>
           ))}
-          <AvatarLayer />
+          <AvatarLayer
+            zoom={zoom}
+            scale={scale}
+            translateX={translateX}
+            translateY={translateY}
+          />
         </div>
         <div className="button-bar">
           <div className="button" onClick={() => setZoom(zoom + 0.1)}>
