@@ -43,6 +43,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         return;
       }
       event.preventDefault();
+      event.stopPropagation();
       dragging = true;
       if (event instanceof TouchEvent) {
         dragStartX = event.touches[0].clientX;
@@ -79,6 +80,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
     const moveListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && ref.current) {
         event.preventDefault();
+        event.stopPropagation();
         move(event);
       }
     };

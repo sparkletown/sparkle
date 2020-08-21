@@ -43,7 +43,7 @@ const Preplaya = () => {
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
-  const [zoom, setZoom] = useState(1.0);
+  const [zoom, setZoom] = useState(5);
   const [translateX, setTranslateX] = useState(0);
   const translateXRef = useRef(translateX);
   const [translateY, setTranslateY] = useState(0);
