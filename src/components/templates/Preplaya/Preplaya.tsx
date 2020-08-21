@@ -217,104 +217,121 @@ const Preplaya = () => {
     [partygoers, hoveredVenue]
   );
 
-  return (
-    <>
-      <div className="preplaya-container">
-        <div
-          className="map-container"
-          ref={mapRef}
-          style={{
-            transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-          }}
-        >
-          <div className="demo-message">
-            This is a demo of how camps and art will look on the final,
-            fully-interactive playa.
-          </div>
-          <img
-            className="playa-background"
-            src={PLAYA_IMAGE}
-            alt="Playa Background Map"
-          />
-          {venues?.filter(isPlaced).map((venue, idx) => (
-            <div
-              className="venue"
-              style={{
-                top: (venue.placement?.y || 0) * scale,
-                left: (venue.placement?.x || 0) * scale,
-                position: "absolute",
-              }}
-              onClick={() => showVenue(venue)}
-              key={idx}
-              ref={hoveredVenue === venue ? hoveredRed : undefined}
-              onMouseOver={() => {
-                setHoveredVenue(venue);
-                setShowVenueTooltip(true);
-              }}
-              onMouseLeave={() => setShowVenueTooltip(false)}
-            >
-              <img
-                className="venue-icon"
-                src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                alt={`${venue.name} Icon`}
-              />
-              {selectedVenue?.id === venue.id && <div className="selected" />}
+  return useMemo(
+    () => (
+      <>
+        <div className="preplaya-container">
+          <div
+            className="map-container"
+            ref={mapRef}
+            style={{
+              transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+            }}
+          >
+            <div className="demo-message">
+              This is a demo of how camps and art will look on the final,
+              fully-interactive playa.
             </div>
-          ))}
-          <Overlay target={hoveredRed.current} show={showVenueTooltip}>
-            {({ placement, arrowProps, show: _show, popper, ...props }) => (
-              // @ts-expect-error
+            <img
+              className="playa-background"
+              src={PLAYA_IMAGE}
+              alt="Playa Background Map"
+            />
+            {venues?.filter(isPlaced).map((venue, idx) => (
               <div
-                {...props}
+                className="venue"
                 style={{
-                  ...props.style,
-                  padding: "10px",
+                  top: (venue.placement?.y || 0) * scale,
+                  left: (venue.placement?.x || 0) * scale,
+                  position: "absolute",
                 }}
+                onClick={() => showVenue(venue)}
+                key={idx}
+                ref={hoveredVenue === venue ? hoveredRed : undefined}
+                onMouseOver={() => {
+                  setHoveredVenue(venue);
+                  setShowVenueTooltip(true);
+                }}
+                onMouseLeave={() => setShowVenueTooltip(false)}
               >
-                <div className="playa-venue-text">
-                  <div className="playa-venue-maininfo">
-                    <div className="playa-venue-title">
-                      {hoveredVenue?.name}
-                    </div>
-                    <div className="playa-venue-people">
-                      {users?.length ?? 0}
+                <img
+                  className="venue-icon"
+                  src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                  alt={`${venue.name} Icon`}
+                />
+                {selectedVenue?.id === venue.id && <div className="selected" />}
+              </div>
+            ))}
+            <Overlay target={hoveredRed.current} show={showVenueTooltip}>
+              {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                // @ts-expect-error
+                <div
+                  {...props}
+                  style={{
+                    ...props.style,
+                    padding: "10px",
+                  }}
+                >
+                  <div className="playa-venue-text">
+                    <div className="playa-venue-maininfo">
+                      <div className="playa-venue-title">
+                        {hoveredVenue?.name}
+                      </div>
+                      <div className="playa-venue-people">
+                        {users?.length ?? 0}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </Overlay>
-        </div>
-        <div className="playa-controls">
-          <div className="playa-controls-zoom">
-            <div
-              className="playa-controls-zoom-in"
-              onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
-            ></div>
-            <div
-              className="playa-controls-zoom-out"
-              onClick={() =>
-                setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, 1))
-              }
-            ></div>
+              )}
+            </Overlay>
           </div>
-          <div className="playa-controls-shout">
-            <div className="playa-controls-shout-btn"></div>
+          <div className="playa-controls">
+            <div className="playa-controls-zoom">
+              <div
+                className="playa-controls-zoom-in"
+                onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
+              ></div>
+              <div
+                className="playa-controls-zoom-out"
+                onClick={() =>
+                  setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, 1))
+                }
+              ></div>
+            </div>
+            <div className="playa-controls-shout">
+              <div className="playa-controls-shout-btn"></div>
+            </div>
+          </div>
+          <div className="chat-pop-up">
+            <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
+          </div>
+          <div className="sparkle-fairies">
+            <SparkleFairiesPopUp />
           </div>
         </div>
-        <div className="chat-pop-up">
-          <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
-        </div>
-        <div className="sparkle-fairies">
-          <SparkleFairiesPopUp />
-        </div>
-      </div>
-      <Modal show={showModal} onHide={hideVenue}>
-        {selectedVenue && user && (
-          <VenuePreview user={user} venue={selectedVenue} />
-        )}
-      </Modal>
-    </>
+        <Modal show={showModal} onHide={hideVenue}>
+          {selectedVenue && user && (
+            <VenuePreview user={user} venue={selectedVenue} />
+          )}
+        </Modal>
+      </>
+    ),
+    [
+      hideVenue,
+      hoveredVenue,
+      scale,
+      selectedVenue,
+      showModal,
+      showVenue,
+      showVenueTooltip,
+      translateX,
+      translateY,
+      user,
+      users?.length,
+      venues,
+      zoom,
+    ]
   );
 };
 
