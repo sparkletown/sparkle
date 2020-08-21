@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import useUpdateLocationEffect, {
-  updateLocationData,
-} from "utils/useLocationUpdateEffect";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
@@ -34,7 +32,12 @@ const Camp = () => {
 
   const campLocation = `${venue.name}`;
 
-  useUpdateLocationEffect(user, campLocation);
+  const location = useMemo(
+    () =>
+      isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
+    [isRoomModalOpen, selectedRoom, campLocation]
+  );
+  useUpdateLocationEffect(user, location);
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),
@@ -50,10 +53,7 @@ const Camp = () => {
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
-    if (user) {
-      updateLocationData(user, campLocation);
-    }
-  }, [user, campLocation]);
+  }, [setIsRoomModalOpen]);
 
   return (
     <div className="camp-container container-fluid">
