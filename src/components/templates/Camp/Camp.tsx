@@ -17,7 +17,6 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
-import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -121,9 +120,6 @@ const Camp = () => {
       />
       <div className="chat-pop-up">
         <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
-      </div>
-      <div className="donate-pop-up">
-        <DonatePopUp />
       </div>
       <div className="sparkle-fairies">
         <SparkleFairiesPopUp />
