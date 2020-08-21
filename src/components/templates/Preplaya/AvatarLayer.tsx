@@ -36,8 +36,6 @@ interface PropsType {
   translateY: number;
 }
 
-type SendFunc = (data: any, cb?: (err?: Error) => void) => void;
-
 type VideoParticipant = {};
 
 interface VideoMeeting {
@@ -59,7 +57,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const { user } = useUser();
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
   const userStateMapRef = useRef(userStateMap);
-  const wsSend = useRef<SendFunc>();
+  const wsRef = useRef<WebSocket>();
   const [videoMeeting, setVideoMeeting] = useState<VideoMeeting>();
   const videoMeetingRef = useRef(videoMeeting);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
@@ -84,14 +82,16 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   }, [user]);
 
   const sendUpdatedState = (state: UserState) => {
-    if (!user || !wsSend.current) return;
+    console.log("sendUpdatedState", state, wsRef);
+    if (!user || !wsRef.current) return;
 
     const update: UpdateWsMessage = {
       type: MessageType.Update,
       uid: user?.uid,
       update: state,
     };
-    wsSend.current(JSON.stringify(update));
+    console.log("sending", JSON.stringify(update));
+    wsRef.current.send(JSON.stringify(update));
   };
 
   const jumpTo = useCallback(
@@ -120,11 +120,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         uid: user.uid,
       };
       ws.send(JSON.stringify(hello));
-      wsSend.current = ws.send;
+      wsRef.current = ws;
     };
 
     ws.onclose = () => {
-      wsSend.current = undefined;
+      wsRef.current = undefined;
     };
 
     ws.onmessage = (data) => {
