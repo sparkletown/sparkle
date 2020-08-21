@@ -7,7 +7,11 @@ import Chatbox from "../Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { venuePlayaPreviewUrl, venueInsideUrl } from "utils/url";
+import {
+  venuePlayaPreviewUrl,
+  venueInsideUrl,
+  campPreviewUrl,
+} from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { PLAYA_VENUE_NAME } from "settings";
@@ -138,7 +142,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     user.room === PLAYA_VENUE_NAME
       ? venueInsideUrl(suspectedLocation.venueId)
       : suspectedLocation.roomTitle
-      ? venuePlayaPreviewUrl(suspectedLocation.venueId) // need something for camp popup here if roomTitle ie defined
+      ? campPreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
       : venuePlayaPreviewUrl(suspectedLocation.venueId);
 
   const suspectedLocationText = suspectedLocation.roomTitle

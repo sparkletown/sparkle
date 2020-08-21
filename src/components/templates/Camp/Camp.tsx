@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
@@ -16,6 +16,7 @@ import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { peopleAttending } from "utils/venue";
+import { useParams } from "react-router-dom";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -54,6 +55,17 @@ const Camp = () => {
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
   }, [setIsRoomModalOpen]);
+
+  const { roomTitle } = useParams();
+  useEffect(() => {
+    if (roomTitle) {
+      const campRoom = venue?.rooms.find((room) => room.title === roomTitle);
+      if (campRoom) {
+        setSelectedRoom(campRoom);
+        setIsRoomModalOpen(true);
+      }
+    }
+  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
     <div className="camp-container container-fluid">
