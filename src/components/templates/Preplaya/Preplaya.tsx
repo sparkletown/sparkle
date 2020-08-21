@@ -31,6 +31,7 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
+const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const ARROW_MOVE_INCREMENT_PX = 3;
 
 const isPlaced = (venue: Venue) => {
@@ -49,6 +50,9 @@ const Preplaya = () => {
   const [translateY, setTranslateY] = useState(0);
   const mapRef = useRef<HTMLDivElement>(null);
 
+  const zoomRef = useRef(zoom);
+  useMemo(() => (zoomRef.current = zoom), [zoom]);
+
   const { user } = useUser();
 
   useLocationUpdateEffect(user, "Playa");
@@ -58,6 +62,7 @@ const Preplaya = () => {
       setScale(window.innerWidth / PLAYA_WIDTH_AND_HEIGHT);
     };
 
+    const zoom = zoomRef.current;
     let dragging = false;
     let movedSoFarX = 0;
     let movedSoFarY = 0;
@@ -124,23 +129,32 @@ const Preplaya = () => {
       event.stopPropagation();
       switch (event.key) {
         case "ArrowLeft":
-          // Left pressed
           setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoom);
           break;
         case "ArrowRight":
-          // Right pressed
           setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoom);
           break;
         case "ArrowUp":
-          // Up pressed
           setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoom);
           break;
         case "ArrowDown":
-          // Down pressed
           setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoom);
           break;
       }
     }, 1);
+
+    const wheelScrollAction = throttle((event: WheelEvent) => {
+      const delta = Math.sign(event.deltaY);
+      setZoom((z) =>
+        Math.min(Math.max(1, z + delta * WHEEL_ZOOM_INCREMENT_DELTA), 3)
+      );
+    }, 1);
+
+    const wheelScrollListener = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      wheelScrollAction(event);
+    };
 
     if (mapRef.current) {
       mapRef.current.addEventListener("mousedown", dragStartListener);
@@ -151,6 +165,7 @@ const Preplaya = () => {
       window.addEventListener("touchend", dragEndListener);
       mapRef.current.addEventListener("dblclick", doubleClickListener);
       window.addEventListener("keydown", keyboardEventListener);
+      mapRef.current.addEventListener("wheel", wheelScrollListener);
     }
     const mapRefCurrent = mapRef.current;
 
@@ -166,9 +181,10 @@ const Preplaya = () => {
         window.removeEventListener("touchend", dragEndListener);
         mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
         window.removeEventListener("keydown", keyboardEventListener);
+        mapRefCurrent.removeEventListener("wheel", wheelScrollListener);
       }
     };
-  }, [zoom]);
+  }, []);
 
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
