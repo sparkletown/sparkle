@@ -110,29 +110,34 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const venues = useSelector((state) => state.firestore.ordered.venues);
-  if (!user.room || !venues) {
-    return <></>;
-  }
 
-  const suspectedLocation = venues
-    ?.filter(
+  const suspectedLocation = useMemo(() => {
+    const suspectedVenue = venues?.find(
       (v) =>
         v.name === user.room ||
         (isCampVenue(v) && v.rooms.find((r) => r.title === user.room))
-    )
-    .map((v) => {
-      if (v.name === user.room) {
-        return {
-          venueId: user.room,
-          roomTitle: undefined,
-        };
-      }
+    );
+
+    if (!suspectedVenue) {
+      return undefined;
+    }
+
+    if (suspectedVenue.name === user.room) {
       return {
-        venueId: v.id,
-        venueName: v.name,
-        roomTitle: user.room,
+        venueId: user.room,
+        roomTitle: undefined,
       };
-    })[0];
+    }
+    return {
+      venueId: suspectedVenue.id,
+      venueName: suspectedVenue.name,
+      roomTitle: user.room,
+    };
+  }, [user.room, venues]);
+
+  if (!user.room || !venues) {
+    return <></>;
+  }
 
   if (!suspectedLocation) {
     return <>This burner has gone walkabout. Location unguessable</>;

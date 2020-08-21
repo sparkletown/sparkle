@@ -46,7 +46,7 @@ const Camp = () => {
   );
 
   const attendances = usersInCamp
-    ? usersInCamp.reduce((acc: { [key: string]: number }, value) => {
+    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
         acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
         return acc;
       }, {})
@@ -54,7 +54,7 @@ const Camp = () => {
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
-  }, [setIsRoomModalOpen]);
+  }, []);
 
   const { roomTitle } = useParams();
   useEffect(() => {
