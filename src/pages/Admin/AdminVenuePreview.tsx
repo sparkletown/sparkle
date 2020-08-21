@@ -43,22 +43,9 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               {" "}
               This is a preview of your art piece:
             </div>
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                height: "0",
-                paddingBottom: "50%",
-              }}
-            >
+            <div className="iframe-preview-container">
               <iframe
-                style={{
-                  width: "100%",
-                  position: "absolute",
-                  height: "100%",
-                  left: 0,
-                  top: 0,
-                }}
+                className="iframe-preview"
                 title="art-piece-video"
                 src={ConvertToEmbeddableUrl(venue.embedIframeUrl)}
                 frameBorder="0"
