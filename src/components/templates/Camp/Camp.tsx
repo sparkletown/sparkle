@@ -1,9 +1,7 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import useUpdateLocationEffect, {
-  updateLocationData,
-} from "utils/useLocationUpdateEffect";
+import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
@@ -12,10 +10,13 @@ import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
 import { Map } from "./components/Map";
+import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { peopleAttending } from "utils/venue";
+import { useParams } from "react-router-dom";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -32,10 +33,20 @@ const Camp = () => {
 
   const campLocation = `${venue.name}`;
 
-  useUpdateLocationEffect(user, campLocation);
+  const location = useMemo(
+    () =>
+      isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
+    [isRoomModalOpen, selectedRoom, campLocation]
+  );
+  useUpdateLocationEffect(user, location);
 
-  const attendances = partygoers
-    ? partygoers.reduce((acc: { [key: string]: number }, value) => {
+  const usersInCamp = useMemo(
+    () => venue && peopleAttending(partygoers, venue),
+    [partygoers, venue]
+  );
+
+  const attendances = usersInCamp
+    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
         acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
         return acc;
       }, {})
@@ -43,10 +54,18 @@ const Camp = () => {
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
-    if (user) {
-      updateLocationData(user, campLocation);
+  }, []);
+
+  const { roomTitle } = useParams();
+  useEffect(() => {
+    if (roomTitle) {
+      const campRoom = venue?.rooms.find((room) => room.title === roomTitle);
+      if (campRoom) {
+        setSelectedRoom(campRoom);
+        setIsRoomModalOpen(true);
+      }
     }
-  }, [user, campLocation]);
+  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
     <div className="camp-container container-fluid">
@@ -56,9 +75,9 @@ const Camp = () => {
           withCountDown={false}
         />
       </div>
-      {partygoers && (
+      {usersInCamp && (
         <div className="col">
-          <UserList users={partygoers} imageSize={50} disableSeeAll={false} />
+          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
         </div>
       )}
       <div className="col">
@@ -83,6 +102,16 @@ const Camp = () => {
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
+      </div>
+      <div className="row">
+        <div className="col">
+          <RoomList
+            rooms={venue.rooms}
+            attendances={attendances}
+            setSelectedRoom={setSelectedRoom}
+            setIsRoomModalOpen={setIsRoomModalOpen}
+          />
+        </div>
       </div>
       <RoomModal
         show={isRoomModalOpen}

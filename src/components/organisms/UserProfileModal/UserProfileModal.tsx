@@ -7,6 +7,14 @@ import Chatbox from "../Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import {
+  venuePlayaPreviewUrl,
+  venueInsideUrl,
+  campPreviewUrl,
+} from "utils/url";
+import { isCampVenue } from "types/CampVenue";
+import { Link } from "react-router-dom";
+import { PLAYA_VENUE_NAME } from "settings";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -82,12 +90,12 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 </React.Fragment>
               ))}
             </div>
-            {fullUserProfile.room && (
-              <div className="profile-location">
-                <p className="question">Suspected Location:</p>
-                <h6 className="location">{fullUserProfile.room}</h6>
-              </div>
-            )}
+            <div className="profile-location">
+              <p className="question">Suspected Location:</p>
+              <h6 className="location">
+                <SuspectedLocation user={fullUserProfile} />
+              </h6>
+            </div>
           </div>
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
@@ -98,6 +106,54 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
       </Modal.Body>
     </Modal>
   );
+};
+
+const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
+  const venues = useSelector((state) => state.firestore.ordered.venues);
+
+  const suspectedLocation = useMemo(() => {
+    const suspectedVenue = venues?.find(
+      (v) =>
+        v.name === user.room ||
+        (isCampVenue(v) && v.rooms.find((r) => r.title === user.room))
+    );
+
+    if (!suspectedVenue) {
+      return undefined;
+    }
+
+    if (suspectedVenue.name === user.room) {
+      return {
+        venueId: user.room,
+        roomTitle: undefined,
+      };
+    }
+    return {
+      venueId: suspectedVenue.id,
+      venueName: suspectedVenue.name,
+      roomTitle: user.room,
+    };
+  }, [user.room, venues]);
+
+  if (!user.room || !venues) {
+    return <></>;
+  }
+
+  if (!suspectedLocation) {
+    return <>This burner has gone walkabout. Location unguessable</>;
+  }
+
+  const suspectedLocationLink =
+    user.room === PLAYA_VENUE_NAME
+      ? venueInsideUrl(suspectedLocation.venueId)
+      : suspectedLocation.roomTitle
+      ? campPreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
+      : venuePlayaPreviewUrl(suspectedLocation.venueId);
+
+  const suspectedLocationText = suspectedLocation.roomTitle
+    ? `Room ${suspectedLocation.roomTitle}, in Camp ${suspectedLocation.venueName}`
+    : user.room;
+  return <Link to={suspectedLocationLink}>{suspectedLocationText}</Link>;
 };
 
 export default UserProfileModal;

@@ -12,6 +12,7 @@ import { EventData } from "types/EventData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 
 interface getOnlineStatsData {
   onlineUsers: Array<WithId<User>>;
@@ -167,44 +168,11 @@ const OnlineStats: React.FC = () => {
                           title={venue.name}
                         />
                       </div>
-                      <div className="venue-info-container">
-                        <div className="whats-on-container">
-                          <div className="title-container">
-                            <img src="/sparkle-icon.png" alt="sparkle icon" />
-                            <span className="title">{`What's on now`}</span>
-                          </div>
-                          <div className="description-container">
-                            {currentEvents.length > 0 ? (
-                              <>
-                                <span className="yellow">
-                                  {currentEvents[0].name}
-                                </span>
-                                <span> by </span>
-                                <span className="yellow">
-                                  {currentEvents[0].host}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="yellow">
-                                No events currently
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="centered-flex">
-                          <button
-                            className="btn btn-primary"
-                            // @debt would be nice not to refresh the page
-                            onClick={() =>
-                              (window.location.href = venuePlayaPreviewUrl(
-                                venue.id
-                              ))
-                            }
-                          >
-                            View on Playa
-                          </button>
-                        </div>
-                      </div>
+                      <VenueInfoEvents
+                        eventsNow={currentEvents}
+                        venue={venue}
+                        showButton={true}
+                      />
                     </div>
                   ))}
                 </div>
