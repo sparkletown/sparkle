@@ -7,9 +7,8 @@ const ONE_HOUR = 60 * ONE_MINUTE;
 const eventIsNow = (event, now) => {
   const nowSeconds = now / 1000;
   return (
-    nowSeconds > event.data().start_utc_seconds &&
-    nowSeconds <
-      60 * event.data().duration_minutes + event.data().start_utc_seconds
+    nowSeconds > event.start_utc_seconds &&
+    nowSeconds < 60 * event.duration_minutes + event.start_utc_seconds
   );
 };
 
@@ -31,20 +30,25 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const venues = await admin.firestore().collection("venues").get();
   await Promise.all(
     venues.docs.map(async (venue) => {
-      let venueOpen = false;
+      const template = venue.data().template;
+      const openWithoutEvents =
+        template === "artpiece" || template === "themecamp";
       await venue.ref
         .collection("events")
         .get()
         .then((events) => {
-          events.docs.forEach((event) => {
-            if (eventIsNow(event, now)) {
-              venueOpen = true;
-            }
-          });
-          if (venueOpen) {
+          const currentEvents = events.docs
+            .map((event) => event.data())
+            .filter((event) => eventIsNow(event, now));
+          const venueOpen = currentEvents.length > 0;
+
+          if (venueOpen || openWithoutEvents) {
             const venueWithId = venue.data();
             venueWithId.id = venue.id;
-            openVenues.push(venueWithId);
+            openVenues.push({
+              venue: venueWithId,
+              currentEvents: currentEvents,
+            });
           }
         });
     })

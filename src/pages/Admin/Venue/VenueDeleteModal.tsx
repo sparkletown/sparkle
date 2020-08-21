@@ -71,7 +71,7 @@ const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
             <div className="input-group">
               <button
                 disabled={deleting}
-                className="btn btn-primary btn-block btn-centered"
+                className="btn btn-danger btn-block btn-centered"
                 onClick={deleteVenue}
               >
                 Yes, Delete

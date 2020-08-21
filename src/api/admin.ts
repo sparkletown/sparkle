@@ -62,12 +62,21 @@ export type VenueInput = AdvancedVenueInput &
     template: any;
     rooms?: Array<any>;
     placement?: Omit<VenuePlacement, "state">;
+    placementRequests?: string;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
   VenueImageUrls;
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
+
+export type PlacementInput = {
+  mapIconImageFile?: FileList;
+  mapIconImageUrl?: string;
+  addressText?: string;
+  notes?: string;
+  placement?: Omit<VenuePlacement, "state">;
+};
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();

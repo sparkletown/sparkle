@@ -38,7 +38,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
 
   const hasUserAlreadyBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, event.id) ||
-    (user && isUserAMember(user.email, venue.config.memberEmails));
+    (user && isUserAMember(user.email, venue.config?.memberEmails));
 
   const handleClick = () => {
     selectEvent();

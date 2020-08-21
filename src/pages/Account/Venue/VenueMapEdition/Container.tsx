@@ -38,6 +38,7 @@ interface PropsType {
   draggableIconImageStyle: CSSProperties;
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
+  onOtherIconClick?: (key: string) => void;
   coordinatesBoundary: number;
   interactive: boolean;
   resizable: boolean;
@@ -53,6 +54,7 @@ export const Container: React.FC<PropsType> = (props) => {
     iconImageStyle,
     onChange,
     otherIcons,
+    onOtherIconClick,
     coordinatesBoundary,
     interactive,
     resizable,
@@ -60,7 +62,6 @@ export const Container: React.FC<PropsType> = (props) => {
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
-  console.log("otherIcons", otherIcons);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -181,23 +182,38 @@ export const Container: React.FC<PropsType> = (props) => {
         >
           {useMemo(
             () =>
-              Object.values(otherIcons).map((icon, index) => (
+              Object.keys(otherIcons).map((key, index) => (
                 <img
-                  key={`${icon.top}-${icon.left}-${icon.url}-${index}`}
-                  src={icon.url || DEFAULT_MAP_ICON_URL}
+                  key={`${otherIcons[key].top}-${otherIcons[key].left}-${otherIcons[key].url}-${index}`}
+                  src={otherIcons[key].url || DEFAULT_MAP_ICON_URL}
                   style={{
                     position: "absolute",
-                    top: `${(100 * icon.top) / coordinatesBoundary}%`,
-                    left: `${(100 * icon.left) / coordinatesBoundary}%`,
-                    width: resizable ? `${icon.width}%` : icon.width, //resizable dimensions are in percentages
-                    height: resizable ? `${icon.height}%` : icon.width,
+                    top: `${
+                      (100 * otherIcons[key].top) / coordinatesBoundary
+                    }%`,
+                    left: `${
+                      (100 * otherIcons[key].left) / coordinatesBoundary
+                    }%`,
+                    width: resizable
+                      ? `${otherIcons[key].width}%`
+                      : otherIcons[key].width, //resizable dimensions are in percentages
+                    height: resizable
+                      ? `${otherIcons[key].height}%`
+                      : otherIcons[key].width,
                     borderRadius: "50%",
                     ...otherIconsStyle,
                   }}
-                  alt={`${icon.url} map icon`}
+                  alt={`${otherIcons[key].url} map icon`}
+                  onClick={() => onOtherIconClick && onOtherIconClick(key)}
                 />
               )),
-            [otherIcons, coordinatesBoundary, otherIconsStyle, resizable]
+            [
+              otherIcons,
+              coordinatesBoundary,
+              otherIconsStyle,
+              resizable,
+              onOtherIconClick,
+            ]
           )}
         </div>
         {Object.keys(boxes).map((key) => (

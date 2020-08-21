@@ -3,6 +3,7 @@ const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
+const PLAYA_VENUE_ID = "playa";
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [
@@ -106,6 +107,10 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
+const checkUserIsPlayaOwner = (uid) => {
+  return checkUserIsOwner(PLAYA_VENUE_ID, uid);
+};
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -133,7 +138,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
       }
       const docData = doc.data();
 
-      if (roomIndex === undefined) {
+      if (typeof roomIndex !== "number") {
         docData.rooms = [...docData.rooms, room];
       } else {
         docData.rooms[roomIndex] = room;
@@ -225,8 +230,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.mapBackgroundImageUrl) {
         updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       }
-      if (data.placement) {
-        updated.placement = data.placement;
+      if (data.placementRequests) {
+        updated.placementRequests = data.placementRequests;
       }
 
       switch (updated.template) {
@@ -262,4 +267,33 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   checkUserIsOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
+});
+
+//@thecadams using ?? and ?. breaks functions. Please fix.
+
+exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
+  // const venueId = data.id;
+  // checkAuth(context);
+  //   await checkUserIsPlayaOwner(context.auth.token.user_id);
+  //   await admin
+  //     .firestore()
+  //     .collection("venues")
+  //     .doc(venueId)
+  //     .get()
+  //     .then((doc) => {
+  //       if (!doc || !doc.exists) {
+  //         throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  //       }
+  //       const updated = doc.data();
+  // updated.mapIconImageUrl = data.mapIconImageUrl ?? updated.mapIconImageUrl;
+  // updated.placement = {
+  //   x: data.placement?.x ?? updated.placement?.x,
+  //   y: data.placement?.y ?? updated.placement?.y,
+  //   addressText:
+  //     data.placement?.addressText ?? updated.placement?.addressText,
+  //   notes: data.placement?.notes ?? updated.placement?.notes,
+  //   state: PlacementState.AdminPlaced,
+  // };
+  //       admin.firestore().collection("venues").doc(venueId).update(updated);
+  //     });
 });

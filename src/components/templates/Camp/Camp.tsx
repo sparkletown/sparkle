@@ -11,11 +11,12 @@ import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
-import Chatbox from "components/organisms/Chatbox";
 import { Map } from "./components/Map";
 import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -63,7 +64,7 @@ const Camp = () => {
       )}
       <div className="col">
         <div className="starting-indication">
-          {venue.config.landingPageConfig.description}{" "}
+          {venue.config?.landingPageConfig.description}{" "}
           {venue.description?.program_url && (
             <a
               href={venue.description.program_url}
@@ -93,15 +94,18 @@ const Camp = () => {
             setIsRoomModalOpen={setIsRoomModalOpen}
           />
         </div>
-        <div className="col-5 chat-wrapper">
-          <Chatbox />
-        </div>
       </div>
       <RoomModal
         show={isRoomModalOpen}
         room={selectedRoom}
         onHide={modalHidden}
       />
+      <div className="chat-pop-up">
+        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+      </div>
+      <div className="sparkle-fairies">
+        <SparkleFairiesPopUp />
+      </div>
     </div>
   );
 };

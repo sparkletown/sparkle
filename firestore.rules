@@ -44,6 +44,9 @@ service cloud.firestore {
         allow read: if true;
         allow write: if request.auth.uid in venueData().owners;
       }
+      match /chats/{restOfPath=**} {
+        allow read,create: if request.auth.uid != null;
+      }
     }
     match /customers/{userId} {
       allow read: if false;
