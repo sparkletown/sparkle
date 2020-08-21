@@ -21,7 +21,7 @@ import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { PreplayaRouter } from "components/templates/Preplaya/Router";
-import Camp from "components/templates/Camp/Camp";
+import { CampRouter } from "components/templates/Camp/Router";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -80,12 +80,16 @@ const VenuePage = () => {
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user?.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
+  useFirestoreConnect(
+    user
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
 
   if (!user) {
     return (
@@ -155,7 +159,7 @@ const VenuePage = () => {
       template = <ArtPiece />;
       break;
     case VenueTemplate.themecamp:
-      template = <Camp />;
+      template = <CampRouter />;
       break;
     case VenueTemplate.preplaya:
       template = <PreplayaRouter />;

@@ -22,14 +22,19 @@ import useLocationUpdateEffect, {
 } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { throttle } from "lodash";
 
 import "./Preplaya.scss";
 import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
+
+const ZOOM_INCREMENT = 1.2;
+const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
+const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
+const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
+const ARROW_MOVE_INCREMENT_PX = 3;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -47,6 +52,9 @@ const Preplaya = () => {
   const [translateY, setTranslateY] = useState(0);
   const mapRef = useRef<HTMLDivElement>(null);
 
+  const zoomRef = useRef(zoom);
+  useMemo(() => (zoomRef.current = zoom), [zoom]);
+
   const { user } = useUser();
 
   useLocationUpdateEffect(user, "Playa");
@@ -57,10 +65,11 @@ const Preplaya = () => {
     };
 
     let dragging = false;
-    const translateX = 0;
-    const translateY = 0;
+    let movedSoFarX = 0;
+    let movedSoFarY = 0;
     let dragStartX = 0;
     let dragStartY = 0;
+
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
       if (event.which !== 1) {
         return;
@@ -76,17 +85,25 @@ const Preplaya = () => {
       }
     };
     const pan = throttle((event: MouseEvent | TouchEvent) => {
+      // since this function is asynchronous due to throttling, it's possible that dragging is false in moveListener but this is still called
+      if (!dragging) return;
+
+      let diffX: number;
+      let diffY: number;
+
       if (event instanceof TouchEvent) {
-        setTranslateX(
-          translateX + (event.touches[0].clientX - dragStartX) / zoom
-        );
-        setTranslateY(
-          translateY + (event.touches[0].clientY - dragStartY) / zoom
-        );
+        diffX = event.touches[0].clientX - dragStartX;
+        diffY = event.touches[0].clientY - dragStartY;
       } else {
-        setTranslateX(translateX + (event.clientX - dragStartX) / zoom);
-        setTranslateY(translateY + (event.clientY - dragStartY) / zoom);
+        diffX = event.clientX - dragStartX;
+        diffY = event.clientY - dragStartY;
       }
+
+      setTranslateX((tx) => tx + (diffX - movedSoFarX) / zoomRef.current);
+      setTranslateY((ty) => ty + (diffY - movedSoFarY) / zoomRef.current);
+
+      movedSoFarX = diffX;
+      movedSoFarY = diffY;
     }, 25);
     const moveListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
@@ -97,9 +114,61 @@ const Preplaya = () => {
     const dragEndListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
         event.preventDefault();
-        pan(event);
       }
+
+      // reset drag state
+      dragStartX = 0;
+      dragStartY = 0;
+      movedSoFarX = 0;
+      movedSoFarY = 0;
       dragging = false;
+    };
+
+    const doubleClickListener = (event: MouseEvent | TouchEvent) => {
+      event.preventDefault();
+      setZoom((z) => z * DOUBLE_CLICK_ZOOM_INCREMENT);
+    };
+    const keyboardEventListener = throttle((event: KeyboardEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      switch (event.key) {
+        case "ArrowLeft":
+          setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
+          break;
+        case "ArrowRight":
+          setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
+          break;
+        case "ArrowUp":
+          setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
+          break;
+        case "ArrowDown":
+          setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
+          break;
+      }
+    }, 1);
+
+    const zoomAction = throttle((event: WheelEvent) => {
+      const trackpad = event.ctrlKey;
+      const delta = Math.sign(event.deltaY) * (trackpad ? -1 : 1);
+      setZoom((z) =>
+        Math.min(
+          Math.max(
+            1,
+            z +
+            delta *
+            (trackpad
+              ? TRACKPAD_ZOOM_INCREMENT_DELTA
+              : WHEEL_ZOOM_INCREMENT_DELTA)
+          ),
+          3
+        )
+      );
+    }, 1);
+
+    const zoomListener = (event: WheelEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      zoomAction(event);
     };
 
     if (mapRef.current) {
@@ -109,6 +178,9 @@ const Preplaya = () => {
       window.addEventListener("touchmove", moveListener);
       window.addEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
+      mapRef.current.addEventListener("dblclick", doubleClickListener);
+      window.addEventListener("keydown", keyboardEventListener);
+      mapRef.current.addEventListener("wheel", zoomListener);
     }
     const mapRefCurrent = mapRef.current;
 
@@ -121,10 +193,13 @@ const Preplaya = () => {
         window.removeEventListener("mousemove", moveListener);
         window.removeEventListener("touchmove", moveListener);
         window.removeEventListener("mouseup", dragEndListener);
-        window.addEventListener("touchend", dragEndListener);
+        window.removeEventListener("touchend", dragEndListener);
+        mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
+        window.removeEventListener("keydown", keyboardEventListener);
+        mapRefCurrent.removeEventListener("wheel", zoomListener);
       }
     };
-  }, [zoom]);
+  }, []);
 
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
@@ -173,95 +248,127 @@ const Preplaya = () => {
     [partygoers, hoveredVenue]
   );
 
-  return (
-    <>
-      <div className="preplaya-container">
-        <div
-          className="map-container"
-          ref={mapRef}
-          style={{
-            transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-          }}
-        >
-          <div className="demo-message">
-            This is a demo of how camps and art will look on the final,
-            fully-interactive playa.
-          </div>
-          <img
-            className="playa-background"
-            src={PLAYA_IMAGE}
-            alt="Playa Background Map"
-          />
-          {venues?.filter(isPlaced).map((venue, idx) => (
-            <div
-              className="venue"
-              style={{
-                top: (venue.placement?.y || 0) * scale,
-                left: (venue.placement?.x || 0) * scale,
-                position: "absolute",
-              }}
-              onClick={() => showVenue(venue)}
-              key={idx}
-              ref={hoveredVenue === venue ? hoveredRed : undefined}
-              onMouseOver={() => {
-                setHoveredVenue(venue);
-                setShowVenueTooltip(true);
-              }}
-              onMouseLeave={() => setShowVenueTooltip(false)}
-            >
-              <img
-                className="venue-icon"
-                src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                alt={`${venue.name} Icon`}
-              />
-              {selectedVenue?.id === venue.id && <div className="selected" />}
+  return useMemo(
+    () => (
+      <>
+        <div className="preplaya-container">
+          <div
+            className="map-container"
+            ref={mapRef}
+            style={{
+              transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+            }}
+          >
+            <div className="demo-message">
+              `PLAYA UNDER CONSTRUCTION. It’s build week: this is a preview of
+              the Playa as we build it together. Explorable Playa on the way.
+              <br />
+              Locations subject to alteration by placement team as it all comes
+              together.`
             </div>
-          ))}
-          <Overlay target={hoveredRed.current} show={showVenueTooltip}>
-            {({ placement, arrowProps, show: _show, popper, ...props }) => (
-              // @ts-expect-error
+            <img
+              className="playa-background"
+              src={PLAYA_IMAGE}
+              alt="Playa Background Map"
+            />
+            {venues?.filter(isPlaced).map((venue, idx) => (
               <div
-                {...props}
+                className="venue"
                 style={{
-                  ...props.style,
-                  padding: "10px",
+                  top: (venue.placement?.y || 0) * scale,
+                  left: (venue.placement?.x || 0) * scale,
+                  position: "absolute",
                 }}
+                onClick={() => showVenue(venue)}
+                key={idx}
+                ref={hoveredVenue === venue ? hoveredRed : undefined}
+                onMouseOver={() => {
+                  setHoveredVenue(venue);
+                  setShowVenueTooltip(true);
+                }}
+                onMouseLeave={() => setShowVenueTooltip(false)}
               >
-                <div className="playa-venue-text">
-                  <div className="playa-venue-maininfo">
-                    <div className="playa-venue-title">
-                      {hoveredVenue?.name}
-                    </div>
-                    <div className="playa-venue-people">
-                      {users?.length ?? 0}
+                <img
+                  className="venue-icon"
+                  src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                  alt={`${venue.name} Icon`}
+                />
+                {selectedVenue?.id === venue.id && <div className="selected" />}
+              </div>
+            ))}
+            <Overlay target={hoveredRed.current} show={showVenueTooltip}>
+              {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                // @ts-expect-error
+                <div
+                  {...props}
+                  style={{
+                    ...props.style,
+                    padding: "10px",
+                  }}
+                >
+                  <div className="playa-venue-text">
+                    <div className="playa-venue-maininfo">
+                      <div className="playa-venue-title">
+                        {hoveredVenue?.name}
+                      </div>
+                      <div className="playa-venue-people">
+                        {users?.length ?? 0}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </Overlay>
-        </div>
-        <div className="button-bar">
-          <div className="button" onClick={() => setZoom(zoom + 0.1)}>
-            <FontAwesomeIcon icon={faPlus} className="icon" />
+              )}
+            </Overlay>
           </div>
-          <div className="button" onClick={() => setZoom(zoom - 0.1)}>
-            <FontAwesomeIcon icon={faMinus} className="icon" />
+          <div className="playa-controls">
+            <div className="playa-controls-zoom">
+              <div
+                className="playa-controls-zoom-in"
+                onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
+              ></div>
+              <div
+                className="playa-controls-zoom-out"
+                onClick={() =>
+                  setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, 1))
+                }
+              ></div>
+            </div>
+            <div className="playa-controls-shout">
+              <div className="playa-controls-shout-btn"></div>
+            </div>
+          </div>
+          <div className="chat-pop-up">
+            <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
+          </div>
+          <div className="donate-pop-up">
+            <DonatePopUp />
+          </div>
+          <div className="sparkle-fairies">
+            <SparkleFairiesPopUp />
           </div>
         </div>
-        <div className="chat-pop-up">
-          <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
-        </div>
-        <div className="sparkle-fairies">
-          <SparkleFairiesPopUp />
-        </div>
-      </div>
-      <Modal show={showModal} onHide={hideVenue}>
-        {selectedVenue && user && (
-          <VenuePreview user={user} venue={selectedVenue} />
-        )}
-      </Modal>
-    </>
+        <Modal show={showModal} onHide={hideVenue}>
+          {selectedVenue && user && (
+            <VenuePreview user={user} venue={selectedVenue} />
+          )}
+        </Modal>
+      </>
+    ),
+    [
+      hideVenue,
+      hoveredVenue,
+      scale,
+      selectedVenue,
+      showModal,
+      showVenue,
+      showVenueTooltip,
+      translateX,
+      translateY,
+      user,
+      users,
+      venues,
+      zoom,
+    ]
   );
 };
 
