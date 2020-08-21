@@ -61,12 +61,12 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         event instanceof TouchEvent ? event.touches[0].clientY : event.clientY;
 
       const x = toPlayaUnits(
-        toPixels(translateXRef.current, zoom, scale) + clientX - dragStartX,
+        toPixels(translateXRef.current, zoom, scale) + dragStartX - clientX,
         zoom,
         scale
       );
       const y = toPlayaUnits(
-        toPixels(translateYRef.current, zoom, scale) + clientY - dragStartY,
+        toPixels(translateYRef.current, zoom, scale) + dragStartY - clientY,
         zoom,
         scale
       );
@@ -110,13 +110,13 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
     };
   });
 
-  const top = useMemo(() => toPixels(state.y, zoom, scale) - translateY, [
+  const top = useMemo(() => toPixels(state.y, zoom, scale) + translateY, [
     state.y,
     scale,
     zoom,
     translateY,
   ]);
-  const left = useMemo(() => toPixels(state.x, zoom, scale) - translateX, [
+  const left = useMemo(() => toPixels(state.x, zoom, scale) + translateX, [
     state.x,
     scale,
     zoom,
