@@ -33,7 +33,11 @@ const ArtPiece = () => {
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
+<<<<<<< HEAD
           venueLogoPath={venue?.host.icon ?? ""}
+=======
+          venueLogoPath={venue ? venue.host.icon : ""}
+>>>>>>> added donate popup
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
