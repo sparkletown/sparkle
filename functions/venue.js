@@ -230,7 +230,16 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.mapBackgroundImageUrl) {
         updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       }
-      if (data.placementRequests) {
+
+      if (
+        !data.placement.state ||
+        data.placement.state === PlacementState.SelfPlaced
+      ) {
+        updated.placement = {
+          ...data.placement,
+          state: PlacementState.SelfPlaced,
+        };
+      } else if (data.placementRequests) {
         updated.placementRequests = data.placementRequests;
       }
 
