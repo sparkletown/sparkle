@@ -29,6 +29,8 @@ import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
+const ZOOM_INCREMENT = 1.2;
+
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
@@ -55,10 +57,11 @@ const Preplaya = () => {
     };
 
     let dragging = false;
-    const translateX = 0;
-    const translateY = 0;
+    let movedSoFarX = 0;
+    let movedSoFarY = 0;
     let dragStartX = 0;
     let dragStartY = 0;
+
     const dragStartListener = (event: MouseEvent | TouchEvent) => {
       if (event.which !== 1) {
         return;
@@ -74,17 +77,22 @@ const Preplaya = () => {
       }
     };
     const pan = throttle((event: MouseEvent | TouchEvent) => {
+      let diffX: number;
+      let diffY: number;
+
       if (event instanceof TouchEvent) {
-        setTranslateX(
-          translateX + (event.touches[0].clientX - dragStartX) / zoom
-        );
-        setTranslateY(
-          translateY + (event.touches[0].clientY - dragStartY) / zoom
-        );
+        diffX = event.touches[0].clientX - dragStartX;
+        diffY = event.touches[0].clientY - dragStartY;
       } else {
-        setTranslateX(translateX + (event.clientX - dragStartX) / zoom);
-        setTranslateY(translateY + (event.clientY - dragStartY) / zoom);
+        diffX = event.clientX - dragStartX;
+        diffY = event.clientY - dragStartY;
       }
+
+      setTranslateX((tx) => tx + (diffX - movedSoFarX) / zoom);
+      setTranslateY((ty) => ty + (diffY - movedSoFarY) / zoom);
+
+      movedSoFarX = diffX;
+      movedSoFarY = diffY;
     }, 25);
     const moveListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
@@ -95,8 +103,13 @@ const Preplaya = () => {
     const dragEndListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && mapRef.current) {
         event.preventDefault();
-        pan(event);
       }
+
+      // reset drag state
+      dragStartX = 0;
+      dragStartY = 0;
+      movedSoFarX = 0;
+      movedSoFarY = 0;
       dragging = false;
     };
 
@@ -243,11 +256,13 @@ const Preplaya = () => {
           <div className="playa-controls-zoom">
             <div
               className="playa-controls-zoom-in"
-              onClick={() => setZoom(zoom + 0.1)}
+              onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
             ></div>
             <div
               className="playa-controls-zoom-out"
-              onClick={() => setZoom(Math.max(zoom - 0.1, 1))}
+              onClick={() =>
+                setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, 1))
+              }
             ></div>
           </div>
           <div className="playa-controls-shout">
