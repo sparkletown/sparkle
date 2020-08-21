@@ -32,6 +32,7 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
+const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
 const ARROW_MOVE_INCREMENT_PX = 3;
 
 const isPlaced = (venue: Venue) => {
@@ -143,17 +144,28 @@ const Preplaya = () => {
       }
     }, 1);
 
-    const wheelScrollAction = throttle((event: WheelEvent) => {
-      const delta = Math.sign(event.deltaY);
+    const zoomAction = throttle((event: WheelEvent) => {
+      const trackpad = event.ctrlKey;
+      const delta = Math.sign(event.deltaY) * (trackpad ? -1 : 1);
       setZoom((z) =>
-        Math.min(Math.max(1, z + delta * WHEEL_ZOOM_INCREMENT_DELTA), 3)
+        Math.min(
+          Math.max(
+            1,
+            z +
+              delta *
+                (trackpad
+                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
+                  : WHEEL_ZOOM_INCREMENT_DELTA)
+          ),
+          3
+        )
       );
     }, 1);
 
-    const wheelScrollListener = (event: WheelEvent) => {
+    const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
-      wheelScrollAction(event);
+      zoomAction(event);
     };
 
     if (mapRef.current) {
@@ -165,7 +177,7 @@ const Preplaya = () => {
       window.addEventListener("touchend", dragEndListener);
       mapRef.current.addEventListener("dblclick", doubleClickListener);
       window.addEventListener("keydown", keyboardEventListener);
-      mapRef.current.addEventListener("wheel", wheelScrollListener);
+      mapRef.current.addEventListener("wheel", zoomListener);
     }
     const mapRefCurrent = mapRef.current;
 
@@ -181,7 +193,7 @@ const Preplaya = () => {
         window.removeEventListener("touchend", dragEndListener);
         mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
         window.removeEventListener("keydown", keyboardEventListener);
-        mapRefCurrent.removeEventListener("wheel", wheelScrollListener);
+        mapRefCurrent.removeEventListener("wheel", zoomListener);
       }
     };
   }, []);
