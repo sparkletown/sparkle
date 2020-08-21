@@ -29,15 +29,12 @@ import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
-<<<<<<< HEAD
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
 const ARROW_MOVE_INCREMENT_PX = 3;
-=======
->>>>>>> added donate popup
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -158,10 +155,10 @@ const Preplaya = () => {
           Math.max(
             1,
             z +
-            delta *
-            (trackpad
-              ? TRACKPAD_ZOOM_INCREMENT_DELTA
-              : WHEEL_ZOOM_INCREMENT_DELTA)
+              delta *
+                (trackpad
+                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
+                  : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
           3
         )
@@ -350,7 +347,6 @@ const Preplaya = () => {
             <SparkleFairiesPopUp />
           </div>
         </div>
-<<<<<<< HEAD
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
             <VenuePreview user={user} venue={selectedVenue} />
@@ -373,24 +369,6 @@ const Preplaya = () => {
       venues,
       zoom,
     ]
-=======
-        <div className="chat-pop-up">
-          <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
-        </div>
-        <div className="donate-pop-up">
-          <DonatePopUp />
-        </div>
-        <div className="sparkle-fairies">
-          <SparkleFairiesPopUp />
-        </div>
-      </div>
-      <Modal show={showModal} onHide={hideVenue}>
-        {selectedVenue && user && (
-          <VenuePreview user={user} venue={selectedVenue} />
-        )}
-      </Modal>
-    </>
->>>>>>> added donate popup
   );
 };
 

@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
 import "./DonatePopUp.scss";
-<<<<<<< HEAD
 import { BURNING_MAN_DONATION_SITE } from "../../../../src/settings";
-=======
->>>>>>> added donate popup
 
 export const DonatePopUp = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
@@ -25,11 +22,7 @@ export const DonatePopUp = () => {
           <a
             className="btn btn-primary join-button"
             style={{ fontSize: 16 }}
-<<<<<<< HEAD
             href={BURNING_MAN_DONATION_SITE}
-=======
-            href={`https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`}
->>>>>>> added donate popup
             target="_blank"
             rel="noopener noreferrer"
           >

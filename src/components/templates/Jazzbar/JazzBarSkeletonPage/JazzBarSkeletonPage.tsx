@@ -22,11 +22,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     <WithNavigationBar>
       <div className="full-page-container jazz-bar-container">
         <InformationLeftColumn
-<<<<<<< HEAD
           venueLogoPath={venue?.host.icon ?? ""}
-=======
-          venueLogoPath={venue ? venue.host.icon : ""}
->>>>>>> added donate popup
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
