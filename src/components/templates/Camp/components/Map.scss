@@ -15,16 +15,16 @@
 }
 .sparkle-fairies {
   position: fixed;
-  top: 250px;
+  top: 160px;
   left: 0px;
 }
-.donate-pop-up {
+.info-drawer-camp {
   position: fixed;
-  top: 370px;
+  top: 40px;
   left: 0px;
 }
 .chat-pop-up {
   position: fixed;
   right: 0px;
-  top: $navbar-height * 2;
+  top: calc(#{$navbar-height} + 15px);
 }

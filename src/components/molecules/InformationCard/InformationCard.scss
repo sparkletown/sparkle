@@ -4,6 +4,8 @@
   border-radius: 30px;
   background: $dark-grey;
   padding: 20px;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .information-card-text {

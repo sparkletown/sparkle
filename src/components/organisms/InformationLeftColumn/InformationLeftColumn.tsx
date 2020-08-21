@@ -28,7 +28,7 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             ? ""
             : venueLogoPath === "heart"
             ? "expanded-donation"
-            : "expanded"
+            : "expanded1"
         }`}
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
         id="expand-venue-information"
@@ -44,13 +44,13 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
           <FontAwesomeIcon
             icon={faAmbulance}
             size="2x"
-            className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
+            className={`band-logo ${isLeftColumnExpanded ? "expanded1" : ""}`}
           />
         ) : venueLogoPath === "heart" && isLeftColumnExpanded ? (
           <img
             src="/imageDonate1.png"
             alt="experience-logo"
-            className={`expanded`}
+            className={`expanded1`}
           />
         ) : venueLogoPath === "heart" && !isLeftColumnExpanded ? (
           <FontAwesomeIcon icon={faHeart} size="2x" className={`band-logo`} />
@@ -58,7 +58,7 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
           <img
             src={venueLogoPath}
             alt="experience-logo"
-            className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
+            className={`band-logo ${isLeftColumnExpanded ? "expanded1" : ""}`}
           />
         )}
         {isLeftColumnExpanded && <>{children}</>}
