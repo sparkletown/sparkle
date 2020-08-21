@@ -63,7 +63,6 @@ const Preplaya = () => {
       setScale(window.innerWidth / PLAYA_WIDTH_AND_HEIGHT);
     };
 
-    const zoom = zoomRef.current;
     let dragging = false;
     let movedSoFarX = 0;
     let movedSoFarY = 0;
@@ -99,8 +98,8 @@ const Preplaya = () => {
         diffY = event.clientY - dragStartY;
       }
 
-      setTranslateX((tx) => tx + (diffX - movedSoFarX) / zoom);
-      setTranslateY((ty) => ty + (diffY - movedSoFarY) / zoom);
+      setTranslateX((tx) => tx + (diffX - movedSoFarX) / zoomRef.current);
+      setTranslateY((ty) => ty + (diffY - movedSoFarY) / zoomRef.current);
 
       movedSoFarX = diffX;
       movedSoFarY = diffY;
@@ -133,16 +132,16 @@ const Preplaya = () => {
       event.stopPropagation();
       switch (event.key) {
         case "ArrowLeft":
-          setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoom);
+          setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
           break;
         case "ArrowRight":
-          setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoom);
+          setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
           break;
         case "ArrowUp":
-          setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoom);
+          setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
           break;
         case "ArrowDown":
-          setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoom);
+          setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
           break;
       }
     }, 1);
@@ -362,7 +361,7 @@ const Preplaya = () => {
       translateX,
       translateY,
       user,
-      users?.length,
+      users,
       venues,
       zoom,
     ]
