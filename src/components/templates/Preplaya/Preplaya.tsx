@@ -85,6 +85,9 @@ const Preplaya = () => {
       }
     };
     const pan = throttle((event: MouseEvent | TouchEvent) => {
+      // since this function is asynchronous due to throttling, it's possible that dragging is false in moveListener but this is still called
+      if (!dragging) return;
+
       let diffX: number;
       let diffY: number;
 
