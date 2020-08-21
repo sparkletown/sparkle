@@ -28,6 +28,7 @@ import "./Preplaya.scss";
 import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -154,10 +155,10 @@ const Preplaya = () => {
           Math.max(
             1,
             z +
-              delta *
-                (trackpad
-                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
-                  : WHEEL_ZOOM_INCREMENT_DELTA)
+            delta *
+            (trackpad
+              ? TRACKPAD_ZOOM_INCREMENT_DELTA
+              : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
           3
         )
@@ -338,6 +339,9 @@ const Preplaya = () => {
           </div>
           <div className="chat-pop-up">
             <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
+          </div>
+          <div className="donate-pop-up">
+            <DonatePopUp />
           </div>
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
