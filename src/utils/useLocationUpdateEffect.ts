@@ -25,6 +25,7 @@ const useLocationUpdateEffect = (
   useEffect(() => {
     if (!user || !roomName) return;
 
+    updateLocationData(user, roomName);
     const intervalId = setInterval(
       () => updateLocationData(user, roomName),
       60 * 1000
