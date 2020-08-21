@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useUpdateLocationEffect, {
@@ -17,6 +17,7 @@ import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { peopleAttending } from "utils/venue";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -35,8 +36,13 @@ const Camp = () => {
 
   useUpdateLocationEffect(user, campLocation);
 
-  const attendances = partygoers
-    ? partygoers.reduce((acc: { [key: string]: number }, value) => {
+  const usersInCamp = useMemo(
+    () => venue && peopleAttending(partygoers, venue),
+    [partygoers, venue]
+  );
+
+  const attendances = usersInCamp
+    ? usersInCamp.reduce((acc: { [key: string]: number }, value) => {
         acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
         return acc;
       }, {})
@@ -57,9 +63,9 @@ const Camp = () => {
           withCountDown={false}
         />
       </div>
-      {partygoers && (
+      {usersInCamp && (
         <div className="col">
-          <UserList users={partygoers} imageSize={50} disableSeeAll={false} />
+          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
         </div>
       )}
       <div className="col">
