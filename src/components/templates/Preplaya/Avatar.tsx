@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useMemo } from "react";
 import { UserState } from "types/RelayMessage";
 import { User } from "types/User";
-import { PLAYA_AVATAR_SIDE } from "settings";
 import { throttle } from "lodash";
 import { WithId } from "utils/id";
 import { toPlayaUnits, toPixels } from "utils/units";
@@ -121,16 +120,8 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
     zoom,
     translateX,
   ]);
-  const inViewport = useMemo(
-    () =>
-      top - PLAYA_AVATAR_SIDE > 0 &&
-      left - PLAYA_AVATAR_SIDE > 0 &&
-      top < window.innerHeight &&
-      left < window.innerWidth,
-    [top, left]
-  );
 
-  if (!user || !inViewport) return <></>;
+  if (!user) return <></>;
 
   return (
     <div

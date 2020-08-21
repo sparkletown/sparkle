@@ -19,7 +19,6 @@ export const PLAYA_VENUE_NAME = "Playa";
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
 export const PLAYA_ICON_SIDE = 40;
-export const PLAYA_AVATAR_SIDE = 25;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 export const PLAYA_IMAGE = "/maps/playa2k.jpg";
 

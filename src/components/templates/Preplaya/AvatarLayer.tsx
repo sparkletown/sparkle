@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { WS_RELAY_URL /* JITSI_ROOM_NAME */ } from "secrets";
 import $ from "jquery";
 import "strophe.js";
@@ -20,6 +20,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
+import { toPixels } from "utils/units";
 
 (window as any).jQuery = (window as any).$ = $;
 
@@ -93,8 +94,23 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     wsSend.current(JSON.stringify(update));
   };
 
+  const jumpTo = useCallback(
+    (x: number, y: number) => {
+      const xCoord = toPixels(x, zoom, scale);
+      const yCoord = toPixels(y, zoom, scale);
+      window.scrollTo(
+        Math.min(xCoord - window.innerWidth / 2, 0),
+        Math.min(yCoord - window.innerHeight / 2, 0)
+      );
+      console.log("jumpTo", x, y, xCoord, yCoord);
+    },
+    [zoom, scale]
+  );
+
   useEffect(() => {
     if (!user) return;
+
+    let hasJumpedToUserLocation = false;
 
     const ws = new WebSocket(WS_RELAY_URL || DEFAULT_WS_RELAY_URL);
 
@@ -112,6 +128,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
 
     ws.onmessage = (data) => {
+      console.log("WS message:", data);
       try {
         const update = JSON.parse(data.data.toString()) as BroadcastMessage;
         const newUserStateMap = { ...userStateMapRef.current };
@@ -119,6 +136,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           newUserStateMap[uid] = update.updates[uid];
         }
         setUserStateMap(newUserStateMap);
+
+        if (user.uid in update.updates && !hasJumpedToUserLocation) {
+          jumpTo(update.updates[user.uid].x, update.updates[user.uid].y);
+          hasJumpedToUserLocation = true;
+        }
       } catch (err) {
         console.error(
           `Error ${err} receiving data from ws: ${data.data}; continuing`
@@ -129,13 +151,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       ws.close();
       setUserStateMap({});
     };
-  }, [user]);
+  }, [user, jumpTo]);
 
   return (
-    <div className="avatar-container">
+    <>
       {Object.keys(userStateMap)
         .filter((uid) => !!partygoers.find((partygoer) => partygoer.id === uid))
-        .map((uid) => {
+        .map((uid, index) => {
           return (
             <Avatar
               user={partygoers.find((partygoer) => partygoer.id === uid)}
@@ -147,6 +169,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               translateY={translateY}
               sendUpdatedState={sendUpdatedState}
               setSelectedUserProfile={setSelectedUserProfile}
+              key={index}
             />
           );
         })}
@@ -155,7 +178,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         onHide={() => setSelectedUserProfile(undefined)}
         userProfile={selectedUserProfile}
       />
-    </div>
+    </>
   );
 };
 

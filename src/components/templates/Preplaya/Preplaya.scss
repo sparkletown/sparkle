@@ -10,6 +10,19 @@ $sand: #937c63;
     margin-top: 0;
     position: relative;
     transition: all 0.3s;
+
+    .avatar {
+      position: absolute;
+      border-radius: 50%;
+      width: 1.5%;
+      height: 1.5%;
+      background: $sand;
+      border: 0.5% solid $dark;
+
+      .profile-image {
+        width: 100%;
+      }
+    }
   }
 
   .demo-message {
