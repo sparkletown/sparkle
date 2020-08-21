@@ -11,6 +11,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { peopleAttending } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
+import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -93,7 +94,6 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
         setEventsNow(currentEvents);
       });
   }, [venue]);
-  console.log(venue);
 
   return (
     <>
@@ -150,25 +150,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
         <div className="description">
           {venue.config?.landingPageConfig?.description}
         </div>
-        <div className="venue-info-container">
-          <div className="whats-on-container">
-            <div className="title-container">
-              <img src="/sparkle-icon.png" alt="sparkle icon" />
-              <span className="title">{`What's on now`}</span>
-            </div>
-            <div className="description-container">
-              {eventsNow.length > 0 ? (
-                <>
-                  <span className="yellow">{eventsNow[0].name}</span>
-                  <span> by </span>
-                  <span className="yellow">{eventsNow[0].host}</span>
-                </>
-              ) : (
-                <span className="yellow">No events currently</span>
-              )}
-            </div>
-          </div>
-        </div>
+        <VenueInfoEvents
+          eventsNow={eventsNow}
+          venue={venue}
+          showButton={false}
+        />
       </div>
     </>
   );
