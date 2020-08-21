@@ -22,8 +22,6 @@ import useLocationUpdateEffect, {
 } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { throttle } from "lodash";
 
 import "./Preplaya.scss";
@@ -241,12 +239,19 @@ const Preplaya = () => {
             )}
           </Overlay>
         </div>
-        <div className="button-bar">
-          <div className="button" onClick={() => setZoom(zoom + 0.1)}>
-            <FontAwesomeIcon icon={faPlus} className="icon" />
+        <div className="playa-controls">
+          <div className="playa-controls-zoom">
+            <div
+              className="playa-controls-zoom-in"
+              onClick={() => setZoom(zoom + 0.1)}
+            ></div>
+            <div
+              className="playa-controls-zoom-out"
+              onClick={() => setZoom(Math.max(zoom - 0.1, 1))}
+            ></div>
           </div>
-          <div className="button" onClick={() => setZoom(zoom - 0.1)}>
-            <FontAwesomeIcon icon={faMinus} className="icon" />
+          <div className="playa-controls-shout">
+            <div className="playa-controls-shout-btn"></div>
           </div>
         </div>
         <div className="chat-pop-up">
