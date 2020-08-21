@@ -199,6 +199,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         )}
         <div className="playa">
           <PlayaContainer
+            rounded
             interactive={!isAdminPlaced}
             resizable={false}
             coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
