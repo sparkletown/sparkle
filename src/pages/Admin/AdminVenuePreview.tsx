@@ -41,16 +41,31 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </div>
             <div className="title" style={{ marginTop: 10 }}>
               {" "}
-              This is a preview of your video:
+              This is a preview of your art piece:
             </div>
-            <iframe
-              className="youtube-video"
-              title="art-piece-video"
-              src={ConvertToEmbeddableUrl(venue.embedIframeUrl)}
-              frameBorder="0"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            ></iframe>
+            <div
+              style={{
+                position: "relative",
+                width: "100%",
+                height: "0",
+                paddingBottom: "50%",
+              }}
+            >
+              <iframe
+                style={{
+                  width: "100%",
+                  position: "absolute",
+                  height: "100%",
+                  left: 0,
+                  top: 0,
+                }}
+                title="art-piece-video"
+                src={ConvertToEmbeddableUrl(venue.embedIframeUrl)}
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
           </>
         );
       case VenueTemplate.zoomroom:
