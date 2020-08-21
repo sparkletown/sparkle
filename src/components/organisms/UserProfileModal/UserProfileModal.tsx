@@ -97,6 +97,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
+          <Badges />
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
@@ -106,6 +107,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
       </Modal.Body>
     </Modal>
   );
+};
+
+const Badges: React.FC<{}> = () => {
+  return <></>;
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
