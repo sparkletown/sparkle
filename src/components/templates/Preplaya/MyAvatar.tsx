@@ -1,9 +1,14 @@
-import React, { useRef, useEffect, useMemo, useState } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useMemo,
+  useState,
+  useCallback,
+} from "react";
 import { UserState } from "types/RelayMessage";
 import { User } from "types/User";
 import { throttle } from "lodash";
 import { WithId } from "utils/id";
-import { toPixels } from "utils/units";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -11,7 +16,6 @@ interface PropsType {
   scale: number;
   zoom: number;
   sendUpdatedState: (state: UserState) => void;
-  setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
@@ -20,11 +24,14 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   scale,
   zoom,
   sendUpdatedState,
-  setSelectedUserProfile,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [x, setX] = useState(state.x);
-  const [y, setY] = useState(state.y);
+  const [x, setX] = useState<number>();
+  const [y, setY] = useState<number>();
+
+  const stateUpdated = useCallback(() => {
+    if (x && y && state) sendUpdatedState({ x, y, speaking: state.speaking });
+  }, [x, y, state, sendUpdatedState]);
 
   useEffect(() => {
     if (ref.current === null) return;
@@ -40,6 +47,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         return;
       }
       event.preventDefault();
+      event.stopPropagation();
       dragging = true;
       if (event instanceof TouchEvent) {
         dragStartX = event.touches[0].clientX;
@@ -64,22 +72,24 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         diffY = event.clientY - dragStartY;
       }
 
-      setX((x) => x + (diffX - movedSoFarX) / zoom);
-      setY((y) => y + (diffY - movedSoFarY) / zoom);
-      sendUpdatedState({ x, y, speaking: state.speaking });
+      setX((x) => x && x + (diffX - movedSoFarX) / zoom / scale);
+      setY((y) => y && y + (diffY - movedSoFarY) / zoom / scale);
+      stateUpdated();
 
       movedSoFarX = diffX;
       movedSoFarY = diffY;
     }, 25);
     const moveListener = (event: MouseEvent | TouchEvent) => {
-      if (dragging && ref.current) {
+      if (dragging) {
         event.preventDefault();
+        event.stopPropagation();
         move(event);
       }
     };
     const dragEndListener = (event: MouseEvent | TouchEvent) => {
       if (dragging && ref.current) {
         event.preventDefault();
+        event.stopPropagation();
       }
 
       // reset drag state
@@ -106,28 +116,15 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       window.removeEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
     };
-  });
+  }, [scale, zoom, stateUpdated]);
 
-  const top = useMemo(() => toPixels(state.y, zoom, scale), [
-    state.y,
-    scale,
-    zoom,
-  ]);
-  const left = useMemo(() => toPixels(state.x, zoom, scale), [
-    state.x,
-    scale,
-    zoom,
-  ]);
+  const top = useMemo(() => y && y * scale, [y, scale]);
+  const left = useMemo(() => x && x * scale, [x, scale]);
 
   if (!user) return <></>;
 
   return (
-    <div
-      ref={ref}
-      className="avatar me"
-      style={{ top, left }}
-      onClick={() => setSelectedUserProfile(user)}
-    >
+    <div ref={ref} className="avatar me" style={{ top, left }}>
       <img
         className="profile-image"
         src={user.pictureUrl}

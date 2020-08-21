@@ -48,9 +48,12 @@ const Preplaya = () => {
   const [scale, setScale] = useState(
     window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
   );
-  const [zoom, setZoom] = useState(1.0);
-  const [translateX, setTranslateX] = useState(0);
-  const [translateY, setTranslateY] = useState(0);
+  // FIXME: currently looks different depending on browser window width??
+  // playa units to pixels: (units / scale) * zoom
+  // pixels to playa units: (pixels / zoom) * scale
+  const [zoom, setZoom] = useState(4.0);
+  const [translateX, setTranslateX] = useState(300);
+  const [translateY, setTranslateY] = useState(-880);
   const mapRef = useRef<HTMLDivElement>(null);
 
   const zoomRef = useRef(zoom);
@@ -322,12 +325,7 @@ const Preplaya = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer
-              zoom={zoom}
-              scale={scale}
-              translateX={translateX}
-              translateY={translateY}
-            />
+            <AvatarLayer zoom={zoom} scale={scale} />
           </div>
           <div className="playa-controls">
             <div className="playa-controls-zoom">

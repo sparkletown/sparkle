@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import { UserState } from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { toPixels } from "utils/units";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -19,16 +18,8 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
   zoom,
   setSelectedUserProfile,
 }) => {
-  const top = useMemo(() => toPixels(state.y, zoom, scale), [
-    state.y,
-    scale,
-    zoom,
-  ]);
-  const left = useMemo(() => toPixels(state.x, zoom, scale), [
-    state.x,
-    scale,
-    zoom,
-  ]);
+  const top = useMemo(() => state.y * scale, [state.y, scale]);
+  const left = useMemo(() => state.x * scale, [state.x, scale]);
 
   if (!user) return <></>;
 
