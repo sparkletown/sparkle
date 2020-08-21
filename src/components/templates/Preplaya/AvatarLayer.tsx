@@ -21,6 +21,7 @@ import { WithId } from "utils/id";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
 import { toPixels } from "utils/units";
+import { MyAvatar } from "./MyAvatar";
 
 (window as any).jQuery = (window as any).$ = $;
 
@@ -158,16 +159,23 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       {Object.keys(userStateMap)
         .filter((uid) => !!partygoers.find((partygoer) => partygoer.id === uid))
         .map((uid, index) => {
-          return (
+          const me = user?.uid === uid;
+          return me ? (
+            <MyAvatar
+              user={partygoers.find((partygoer) => partygoer.id === uid)}
+              state={userStateMap[uid]}
+              scale={scale}
+              zoom={zoom}
+              sendUpdatedState={sendUpdatedState}
+              setSelectedUserProfile={setSelectedUserProfile}
+              key={index}
+            />
+          ) : (
             <Avatar
               user={partygoers.find((partygoer) => partygoer.id === uid)}
               state={userStateMap[uid]}
-              me={user?.uid === uid}
               scale={scale}
               zoom={zoom}
-              translateX={translateX}
-              translateY={translateY}
-              sendUpdatedState={sendUpdatedState}
               setSelectedUserProfile={setSelectedUserProfile}
               key={index}
             />
