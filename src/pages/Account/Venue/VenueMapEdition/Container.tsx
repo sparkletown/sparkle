@@ -44,6 +44,7 @@ interface PropsType {
   resizable: boolean;
   onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
   otherIconsStyle?: CSSProperties;
+  rounded?: boolean;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -58,6 +59,7 @@ export const Container: React.FC<PropsType> = (props) => {
     coordinatesBoundary,
     interactive,
     resizable,
+    rounded,
     otherIconsStyle,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
@@ -200,7 +202,7 @@ export const Container: React.FC<PropsType> = (props) => {
                     height: resizable
                       ? `${otherIcons[key].height}%`
                       : otherIcons[key].width,
-                    borderRadius: "50%",
+                    borderRadius: rounded ? "50%" : "none",
                     ...otherIconsStyle,
                   }}
                   alt={`${otherIcons[key].url} map icon`}
@@ -213,6 +215,7 @@ export const Container: React.FC<PropsType> = (props) => {
               otherIconsStyle,
               resizable,
               onOtherIconClick,
+              rounded,
             ]
           )}
         </div>
@@ -222,6 +225,7 @@ export const Container: React.FC<PropsType> = (props) => {
             key={key}
             id={key}
             imageStyle={iconImageStyle}
+            rounded={!!rounded}
             {...boxes[key]}
             onChangeSize={resizeBox(key)}
           />
@@ -230,6 +234,7 @@ export const Container: React.FC<PropsType> = (props) => {
       {imageDims && interactive && (
         <CustomDragLayer
           snapToGrid={!!snapToGrid}
+          rounded={!!rounded}
           iconSize={boxes[Object.keys(boxes)[0]]} // @debt - this gets the size from the first box
         />
       )}

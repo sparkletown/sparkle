@@ -80,12 +80,16 @@ const VenuePage = () => {
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user?.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
+  useFirestoreConnect(
+    user
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
 
   if (!user) {
     return (

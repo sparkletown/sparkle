@@ -211,6 +211,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                 <div className="container venue-entrance-experience-container">
                   <div className="playa-container">
                     <PlayaContainer
+                      rounded
                       interactive={false}
                       resizable={false}
                       iconsMap={
