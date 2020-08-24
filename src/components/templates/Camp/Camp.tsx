@@ -18,8 +18,6 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
-// import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-// import InformationCard from "components/molecules/InformationCard";
 
 const Camp = () => {
   useConnectPartyGoers();
