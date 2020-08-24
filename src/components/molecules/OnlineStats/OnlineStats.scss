@@ -58,9 +58,9 @@
           background-color: rgba(0, 0, 0, 0.9);
           border-radius: 30px;
           overflow: hidden;
-          width: 300px;
+          width: calc(25% - 20px); // minus margin on each side
           height: 400px;
-          margin: 10px 10px;
+          margin: 10px;
           display: flex;
           flex-direction: column;
           padding: 10px;
@@ -86,6 +86,12 @@
               height: 100%;
               object-fit: cover;
             }
+          }
+        }
+
+        @media (max-width: 1500px) {
+          .venue-card {
+            width: calc(33% - 20px); // minus margin on each side
           }
         }
       }
