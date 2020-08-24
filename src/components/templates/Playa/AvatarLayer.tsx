@@ -44,15 +44,19 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
   const sendUpdatedState = useMemo(
     () => (state: UserState) => {
-      if (!user || !wsRef.current) return;
-
-      const update: UpdateWsMessage = {
-        type: MessageType.Update,
-        uid: user?.uid,
-        update: state,
-      };
-      wsRef.current.send(JSON.stringify(update));
+      if (!user) return;
       setMyLocation(state.x, state.y);
+
+      if (wsRef.current) {
+        const update: UpdateWsMessage = {
+          type: MessageType.Update,
+          uid: user?.uid,
+          update: state,
+        };
+        wsRef.current.send(JSON.stringify(update));
+      } else {
+        console.error("Warning: no ability to relay location");
+      }
     },
     [user, setMyLocation]
   );
