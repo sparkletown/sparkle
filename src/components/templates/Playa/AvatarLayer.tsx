@@ -89,6 +89,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       newWs.onmessage = (data) => {
         try {
           const update = JSON.parse(data.data.toString()) as BroadcastMessage;
+          let hasChanges = false;
           for (const uid of Object.keys(update.updates)) {
             if (uid === user.uid) {
               setMyServerSentState((myServerSentState) =>
@@ -96,9 +97,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               );
             } else {
               userStateMapRef.current[uid] = update.updates[uid];
+              hasChanges = true;
             }
           }
-          setUserStateMap(userStateMapRef.current);
+          setUserStateMap((prev) =>
+            hasChanges ? { ...userStateMapRef.current } : prev
+          );
         } catch (err) {
           console.error(
             `Error ${err} receiving data from ws: ${data.data}; continuing`
