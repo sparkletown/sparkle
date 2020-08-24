@@ -4,16 +4,17 @@ import React, {
   useState,
   useRef,
   useMemo,
+  useLayoutEffect,
 } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
-import { Venue } from "types/Venue";
+import { Venue, VenuePlacement } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_TEMPLATES,
   PLAYA_IMAGE,
+  PLAYA_WIDTH_AND_HEIGHT,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -35,7 +36,21 @@ const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
-const ARROW_MOVE_INCREMENT_PX = 3;
+const GATE_X = 1416;
+const GATE_Y = 3689;
+const VENUE_NEARBY_DISTANCE = 80;
+const EDGE_MESSAGES = [
+  "Some call it the digital trash fence.",
+  "Daft Punk plays in an hour.",
+  "Perfect spot to watch the digital sunrise!",
+  "You may get lonely out here, but you’re never really alone.",
+  "The edge of the SparkleVerse, for now...",
+  "If you leave there’s no refund on your free ticket! #decommodification",
+  "Ask yourself: aren’t we all just MOOP; caught up in the great big trash fence called life?",
+  "Tried to write Haiku; you are a brave explorer; SparkleVerse loves you",
+  "Why not put up an art piece out here!",
+  "Hope you’re enjoying your adventure ❤️",
+];
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -45,29 +60,43 @@ const Preplaya = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
-  const [scale, setScale] = useState(
-    window.innerWidth / PLAYA_WIDTH_AND_HEIGHT
-  );
-  // FIXME: currently looks different depending on browser window width??
-  // playa units to pixels: (units / scale) * zoom
-  // pixels to playa units: (pixels / zoom) * scale
-  const [zoom, setZoom] = useState(4.0);
-  const [translateX, setTranslateX] = useState(300);
-  const [translateY, setTranslateY] = useState(-880);
+  const [zoom, setZoom] = useState(1.0);
+  const [centerX, setCenterX] = useState(GATE_X);
+  const [centerY, setCenterY] = useState(GATE_Y);
+  const [myX, setMyX] = useState<number>();
+  const [myY, setMyY] = useState<number>();
+  const [centeredOnMe, setCenteredOnMe] = useState<boolean>();
+  const [atEdge, setAtEdge] = useState<boolean>();
+  const [atEdgeMessage, setAtEdgeMessage] = useState<string>();
   const mapRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = React.useState({
+    height: window.innerHeight,
+    width: window.innerWidth,
+  });
+  const [walkMode, setWalkMode] = useState(true);
 
-  const zoomRef = useRef(zoom);
-  useMemo(() => (zoomRef.current = zoom), [zoom]);
+  const toggleWalkMode = useCallback(() => {
+    setWalkMode(!walkMode);
+  }, [walkMode]);
 
   const { user } = useUser();
 
   useLocationUpdateEffect(user, "Playa");
 
   useEffect(() => {
-    const rescale = () => {
-      setScale(window.innerWidth / PLAYA_WIDTH_AND_HEIGHT);
+    const updateDimensions = () => {
+      setDimensions({
+        height: window.innerHeight,
+        width: window.innerWidth,
+      });
     };
+    window.addEventListener("resize", updateDimensions);
+    return () => {
+      window.removeEventListener("resize", updateDimensions);
+    };
+  });
 
+  useLayoutEffect(() => {
     let dragging = false;
     let movedSoFarX = 0;
     let movedSoFarY = 0;
@@ -103,8 +132,18 @@ const Preplaya = () => {
         diffY = event.clientY - dragStartY;
       }
 
-      setTranslateX((tx) => tx + (diffX - movedSoFarX) / zoomRef.current);
-      setTranslateY((ty) => ty + (diffY - movedSoFarY) / zoomRef.current);
+      setCenterX((tx) =>
+        Math.max(
+          0,
+          Math.min(PLAYA_WIDTH_AND_HEIGHT, tx - (diffX - movedSoFarX))
+        )
+      );
+      setCenterY((ty) =>
+        Math.max(
+          0,
+          Math.min(PLAYA_WIDTH_AND_HEIGHT, ty - (diffY - movedSoFarY))
+        )
+      );
 
       movedSoFarX = diffX;
       movedSoFarY = diffY;
@@ -132,24 +171,6 @@ const Preplaya = () => {
       event.preventDefault();
       setZoom((z) => z * DOUBLE_CLICK_ZOOM_INCREMENT);
     };
-    const keyboardEventListener = throttle((event: KeyboardEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-      switch (event.key) {
-        case "ArrowLeft":
-          setTranslateX((x) => x + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
-          break;
-        case "ArrowRight":
-          setTranslateX((x) => x - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
-          break;
-        case "ArrowUp":
-          setTranslateY((y) => y + ARROW_MOVE_INCREMENT_PX / zoomRef.current);
-          break;
-        case "ArrowDown":
-          setTranslateY((y) => y - ARROW_MOVE_INCREMENT_PX / zoomRef.current);
-          break;
-      }
-    }, 1);
 
     const zoomAction = throttle((event: WheelEvent) => {
       const trackpad = event.ctrlKey;
@@ -185,14 +206,11 @@ const Preplaya = () => {
       window.addEventListener("mouseup", dragEndListener);
       window.addEventListener("touchend", dragEndListener);
       mapRef.current.addEventListener("dblclick", doubleClickListener);
-      window.addEventListener("keydown", keyboardEventListener);
       mapRef.current.addEventListener("wheel", zoomListener);
     }
     const mapRefCurrent = mapRef.current;
 
-    window.addEventListener("resize", rescale);
     return () => {
-      window.removeEventListener("resize", rescale);
       if (mapRefCurrent) {
         mapRefCurrent.removeEventListener("mousedown", dragStartListener);
         mapRefCurrent.removeEventListener("touchstart", dragStartListener);
@@ -201,7 +219,6 @@ const Preplaya = () => {
         window.removeEventListener("mouseup", dragEndListener);
         window.removeEventListener("touchend", dragEndListener);
         mapRefCurrent.removeEventListener("dblclick", doubleClickListener);
-        window.removeEventListener("keydown", keyboardEventListener);
         mapRefCurrent.removeEventListener("wheel", zoomListener);
       }
     };
@@ -222,18 +239,32 @@ const Preplaya = () => {
     user && updateLocationData(user, "playa");
   }, [setShowModal, user]);
 
+  const distanceToVenue = (
+    x: number,
+    y: number,
+    venuePlacement: VenuePlacement | undefined
+  ) => {
+    if (!venuePlacement) {
+      return;
+    }
+    return Math.sqrt(
+      Math.pow(venuePlacement.x - x, 2) + Math.pow(venuePlacement.y - y, 2)
+    );
+  };
+
   const { camp } = useParams();
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
       if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
-        const campY = (campVenue.placement?.y || 0) * scale;
-        const scrollY = campY - window.innerHeight / 2;
-        window.scrollTo(0, scrollY);
+        if (camp.placement) {
+          setCenterX(camp.placement.x);
+          setCenterY(camp.placement.y);
+        }
         showVenue(campVenue);
       }
     }
-  }, [camp, venues, showVenue, scale]);
+  }, [camp, venues, showVenue]);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
@@ -254,9 +285,110 @@ const Preplaya = () => {
     [partygoers, hoveredVenue]
   );
 
-  return useMemo(
-    () => (
+  useEffect(() => {
+    setCenteredOnMe(myX === centerX && myY === centerY);
+    setAtEdge((atEdge) => {
+      const newAtEdge =
+        myX !== undefined &&
+        myY !== undefined &&
+        (myX <= 0 ||
+          myX >= PLAYA_WIDTH_AND_HEIGHT - 1 ||
+          myY <= 0 ||
+          myY >= PLAYA_WIDTH_AND_HEIGHT);
+      console.log(
+        "atEdge",
+        myX,
+        myY,
+        !!myX,
+        !!myX && myX <= 0,
+        myX !== undefined && myX <= 0,
+        atEdge,
+        newAtEdge
+      );
+      if (!atEdge && newAtEdge) {
+        setAtEdgeMessage(
+          EDGE_MESSAGES[Math.floor(Math.random() * EDGE_MESSAGES.length)]
+        );
+      }
+      return newAtEdge;
+    });
+  }, [centerX, centerY, myX, myY]);
+
+  const recenter = useMemo(
+    () => () => {
+      if (myX === undefined || myY === undefined) return;
+      setCenterX(myX);
+      setCenterY(myY);
+    },
+    [myX, myY]
+  );
+
+  const getNearbyVenue = useMemo(
+    () => (x: number, y: number) => {
+      if (!venues) return;
+      let closestVenue: WithId<Venue> | undefined;
+      let distanceToClosestVenue: number;
+      venues.forEach((venue) => {
+        const distance = distanceToVenue(x, y, venue.placement);
+        if (
+          distance &&
+          distance <= VENUE_NEARBY_DISTANCE &&
+          (!distanceToClosestVenue || distance < distanceToClosestVenue)
+        ) {
+          closestVenue = venue;
+          distanceToClosestVenue = distance;
+        }
+      });
+      return closestVenue;
+    },
+    [venues]
+  );
+
+  const setMyLocation = useMemo(
+    () => (x: number, y: number) => {
+      setCenterX(x);
+      setCenterY(y);
+      setMyX(x);
+      setMyY(y);
+      const nearbyVenue = getNearbyVenue(x, y);
+      if (nearbyVenue) {
+        showVenue(nearbyVenue);
+      } else {
+        hideVenue();
+      }
+    },
+    [getNearbyVenue, showVenue, hideVenue]
+  );
+
+  return useMemo(() => {
+    const translateX = Math.min(
+      0,
+      -1 *
+        Math.min(
+          (centerX * zoom - dimensions.width / 2) / zoom,
+          PLAYA_WIDTH_AND_HEIGHT - dimensions.width
+        )
+    );
+    const translateY = Math.min(
+      0,
+      -1 *
+        Math.min(
+          (centerY * zoom - dimensions.height / 2) / zoom,
+          PLAYA_WIDTH_AND_HEIGHT - dimensions.height
+        )
+    );
+
+    return (
       <>
+        <div className="playa-banner">
+          PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
+          alteration by placement team as we build the playa together. Have fun!
+        </div>
+        {atEdge && (
+          <div className="playa-banner">
+            <strong>You're at the edge of the map.</strong> {atEdgeMessage}
+          </div>
+        )}
         <div className="preplaya-container">
           <div
             className="map-container"
@@ -265,13 +397,6 @@ const Preplaya = () => {
               transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
             }}
           >
-            <div className="demo-message">
-              `PLAYA UNDER CONSTRUCTION. It’s build week: this is a preview of
-              the Playa as we build it together. Explorable Playa on the way.
-              <br />
-              Locations subject to alteration by placement team as it all comes
-              together.`
-            </div>
             <img
               className="playa-background"
               src={PLAYA_IMAGE}
@@ -281,8 +406,8 @@ const Preplaya = () => {
               <div
                 className="venue"
                 style={{
-                  top: (venue.placement?.y || 0) * scale,
-                  left: (venue.placement?.x || 0) * scale,
+                  top: venue.placement?.y || 0,
+                  left: venue.placement?.x || 0,
                   position: "absolute",
                 }}
                 onClick={() => showVenue(venue)}
@@ -325,9 +450,28 @@ const Preplaya = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer zoom={zoom} scale={scale} />
+            <AvatarLayer
+              zoom={zoom}
+              walkMode={walkMode}
+              setMyLocation={setMyLocation}
+            />
           </div>
           <div className="playa-controls">
+            <div
+              className={`playa-controls-recenter ${
+                centeredOnMe === false ? "show" : ""
+              }`}
+              onClick={recenter}
+            >
+              <div className="playa-controls-recenter-btn" />
+            </div>
+            <div className={"playa-controls-walkmode"} onClick={toggleWalkMode}>
+              <div
+                className={`playa-controls-walkmode-btn ${
+                  walkMode ? "walk" : ""
+                }`}
+              />
+            </div>
             <div className="playa-controls-zoom">
               <div
                 className="playa-controls-zoom-in"
@@ -360,23 +504,29 @@ const Preplaya = () => {
           )}
         </Modal>
       </>
-    ),
-    [
-      hideVenue,
-      hoveredVenue,
-      scale,
-      selectedVenue,
-      showModal,
-      showVenue,
-      showVenueTooltip,
-      translateX,
-      translateY,
-      user,
-      users,
-      venues,
-      zoom,
-    ]
-  );
+    );
+  }, [
+    hideVenue,
+    hoveredVenue,
+    selectedVenue,
+    showModal,
+    showVenue,
+    showVenueTooltip,
+    user,
+    users,
+    venues,
+    walkMode,
+    toggleWalkMode,
+    centerX,
+    centerY,
+    centeredOnMe,
+    recenter,
+    setMyLocation,
+    atEdge,
+    atEdgeMessage,
+    dimensions,
+    zoom,
+  ]);
 };
 
 export default Preplaya;

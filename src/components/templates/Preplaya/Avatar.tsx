@@ -6,7 +6,6 @@ import { WithId } from "utils/id";
 interface PropsType {
   user: WithId<User> | undefined;
   state: UserState;
-  scale: number;
   zoom: number;
   setSelectedUserProfile: (user: WithId<User>) => void;
 }
@@ -14,12 +13,11 @@ interface PropsType {
 export const Avatar: React.FunctionComponent<PropsType> = ({
   user,
   state,
-  scale,
   zoom,
   setSelectedUserProfile,
 }) => {
-  const top = useMemo(() => state.y * scale, [state.y, scale]);
-  const left = useMemo(() => state.x * scale, [state.x, scale]);
+  const top = useMemo(() => state.y, [state.y]);
+  const left = useMemo(() => state.x, [state.x]);
 
   if (!user) return <></>;
 
@@ -29,6 +27,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       style={{ top, left }}
       onClick={() => setSelectedUserProfile(user)}
     >
+      <span className="helper" />
       <img
         className="profile-image"
         src={user.pictureUrl}

@@ -19,9 +19,11 @@ export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_sou
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
+export const PLAYA_AVATAR_SIZE = 60;
 export const PLAYA_ICON_SIDE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 export const PLAYA_IMAGE = "/maps/playa2k.jpg";
+export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
@@ -123,4 +125,3 @@ export const DEFAULT_REDIRECT_URL =
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
 export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
-export const DEFAULT_JITSI_ROOM_NAME = "sparkleverse-local";

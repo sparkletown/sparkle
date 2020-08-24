@@ -1,136 +1,118 @@
-import React, {
-  useRef,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import { UserState } from "types/RelayMessage";
-import { User } from "types/User";
 import { throttle } from "lodash";
-import { WithId } from "utils/id";
+import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
+import { useUser } from "hooks/useUser";
 
 interface PropsType {
-  user: WithId<User> | undefined;
-  state: UserState;
-  scale: number;
+  serverSentState: UserState | undefined;
   zoom: number;
+  walkMode: boolean;
   sendUpdatedState: (state: UserState) => void;
+  setMyLocation: (x: number, y: number) => void;
 }
 
-export const MyAvatar: React.FunctionComponent<PropsType> = ({
-  user,
-  state,
-  scale,
-  zoom,
-  sendUpdatedState,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [x, setX] = useState<number>();
-  const [y, setY] = useState<number>();
+const ARROW_MOVE_INCREMENT_PX_WALK = 3;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 10;
 
-  const stateUpdated = useCallback(() => {
-    if (x && y && state) sendUpdatedState({ x, y, speaking: state.speaking });
-  }, [x, y, state, sendUpdatedState]);
+export const MyAvatar: React.FunctionComponent<PropsType> = ({
+  serverSentState,
+  zoom,
+  walkMode,
+  sendUpdatedState,
+  setMyLocation,
+}) => {
+  const { profile } = useUser();
+  const ref = useRef<HTMLDivElement>(null);
+  const [state, setState] = useState<UserState>();
+  const stateInitialized = useRef(false);
 
   useEffect(() => {
+    if (!serverSentState || stateInitialized.current) return;
+    setState(serverSentState);
+    setMyLocation(serverSentState.x, serverSentState.y);
+    stateInitialized.current = true;
+  }, [serverSentState, setMyLocation]);
+
+  useLayoutEffect(() => {
     if (ref.current === null) return;
 
-    let dragging = false;
-    let movedSoFarX = 0;
-    let movedSoFarY = 0;
-    let dragStartX = 0;
-    let dragStartY = 0;
-
-    const dragStartListener = (event: MouseEvent | TouchEvent) => {
-      if (event.which !== 1) {
-        return;
+    const pressedKeys: { [key: string]: boolean } = {};
+    const keyListener = throttle((event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "ArrowUp":
+        case "ArrowDown":
+          pressedKeys[event.key] = event.type === "keydown";
+          break;
+        default:
+          return;
       }
-      event.preventDefault();
-      event.stopPropagation();
-      dragging = true;
-      if (event instanceof TouchEvent) {
-        dragStartX = event.touches[0].clientX;
-        dragStartY = event.touches[0].clientY;
-      } else {
-        dragStartX = event.clientX;
-        dragStartY = event.clientY;
-      }
-    };
-    const move = throttle((event: MouseEvent | TouchEvent) => {
-      // since this function is asynchronous due to throttling, it's possible that dragging is false in moveListener but this is still called
-      if (!dragging) return;
+      const moveIncrement = walkMode
+        ? ARROW_MOVE_INCREMENT_PX_WALK
+        : ARROW_MOVE_INCREMENT_PX_BIKE;
+      setState((state) => {
+        if (state) {
+          let needsUpdate = false;
+          if (pressedKeys["ArrowLeft"]) {
+            state.x = Math.max(0, state.x - moveIncrement);
+            needsUpdate = true;
+          }
+          if (pressedKeys["ArrowRight"]) {
+            state.x = Math.min(
+              PLAYA_WIDTH_AND_HEIGHT - 1,
+              state.x + moveIncrement
+            );
+            needsUpdate = true;
+          }
+          if (pressedKeys["ArrowUp"]) {
+            state.y = Math.max(0, state.y - moveIncrement);
+            needsUpdate = true;
+          }
+          if (pressedKeys["ArrowDown"]) {
+            state.y = Math.min(
+              PLAYA_WIDTH_AND_HEIGHT - 1,
+              state.y + moveIncrement
+            );
+            needsUpdate = true;
+          }
+          if (needsUpdate) {
+            sendUpdatedState(state);
+          }
+        }
+        return state;
+      });
+    }, 16);
 
-      let diffX: number;
-      let diffY: number;
-
-      if (event instanceof TouchEvent) {
-        diffX = event.touches[0].clientX - dragStartX;
-        diffY = event.touches[0].clientY - dragStartY;
-      } else {
-        diffX = event.clientX - dragStartX;
-        diffY = event.clientY - dragStartY;
-      }
-
-      setX((x) => x && x + (diffX - movedSoFarX) / zoom / scale);
-      setY((y) => y && y + (diffY - movedSoFarY) / zoom / scale);
-      stateUpdated();
-
-      movedSoFarX = diffX;
-      movedSoFarY = diffY;
-    }, 25);
-    const moveListener = (event: MouseEvent | TouchEvent) => {
-      if (dragging) {
-        event.preventDefault();
-        event.stopPropagation();
-        move(event);
-      }
-    };
-    const dragEndListener = (event: MouseEvent | TouchEvent) => {
-      if (dragging && ref.current) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      // reset drag state
-      dragStartX = 0;
-      dragStartY = 0;
-      movedSoFarX = 0;
-      movedSoFarY = 0;
-      dragging = false;
-    };
-
-    ref.current.addEventListener("mousedown", dragStartListener);
-    ref.current.addEventListener("touchstart", dragStartListener);
-    window.addEventListener("mousemove", moveListener);
-    window.addEventListener("touchmove", moveListener);
-    window.addEventListener("mouseup", dragEndListener);
-    window.addEventListener("touchend", dragEndListener);
-
-    const refCurrent = ref.current;
+    window.addEventListener("keydown", keyListener);
+    window.addEventListener("keyup", keyListener);
     return () => {
-      refCurrent.removeEventListener("mousedown", dragStartListener);
-      refCurrent.removeEventListener("touchstart", dragStartListener);
-      window.removeEventListener("mousemove", moveListener);
-      window.removeEventListener("touchmove", moveListener);
-      window.removeEventListener("mouseup", dragEndListener);
-      window.addEventListener("touchend", dragEndListener);
+      window.removeEventListener("keydown", keyListener);
+      window.removeEventListener("keyup", keyListener);
     };
-  }, [scale, zoom, stateUpdated]);
+  }, [zoom, walkMode, sendUpdatedState]);
 
-  const top = useMemo(() => y && y * scale, [y, scale]);
-  const left = useMemo(() => x && x * scale, [x, scale]);
-
-  if (!user) return <></>;
+  if (!profile || !state) return <></>;
 
   return (
-    <div ref={ref} className="avatar me" style={{ top, left }}>
+    <div
+      ref={ref}
+      className="avatar me"
+      style={{
+        top: state.y - PLAYA_AVATAR_SIZE / 2,
+        left: state.x - PLAYA_AVATAR_SIZE / 2,
+      }}
+    >
+      <span className="helper" />
       <img
         className="profile-image"
-        src={user.pictureUrl}
-        alt={user.partyName}
-        title={user.partyName}
+        src={profile?.pictureUrl}
+        alt={profile?.partyName}
+        title={profile?.partyName}
       />
     </div>
   );
 };
+
+MyAvatar.whyDidYouRender = true;

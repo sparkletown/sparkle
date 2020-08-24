@@ -145,6 +145,7 @@ const VenuePage = () => {
   }
 
   let template;
+  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzbarRouter />;
@@ -163,6 +164,7 @@ const VenuePage = () => {
       break;
     case VenueTemplate.preplaya:
       template = <PreplayaRouter />;
+      fullscreen = true;
       break;
     case VenueTemplate.playa:
       template = <PlayaRouter />;
@@ -191,7 +193,7 @@ const VenuePage = () => {
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar>{template}</WithNavigationBar>
+      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };

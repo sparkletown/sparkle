@@ -10,34 +10,35 @@ $sand: #937c63;
     margin-top: 0;
     position: relative;
     transition: all 0.3s;
+    transform-origin: top left;
+    width: $playa-width-and-height;
+    height: $playa-width-and-height;
 
     .avatar {
       position: absolute;
       border-radius: 50%;
-      width: 1.5%;
-      height: 1.5%;
+      width: $playa-avatar-size;
+      height: $playa-avatar-size;
       background: $sand;
       border: 0.5% solid $dark;
       z-index: 1;
+      transition: all 0.1s ease-in-out;
+      overflow: hidden;
+
+      .helper {
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
+      }
 
       .profile-image {
         width: 100%;
       }
-    }
-  }
 
-  .demo-message {
-    position: fixed;
-    z-index: 1;
-    text-align: center;
-    padding-top: 14px;
-    background-image: linear-gradient(
-      124deg,
-      #00f6d5 0%,
-      #6f43ff 50%,
-      #e15ada 100%
-    );
-    width: 100%;
+      &.me {
+        box-shadow: 0 0 0 75px rgba(purple, 0.25);
+      }
+    }
   }
 
   .playa-background {
@@ -214,6 +215,70 @@ $sand: #937c63;
   bottom: 30px;
   right: 30px;
 
+  .playa-controls-recenter {
+    background-color: rgba($sand, 0.8);
+    width: 44px;
+    height: 44px;
+
+    border-radius: 22px;
+    margin-bottom: 6px;
+    cursor: pointer;
+
+    transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1), visibility 0s,
+      opacity 0.5s ease-in-out;
+    visibility: hidden;
+    opacity: 0;
+    &.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .playa-controls-recenter-btn {
+      height: 100%;
+      width: 100%;
+      background-image: url("./img/playa-controls-recenter.png");
+      background-size: 20px 20px;
+      background-position: center center;
+      background-repeat: no-repeat;
+      &:hover {
+        transform: scale(1.2);
+      }
+      &:active {
+        transform: scale(1);
+      }
+    }
+  }
+
+  .playa-controls-walkmode {
+    background-color: rgba($sand, 0.8);
+    width: 44px;
+    height: 44px;
+
+    border-radius: 22px;
+    margin-bottom: 6px;
+    cursor: pointer;
+
+    .playa-controls-walkmode-btn {
+      height: 100%;
+      width: 100%;
+      background-image: url("./img/playa-controls-bike.png");
+      background-size: 20px 20px;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      &:hover {
+        transform: scale(1.2);
+      }
+      &:active {
+        transform: scale(1);
+      }
+
+      &.walk {
+        background-image: url("./img/playa-controls-walk.png");
+      }
+    }
+  }
+
   .playa-controls-zoom {
     position: relative;
     background-color: rgba($sand, 0.8);
@@ -278,4 +343,18 @@ $sand: #937c63;
       }
     }
   }
+}
+
+.playa-banner {
+  position: fixed;
+  z-index: 1;
+  text-align: center;
+  padding-top: 14px;
+  background-image: linear-gradient(
+    124deg,
+    #00f6d5 0%,
+    #6f43ff 50%,
+    #e15ada 100%
+  );
+  width: 100%;
 }

@@ -6,4 +6,3 @@ export const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 export const STRIPE_PUBLISHABLE_KEY =
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
-export const JITSI_ROOM_NAME = process.env.REACT_APP_JITSI_ROOM_NAME;
