@@ -52,8 +52,12 @@ $sand: #937c63;
       padding: 12px 20px;
       display: flex;
       flex-wrap: wrap;
+      align-items: center;
       align-content: space-between;
       justify-content: flex-end;
+      .navbar-link-schedule {
+        margin-right: 8px;
+      }
       .navbar-link-message,
       .navbar-link-profile,
       .navbar-link-menu {
@@ -71,7 +75,6 @@ $sand: #937c63;
           background-size: 40px 40px;
         }
         &.navbar-link-profile {
-          //background-image: url(./navbar-link-profile.png);
           background-size: 40px 40px;
         }
         &.navbar-link-menu {
