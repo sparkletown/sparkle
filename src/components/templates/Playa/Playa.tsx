@@ -317,14 +317,11 @@ const Playa = () => {
     });
   }, [centerX, centerY, myX, myY]);
 
-  const recenter = useMemo(
-    () => () => {
-      if (myX === undefined || myY === undefined) return;
-      setCenterX(myX);
-      setCenterY(myY);
-    },
-    [myX, myY]
-  );
+  const recenter = useCallback(() => {
+    if (myX === undefined || myY === undefined) return;
+    setCenterX(myX);
+    setCenterY(myY);
+  }, [myX, myY]);
 
   const getNearbyVenue = useMemo(
     () => (x: number, y: number) => {
