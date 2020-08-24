@@ -20,7 +20,7 @@ import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
-import { PreplayaRouter } from "components/templates/Preplaya/Router";
+import { PlayaRouter } from "components/templates/Playa/Router";
 import { CampRouter } from "components/templates/Camp/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -163,7 +163,7 @@ const VenuePage = () => {
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
-      template = <PreplayaRouter />;
+      template = <PlayaRouter />;
       fullscreen = true;
       break;
     case VenueTemplate.zoomroom:

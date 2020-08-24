@@ -26,7 +26,7 @@ import { useParams } from "react-router-dom";
 import { throttle } from "lodash";
 import AvatarLayer from "./AvatarLayer";
 
-import "./Preplaya.scss";
+import "./Playa.scss";
 import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -56,7 +56,7 @@ const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
 
-const Preplaya = () => {
+const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
@@ -389,7 +389,7 @@ const Preplaya = () => {
             <strong>You're at the edge of the map.</strong> {atEdgeMessage}
           </div>
         )}
-        <div className="preplaya-container">
+        <div className="playa-container">
           <div
             className="map-container"
             ref={mapRef}
@@ -529,4 +529,4 @@ const Preplaya = () => {
   ]);
 };
 
-export default Preplaya;
+export default Playa;
