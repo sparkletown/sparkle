@@ -38,6 +38,9 @@ $sand: #937c63;
       &.me {
         box-shadow: 0 0 0 75px rgba(purple, 0.25);
       }
+      &.they {
+        box-shadow: 0 0 0 75px rgba(lightgreen, 0.25);
+      }
     }
   }
 
