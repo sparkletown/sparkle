@@ -36,6 +36,8 @@ const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
+const ZOOM_MIN = 1;
+const ZOOM_MAX = 3;
 const GATE_X = 1416;
 const GATE_Y = 3689;
 const VENUE_NEARBY_DISTANCE = 80;
@@ -178,14 +180,14 @@ const Playa = () => {
       setZoom((z) =>
         Math.min(
           Math.max(
-            1,
+            ZOOM_MIN,
             z +
               delta *
                 (trackpad
                   ? TRACKPAD_ZOOM_INCREMENT_DELTA
                   : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
-          3
+          ZOOM_MAX
         )
       );
     }, 1);
