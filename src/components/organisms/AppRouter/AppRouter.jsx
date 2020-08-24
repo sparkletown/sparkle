@@ -46,14 +46,10 @@ const AppRouter = ({ defaultRedirect }) => {
 
   useEffect(() => {
     window.addEventListener("click", onClickWindow, false);
-    window.addEventListener("onbeforeunload", leaveRoomBeforeUnload, false);
+    window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
     return () => {
       window.removeEventListener("click", onClickWindow, false);
-      window.removeEventListener(
-        "onbeforeunload",
-        leaveRoomBeforeUnload,
-        false
-      );
+      window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
     };
   });
 

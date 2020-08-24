@@ -85,9 +85,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }, [user, profile, venueName, setSeatedAtTable]);
 
   useEffect(() => {
-    window.addEventListener("onbeforeunload", leaveSeat);
+    window.addEventListener("beforeunload", leaveSeat);
     return () => {
-      window.removeEventListener("onbeforeunload", leaveSeat, false);
+      window.removeEventListener("beforeunload", leaveSeat, false);
     };
   }, [leaveSeat]);
 

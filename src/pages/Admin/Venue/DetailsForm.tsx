@@ -416,8 +416,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   Zoom URL
                 </h4>
                 <div style={{ fontSize: "16px" }}>
-                  (you can edit this later so you can leave a placeholder for
-                  now)
+                  (Enter a video chat link. You can edit this later so you can
+                  leave a placeholder for now)
                 </div>
                 <textarea
                   disabled={disable}
@@ -437,6 +437,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               <div className="input-container">
                 <div className="input-title">
                   Livestream URL, for people to view in your venue
+                </div>
+                <div className="input-title">
+                  (Enter an embeddable URL link. You can edit this later so you
+                  can leave a placeholder for now)
                 </div>
                 <textarea
                   disabled={disable}
@@ -458,7 +462,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   URL to your artwork, to embed in the experience as an iframe
                 </div>
                 <div className="input-title">
-                  (Please enter an embeddable URL link)
+                  (Enter an embeddable URL link. You can edit this later so you
+                  can leave a placeholder for now)
                 </div>
                 <textarea
                   disabled={disable}
