@@ -1,9 +1,5 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { WS_RELAY_URL } from "secrets";
-import $ from "jquery";
-import "strophe.js";
-import "strophejs-plugin-disco";
-import "strophejs-plugin-caps";
 import { useUser } from "hooks/useUser";
 import {
   UserStateMap,
@@ -21,8 +17,6 @@ import { WithId } from "utils/id";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
 import { MyAvatar } from "./MyAvatar";
-
-(window as any).jQuery = (window as any).$ = $;
 
 interface PropsType {
   zoom: number;
