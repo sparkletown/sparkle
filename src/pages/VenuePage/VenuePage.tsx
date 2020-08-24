@@ -22,7 +22,6 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { PreplayaRouter } from "components/templates/Preplaya/Router";
 import { CampRouter } from "components/templates/Camp/Router";
-import { PlayaRouter } from "components/templates/Playa/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -162,12 +161,10 @@ const VenuePage = () => {
     case VenueTemplate.themecamp:
       template = <CampRouter />;
       break;
+    case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PreplayaRouter />;
       fullscreen = true;
-      break;
-    case VenueTemplate.playa:
-      template = <PlayaRouter />;
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
