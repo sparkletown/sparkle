@@ -19,27 +19,28 @@ $sand: #937c63;
       border-radius: 50%;
       width: $playa-avatar-size;
       height: $playa-avatar-size;
-      background: $sand;
-      border: 0.5% solid $dark;
       z-index: 1;
       transition: all 0.1s ease-in-out;
       overflow: hidden;
-
-      .helper {
-        display: inline-block;
-        height: 100%;
-        vertical-align: middle;
-      }
 
       .profile-image {
         width: 100%;
       }
 
       &.me {
-        box-shadow: 0 0 0 75px rgba(purple, 0.25);
+        box-shadow: 0 0 0 ($playa-avatar-size * 1.5) rgba($green, 0.25);
+        background: $gradient;
+        padding: 4px;
+
+        .border-helper {
+          background: $sand;
+          border-radius: inherit;
+          height: 100%;
+          overflow: hidden;
+        }
       }
       &.they {
-        box-shadow: 0 0 0 75px rgba(lightgreen, 0.25);
+        border: 4px solid white;
       }
     }
   }
@@ -49,15 +50,18 @@ $sand: #937c63;
   }
 
   .venue {
-    width: 2%;
-    height: 2%;
+    width: $playa-venue-size;
+    height: $playa-venue-size;
     cursor: pointer;
     position: relative;
+    background: rgba($sand, 0.8);
+    border: 4px solid $sand;
+    border-radius: 25%;
+    text-align: center;
 
     .venue-icon {
       max-width: 100%;
       max-height: 100%;
-      border-radius: 50%;
     }
 
     .selected {
@@ -67,7 +71,7 @@ $sand: #937c63;
       bottom: 0;
       right: 0;
       animation: ripple 4s linear infinite;
-      border-radius: 50%;
+      border-radius: 25%;
     }
   }
 
@@ -193,13 +197,14 @@ $sand: #937c63;
 @keyframes ripple {
   0% {
     box-shadow: 0 0 0 0 rgba($ripple-color, 0.4),
-      0 0 0 0.5em rgba($ripple-color, 0.4), 0 0 0 1.5em rgba($ripple-color, 0.4),
-      0 0 0 2.5em rgba($ripple-color, 0.4);
+      0 0 0 0.25em rgba($ripple-color, 0.4),
+      0 0 0 0.75em rgba($ripple-color, 0.4),
+      0 0 0 1.25em rgba($ripple-color, 0.4);
   }
   100% {
-    box-shadow: 0 0 0 1em rgba($ripple-color, 0.4),
-      0 0 0 1.5em rgba($ripple-color, 0.4), 0 0 0 2.5em rgba($ripple-color, 0.4),
-      0 0 0 4em rgba($ripple-color, 0);
+    box-shadow: 0 0 0 0.5em rgba($ripple-color, 0.4),
+      0 0 0 0.75em rgba($ripple-color, 0.4),
+      0 0 0 1.25em rgba($ripple-color, 0.4), 0 0 0 2em rgba($ripple-color, 0);
   }
 }
 .link-button {
@@ -360,4 +365,10 @@ $sand: #937c63;
     #e15ada 100%
   );
   width: 100%;
+}
+
+.img-vcenter-helper {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
 }

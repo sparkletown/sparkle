@@ -104,13 +104,15 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         left: state.x - PLAYA_AVATAR_SIZE / 2,
       }}
     >
-      <span className="helper" />
-      <img
-        className="profile-image"
-        src={profile?.pictureUrl}
-        alt={profile?.partyName}
-        title={profile?.partyName}
-      />
+      <div className="border-helper">
+        <span className="img-vcenter-helper" />
+        <img
+          className="profile-image"
+          src={profile?.pictureUrl}
+          alt={profile?.partyName}
+          title={profile?.partyName}
+        />
+      </div>
     </div>
   );
 };

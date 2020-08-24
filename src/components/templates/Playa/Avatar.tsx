@@ -28,7 +28,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       style={{ top, left }}
       onClick={() => setSelectedUserProfile(user)}
     >
-      <span className="helper" />
+      <span className="img-vcenter-helper" />
       <img
         className="profile-image"
         src={user.pictureUrl}
