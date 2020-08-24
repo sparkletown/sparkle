@@ -17,18 +17,19 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  const [roomClicked, setRoomClicked] = useState("");
-  const [clicked, setClicked] = useState(false);
+  const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
 
   if (!venue) {
     return <>Loading map...</>;
   }
 
-  const rooms: CampRoomData[] = [...venue.rooms];
-  if (roomClicked !== "") {
+  const rooms = [...venue.rooms];
+  if (roomClicked) {
     const idx = rooms.findIndex((room) => room.title === roomClicked);
-    const chosenRoom = rooms.splice(idx, 1);
-    rooms.push(chosenRoom[0]);
+    if (idx !== -1) {
+      const chosenRoom = rooms.splice(idx, 1);
+      rooms.push(chosenRoom[0]);
+    }
   }
 
   const getRoomUrl = (roomUrl: string) => {
@@ -49,11 +50,17 @@ export const Map: React.FC<PropsType> = ({
             }}
             key={room.title}
             onClick={() => {
-              setClicked((prev) => !prev);
-              setRoomClicked(room.title);
+              setRoomClicked((prevRoomClicked) =>
+                prevRoomClicked === room.title ? undefined : room.title
+              );
+              console.log(roomClicked);
             }}
           >
-            <div className={`playa-venue ${clicked ? "clicked" : ""}`}>
+            <div
+              className={`playa-venue ${
+                roomClicked === room.title ? "clicked" : ""
+              }`}
+            >
               <div className="playa-venue-img">
                 <img src={room.image_url} title={room.title} alt={room.title} />
               </div>
