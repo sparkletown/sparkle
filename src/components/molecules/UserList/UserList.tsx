@@ -17,7 +17,7 @@ interface PropsType {
 
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
-  limit = 60,
+  limit = 22,
   imageSize = 40,
   activity = "partying",
   disableSeeAll = true,
@@ -34,7 +34,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
   }));
 
   if (!users) return <></>;
-
   return (
     <>
       <div className="userlist-container">

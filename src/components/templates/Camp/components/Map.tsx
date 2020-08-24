@@ -66,7 +66,7 @@ export const Map: React.FC<PropsType> = ({
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{room.title}</div>
                   <div className="playa-venue-people">
-                    {attendances[room.title]}
+                    {attendances[room.title] || 0}
                   </div>
                 </div>
                 <div className="playa-venue-secondinfo">
@@ -75,7 +75,10 @@ export const Map: React.FC<PropsType> = ({
                     <p>{room.about}</p>
                   </div>
                   <div className="playa-venue-actions">
-                    <a href="#" className="btn btn-block btn-small btn-info">
+                    <a
+                      href={`https://www.google.com`}
+                      className="btn btn-block btn-small btn-info"
+                    >
                       &#9432;
                     </a>
                     <a
