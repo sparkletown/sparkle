@@ -5,6 +5,7 @@ import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import { DEFAULT_USER_LIST_LIMIT } from "../../../settings";
 
 interface PropsType {
   users: Array<WithId<User>>;
@@ -17,7 +18,7 @@ interface PropsType {
 
 const UserList: React.FunctionComponent<PropsType> = ({
   users,
-  limit = 22,
+  limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
   activity = "partying",
   disableSeeAll = true,

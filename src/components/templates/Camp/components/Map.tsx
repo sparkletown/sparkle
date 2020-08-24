@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
-//import { RoomAttendance } from "./RoomAttendance";
 
 import "./Map.scss";
-//import { reduce } from "lodash";
 
 interface PropsType {
   venue: CampVenue;
@@ -19,13 +17,6 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  // const openRoomModal = useCallback(
-  //   (room: CampRoomData) => {
-  //     setSelectedRoom(room);
-  //     setIsRoomModalOpen(true);
-  //   },
-  //   [setSelectedRoom, setIsRoomModalOpen]
-  // );
   const [roomClicked, setRoomClicked] = useState("");
   const [clicked, setClicked] = useState(false);
 
@@ -33,12 +24,16 @@ export const Map: React.FC<PropsType> = ({
     return <>Loading map...</>;
   }
 
-  const rooms: CampRoomData[] = JSON.parse(JSON.stringify(venue.rooms));
+  const rooms: CampRoomData[] = [...venue.rooms];
   if (roomClicked !== "") {
     const idx = rooms.findIndex((room) => room.title === roomClicked);
     const chosenRoom = rooms.splice(idx, 1);
     rooms.push(chosenRoom[0]);
   }
+
+  const getRoomUrl = (roomUrl: string) => {
+    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
 
   return (
     <>
@@ -66,7 +61,7 @@ export const Map: React.FC<PropsType> = ({
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{room.title}</div>
                   <div className="playa-venue-people">
-                    {attendances[room.title] || 0}
+                    {attendances[room.title] ?? 0}
                   </div>
                 </div>
                 <div className="playa-venue-secondinfo">
@@ -77,9 +72,7 @@ export const Map: React.FC<PropsType> = ({
                   <div className="playa-venue-actions">
                     <a
                       className="btn btn-block btn-small btn-primary"
-                      href={
-                        room.url.includes("http") ? room.url : "//" + room.url
-                      }
+                      href={getRoomUrl(room.url)}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
