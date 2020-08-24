@@ -87,6 +87,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           if (needsUpdate) {
             sendUpdatedState(state);
           }
+          return needsUpdate ? { ...state } : state;
         }
         return state;
       });
