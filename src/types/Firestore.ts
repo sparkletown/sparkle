@@ -29,6 +29,10 @@ interface Experience {
 type VenueTimestamps = Record<keyof VenueStatus, number>;
 export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
+interface UserVisit {
+  timeSpent: number;
+}
+
 export interface Firestore {
   status: {
     requesting: VenueStatus;
@@ -51,6 +55,7 @@ export interface Firestore {
     events?: Record<string, VenueEvent>;
     playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
     allUsers?: Record<string, User>;
+    "userModal-visits"?: Record<string, UserVisit>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
@@ -70,5 +75,6 @@ export interface Firestore {
     statsOnlineUsers?: Array<WithId<User>>;
     statsOpenVenues?: Array<WithId<AnyVenue>>;
     allUsers?: Array<WithId<User>>;
+    "userModal-visits"?: Array<WithId<UserVisit>>;
   };
 }
