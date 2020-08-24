@@ -50,7 +50,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       if (wsRef.current) {
         const update: UpdateWsMessage = {
           type: MessageType.Update,
-          uid: user?.uid,
+          uid: user.uid,
           update: state,
         };
         wsRef.current.send(JSON.stringify(update));
