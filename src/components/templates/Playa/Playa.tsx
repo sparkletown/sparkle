@@ -298,16 +298,6 @@ const Playa = () => {
           myX >= PLAYA_WIDTH_AND_HEIGHT - 1 ||
           myY <= 0 ||
           myY >= PLAYA_WIDTH_AND_HEIGHT);
-      console.log(
-        "atEdge",
-        myX,
-        myY,
-        !!myX,
-        !!myX && myX <= 0,
-        myX !== undefined && myX <= 0,
-        atEdge,
-        newAtEdge
-      );
       if (!atEdge && newAtEdge) {
         setAtEdgeMessage(
           EDGE_MESSAGES[Math.floor(Math.random() * EDGE_MESSAGES.length)]
