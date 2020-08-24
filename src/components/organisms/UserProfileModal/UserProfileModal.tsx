@@ -15,6 +15,8 @@ import {
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { PLAYA_VENUE_NAME } from "settings";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { AnyVenue } from "types/Firestore";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -97,7 +99,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
-          <Badges />
+          <Badges user={fullUserProfile} />
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
@@ -109,8 +111,115 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   );
 };
 
-const Badges: React.FC<{}> = () => {
-  return <></>;
+const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
+  useFirestoreConnect([
+    {
+      collection: "users",
+      doc: user.id,
+      subcollections: [{ collection: "visits" }],
+      storeAs: "userModal-visits",
+    },
+  ]);
+  const visits = useSelector(
+    (state) => state.firestore.ordered["userModal-visits"]
+  );
+  const venues = useSelector((state) => state.firestore.ordered.venues);
+
+  const playaTime = useMemo(() => {
+    if (!visits) return undefined;
+
+    const playaSeconds = visits.reduce((acc, v) => acc + v.timeSpent, 0);
+    const playaHours = Math.floor(playaSeconds / (60 * 60));
+    return playaHours > 1 ? `${playaHours}` : "> 1";
+  }, [visits]);
+
+  const venuesVisited = useMemo(() => {
+    if (!visits) return undefined;
+    return visits.filter((visit) => visit.id !== "Playa").length; // Playa does not count
+  }, [visits]);
+
+  const badges = useMemo(() => {
+    if (!visits || !venues) return [];
+    return [
+      ...visits
+        .filter((visit) => visit.id !== "Playa") // no badge for the Playa. Also does not have a logo
+        .map((visit) => {
+          const { venue, room } = findVenueAndRoomByName(visit.id, venues);
+          if (!venue) return {};
+
+          if (room) {
+            return {
+              image: room.image_url,
+              label: room.title,
+            };
+          }
+
+          return {
+            image: venue.mapIconImageUrl,
+            label: venue.name,
+          };
+        }),
+      // Other badges could come here
+    ];
+  }, [visits, venues]);
+
+  if (!visits) {
+    return <>Loading...</>;
+  }
+
+  return (
+    <>
+      <div className="visits">
+        <div className="visit-item">
+          <span className="visit-item__value">{playaTime} hrs</span>
+          <span className="visit-item__label">spent on the Playa</span>
+        </div>
+        <div className="separator"></div>
+        <div className="visit-item">
+          <span className="visit-item__value">{venuesVisited}</span>
+          <span className="visit-item__label">venues visited</span>
+        </div>
+      </div>
+      <div className="badges-container">
+        <div className="badges-title">{badges.length} badges</div>
+        <ul className="badge-list">
+          {badges.map((b) => (
+            <li className="badge-list-item" key={b.label}>
+              <img
+                className="badge-list-item-image"
+                src={b.image}
+                alt={`${b.label} badge`}
+              />
+            </li>
+            // label missing on hover - similar to playa
+            // maybe link to venue on click - similar to suspected location below
+          ))}
+        </ul>
+      </div>
+    </>
+  );
+};
+
+const findVenueAndRoomByName = (
+  nameOrRoomTitle: string,
+  venues: Array<AnyVenue>
+) => {
+  const venue = venues?.find(
+    (v) =>
+      v.name === nameOrRoomTitle ||
+      (isCampVenue(v) && v.rooms.find((r) => r.title === nameOrRoomTitle))
+  );
+
+  if (!venue) return {};
+
+  if (venue.name === nameOrRoomTitle) return { venue };
+
+  return {
+    venue,
+    room:
+      isCampVenue(venue) &&
+      venue.rooms.find((r) => r.title === nameOrRoomTitle),
+  };
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
