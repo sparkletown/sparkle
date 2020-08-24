@@ -93,6 +93,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
   const venueTypeText =
     venue.template === VenueTemplate.themecamp
       ? "Camp Info:"
+      : venue.template === VenueTemplate.artpiece
+      ? "Art Piece Info:"
       : "Experience Info:";
 
   return (
