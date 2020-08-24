@@ -88,12 +88,12 @@ $sand: #937c63;
   }
   .sparkle-fairies {
     position: fixed;
-    top: 180px;
+    top: calc(#{$navbar-height} + 25px);
     left: 0px;
   }
   .donate-pop-up {
     position: fixed;
-    top: 300px;
+    top: 210px;
     left: 0px;
   }
   .chat-pop-up {

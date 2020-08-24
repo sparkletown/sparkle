@@ -155,10 +155,10 @@ const Preplaya = () => {
           Math.max(
             1,
             z +
-            delta *
-            (trackpad
-              ? TRACKPAD_ZOOM_INCREMENT_DELTA
-              : WHEEL_ZOOM_INCREMENT_DELTA)
+              delta *
+                (trackpad
+                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
+                  : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
           3
         )

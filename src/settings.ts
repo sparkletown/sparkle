@@ -16,6 +16,7 @@ export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Playa";
 export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
+export const DEFAULT_USER_LIST_LIMIT = 22;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;

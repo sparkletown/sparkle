@@ -17,6 +17,7 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
+import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 
 const Camp = () => {
   useConnectPartyGoers();
@@ -68,7 +69,10 @@ const Camp = () => {
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
-    <div className="camp-container container-fluid">
+    <div
+      className="camp-container"
+      style={{ marginLeft: 100, marginRight: 100 }}
+    >
       <div className="small-right-margin">
         <PartyTitle
           startUtcSeconds={BURN_START_UTC_SECONDS}
@@ -123,6 +127,9 @@ const Camp = () => {
       </div>
       <div className="sparkle-fairies">
         <SparkleFairiesPopUp />
+      </div>
+      <div className="info-drawer-camp">
+        <InfoDrawer venue={venue} />
       </div>
     </div>
   );

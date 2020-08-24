@@ -12,7 +12,7 @@
   cursor: pointer;
 
   &.expanded {
-    height: calc(100vh - #{$navbar-height * 2});
+    height: calc(100vh - #{$navbar-height} - 15px);
     width: 280px;
     cursor: default;
   }

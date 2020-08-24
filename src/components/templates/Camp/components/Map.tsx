@@ -1,7 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
-import { RoomAttendance } from "./RoomAttendance";
 
 import "./Map.scss";
 
@@ -18,22 +17,29 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  const openRoomModal = useCallback(
-    (room: CampRoomData) => {
-      setSelectedRoom(room);
-      setIsRoomModalOpen(true);
-    },
-    [setSelectedRoom, setIsRoomModalOpen]
-  );
+  const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
 
   if (!venue) {
     return <>Loading map...</>;
   }
 
+  const rooms = [...venue.rooms];
+  if (roomClicked) {
+    const idx = rooms.findIndex((room) => room.title === roomClicked);
+    if (idx !== -1) {
+      const chosenRoom = rooms.splice(idx, 1);
+      rooms.push(chosenRoom[0]);
+    }
+  }
+
+  const getRoomUrl = (roomUrl: string) => {
+    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
+
   return (
     <>
       <div id="map" className="map-container">
-        {venue.rooms.map((room, idx) => (
+        {rooms.map((room, idx) => (
           <div
             className="room position-absolute"
             style={{
@@ -42,22 +48,46 @@ export const Map: React.FC<PropsType> = ({
               width: room.width_percent + "%",
               height: room.height_percent + "%",
             }}
-            key={idx}
-            onClick={() => openRoomModal(room)}
+            key={room.title}
+            onClick={() => {
+              setRoomClicked((prevRoomClicked) =>
+                prevRoomClicked === room.title ? undefined : room.title
+              );
+            }}
           >
-            <img
-              className="room-image"
-              src={room.image_url}
-              onClick={() => openRoomModal(room)}
-              title={room.title}
-              alt={room.title}
-            />
-            <RoomAttendance
-              roomTitle={room.title}
-              attendance={attendances[room.title]}
-              key={idx}
-              onClick={() => openRoomModal(room)}
-            />
+            <div
+              className={`playa-venue ${
+                roomClicked === room.title ? "clicked" : ""
+              }`}
+            >
+              <div className="playa-venue-img">
+                <img src={room.image_url} title={room.title} alt={room.title} />
+              </div>
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-venue-title">{room.title}</div>
+                  <div className="playa-venue-people">
+                    {attendances[room.title] ?? 0}
+                  </div>
+                </div>
+                <div className="playa-venue-secondinfo">
+                  <div className="playa-venue-desc">
+                    <p>{room.subtitle}</p>
+                    <p>{room.about}</p>
+                  </div>
+                  <div className="playa-venue-actions">
+                    <a
+                      className="btn btn-block btn-small btn-primary"
+                      href={getRoomUrl(room.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Join the room
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         ))}
         <img
