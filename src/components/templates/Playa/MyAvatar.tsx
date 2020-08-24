@@ -35,8 +35,6 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   }, [serverSentState, setMyLocation]);
 
   useLayoutEffect(() => {
-    if (ref.current === null) return;
-
     const pressedKeys: { [key: string]: boolean } = {};
     const keyListener = throttle((event: KeyboardEvent) => {
       switch (event.key) {
@@ -55,6 +53,15 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       setState((state) => {
         if (state) {
           let needsUpdate = false;
+          // Work around possible bad state that can happen in the presence of scroll jank
+          if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
+            pressedKeys["ArrowLeft"] = false;
+            pressedKeys["ArrowRight"] = false;
+          }
+          if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
+            pressedKeys["ArrowUp"] = false;
+            pressedKeys["ArrowDown"] = false;
+          }
           if (pressedKeys["ArrowLeft"]) {
             state.x = Math.max(0, state.x - moveIncrement);
             needsUpdate = true;
