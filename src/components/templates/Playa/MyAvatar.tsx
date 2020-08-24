@@ -114,5 +114,3 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-MyAvatar.whyDidYouRender = true;
