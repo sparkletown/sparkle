@@ -126,31 +126,34 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     [myServerSentState, zoom, walkMode, sendUpdatedState, setMyLocation]
   );
 
-  return (
-    <>
-      {myAvatar}
-      {Object.keys(userStateMap)
-        .sort()
-        .filter(
-          (uid) =>
-            user?.uid !== uid &&
-            !!partygoers.find((partygoer) => partygoer.id === uid)
-        )
-        .map((uid) => (
-          <Avatar
-            user={partygoers.find((partygoer) => partygoer.id === uid)}
-            state={userStateMap[uid]}
-            zoom={zoom}
-            setSelectedUserProfile={setSelectedUserProfile}
-            key={uid}
-          />
-        ))}
-      <UserProfileModal
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-        userProfile={selectedUserProfile}
-      />
-    </>
+  return useMemo(
+    () => (
+      <>
+        {myAvatar}
+        {Object.keys(userStateMap)
+          .sort()
+          .filter(
+            (uid) =>
+              user?.uid !== uid &&
+              !!partygoers.find((partygoer) => partygoer.id === uid)
+          )
+          .map((uid) => (
+            <Avatar
+              user={partygoers.find((partygoer) => partygoer.id === uid)}
+              state={userStateMap[uid]}
+              zoom={zoom}
+              setSelectedUserProfile={setSelectedUserProfile}
+              key={uid}
+            />
+          ))}
+        <UserProfileModal
+          show={selectedUserProfile !== undefined}
+          onHide={() => setSelectedUserProfile(undefined)}
+          userProfile={selectedUserProfile}
+        />
+      </>
+    ),
+    [myAvatar, partygoers, selectedUserProfile, user, userStateMap, zoom]
   );
 };
 
