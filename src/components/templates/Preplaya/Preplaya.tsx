@@ -338,7 +338,11 @@ const Preplaya = () => {
             </div>
           </div>
           <div className="chat-pop-up">
-            <ChatDrawer roomName={"PLAYA"} chatInputPlaceholder="Chat" />
+            <ChatDrawer
+              roomName={"PLAYA"}
+              title={"Playa Chat"}
+              chatInputPlaceholder="Chat"
+            />
           </div>
           <div className="donate-pop-up">
             <DonatePopUp />

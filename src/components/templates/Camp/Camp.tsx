@@ -123,7 +123,11 @@ const Camp = () => {
         onHide={modalHidden}
       />
       <div className="chat-pop-up">
-        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+        <ChatDrawer
+          roomName={venue.name}
+          title={"Camp Chat"}
+          chatInputPlaceholder="Chat"
+        />
       </div>
       <div className="sparkle-fairies">
         <SparkleFairiesPopUp />

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
-import ProfileModal from "components/organisms/ProfileModal";
+import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -38,7 +38,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
     false
   );
@@ -55,6 +54,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     <Popover id="popover-basic">
       <Popover.Content>
         <PrivateChatModal />
+      </Popover.Content>
+    </Popover>
+  );
+
+  const profilePopover = (
+    <Popover id="profile-popover">
+      <Popover.Content>
+        <ProfilePopoverContent />
       </Popover.Content>
     </Popover>
   );
@@ -135,19 +142,22 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  <div
-                    className="navbar-link-profile"
-                    onClick={() => setIsProfileModalOpen(true)}
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={profilePopover}
+                    rootClose={true}
                   >
-                    <img
-                      src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-                      className="profile-icon"
-                      alt="avatar"
-                      width="40"
-                      height="40"
-                    />
-                  </div>
-                  {/* <div className="navbar-link-menu"></div> */}
+                    <div className="navbar-link-profile">
+                      <img
+                        src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                        className="profile-icon"
+                        alt="avatar"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                  </OverlayTrigger>
                 </div>
               </>
             ) : (
@@ -162,10 +172,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           </div>
         </div>
       </header>
-      <ProfileModal
-        show={isProfileModalOpen}
-        onHide={() => setIsProfileModalOpen(false)}
-      />
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={() => setIsAuthenticationModalOpen(false)}
