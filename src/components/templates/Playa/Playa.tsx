@@ -43,7 +43,7 @@ const GATE_Y = 3689;
 const VENUE_NEARBY_DISTANCE = 80;
 const EDGE_MESSAGES = [
   "Some call it the digital trash fence.",
-  "Daft Punk plays in an hour.",
+  "Daft Punk plays in an hour!",
   "Perfect spot to watch the digital sunrise!",
   "You may get lonely out here, but you’re never really alone.",
   "The edge of the SparkleVerse, for now...",
@@ -383,14 +383,18 @@ const Playa = () => {
     return (
       <>
         <div className="playa-banner">
-          PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
-          alteration by placement team as we build the playa together. Have fun!
+          {atEdge ? (
+            <>
+              <strong>You're at the edge of the map.</strong> {atEdgeMessage}
+            </>
+          ) : (
+            <>
+              PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
+              alteration by placement team as we build the playa together. Have
+              fun!
+            </>
+          )}
         </div>
-        {atEdge && (
-          <div className="playa-banner">
-            <strong>You're at the edge of the map.</strong> {atEdgeMessage}
-          </div>
-        )}
         <div className="playa-container">
           <div
             className="map-container"
