@@ -53,7 +53,6 @@ export const Map: React.FC<PropsType> = ({
               setRoomClicked((prevRoomClicked) =>
                 prevRoomClicked === room.title ? undefined : room.title
               );
-              console.log(roomClicked);
             }}
           >
             <div
