@@ -38,6 +38,7 @@ const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
 const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
+const INITIAL_ZOOM = 1;
 const GATE_X = 1416;
 const GATE_Y = 3689;
 const VENUE_NEARBY_DISTANCE = 80;
@@ -62,7 +63,7 @@ const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
-  const [zoom, setZoom] = useState(1.0);
+  const [zoom, setZoom] = useState(INITIAL_ZOOM);
   const [centerX, setCenterX] = useState(GATE_X);
   const [centerY, setCenterY] = useState(GATE_Y);
   const [myX, setMyX] = useState<number>();
