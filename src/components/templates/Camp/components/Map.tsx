@@ -76,12 +76,6 @@ export const Map: React.FC<PropsType> = ({
                   </div>
                   <div className="playa-venue-actions">
                     <a
-                      href={`https://www.google.com`}
-                      className="btn btn-block btn-small btn-info"
-                    >
-                      &#9432;
-                    </a>
-                    <a
                       className="btn btn-block btn-small btn-primary"
                       href={
                         room.url.includes("http") ? room.url : "//" + room.url
