@@ -16,7 +16,7 @@ const Step1 = () => {
       <AuthenticationModal
         show={true}
         onHide={() => console.log("hide")}
-        showAuth="register"
+        showAuth="login"
       />
     </div>
   );
