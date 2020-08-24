@@ -20,9 +20,8 @@ import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
-import { PreplayaRouter } from "components/templates/Preplaya/Router";
-import { CampRouter } from "components/templates/Camp/Router";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { CampRouter } from "components/templates/Camp/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useFirestoreConnect } from "react-redux-firebase";
@@ -145,6 +144,7 @@ const VenuePage = () => {
   }
 
   let template;
+  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzbarRouter />;
@@ -161,11 +161,10 @@ const VenuePage = () => {
     case VenueTemplate.themecamp:
       template = <CampRouter />;
       break;
-    case VenueTemplate.preplaya:
-      template = <PreplayaRouter />;
-      break;
     case VenueTemplate.playa:
+    case VenueTemplate.preplaya:
       template = <PlayaRouter />;
+      fullscreen = true;
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
@@ -191,7 +190,7 @@ const VenuePage = () => {
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar>{template}</WithNavigationBar>
+      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };

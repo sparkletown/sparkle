@@ -1,5 +1,11 @@
 @import "scss/constants.scss";
 
+#profile-popover {
+  &.popover {
+    height: unset;
+  }
+}
+
 .profile-modal-container {
   padding: 30px;
   background: $black;

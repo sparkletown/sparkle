@@ -62,7 +62,11 @@ const ArtPiece = () => {
             />
           </div>
         </div>
-        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+        <ChatDrawer
+          title={"Art Piece Chat"}
+          roomName={venue.name}
+          chatInputPlaceholder="Chat"
+        />
       </div>
       <div className="sparkle-fairie">
         <SparkleFairiesPopUp />

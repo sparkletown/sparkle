@@ -16,12 +16,15 @@ export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Playa";
 export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
+export const DEFAULT_USER_LIST_LIMIT = 22;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
+export const PLAYA_AVATAR_SIZE = 60;
 export const PLAYA_ICON_SIDE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/maps/playa2k.jpg";
+export const PLAYA_IMAGE = "/maps/playa4k.jpg";
+export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
@@ -119,3 +122,7 @@ export const DEFAULT_REDIRECT_URL =
   FIREBASE_CONFIG.projectId === "co-reality-map"
     ? venueLandingUrl("kansassmittys")
     : venueInsideUrl("playa");
+
+// Trouble connecting? Run a local relay:
+// git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
+export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
