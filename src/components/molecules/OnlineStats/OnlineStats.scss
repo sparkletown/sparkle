@@ -4,6 +4,16 @@
   width: 100%;
   max-width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
+  transform: translateY(-800px);
+  transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  &.show {
+    transform: translateY(0px);
+  }
+  .popover-body {
+    height: 100%;
+    overflow: hidden;
+  }
 
   .stats-outer-container {
     width: 100%;
@@ -134,19 +144,4 @@
       }
     }
   }
-}
-
-.popover {
-  max-width: 100%;
-  transform: translateY(-800px);
-  transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
-
-  &.show {
-    transform: translateY(0px);
-  }
-}
-
-.popover-body {
-  height: 100%;
-  overflow: hidden;
 }
