@@ -43,6 +43,14 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
         onChange={(ev) => setVolume(Number(ev.target.value))}
         value={volume}
       />
+      <iframe
+        title="burning-man-radio"
+        allow="autoplay"
+        width="100%"
+        height="200"
+        src="https://www.iheart.com/podcast/269-burning-man-live-63444432/episode/burning-in-a-virtual-universe-70395877/?embed=true"
+        frameBorder="0"
+      ></iframe>
     </div>
   );
 };
