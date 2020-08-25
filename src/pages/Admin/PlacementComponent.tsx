@@ -10,17 +10,23 @@ import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_ICON_SIDE, PLAYA_IMAGE } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { editPlacementCastSchema } from "./Venue/DetailsValidationSchema";
+import {
+  editPlacementCastSchema,
+  editPlacementSchema,
+} from "./Venue/DetailsValidationSchema";
 import * as Yup from "yup";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { useUser } from "hooks/useUser";
 import { PlacementInput } from "api/admin";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { VenuePlacementState, Venue } from "types/Venue";
 import { ExtractProps } from "types/utility";
 import { SubmitButton } from "./Venue/DetailsForm";
+import { AnyVenue } from "types/Firestore";
+import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
+type FormErrors = FieldErrors<Required<FormValues>>;
 
 const isUnplaced = (venue: Venue) => {
   return !venue?.placement?.state;
@@ -42,11 +48,20 @@ const createFirestorePlacementInput = async (
 
   const fileKey = "mapIconImageFile";
 
+  const placementPayload = {
+    ...input.placement,
+    addressText: input.addressText,
+    notes: input.notes,
+  };
+
+  const firestorePayload = {
+    placement: placementPayload,
+    mapIconImageUrl: input.mapIconImageUrl,
+  };
+
   const fileArr = input[fileKey];
   if (!fileArr || fileArr.length === 0) {
-    return {
-      placement: input.placement,
-    };
+    return firestorePayload;
   }
   const file = fileArr[0];
 
@@ -58,23 +73,25 @@ const createFirestorePlacementInput = async (
   const downloadUrl: string = await uploadFileRef.getDownloadURL();
 
   return {
+    ...firestorePayload,
     mapIconImageUrl: downloadUrl,
-    placement: {
-      ...input.placement,
-      addressText: input.addressText,
-      notes: input.notes,
-    },
   };
 };
 
-const updatePlacement = async (input: PlacementInput, user: UserInfo) => {
+const updatePlacement = async (
+  input: PlacementInput,
+  venueId: string,
+  user: UserInfo
+) => {
   const firestorePlacementInput = await createFirestorePlacementInput(
     input,
     user
   );
 
+  const payload = { ...firestorePlacementInput, id: venueId };
+
   return await firebase.functions().httpsCallable("venue-adminUpdatePlacement")(
-    firestorePlacementInput
+    payload
   );
 };
 
@@ -96,32 +113,28 @@ const PlacementComponent: React.FC = () => {
     venues,
   ]);
   const placedVenues = useMemo(() => venues?.filter(isPlaced), [venues]);
+  const defaultValues = useMemo(() => editPlacementCastSchema.cast(venue), [
+    venue,
+  ]);
 
-  const defaultValues = useMemo(
-    () =>
-      !!venue
-        ? editPlacementCastSchema.cast(venue)
-        : editPlacementCastSchema.cast(),
-    [venue]
-  );
-
-  const { watch, formState, register, setValue, errors, ...rest } = useForm<
-    FormValues
-  >({
+  const { watch, register, reset, errors, ...rest } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: editPlacementCastSchema,
+    validationSchema: editPlacementSchema,
     validationContext: {
       template: venue?.template,
       editing: !!venue,
     },
     defaultValues,
   });
+
+  // defaultValues gets cached from first render. Need to call reset to give the latest defaults
+  useEffect(() => {
+    reset(defaultValues);
+  }, [reset, defaultValues]);
+
   const { user } = useUser();
-  const { isSubmitting } = formState;
   const values = watch();
-  const editing = !!venueId;
-  const disable = isSubmitting;
 
   const [formError, setFormError] = useState(false);
 
@@ -135,7 +148,7 @@ const PlacementComponent: React.FC = () => {
       if (!user || !venue) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        await updatePlacement(vals as PlacementInput, user);
+        await updatePlacement(vals as PlacementInput, venue.id, user);
         setVenueId(undefined);
       } catch (e) {
         setFormError(true);
@@ -144,7 +157,6 @@ const PlacementComponent: React.FC = () => {
     },
     [user, venue]
   );
-  const onFormSubmit = rest.handleSubmit(onSubmit);
 
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
@@ -167,150 +179,29 @@ const PlacementComponent: React.FC = () => {
     [mapIconUrl, defaultValues]
   );
 
-  const onBoxMove: ExtractProps<
-    typeof PlayaContainer
-  >["onChange"] = useCallback(
-    (val) => {
-      if (!(iconPositionFieldName in val)) return;
-      const iconPos = val[iconPositionFieldName];
-      setValue("placement", {
-        x: iconPos.left,
-        y: iconPos.top,
-      });
-    },
-    [setValue]
-  );
-
-  const onOtherIconClick: ExtractProps<
-    typeof PlayaContainer
-  >["onOtherIconClick"] = useCallback(
-    (val) => {
-      if (!(iconVenueIdFieldName in val)) return;
-      const venueId = val[iconVenueIdFieldName];
-      setVenueId(venueId);
-    },
-    [setVenueId]
-  );
-
   return (
     <>
       <div className="page-container-adminpanel-placement">
         <div className="venue-preview">
           <h4 className="heading">Drag-and-Drop Playa Placement</h4>
-          <form onSubmit={onFormSubmit}>
-            {!venueId && (
-              <div className="heading">
-                Select a venue on the right to begin the placement process
-              </div>
-            )}
-            {venueId && (
-              <>
-                <div className="content-group">
-                  <div className="banner">
-                    <h4 className="italic">Selected venue:</h4>
-                    {venue?.name}
-                  </div>
-                  {venue?.placementRequests && (
-                    <div className="banner">
-                      <h4 className="italic">
-                        Camp owner's placement requests:
-                      </h4>
-                      {venue?.placementRequests}
-                    </div>
-                  )}
-                </div>
-                <div className="content-group">
-                  <h4 className="italic" style={{ fontSize: "20px" }}>
-                    Venue icon which will appear on the map
-                  </h4>
-                  <ImageCollectionInput
-                    collectionPath={"assets/mapIcons2"}
-                    disabled={false}
-                    fieldName={"mapIconImage"}
-                    register={register}
-                    imageUrl={values.mapIconImageUrl}
-                    containerClassName="input-square-container"
-                    imageClassName="input-square-image"
-                    image={values.mapIconImageFile}
-                    error={errors.mapIconImageFile || errors.mapIconImageUrl}
-                    setValue={setValue}
-                    imageType="icons"
-                  />
-                </div>
-                <div className="content-group">
-                  <h4 className="italic" style={{ fontSize: "20px" }}>
-                    Location on the map
-                  </h4>
-                  <div className="playa">
-                    <PlayaContainer
-                      interactive
-                      resizable={false}
-                      coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-                      onChange={onBoxMove}
-                      snapToGrid={false}
-                      iconsMap={iconsMap ?? {}}
-                      onOtherIconClick={onOtherIconClick}
-                      backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={styles.iconImage}
-                      draggableIconImageStyle={styles.draggableIconImage}
-                      venueId={venueId}
-                      otherIconsStyle={{ opacity: 0.4 }}
-                    />
-                  </div>
-                </div>
-                <div className="content-group">
-                  <div className="input-container">
-                    <h4 className="italic" style={{ fontSize: "20px" }}>
-                      Address in the city grid (shown to burners)
-                    </h4>
-                    <input
-                      disabled={disable}
-                      name="addressText"
-                      ref={register}
-                      className="align-left"
-                      placeholder={`Example: 8:00 & B`}
-                    />
-                    {errors.addressText && (
-                      <span className="input-error">
-                        {errors.addressText.message}
-                      </span>
-                    )}
-                  </div>
-                  <div className="input-container">
-                    <h4 className="italic" style={{ fontSize: "20px" }}>
-                      Placement notes (for the placement team only)
-                    </h4>
-                    <input
-                      disabled={disable}
-                      name="notes"
-                      ref={register}
-                      className="align-left"
-                      placeholder={`Example: requested a quiet area`}
-                    />
-                    {errors.notes && (
-                      <span className="input-error">
-                        {errors.notes.message}
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <div className="page-container-left-bottombar">
-                  <div>
-                    {formError && (
-                      <span className="input-error">
-                        {"An error occured when saving the form"}
-                      </span>
-                    )}
-                    <SubmitButton
-                      editing={editing}
-                      isSubmitting={isSubmitting}
-                      templateType={venue?.template ?? "Venue"}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-          </form>
+          {venue && venueId && iconsMap ? (
+            <PlacementForm
+              onSubmit={onSubmit}
+              venue={venue}
+              errors={errors as FormErrors}
+              register={register}
+              {...rest}
+              values={values}
+              venueId={venueId}
+              setVenueId={setVenueId}
+              formError={formError}
+              iconsMap={iconsMap}
+            />
+          ) : (
+            <div className="heading">
+              Select a venue on the right to begin the placement process
+            </div>
+          )}
         </div>
       </div>
       <div className="page-container-adminpanel-sidebar">
@@ -357,6 +248,168 @@ const PlacementComponent: React.FC = () => {
         </ul>
       </div>
     </>
+  );
+};
+
+interface PlacementFormProps
+  extends Omit<ReturnType<typeof useForm>, "reset" | "watch"> {
+  onSubmit: (vals: Partial<FormValues>) => void;
+  venue: AnyVenue;
+  values: FormValues;
+  errors: FieldErrors<Required<FormValues>>;
+  venueId: string;
+  setVenueId: (val: string) => void;
+  formError: boolean;
+  iconsMap: SubVenueIconMap;
+}
+
+const PlacementForm: React.FC<PlacementFormProps> = (props) => {
+  const {
+    venue,
+    onSubmit,
+    handleSubmit,
+    register,
+    values,
+    errors,
+    setValue,
+    venueId,
+    setVenueId,
+    formState: { isSubmitting },
+    formError,
+    iconsMap,
+  } = props;
+
+  const onFormSubmit = handleSubmit(onSubmit);
+
+  const onBoxMove: ExtractProps<
+    typeof PlayaContainer
+  >["onChange"] = useCallback(
+    (val) => {
+      if (!(iconPositionFieldName in val)) return;
+      const iconPos = val[iconPositionFieldName];
+      setValue("placement", {
+        x: iconPos.left,
+        y: iconPos.top,
+      });
+    },
+    [setValue]
+  );
+
+  const onOtherIconClick: ExtractProps<
+    typeof PlayaContainer
+  >["onOtherIconClick"] = useCallback(
+    (val) => {
+      if (!(iconVenueIdFieldName in val)) return;
+      const venueId = val[iconVenueIdFieldName];
+      setVenueId(venueId);
+    },
+    [setVenueId]
+  );
+
+  const disable = isSubmitting;
+
+  return (
+    <form onSubmit={onFormSubmit}>
+      <>
+        <div className="content-group">
+          <div className="banner">
+            <h4 className="italic">Selected venue:</h4>
+            {venue?.name}
+          </div>
+          {venue?.placementRequests && (
+            <div className="banner">
+              <h4 className="italic">{`Camp owner's placement requests:`}</h4>
+              {venue?.placementRequests}
+            </div>
+          )}
+        </div>
+        <div className="content-group">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Venue icon which will appear on the map
+          </h4>
+          <ImageCollectionInput
+            collectionPath={"assets/mapIcons2"}
+            disabled={false}
+            fieldName={"mapIconImage"}
+            register={register}
+            imageUrl={values.mapIconImageUrl}
+            containerClassName="input-square-container"
+            imageClassName="input-square-image"
+            image={values.mapIconImageFile}
+            error={errors.mapIconImageFile || errors.mapIconImageUrl}
+            setValue={setValue}
+            imageType="icons"
+          />
+        </div>
+        <div className="content-group">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Location on the map
+          </h4>
+          <div className="playa">
+            <PlayaContainer
+              interactive
+              resizable={false}
+              coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+              onChange={onBoxMove}
+              snapToGrid={false}
+              iconsMap={iconsMap ?? {}}
+              onOtherIconClick={onOtherIconClick}
+              backgroundImage={PLAYA_IMAGE}
+              iconImageStyle={styles.iconImage}
+              draggableIconImageStyle={styles.draggableIconImage}
+              venueId={venueId}
+              otherIconsStyle={{ opacity: 0.4 }}
+            />
+          </div>
+        </div>
+        <div className="content-group">
+          <div className="input-container">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Address in the city grid (shown to burners)
+            </h4>
+            <input
+              disabled={disable}
+              name="addressText"
+              ref={register}
+              className="align-left"
+              placeholder={`Example: 8:00 & B`}
+            />
+            {errors.addressText && (
+              <span className="input-error">{errors.addressText.message}</span>
+            )}
+          </div>
+          <div className="input-container">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Placement notes (for the placement team only)
+            </h4>
+            <input
+              disabled={disable}
+              name="notes"
+              ref={register}
+              className="align-left"
+              placeholder={`Example: requested a quiet area`}
+            />
+            {errors.notes && (
+              <span className="input-error">{errors.notes.message}</span>
+            )}
+          </div>
+        </div>
+        <div className="page-container-left-bottombar">
+          <div>
+            {formError && (
+              <span className="input-error">
+                {"An error occured when saving the form"}
+              </span>
+            )}
+            <SubmitButton
+              editing
+              isSubmitting={isSubmitting}
+              templateType={venue?.template ?? "Venue"}
+            />
+          </div>
+        </div>
+      </>
+    </form>
   );
 };
 

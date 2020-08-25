@@ -169,10 +169,23 @@ export const editVenueCastSchema = Yup.object()
 
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
-  .from("placement.addressText", "addressText")
-  .from("placement.notes", "notes")
 
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("mapIconImageUrl", "mapIconImageUrl")
+  .from("placement.addressText", "addressText")
+  .from("placement.notes", "notes")
   .required();
+
+export const editPlacementSchema = Yup.object().shape<PlacementInput>({
+  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
+  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
+  addressText: Yup.string(),
+  notes: Yup.string(),
+  placement: Yup.object()
+    .shape({
+      x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+      y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+    })
+    .default(initialMapIconPlacement),
+});
