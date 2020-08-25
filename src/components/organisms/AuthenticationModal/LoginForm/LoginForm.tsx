@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -20,6 +21,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
   afterUserIsLoggedIn,
 }) => {
+  const history = useHistory();
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({
@@ -35,6 +37,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       await signIn(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
+      history.push("/in/playa");
     } catch (error) {
       setError("email", "firebase", error.message);
     }

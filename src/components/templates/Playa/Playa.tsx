@@ -36,9 +36,7 @@ const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
 const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
-const ZOOM_MIN = 1;
 const ZOOM_MAX = 3;
-const INITIAL_ZOOM = 1;
 const GATE_X = 1416;
 const GATE_Y = 3689;
 const VENUE_NEARBY_DISTANCE = 80;
@@ -59,11 +57,13 @@ const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
 
+const minZoom = () => window.innerWidth / PLAYA_WIDTH_AND_HEIGHT;
+
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
-  const [zoom, setZoom] = useState(INITIAL_ZOOM);
+  const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
   const [centerY, setCenterY] = useState(GATE_Y);
   const [myX, setMyX] = useState<number>();
@@ -181,7 +181,7 @@ const Playa = () => {
       setZoom((z) =>
         Math.min(
           Math.max(
-            ZOOM_MIN,
+            minZoom(),
             z +
               delta *
                 (trackpad
@@ -475,7 +475,7 @@ const Playa = () => {
               <div
                 className="playa-controls-zoom-out"
                 onClick={() =>
-                  setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, 1))
+                  setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }
               ></div>
             </div>

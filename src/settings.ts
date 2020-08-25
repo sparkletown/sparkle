@@ -6,7 +6,7 @@ import {
   BUCKET_URL,
   PROJECT_ID,
 } from "./secrets";
-import { venueLandingUrl, venueInsideUrl } from "utils/url";
+import { venueLandingUrl } from "utils/url";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -121,7 +121,7 @@ export const FIREBASE_CONFIG = {
 export const DEFAULT_REDIRECT_URL =
   FIREBASE_CONFIG.projectId === "co-reality-map"
     ? venueLandingUrl("kansassmittys")
-    : venueInsideUrl("playa");
+    : "/enter";
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
