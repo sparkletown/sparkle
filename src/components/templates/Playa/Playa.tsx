@@ -258,9 +258,7 @@ const Playa = () => {
     if (!venuePlacement) {
       return;
     }
-    return Math.sqrt(
-      Math.pow(venuePlacement.x - x, 2) + Math.pow(venuePlacement.y - y, 2)
-    );
+    return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
   };
 
   const { camp } = useParams();
@@ -321,8 +319,8 @@ const Playa = () => {
     setCenterY(myY);
   }, [myX, myY]);
 
-  const getNearbyVenue = useMemo(
-    () => (x: number, y: number) => {
+  const getNearbyVenue = useCallback(
+    (x: number, y: number) => {
       if (!venues) return;
       let closestVenue: WithId<Venue> | undefined;
       let distanceToClosestVenue: number;
@@ -350,12 +348,11 @@ const Playa = () => {
       setMyY(y);
       const nearbyVenue = getNearbyVenue(x, y);
       if (nearbyVenue) {
-        showVenue(nearbyVenue);
-      } else {
-        hideVenue();
+        setHoveredVenue(nearbyVenue);
       }
+      setShowVenueTooltip(!!nearbyVenue);
     },
-    [getNearbyVenue, showVenue, hideVenue]
+    [getNearbyVenue]
   );
 
   return useMemo(() => {
