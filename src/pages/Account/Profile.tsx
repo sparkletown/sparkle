@@ -38,12 +38,12 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   };
 
   const pictureUrl = watch("pictureUrl");
-  console.log(user);
+
   return (
     <div className="page-container">
       <div className="login-container">
         <h2>Well done! Now create your profile</h2>
-        <p>Nearly done!</p>
+        <p>This will give you access to the Playa and all the fun venues!</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input

@@ -21,7 +21,7 @@ const SplashPage = () => {
     <div className="splash-page-container">
       <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
       <div className="welcome-to-the-burn">Welcome to the online burn</div>
-      <div className="enter-the-burn">
+      <div className="step-container step0-container">
         Join us to build Virtual Black Rock City, Sparkleverse is a giant
         interactive map that puts ur creattivity on the virtual playa in
         minutes. We share our knowledge of hosting online experiences in
