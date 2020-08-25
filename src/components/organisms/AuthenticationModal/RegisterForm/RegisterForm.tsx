@@ -1,6 +1,8 @@
 import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
+import { useHistory } from "react-router-dom";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -14,25 +16,54 @@ interface RegisterFormData {
   password: string;
 }
 
+export interface CodeOfConductQuestion {
+  name: keyof CodeOfConductFormData;
+  text: string;
+  link?: string;
+}
+
+const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
+  {
+    name: "termsAndConditions",
+    text: "I agree to SparkleVerse's Terms and Conditions",
+    link: "https://sparklever.se/terms-and-conditions",
+  },
+  {
+    name: "commonDecency",
+    text:
+      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
+  },
+];
+
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   displayPasswordResetForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
+  const history = useHistory();
+
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    RegisterFormData
-  >({
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+    watch,
+  } = useForm<RegisterFormData>({
     mode: "onChange",
   });
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await signUp(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
+      history.push(`/enter/step2`);
     } catch (error) {
       setError("email", "firebase", error.message);
     }
@@ -88,6 +119,33 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
+        {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
+          <div className="input-group" key={q.name}>
+            <label
+              htmlFor={q.name}
+              className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
+            >
+              {q.link && (
+                <a href={q.link} target="_blank" rel="noopener noreferrer">
+                  {q.text}
+                </a>
+              )}
+              {!q.link && q.text}
+            </label>
+            <input
+              type="checkbox"
+              name={q.name}
+              id={q.name}
+              ref={register({
+                required: true,
+              })}
+            />
+            {/* @ts-ignore @debt questions should be typed if possible */}
+            {q.name in errors && errors[q.name].type === "required" && (
+              <span className="input-error">Required</span>
+            )}
+          </div>
+        ))}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
@@ -95,13 +153,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
-      <div className="secondary-action">
-        {`Forgot your password?`}
-        <br />
-        <span className="link" onClick={displayPasswordResetForm}>
-          Reset your password
-        </span>
-      </div>
     </div>
   );
 };
