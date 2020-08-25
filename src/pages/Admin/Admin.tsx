@@ -39,7 +39,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
-  PLAYA_ICON_SIDE,
+  PLAYA_VENUE_SIZE,
 } from "settings";
 import PlacementComponent from "./PlacementComponent";
 import Fuse from "fuse.js";
@@ -218,8 +218,8 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                         venue.placement && venue.mapIconImageUrl
                           ? {
                               icon: {
-                                width: PLAYA_ICON_SIDE,
-                                height: PLAYA_ICON_SIDE,
+                                width: PLAYA_VENUE_SIZE,
+                                height: PLAYA_VENUE_SIZE,
                                 top: venue.placement.y,
                                 left: venue.placement.x,
                                 url: venue.mapIconImageUrl,

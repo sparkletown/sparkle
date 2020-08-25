@@ -15,6 +15,8 @@ import {
   PLAYA_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_AVATAR_SIZE,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -92,6 +94,7 @@ const Playa = () => {
         height: window.innerHeight,
         width: window.innerWidth,
       });
+      setZoom((zoom) => Math.max(minZoom(), zoom));
     };
     window.addEventListener("resize", updateDimensions);
     return () => {
@@ -297,7 +300,7 @@ const Playa = () => {
         (myX <= 0 ||
           myX >= PLAYA_WIDTH_AND_HEIGHT - 1 ||
           myY <= 0 ||
-          myY >= PLAYA_WIDTH_AND_HEIGHT);
+          myY >= PLAYA_WIDTH_AND_HEIGHT - 1);
       if (!atEdge && newAtEdge) {
         setAtEdgeMessage(
           EDGE_MESSAGES[Math.floor(Math.random() * EDGE_MESSAGES.length)]
@@ -352,20 +355,16 @@ const Playa = () => {
 
   return useMemo(() => {
     const translateX = Math.min(
-      0,
+      75 / zoom,
       -1 *
         Math.min(
           (centerX * zoom - dimensions.width / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT - dimensions.width
+          (PLAYA_WIDTH_AND_HEIGHT - dimensions.width / zoom + 75) / zoom
         )
     );
     const translateY = Math.min(
-      0,
-      -1 *
-        Math.min(
-          (centerY * zoom - dimensions.height / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT - dimensions.height
-        )
+      60 / zoom,
+      -1 * ((centerY * zoom - dimensions.height / 2) / zoom)
     );
 
     return (
@@ -400,8 +399,8 @@ const Playa = () => {
               <div
                 className="venue"
                 style={{
-                  top: venue.placement?.y || 0,
-                  left: venue.placement?.x || 0,
+                  top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
+                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
                   position: "absolute",
                 }}
                 onClick={() => showVenue(venue)}
@@ -445,11 +444,7 @@ const Playa = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer
-              zoom={zoom}
-              walkMode={walkMode}
-              setMyLocation={setMyLocation}
-            />
+            <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />
           </div>
           <div className="playa-controls">
             <div
@@ -469,11 +464,17 @@ const Playa = () => {
             </div>
             <div className="playa-controls-zoom">
               <div
-                className="playa-controls-zoom-in"
-                onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
+                className={`playa-controls-zoom-in ${
+                  zoom >= ZOOM_MAX ? "disabled" : ""
+                }`}
+                onClick={() =>
+                  setZoom((zoom) => Math.min(zoom * ZOOM_INCREMENT, ZOOM_MAX))
+                }
               ></div>
               <div
-                className="playa-controls-zoom-out"
+                className={`playa-controls-zoom-out ${
+                  zoom <= minZoom() ? "disabled" : ""
+                }`}
                 onClick={() =>
                   setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }

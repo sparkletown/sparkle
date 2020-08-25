@@ -9,12 +9,12 @@ import {
   EMBED_IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
-  PLAYA_ICON_SIDE,
+  PLAYA_VENUE_SIZE,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
-  x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
-  y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_ICON_SIDE) / 2,
+  x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_VENUE_SIZE) / 2,
+  y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
 type Question = VenueInput["profileQuestions"][number];

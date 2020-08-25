@@ -5,7 +5,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 
 import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
-import { PLAYA_ICON_SIDE } from "settings";
+import { PLAYA_VENUE_SIZE } from "settings";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venueId?: string;
@@ -29,8 +29,8 @@ export const PlayaContainer: React.FC<PropsType> = (props) => {
           return {
             ...acc,
             [v.id]: {
-              width: PLAYA_ICON_SIDE,
-              height: PLAYA_ICON_SIDE,
+              width: PLAYA_VENUE_SIZE,
+              height: PLAYA_VENUE_SIZE,
               top: v.placement?.y,
               left: v.placement?.x,
               url: v.mapIconImageUrl,

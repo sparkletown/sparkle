@@ -6,7 +6,11 @@ import React, {
   useCallback,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
-import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_ICON_SIDE, PLAYA_IMAGE } from "settings";
+import {
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_IMAGE,
+} from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -156,8 +160,8 @@ const PlacementComponent: React.FC = () => {
       mapIconUrl
         ? {
             [iconPositionFieldName]: {
-              width: PLAYA_ICON_SIDE,
-              height: PLAYA_ICON_SIDE,
+              width: PLAYA_VENUE_SIZE,
+              height: PLAYA_VENUE_SIZE,
               top: defaultValues?.placement?.y ?? 0,
               left: defaultValues?.placement?.x ?? 0,
               url: mapIconUrl,

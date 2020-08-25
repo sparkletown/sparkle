@@ -17,15 +17,14 @@ import { WithId } from "utils/id";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
 import { MyAvatar } from "./MyAvatar";
+import { Overlay } from "react-bootstrap";
 
 interface PropsType {
-  zoom: number;
   walkMode: boolean;
   setMyLocation(x: number, y: number): void;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
-  zoom,
   walkMode,
   setMyLocation,
 }) => {
@@ -39,6 +38,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+  const [hoveredUser, setHoveredUser] = useState<User | null>();
+  const [hovered, setHovered] = useState(false);
+  const hoveredRef = useRef<HTMLDivElement>(null);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -125,35 +127,61 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (
       <MyAvatar
         serverSentState={myServerSentState}
-        zoom={zoom}
         walkMode={walkMode}
         sendUpdatedState={sendUpdatedState}
         setMyLocation={setMyLocation}
       />
     ),
-    [myServerSentState, zoom, walkMode, sendUpdatedState, setMyLocation]
+    [myServerSentState, walkMode, sendUpdatedState, setMyLocation]
+  );
+
+  const avatars = useMemo(
+    () =>
+      Object.keys(userStateMap)
+        .sort()
+        .filter(
+          (uid) =>
+            user?.uid !== uid &&
+            !!partygoers.find((partygoer) => partygoer.id === uid)
+        )
+        .map((uid) => {
+          const avatarUser = partygoers.find(
+            (partygoer) => partygoer.id === uid
+          );
+          return (
+            <Avatar
+              user={avatarUser}
+              state={userStateMap[uid]}
+              setSelectedUserProfile={setSelectedUserProfile}
+              setHoveredUser={setHoveredUser}
+              setHovered={setHovered}
+              hoveredRef={hoveredRef}
+              key={uid}
+            />
+          );
+        }),
+    [partygoers, user, userStateMap]
   );
 
   return useMemo(
     () => (
       <>
         {myAvatar}
-        {Object.keys(userStateMap)
-          .sort()
-          .filter(
-            (uid) =>
-              user?.uid !== uid &&
-              !!partygoers.find((partygoer) => partygoer.id === uid)
-          )
-          .map((uid) => (
-            <Avatar
-              user={partygoers.find((partygoer) => partygoer.id === uid)}
-              state={userStateMap[uid]}
-              zoom={zoom}
-              setSelectedUserProfile={setSelectedUserProfile}
-              key={uid}
-            />
-          ))}
+        {avatars}
+        <Overlay target={hoveredRef.current} show={hovered}>
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-user-title">
+                    {hoveredUser?.partyName}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </Overlay>
         <UserProfileModal
           show={selectedUserProfile !== undefined}
           onHide={() => setSelectedUserProfile(undefined)}
@@ -161,7 +189,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         />
       </>
     ),
-    [myAvatar, partygoers, selectedUserProfile, user, userStateMap, zoom]
+    [myAvatar, avatars, hoveredUser, selectedUserProfile, hovered]
   );
 };
 

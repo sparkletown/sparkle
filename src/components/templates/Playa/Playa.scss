@@ -59,6 +59,7 @@ $sand: #937c63;
     border: 4px solid $sand;
     border-radius: 25%;
     text-align: center;
+    overflow: hidden;
 
     .venue-icon {
       max-width: 100%;
@@ -131,7 +132,7 @@ $sand: #937c63;
   background-color: darken($sand, 5%);
   border-radius: 20px;
   margin-top: 10px;
-  width: 130%;
+  width: 110%;
   margin-left: -15%;
   height: auto;
   transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
@@ -161,6 +162,26 @@ $sand: #937c63;
         width: 20px;
         height: 20px;
         right: -2px;
+        top: 50%;
+        transform: translateY(-50%);
+        background-image: url("./img/playa-venue-people.png");
+        background-repeat: no-repeat;
+        background-size: 20px 20px;
+        background-position: center;
+      }
+    }
+    .playa-user-title {
+      display: block;
+      line-height: 1;
+      font-size: 0.9rem;
+      padding-left: 24px;
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        left: 6px;
         top: 50%;
         transform: translateY(-50%);
         background-image: url("./img/playa-venue-people.png");
@@ -321,6 +342,12 @@ $sand: #937c63;
       }
       &:active {
         transform: scale(1);
+      }
+      &.disabled {
+        opacity: 0.4;
+        &:hover {
+          transform: none;
+        }
       }
       &.playa-controls-zoom-out {
         background-image: url("./img/playa-controls-zoom-out.png");
