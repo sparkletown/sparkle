@@ -14,13 +14,12 @@ export interface ProfileFormData {
 }
 
 interface PropsType {
-  location: RouterLocation;
+  location?: RouterLocation;
 }
 
 const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user } = useUser();
-
   const {
     register,
     handleSubmit,
@@ -35,17 +34,16 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(`/account/questions${location.search}`);
+    history.push(`/enter/step3`);
   };
 
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container">
-      <div className="hero-logo sparkle"></div>
+    <div className="page-container-onboarding">
       <div className="login-container">
         <h2>Well done! Now create your profile</h2>
-        <p>Nearly done!</p>
+        <p>This will give you access to the Playa and all the fun venues!</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input
