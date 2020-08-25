@@ -86,7 +86,6 @@ const Camp = () => {
       )}
       <div className="col">
         <div className="starting-indication">
-          {venue.config?.landingPageConfig.description}{" "}
           {venue.description?.program_url && (
             <a
               href={venue.description.program_url}
