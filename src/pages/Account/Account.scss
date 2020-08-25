@@ -42,6 +42,11 @@ $login-max-width: 540px;
 
 .page-container {
   max-height: 100%;
+  background-color: $dark;
+  overflow: hidden;
+}
+.page-container-onboarding {
+  max-height: 100%;
   overflow: hidden;
   position: absolute;
   top: 20%;

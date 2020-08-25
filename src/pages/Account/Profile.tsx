@@ -40,7 +40,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container">
+    <div className="page-container-onboarding">
       <div className="login-container">
         <h2>Well done! Now create your profile</h2>
         <p>This will give you access to the Playa and all the fun venues!</p>
