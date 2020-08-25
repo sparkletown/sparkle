@@ -2,18 +2,9 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./DustStorm.scss";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
-import { User } from "types/User";
-import { EventData } from "types/EventData";
 import firebase from "firebase";
 import { useHistory } from "react-router-dom";
-
-interface getOnlineStatsData {
-  onlineUsers: Array<WithId<User>>;
-  openVenues: Array<{
-    venue: WithId<AnyVenue>;
-    currentEvents: EventData;
-  }>;
-}
+import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
 
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * Math.floor(max + 1));
@@ -47,9 +38,9 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
 };
 
 export const DustStorm = () => {
-  const [openVenues, setOpenVenues] = useState<
-    getOnlineStatsData["openVenues"]
-  >([]);
+  const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>(
+    []
+  );
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -58,7 +49,7 @@ export const DustStorm = () => {
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
-          const { openVenues } = result.data as getOnlineStatsData;
+          const { openVenues } = result.data as OnlineStatsData;
           setOpenVenues(openVenues);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
