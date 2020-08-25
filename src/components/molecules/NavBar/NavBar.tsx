@@ -9,6 +9,7 @@ import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import { RadioModal } from "../../organisms/RadioModal/RadioModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -61,6 +62,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     <Popover id="profile-popover">
       <Popover.Content>
         <ProfilePopoverContent />
+      </Popover.Content>
+    </Popover>
+  );
+
+  const radioPopover = (
+    <Popover id="radio-popover">
+      <Popover.Content>
+        <RadioModal />
       </Popover.Content>
     </Popover>
   );
@@ -144,6 +153,22 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={radioPopover}
+                    rootClose={true}
+                  >
+                    <div className="navbar-link-profile">
+                      <img
+                        src={"/navbar-link-radio.png"}
+                        className="profile-icon"
+                        alt="radio"
+                        width="40"
+                        height="40"
+                      />
+                    </div>
+                  </OverlayTrigger>
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
