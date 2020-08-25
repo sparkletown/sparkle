@@ -77,7 +77,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             </div>
             <div className="profile-extras">
-              {venue.profile_questions?.map((question) => (
+              {venue?.profile_questions?.map((question) => (
                 <React.Fragment key="question.text">
                   <p className="light question">{question.text}</p>
                   <h6>

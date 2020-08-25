@@ -73,7 +73,7 @@ const VenuePage = () => {
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
-  useUpdateLocationEffect(user, venueName);
+  useUpdateLocationEffect(user, venueName ?? "");
 
   useConnectPartyGoers();
   useConnectCurrentVenue();

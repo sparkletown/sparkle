@@ -12,11 +12,11 @@ import { useSelector } from "hooks/useSelector";
 
 const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   useConnectPartyGoers();
+
+  if (!venue) return <>Loading...</>;
 
   return (
     <WithNavigationBar>
