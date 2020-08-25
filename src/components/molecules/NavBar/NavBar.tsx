@@ -16,7 +16,6 @@ import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
   PLAYA_VENUE_NAME,
-  DEFAULT_REDIRECT_URL,
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
@@ -82,7 +81,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
         <div className="navbar navbar_playa">
           <div className="navbar-container">
             <div className="navbar-logo">
-              <Link to={redirectionUrl || "/"}>
+              <Link to={redirectionUrl || "/in/playa"}>
                 <img
                   src={SPARKLEVERSE_LOGO_URL}
                   alt="Logo"
@@ -103,9 +102,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </div>
                 ) : (
                   <span
-                    onClick={() =>
-                      (window.location.href = DEFAULT_REDIRECT_URL)
-                    }
+                    onClick={() => (window.location.href = "playa")}
                     className="playa-link"
                   >
                     Go to playa

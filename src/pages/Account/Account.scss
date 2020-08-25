@@ -1,4 +1,5 @@
 @import "scss/constants";
+$sand: #937c63;
 
 $top-margin: 20px;
 $vertical-padding: 20px;
@@ -40,9 +41,17 @@ $login-max-width: 540px;
 }
 
 .page-container {
+  max-height: 100%;
   background-color: $dark;
+  overflow: hidden;
+}
+.page-container-onboarding {
   max-height: 100%;
   overflow: hidden;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  right: 20%;
 }
 
 .code-of-conduct-container {
@@ -139,5 +148,149 @@ $login-max-width: 540px;
 @media (max-width: $login-max-width) {
   .login-container {
     border-radius: 0;
+  }
+}
+
+.splash-page-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-align: center;
+  .playa-img {
+    opacity: 0.5;
+    width: 100%;
+  }
+  .step-container {
+    max-height: 100%;
+    overflow: hidden;
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    right: 20%;
+  }
+  .step0-container {
+    top: 50%;
+    bottom: 25%;
+    max-width: $login-max-width;
+    margin: 0 auto;
+    padding: $side-padding;
+    background-color: $dark;
+    box-shadow: $large-shadow;
+    text-align: center;
+    border-radius: $border-radius;
+    .enter-button {
+      margin-top: 15px;
+    }
+  }
+  .welcome-to-the-burn {
+    position: absolute;
+    top: 10%;
+    left: 20%;
+    right: 20%;
+    height: 200px;
+    line-height: 200px;
+    font-size: 40px;
+    background-color: $sand;
+    border: solid 1px black;
+  }
+  .enter-the-burn {
+    position: absolute;
+    top: 40%;
+    left: 30%;
+    right: 30%;
+    height: 200px;
+    padding: 20px;
+    font-size: 18px;
+    background-color: darken($sand, 20%);
+    border: solid 1px black;
+    .enter-button {
+      margin-top: 30px;
+    }
+  }
+  .ten-principles-burning {
+    max-width: $login-max-width;
+    margin: 0 auto;
+    padding: $side-padding;
+    background-color: $black;
+    box-shadow: $large-shadow;
+    text-align: center;
+    border-radius: $border-radius;
+    overflow-y: auto;
+    bottom: 10%;
+
+    .form {
+      margin-top: 2rem;
+    }
+
+    .principle-name {
+      font-weight: bold;
+      font-size: 15px;
+    }
+    .principle-description {
+      font-size: 12px;
+    }
+  }
+  .step4-container {
+    top: 20%;
+    bottom: 20%;
+    max-width: $login-max-width;
+    margin: 0 auto;
+    padding: $side-padding;
+    background-color: $black;
+    box-shadow: $large-shadow;
+    text-align: center;
+    border-radius: $border-radius;
+    .step-4-buttons {
+      width: 100%;
+      padding: 15px;
+      border-radius: $border-radius;
+      background-color: $dark;
+      margin-bottom: 20px;
+      cursor: pointer;
+      height: 130px;
+      transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      &:hover {
+        box-shadow: 0 0 0 4px rgba($white, 0.62);
+        background-color: lighten($dark, 4%);
+      }
+    }
+  }
+  .step5-container {
+    top: 8%;
+    bottom: 8%;
+    max-width: $login-max-width;
+    margin: 0 auto;
+    padding: $side-padding;
+    background-color: $black;
+    box-shadow: $large-shadow;
+    text-align: center;
+    border-radius: $border-radius;
+    .microphone {
+      width: 410px;
+      background-color: black;
+    }
+    .microphone-button {
+      width: 200px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      background-color: grey;
+      border: none;
+      margin-bottom: 15px;
+    }
+  }
+  .step6b-container {
+    top: 50%;
+    bottom: 20%;
+    max-width: $login-max-width;
+    margin: 0 auto;
+    padding: $side-padding;
+    background-color: $dark;
+    box-shadow: $large-shadow;
+    text-align: center;
+    border-radius: $border-radius;
+    .step6b-welcome-message {
+      margin-bottom: 30px;
+    }
   }
 }
