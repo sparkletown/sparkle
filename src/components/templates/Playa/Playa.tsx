@@ -16,7 +16,6 @@ import {
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
-  PLAYA_AVATAR_SIZE,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -54,6 +53,12 @@ const EDGE_MESSAGES = [
   "Why not put up an art piece out here!",
   "Hope you’re enjoying your adventure ❤️",
 ];
+// Let the playa scroll out from under the left donate button, left ranger button, and right chat bar
+const PLAYA_MARGIN_X = 75;
+// Let the playa scroll out from under the top banners
+const PLAYA_MARGIN_TOP = 60;
+// Let the playa scroll at the bottom, accounting for navbar padding and zooming the avatar
+const PLAYA_MARGIN_BOTTOM = 180;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -355,16 +360,24 @@ const Playa = () => {
 
   return useMemo(() => {
     const translateX = Math.min(
-      75 / zoom,
+      PLAYA_MARGIN_X / zoom,
       -1 *
         Math.min(
           (centerX * zoom - dimensions.width / 2) / zoom,
-          (PLAYA_WIDTH_AND_HEIGHT - dimensions.width / zoom + 75) / zoom
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.width / zoom +
+            PLAYA_MARGIN_X / zoom
         )
     );
     const translateY = Math.min(
-      60 / zoom,
-      -1 * ((centerY * zoom - dimensions.height / 2) / zoom)
+      PLAYA_MARGIN_TOP / zoom,
+      -1 *
+        Math.min(
+          (centerY * zoom - dimensions.height / 2) / zoom,
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.height / zoom +
+            PLAYA_MARGIN_BOTTOM / zoom
+        )
     );
 
     return (
