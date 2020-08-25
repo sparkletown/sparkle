@@ -184,6 +184,30 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
     });
 });
 
+exports.setDustStorm = functions.https.onCall(async (dustStormIsOn) => {
+  checkAuth(context);
+
+  checkUserIsPlayaOwner(userUID);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc("playa")
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue playa not found`);
+      }
+      admin
+        .firestore()
+        .collection("venues")
+        .doc("playa")
+        .update({ dustStorm: !dustStormIsOn });
+    });
+
+  return new HttpsError("ok", "Success");
+});
+
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
