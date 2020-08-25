@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import "./RadioModal.scss";
 
-export const RadioModal: React.FunctionComponent = () => {
-  const [volume, setVolume] = useState(0);
+const sound = new Audio(
+  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"
+);
+
+interface PropsType {
+  volume: number;
+  setVolume: Function;
+}
+
+export const RadioModal: React.FunctionComponent<PropsType> = ({
+  volume,
+  setVolume,
+}) => {
+  useEffect(() => {
+    sound.play();
+  }, []);
+
+  useEffect(() => {
+    sound.volume = volume / 100;
+  }, [volume]);
+
   return (
     <div className="radio-modal-container">
       <div className="title-radio">Burning radio</div>
@@ -21,6 +40,7 @@ export const RadioModal: React.FunctionComponent = () => {
         name="vol"
         min="0"
         max="100"
+        onChange={(ev) => setVolume(Number(ev.target.value))}
         value={volume}
       />
     </div>

@@ -66,10 +66,12 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
+  const [volume, setVolume] = useState<number>(0);
+
   const radioPopover = (
     <Popover id="radio-popover">
       <Popover.Content>
-        <RadioModal />
+        <RadioModal volume={volume} setVolume={setVolume} />
       </Popover.Content>
     </Popover>
   );
@@ -160,13 +162,23 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     rootClose={true}
                   >
                     <div className="navbar-link-profile">
-                      <img
-                        src={"/navbar-link-radio.png"}
-                        className="profile-icon"
-                        alt="radio"
-                        width="40"
-                        height="40"
-                      />
+                      {volume === 0 ? (
+                        <img
+                          src={"/navbar-link-radio-off.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      ) : (
+                        <img
+                          src={"/navbar-link-radio.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      )}
                     </div>
                   </OverlayTrigger>
                   <OverlayTrigger
