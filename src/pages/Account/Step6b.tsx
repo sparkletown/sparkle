@@ -13,8 +13,8 @@ const Step6 = () => {
         <div>
           <h2>Welcome to the playa!</h2>
           <div className="step6b-welcome-message">
-            A nice welcome message, A nice welcome message, A nice welcome
-            message
+            Congratulations, welcome in! Start exploring all the venues in the
+            playa and have fun.
           </div>
           <button
             className={`btn btn-primary btn-block btn-centered`}
