@@ -19,18 +19,17 @@ const Step5 = () => {
           >
             <h3>Normal Mode</h3>
             <div>
-              description of normal entry, description of normal entry,
-              description of normal entry
+              Enter the playa straight waya and start exploring the venues.
             </div>
           </div>
           <div
             className="step-4-buttons"
-            onClick={() => history.push(`/enter/step6a`)}
+            //onClick={() => history.push(`/enter/step6a`)}
           >
             <h3>Heroic Mode</h3>
             <div>
-              description of heroic entry, description of heroic entry,
-              description of heroic entry
+              Enter an art car with other users and make some friends before
+              entering the playa.
             </div>
           </div>
         </div>

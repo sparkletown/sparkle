@@ -184,14 +184,17 @@ $login-max-width: 540px;
   }
   .welcome-to-the-burn {
     position: absolute;
-    top: 10%;
+    top: 25%;
     left: 20%;
     right: 20%;
-    height: 200px;
-    line-height: 200px;
-    font-size: 40px;
-    background-color: $sand;
-    border: solid 1px black;
+    height: 100px;
+    line-height: 100px;
+    font-size: 45px;
+    //background-color: $sand;
+    //border: solid 1px black;
+    font-weight: bolder;
+    color: black;
+    text-shadow: 1px 1px white;
   }
   .enter-the-burn {
     position: absolute;
