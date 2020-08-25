@@ -14,7 +14,7 @@ export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   } else if (string?.includes("vimeo") && !string?.includes("player")) {
     return string?.replace("vimeo.com/", "player.vimeo.com/video/");
   } else {
-    return string;
+    return string?.includes("http") ? string : "//" + string;
   }
 };
 

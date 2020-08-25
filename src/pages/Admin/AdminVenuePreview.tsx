@@ -34,7 +34,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         return (
           <>
             <div>
-              <span className="title">iFrame URL</span>
+              <span className="title">iFrame URL: </span>
               <span className="content">
                 <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
               </span>
@@ -43,6 +43,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               {" "}
               This is a preview of your art piece:
             </div>
+            <p>(Make sure the URL provided is embeddable)</p>
             <div className="iframe-preview-container">
               <iframe
                 className="iframe-preview"
