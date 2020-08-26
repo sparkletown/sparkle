@@ -40,7 +40,7 @@ const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
 const ZOOM_MAX = 3;
 const GATE_X = 1416;
 const GATE_Y = 3689;
-const VENUE_NEARBY_DISTANCE = 80;
+const VENUE_NEARBY_DISTANCE = 250;
 const EDGE_MESSAGES = [
   "Some call it the digital trash fence.",
   "Daft Punk plays in an hour!",

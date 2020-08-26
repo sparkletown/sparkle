@@ -8,6 +8,7 @@ import {
   BroadcastMessage,
   UserState,
   UpdateWsMessage,
+  UserStateKey,
 } from "types/RelayMessage";
 import { DEFAULT_WS_RELAY_URL } from "settings";
 import { Avatar } from "./Avatar";
@@ -32,6 +33,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
   const { user } = useUser();
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
+  const [videoState, setVideoState] = useState<string>();
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
@@ -48,6 +50,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (state: UserState) => {
       if (!user) return;
       setMyLocation(state.x, state.y);
+      setVideoState(state?.state?.[UserStateKey.Video]);
 
       if (wsRef.current) {
         const update: UpdateWsMessage = {
@@ -97,6 +100,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               setMyServerSentState((myServerSentState) =>
                 myServerSentState ? myServerSentState : update.updates[uid]
               );
+              setVideoState(update.updates[uid].state?.[UserStateKey.Video]);
             } else {
               userStateMapRef.current[uid] = update.updates[uid];
               hasChanges = true;
@@ -128,11 +132,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       <MyAvatar
         serverSentState={myServerSentState}
         bikeMode={bikeMode}
+        videoState={videoState}
         sendUpdatedState={sendUpdatedState}
         setMyLocation={setMyLocation}
       />
     ),
-    [myServerSentState, bikeMode, sendUpdatedState, setMyLocation]
+    [myServerSentState, bikeMode, sendUpdatedState, setMyLocation, videoState]
   );
 
   const avatars = useMemo(

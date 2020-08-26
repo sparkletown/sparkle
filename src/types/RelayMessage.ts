@@ -7,7 +7,7 @@ export type UserState = {
 
 export enum UserStateKey {
   Bike = "bike",
-  VideoChatBlocked = "videoChatBlocked",
+  Video = "video",
 }
 
 export const stateBoolean: (state: UserState, key: UserStateKey) => boolean = (
@@ -16,6 +16,11 @@ export const stateBoolean: (state: UserState, key: UserStateKey) => boolean = (
 ) => state?.state?.[key] === true.toString();
 
 export type UserStateMap = { [uid: string]: UserState };
+
+export enum UserVideoState {
+  Locked = "locked",
+  Open = "open",
+}
 
 export enum MessageType {
   Hello = "hello",

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
-import { UserState, UserStateKey, stateBoolean } from "types/RelayMessage";
+import { UserState, UserStateKey, UserVideoState } from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
@@ -8,6 +8,7 @@ import { Overlay } from "react-bootstrap";
 interface PropsType {
   serverSentState: UserState | undefined;
   bikeMode: boolean;
+  videoState: string | undefined;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
 }
@@ -18,6 +19,7 @@ const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
   bikeMode,
+  videoState,
   sendUpdatedState,
   setMyLocation,
 }) => {
@@ -116,15 +118,25 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
     });
   }, [bikeMode, sendUpdatedState]);
 
+  const setVideoChat = (value: UserVideoState) => {
+    setState((state) => {
+      if (!state) return;
+      if (!state.state) state.state = {};
+      if (state.state[UserStateKey.Video] === value) return state;
+
+      state.state[UserStateKey.Video] = value;
+      sendUpdatedState(state);
+      return { ...state };
+    });
+  };
+
   if (!profile || !state) return <></>;
 
   return (
     <>
       <div
         ref={ref}
-        className={`avatar me chat-${
-          stateBoolean(state, UserStateKey.VideoChatBlocked) ? "off" : "on"
-        }`}
+        className="avatar me"
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
@@ -142,6 +154,16 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           />
         </div>
       </div>
+      <div
+        className={`chatzone ${
+          videoState === UserVideoState.Locked ? "locked" : ""
+        }
+        ${videoState === UserVideoState.Open ? "open" : ""}`}
+        style={{
+          top: state.y - PLAYA_AVATAR_SIZE * 1.5,
+          left: state.x - PLAYA_AVATAR_SIZE * 1.5,
+        }}
+      />
       {bikeMode && (
         <div
           className="bike"

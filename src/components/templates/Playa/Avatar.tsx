@@ -1,5 +1,10 @@
 import React from "react";
-import { UserState, UserStateKey, stateBoolean } from "types/RelayMessage";
+import {
+  UserState,
+  UserStateKey,
+  stateBoolean,
+  UserVideoState,
+} from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { PLAYA_AVATAR_SIZE } from "settings";
@@ -26,9 +31,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
   return (
     <>
       <div
-        className={`avatar they chat-${
-          stateBoolean(state, UserStateKey.VideoChatBlocked) ? "off" : "on"
-        }`}
+        className="avatar they"
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
@@ -49,6 +52,22 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           title={user.partyName}
         />
       </div>
+      <div
+        className={`chatzone ${
+          state?.state?.[UserStateKey.Video] === UserVideoState.Locked
+            ? "locked"
+            : ""
+        }
+        ${
+          state?.state?.[UserStateKey.Video] === UserVideoState.Open
+            ? "open"
+            : ""
+        }`}
+        style={{
+          top: state.y - PLAYA_AVATAR_SIZE * 1.5,
+          left: state.x - PLAYA_AVATAR_SIZE * 1.5,
+        }}
+      />
       {stateBoolean(state, UserStateKey.Bike) && (
         <div
           className="bike"
