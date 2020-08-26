@@ -313,7 +313,11 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         }}
         venue={venue}
       />
-      <VenueOwnersModal visible={manageUsers} onHide={onManageUsersModalHide} />
+      <VenueOwnersModal
+        visible={manageUsers}
+        onHide={onManageUsersModalHide}
+        venue={venue}
+      />
     </>
   );
 };
