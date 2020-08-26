@@ -72,6 +72,7 @@ $sand: #937c63;
     height: 480px;
     overflow-y: auto;
     .event {
+      margin-bottom: 5px;
       padding: 16px;
       display: flex;
       &:nth-child(even) {

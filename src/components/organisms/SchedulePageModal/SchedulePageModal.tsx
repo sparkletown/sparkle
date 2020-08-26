@@ -35,7 +35,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     const getOnlineStats = firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
+      .httpsCallable("stats-getAllEvents");
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
@@ -73,16 +73,22 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
         events: allEvents
           .filter((ve) =>
             // some events will span multiple days. Pick events for which `day` is between the event start and end
-            isWithinInterval(day, {
-              start: startOfDay(new Date(ve.event.start_utc_seconds * 1000)),
-              end: endOfDay(
-                new Date(
-                  (ve.event.start_utc_seconds +
-                    ve.event.duration_minutes * 60) *
-                    1000
-                )
-              ),
-            })
+            {
+              if (ve.event.start_utc_seconds && ve.event.duration_minutes) {
+                return isWithinInterval(day, {
+                  start: startOfDay(
+                    new Date(ve.event.start_utc_seconds * 1000)
+                  ),
+                  end: endOfDay(
+                    new Date(
+                      (ve.event.start_utc_seconds +
+                        ve.event.duration_minutes * 60) *
+                        1000
+                    )
+                  ),
+                });
+              } else return undefined;
+            }
           )
           .sort(
             (a, b) => a.event.start_utc_seconds - b.event.start_utc_seconds
@@ -154,17 +160,27 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
         <div className="events-list events-list_monday">
           {orderedEvents[date] &&
             orderedEvents[date].events.map((event) => (
-              <div key={event.event.name} className="event">
+              <div
+                key={event.event.name}
+                className={`event ${
+                  Date.now() > event.event.start_utc_seconds * 1000
+                    ? "event_live"
+                    : ""
+                }`}
+              >
                 <div className="event-time">
                   <div className="event-time-start">
                     {daysDifferenceStart(event.event.start_utc_seconds) === 0
                       ? "Starts today at:"
-                      : `Started ${daysDifferenceStart(
+                      : daysDifferenceStart(event.event.start_utc_seconds) > 0
+                      ? `Started ${daysDifferenceStart(
                           event.event.start_utc_seconds
-                        )} days ago at:`}
+                        )} days ago at:`
+                      : `Starts in ${-daysDifferenceStart(
+                          event.event.start_utc_seconds
+                        )} days at:`}
                   </div>
                   <div>{TimeToString(event.event.start_utc_seconds)}</div>
-                  <br />
                   <div className="event-time-end">
                     {daysDifferenceEnd(
                       event.event.start_utc_seconds,
@@ -182,6 +198,9 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
                         event.event.duration_minutes * 60
                     )}
                   </div>
+                  {Date.now() > event.event.start_utc_seconds * 1000 && (
+                    <span className="event-badge-live">Live</span>
+                  )}
                 </div>
                 <div className="event-text">
                   <h5>{event.event.name}</h5>
