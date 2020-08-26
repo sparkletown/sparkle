@@ -363,7 +363,7 @@ const Playa = () => {
   );
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
-  const dustStorm = venue.dustStorm;
+  const dustStorm = venue?.dustStorm;
 
   return useMemo(() => {
     const translateX = Math.min(
