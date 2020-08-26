@@ -119,6 +119,21 @@ const checkUserIsAdminOrOwner = async (venueId, uid) => {
   }
 };
 
+exports.addVenueOwner = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const { venueId, newOwnerId } = data;
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({
+      owners: admin.firestore.FieldValue.arrayUnion(newOwnerId),
+    });
+});
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
