@@ -6,7 +6,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useMemo, useState, CSSProperties } from "react";
+import React, { useMemo, useState, CSSProperties, useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
@@ -15,6 +15,7 @@ import {
   useLocation,
   useParams,
   useRouteMatch,
+  useHistory,
 } from "react-router-dom";
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
@@ -43,6 +44,7 @@ import {
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
+import { VenueOwnersModal } from "./VenueOwnersModal";
 
 dayjs.extend(advancedFormat);
 
@@ -55,9 +57,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector((state) => state.firestore.ordered.venues);
 
   const topLevelVenues = useMemo(
     () => venues?.filter((v) => v.parentId === undefined) ?? [],
@@ -182,6 +182,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   roomIndex,
 }) => {
+  const queryParams = useQuery();
+  const manageUsers = !!queryParams.get("manageUsers");
+  const { push } = useHistory();
+  const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
+    push,
+  ]);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
@@ -284,6 +291,12 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                 {deleteText}
               </button>
             )}
+            <Link
+              to={{ search: "manageUsers=true" }}
+              className="btn btn-primary"
+            >
+              Manage Venue Owners
+            </Link>
             {typeof roomIndex !== "number" && (
               <div>
                 If you are looking to edit one of your rooms, please select the
@@ -300,6 +313,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         }}
         venue={venue}
       />
+      <VenueOwnersModal visible={manageUsers} onHide={onManageUsersModalHide} />
     </>
   );
 };
