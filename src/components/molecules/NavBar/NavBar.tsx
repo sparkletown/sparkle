@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "../../organisms/RadioModal/RadioModal";
@@ -20,6 +20,7 @@ import {
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
+import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -94,6 +95,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     );
   }, [privateChats, user]);
 
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
+
   return (
     <>
       <header>
@@ -129,9 +132,12 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 )}
                 <div className="navbar-links">
                   <div className="button-container create-button-container navbar-link-schedule">
-                    <Link to="/playa/schedule" className="create-button">
+                    <div
+                      className="create-button"
+                      onClick={() => setShowEventSchedule(true)}
+                    >
                       Event Schedule
-                    </Link>
+                    </div>
                   </div>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
@@ -224,6 +230,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
         onHide={() => setIsAuthenticationModalOpen(false)}
         showAuth="login"
       />
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };
