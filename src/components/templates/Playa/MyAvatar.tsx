@@ -91,7 +91,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         }
         return state;
       });
-    }, 16);
+    }, 50);
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
