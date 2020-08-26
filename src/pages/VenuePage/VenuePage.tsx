@@ -73,6 +73,8 @@ const VenuePage = () => {
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
+  // Camp and PartyMap needs to be able to modify this
+  // Currently does not work with roome
   useUpdateLocationEffect(user, venueName ?? "");
 
   useConnectPartyGoers();

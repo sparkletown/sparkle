@@ -35,6 +35,7 @@ const useLocationUpdateEffect = (
   }, [user, roomName]);
 
   useEffect(() => {
+    // Time spent is currently counted multiple time if multiple tabs are open
     if (!user || !roomName) return;
 
     const firestore = firebase.firestore();
@@ -48,7 +49,7 @@ const useLocationUpdateEffect = (
         .catch(() => {
           firestore.doc(doc).set({ timeSpent: 1 });
         });
-    }, 5 * 1000);
+    }, 60 * 1000);
     return () => clearInterval(intervalId);
   }, [user, roomName]);
 };

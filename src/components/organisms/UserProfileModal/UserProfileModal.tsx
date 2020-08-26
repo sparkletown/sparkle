@@ -130,7 +130,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
     const playaSeconds = visits.reduce((acc, v) => acc + v.timeSpent, 0);
     const playaHours = Math.floor(playaSeconds / (60 * 60));
-    return playaHours > 1 ? `${playaHours}` : "> 1";
+    return playaHours > 1 ? `${playaHours}` : "< 1";
   }, [visits]);
 
   const venuesVisited = useMemo(() => {
@@ -140,27 +140,24 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
   const badges = useMemo(() => {
     if (!visits || !venues) return [];
-    return [
-      ...visits
-        .filter((visit) => visit.id !== "Playa") // no badge for the Playa. Also does not have a logo
-        .map((visit) => {
-          const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-          if (!venue) return {};
+    return visits
+      .filter((visit) => visit.id !== "Playa") // no badge for the Playa. Also does not have a logo
+      .map((visit) => {
+        const { venue, room } = findVenueAndRoomByName(visit.id, venues);
+        if (!venue) return {};
 
-          if (room) {
-            return {
-              image: room.image_url,
-              label: room.title,
-            };
-          }
-
+        if (room) {
           return {
-            image: venue.mapIconImageUrl,
-            label: venue.name,
+            image: room.image_url,
+            label: room.title,
           };
-        }),
-      // Other badges could come here
-    ];
+        }
+
+        return {
+          image: venue.mapIconImageUrl,
+          label: venue.name,
+        };
+      });
   }, [visits, venues]);
 
   if (!visits) {
@@ -204,7 +201,7 @@ const findVenueAndRoomByName = (
   nameOrRoomTitle: string,
   venues: Array<AnyVenue>
 ) => {
-  const venue = venues?.find(
+  const venue = venues.find(
     (v) =>
       v.name === nameOrRoomTitle ||
       (isCampVenue(v) && v.rooms.find((r) => r.title === nameOrRoomTitle))
