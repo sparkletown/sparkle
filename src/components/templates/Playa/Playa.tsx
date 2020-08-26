@@ -64,7 +64,8 @@ const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
 
-const minZoom = () => window.innerWidth / PLAYA_WIDTH_AND_HEIGHT;
+const minZoom = () =>
+  (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH_AND_HEIGHT;
 
 const Playa = () => {
   useFirestoreConnect("venues");
