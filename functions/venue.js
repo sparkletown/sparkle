@@ -184,10 +184,10 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
     });
 });
 
-exports.setDustStorm = functions.https.onCall(async (dustStormIsOn) => {
+exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   checkAuth(context);
 
-  checkUserIsPlayaOwner(userUID);
+  await checkUserIsPlayaOwner(context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -198,11 +198,9 @@ exports.setDustStorm = functions.https.onCall(async (dustStormIsOn) => {
       if (!doc || !doc.exists) {
         throw new HttpsError("not-found", `Venue playa not found`);
       }
-      admin
-        .firestore()
-        .collection("venues")
-        .doc("playa")
-        .update({ dustStorm: !dustStormIsOn });
+      const updated = doc.data();
+      updated.dustStorm = !updated.dustStorm;
+      admin.firestore().collection("venues").doc("playa").update(updated);
     });
 
   return new HttpsError("ok", "Success");

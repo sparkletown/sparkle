@@ -21,11 +21,20 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
 }) => {
   const history = useHistory();
   const goToRandomVenue = useCallback(() => {
-    if (!openVenues) return;
-    const randomVenue = openVenues[getRandomInt(openVenues?.length - 1)];
+    const ExperiencesOrArtpieces = openVenues?.filter(
+      (venue) => venue.template === "zoomroom" || venue.template === "artpiece"
+    );
+
+    if (!ExperiencesOrArtpieces) return;
+
+    const randomVenue =
+      ExperiencesOrArtpieces[getRandomInt(ExperiencesOrArtpieces?.length - 1)];
     afterSelect();
-    console.log(randomVenue.id);
-    history.push(`/in/${randomVenue.id}`);
+
+    if (randomVenue?.template === "artpiece")
+      history.push(`/in/${randomVenue.id}`);
+    if (randomVenue?.template === "zoomroom")
+      window.open(`${randomVenue.zoomUrl}`);
   }, [openVenues, afterSelect, history]);
   if (!openVenues) {
     return <></>;

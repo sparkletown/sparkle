@@ -387,12 +387,10 @@ const Playa = () => {
         )
     );
 
-    const changeDustStorm = () => {
-      firebase
-        .firestore()
-        .collection(`venues`)
-        .doc("playa")
-        .update({ dustStorm: !dustStorm });
+    const changeDustStorm = async () => {
+      return await firebase
+        .functions()
+        .httpsCallable("venue-toggleDustStorm")();
     };
 
     return (
