@@ -1,25 +1,17 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import "./RadioModal.scss";
-import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   volume: number;
   setVolume: Function;
+  sound: HTMLAudioElement | undefined;
 }
 
 export const RadioModal: React.FunctionComponent<PropsType> = ({
   volume,
   setVolume,
+  sound,
 }) => {
-  const { radioStations } = useSelector((state) => ({
-    radioStations: state.firestore.data.venues?.playa?.radioStations,
-  }));
-
-  const sound = useMemo(
-    () => (radioStations ? new Audio(radioStations[0]) : undefined),
-    [radioStations]
-  );
-
   useEffect(() => {
     sound?.play();
   }, [sound]);

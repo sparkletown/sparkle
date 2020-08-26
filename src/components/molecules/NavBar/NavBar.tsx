@@ -27,9 +27,10 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue, privateChats } = useSelector((state) => ({
+  const { venue, privateChats, radioStations } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
+    radioStations: state.firestore.data.venues?.playa?.radioStations,
   }));
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -67,11 +68,18 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   );
 
   const [volume, setVolume] = useState<number>(0);
+  const sound = useMemo(
+    () =>
+      radioStations && radioStations.length
+        ? new Audio(radioStations[0])
+        : undefined,
+    [radioStations]
+  );
 
   const radioPopover = (
     <Popover id="radio-popover">
       <Popover.Content>
-        <RadioModal volume={volume} setVolume={setVolume} />
+        <RadioModal volume={volume} setVolume={setVolume} sound={sound} />
       </Popover.Content>
     </Popover>
   );
