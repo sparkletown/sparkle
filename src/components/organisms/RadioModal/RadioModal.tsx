@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import "./RadioModal.scss";
-
-const sound = new Audio("http://bmir-ice.streamguys.com/live");
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   volume: number;
@@ -12,13 +11,22 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
   volume,
   setVolume,
 }) => {
-  useEffect(() => {
-    sound.play();
-  }, []);
+  const { radioStations } = useSelector((state) => ({
+    radioStations: state.firestore.data.venues?.playa?.radioStations,
+  }));
+
+  const sound = useMemo(
+    () => (radioStations ? new Audio(radioStations[0]) : undefined),
+    [radioStations]
+  );
 
   useEffect(() => {
-    sound.volume = volume / 100;
-  }, [volume]);
+    sound?.play();
+  }, [sound]);
+
+  useEffect(() => {
+    if (sound) sound.volume = volume / 100;
+  }, [volume, sound]);
 
   return (
     <div className="radio-modal-container">
