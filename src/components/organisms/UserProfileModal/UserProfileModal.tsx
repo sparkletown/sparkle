@@ -17,6 +17,7 @@ import { Link } from "react-router-dom";
 import { PLAYA_VENUE_NAME } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
+import { CampRoomData } from "types/CampRoomData";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }

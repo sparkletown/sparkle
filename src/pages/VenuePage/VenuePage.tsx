@@ -73,9 +73,10 @@ const VenuePage = () => {
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
+  const [locationName, setLocationName] = useState(venueName);
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  useUpdateLocationEffect(user, venueName ?? "");
+  useUpdateLocationEffect(user, locationName ?? "");
 
   useConnectPartyGoers();
   useConnectCurrentVenue();
@@ -161,7 +162,7 @@ const VenuePage = () => {
       template = <ArtPiece />;
       break;
     case VenueTemplate.themecamp:
-      template = <CampRouter />;
+      template = <CampRouter setLocationName={setLocationName} />;
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:

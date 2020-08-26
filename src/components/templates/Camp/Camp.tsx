@@ -18,26 +18,27 @@ import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 
-const Camp = () => {
+export interface CampProps {
+  setLocationName: (locationName: string) => void;
+}
+
+const Camp: React.FC<CampProps> = ({ setLocationName }) => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
-  const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
     partygoers: state.firestore.ordered.partygoers,
   }));
 
-  const campLocation = `${venue.name}`;
-
-  // const location = useMemo(
-  //   () =>
-  //     isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
-  //   [isRoomModalOpen, selectedRoom, campLocation]
-  // );
+  useEffect(() => {
+    isRoomModalOpen && selectedRoom
+      ? setLocationName(selectedRoom?.title)
+      : setLocationName(venue.name);
+  }, [isRoomModalOpen, selectedRoom, venue]);
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),
