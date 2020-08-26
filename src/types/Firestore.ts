@@ -36,7 +36,7 @@ export interface Firestore {
     timestamps: VenueTimestamps;
   };
   data: {
-    currentVenue: AnyVenue;
+    currentVenue?: AnyVenue;
     currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;

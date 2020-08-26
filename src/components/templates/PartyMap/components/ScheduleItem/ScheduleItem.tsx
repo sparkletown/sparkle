@@ -1,11 +1,11 @@
 import React from "react";
-import { EventData } from "types/EventData";
+import { RoomEventData } from "types/RoomEventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 
 interface PropsType {
   startUtcSeconds: number;
-  event: EventData[0];
+  event: RoomEventData[0];
   isCurrentEvent: boolean;
   enterRoom: () => void;
   roomUrl: string;

@@ -1,4 +1,4 @@
-import { EventData } from "./EventData";
+import { RoomEventData } from "./RoomEventData";
 
 export interface RoomData {
   name?: string;
@@ -14,6 +14,6 @@ export interface RoomData {
   attendance_y?: string;
   url: string;
   path: string;
-  events: EventData;
+  events: RoomEventData;
   external_url: string;
 }

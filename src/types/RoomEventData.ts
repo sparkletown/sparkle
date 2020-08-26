@@ -1,4 +1,4 @@
-export type EventData = {
+export type RoomEventData = {
   start_minute: number;
   duration_minutes: number;
   host: string;

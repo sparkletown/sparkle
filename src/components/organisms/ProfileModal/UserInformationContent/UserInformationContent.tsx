@@ -19,10 +19,9 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   hideModal,
 }) => {
   const { user, profile } = useUser();
-  const { profileQuestions } = useSelector((state) => ({
-    profileQuestions: state.firestore.data.currentVenue.profile_questions,
-    venue: state.firestore.ordered.currentVenue[0],
-  }));
+  const profileQuestions = useSelector(
+    (state) => state.firestore.data.currentVenue?.profile_questions
+  );
 
   const history = useHistory();
   const firebase = useFirebase();

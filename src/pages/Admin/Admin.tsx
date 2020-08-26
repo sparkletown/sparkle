@@ -41,7 +41,7 @@ import {
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
 } from "settings";
-import PlacementComponent from "./PlacementComponent";
+import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
 
 dayjs.extend(advancedFormat);
@@ -133,7 +133,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
     tabs.push({ url: `${match.url}/events`, label: "Events" });
   }
   if (canHavePlacement(venue)) {
-    tabs.push({ url: `${match.url}/placement`, label: "Placement" });
+    tabs.push({ url: `${match.url}/placement`, label: "Placement & Editing" });
   }
 
   return (
@@ -159,7 +159,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           />
           <Route
             path={`${match.url}/placement`}
-            render={() => <PlacementComponent />}
+            render={() => <AdminEditComponent />}
             venue={venue}
           />
           <Route

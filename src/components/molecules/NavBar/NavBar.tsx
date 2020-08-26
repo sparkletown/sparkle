@@ -108,7 +108,12 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     Go to playa
                   </span>
                 )}
-                <div className="navbar-links" style={{ width: 500 }}>
+                <div className="navbar-links">
+                  <div className="button-container create-button-container navbar-link-schedule">
+                    <Link to="/playa/schedule" className="create-button">
+                      Event Schedule
+                    </Link>
+                  </div>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"

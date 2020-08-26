@@ -111,6 +111,14 @@ const checkUserIsPlayaOwner = (uid) => {
   return checkUserIsOwner(PLAYA_VENUE_ID, uid);
 };
 
+const checkUserIsAdminOrOwner = async (venueId, uid) => {
+  try {
+    return await checkUserIsPlayaOwner(uid);
+  } catch (e) {
+    return checkUserIsOwner(venueId, uid);
+  }
+};
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -126,7 +134,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, roomIndex, room } = data;
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -151,7 +159,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -180,7 +188,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -273,36 +281,53 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
   checkAuth(context);
 
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
-//@thecadams using ?? and ?. breaks functions. Please fix.
-
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  // const venueId = data.id;
-  // checkAuth(context);
-  //   await checkUserIsPlayaOwner(context.auth.token.user_id);
-  //   await admin
-  //     .firestore()
-  //     .collection("venues")
-  //     .doc(venueId)
-  //     .get()
-  //     .then((doc) => {
-  //       if (!doc || !doc.exists) {
-  //         throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  //       }
-  //       const updated = doc.data();
-  // updated.mapIconImageUrl = data.mapIconImageUrl ?? updated.mapIconImageUrl;
-  // updated.placement = {
-  //   x: data.placement?.x ?? updated.placement?.x,
-  //   y: data.placement?.y ?? updated.placement?.y,
-  //   addressText:
-  //     data.placement?.addressText ?? updated.placement?.addressText,
-  //   notes: data.placement?.notes ?? updated.placement?.notes,
-  //   state: PlacementState.AdminPlaced,
-  // };
-  //       admin.firestore().collection("venues").doc(venueId).update(updated);
-  //     });
+  const venueId = data.id;
+  checkAuth(context);
+  await checkUserIsPlayaOwner(context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const updated = doc.data();
+      updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
+      updated.placement = {
+        x: dataOrUpdateKey(data.placement, updated.placement, "x"),
+        y: dataOrUpdateKey(data.placement, updated.placement, "y"),
+        state: PlacementState.AdminPlaced,
+      };
+
+      const addressText = dataOrUpdateKey(
+        data.placement,
+        updated.placement,
+        "addressText"
+      );
+      const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
+
+      if (addressText) {
+        updated.placement.addressText = addressText;
+      }
+      if (notes) {
+        updated.placement.notes = notes;
+      }
+
+      admin.firestore().collection("venues").doc(venueId).update(updated);
+    });
 });
+
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);

@@ -8,19 +8,11 @@ import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
-import { EventData } from "types/EventData";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
-
-interface getOnlineStatsData {
-  onlineUsers: Array<WithId<User>>;
-  openVenues: Array<{
-    venue: WithId<AnyVenue>;
-    currentEvents: EventData;
-  }>;
-}
+import { OnlineStatsData } from "types/OnlineStatsData";
 
 const getRandomInt = (max: number) => {
   return Math.floor(Math.random() * Math.floor(max + 1));
@@ -56,11 +48,11 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
 
 const OnlineStats: React.FC = () => {
   const [onlineUsers, setOnlineUsers] = useState<
-    getOnlineStatsData["onlineUsers"]
+    OnlineStatsData["onlineUsers"]
   >([]);
-  const [openVenues, setOpenVenues] = useState<
-    getOnlineStatsData["openVenues"]
-  >([]);
+  const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>(
+    []
+  );
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
@@ -75,7 +67,7 @@ const OnlineStats: React.FC = () => {
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
-          const { onlineUsers, openVenues } = result.data as getOnlineStatsData;
+          const { onlineUsers, openVenues } = result.data as OnlineStatsData;
           setOnlineUsers(onlineUsers);
           setOpenVenues(openVenues);
           setLoaded(true);

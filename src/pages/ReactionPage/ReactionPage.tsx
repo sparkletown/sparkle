@@ -20,13 +20,15 @@ const ReactionPage = () => {
   }));
 
   useFirestoreConnect([
-    {
-      collection: "experiences",
-      doc: venue.name,
-      subcollections: [{ collection: "reactions" }],
-      storeAs: "reactions",
-      orderBy: ["created_at", "desc"],
-    },
+    venue
+      ? {
+          collection: "experiences",
+          doc: venue.name,
+          subcollections: [{ collection: "reactions" }],
+          storeAs: "reactions",
+          orderBy: ["created_at", "desc"],
+        }
+      : {},
   ]);
 
   const messagesToTheBand = reactions?.filter(

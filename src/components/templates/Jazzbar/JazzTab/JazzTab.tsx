@@ -102,6 +102,8 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
       ? participantWindows + (participantWindows % 2)
       : undefined;
 
+  if (!venueToUse) return <>Loading...</>;
+
   return (
     <>
       <div
