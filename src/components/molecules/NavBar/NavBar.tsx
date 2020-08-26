@@ -9,6 +9,7 @@ import { isChatValid } from "validation";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import { RadioModal } from "../../organisms/RadioModal/RadioModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -26,9 +27,10 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue, privateChats } = useSelector((state) => ({
+  const { venue, privateChats, radioStations } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
+    radioStations: state.firestore.data.venues?.playa?.radioStations,
   }));
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -61,6 +63,23 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     <Popover id="profile-popover">
       <Popover.Content>
         <ProfilePopoverContent />
+      </Popover.Content>
+    </Popover>
+  );
+
+  const [volume, setVolume] = useState<number>(0);
+  const sound = useMemo(
+    () =>
+      radioStations && radioStations.length
+        ? new Audio(radioStations[0])
+        : undefined,
+    [radioStations]
+  );
+
+  const radioPopover = (
+    <Popover id="radio-popover">
+      <Popover.Content>
+        <RadioModal volume={volume} setVolume={setVolume} sound={sound} />
       </Popover.Content>
     </Popover>
   );
@@ -144,6 +163,32 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={radioPopover}
+                    rootClose={true}
+                  >
+                    <div className="navbar-link-profile">
+                      {volume === 0 ? (
+                        <img
+                          src={"/navbar-link-radio-off.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      ) : (
+                        <img
+                          src={"/navbar-link-radio.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      )}
+                    </div>
+                  </OverlayTrigger>
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
