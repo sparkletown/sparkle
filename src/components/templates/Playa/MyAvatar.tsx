@@ -3,21 +3,20 @@ import { UserState } from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
+import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
-  zoom: number;
   walkMode: boolean;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
 }
 
-const ARROW_MOVE_INCREMENT_PX_WALK = 3;
-const ARROW_MOVE_INCREMENT_PX_BIKE = 10;
+const ARROW_MOVE_INCREMENT_PX_WALK = 6;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
-  zoom,
   walkMode,
   sendUpdatedState,
   setMyLocation,
@@ -26,6 +25,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -91,7 +91,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         }
         return state;
       });
-    }, 16);
+    }, 50);
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
@@ -99,28 +99,46 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       window.removeEventListener("keydown", keyListener);
       window.removeEventListener("keyup", keyListener);
     };
-  }, [zoom, walkMode, sendUpdatedState]);
+  }, [walkMode, sendUpdatedState]);
 
   if (!profile || !state) return <></>;
 
   return (
-    <div
-      ref={ref}
-      className="avatar me"
-      style={{
-        top: state.y - PLAYA_AVATAR_SIZE / 2,
-        left: state.x - PLAYA_AVATAR_SIZE / 2,
-      }}
-    >
-      <div className="border-helper">
-        <span className="img-vcenter-helper" />
-        <img
-          className="profile-image"
-          src={profile?.pictureUrl}
-          alt={profile?.partyName}
-          title={profile?.partyName}
-        />
+    <>
+      <div
+        ref={ref}
+        className="avatar me"
+        style={{
+          top: state.y - PLAYA_AVATAR_SIZE / 2,
+          left: state.x - PLAYA_AVATAR_SIZE / 2,
+        }}
+        onMouseOver={() => setShowTooltip(true)}
+        onMouseLeave={() => setShowTooltip(false)}
+      >
+        <div className="border-helper">
+          <span className="img-vcenter-helper" />
+          <img
+            className="profile-image"
+            src={profile?.pictureUrl}
+            alt={profile?.partyName}
+            title={profile?.partyName}
+          />
+        </div>
       </div>
-    </div>
+      <Overlay target={ref.current} show={showTooltip}>
+        {({ placement, arrowProps, show: _show, popper, ...props }) => (
+          // @ts-expect-error
+          <div {...props} style={{ ...props.style, padding: "10px" }}>
+            <div className="playa-venue-text">
+              <div className="playa-venue-maininfo">
+                <div className="playa-user-title">
+                  {profile?.partyName} (you)
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </Overlay>
+    </>
   );
 };
