@@ -238,7 +238,6 @@ const Playa = () => {
     };
   }, []);
 
-  //const venues = useSelector((state) => state.firestore.ordered.venues);
   const { venue, venues } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venues: state.firestore.ordered.venues,
@@ -365,6 +364,10 @@ const Playa = () => {
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const dustStorm = venue?.dustStorm;
 
+  const changeDustStorm = useCallback(async () => {
+    return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
+  }, []);
+
   return useMemo(() => {
     const translateX = Math.min(
       PLAYA_MARGIN_X / zoom,
@@ -386,12 +389,6 @@ const Playa = () => {
             PLAYA_MARGIN_BOTTOM / zoom
         )
     );
-
-    const changeDustStorm = async () => {
-      return await firebase
-        .functions()
-        .httpsCallable("venue-toggleDustStorm")();
-    };
 
     return (
       <>
@@ -577,6 +574,7 @@ const Playa = () => {
     zoom,
     isUserVenueOwner,
     dustStorm,
+    changeDustStorm,
   ]);
 };
 

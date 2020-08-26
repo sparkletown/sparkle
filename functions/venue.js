@@ -202,8 +202,6 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
       updated.dustStorm = !updated.dustStorm;
       admin.firestore().collection("venues").doc("playa").update(updated);
     });
-
-  return new HttpsError("ok", "Success");
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
@@ -295,8 +293,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
       admin.firestore().collection("venues").doc(venueId).update(updated);
     });
-
-  return new HttpsError("ok", "Success");
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {

@@ -5,10 +5,7 @@ import { AnyVenue } from "types/Firestore";
 import firebase from "firebase";
 import { useHistory } from "react-router-dom";
 import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
-
-const getRandomInt = (max: number) => {
-  return Math.floor(Math.random() * Math.floor(max + 1));
-};
+import { getRandomInt } from "../../../utils/getRandomInt";
 
 interface PoLuckButtonProps {
   openVenues?: Array<WithId<AnyVenue>>;
@@ -75,9 +72,9 @@ export const DustStorm = () => {
       <div className="modal-content">
         <h3 className="italic">Dust Storm ahead!</h3>
         <p>
-          All navigation are impossible! You have one option and one option
-          only: to head to the nearest space and hang out there for the duration
-          of the sand storm!
+          All navigation is impossible! You have one option and one option only:
+          to head to the nearest space and hang out there for the duration of
+          the sand storm!
         </p>
         <PotLuckButton
           openVenues={openVenues.map((ov) => ov.venue)}

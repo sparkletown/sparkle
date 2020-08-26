@@ -13,10 +13,7 @@ import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
-
-const getRandomInt = (max: number) => {
-  return Math.floor(Math.random() * Math.floor(max + 1));
-};
+import { getRandomInt } from "../../../utils/getRandomInt";
 
 interface PoLuckButtonProps {
   openVenues?: Array<WithId<AnyVenue>>;
