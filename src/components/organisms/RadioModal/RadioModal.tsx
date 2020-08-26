@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import "./RadioModal.scss";
 
-const sound = new Audio(
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"
-);
+const sound = new Audio("http://bmir-ice.streamguys.com/live");
 
 interface PropsType {
   volume: number;
@@ -43,14 +41,6 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
         onChange={(ev) => setVolume(Number(ev.target.value))}
         value={volume}
       />
-      <iframe
-        title="burning-man-radio"
-        allow="autoplay"
-        width="100%"
-        height="200"
-        src="https://www.iheart.com/podcast/269-burning-man-live-63444432/episode/burning-in-a-virtual-universe-70395877/?embed=true"
-        frameBorder="0"
-      ></iframe>
     </div>
   );
 };
