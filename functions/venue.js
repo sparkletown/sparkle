@@ -111,6 +111,14 @@ const checkUserIsPlayaOwner = (uid) => {
   return checkUserIsOwner(PLAYA_VENUE_ID, uid);
 };
 
+const checkUserIsAdminOrOwner = async (venueId, uid) => {
+  try {
+    return await checkUserIsPlayaOwner(uid);
+  } catch (e) {
+    return checkUserIsOwner(venueId, uid);
+  }
+};
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -126,7 +134,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, roomIndex, room } = data;
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -151,7 +159,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -180,7 +188,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -273,7 +281,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
   checkAuth(context);
 
-  checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });

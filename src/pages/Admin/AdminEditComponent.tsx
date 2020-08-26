@@ -24,6 +24,8 @@ import { ExtractProps } from "types/utility";
 import { SubmitButton } from "./Venue/DetailsForm";
 import { AnyVenue } from "types/Firestore";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+import { Link } from "react-router-dom";
+import { isCampVenue } from "types/CampVenue";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 type FormErrors = FieldErrors<Required<FormValues>>;
@@ -98,7 +100,7 @@ const updatePlacement = async (
 const iconPositionFieldName = "iconPosition";
 const iconVenueIdFieldName = "iconVenueId";
 
-const PlacementComponent: React.FC = () => {
+const AdminEditComponent: React.FC = () => {
   const [venueId, setVenueId] = useState<string>();
 
   useFirestoreConnect({
@@ -182,6 +184,39 @@ const PlacementComponent: React.FC = () => {
   return (
     <>
       <div className="page-container-adminpanel-placement">
+        {venue && (
+          <div className="venue-preview">
+            <h4 className="heading">Edit venue/room links</h4>
+            <div style={{ marginBottom: 10 }}>
+              <b>Selected Venue:</b> {venue.name}
+            </div>
+            <Link
+              className="btn btn-primary"
+              target="_blank"
+              to={`/admin/venue/edit/${venue.id}`}
+            >
+              Edit Venue
+            </Link>
+            {isCampVenue(venue) && (
+              <div style={{ marginTop: 10 }}>
+                <h5>Venue Rooms</h5>
+                <div className="edit-rooms-container">
+                  {venue.rooms.map((room, idx) => (
+                    <div key={`${room.title}-${idx}`} style={{ margin: 10 }}>
+                      <Link
+                        className="btn btn-secondary"
+                        target="_blank"
+                        to={`/admin/venue/rooms/${venue.id}?roomIndex=${idx}`}
+                      >
+                        {`Edit Room "${room.title}"`}
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
         <div className="venue-preview">
           <h4 className="heading">Drag-and-Drop Playa Placement</h4>
           {venue && venueId && iconsMap ? (
@@ -199,7 +234,8 @@ const PlacementComponent: React.FC = () => {
             />
           ) : (
             <div className="heading">
-              Select a venue on the right to begin the placement process
+              Select a venue on the right to begin the placement process. You
+              can also edit venues/rooms from this panel.
             </div>
           )}
         </div>
@@ -429,4 +465,4 @@ const styles: Record<string, CSSProperties> = {
   },
 };
 
-export default PlacementComponent;
+export default AdminEditComponent;
