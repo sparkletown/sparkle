@@ -145,20 +145,24 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
       .filter((visit) => visit.id !== "Playa") // no badge for the Playa. Also does not have a logo
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-        if (!venue) return {};
+        if (!venue) return undefined;
 
         if (room) {
           return {
+            venue,
+            room,
             image: room.image_url,
             label: room.title,
           };
         }
 
         return {
+          venue,
           image: venue.mapIconImageUrl,
           label: venue.name,
         };
-      });
+      })
+      .filter((b) => b !== undefined);
   }, [visits, venues]);
 
   if (!visits) {
@@ -181,17 +185,21 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
       <div className="badges-container">
         <div className="badges-title">{badges.length} badges</div>
         <ul className="badge-list">
-          {badges.map((b) => (
-            <li className="badge-list-item" key={b.label}>
-              <img
-                className="badge-list-item-image"
-                src={b.image}
-                alt={`${b.label} badge`}
-              />
-            </li>
+          {badges.map(
+            (b) =>
+              b && (
+                <li className="badge-list-item" key={b.label}>
+                  <Link to={getLocationLink(b.venue, b.room)}>
+                    <img
+                      className="badge-list-item-image"
+                      src={b.image}
+                      alt={`${b.label} badge`}
+                    />
+                  </Link>
+                </li>
+              )
             // label missing on hover - similar to playa
-            // maybe link to venue on click - similar to suspected location below
-          ))}
+          )}
         </ul>
       </div>
     </>
@@ -200,7 +208,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
 const findVenueAndRoomByName = (
   nameOrRoomTitle: string,
-  venues: Array<AnyVenue>
+  venues: Array<WithId<AnyVenue>>
 ) => {
   const venue = venues.find(
     (v) =>
@@ -218,6 +226,18 @@ const findVenueAndRoomByName = (
       isCampVenue(venue) &&
       venue.rooms.find((r) => r.title === nameOrRoomTitle),
   };
+};
+
+const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
+  if (venue.name === PLAYA_VENUE_NAME) {
+    return venueInsideUrl(venue.id);
+  }
+
+  if (room) {
+    return campPreviewUrl(venue.id, room.title);
+  }
+
+  return venuePlayaPreviewUrl(venue.id);
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
