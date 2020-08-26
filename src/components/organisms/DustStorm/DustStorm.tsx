@@ -6,20 +6,20 @@ import firebase from "firebase";
 import { useHistory } from "react-router-dom";
 import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
+import { ZOOM_URL_TEMPLATES, EMBED_IFRAME_TEMPLATES } from "settings";
 
-interface PoLuckButtonProps {
+interface PoLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
 
-const PotLuckButton: React.FC<PoLuckButtonProps> = ({
-  openVenues,
-  afterSelect,
-}) => {
+const PotLuck: React.FC<PoLuckProps> = ({ openVenues, afterSelect }) => {
   const history = useHistory();
   const goToRandomVenue = useCallback(() => {
     const ExperiencesOrArtpieces = openVenues?.filter(
-      (venue) => venue.template === "zoomroom" || venue.template === "artpiece"
+      (venue) =>
+        EMBED_IFRAME_TEMPLATES.includes(venue.template) ||
+        ZOOM_URL_TEMPLATES.includes(venue.template)
     );
 
     if (!ExperiencesOrArtpieces) return;
@@ -28,9 +28,9 @@ const PotLuckButton: React.FC<PoLuckButtonProps> = ({
       ExperiencesOrArtpieces[getRandomInt(ExperiencesOrArtpieces?.length - 1)];
     afterSelect();
 
-    if (randomVenue?.template === "artpiece")
+    if (EMBED_IFRAME_TEMPLATES.includes(randomVenue?.template))
       history.push(`/in/${randomVenue.id}`);
-    if (randomVenue?.template === "zoomroom")
+    if (ZOOM_URL_TEMPLATES.includes(randomVenue?.template))
       window.open(`${randomVenue.zoomUrl}`);
   }, [openVenues, afterSelect, history]);
   if (!openVenues) {
@@ -63,7 +63,7 @@ export const DustStorm = () => {
     updateStats();
     const id = setInterval(() => {
       updateStats();
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
     return () => clearInterval(id);
   }, []);
 
@@ -76,7 +76,7 @@ export const DustStorm = () => {
           to head to the nearest space and hang out there for the duration of
           the sand storm!
         </p>
-        <PotLuckButton
+        <PotLuck
           openVenues={openVenues.map((ov) => ov.venue)}
           // Force popover to close
           afterSelect={() => document.body.click()}

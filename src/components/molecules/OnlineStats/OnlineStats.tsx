@@ -74,7 +74,7 @@ const OnlineStats: React.FC = () => {
     updateStats();
     const id = setInterval(() => {
       updateStats();
-    }, 60 * 1000);
+    }, 5 * 60 * 1000);
     return () => clearInterval(id);
   }, []);
   const fuseVenues = useMemo(
