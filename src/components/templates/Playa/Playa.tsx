@@ -32,6 +32,8 @@ import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
+import { DustStorm } from "components/organisms/DustStorm/DustStorm";
+import firebase from "firebase/app";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -236,7 +238,10 @@ const Playa = () => {
     };
   }, []);
 
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const { venue, venues } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    venues: state.firestore.ordered.venues,
+  }));
 
   const showVenue = useCallback(
     (venue: WithId<Venue>) => {
@@ -356,6 +361,13 @@ const Playa = () => {
     [getNearbyVenue]
   );
 
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const dustStorm = venue?.dustStorm;
+
+  const changeDustStorm = useCallback(async () => {
+    return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
+  }, []);
+
   return useMemo(() => {
     const translateX = Math.min(
       PLAYA_MARGIN_X / zoom,
@@ -383,7 +395,8 @@ const Playa = () => {
         <div className="playa-banner">
           {atEdge ? (
             <>
-              <strong>You're at the edge of the map.</strong> {atEdgeMessage}
+              <strong>{`You're at the edge of the map.`}</strong>{" "}
+              {atEdgeMessage}
             </>
           ) : (
             <>
@@ -393,6 +406,28 @@ const Playa = () => {
             </>
           )}
         </div>
+        {isUserVenueOwner && (
+          <div
+            style={{
+              position: "absolute",
+              width: 50,
+              height: 50,
+              zIndex: 5000,
+            }}
+            onClick={() => changeDustStorm()}
+          >
+            <div className="playa-controls" style={{ bottom: 270, right: 30 }}>
+              <div className={`playa-controls-recenter show`}>
+                <div
+                  className={`playa-dust-storm-btn${
+                    dustStorm ? "-activated" : ""
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {dustStorm && <DustStorm />}
         <div className="playa-container">
           <div
             className="map-container"
@@ -537,6 +572,9 @@ const Playa = () => {
     atEdgeMessage,
     dimensions,
     zoom,
+    isUserVenueOwner,
+    dustStorm,
+    changeDustStorm,
   ]);
 };
 

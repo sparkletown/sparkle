@@ -184,6 +184,26 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
     });
 });
 
+exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
+  checkAuth(context);
+
+  await checkUserIsPlayaOwner(context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc("playa")
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue playa not found`);
+      }
+      const updated = doc.data();
+      updated.dustStorm = !updated.dustStorm;
+      admin.firestore().collection("venues").doc("playa").update(updated);
+    });
+});
+
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
@@ -273,8 +293,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
       admin.firestore().collection("venues").doc(venueId).update(updated);
     });
-
-  return new HttpsError("ok", "Success");
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
