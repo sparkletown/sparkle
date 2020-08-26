@@ -2,7 +2,6 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
@@ -38,7 +37,7 @@ const Camp: React.FC<CampProps> = ({ setLocationName }) => {
     isRoomModalOpen && selectedRoom
       ? setLocationName(selectedRoom?.title)
       : setLocationName(venue.name);
-  }, [isRoomModalOpen, selectedRoom, venue]);
+  }, [isRoomModalOpen, selectedRoom, venue, setLocationName]);
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),
