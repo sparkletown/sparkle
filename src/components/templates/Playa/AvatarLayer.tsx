@@ -20,12 +20,12 @@ import { MyAvatar } from "./MyAvatar";
 import { Overlay } from "react-bootstrap";
 
 interface PropsType {
-  walkMode: boolean;
+  bikeMode: boolean;
   setMyLocation(x: number, y: number): void;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
-  walkMode,
+  bikeMode,
   setMyLocation,
 }) => {
   useConnectPartyGoers();
@@ -127,12 +127,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (
       <MyAvatar
         serverSentState={myServerSentState}
-        walkMode={walkMode}
+        bikeMode={bikeMode}
         sendUpdatedState={sendUpdatedState}
         setMyLocation={setMyLocation}
       />
     ),
-    [myServerSentState, walkMode, sendUpdatedState, setMyLocation]
+    [myServerSentState, bikeMode, sendUpdatedState, setMyLocation]
   );
 
   const avatars = useMemo(

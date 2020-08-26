@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
-import { UserState } from "types/RelayMessage";
+import { UserState, UserStateKey, stateBoolean } from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
@@ -7,7 +7,7 @@ import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
-  walkMode: boolean;
+  bikeMode: boolean;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
 }
@@ -17,7 +17,7 @@ const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
-  walkMode,
+  bikeMode,
   sendUpdatedState,
   setMyLocation,
 }) => {
@@ -47,9 +47,9 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         default:
           return;
       }
-      const moveIncrement = walkMode
-        ? ARROW_MOVE_INCREMENT_PX_WALK
-        : ARROW_MOVE_INCREMENT_PX_BIKE;
+      const moveIncrement = bikeMode
+        ? ARROW_MOVE_INCREMENT_PX_BIKE
+        : ARROW_MOVE_INCREMENT_PX_WALK;
       setState((state) => {
         if (state) {
           let needsUpdate = false;
@@ -99,7 +99,22 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       window.removeEventListener("keydown", keyListener);
       window.removeEventListener("keyup", keyListener);
     };
-  }, [walkMode, sendUpdatedState]);
+  }, [bikeMode, sendUpdatedState]);
+
+  useEffect(() => {
+    setState((state) => {
+      if (!state) return state;
+      const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
+      const needsUpdate = bikeMode !== onBike;
+      if (!needsUpdate) return state;
+
+      if (state.state) {
+        state.state[UserStateKey.Bike] = bikeMode.toString();
+      }
+      sendUpdatedState(state);
+      return { ...state };
+    });
+  }, [bikeMode, sendUpdatedState]);
 
   if (!profile || !state) return <></>;
 
@@ -107,7 +122,9 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
     <>
       <div
         ref={ref}
-        className="avatar me"
+        className={`avatar me chat-${
+          stateBoolean(state, UserStateKey.VideoChatBlocked) ? "off" : "on"
+        }`}
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
@@ -125,6 +142,15 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           />
         </div>
       </div>
+      {bikeMode && (
+        <div
+          className="bike"
+          style={{
+            top: state.y + PLAYA_AVATAR_SIZE / 5,
+            left: state.x + PLAYA_AVATAR_SIZE / 5,
+          }}
+        />
+      )}
       <Overlay target={ref.current} show={showTooltip}>
         {({ placement, arrowProps, show: _show, popper, ...props }) => (
           // @ts-expect-error

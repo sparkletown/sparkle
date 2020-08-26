@@ -26,9 +26,14 @@ $sand: #937c63;
       .profile-image {
         width: 100%;
       }
+      &.chat-on {
+        box-shadow: 0 0 0 $playa-avatar-size rgba($green, 0.25);
+      }
+      &.chat-off {
+        box-shadow: 0 0 0 $playa-avatar-size rgba($red, 0.25);
+      }
 
       &.me {
-        box-shadow: 0 0 0 ($playa-avatar-size * 1.5) rgba($green, 0.25);
         background: $gradient;
         padding: 4px;
 
@@ -42,6 +47,30 @@ $sand: #937c63;
       &.they {
         border: 4px solid white;
         background: $sand;
+      }
+    }
+
+    .bike {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid white;
+      width: $playa-avatar-size/2;
+      height: $playa-avatar-size/2;
+      background-color: rgba($sand, 0.5);
+      z-index: 1;
+      transition: all 0.1s ease-in-out;
+      overflow: hidden;
+
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        background-image: url("./img/playa-controls-bike.png");
+        width: 18px;
+        height: 18px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        margin: 3px;
       }
     }
   }
@@ -279,7 +308,7 @@ $sand: #937c63;
     }
   }
 
-  .playa-controls-walkmode {
+  .playa-controls-bikemode {
     background-color: rgba($sand, 0.8);
     width: 44px;
     height: 44px;
@@ -288,10 +317,10 @@ $sand: #937c63;
     margin-bottom: 6px;
     cursor: pointer;
 
-    .playa-controls-walkmode-btn {
+    .playa-controls-bikemode-btn {
       height: 100%;
       width: 100%;
-      background-image: url("./img/playa-controls-bike.png");
+      background-image: url("./img/playa-controls-walk.png");
       background-size: 20px 20px;
       background-position: center center;
       background-repeat: no-repeat;
@@ -303,8 +332,8 @@ $sand: #937c63;
         transform: scale(1);
       }
 
-      &.walk {
-        background-image: url("./img/playa-controls-walk.png");
+      &.bike {
+        background-image: url("./img/playa-controls-bike.png");
       }
     }
   }

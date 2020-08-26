@@ -84,11 +84,11 @@ const Playa = () => {
     height: window.innerHeight,
     width: window.innerWidth,
   });
-  const [walkMode, setWalkMode] = useState(true);
+  const [bikeMode, setBikeMode] = useState(false);
 
-  const toggleWalkMode = useCallback(() => {
-    setWalkMode(!walkMode);
-  }, [walkMode]);
+  const toggleBikeMode = useCallback(() => {
+    setBikeMode(!bikeMode);
+  }, [bikeMode]);
 
   const { user } = useUser();
 
@@ -455,7 +455,7 @@ const Playa = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />
+            <AvatarLayer bikeMode={bikeMode} setMyLocation={setMyLocation} />
           </div>
           <div className="playa-controls">
             <div
@@ -466,10 +466,10 @@ const Playa = () => {
             >
               <div className="playa-controls-recenter-btn" />
             </div>
-            <div className={"playa-controls-walkmode"} onClick={toggleWalkMode}>
+            <div className={"playa-controls-bikemode"} onClick={toggleBikeMode}>
               <div
-                className={`playa-controls-walkmode-btn ${
-                  walkMode ? "walk" : ""
+                className={`playa-controls-bikemode-btn ${
+                  bikeMode ? "bike" : ""
                 }`}
               />
             </div>
@@ -526,8 +526,8 @@ const Playa = () => {
     user,
     users,
     venues,
-    walkMode,
-    toggleWalkMode,
+    bikeMode,
+    toggleBikeMode,
     centerX,
     centerY,
     centeredOnMe,
