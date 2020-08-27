@@ -209,7 +209,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
     .collection("venues")
     .doc("playa")
     .get()
-    .then((doc) => {
+    .then(async (doc) => {
       if (!doc || !doc.exists) {
         throw new HttpsError("not-found", `Venue playa not found`);
       }
@@ -221,26 +221,24 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
       // Fetch the doc again, in case anything changed meanwhile.
       // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
       if (updated.dustStorm) {
-        setTimeout(
-          async () =>
-            await admin
-              .firestore()
-              .collection("venues")
-              .doc("playa")
-              .get()
-              .then((doc) => {
-                if (doc && doc.exists) {
-                  const updated = doc.data();
-                  updated.dustStorm = false;
-                  admin
-                    .firestore()
-                    .collection("venues")
-                    .doc("playa")
-                    .update(updated);
-                }
-              }),
-          30 * 1000
-        );
+        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        await wait(30 * 1000);
+        await admin
+          .firestore()
+          .collection("venues")
+          .doc("playa")
+          .get()
+          .then((doc) => {
+            if (doc && doc.exists) {
+              const updated = doc.data();
+              updated.dustStorm = false;
+              admin
+                .firestore()
+                .collection("venues")
+                .doc("playa")
+                .update(updated);
+            }
+          });
       }
     });
 });
