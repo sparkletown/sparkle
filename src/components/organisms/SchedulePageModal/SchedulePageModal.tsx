@@ -4,6 +4,12 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import firebase from "firebase";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
+import {
+  formatDate,
+  formatHourAndMinute,
+  daysFromEndOfEvent,
+  daysFromStartOfEvent,
+} from "../../../utils/time";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -99,47 +105,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
     return dates;
   }, [openVenues]);
 
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  const DateToString = (Date: Date) =>
-    String(Date.getDate()).padStart(2, "0") +
-    " " +
-    String(months[Date.getMonth()]);
-  const TimeToString = (time: number) => {
-    const date = new Date(time * 1000);
-    const hh = String(date.getHours()).padStart(2, "0");
-    const mm = String(date.getMinutes()).padStart(2, "0");
-    return hh + ":" + mm;
-  };
-  const daysDifferenceEnd = (time: number, duration: number) => {
-    const dateNow = new Date();
-    const dateOfFinish = new Date((time + duration * 60) * 1000);
-    const differenceInTime = dateOfFinish.getTime() - dateNow.getTime();
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-    return Math.round(differenceInDays);
-  };
-  const daysDifferenceStart = (time: number) => {
-    const dateNow = new Date();
-    const dateOfStart = new Date(time * 1000);
-    const differenceInTime = dateNow.getTime() - dateOfStart.getTime();
-    const differenceInDays = differenceInTime / (1000 * 3600 * 24);
-    return Math.round(differenceInDays);
-  };
-
   const [date, setDate] = useState(0);
-  console.log(orderedEvents);
 
   return (
     <div>
@@ -148,12 +114,12 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
         <div className="modal-tabs">
           {orderedEvents.map((day, idx) => (
             <button
-              key={DateToString(day?.dateDay)}
+              key={formatDate(day?.dateDay.getTime() / 1000)}
               className="modal-tab selected"
               style={{ width: 100 }}
               onClick={() => setDate(idx)}
             >
-              {DateToString(day?.dateDay)}
+              {formatDate(day?.dateDay.getTime() / 1000)}
             </button>
           ))}
         </div>
@@ -170,30 +136,32 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
               >
                 <div className="event-time">
                   <div className="event-time-start">
-                    {daysDifferenceStart(event.event.start_utc_seconds) === 0
+                    {daysFromStartOfEvent(event.event.start_utc_seconds) === 0
                       ? "Starts today at:"
-                      : daysDifferenceStart(event.event.start_utc_seconds) > 0
-                      ? `Started ${daysDifferenceStart(
+                      : daysFromStartOfEvent(event.event.start_utc_seconds) > 0
+                      ? `Started ${daysFromStartOfEvent(
                           event.event.start_utc_seconds
                         )} days ago at:`
-                      : `Starts in ${-daysDifferenceStart(
+                      : `Starts in ${-daysFromStartOfEvent(
                           event.event.start_utc_seconds
                         )} days at:`}
                   </div>
-                  <div>{TimeToString(event.event.start_utc_seconds)}</div>
+                  <div>
+                    {formatHourAndMinute(event.event.start_utc_seconds)}
+                  </div>
                   <div className="event-time-end">
-                    {daysDifferenceEnd(
+                    {daysFromEndOfEvent(
                       event.event.start_utc_seconds,
                       event.event.duration_minutes
                     ) === 0
                       ? "Ends today at:"
-                      : `Ends in ${daysDifferenceEnd(
+                      : `Ends in ${daysFromEndOfEvent(
                           event.event.start_utc_seconds,
                           event.event.duration_minutes
                         )} days at:`}
                   </div>
                   <div>
-                    {TimeToString(
+                    {formatHourAndMinute(
                       event.event.start_utc_seconds +
                         event.event.duration_minutes * 60
                     )}
