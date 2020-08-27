@@ -3,18 +3,26 @@ import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";
-import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useSelector, useKeyedSelector } from "hooks/useSelector";
+import { useKeyedSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 
 interface RoomProps {
   roomName: string;
+  host: boolean;
   setSelectedUserProfile: (user: WithId<User>) => void;
+  leave: () => void;
+  removeParticipant: (uid: string) => void;
 }
 
-const Room: React.FC<RoomProps> = ({ roomName, setSelectedUserProfile }) => {
+const Room: React.FC<RoomProps> = ({
+  roomName,
+  host,
+  setSelectedUserProfile,
+  leave,
+  removeParticipant,
+}) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
     []
@@ -89,23 +97,19 @@ const Room: React.FC<RoomProps> = ({ roomName, setSelectedUserProfile }) => {
     };
   }, [roomName, token]);
 
-  if (!user) return <></>;
-
   const me = useMemo(() => {
-    return room ? (
+    return room && user ? (
       <div className="participant-container">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
           user={users[user.uid]}
           setSelectedUserProfile={setSelectedUserProfile}
-          leave={() => alert("leave clicked")}
+          leave={leave}
         />
       </div>
     ) : null;
-  }, [room]);
-
-  const meIsHost = false; // REVISIT
+  }, [room, user, users, setSelectedUserProfile, leave]);
 
   const others = useMemo(
     () =>
@@ -121,13 +125,13 @@ const Room: React.FC<RoomProps> = ({ roomName, setSelectedUserProfile }) => {
               participant={participant}
               user={users[participant.identity]}
               setSelectedUserProfile={setSelectedUserProfile}
-              host={meIsHost}
-              remove={() => alert("remove clicked")}
+              host={host}
+              remove={() => removeParticipant(participant.identity)}
             />
           </div>
         );
       }),
-    [participants, roomName, users]
+    [participants, users, host, setSelectedUserProfile, removeParticipant]
   );
 
   if (!token) {

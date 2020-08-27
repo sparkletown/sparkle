@@ -36,6 +36,7 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import firebase from "firebase/app";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import VideoChatLayer from "./VideoChatLayer";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -540,6 +541,7 @@ const Playa = () => {
               <div className="playa-controls-shout-btn"></div>
             </div>
           </div>
+          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
           <div className="chat-pop-up">
             <ChatDrawer
               roomName={"PLAYA"}
