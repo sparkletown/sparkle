@@ -239,7 +239,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
                     .update(updated);
                 }
               }),
-          60 * 1000
+          30 * 1000
         );
       }
     });
