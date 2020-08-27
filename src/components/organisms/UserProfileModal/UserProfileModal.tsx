@@ -136,13 +136,13 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
   const venuesVisited = useMemo(() => {
     if (!visits) return undefined;
-    return visits.filter((visit) => visit.id !== "Playa").length; // Playa does not count
+    return visits.filter((visit) => visit.id !== PLAYA_VENUE_NAME).length; // Playa does not count
   }, [visits]);
 
   const badges = useMemo(() => {
     if (!visits || !venues) return [];
     return visits
-      .filter((visit) => visit.id !== "Playa") // no badge for the Playa. Also does not have a logo
+      .filter((visit) => visit.id !== PLAYA_VENUE_NAME) // no badge for the Playa. Also does not have a logo
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
         if (!venue) return undefined;
@@ -166,7 +166,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
   }, [visits, venues]);
 
   if (!visits) {
-    return <>Loading...</>;
+    return <>Visit venues to collect badges!</>;
   }
 
   return (

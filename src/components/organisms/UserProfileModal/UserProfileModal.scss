@@ -99,6 +99,7 @@ $modal-max-width: 540px;
 
     .badge-list {
       display: flex;
+      flex-wrap: wrap;
       list-style: none;
     }
 

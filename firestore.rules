@@ -12,7 +12,7 @@ service cloud.firestore {
     }
     match /users/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid == request.resource.id;
+      allow write: if request.auth.uid == userId;
 
       match /visits/{venueId} {
         allow read: if true;

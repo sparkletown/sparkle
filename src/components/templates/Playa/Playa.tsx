@@ -16,10 +16,14 @@ import {
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
-import { updateLocationData } from "utils/useLocationUpdateEffect";
+import {
+  updateLocationData,
+  useLocationUpdateEffect,
+} from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
 import { throttle } from "lodash";
@@ -91,6 +95,8 @@ const Playa = () => {
   }, [walkMode]);
 
   const { user } = useUser();
+
+  useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
   useEffect(() => {
     const updateDimensions = () => {

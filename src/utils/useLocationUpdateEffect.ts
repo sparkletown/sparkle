@@ -3,6 +3,8 @@ import firebase, { UserInfo } from "firebase";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
+const LOCATION_INCREMENT_SECONDS = 2;
+
 export const updateLocationData = (user: UserInfo, roomName: string | null) => {
   updateUserProfile(user.uid, {
     lastSeenAt: new Date().getTime() / 1000,
@@ -18,7 +20,7 @@ export const leaveRoom = (user: UserInfo) => {
   updateLocationData(user, null);
 };
 
-const useLocationUpdateEffect = (
+export const useLocationUpdateEffect = (
   user: UserInfo | undefined,
   roomName: string
 ) => {
@@ -40,18 +42,18 @@ const useLocationUpdateEffect = (
 
     const firestore = firebase.firestore();
     const doc = `users/${user.uid}/visits/${roomName}`;
-    const increment = firebase.firestore.FieldValue.increment(1);
+    const increment = firebase.firestore.FieldValue.increment(
+      LOCATION_INCREMENT_SECONDS
+    );
 
     const intervalId = setInterval(() => {
       return firestore
         .doc(doc)
         .update({ timeSpent: increment })
         .catch(() => {
-          firestore.doc(doc).set({ timeSpent: 1 });
+          firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
-    }, 60 * 1000);
+    }, LOCATION_INCREMENT_SECONDS * 1000);
     return () => clearInterval(intervalId);
   }, [user, roomName]);
 };
-
-export default useLocationUpdateEffect;

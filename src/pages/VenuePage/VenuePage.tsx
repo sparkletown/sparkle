@@ -17,7 +17,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { PlayaRouter } from "components/templates/Playa/Router";
@@ -73,10 +73,9 @@ const VenuePage = () => {
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
-  const [locationName, setLocationName] = useState(venueName);
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  useUpdateLocationEffect(user, locationName ?? "");
+  useLocationUpdateEffect(user, venueName ?? "");
 
   useConnectPartyGoers();
   useConnectCurrentVenue();
@@ -162,7 +161,7 @@ const VenuePage = () => {
       template = <ArtPiece />;
       break;
     case VenueTemplate.themecamp:
-      template = <CampRouter setLocationName={setLocationName} />;
+      template = <CampRouter />;
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
