@@ -106,8 +106,6 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   }, [openVenues]);
 
   const [date, setDate] = useState(0);
-  console.log(date);
-  console.log(orderedEvents);
 
   return (
     <div>

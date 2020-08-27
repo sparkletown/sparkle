@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
 import "./SparkleFairiesPopUp.scss";
+import { PLAYA_INFO_URL, REALITY_RANGERS_URL } from "../../../../src/settings";
 
 interface PropsType {
   setShowEventSchedule: Function;
@@ -30,7 +31,7 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
           </button>
           <br />
           <a
-            href="https://playa.sparklever.se/in/playainfo"
+            href={PLAYA_INFO_URL}
             rel="noopener noreferrer"
             target="_blank"
             className="btn btn-primary join-button"
@@ -41,7 +42,7 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
           <div className="title">Help and support</div>
           <p className="title-sidebar">{`If you're in need of help or support, you can call on our Reality Rangers`}</p>
           <a
-            href="https://multiverserangers.org/rangers911/"
+            href={REALITY_RANGERS_URL}
             rel="noopener noreferrer"
             target="_blank"
             className="btn btn-primary join-button"
