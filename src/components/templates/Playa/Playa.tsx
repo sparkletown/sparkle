@@ -15,6 +15,7 @@ import {
   PLAYA_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_VENUE_SIZE,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -31,6 +32,8 @@ import { peopleAttending } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
+import { DustStorm } from "components/organisms/DustStorm/DustStorm";
+import firebase from "firebase/app";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -52,12 +55,19 @@ const EDGE_MESSAGES = [
   "Why not put up an art piece out here!",
   "Hope you’re enjoying your adventure ❤️",
 ];
+// Let the playa scroll out from under the left donate button, left ranger button, and right chat bar
+const PLAYA_MARGIN_X = 75;
+// Let the playa scroll out from under the top banners
+const PLAYA_MARGIN_TOP = 60;
+// Let the playa scroll at the bottom, accounting for navbar padding and zooming the avatar
+const PLAYA_MARGIN_BOTTOM = 180;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
 };
 
-const minZoom = () => window.innerWidth / PLAYA_WIDTH_AND_HEIGHT;
+const minZoom = () =>
+  (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH_AND_HEIGHT;
 
 const Playa = () => {
   useFirestoreConnect("venues");
@@ -92,6 +102,7 @@ const Playa = () => {
         height: window.innerHeight,
         width: window.innerWidth,
       });
+      setZoom((zoom) => Math.max(minZoom(), zoom));
     };
     window.addEventListener("resize", updateDimensions);
     return () => {
@@ -227,7 +238,10 @@ const Playa = () => {
     };
   }, []);
 
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const { venue, venues } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    venues: state.firestore.ordered.venues,
+  }));
 
   const showVenue = useCallback(
     (venue: WithId<Venue>) => {
@@ -250,9 +264,7 @@ const Playa = () => {
     if (!venuePlacement) {
       return;
     }
-    return Math.sqrt(
-      Math.pow(venuePlacement.x - x, 2) + Math.pow(venuePlacement.y - y, 2)
-    );
+    return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
   };
 
   const { camp } = useParams();
@@ -297,7 +309,7 @@ const Playa = () => {
         (myX <= 0 ||
           myX >= PLAYA_WIDTH_AND_HEIGHT - 1 ||
           myY <= 0 ||
-          myY >= PLAYA_WIDTH_AND_HEIGHT);
+          myY >= PLAYA_WIDTH_AND_HEIGHT - 1);
       if (!atEdge && newAtEdge) {
         setAtEdgeMessage(
           EDGE_MESSAGES[Math.floor(Math.random() * EDGE_MESSAGES.length)]
@@ -313,8 +325,8 @@ const Playa = () => {
     setCenterY(myY);
   }, [myX, myY]);
 
-  const getNearbyVenue = useMemo(
-    () => (x: number, y: number) => {
+  const getNearbyVenue = useCallback(
+    (x: number, y: number) => {
       if (!venues) return;
       let closestVenue: WithId<Venue> | undefined;
       let distanceToClosestVenue: number;
@@ -342,29 +354,39 @@ const Playa = () => {
       setMyY(y);
       const nearbyVenue = getNearbyVenue(x, y);
       if (nearbyVenue) {
-        showVenue(nearbyVenue);
-      } else {
-        hideVenue();
+        setHoveredVenue(nearbyVenue);
       }
+      setShowVenueTooltip(!!nearbyVenue);
     },
-    [getNearbyVenue, showVenue, hideVenue]
+    [getNearbyVenue]
   );
+
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const dustStorm = venue?.dustStorm;
+
+  const changeDustStorm = useCallback(async () => {
+    return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
+  }, []);
 
   return useMemo(() => {
     const translateX = Math.min(
-      0,
+      PLAYA_MARGIN_X / zoom,
       -1 *
         Math.min(
           (centerX * zoom - dimensions.width / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT - dimensions.width
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.width / zoom +
+            PLAYA_MARGIN_X / zoom
         )
     );
     const translateY = Math.min(
-      0,
+      PLAYA_MARGIN_TOP / zoom,
       -1 *
         Math.min(
           (centerY * zoom - dimensions.height / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT - dimensions.height
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.height / zoom +
+            PLAYA_MARGIN_BOTTOM / zoom
         )
     );
 
@@ -373,7 +395,8 @@ const Playa = () => {
         <div className="playa-banner">
           {atEdge ? (
             <>
-              <strong>You're at the edge of the map.</strong> {atEdgeMessage}
+              <strong>{`You're at the edge of the map.`}</strong>{" "}
+              {atEdgeMessage}
             </>
           ) : (
             <>
@@ -383,6 +406,28 @@ const Playa = () => {
             </>
           )}
         </div>
+        {isUserVenueOwner && (
+          <div
+            style={{
+              position: "absolute",
+              width: 50,
+              height: 50,
+              zIndex: 5000,
+            }}
+            onClick={() => changeDustStorm()}
+          >
+            <div className="playa-controls" style={{ bottom: 270, right: 30 }}>
+              <div className={`playa-controls-recenter show`}>
+                <div
+                  className={`playa-dust-storm-btn${
+                    dustStorm ? "-activated" : ""
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+        {dustStorm && <DustStorm />}
         <div className="playa-container">
           <div
             className="map-container"
@@ -400,8 +445,8 @@ const Playa = () => {
               <div
                 className="venue"
                 style={{
-                  top: venue.placement?.y || 0,
-                  left: venue.placement?.x || 0,
+                  top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
+                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
                   position: "absolute",
                 }}
                 onClick={() => showVenue(venue)}
@@ -445,11 +490,7 @@ const Playa = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer
-              zoom={zoom}
-              walkMode={walkMode}
-              setMyLocation={setMyLocation}
-            />
+            <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />
           </div>
           <div className="playa-controls">
             <div
@@ -469,11 +510,17 @@ const Playa = () => {
             </div>
             <div className="playa-controls-zoom">
               <div
-                className="playa-controls-zoom-in"
-                onClick={() => setZoom((zoom) => zoom * ZOOM_INCREMENT)}
+                className={`playa-controls-zoom-in ${
+                  zoom >= ZOOM_MAX ? "disabled" : ""
+                }`}
+                onClick={() =>
+                  setZoom((zoom) => Math.min(zoom * ZOOM_INCREMENT, ZOOM_MAX))
+                }
               ></div>
               <div
-                className="playa-controls-zoom-out"
+                className={`playa-controls-zoom-out ${
+                  zoom <= minZoom() ? "disabled" : ""
+                }`}
                 onClick={() =>
                   setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }
@@ -525,6 +572,9 @@ const Playa = () => {
     atEdgeMessage,
     dimensions,
     zoom,
+    isUserVenueOwner,
+    dustStorm,
+    changeDustStorm,
   ]);
 };
 

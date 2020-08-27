@@ -46,6 +46,8 @@ export interface Venue {
   embedIframeUrl?: string;
   mapBackgroundImageUrl?: string;
   placementRequests?: string;
+  radioStations?: string[];
+  dustStorm?: boolean;
 }
 
 export interface VenuePlacement {

@@ -157,6 +157,14 @@ $page-max-width: 1240px;
           position: relative;
           z-index: 10;
           overflow-y: scroll;
+
+          .edit-rooms-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            align-items: center;
+          }
+
           .filter-event-section {
             display: flex;
             flex-direction: row;

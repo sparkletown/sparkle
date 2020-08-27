@@ -47,7 +47,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
             <p
               className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}
-              id={`see-venue-information-${venue.name}`}
+              id={`see-venue-information-${venue?.name}`}
             >
               See {isExpanded ? "less" : "all"}
             </p>

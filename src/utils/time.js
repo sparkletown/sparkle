@@ -108,3 +108,26 @@ export function entranceUnhosted(startUtcSeconds, hostedDurationHours) {
 export function getHoursAgoInSeconds(hours) {
   return new Date().getTime() / 1000 - hours * 60 * 60;
 }
+
+export const formatHourAndMinute = (utcSeconds) => {
+  const date = new Date(utcSeconds * 1000);
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  return hh + ":" + mm;
+};
+
+export const daysFromEndOfEvent = (utcSeconds, durationMinutes) => {
+  const dateNow = new Date();
+  const dateOfFinish = new Date((utcSeconds + durationMinutes * 60) * 1000);
+  const differenceInTime = dateOfFinish.getTime() - dateNow.getTime();
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  return Math.round(differenceInDays);
+};
+
+export const daysFromStartOfEvent = (utcSeconds) => {
+  const dateNow = new Date();
+  const dateOfStart = new Date(utcSeconds * 1000);
+  const differenceInTime = dateNow.getTime() - dateOfStart.getTime();
+  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  return Math.round(differenceInDays);
+};

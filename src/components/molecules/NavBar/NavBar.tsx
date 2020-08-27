@@ -6,9 +6,10 @@ import { Link } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import { RadioModal } from "../../organisms/RadioModal/RadioModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -19,6 +20,7 @@ import {
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
+import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -26,9 +28,10 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
-  const { venue, privateChats } = useSelector((state) => ({
+  const { venue, privateChats, radioStations } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
+    radioStations: state.firestore.data.venues?.playa?.radioStations,
   }));
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -65,6 +68,23 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
+  const [volume, setVolume] = useState<number>(0);
+  const sound = useMemo(
+    () =>
+      radioStations && radioStations.length
+        ? new Audio(radioStations[0])
+        : undefined,
+    [radioStations]
+  );
+
+  const radioPopover = (
+    <Popover id="radio-popover">
+      <Popover.Content>
+        <RadioModal volume={volume} setVolume={setVolume} sound={sound} />
+      </Popover.Content>
+    </Popover>
+  );
+
   const numberOfUnreadMessages = useMemo(() => {
     return (
       privateChats &&
@@ -74,6 +94,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
         .filter((chat) => chat.to === user.uid && chat.isRead === false).length
     );
   }, [privateChats, user]);
+
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   return (
     <>
@@ -108,7 +130,15 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     Go to playa
                   </span>
                 )}
-                <div className="navbar-links" style={{ width: 500 }}>
+                <div className="navbar-links">
+                  <div className="button-container create-button-container navbar-link-schedule">
+                    <div
+                      className="create-button"
+                      onClick={() => setShowEventSchedule(true)}
+                    >
+                      Event Schedule
+                    </div>
+                  </div>
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -139,6 +169,32 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={radioPopover}
+                    rootClose={true}
+                  >
+                    <div className="navbar-link-profile">
+                      {volume === 0 ? (
+                        <img
+                          src={"/navbar-link-radio-off.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      ) : (
+                        <img
+                          src={"/navbar-link-radio.png"}
+                          className="profile-icon"
+                          alt="radio"
+                          width="40"
+                          height="40"
+                        />
+                      )}
+                    </div>
+                  </OverlayTrigger>
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
@@ -174,6 +230,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
         onHide={() => setIsAuthenticationModalOpen(false)}
         showAuth="login"
       />
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

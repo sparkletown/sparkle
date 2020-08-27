@@ -20,9 +20,9 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
   onHide,
 }) => {
   const { user, profile } = useUser();
-  const { profileQuestions } = useSelector((state) => ({
-    profileQuestions: state.firestore.data.currentVenue.profile_questions,
-  }));
+  const profileQuestions = useSelector(
+    (state) => state.firestore.data.currentVenue?.profile_questions
+  );
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);

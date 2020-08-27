@@ -23,12 +23,13 @@ const ArtPiece = () => {
     venue: state.firestore.data.currentVenue,
   }));
 
+  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+
+  if (!venue) return <>Loading...</>;
+
   const iFrameUrl = ConvertToEmbeddableUrl(
     venue.iframeUrl ?? venue.embedIframeUrl
   );
-
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-
   return (
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">

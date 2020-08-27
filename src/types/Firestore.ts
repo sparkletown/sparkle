@@ -36,7 +36,7 @@ export interface Firestore {
     timestamps: VenueTimestamps;
   };
   data: {
-    currentVenue: AnyVenue;
+    currentVenue?: AnyVenue;
     currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
@@ -50,6 +50,7 @@ export interface Firestore {
     venues?: Record<string, AnyVenue>;
     events?: Record<string, VenueEvent>;
     playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
+    allUsers?: Record<string, User>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
@@ -68,5 +69,6 @@ export interface Firestore {
     playaVenues?: Array<WithId<AnyVenue>>;
     statsOnlineUsers?: Array<WithId<User>>;
     statsOpenVenues?: Array<WithId<AnyVenue>>;
+    allUsers?: Array<WithId<User>>;
   };
 }

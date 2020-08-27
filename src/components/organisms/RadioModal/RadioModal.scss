@@ -1,0 +1,29 @@
+@import "scss/constants.scss";
+
+#radio-popover {
+  &.popover {
+    height: unset;
+  }
+}
+
+.radio-modal-container {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  .title-radio {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .text-radio {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+  .img-radio {
+    margin-left: 20px;
+    width: 210px;
+    height: 120px;
+    margin-bottom: 15px;
+  }
+}
