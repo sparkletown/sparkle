@@ -12,6 +12,13 @@ const eventIsNow = (event, now) => {
   );
 };
 
+// Someone snuck by our client side validation! Naughty naughty!
+const sanitizeEvent = (event, now) => {
+  if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
+    event.start_utc_seconds = now / 1000;
+  }
+};
+
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
   const userLastSeenLimit = (now - ONE_HOUR) / 1000;
@@ -71,7 +78,9 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
           .collection("events")
           .get()
           .then((events) => {
-            const allEvents = events.docs.map((event) => event.data());
+            const allEvents = events.docs.map((event) =>
+              sanitizeEvent(event.data(), now)
+            );
             const venueHasEvents = allEvents.length > 0;
 
             if (venueHasEvents || openWithoutEvents) {
@@ -85,7 +94,20 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
           });
       })
     );
-    console.log(typeof openVenues);
+
+    let maybeBrokenVenue;
+    var https = require("firebase-functions").https;
+    openVenues.forEach((v, i) => {
+      try {
+        console.log("encoding", i);
+        maybeBrokenVenue = v;
+        https.encode(v);
+      } catch (e) {
+        console.log(e, e.error);
+        console.log("bokred venue", maybeBrokenVenue);
+      }
+    });
+
     return { openVenues };
   } catch (error) {
     console.log(error);

@@ -41,6 +41,8 @@ import { FIREBASE_CONFIG, DEFAULT_REDIRECT_URL } from "settings";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
+const a: number = NaN;
+
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
