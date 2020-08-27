@@ -106,6 +106,8 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   }, [openVenues]);
 
   const [date, setDate] = useState(0);
+  console.log(date);
+  console.log(orderedEvents);
 
   return (
     <div>
@@ -114,7 +116,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
         <div className="modal-tabs">
           {orderedEvents.map((day, idx) => (
             <button
-              key={formatDate(day?.dateDay.getTime() / 1000)}
+              key={formatDate(day?.dateDay.getTime())}
               className="modal-tab selected"
               style={{ width: 100 }}
               onClick={() => setDate(idx)}
@@ -127,7 +129,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
           {orderedEvents[date] &&
             orderedEvents[date].events.map((event) => (
               <div
-                key={event.event.name}
+                key={event.event.name + Math.random().toString()}
                 className={`event ${
                   Date.now() > event.event.start_utc_seconds * 1000
                     ? "event_live"
