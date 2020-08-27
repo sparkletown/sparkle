@@ -78,6 +78,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
   const [eventsNow, setEventsNow] = useState<firebase.firestore.DocumentData[]>(
     []
   );
+  const [eventsFuture, setEventsFuture] = useState<
+    firebase.firestore.DocumentData[]
+  >([]);
   useEffect(() => {
     firebase
       .firestore()
@@ -92,6 +95,20 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
               event.start_utc_seconds + event.duration_minutes * 60 > nowSeconds
           );
         setEventsNow(currentEvents);
+      });
+  }, [venue]);
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection(`venues/${venue.id}/events`)
+      .get()
+      .then(function (array) {
+        const futureEvents = array.docs
+          .map((doc) => doc.data())
+          .filter((event) => event.start_utc_seconds > nowSeconds)
+          .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+        setEventsFuture(futureEvents);
       });
   }, [venue]);
 
@@ -154,6 +171,13 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
           eventsNow={eventsNow}
           venue={venue}
           showButton={false}
+          //futureEvents={false}
+        />
+        <VenueInfoEvents
+          eventsNow={eventsFuture}
+          venue={venue}
+          showButton={false}
+          futureEvents={true}
         />
       </div>
     </>
