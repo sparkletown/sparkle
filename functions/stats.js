@@ -95,19 +95,6 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
       })
     );
 
-    let maybeBrokenVenue;
-    var https = require("firebase-functions").https;
-    openVenues.forEach((v, i) => {
-      try {
-        console.log("encoding", i);
-        maybeBrokenVenue = v;
-        https.encode(v);
-      } catch (e) {
-        console.log(e, e.error);
-        console.log("bokred venue", maybeBrokenVenue);
-      }
-    });
-
     return { openVenues };
   } catch (error) {
     console.log(error);
