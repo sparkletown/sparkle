@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
@@ -19,27 +17,17 @@ import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 
-const Camp = () => {
+const Camp: React.FC = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
-  const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
     partygoers: state.firestore.ordered.partygoers,
   }));
-
-  const campLocation = `${venue.name}`;
-
-  const location = useMemo(
-    () =>
-      isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
-    [isRoomModalOpen, selectedRoom, campLocation]
-  );
-  useUpdateLocationEffect(user, location);
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),

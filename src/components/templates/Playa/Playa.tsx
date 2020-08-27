@@ -16,11 +16,13 @@ import {
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
-import useLocationUpdateEffect, {
+import {
   updateLocationData,
+  useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
@@ -94,7 +96,7 @@ const Playa = () => {
 
   const { user } = useUser();
 
-  useLocationUpdateEffect(user, "Playa");
+  useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
   useEffect(() => {
     const updateDimensions = () => {
