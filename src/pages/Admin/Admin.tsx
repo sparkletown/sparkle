@@ -190,6 +190,8 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   ]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
   const editText =
@@ -291,6 +293,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                 {deleteText}
               </button>
             )}
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowCreateEventModal(true)}
+              style={{ marginBottom: 10, width: "100%" }}
+            >
+              Create an Event
+            </button>
             <Link
               to={{ search: "manageUsers=true" }}
               className="btn btn-primary"
@@ -317,6 +326,16 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         visible={manageUsers}
         onHide={onManageUsersModalHide}
         venue={venue}
+      />
+      <AdminEvent
+        show={showCreateEventModal}
+        onHide={() => {
+          setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+        template={venue.template}
       />
     </>
   );
