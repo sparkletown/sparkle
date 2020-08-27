@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
+// import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
@@ -25,13 +25,13 @@ const Camp = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
-  const { user } = useUser();
+  // const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
     partygoers: state.firestore.ordered.partygoers,
   }));
 
-  const campLocation = `${venue.name}`;
+  // const campLocation = `${venue.name}`;
 
   // const location = useMemo(
   //   () =>
@@ -79,7 +79,12 @@ const Camp = () => {
       </div>
       {usersInCamp && (
         <div className="col">
-          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
+          <UserList
+            users={usersInCamp}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+          />
         </div>
       )}
       <div className="col">
@@ -119,7 +124,7 @@ const Camp = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
-      <div className="chat-pop-up">
+      <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
           title={"Camp Chat"}

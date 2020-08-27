@@ -14,6 +14,7 @@ interface PropsType {
   activity?: string;
   disableSeeAll?: boolean;
   isAudioEffectDisabled?: boolean;
+  isCamp?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -23,6 +24,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   activity = "partying",
   disableSeeAll = true,
   isAudioEffectDisabled,
+  isCamp,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
@@ -41,7 +43,8 @@ const UserList: React.FunctionComponent<PropsType> = ({
         <div className="row header no-margin">
           <p>
             <span className="bold">{users.length}</span>{" "}
-            {users.length === 1 ? "person" : "people"} {activity}
+            {users.length === 1 ? "person" : "people"}{" "}
+            {isCamp ? "in the camp" : activity}
           </p>
           {!disableSeeAll && users.length > limit && (
             <p
