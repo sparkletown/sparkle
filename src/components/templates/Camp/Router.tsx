@@ -7,8 +7,8 @@ export const CampRouter: React.FunctionComponent = () => {
 
   return (
     <Switch>
-      <Route path={`${match.url}/:roomTitle`} component={Camp} />
-      <Route path={`${match.url}/`} component={Camp} />
+      <Route path={`${match.url}/:roomTitle`} render={() => <Camp />} />
+      <Route path={`${match.url}/`} render={() => <Camp />} />
     </Switch>
   );
 };

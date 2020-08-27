@@ -10,11 +10,14 @@ import { WithId } from "utils/id";
 import {
   venuePlayaPreviewUrl,
   venueInsideUrl,
-  campPreviewUrl,
+  venuePreviewUrl,
 } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { PLAYA_VENUE_NAME } from "settings";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { AnyVenue } from "types/Firestore";
+import { CampRoomData } from "types/CampRoomData";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -97,6 +100,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
+          <Badges user={fullUserProfile} />
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
@@ -106,6 +110,134 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
       </Modal.Body>
     </Modal>
   );
+};
+
+const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
+  useFirestoreConnect([
+    {
+      collection: "users",
+      doc: user.id,
+      subcollections: [{ collection: "visits" }],
+      storeAs: "userModalVisits",
+    },
+  ]);
+  const visits = useSelector(
+    (state) => state.firestore.ordered.userModalVisits
+  );
+  const venues = useSelector((state) => state.firestore.ordered.venues);
+
+  const playaTime = useMemo(() => {
+    if (!visits) return undefined;
+
+    const playaSeconds = visits.reduce((acc, v) => acc + v.timeSpent, 0);
+    const playaHours = Math.floor(playaSeconds / (60 * 60));
+    return playaHours > 1 ? `${playaHours}` : "< 1";
+  }, [visits]);
+
+  const venuesVisited = useMemo(() => {
+    if (!visits) return undefined;
+    return visits.filter((visit) => visit.id !== PLAYA_VENUE_NAME).length; // Playa does not count
+  }, [visits]);
+
+  const badges = useMemo(() => {
+    if (!visits || !venues) return [];
+    return visits
+      .filter((visit) => visit.id !== PLAYA_VENUE_NAME) // no badge for the Playa. Also does not have a logo
+      .map((visit) => {
+        const { venue, room } = findVenueAndRoomByName(visit.id, venues);
+        if (!venue) return undefined;
+
+        if (room) {
+          return {
+            venue,
+            room,
+            image: room.image_url,
+            label: room.title,
+          };
+        }
+
+        return {
+          venue,
+          image: venue.mapIconImageUrl,
+          label: venue.name,
+        };
+      })
+      .filter((b) => b !== undefined);
+  }, [visits, venues]);
+
+  if (!visits) {
+    return <>Visit venues to collect badges!</>;
+  }
+
+  return (
+    <>
+      <div className="visits">
+        <div className="visit-item">
+          <span className="visit-item__value">{playaTime} hrs</span>
+          <span className="visit-item__label">spent on the Playa</span>
+        </div>
+        <div className="separator"></div>
+        <div className="visit-item">
+          <span className="visit-item__value">{venuesVisited}</span>
+          <span className="visit-item__label">venues visited</span>
+        </div>
+      </div>
+      <div className="badges-container">
+        <div className="badges-title">{badges.length} badges</div>
+        <ul className="badge-list">
+          {badges.map(
+            (b) =>
+              b && (
+                <li className="badge-list-item" key={b.label}>
+                  <Link to={getLocationLink(b.venue, b.room)}>
+                    <img
+                      className="badge-list-item-image"
+                      src={b.image}
+                      alt={`${b.label} badge`}
+                    />
+                  </Link>
+                </li>
+              )
+            // label missing on hover - similar to playa
+          )}
+        </ul>
+      </div>
+    </>
+  );
+};
+
+const findVenueAndRoomByName = (
+  nameOrRoomTitle: string,
+  venues: Array<WithId<AnyVenue>>
+) => {
+  const venue = venues.find(
+    (v) =>
+      v.name === nameOrRoomTitle ||
+      (isCampVenue(v) && v.rooms.find((r) => r.title === nameOrRoomTitle))
+  );
+
+  if (!venue) return {};
+
+  if (venue.name === nameOrRoomTitle) return { venue };
+
+  return {
+    venue,
+    room:
+      isCampVenue(venue) &&
+      venue.rooms.find((r) => r.title === nameOrRoomTitle),
+  };
+};
+
+const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
+  if (venue.name === PLAYA_VENUE_NAME) {
+    return venueInsideUrl(venue.id);
+  }
+
+  if (room) {
+    return venuePreviewUrl(venue.id, room.title);
+  }
+
+  return venuePlayaPreviewUrl(venue.id);
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
@@ -147,7 +279,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     user.room === PLAYA_VENUE_NAME
       ? venueInsideUrl(suspectedLocation.venueId)
       : suspectedLocation.roomTitle
-      ? campPreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
+      ? venuePreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
       : venuePlayaPreviewUrl(suspectedLocation.venueId);
 
   const suspectedLocationText = suspectedLocation.roomTitle

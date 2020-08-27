@@ -57,34 +57,38 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
 });
 
 exports.getAllEvents = functions.https.onCall(async (data, context) => {
-  const now = new Date().getTime();
+  try {
+    const now = new Date().getTime();
 
-  let openVenues = [];
-  const venues = await admin.firestore().collection("venues").get();
-  await Promise.all(
-    venues.docs.map(async (venue) => {
-      const template = venue.data().template;
-      const openWithoutEvents =
-        template === "artpiece" || template === "themecamp";
-      await venue.ref
-        .collection("events")
-        .get()
-        .then((events) => {
-          const allEvents = events.docs.map((event) => event.data());
-          const venueHasEvents = allEvents.length > 0;
+    let openVenues = [];
+    const venues = await admin.firestore().collection("venues").get();
+    await Promise.all(
+      venues.docs.map(async (venue) => {
+        const template = venue.data().template;
+        const openWithoutEvents =
+          template === "artpiece" || template === "themecamp";
+        await venue.ref
+          .collection("events")
+          .get()
+          .then((events) => {
+            const allEvents = events.docs.map((event) => event.data());
+            const venueHasEvents = allEvents.length > 0;
 
-          if (venueHasEvents || openWithoutEvents) {
-            const venueWithId = venue.data();
-            venueWithId.id = venue.id;
-            openVenues.push({
-              venue: venueWithId,
-              currentEvents: allEvents,
-            });
-          }
-        });
-    })
-  );
-  console.log(openVenues);
-  console.log(typeof openVenues);
-  return { openVenues };
+            if (venueHasEvents || openWithoutEvents) {
+              const venueWithId = venue.data();
+              venueWithId.id = venue.id;
+              openVenues.push({
+                venue: venueWithId,
+                currentEvents: allEvents,
+              });
+            }
+          });
+      })
+    );
+    console.log(typeof openVenues);
+    return { openVenues };
+  } catch (error) {
+    console.log(error);
+    console.error(error);
+  }
 });
