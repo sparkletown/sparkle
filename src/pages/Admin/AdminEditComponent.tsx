@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
 import {
@@ -347,6 +348,18 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
 
   const disable = isSubmitting;
 
+  const placementDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
+    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
+
+    placementDivRef.current?.scrollTo(
+      (venue.placement?.x ?? 0) - clientWidth / 2,
+      (venue.placement?.y ?? 0) - clientHeight / 2
+    );
+  }, [venue]);
+
   return (
     <form onSubmit={onFormSubmit}>
       <>
@@ -386,6 +399,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           </h4>
           <div
             className="playa"
+            ref={placementDivRef}
             style={{ width: "100%", height: 1000, overflow: "scroll" }}
           >
             <PlayaContainer
