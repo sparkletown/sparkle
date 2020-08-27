@@ -2,18 +2,18 @@ import React, { useState, useCallback, useEffect } from "react";
 import "./DustStorm.scss";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
 import { ZOOM_URL_TEMPLATES, EMBED_IFRAME_TEMPLATES } from "settings";
 
-interface PoLuckProps {
+interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
 
-const PotLuck: React.FC<PoLuckProps> = ({ openVenues, afterSelect }) => {
+const PotLuck: React.FC<PotLuckProps> = ({ openVenues, afterSelect }) => {
   const history = useHistory();
   const goToRandomVenue = useCallback(() => {
     const ExperiencesOrArtpieces = openVenues?.filter(

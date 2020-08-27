@@ -9,25 +9,29 @@ import {
   UserState,
   UpdateWsMessage,
   UserStateKey,
+  stateBoolean,
+  UserVideoState,
 } from "types/RelayMessage";
 import { DEFAULT_WS_RELAY_URL } from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { User } from "types/User";
 import { MyAvatar } from "./MyAvatar";
 import { Overlay } from "react-bootstrap";
+import { MenuConfig } from "components/molecules/OverlayMenu/OverlayMenu";
 
 interface PropsType {
   bikeMode: boolean;
   setMyLocation(x: number, y: number): void;
+  setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
   bikeMode,
   setMyLocation,
+  setSelectedUserProfile,
 }) => {
   useConnectPartyGoers();
 
@@ -37,9 +41,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
   const [hoveredUser, setHoveredUser] = useState<User | null>();
   const [hovered, setHovered] = useState(false);
   const hoveredRef = useRef<HTMLDivElement>(null);
@@ -131,7 +132,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (
       <MyAvatar
         serverSentState={myServerSentState}
-        bikeMode={bikeMode}
+        bike={bikeMode}
         videoState={videoState}
         sendUpdatedState={sendUpdatedState}
         setMyLocation={setMyLocation}
@@ -153,19 +154,45 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           const avatarUser = partygoers.find(
             (partygoer) => partygoer.id === uid
           );
+          if (!avatarUser) return <></>;
+          const videoState = userStateMap[uid].state?.[UserStateKey.Video];
+          let menu: MenuConfig = {
+            prompt: "test",
+            choices: [
+              {
+                text: avatarUser?.partyName || "test1",
+                onClick: () => alert(avatarUser?.partyName),
+              },
+            ],
+          };
+          if (videoState === UserVideoState.Open) {
+            menu = {
+              prompt: `Wanna join ${avatarUser?.partyName}'s video chat?`,
+              choices: [
+                { text: "Join chat", onClick: () => alert("yay") },
+                {
+                  text: "Message them first",
+                  onClick: () => setSelectedUserProfile(avatarUser),
+                },
+              ],
+            };
+          }
           return (
             <Avatar
               user={avatarUser}
-              state={userStateMap[uid]}
-              setSelectedUserProfile={setSelectedUserProfile}
+              x={userStateMap[uid].x}
+              y={userStateMap[uid].y}
+              videoState={videoState}
+              bike={stateBoolean(userStateMap[uid], UserStateKey.Bike)}
               setHoveredUser={setHoveredUser}
               setHovered={setHovered}
               hoveredRef={hoveredRef}
+              menu={menu}
               key={uid}
             />
           );
         }),
-    [partygoers, user, userStateMap]
+    [partygoers, user, userStateMap, setSelectedUserProfile]
   );
 
   return useMemo(
@@ -187,14 +214,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             </div>
           )}
         </Overlay>
-        <UserProfileModal
-          show={selectedUserProfile !== undefined}
-          onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile}
-        />
       </>
     ),
-    [myAvatar, avatars, hoveredUser, selectedUserProfile, hovered]
+    [myAvatar, avatars, hoveredUser, hovered]
   );
 };
 

@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
 $sand: #937c63;
+$playa-mode-badge-size: 25px;
+$playa-mode-badge-icon-size: 18px;
 
 .playa-container {
   width: 100%;
@@ -67,13 +69,12 @@ $sand: #937c63;
       }
     }
 
-    .bike {
+    .mode-badge {
       position: absolute;
       border-radius: 50%;
-      border: 1px solid white;
-      width: $playa-avatar-size/2;
-      height: $playa-avatar-size/2;
-      background-color: rgba($sand, 0.5);
+      width: $playa-mode-badge-size;
+      height: $playa-mode-badge-size;
+      background-color: white;
       z-index: 1;
       transition: all 0.1s ease-in-out;
       overflow: hidden;
@@ -82,12 +83,18 @@ $sand: #937c63;
         content: "";
         display: block;
         position: absolute;
-        background-image: url("./img/playa-controls-bike.png");
-        width: 18px;
-        height: 18px;
+        width: $playa-mode-badge-icon-size;
+        height: $playa-mode-badge-icon-size;
         background-size: contain;
         background-repeat: no-repeat;
         margin: 3px;
+      }
+
+      &.bike:before {
+        background-image: url("./img/avatar-bike.png");
+      }
+      &.walk:before {
+        background-image: url("./img/avatar-walk.png");
       }
     }
   }

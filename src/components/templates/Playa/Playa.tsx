@@ -34,6 +34,8 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import firebase from "firebase/app";
+import { User } from "types/User";
+import UserProfileModal from "components/organisms/UserProfileModal";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -72,6 +74,10 @@ const minZoom = () =>
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
+
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -490,7 +496,11 @@ const Playa = () => {
                 </div>
               )}
             </Overlay>
-            <AvatarLayer bikeMode={bikeMode} setMyLocation={setMyLocation} />
+            <AvatarLayer
+              bikeMode={bikeMode}
+              setMyLocation={setMyLocation}
+              setSelectedUserProfile={setSelectedUserProfile}
+            />
           </div>
           <div className="playa-controls">
             <div
@@ -549,6 +559,11 @@ const Playa = () => {
             <VenuePreview user={user} venue={selectedVenue} />
           )}
         </Modal>
+        <UserProfileModal
+          show={selectedUserProfile !== undefined}
+          onHide={() => setSelectedUserProfile(undefined)}
+          userProfile={selectedUserProfile}
+        />
       </>
     );
   }, [
@@ -575,6 +590,7 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
+    selectedUserProfile,
   ]);
 };
 

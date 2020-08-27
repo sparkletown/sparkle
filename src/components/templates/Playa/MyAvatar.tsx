@@ -7,7 +7,7 @@ import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
-  bikeMode: boolean;
+  bike: boolean;
   videoState: string | undefined;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
@@ -18,7 +18,7 @@ const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
-  bikeMode,
+  bike,
   videoState,
   sendUpdatedState,
   setMyLocation,
@@ -49,7 +49,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         default:
           return;
       }
-      const moveIncrement = bikeMode
+      const moveIncrement = bike
         ? ARROW_MOVE_INCREMENT_PX_BIKE
         : ARROW_MOVE_INCREMENT_PX_WALK;
       setState((state) => {
@@ -101,22 +101,22 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       window.removeEventListener("keydown", keyListener);
       window.removeEventListener("keyup", keyListener);
     };
-  }, [bikeMode, sendUpdatedState]);
+  }, [bike, sendUpdatedState]);
 
   useEffect(() => {
     setState((state) => {
       if (!state) return state;
       const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
-      const needsUpdate = bikeMode !== onBike;
+      const needsUpdate = bike !== onBike;
       if (!needsUpdate) return state;
 
       if (state.state) {
-        state.state[UserStateKey.Bike] = bikeMode.toString();
+        state.state[UserStateKey.Bike] = bike.toString();
       }
       sendUpdatedState(state);
       return { ...state };
     });
-  }, [bikeMode, sendUpdatedState]);
+  }, [bike, sendUpdatedState]);
 
   const setVideoChat = (value: UserVideoState) => {
     setState((state) => {
@@ -164,15 +164,13 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           left: state.x - PLAYA_AVATAR_SIZE * 1.5,
         }}
       />
-      {bikeMode && (
-        <div
-          className="bike"
-          style={{
-            top: state.y + PLAYA_AVATAR_SIZE / 5,
-            left: state.x + PLAYA_AVATAR_SIZE / 5,
-          }}
-        />
-      )}
+      <div
+        className={`mode-badge ${bike ? "bike" : "walk"}`}
+        style={{
+          top: state.y + PLAYA_AVATAR_SIZE / 3,
+          left: state.x - PLAYA_AVATAR_SIZE / 4,
+        }}
+      />
       <Overlay target={ref.current} show={showTooltip}>
         {({ placement, arrowProps, show: _show, popper, ...props }) => (
           // @ts-expect-error

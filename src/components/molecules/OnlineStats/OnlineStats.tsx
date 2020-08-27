@@ -15,11 +15,11 @@ import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
 
-interface PoLuckButtonProps {
+interface PotLuckButtonProps {
   openVenues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
-const PotLuckButton: React.FC<PoLuckButtonProps> = ({
+const PotLuckButton: React.FC<PotLuckButtonProps> = ({
   openVenues,
   afterSelect,
 }) => {
