@@ -10,6 +10,6 @@ export const venuePlayaPreviewUrl = (venueId: string) => {
   return `${venueInsideUrl("playa")}/${venueId}`;
 };
 
-export const campPreviewUrl = (venueId: string, roomTitle: string) => {
+export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
 };
