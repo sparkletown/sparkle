@@ -216,6 +216,32 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
       const updated = doc.data();
       updated.dustStorm = !updated.dustStorm;
       admin.firestore().collection("venues").doc("playa").update(updated);
+
+      // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
+      // Fetch the doc again, in case anything changed meanwhile.
+      // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
+      if (updated.dustStorm) {
+        setTimeout(
+          async () =>
+            await admin
+              .firestore()
+              .collection("venues")
+              .doc("playa")
+              .get()
+              .then((doc) => {
+                if (doc && doc.exists) {
+                  const updated = doc.data();
+                  updated.dustStorm = false;
+                  admin
+                    .firestore()
+                    .collection("venues")
+                    .doc("playa")
+                    .update(updated);
+                }
+              }),
+          60 * 1000
+        );
+      }
     });
 });
 
