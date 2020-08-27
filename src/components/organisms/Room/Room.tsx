@@ -118,13 +118,12 @@ const Room: React.FC<RoomProps> = ({
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
-  const capacity = 2 + participants.length + (participants.length % 2);
 
   const profileData = room ? users[room.localParticipant.identity] : undefined;
 
   const meComponent = useMemo(() => {
     return room && profileData ? (
-      <div className={`participant-container-2`}>
+      <div className={`participant-container`}>
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -148,10 +147,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div
-            key={participant.identity}
-            className={`participant-container-${capacity}`}
-          >
+          <div key={participant.identity} className={`participant-container`}>
             <Participant
               key={`${participant.sid}-${index}`}
               participant={participant}
@@ -162,7 +158,7 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [capacity, meIsBartender, participants, roomName, users]
+    [meIsBartender, participants, roomName, users]
   );
 
   const emptyComponents = useMemo(
@@ -171,7 +167,7 @@ const Room: React.FC<RoomProps> = ({
         ? Array(participants.length % 2).map((e, index) => (
             <div
               key={`empty-participant-${index}`}
-              className={`participant-container-${capacity}`}
+              className={`participant-container`}
             >
               <img
                 className="empty-chair-image"
@@ -181,7 +177,7 @@ const Room: React.FC<RoomProps> = ({
             </div>
           ))
         : [],
-    [capacity, hasChairs, participants.length]
+    [hasChairs, participants.length]
   );
 
   if (!token) {
