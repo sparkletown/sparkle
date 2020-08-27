@@ -17,6 +17,7 @@ const sanitizeEvent = (event, now) => {
   if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
     event.start_utc_seconds = now / 1000;
   }
+  return event;
 };
 
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {

@@ -7,6 +7,8 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { Modal } from "react-bootstrap";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -24,6 +26,7 @@ const ArtPiece = () => {
   }));
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
 
@@ -70,8 +73,17 @@ const ArtPiece = () => {
         />
       </div>
       <div className="sparkle-fairie">
-        <SparkleFairiesPopUp />
+        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
       </div>
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </WithNavigationBar>
   );
 };

@@ -10,6 +10,7 @@
   padding: 10px;
   border-radius: 22px 0 0 22px;
   cursor: pointer;
+  box-shadow: 0 0 30px #000000;
 
   &.expanded {
     height: calc(100vh - #{$navbar-height} - 15px);
