@@ -94,7 +94,7 @@ const Step3 = () => {
       <div className="step-container ten-principles-burning">
         <div className="login-container">
           <h2>The 10 principles of Burning Man</h2>
-          <p>{`They are the community's ethos and culture as it had organically developped since the event's inception. Please read and check them`}</p>
+          <p>{`They are the community's ethos and culture as it had organically developed since the event's inception. Please read and check them`}</p>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
               <div className="input-group" key={q.name}>

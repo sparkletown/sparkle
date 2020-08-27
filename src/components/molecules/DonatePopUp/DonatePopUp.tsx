@@ -17,7 +17,12 @@ export const DonatePopUp = () => {
         <p
           className="title-sidebar"
           style={{ fontSize: 15 }}
-        >{`We need your support to make this event better!`}</p>
+        >{`Please consider a donation to the Burning Man Org.`}</p>
+        <p
+          className="title-sidebar"
+          style={{ fontSize: 15 }}
+        >{`The world needs burning man.
+        And burning man needs you. `}</p>
         <div className="donate-container">
           <a
             className="btn btn-primary join-button"
