@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 import {
   venuePlayaPreviewUrl,
   venueInsideUrl,
-  campPreviewUrl,
+  venuePreviewUrl,
 } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
@@ -118,11 +118,11 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
       collection: "users",
       doc: user.id,
       subcollections: [{ collection: "visits" }],
-      storeAs: "userModal-visits",
+      storeAs: "userModalVisits",
     },
   ]);
   const visits = useSelector(
-    (state) => state.firestore.ordered["userModal-visits"]
+    (state) => state.firestore.ordered.userModalVisits
   );
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
@@ -234,7 +234,7 @@ const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
   }
 
   if (room) {
-    return campPreviewUrl(venue.id, room.title);
+    return venuePreviewUrl(venue.id, room.title);
   }
 
   return venuePlayaPreviewUrl(venue.id);
@@ -279,7 +279,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     user.room === PLAYA_VENUE_NAME
       ? venueInsideUrl(suspectedLocation.venueId)
       : suspectedLocation.roomTitle
-      ? campPreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
+      ? venuePreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
       : venuePlayaPreviewUrl(suspectedLocation.venueId);
 
   const suspectedLocationText = suspectedLocation.roomTitle

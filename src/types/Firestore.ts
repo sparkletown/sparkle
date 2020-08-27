@@ -55,7 +55,7 @@ export interface Firestore {
     events?: Record<string, VenueEvent>;
     playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
     allUsers?: Record<string, User>;
-    "userModal-visits"?: Record<string, UserVisit>;
+    userModalVisits?: Record<string, UserVisit>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
@@ -75,6 +75,6 @@ export interface Firestore {
     statsOnlineUsers?: Array<WithId<User>>;
     statsOpenVenues?: Array<WithId<AnyVenue>>;
     allUsers?: Array<WithId<User>>;
-    "userModal-visits"?: Array<WithId<UserVisit>>;
+    userModalVisits?: Array<WithId<UserVisit>>;
   };
 }

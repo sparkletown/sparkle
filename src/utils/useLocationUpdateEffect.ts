@@ -3,7 +3,7 @@ import firebase, { UserInfo } from "firebase";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-const LOCATION_INCREMENT_SECONDS = 2;
+const LOCATION_INCREMENT_SECONDS = 10;
 
 export const updateLocationData = (user: UserInfo, roomName: string | null) => {
   updateUserProfile(user.uid, {
