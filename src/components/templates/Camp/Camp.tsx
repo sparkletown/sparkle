@@ -69,7 +69,12 @@ const Camp: React.FC = () => {
       </div>
       {usersInCamp && (
         <div className="col">
-          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
+          <UserList
+            users={usersInCamp}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+          />
         </div>
       )}
       <div className="col">
@@ -109,7 +114,7 @@ const Camp: React.FC = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
-      <div className="chat-pop-up">
+      <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
           title={"Camp Chat"}
