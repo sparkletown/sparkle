@@ -34,7 +34,7 @@ $border-radius: 28px;
 }
 
 .playa-venue {
-  position: absolute;
+  //position: absolute;
   z-index: 1;
   width: 100%;
   height: 100%;
@@ -90,6 +90,20 @@ $border-radius: 28px;
       }
     }
   }
+  .room-on-left-side {
+    float: left;
+    margin-left: 0px;
+  }
+  .room-on-right-side {
+    float: right;
+    margin-right: 0px;
+  }
+  .room-on-bottom-side {
+    bottom: calc(100% + 60px);
+  }
+  .room-on-bottom-side-expanded {
+    bottom: calc(100% + 175px);
+  }
 
   .playa-venue-text {
     z-index: 200;
@@ -97,8 +111,7 @@ $border-radius: 28px;
     background-color: darken($sand, 5%);
     border-radius: 20px;
     margin-top: 10px;
-    width: 100%;
-    margin-left: -15%;
+    width: 300px;
     height: auto;
     transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
     display: none;
@@ -112,6 +125,7 @@ $border-radius: 28px;
         display: block;
         line-height: 1;
         font-size: 0.9rem;
+        font-size: 20px;
       }
       .playa-venue-people {
         position: relative;
@@ -140,9 +154,11 @@ $border-radius: 28px;
       border-top: 1px solid rgba($black, 0.2);
       padding: 6px 10px;
       display: none;
+      font-size: 20px;
       .playa-venue-desc {
         font-size: 0.7rem;
         z-index: 2;
+        font-size: 15px;
       }
 
       .playa-venue-actions {
