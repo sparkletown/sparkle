@@ -74,24 +74,24 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
         const template = venue.data().template;
         const openWithoutEvents =
           template === "artpiece" || template === "themecamp";
-        await venue.ref
-          .collection("events")
-          .get()
-          .then((events) => {
-            const allEvents = events.docs.map((event) =>
-              sanitizeEvent(event.data(), now)
-            );
-            const venueHasEvents = allEvents.length > 0;
+        try {
+          const events = await venue.ref.collection("events").get();
+          const allEvents = events.docs.map((event) =>
+            sanitizeEvent(event.data(), now)
+          );
+          const venueHasEvents = allEvents.length > 0;
 
-            if (venueHasEvents || openWithoutEvents) {
-              const venueWithId = venue.data();
-              venueWithId.id = venue.id;
-              openVenues.push({
-                venue: venueWithId,
-                currentEvents: allEvents,
-              });
-            }
-          });
+          if (venueHasEvents || openWithoutEvents) {
+            const venueWithId = venue.data();
+            venueWithId.id = venue.id;
+            openVenues.push({
+              venue: venueWithId,
+              currentEvents: allEvents,
+            });
+          }
+        } catch (e) {
+          console.log("error", e);
+        }
       })
     );
 
