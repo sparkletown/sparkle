@@ -8,12 +8,20 @@ export type UserState = {
 export enum UserStateKey {
   Bike = "bike",
   Video = "video",
+  Visible = "visible",
 }
 
-export const stateBoolean: (state: UserState, key: UserStateKey) => boolean = (
-  state,
-  key
-) => state?.state?.[key] === true.toString();
+export const stateBoolean: (
+  state: UserState,
+  key: UserStateKey
+) => boolean | undefined = (state, key) => {
+  switch (state.state?.[key]) {
+    case true.toString():
+      return true;
+    case false.toString():
+      return false;
+  }
+};
 
 export type UserStateMap = { [uid: string]: UserState };
 

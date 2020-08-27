@@ -155,6 +155,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             (partygoer) => partygoer.id === uid
           );
           if (!avatarUser) return <></>;
+          const visible =
+            stateBoolean(userStateMap[uid], UserStateKey.Visible) !== false;
+          if (!visible) return <></>;
           const videoState = userStateMap[uid].state?.[UserStateKey.Video];
           let menu: MenuConfig = {
             prompt: "test",
@@ -183,7 +186,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               x={userStateMap[uid].x}
               y={userStateMap[uid].y}
               videoState={videoState}
-              bike={stateBoolean(userStateMap[uid], UserStateKey.Bike)}
+              bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
               setHoveredUser={setHoveredUser}
               setHovered={setHovered}
               hoveredRef={hoveredRef}

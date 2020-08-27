@@ -1,5 +1,10 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
-import { UserState, UserStateKey, UserVideoState } from "types/RelayMessage";
+import {
+  UserState,
+  UserStateKey,
+  UserVideoState,
+  stateBoolean,
+} from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
@@ -132,7 +137,9 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
 
   if (!profile || !state) return <></>;
 
-  return (
+  const visible = stateBoolean(state?.state, UserStateKey.Visible) !== false;
+
+  return visible ? (
     <>
       <div
         ref={ref}
@@ -186,5 +193,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         )}
       </Overlay>
     </>
+  ) : (
+    <></>
   );
 };
