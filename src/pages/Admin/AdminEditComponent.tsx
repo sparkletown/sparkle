@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useEffect,
   useCallback,
+  useRef,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
 import {
@@ -102,7 +103,6 @@ const updatePlacement = async (
 };
 
 const iconPositionFieldName = "iconPosition";
-const iconVenueIdFieldName = "iconVenueId";
 
 const AdminEditComponent: React.FC = () => {
   const [venueId, setVenueId] = useState<string>();
@@ -313,7 +313,6 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
     errors,
     setValue,
     venueId,
-    setVenueId,
     formState: { isSubmitting },
     formError,
     iconsMap,
@@ -321,9 +320,10 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
 
   const onFormSubmit = handleSubmit(onSubmit);
 
-  const onBoxMove: ExtractProps<
-    typeof PlayaContainer
-  >["onChange"] = useCallback(
+  const onBoxMove: Exclude<
+    ExtractProps<typeof PlayaContainer>["onChange"],
+    undefined
+  > = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
       const iconPos = val[iconPositionFieldName];
@@ -335,18 +335,30 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
     [setValue]
   );
 
-  const onOtherIconClick: ExtractProps<
-    typeof PlayaContainer
-  >["onOtherIconClick"] = useCallback(
-    (val) => {
-      if (!(iconVenueIdFieldName in val)) return;
-      const venueId = val[iconVenueIdFieldName];
-      setVenueId(venueId);
-    },
-    [setVenueId]
-  );
+  // This functionality is causing bugs. Leaving it in incase somebody has a chance to debug it.
+  // const onOtherIconClick: Exclude<
+  //   ExtractProps<typeof PlayaContainer>["onOtherIconClick"],
+  //   undefined
+  // > = useCallback(
+  //   (val) => {
+  //     setVenueId(val);
+  //   },
+  //   [setVenueId]
+  // );
 
   const disable = isSubmitting;
+
+  const placementDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
+    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
+
+    placementDivRef.current?.scrollTo(
+      (venue.placement?.x ?? 0) - clientWidth / 2,
+      (venue.placement?.y ?? 0) - clientHeight / 2
+    );
+  }, [venue]);
 
   return (
     <form onSubmit={onFormSubmit}>
@@ -385,7 +397,11 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Location on the map
           </h4>
-          <div className="playa">
+          <div
+            className="playa"
+            ref={placementDivRef}
+            style={{ width: "100%", height: 1000, overflow: "scroll" }}
+          >
             <PlayaContainer
               interactive
               resizable={false}
@@ -393,12 +409,16 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               onChange={onBoxMove}
               snapToGrid={false}
               iconsMap={iconsMap ?? {}}
-              onOtherIconClick={onOtherIconClick}
               backgroundImage={PLAYA_IMAGE}
               iconImageStyle={styles.iconImage}
               draggableIconImageStyle={styles.draggableIconImage}
               venueId={venueId}
               otherIconsStyle={{ opacity: 0.4 }}
+              backgroundImageStyle={{ width: "unset" }}
+              containerStyle={{
+                width: PLAYA_WIDTH_AND_HEIGHT,
+                height: PLAYA_WIDTH_AND_HEIGHT,
+              }}
             />
           </div>
         </div>
