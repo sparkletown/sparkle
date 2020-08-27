@@ -84,5 +84,7 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
         });
     })
   );
+  console.log(openVenues);
+  console.log(typeof openVenues);
   return { openVenues };
 });
