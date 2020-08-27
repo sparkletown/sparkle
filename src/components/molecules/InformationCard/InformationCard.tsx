@@ -13,7 +13,7 @@ const InformationCard: React.FunctionComponent<PropsType> = ({
   className,
 }) => (
   <div className={`information-card-container ${className}`}>
-    <h4>{title}</h4>
+    <h4 className="title">{title}</h4>
     <div className="information-card-text">{children}</div>
   </div>
 );

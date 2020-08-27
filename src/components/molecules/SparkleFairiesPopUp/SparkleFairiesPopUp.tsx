@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
+import "./SparkleFairiesPopUp.scss";
 
-const SparkleFairiesPopUp = () => {
+interface PropsType {
+  setShowEventSchedule: Function;
+}
+
+const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
+  setShowEventSchedule,
+}) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
@@ -11,21 +18,38 @@ const SparkleFairiesPopUp = () => {
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
-      <InformationCard title="Call the Sparkle Fairies">
-        <p className="title-sidebar">{`It's ok to need help!`}</p>
-        <p className="short-description-sidebar">
-          {`Sparkle Fairies (also knows as "reality rangers") are here to help if you need us. Whether you're feeling down, need a hug, have an issue with someone at the burn or taken too much of something, we're here to help.`}
-        </p>
-        <p>{`We're discreet, loving and here for you!`}</p>
-        <a
-          href="https://www.theguardian.com"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="btn btn-primary join-button"
-          style={{ fontSize: 16 }}
-        >
-          Go to private zoom
-        </a>
+      <InformationCard title="Information">
+        <div style={{ textAlign: "center" }}>
+          <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>
+          <button
+            onClick={() => setShowEventSchedule(true)}
+            className="btn btn-primary join-button button-event-schedule"
+            style={{ fontSize: 14 }}
+          >
+            Events Schedule
+          </button>
+          <br />
+          <a
+            href="https://playa.sparklever.se/in/playainfo"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            Playa Information Booth
+          </a>
+          <div className="title">Help and support</div>
+          <p className="title-sidebar">{`If you're in need of help or support, you can call on our Reality Rangers`}</p>
+          <a
+            href="https://multiverserangers.org/rangers911/"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            Call the Reality Rangers
+          </a>
+        </div>
       </InformationCard>
     </InformationLeftColumn>
   );

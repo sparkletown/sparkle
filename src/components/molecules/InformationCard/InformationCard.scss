@@ -4,7 +4,7 @@
   border-radius: 30px;
   background: $dark-grey;
   padding: 20px;
-  max-height: 300px;
+  max-height: 370px;
   overflow: auto;
 }
 
@@ -16,4 +16,8 @@
   li {
     margin-left: 20px;
   }
+}
+
+.title {
+  text-align: center;
 }
