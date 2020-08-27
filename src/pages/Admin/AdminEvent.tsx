@@ -80,7 +80,8 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
       const formEvent: VenueEvent = {
         name: data.name,
         description: data.description,
-        start_utc_seconds: start.unix(),
+        start_utc_seconds:
+          start.unix() || Math.floor(new Date().getTime() / 1000),
         duration_minutes: data.duration_hours * 60,
         price: 0,
         collective_price: 0,

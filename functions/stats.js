@@ -12,6 +12,13 @@ const eventIsNow = (event, now) => {
   );
 };
 
+// Someone snuck by our client side validation! Naughty naughty!
+const sanitizeEvent = (event, now) => {
+  if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
+    event.start_utc_seconds = now / 1000;
+  }
+};
+
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
   const userLastSeenLimit = (now - ONE_HOUR) / 1000;
@@ -69,7 +76,9 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
           template === "artpiece" || template === "themecamp";
         try {
           const events = await venue.ref.collection("events").get();
-          const allEvents = events.docs.map((event) => event.data());
+          const allEvents = events.docs.map((event) =>
+            sanitizeEvent(event.data(), now)
+          );
           const venueHasEvents = allEvents.length > 0;
 
           if (venueHasEvents || openWithoutEvents) {
@@ -85,7 +94,7 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
         }
       })
     );
-    console.log(typeof openVenues);
+
     return { openVenues };
   } catch (error) {
     console.log(error);
