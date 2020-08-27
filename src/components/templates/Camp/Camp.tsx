@@ -36,9 +36,9 @@ const Camp: React.FC = () => {
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
-        return acc;
-      }, {})
+      acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+      return acc;
+    }, {})
     : {};
 
   const modalHidden = useCallback(() => {
@@ -69,7 +69,12 @@ const Camp: React.FC = () => {
       </div>
       {usersInCamp && (
         <div className="col">
-          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
+          <UserList
+            users={usersInCamp}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+          />
         </div>
       )}
       <div className="col">
@@ -109,7 +114,7 @@ const Camp: React.FC = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
-      <div className="chat-pop-up">
+      <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
           title={"Camp Chat"}
