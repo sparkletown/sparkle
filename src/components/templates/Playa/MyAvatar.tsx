@@ -137,7 +137,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
 
   if (!profile || !state) return <></>;
 
-  const visible = stateBoolean(state?.state, UserStateKey.Visible) !== false;
+  const visible = stateBoolean(state, UserStateKey.Visible) !== false;
 
   return visible ? (
     <>

@@ -12,10 +12,10 @@ export enum UserStateKey {
 }
 
 export const stateBoolean: (
-  state: UserState,
+  state: UserState | undefined,
   key: UserStateKey
 ) => boolean | undefined = (state, key) => {
-  switch (state.state?.[key]) {
+  switch (state?.state?.[key]) {
     case true.toString():
       return true;
     case false.toString():
