@@ -4,12 +4,15 @@ import "./VenueInfoEvents.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
 import { venuePlayaPreviewUrl } from "utils/url";
+import { EventDisplay } from "../EventDisplay/EventDisplay";
+import "../../../../src/components/molecules/EventDisplay/EventDisplay.scss";
 
 interface PropsType {
   eventsNow: firebase.firestore.DocumentData[];
   venue: WithId<AnyVenue>;
   showButton: boolean;
   futureEvents?: boolean;
+  joinNowButton: boolean;
 }
 
 const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
@@ -17,25 +20,32 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
   venue,
   showButton,
   futureEvents,
+  joinNowButton,
 }) => {
   return (
-    <div className="venue-info-container">
-      <div className="whats-on-container">
+    <div>
+      <div>
         {futureEvents ? (
           <>
             <div className="title-container">
               <img src="/sparkle-icon.png" alt="sparkle icon" />
-              <span className="title">{`What's next`}</span>
+              <span
+                style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
+              >{`What's next`}</span>
             </div>
             <div className="description-container">
               {eventsNow.length > 0 ? (
-                eventsNow.map((ev) => (
-                  <div key={ev.name}>
-                    <span className="yellow">{ev.name}</span>
-                    <span> by </span>
-                    <span className="yellow">{ev.host}</span>
-                  </div>
-                ))
+                <div className="events-list events-list_monday">
+                  {eventsNow &&
+                    eventsNow.map((event) => (
+                      <EventDisplay
+                        key={event.name + Math.random().toString()}
+                        event={event}
+                        venue={venue}
+                        joinNowButton={joinNowButton}
+                      />
+                    ))}
+                </div>
               ) : (
                 <span className="yellow">No future events planned</span>
               )}
@@ -45,17 +55,23 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
           <>
             <div className="title-container">
               <img src="/sparkle-icon.png" alt="sparkle icon" />
-              <span className="title">{`What's on now`}</span>
+              <span
+                style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
+              >{`What's on now`}</span>
             </div>
             <div className="description-container">
               {eventsNow.length > 0 ? (
                 <>
-                  <span className="yellow">{eventsNow[0].name}</span>
-                  <span> by </span>
-                  <span className="yellow">{eventsNow[0].host}</span>
+                  <div className="events-list">
+                    <EventDisplay
+                      event={eventsNow[0]}
+                      venue={venue}
+                      joinNowButton={joinNowButton}
+                    />
+                  </div>
                 </>
               ) : (
-                <span className="yellow">No events currently</span>
+                <div className="yellow">No events currently</div>
               )}
             </div>
           </>

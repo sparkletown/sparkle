@@ -171,13 +171,15 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
           eventsNow={eventsNow}
           venue={venue}
           showButton={false}
-          //futureEvents={false}
+          futureEvents={false}
+          joinNowButton
         />
         <VenueInfoEvents
           eventsNow={eventsFuture}
           venue={venue}
           showButton={false}
           futureEvents={true}
+          joinNowButton
         />
       </div>
     </>
