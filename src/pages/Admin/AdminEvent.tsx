@@ -129,8 +129,12 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
           </div>
           <div className="input-group">
             <label>Start Time</label>
-            <span>{`Please enter these in your local [GMT+1] timezone.`}</span>{" "}
-            <span>{`Don't worry- your event times will be automatically shown in the local times of burners round the world.`}</span>
+            <span
+              style={{ fontSize: 13 }}
+            >{`Please enter these in your local timezone.`}</span>{" "}
+            <span
+              style={{ fontSize: 13 }}
+            >{`Don't worry- your event times will be automatically shown in the local times of burners round the world.`}</span>
             <input
               type="date"
               min={dayjs().format("YYYY-MM-DD")}
