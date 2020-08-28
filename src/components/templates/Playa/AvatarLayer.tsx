@@ -117,7 +117,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       newWs.onmessage = (data) => {
         try {
           const update = JSON.parse(data.data.toString()) as BroadcastMessage;
-          console.log("onmessage", update.updates);
           let hasChanges = false;
           for (const uid of Object.keys(update.updates)) {
             if (uid === user.uid) {

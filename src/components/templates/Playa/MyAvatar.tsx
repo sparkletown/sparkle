@@ -113,11 +113,6 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
 
   useEffect(() => {
     setState((state) => {
-      console.log(
-        "updating state from/to",
-        state?.state?.[UserStateKey.Video],
-        videoState
-      );
       if (!state) return state;
       const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
       const video = state?.state?.[UserStateKey.Video];
@@ -128,7 +123,6 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         if (bike) state.state[UserStateKey.Bike] = bike.toString();
         if (videoState) state.state[UserStateKey.Video] = videoState;
       }
-      console.log("sending updated state");
       sendUpdatedState(state);
       return { ...state };
     });
