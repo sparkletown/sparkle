@@ -4,6 +4,14 @@ import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
+import jimp from "jimp";
+import {
+  LOGO_IMAGE_WIDTH_PX,
+  BANNER_IMAGE_WIDTH_PX,
+  MAP_ICON_WIDTH_PX,
+  MAP_BACKGROUND_IMAGE_WIDTH_PX,
+  ROOM_IMAGE_WIDTH_PX,
+} from "settings";
 
 export interface EventInput {
   name: string;
@@ -81,19 +89,53 @@ export type PlacementInput = {
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
+const compressImage = async (file: File, compressionWidth: number) => {
+  // cannot resize gifs
+  if (file.type === "image/gif") return file;
+
+  const jimpImage = await jimp.read(URL.createObjectURL(file));
+
+  // only resize if intrinsic width greater than compression width
+  if (jimpImage.bitmap.width <= compressionWidth) return file;
+
+  jimpImage.resize(compressionWidth, jimp.AUTO);
+  const buffer = await jimpImage.getBufferAsync(jimpImage.getMIME());
+  return buffer;
+};
+
+type ImageConfig = {
+  compressionWidth: number;
+};
+
 const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 
   const urlVenueName = createUrlSafeName(input.name);
-  type ImageNaming = {
+  type ImageNaming = ImageConfig & {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
   };
   const imageKeys: Array<ImageNaming> = [
-    { fileKey: "logoImageFile", urlKey: "logoImageUrl" },
-    { fileKey: "bannerImageFile", urlKey: "bannerImageUrl" },
-    { fileKey: "mapIconImageFile", urlKey: "mapIconImageUrl" },
-    { fileKey: "mapBackgroundImageFile", urlKey: "mapBackgroundImageUrl" },
+    {
+      fileKey: "logoImageFile",
+      urlKey: "logoImageUrl",
+      compressionWidth: LOGO_IMAGE_WIDTH_PX,
+    },
+    {
+      fileKey: "bannerImageFile",
+      urlKey: "bannerImageUrl",
+      compressionWidth: BANNER_IMAGE_WIDTH_PX,
+    },
+    {
+      fileKey: "mapIconImageFile",
+      urlKey: "mapIconImageUrl",
+      compressionWidth: MAP_ICON_WIDTH_PX,
+    },
+    {
+      fileKey: "mapBackgroundImageFile",
+      urlKey: "mapBackgroundImageUrl",
+      compressionWidth: MAP_BACKGROUND_IMAGE_WIDTH_PX,
+    },
   ];
 
   let imageInputData = {};
@@ -111,7 +153,9 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
       `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
     );
 
-    await uploadFileRef.put(file);
+    const buffer = await compressImage(file, entry.compressionWidth);
+
+    await uploadFileRef.put(buffer);
     const downloadUrl: string = await uploadFileRef.getDownloadURL();
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
@@ -137,12 +181,16 @@ const createFirestoreRoomInput = async (
   const urlRoomName = createUrlSafeName(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
-  type ImageNaming = {
+  type ImageNaming = ImageConfig & {
     fileKey: RoomImageFileKeys;
     urlKey: RoomImageUrlKeys;
   };
   const imageKeys: Array<ImageNaming> = [
-    { fileKey: "image_file", urlKey: "image_url" },
+    {
+      fileKey: "image_file",
+      urlKey: "image_url",
+      compressionWidth: ROOM_IMAGE_WIDTH_PX,
+    },
   ];
 
   let imageInputData = {};
@@ -155,7 +203,10 @@ const createFirestoreRoomInput = async (
     const uploadFileRef = storageRef.child(
       `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
     );
-    await uploadFileRef.put(file);
+
+    const buffer = await compressImage(file, entry.compressionWidth);
+
+    await uploadFileRef.put(buffer);
     const downloadUrl: string = await uploadFileRef.getDownloadURL();
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
