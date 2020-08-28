@@ -43,10 +43,12 @@ const ArtPiece = () => {
         >
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}.</p>
-            <p className="short-description-sidebar">
+            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p>{venue.config?.landingPageConfig.description}</p>
+            <p style={{ fontSize: 13 }}>
+              {venue.config?.landingPageConfig.description}
+            </p>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">

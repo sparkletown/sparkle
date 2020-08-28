@@ -161,6 +161,8 @@ const OnlineStats: React.FC = () => {
                         eventsNow={currentEvents}
                         venue={venue}
                         showButton={true}
+                        futureEvents={false}
+                        joinNowButton={false}
                       />
                     </div>
                   ))}

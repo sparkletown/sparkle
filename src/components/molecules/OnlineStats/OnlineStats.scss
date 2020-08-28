@@ -18,7 +18,7 @@
   .stats-outer-container {
     width: 100%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
     display: flex;
     flex-direction: row;
     .stats-modal-container {
@@ -50,7 +50,7 @@
       .venues-container {
         display: flex;
         flex-wrap: wrap;
-        overflow: scroll;
+        overflow: auto;
         padding: 20px 0;
 
         .venue-card {
@@ -59,7 +59,7 @@
           border-radius: 30px;
           overflow: hidden;
           width: calc(25% - 20px); // minus margin on each side
-          height: 400px;
+          height: 500px;
           margin: 10px;
           display: flex;
           flex-direction: column;
@@ -87,6 +87,67 @@
               object-fit: cover;
             }
           }
+          .events-list {
+            overflow-y: auto;
+            .event {
+              margin-bottom: 5px;
+              padding: 16px;
+              display: flex;
+              &:nth-child(even) {
+                background-color: rgba($dark, 0.5);
+              }
+              &.event_live {
+                .event-time,
+                .event-text h5 {
+                  color: white;
+                }
+              }
+
+              .event-time {
+                margin-right: 10px;
+                .event-time-start,
+                .event-time-end {
+                  font-size: 0.9em;
+                  display: inline-block;
+                  width: 115px;
+                  &.event-time-end {
+                    opacity: 0.5;
+                  }
+                }
+                .event-badge-live {
+                  display: block;
+                  margin-top: 6px;
+                  border-radius: 16px;
+                  background-color: rgba($primary, 0.2);
+                  text-align: center;
+                  color: $white;
+                  padding: 2px 0;
+                  font-weight: 500;
+                }
+              }
+              .event-text {
+                margin-left: 5px;
+                .button-join-now {
+                  color: white;
+                  text-decoration: none;
+                }
+                .h5 {
+                  margin-top: 0;
+                  margin: 0;
+                }
+                a {
+                  font-weight: normal;
+                  margin-top: 0.5rem;
+                  display: inline-block;
+                  color: white;
+                  text-decoration: underline;
+                  &:hover {
+                    opacity: 0.7;
+                  }
+                }
+              }
+            }
+          }
         }
 
         @media (max-width: 1500px) {
@@ -111,7 +172,7 @@
 
       .people {
         flex: 1;
-        overflow: scroll;
+        overflow: auto;
 
         .user-row {
           border-radius: 20px;

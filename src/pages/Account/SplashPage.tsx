@@ -2,8 +2,9 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import "firebase/storage";
 import "./Account.scss";
-//import { RouterLocation } from "types/RouterLocation";
 import { PLAYA_IMAGE } from "settings";
+import { venueInsideUrl } from "utils/url";
+import { useUser } from "hooks/useUser";
 
 export interface ProfileFormData {
   partyName: string;
@@ -12,9 +13,10 @@ export interface ProfileFormData {
 
 const SplashPage = () => {
   const history = useHistory();
+  const { user } = useUser();
 
   const onSubmit = () => {
-    history.push(`/enter/step1`);
+    history.push(user ? venueInsideUrl("playa") : "/enter/step1");
   };
 
   return (

@@ -77,17 +77,7 @@ export const Map: React.FC<PropsType> = ({
                     alt={room.title}
                   />
                 </div>
-                <div
-                  className={`playa-venue-text
-                  ${left < 50 ? "room-on-left-side" : "room-on-right-side"}
-                  ${
-                    top < 50
-                      ? ""
-                      : roomClicked
-                      ? "room-on-bottom-side-expanded"
-                      : "room-on-bottom-side"
-                  }`}
-                >
+                <div className={`playa-venue-text`}>
                   <div className="playa-venue-maininfo">
                     <div className="playa-venue-title">{room.title}</div>
                     <div className="playa-venue-people">
