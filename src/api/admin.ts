@@ -1,5 +1,4 @@
-import { UserInfo } from "firebase";
-import firebase from "firebase/app";
+import firebase, { UserInfo } from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";

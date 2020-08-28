@@ -2,7 +2,7 @@ import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
 import { User } from "types/User";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { ChatMessage } from "components/context/ChatContext";
 import { WithId } from "utils/id";
 
