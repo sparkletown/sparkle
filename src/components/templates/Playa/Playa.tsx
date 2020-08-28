@@ -40,6 +40,7 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VideoChatLayer from "./VideoChatLayer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { UserVideoState } from "types/RelayMessage";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -97,10 +98,16 @@ const Playa = () => {
     width: window.innerWidth,
   });
   const [bikeMode, setBikeMode] = useState(false);
+  const [videoState, setVideoState] = useState<string>();
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
   }, [bikeMode]);
+  const toggleVideoState = useCallback(() => {
+    setVideoState((prev) =>
+      prev === UserVideoState.Open ? UserVideoState.Locked : UserVideoState.Open
+    );
+  }, []);
 
   const { user } = useUser();
 
@@ -426,7 +433,7 @@ const Playa = () => {
             }}
             onClick={() => changeDustStorm()}
           >
-            <div className="playa-controls" style={{ bottom: 270, right: 30 }}>
+            <div className="playa-controls" style={{ bottom: 320, right: 30 }}>
               <div className={`playa-controls-recenter show`}>
                 <div
                   className={`playa-dust-storm-btn${
@@ -502,6 +509,8 @@ const Playa = () => {
             </Overlay>
             <AvatarLayer
               bikeMode={bikeMode}
+              videoState={videoState}
+              setVideoState={setVideoState}
               setMyLocation={setMyLocation}
               setSelectedUserProfile={setSelectedUserProfile}
             />
@@ -519,6 +528,13 @@ const Playa = () => {
               <div
                 className={`playa-controls-bikemode-btn ${
                   bikeMode ? "bike" : ""
+                }`}
+              />
+            </div>
+            <div className={"playa-controls-video"} onClick={toggleVideoState}>
+              <div
+                className={`playa-controls-video-btn ${
+                  videoState === UserVideoState.Open ? "on" : "off"
                 }`}
               />
             </div>
@@ -592,6 +608,9 @@ const Playa = () => {
     venues,
     bikeMode,
     toggleBikeMode,
+    videoState,
+    setVideoState,
+    toggleVideoState,
     centerX,
     centerY,
     centeredOnMe,

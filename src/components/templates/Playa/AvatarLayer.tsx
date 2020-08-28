@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { WS_RELAY_URL } from "secrets";
 import { useUser } from "hooks/useUser";
 import {
@@ -17,33 +23,49 @@ import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
-import { User } from "types/User";
+import { User, VideoState } from "types/User";
 import { MyAvatar } from "./MyAvatar";
 import { Overlay } from "react-bootstrap";
-import { MenuConfig } from "components/molecules/OverlayMenu/OverlayMenu";
+import { useFirebase } from "react-redux-firebase";
+
+type MenuConfig = {
+  prompt?: string;
+  choices?: MenuChoice[];
+};
+
+type MenuChoice = {
+  text: string;
+  onClick: () => void;
+};
 
 interface PropsType {
   bikeMode: boolean;
+  videoState: string | undefined;
+  setVideoState: (state: string | undefined) => void;
   setMyLocation(x: number, y: number): void;
   setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
   bikeMode,
+  videoState,
   setMyLocation,
   setSelectedUserProfile,
 }) => {
   useConnectPartyGoers();
 
   const { user } = useUser();
+  const firebase = useFirebase();
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
-  const [videoState, setVideoState] = useState<string>();
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
   const [hoveredUser, setHoveredUser] = useState<User | null>();
   const [hovered, setHovered] = useState(false);
-  const hoveredRef = useRef<HTMLDivElement>(null);
+  const hoverRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const [menu, setMenu] = useState<MenuConfig>();
+  const [menuUser, setMenuUser] = useState<User>();
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -51,7 +73,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (state: UserState) => {
       if (!user) return;
       setMyLocation(state.x, state.y);
-      setVideoState(state?.state?.[UserStateKey.Video]);
 
       if (wsRef.current) {
         const update: UpdateWsMessage = {
@@ -95,13 +116,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       newWs.onmessage = (data) => {
         try {
           const update = JSON.parse(data.data.toString()) as BroadcastMessage;
+          console.log("onmessage", update.updates);
           let hasChanges = false;
           for (const uid of Object.keys(update.updates)) {
             if (uid === user.uid) {
               setMyServerSentState((myServerSentState) =>
                 myServerSentState ? myServerSentState : update.updates[uid]
               );
-              setVideoState(update.updates[uid].state?.[UserStateKey.Video]);
             } else {
               userStateMapRef.current[uid] = update.updates[uid];
               hasChanges = true;
@@ -155,6 +176,17 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ]
   );
 
+  const joinUserVideoChat = useCallback(
+    (ownerUid: string) => {
+      if (!user) return;
+      const video: VideoState = {
+        inRoomOwnedBy: ownerUid,
+      };
+      firebase.firestore().doc(`users/${user.uid}`).update({ video: video });
+    },
+    [firebase, user]
+  );
+
   const avatars = useMemo(
     () =>
       Object.keys(userStateMap)
@@ -173,27 +205,42 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             stateBoolean(userStateMap[uid], UserStateKey.Visible) !== false;
           if (!visible) return <></>;
           const videoState = userStateMap[uid].state?.[UserStateKey.Video];
-          let menu: MenuConfig = {
-            prompt: "test",
-            choices: [
-              {
-                text: avatarUser?.partyName || "test1",
-                onClick: () => alert(avatarUser?.partyName),
-              },
-            ],
-          };
-          if (videoState === UserVideoState.Open) {
-            menu = {
-              prompt: `Wanna join ${avatarUser?.partyName}'s video chat?`,
-              choices: [
-                { text: "Join chat", onClick: () => alert("yay") },
-                {
-                  text: "Message them first",
-                  onClick: () => setSelectedUserProfile(avatarUser),
-                },
-              ],
-            };
-          }
+          const removedFromTheirChat =
+            avatarUser.video?.removedParticipantUids &&
+            avatarUser.video.removedParticipantUids.includes(avatarUser.id);
+          const theirChatIsDisbanded =
+            avatarUser.video?.removedParticipantUids &&
+            avatarUser.video.myRoomIsDisbanded;
+          const menu: MenuConfig =
+            UserVideoState.Open &&
+            !removedFromTheirChat &&
+            !theirChatIsDisbanded
+              ? {
+                  prompt: `Wanna join ${avatarUser.partyName}'s video chat?`,
+                  choices: [
+                    {
+                      text: "Join chat",
+                      onClick: () => joinUserVideoChat(avatarUser.id),
+                    },
+                    {
+                      text: "Message them first",
+                      onClick: () => setSelectedUserProfile(avatarUser),
+                    },
+                  ],
+                }
+              : {
+                  prompt:
+                    avatarUser.partyName +
+                    (videoState === UserVideoState.Locked
+                      ? " (unavailable for video chat)"
+                      : ""),
+                  choices: [
+                    {
+                      text: "View profile & message them",
+                      onClick: () => setSelectedUserProfile(avatarUser),
+                    },
+                  ],
+                };
           return (
             <Avatar
               user={avatarUser}
@@ -201,15 +248,36 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               y={userStateMap[uid].y}
               videoState={videoState}
               bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
-              setHoveredUser={setHoveredUser}
-              setHovered={setHovered}
-              hoveredRef={hoveredRef}
-              menu={menu}
+              onClick={() => {
+                setMenu(menu);
+                setMenuUser(avatarUser);
+              }}
+              onMouseOver={() => {
+                setHoveredUser(avatarUser);
+                setHovered(true);
+              }}
+              onMouseLeave={() => setHovered(false)}
+              hoverRef={
+                menuUser === avatarUser
+                  ? menuRef
+                  : hovered && hoveredUser === avatarUser
+                  ? hoverRef
+                  : undefined
+              }
               key={uid}
             />
           );
         }),
-    [partygoers, user, userStateMap, setSelectedUserProfile]
+    [
+      partygoers,
+      user,
+      userStateMap,
+      setSelectedUserProfile,
+      hovered,
+      hoveredUser,
+      joinUserVideoChat,
+      menuUser,
+    ]
   );
 
   return useMemo(
@@ -217,7 +285,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       <>
         {myAvatar}
         {avatars}
-        <Overlay target={hoveredRef.current} show={hovered}>
+        <Overlay target={hoverRef.current} show={hovered}>
           {({ placement, arrowProps, show: _show, popper, ...props }) => (
             // @ts-expect-error
             <div {...props} style={{ ...props.style, padding: "10px" }}>
@@ -231,9 +299,35 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             </div>
           )}
         </Overlay>
+        <Overlay
+          target={menuRef.current}
+          show={!!menuUser}
+          rootClose
+          onHide={() => setMenuUser(undefined)}
+          placement="right-start"
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="overlay-menu">
+                <div className="prompt">{menu?.prompt}</div>
+                <ul>
+                  {menu?.choices?.map((choice, index) => (
+                    <li className="choice" onClick={choice.onClick} key={index}>
+                      {choice.text}
+                    </li>
+                  ))}
+                  <li className="choice" onClick={document.body.click}>
+                    Cancel
+                  </li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </Overlay>
       </>
     ),
-    [myAvatar, avatars, hoveredUser, hovered]
+    [myAvatar, avatars, hoveredUser, hovered, menu, menuUser]
   );
 };
 

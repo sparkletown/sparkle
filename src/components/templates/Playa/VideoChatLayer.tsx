@@ -3,7 +3,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirebase } from "react-redux-firebase";
 import Room from "./Video/Room";
-import { User } from "types/User";
+import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 
 type PropsType = {
@@ -23,15 +23,21 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   const roomOwnerUid = profile.video.inRoomOwnedBy;
   if (roomOwnerUid === undefined) return <></>;
 
-  const updateVideoState = (update: any) => {
+  const updateVideoState = (update: VideoState) => {
     firebase
       .firestore()
       .doc(`users/${user.uid}`)
       .update({ video: { ...profile.video, ...update } });
   };
 
+  // Host leaving ends the chat
   const leave = () => {
-    updateVideoState({ room: null });
+    const inMyOwnRoom = user.uid === profile.video?.inRoomOwnedBy;
+    if (inMyOwnRoom) {
+      updateVideoState({ myRoomIsDisbanded: true });
+    } else {
+      updateVideoState({});
+    }
   };
 
   const disbanded = partygoers[roomOwnerUid].video?.myRoomIsDisbanded === true;

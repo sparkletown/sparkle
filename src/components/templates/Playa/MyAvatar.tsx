@@ -112,30 +112,26 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
 
   useEffect(() => {
     setState((state) => {
+      console.log(
+        "updating state from/to",
+        state?.state?.[UserStateKey.Video],
+        videoState
+      );
       if (!state) return state;
       const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
-      const needsUpdate = bike !== onBike;
+      const video = state?.state?.[UserStateKey.Video];
+      const needsUpdate = bike !== onBike || video !== videoState;
       if (!needsUpdate) return state;
 
       if (state.state) {
         state.state[UserStateKey.Bike] = bike.toString();
+        if (videoState) state.state[UserStateKey.Video] = videoState;
       }
+      console.log("sending updated state");
       sendUpdatedState(state);
       return { ...state };
     });
-  }, [bike, sendUpdatedState]);
-
-  const setVideoChat = (value: UserVideoState) => {
-    setState((state) => {
-      if (!state) return;
-      if (!state.state) state.state = {};
-      if (state.state[UserStateKey.Video] === value) return state;
-
-      state.state[UserStateKey.Video] = value;
-      sendUpdatedState(state);
-      return { ...state };
-    });
-  };
+  }, [bike, videoState, sendUpdatedState]);
 
   if (!profile || !state) return <></>;
 
