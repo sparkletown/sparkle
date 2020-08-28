@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirebase } from "react-redux-firebase";
@@ -18,6 +18,28 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   const firebase = useFirebase();
   const { user, profile } = useUser();
   const partygoers = useSelector((state) => state.firestore.data.partygoers);
+
+  // Join your own chat when someone else joins your chat.
+  // Only applicable if you're not already in a room.
+  useEffect(() => {
+    const joinUserVideoChat = (ownerUid: string) => {
+      if (!user) return;
+      const video: VideoState = {
+        inRoomOwnedBy: ownerUid,
+      };
+      firebase.firestore().doc(`users/${user.uid}`).update({ video: video });
+    };
+
+    const alreadyInChat = profile?.video?.inRoomOwnedBy !== undefined;
+    if (!user || alreadyInChat) return;
+    if (
+      Object.keys(partygoers).find(
+        (uid) => partygoers[uid].video?.inRoomOwnedBy === user.uid
+      )
+    ) {
+      joinUserVideoChat(user.uid);
+    }
+  }, [firebase, profile, user, partygoers]);
 
   if (!user || !profile || !profile.video) return <></>;
   const roomOwnerUid = profile.video.inRoomOwnedBy;
@@ -50,7 +72,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     return <></>;
   }
 
-  const inRoom = profile.video.inRoomOwnedBy === undefined;
+  const inRoom = profile.video.inRoomOwnedBy !== undefined;
   if (!inRoom) return <></>;
 
   const roomName = ROOM_PREFIX + profile.video.inRoomOwnedBy;

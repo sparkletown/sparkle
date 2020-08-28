@@ -107,6 +107,13 @@ const Playa = () => {
     height: window.innerHeight,
     width: window.innerWidth,
   });
+  const [videoChatHeight, setVideoChatHeight] = useState(
+    window.innerHeight / 4
+  );
+  const [autoAdjustVideoChatHeight, setAutoAdjustVideoChatHeight] = useState(
+    true
+  );
+  const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
   const [videoState, setVideoState] = useState<string>();
   // REVISIT: show a modal when you leave & go elsewhere on playa. Need to send this to the relay when clicking a "join venue" button.
@@ -121,7 +128,7 @@ const Playa = () => {
     );
   }, []);
 
-  const { user } = useUser();
+  const { user, profile } = useUser();
 
   useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
@@ -132,6 +139,9 @@ const Playa = () => {
         width: window.innerWidth,
       });
       setZoom((zoom) => Math.max(minZoom(), zoom));
+      if (autoAdjustVideoChatHeight) {
+        setVideoChatHeight(window.innerHeight / 4);
+      }
     };
     window.addEventListener("resize", updateDimensions);
     return () => {
@@ -354,6 +364,46 @@ const Playa = () => {
     });
   }, [centerX, centerY, myX, myY]);
 
+  useEffect(() => {
+    if (!sliderRef.current) return;
+
+    let dragStartY = 0;
+    let movedSoFarY = 0;
+    let dragging = false;
+    const sliderDragStart = (event: MouseEvent) => {
+      dragStartY = event.clientY;
+      movedSoFarY = 0;
+      dragging = true;
+      event.preventDefault();
+    };
+    const sliderDrag = throttle((event: MouseEvent) => {
+      if (!dragging) return;
+      const diffY = dragStartY - event.clientY;
+      setVideoChatHeight((prev) => {
+        const next = prev + diffY - movedSoFarY;
+        return next;
+      });
+      movedSoFarY = diffY;
+    }, 25);
+    const sliderDragMove = (event: MouseEvent) => {
+      if (dragging) {
+        event.preventDefault();
+        sliderDrag(event);
+      }
+    };
+    const sliderDragEnd = () => (dragging = false);
+    sliderRef.current.addEventListener("mousedown", sliderDragStart);
+    window.addEventListener("mousemove", sliderDragMove);
+    window.addEventListener("mouseup", sliderDragEnd);
+
+    const sliderRefCurrent = sliderRef.current;
+    return () => {
+      sliderRefCurrent.removeEventListener("mousedown", sliderDragStart);
+      window.removeEventListener("mousemove", sliderDrag);
+      window.removeEventListener("mouseup", sliderDragEnd);
+    };
+  }, [sliderRef]);
+
   const recenter = useCallback(() => {
     if (myX === undefined || myY === undefined) return;
     setCenterX(myX);
@@ -397,6 +447,7 @@ const Playa = () => {
   );
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const inVideoChat = profile && profile.video?.inRoomOwnedBy !== undefined;
   const dustStorm = venue?.dustStorm;
 
   const changeDustStorm = useCallback(async () => {
@@ -641,7 +692,6 @@ const Playa = () => {
               <div className="playa-controls-shout-btn"></div>
             </div>
           </div>
-          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
           <div className="chat-pop-up">
             <ChatDrawer
               roomName={"PLAYA"}
@@ -655,6 +705,16 @@ const Playa = () => {
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
+        </div>
+        <div
+          className={`playa-slider ${inVideoChat ? "show" : ""}`}
+          ref={sliderRef}
+        />
+        <div
+          className={`playa-videochat ${inVideoChat ? "show" : ""}`}
+          style={{ height: videoChatHeight }}
+        >
+          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
@@ -710,6 +770,8 @@ const Playa = () => {
     hoveredUser,
     showMenu,
     menu,
+    inVideoChat,
+    videoChatHeight,
   ]);
 };
 

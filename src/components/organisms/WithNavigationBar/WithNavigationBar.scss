@@ -4,6 +4,9 @@
   padding-top: $navbar-height;
 }
 .navbar-margin.fullscreen {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   overflow: hidden;
+  flex-flow: column;
 }

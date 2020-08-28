@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -99,14 +98,9 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   return (
     <div className="participant">
       {videos}
-      <div className="profile-icon">
-        <UserProfilePicture
-          user={user}
-          setSelectedUserProfile={() => setSelectedUserProfile(user)}
-          imageSize={40}
-        />
+      <div className="name" onClick={() => setSelectedUserProfile(user)}>
+        {user.partyName}
       </div>
-      <div className="name">{user.partyName}</div>
       {children}
     </div>
   );

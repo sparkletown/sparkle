@@ -99,38 +99,29 @@ const Room: React.FC<RoomProps> = ({
 
   const me = useMemo(() => {
     return room && user ? (
-      <div className="participant-container">
-        <LocalParticipant
-          key={room.localParticipant.sid}
-          participant={room.localParticipant}
-          user={users[user.uid]}
-          setSelectedUserProfile={setSelectedUserProfile}
-          leave={leave}
-        />
-      </div>
+      <LocalParticipant
+        participant={room.localParticipant}
+        user={users[user.uid]}
+        setSelectedUserProfile={setSelectedUserProfile}
+        leave={leave}
+      />
     ) : null;
   }, [room, user, users, setSelectedUserProfile, leave]);
 
   const others = useMemo(
     () =>
-      participants.map((participant, index) => {
-        if (!participant) {
-          return null;
-        }
-
-        return (
-          <div key={participant.identity} className="participant-container">
-            <RemoteParticipant
-              key={index}
-              participant={participant}
-              user={users[participant.identity]}
-              setSelectedUserProfile={setSelectedUserProfile}
-              host={host}
-              remove={() => removeParticipant(participant.identity)}
-            />
-          </div>
-        );
-      }),
+      participants
+        .filter((p) => !!p)
+        .map((participant, index) => (
+          <RemoteParticipant
+            participant={participant}
+            user={users[participant.identity]}
+            setSelectedUserProfile={setSelectedUserProfile}
+            host={host}
+            remove={() => removeParticipant(participant.identity)}
+            key={index}
+          />
+        )),
     [participants, users, host, setSelectedUserProfile, removeParticipant]
   );
 
@@ -139,10 +130,10 @@ const Room: React.FC<RoomProps> = ({
   }
 
   return (
-    <>
+    <div className="room">
       {me}
       {others}
-    </>
+    </div>
   );
 };
 
