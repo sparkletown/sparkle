@@ -139,13 +139,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
                 : "/pickspace-thumbnail_art.png"
             }
             alt="pic of camp/artpiece/zoom"
-            style={{
-              position: "absolute",
-              top: 30,
-              right: 20,
-              height: 70,
-              width: 70,
-            }}
+            className="img-venue"
           />
           <div className="title-container">
             <img

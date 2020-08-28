@@ -11,6 +11,14 @@
     margin: 0 -15px;
     border-radius: 22px;
 
+    .img-venue {
+      position: absolute;
+      top: 30px;
+      right: 20px;
+      height: 70px;
+      width: 70px;
+    }
+
     .title-container {
       display: flex;
       width: 100%;
