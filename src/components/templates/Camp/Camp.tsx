@@ -1,9 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
@@ -18,28 +16,21 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
+import { Modal } from "react-bootstrap";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
-const Camp = () => {
+const Camp: React.FC = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
-  const { user } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
     partygoers: state.firestore.ordered.partygoers,
   }));
-
-  const campLocation = `${venue.name}`;
-
-  const location = useMemo(
-    () =>
-      isRoomModalOpen && selectedRoom ? selectedRoom?.title : campLocation,
-    [isRoomModalOpen, selectedRoom, campLocation]
-  );
-  useUpdateLocationEffect(user, location);
 
   const usersInCamp = useMemo(
     () => venue && peopleAttending(partygoers, venue),
@@ -81,7 +72,12 @@ const Camp = () => {
       </div>
       {usersInCamp && (
         <div className="col">
-          <UserList users={usersInCamp} imageSize={50} disableSeeAll={false} />
+          <UserList
+            users={usersInCamp}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+          />
         </div>
       )}
       <div className="col">
@@ -121,7 +117,7 @@ const Camp = () => {
         room={selectedRoom}
         onHide={modalHidden}
       />
-      <div className="chat-pop-up">
+      <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
           title={"Camp Chat"}
@@ -129,11 +125,20 @@ const Camp = () => {
         />
       </div>
       <div className="sparkle-fairies">
-        <SparkleFairiesPopUp />
+        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
       </div>
       <div className="info-drawer-camp">
         <InfoDrawer venue={venue} />
       </div>
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

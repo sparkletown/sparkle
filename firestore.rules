@@ -12,7 +12,12 @@ service cloud.firestore {
     }
     match /users/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid != null;
+      allow write: if request.auth.uid == userId;
+
+      match /visits/{venueId} {
+        allow read: if true;
+        allow write: if request.auth.uid == userId;
+      }
     }
     match /chatsv3/{chatId} {
       allow write, read: if request.auth.uid != null;

@@ -12,6 +12,14 @@ const eventIsNow = (event, now) => {
   );
 };
 
+// Someone snuck by our client side validation! Naughty naughty!
+const sanitizeEvent = (event, now) => {
+  if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
+    event.start_utc_seconds = now / 1000;
+  }
+  return event;
+};
+
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
   const userLastSeenLimit = (now - ONE_HOUR) / 1000;
@@ -67,25 +75,27 @@ exports.getAllEvents = functions.https.onCall(async (data, context) => {
         const template = venue.data().template;
         const openWithoutEvents =
           template === "artpiece" || template === "themecamp";
-        await venue.ref
-          .collection("events")
-          .get()
-          .then((events) => {
-            const allEvents = events.docs.map((event) => event.data());
-            const venueHasEvents = allEvents.length > 0;
+        try {
+          const events = await venue.ref.collection("events").get();
+          const allEvents = events.docs.map((event) =>
+            sanitizeEvent(event.data(), now)
+          );
+          const venueHasEvents = allEvents.length > 0;
 
-            if (venueHasEvents || openWithoutEvents) {
-              const venueWithId = venue.data();
-              venueWithId.id = venue.id;
-              openVenues.push({
-                venue: venueWithId,
-                currentEvents: allEvents,
-              });
-            }
-          });
+          if (venueHasEvents || openWithoutEvents) {
+            const venueWithId = venue.data();
+            venueWithId.id = venue.id;
+            openVenues.push({
+              venue: venueWithId,
+              currentEvents: allEvents,
+            });
+          }
+        } catch (e) {
+          console.log("error", e);
+        }
       })
     );
-    console.log(typeof openVenues);
+
     return { openVenues };
   } catch (error) {
     console.log(error);

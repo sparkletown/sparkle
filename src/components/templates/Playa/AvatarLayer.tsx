@@ -128,17 +128,31 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
   }, [user]);
 
+  const selfUserProfile = user?.uid
+    ? partygoers.find((pg) => pg.id === user.uid)
+    : undefined;
+
   const myAvatar = useMemo(
-    () => (
-      <MyAvatar
-        serverSentState={myServerSentState}
-        bike={bikeMode}
-        videoState={videoState}
-        sendUpdatedState={sendUpdatedState}
-        setMyLocation={setMyLocation}
-      />
-    ),
-    [myServerSentState, bikeMode, sendUpdatedState, setMyLocation, videoState]
+    () =>
+      selfUserProfile ? (
+        <MyAvatar
+          serverSentState={myServerSentState}
+          bike={bikeMode}
+          videoState={videoState}
+          sendUpdatedState={sendUpdatedState}
+          setMyLocation={setMyLocation}
+          onClick={() => setSelectedUserProfile(selfUserProfile)}
+        />
+      ) : undefined,
+    [
+      myServerSentState,
+      bikeMode,
+      videoState,
+      sendUpdatedState,
+      setMyLocation,
+      selfUserProfile,
+      setSelectedUserProfile,
+    ]
   );
 
   const avatars = useMemo(

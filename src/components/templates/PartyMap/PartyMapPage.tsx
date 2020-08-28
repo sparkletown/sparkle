@@ -6,9 +6,7 @@ import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { updateTheme } from "pages/VenuePage/helpers";
-import useUpdateLocationEffect, {
-  updateLocationData,
-} from "utils/useLocationUpdateEffect";
+import { updateLocationData } from "utils/useLocationUpdateEffect";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
@@ -33,8 +31,6 @@ const PartyMap = () => {
     venue: state.firestore.ordered.currentVenue?.[0],
     partygoers: state.firestore.ordered.partygoers,
   }));
-
-  useUpdateLocationEffect(user, "Map");
 
   venue && updateTheme(venue);
 

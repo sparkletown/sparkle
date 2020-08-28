@@ -45,6 +45,8 @@ interface PropsType {
   onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
   otherIconsStyle?: CSSProperties;
   rounded?: boolean;
+  backgroundImageStyle?: CSSProperties;
+  containerStyle?: CSSProperties;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -61,6 +63,8 @@ export const Container: React.FC<PropsType> = (props) => {
     resizable,
     rounded,
     otherIconsStyle,
+    backgroundImageStyle,
+    containerStyle,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
@@ -166,7 +170,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   return (
     <>
-      <div ref={drop} style={styles}>
+      <div ref={drop} style={{ ...styles, ...containerStyle }}>
         <ReactResizeDetector
           handleWidth
           handleHeight
@@ -176,6 +180,7 @@ export const Container: React.FC<PropsType> = (props) => {
           alt="draggable background "
           style={{
             width: "100%",
+            ...backgroundImageStyle,
           }}
           src={backgroundImage}
         />

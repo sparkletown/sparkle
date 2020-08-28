@@ -413,11 +413,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
               <div className="input-container">
                 <h4 className="italic" style={{ fontSize: "20px" }}>
-                  Zoom URL
+                  URL
                 </h4>
                 <div style={{ fontSize: "16px" }}>
-                  (Enter a video chat link. You can edit this later so you can
-                  leave a placeholder for now)
+                  Please post a URL to, for example, a Zoom room, Twitch stream,
+                  other Universe, or any interesting thing out there on the open
+                  web.
                 </div>
                 <textarea
                   disabled={disable}

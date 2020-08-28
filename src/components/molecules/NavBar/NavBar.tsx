@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import "./playa.scss";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
@@ -33,6 +33,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     privateChats: state.firestore.ordered.privatechats,
     radioStations: state.firestore.data.venues?.playa?.radioStations,
   }));
+  const {
+    location: { pathname },
+  } = useHistory();
+  const isOnPlaya =
+    pathname.toLowerCase() === `/in/${PLAYA_VENUE_NAME}`.toLowerCase();
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -118,7 +123,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
             </div>
             {user ? (
               <>
-                {venue?.name === PLAYA_VENUE_NAME ? (
+                {isOnPlaya ? (
                   <div className="navbar-dropdown-middle">
                     <OnlineStats />
                   </div>
@@ -131,12 +136,15 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </span>
                 )}
                 <div className="navbar-links">
-                  <div className="button-container create-button-container navbar-link-schedule">
-                    <div
-                      className="create-button"
-                      onClick={() => setShowEventSchedule(true)}
-                    >
-                      Event Schedule
+                  <div className="button-container navbar-link-schedule">
+                    <div onClick={() => setShowEventSchedule(true)}>
+                      <img
+                        src={"/navbar-link-events.png"}
+                        className="profile-icon"
+                        alt="radio"
+                        width="40"
+                        height="40"
+                      />
                     </div>
                   </div>
                   {hasUpcomingEvents && (
@@ -233,6 +241,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <Modal
         show={showEventSchedule}
         onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
       >
         <Modal.Body>
           <SchedulePageModal />

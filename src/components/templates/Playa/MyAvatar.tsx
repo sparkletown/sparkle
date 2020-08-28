@@ -14,6 +14,7 @@ interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean;
   videoState: string | undefined;
+  onClick: () => void;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
 }
@@ -27,6 +28,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   videoState,
   sendUpdatedState,
   setMyLocation,
+  onClick,
 }) => {
   const { profile } = useUser();
   const ref = useRef<HTMLDivElement>(null);
@@ -150,6 +152,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         }}
         onMouseOver={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}
+        onClick={onClick}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />

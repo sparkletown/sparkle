@@ -16,11 +16,13 @@ import {
   PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
-import useLocationUpdateEffect, {
+import {
   updateLocationData,
+  useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
@@ -37,6 +39,7 @@ import firebase from "firebase/app";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VideoChatLayer from "./VideoChatLayer";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -78,7 +81,7 @@ const Playa = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -101,7 +104,7 @@ const Playa = () => {
 
   const { user } = useUser();
 
-  useLocationUpdateEffect(user, "Playa");
+  useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -553,7 +556,7 @@ const Playa = () => {
             <DonatePopUp />
           </div>
           <div className="sparkle-fairies">
-            <SparkleFairiesPopUp />
+            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
         </div>
         <Modal show={showModal} onHide={hideVenue}>
@@ -566,6 +569,15 @@ const Playa = () => {
           onHide={() => setSelectedUserProfile(undefined)}
           userProfile={selectedUserProfile}
         />
+        <Modal
+          show={showEventSchedule}
+          onHide={() => setShowEventSchedule(false)}
+          dialogClassName="custom-dialog"
+        >
+          <Modal.Body>
+            <SchedulePageModal />
+          </Modal.Body>
+        </Modal>
       </>
     );
   }, [
@@ -593,6 +605,7 @@ const Playa = () => {
     dustStorm,
     changeDustStorm,
     selectedUserProfile,
+    showEventSchedule,
   ]);
 };
 
