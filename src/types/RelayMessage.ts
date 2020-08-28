@@ -6,9 +6,12 @@ export type UserState = {
 };
 
 export enum UserStateKey {
-  Bike = "bike",
-  Video = "video",
-  Visible = "visible",
+  Bike = "Bike", // boolean
+  Video = "Video", // enum UserVideoState
+  Visible = "Visible", // boolean
+  VideoAskingToJoin = "VideoAskingToJoin", // string uid
+  VideoAccepting = "VideoAccepting", // string uid
+  VideoDeclining = "VideoDeclining", // comma-separated list of uids
 }
 
 export const stateBoolean: (

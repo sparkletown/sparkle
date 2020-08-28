@@ -67,6 +67,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
+  const myAvatarRef = useRef<HTMLDivElement>(null);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -173,6 +174,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             setShowUserTooltip(true);
           }}
           onMouseLeave={() => setShowUserTooltip(false)}
+          ref={myAvatarRef}
         />
       ) : undefined,
     [
@@ -192,107 +194,204 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ]
   );
 
-  const joinUserVideoChat = useCallback(
-    (ownerUid: string) => {
+  const cancelJoinRequests = useCallback(() => {
+    if (
+      myServerSentState?.state &&
+      UserStateKey.VideoAskingToJoin in myServerSentState.state
+    ) {
+      delete myServerSentState.state[UserStateKey.VideoAskingToJoin];
+      sendUpdatedState(myServerSentState);
+    }
+  }, [myServerSentState, sendUpdatedState]);
+
+  // If video is locked, auto-decline
+  // Otherwise ask with a menu
+  useEffect(() => {
+    if (!user) return;
+
+    const declineJoinRequest = (uid: string) => {
+      if (!myServerSentState) return;
+      if (!myServerSentState.state) {
+        myServerSentState.state = {};
+      }
+      let decliningUids = myServerSentState.state[UserStateKey.VideoDeclining];
+      if (!decliningUids) {
+        decliningUids = uid;
+      } else {
+        decliningUids += "," + uid;
+      }
+      myServerSentState.state[UserStateKey.VideoDeclining] = decliningUids;
+      sendUpdatedState(myServerSentState);
+    };
+
+    const joinUserVideoChat = (ownerUid: string) => {
       if (!user) return;
       const video: VideoState = {
         inRoomOwnedBy: ownerUid,
       };
       firebase.firestore().doc(`users/${user.uid}`).update({ video: video });
-    },
-    [firebase, user]
-  );
+    };
 
-  const avatars = useMemo(
-    () =>
-      Object.keys(userStateMap)
-        .sort()
-        .filter(
-          (uid) =>
-            user?.uid !== uid &&
-            !!partygoers.find((partygoer) => partygoer.id === uid)
-        )
-        .map((uid) => {
-          const avatarUser = partygoers.find(
-            (partygoer) => partygoer.id === uid
-          );
-          if (!avatarUser) return <></>;
-          const visible =
-            stateBoolean(userStateMap[uid], UserStateKey.Visible) !== false;
-          if (!visible) return <></>;
-          const videoState = userStateMap[uid].state?.[UserStateKey.Video];
-          const removedFromTheirChat =
-            avatarUser.video?.removedParticipantUids &&
-            avatarUser.video.removedParticipantUids.includes(avatarUser.id);
-          const theirChatIsDisbanded =
-            avatarUser.video?.removedParticipantUids &&
-            avatarUser.video.myRoomIsDisbanded;
-          const menu: MenuConfig =
-            UserVideoState.Open &&
-            !removedFromTheirChat &&
-            !theirChatIsDisbanded
-              ? {
-                  prompt: `Wanna join ${avatarUser.partyName}'s video chat?`,
-                  choices: [
-                    {
-                      text: "Join chat",
-                      onClick: () => joinUserVideoChat(avatarUser.id),
-                    },
-                    {
-                      text: "Message them first",
-                      onClick: () => setSelectedUserProfile(avatarUser),
-                    },
-                  ],
-                }
-              : {
-                  prompt:
-                    avatarUser.partyName +
-                    (videoState === UserVideoState.Locked
-                      ? " (unavailable for video chat)"
-                      : ""),
-                  choices: [
-                    {
-                      text: "View profile & message them",
-                      onClick: () => setSelectedUserProfile(avatarUser),
-                    },
-                  ],
-                };
-          return (
-            <Avatar
-              user={avatarUser}
-              x={userStateMap[uid].x}
-              y={userStateMap[uid].y}
-              videoState={videoState}
-              bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
-              onClick={(event: React.MouseEvent) => {
-                setMenu(menu);
-                menuRef.current = event.target as HTMLDivElement;
-                setShowMenu(true);
-              }}
-              onMouseOver={(event: React.MouseEvent) => {
-                setHoveredUser(avatarUser);
-                userRef.current = event.target as HTMLDivElement;
-                setShowUserTooltip(true);
-              }}
-              onMouseLeave={() => setShowUserTooltip(false)}
-              key={uid}
-            />
-          );
-        }),
-    [
-      partygoers,
-      user,
-      userStateMap,
-      setSelectedUserProfile,
-      joinUserVideoChat,
-      setShowUserTooltip,
-      setHoveredUser,
-      userRef,
-      setShowMenu,
-      setMenu,
-      menuRef,
-    ]
-  );
+    const acceptJoinRequest = (uid: string) => {
+      if (!myServerSentState) return;
+      if (!myServerSentState.state) {
+        myServerSentState.state = {};
+      }
+      myServerSentState.state[UserStateKey.VideoAccepting] = uid;
+      // Also delete any asks, since now we will join a chat
+      if (myServerSentState.state[UserStateKey.VideoAskingToJoin]) {
+        delete myServerSentState.state[UserStateKey.VideoAskingToJoin];
+      }
+      sendUpdatedState(myServerSentState);
+      joinUserVideoChat(uid);
+    };
+
+    const refuserUid = Object.keys(userStateMap).find(
+      (uid) =>
+        userStateMap[uid].state?.[UserStateKey.VideoDeclining] !== undefined &&
+        userStateMap[uid].state?.[UserStateKey.VideoDeclining]
+          .split(",")
+          .includes(uid)
+    );
+    if (refuserUid !== undefined) {
+      const refuser = partygoers.find(
+        (partygoer) => partygoer.id === refuserUid
+      );
+      if (refuser) {
+        const menu = {
+          prompt: `${refuser.partyName} politely refused your offer to chat.`,
+          choices: [{ text: "OK" }],
+          onHide: () => cancelJoinRequests(),
+        };
+        setMenu(menu);
+        menuRef.current = myAvatarRef.current;
+        setShowMenu(true);
+      }
+    }
+
+    const askerUid = Object.keys(userStateMap).find(
+      (uid) =>
+        userStateMap[uid].state?.[UserStateKey.VideoAskingToJoin] === user?.uid
+    );
+    if (askerUid !== undefined) {
+      const asker = partygoers.find((partygoer) => partygoer.id === askerUid);
+      if (asker) {
+        if (videoState === UserVideoState.Locked) {
+          declineJoinRequest(askerUid);
+          return;
+        }
+
+        const menu = {
+          prompt: `${asker.partyName} would like to join your chat`,
+          choices: [
+            { text: "Accept", onClick: () => acceptJoinRequest(askerUid) },
+            {
+              text: "Refuse politely",
+              onClick: () => declineJoinRequest(askerUid),
+            },
+          ],
+          onClose: () => declineJoinRequest(askerUid),
+        };
+        setMenu(menu);
+        menuRef.current = myAvatarRef.current;
+        setShowMenu(true);
+      }
+    }
+  });
+
+  const avatars = useMemo(() => {
+    const askToJoin = (uid: string) => {
+      if (!myServerSentState) return;
+      if (!myServerSentState.state) {
+        myServerSentState.state = {};
+      }
+      myServerSentState.state[UserStateKey.VideoAskingToJoin] = uid;
+      sendUpdatedState(myServerSentState);
+    };
+
+    return Object.keys(userStateMap)
+      .sort()
+      .filter(
+        (uid) =>
+          user?.uid !== uid &&
+          !!partygoers.find((partygoer) => partygoer.id === uid)
+      )
+      .map((uid) => {
+        const avatarUser = partygoers.find((partygoer) => partygoer.id === uid);
+        if (!avatarUser) return <></>;
+        const visible =
+          stateBoolean(userStateMap[uid], UserStateKey.Visible) !== false;
+        if (!visible) return <></>;
+        const videoState = userStateMap[uid].state?.[UserStateKey.Video];
+        const removedFromTheirChat =
+          avatarUser.video?.removedParticipantUids &&
+          avatarUser.video.removedParticipantUids.includes(avatarUser.id);
+        const menu: MenuConfig =
+          UserVideoState.Open && !removedFromTheirChat
+            ? {
+                prompt: `Wanna join ${avatarUser.partyName}'s video chat?`,
+                choices: [
+                  {
+                    text: `Ask ${avatarUser.partyName} to join`,
+                    onClick: () => askToJoin(avatarUser.id),
+                  },
+                  {
+                    text: "Message them first",
+                    onClick: () => setSelectedUserProfile(avatarUser),
+                  },
+                ],
+                onHide: () => cancelJoinRequests(),
+              }
+            : {
+                prompt:
+                  avatarUser.partyName +
+                  (videoState === UserVideoState.Locked
+                    ? " (unavailable for video chat)"
+                    : ""),
+                choices: [
+                  {
+                    text: "View profile & message them",
+                    onClick: () => setSelectedUserProfile(avatarUser),
+                  },
+                ],
+              };
+        return (
+          <Avatar
+            user={avatarUser}
+            x={userStateMap[uid].x}
+            y={userStateMap[uid].y}
+            videoState={videoState}
+            bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
+            onClick={(event: React.MouseEvent) => {
+              setMenu(menu);
+              menuRef.current = event.target as HTMLDivElement;
+              setShowMenu(true);
+            }}
+            onMouseOver={(event: React.MouseEvent) => {
+              setHoveredUser(avatarUser);
+              userRef.current = event.target as HTMLDivElement;
+              setShowUserTooltip(true);
+            }}
+            onMouseLeave={() => setShowUserTooltip(false)}
+            key={uid}
+          />
+        );
+      });
+  }, [
+    partygoers,
+    user,
+    userStateMap,
+    setSelectedUserProfile,
+    setShowUserTooltip,
+    setHoveredUser,
+    userRef,
+    setShowMenu,
+    setMenu,
+    menuRef,
+    myServerSentState,
+    sendUpdatedState,
+    cancelJoinRequests,
+  ]);
 
   return useMemo(
     () => (

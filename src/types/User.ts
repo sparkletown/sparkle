@@ -10,7 +10,6 @@ type UserExperienceData = Record<string, Experience>;
 export type VideoState = {
   inRoomOwnedBy?: string;
   removedParticipantUids?: string[];
-  myRoomIsDisbanded?: boolean;
 };
 
 export interface User {

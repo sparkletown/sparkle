@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useLayoutEffect,
+  RefObject,
+} from "react";
 import {
   UserState,
   UserStateKey,
@@ -21,6 +27,7 @@ interface PropsType {
   setBikeMode: (bikeMode: boolean | undefined) => void;
   setVideoState: (state: string | undefined) => void;
   setAvatarVisible: (visibility: boolean) => void;
+  ref: RefObject<HTMLDivElement>;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
@@ -38,6 +45,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   setBikeMode,
   setVideoState,
   setAvatarVisible,
+  ref,
 }) => {
   const { profile } = useUser();
   const [state, setState] = useState<UserState>();
@@ -162,6 +170,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
+        ref={ref}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />

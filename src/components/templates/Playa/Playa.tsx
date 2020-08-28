@@ -45,11 +45,12 @@ import { UserVideoState } from "types/RelayMessage";
 export type MenuConfig = {
   prompt?: string;
   choices?: MenuChoice[];
+  onHide?: () => void;
 };
 
 type MenuChoice = {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
 };
 
 const ZOOM_INCREMENT = 1.2;
@@ -615,7 +616,12 @@ const Playa = () => {
               target={menuRef.current}
               show={showMenu}
               rootClose
-              onHide={() => setShowMenu(false)}
+              onHide={() => {
+                if (menu?.onHide) {
+                  menu.onHide();
+                }
+                setShowMenu(false);
+              }}
             >
               {({ placement, arrowProps, show: _show, popper, ...props }) => (
                 // @ts-expect-error
@@ -627,7 +633,7 @@ const Playa = () => {
                         <li
                           className="choice"
                           onClick={() => {
-                            choice.onClick();
+                            if (choice.onClick) choice.onClick();
                             document.body.click();
                           }}
                           key={index}
