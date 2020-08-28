@@ -37,9 +37,9 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               {eventsNow.length > 0 ? (
                 <div className="events-list events-list_monday">
                   {eventsNow &&
-                    eventsNow.map((event) => (
+                    eventsNow.map((event, idx) => (
                       <EventDisplay
-                        key={event.name + Math.random().toString()}
+                        key={event.name + idx}
                         event={event}
                         venue={venue}
                         joinNowButton={joinNowButton}
