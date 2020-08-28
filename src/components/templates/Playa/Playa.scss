@@ -589,6 +589,8 @@ $playa-mode-badge-icon-size: 9px;
     .participant {
       height: 100%;
       position: relative;
+      display: inline-block;
+
       video {
         height: 100%;
       }
@@ -602,6 +604,83 @@ $playa-mode-badge-icon-size: 9px;
         padding: 4px 10px 4px 4px;
         border-top-right-radius: 10px;
         cursor: pointer;
+      }
+
+      .leave,
+      .remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 40px;
+        background-color: rgba($sand, 0.8);
+        border-bottom-left-radius: 22px;
+      }
+
+      .leave {
+        width: 40px;
+        border-radius: 50%;
+
+        .btn {
+          background-image: url("./img/playa-controls-exit.png");
+        }
+      }
+
+      .remove {
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        padding: 8px;
+        cursor: pointer;
+      }
+
+      .av-controls {
+        display: block;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+
+        .mic,
+        .camera {
+          width: 40px;
+          height: 40px;
+          margin: 0 4px;
+          background-color: rgba($sand, 0.8);
+          border-radius: 50%;
+          display: inline-block;
+        }
+
+        .mic {
+          .btn.on {
+            background-image: url("./img/playa-controls-audio-on.png");
+          }
+          .btn.off {
+            background-image: url("./img/playa-controls-audio-off.png");
+          }
+        }
+
+        .camera {
+          .btn.on {
+            background-image: url("./img/playa-controls-video-on.png");
+          }
+          .btn.off {
+            background-image: url("./img/playa-controls-video-off.png");
+          }
+        }
+      }
+
+      .btn {
+        height: 100%;
+        width: 100%;
+        background-size: 20px 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        &:hover {
+          transform: scale(1.2);
+        }
+        &:active {
+          transform: scale(1);
+        }
       }
     }
   }

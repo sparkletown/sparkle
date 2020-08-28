@@ -46,10 +46,8 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   if (roomOwnerUid === undefined) return <></>;
 
   const updateVideoState = (update: VideoState) => {
-    firebase
-      .firestore()
-      .doc(`users/${user.uid}`)
-      .update({ video: { ...profile.video, ...update } });
+    console.log("updateVideoState", update);
+    firebase.firestore().doc(`users/${user.uid}`).update({ video: update });
   };
 
   // Host leaving ends the chat
@@ -86,6 +84,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     }
     updateVideoState({
       removedParticipantUids: removed,
+      ...profile.video,
     });
   };
 

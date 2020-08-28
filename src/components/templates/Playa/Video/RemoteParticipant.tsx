@@ -54,8 +54,12 @@ const RemoteParticipant: React.FunctionComponent<RemoteParticipantProps> = ({
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
     >
-      <div className="actions">
-        {host && <div className="remove" onClick={() => remove()} />}
+      {host && (
+        <div className="remove" onClick={() => remove()}>
+          Remove
+        </div>
+      )}
+      <div className="av-controls">
         <div
           className={`audio ${audio ? "on" : "off"}`}
           onClick={() => setAudio(!audio)}

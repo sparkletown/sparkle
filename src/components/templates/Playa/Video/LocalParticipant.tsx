@@ -52,16 +52,16 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
     >
-      <div className="actions">
-        <div className="leave" onClick={() => leave()} />
-        <div
-          className={`mic ${mic ? "on" : "off"}`}
-          onClick={() => setMic(!mic)}
-        />
-        <div
-          className={`camera ${camera ? "on" : "ooff"}`}
-          onClick={() => setCamera(!camera)}
-        />
+      <div className="leave" onClick={() => leave()}>
+        <div className="btn" />
+      </div>
+      <div className="av-controls">
+        <div className="mic" onClick={() => setMic(!mic)}>
+          <div className={`btn ${mic ? "on" : "off"}`} />
+        </div>
+        <div className="camera" onClick={() => setCamera(!camera)}>
+          <div className={`btn ${camera ? "on" : "off"}`} />
+        </div>
       </div>
     </Participant>
   );
