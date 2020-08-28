@@ -90,6 +90,9 @@ export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
 const compressImage = async (file: File, compressionWidth: number) => {
+  // cannot resize gifs
+  if (file.type === "image/gif") return file;
+
   const jimpImage = await jimp.read(URL.createObjectURL(file));
 
   // only resize if intrinsic width greater than compression width
