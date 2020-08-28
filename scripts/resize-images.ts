@@ -11,14 +11,21 @@
 */
 
 import admin from "firebase-admin";
-import serviceAccount from "./accountKey.json";
+import serviceAccount from "./prodAccountKey.json";
 import { uuid } from "uuidv4";
 import jimp from "jimp";
 import fs from "fs";
 
-const APP_PREFIX = "co-reality-staging";
+const APP_PREFIX = "co-reality-map";
 const COMPRESSION_WIDTH_PX = 600;
-const BACKUP = false;
+const BACKUP = true;
+const ACCEPTED_MIME_TYPES = [
+  "image/png",
+  "image/jpg",
+  "image/jpeg",
+  "image/tiff",
+  "image/bmp",
+];
 
 admin.initializeApp({
   credential: admin.credential.cert((serviceAccount as unknown) as string),
@@ -33,6 +40,9 @@ const backupFile = async (remotePath: string, signedUrl: string) => {
     console.log("file exists", backuplocation);
     return;
   }
+
+  console.log("downloading", backuplocation);
+
   try {
     // errors if the image is malformed
     const jimpImage = await jimp.read(signedUrl);
@@ -57,6 +67,13 @@ const main = async () => {
       expires: "10-10-2020",
     });
     console.log("\n\n");
+
+    if (!ACCEPTED_MIME_TYPES.includes(file.metadata.contentType)) {
+      console.log(
+        `Skipping - ${file.metadata.contentType} Not a processible file type`
+      );
+      continue;
+    }
 
     if (BACKUP) {
       await backupFile(file.name, signedurl);
