@@ -13,8 +13,8 @@
   box-shadow: 0 0 30px #000000;
 
   &.expanded {
-    height: calc(100vh - #{$navbar-height} - 15px);
-    width: 280px;
+    height: calc(100vh - #{$navbar-height * 2});
+    width: 420px;
     cursor: default;
   }
 
