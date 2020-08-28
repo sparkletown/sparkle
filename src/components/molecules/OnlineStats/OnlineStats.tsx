@@ -9,7 +9,7 @@ import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
@@ -228,7 +228,7 @@ const OnlineStats: React.FC = () => {
         >
           <span>
             {openVenues.length} venues open now / {onlineUsers.length} burners
-            live
+            live <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
       )}
