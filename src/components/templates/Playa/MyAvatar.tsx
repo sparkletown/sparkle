@@ -137,8 +137,10 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       if (!needsUpdate) return state;
 
       if (state.state) {
-        if (bike) state.state[UserStateKey.Bike] = bike.toString();
-        if (videoState) state.state[UserStateKey.Video] = videoState;
+        if (bike !== undefined)
+          state.state[UserStateKey.Bike] = bike.toString();
+        if (videoState !== undefined)
+          state.state[UserStateKey.Video] = videoState;
       }
       sendUpdatedState(state);
       return { ...state };
