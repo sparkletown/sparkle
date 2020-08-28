@@ -395,7 +395,6 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
 
   const events = useSelector((state) => state.firestore.ordered.events);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
-  //const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 

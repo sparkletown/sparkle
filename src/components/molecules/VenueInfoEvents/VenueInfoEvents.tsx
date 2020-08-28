@@ -5,7 +5,7 @@ import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
-import "../../../../src/components/molecules/EventDisplay/EventDisplay.scss";
+import "../EventDisplay/EventDisplay.scss";
 
 interface PropsType {
   eventsNow: firebase.firestore.DocumentData[];

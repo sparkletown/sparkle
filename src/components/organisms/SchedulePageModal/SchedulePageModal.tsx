@@ -102,7 +102,6 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   }, [openVenues]);
 
   const [date, setDate] = useState(0);
-  console.log(openVenues);
 
   return (
     <div>
@@ -111,7 +110,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
           <div>
             <h3 className="italic">One time events</h3>
           </div>
-          {!openVenues && <div className="spinner-border" />}
+          {typeof openVenues !== "object" && <div className="spinner-border" />}
         </div>
         <div className="modal-tabs">
           {orderedEvents.map((day, idx) => (
