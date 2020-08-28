@@ -13,8 +13,9 @@ interface PropsType {
   setMyLocation: (x: number, y: number) => void;
 }
 
-const ARROW_MOVE_INCREMENT_PX_WALK = 6;
-const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
+const ARROW_MOVE_INCREMENT_PX_WALK = 18;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 60;
+export const KEY_INTERACTION_THROTTLE_MS = 150;
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
@@ -93,7 +94,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         }
         return state;
       });
-    }, 50);
+    }, KEY_INTERACTION_THROTTLE_MS);
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
@@ -113,6 +114,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
+          transition: `all ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
         }}
         onMouseOver={() => setShowTooltip(true)}
         onMouseLeave={() => setShowTooltip(false)}

@@ -37,6 +37,9 @@ import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import firebase from "firebase/app";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { unstable_batchedUpdates } from "react-dom";
+import { useSynchronizedRef } from "hooks/useSynchronizedRef";
+import { KEY_INTERACTION_THROTTLE_MS } from "./MyAvatar";
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -91,6 +94,8 @@ const Playa = () => {
     width: window.innerWidth,
   });
   const [walkMode, setWalkMode] = useState(true);
+  const myXRef = useSynchronizedRef(myX);
+  const myYRef = useSynchronizedRef(myY);
 
   const toggleWalkMode = useCallback(() => {
     setWalkMode(!walkMode);
@@ -198,10 +203,10 @@ const Playa = () => {
           Math.max(
             minZoom(),
             z +
-            delta *
-            (trackpad
-              ? TRACKPAD_ZOOM_INCREMENT_DELTA
-              : WHEEL_ZOOM_INCREMENT_DELTA)
+              delta *
+                (trackpad
+                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
+                  : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
           ZOOM_MAX
         )
@@ -324,10 +329,12 @@ const Playa = () => {
   }, [centerX, centerY, myX, myY]);
 
   const recenter = useCallback(() => {
-    if (myX === undefined || myY === undefined) return;
-    setCenterX(myX);
-    setCenterY(myY);
-  }, [myX, myY]);
+    unstable_batchedUpdates(() => {
+      if (myXRef.current === undefined || myYRef.current === undefined) return;
+      setCenterX(myXRef.current);
+      setCenterY(myYRef.current);
+    });
+  }, [myXRef, myYRef]);
 
   const getNearbyVenue = useCallback(
     (x: number, y: number) => {
@@ -352,15 +359,17 @@ const Playa = () => {
 
   const setMyLocation = useMemo(
     () => (x: number, y: number) => {
-      setCenterX(x);
-      setCenterY(y);
-      setMyX(x);
-      setMyY(y);
-      const nearbyVenue = getNearbyVenue(x, y);
-      if (nearbyVenue) {
-        setHoveredVenue(nearbyVenue);
-      }
-      setShowVenueTooltip(!!nearbyVenue);
+      unstable_batchedUpdates(() => {
+        setCenterX(x);
+        setCenterY(y);
+        setMyX(x);
+        setMyY(y);
+        const nearbyVenue = getNearbyVenue(x, y);
+        if (nearbyVenue) {
+          setHoveredVenue(nearbyVenue);
+        }
+        setShowVenueTooltip(!!nearbyVenue);
+      });
     },
     [getNearbyVenue]
   );
@@ -372,28 +381,123 @@ const Playa = () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
   }, []);
 
-  return useMemo(() => {
+  const numberOfUsers = users?.length ?? 0;
+  const selectedVenueId = selectedVenue?.id;
+
+  const playaContent = useMemo(() => {
+    return (
+      <>
+        <img
+          className="playa-background"
+          src={PLAYA_IMAGE}
+          alt="Playa Background Map"
+        />
+        {venues?.filter(isPlaced).map((venue, idx) => (
+          <div
+            className="venue"
+            style={{
+              top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
+              left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+              position: "absolute",
+            }}
+            onClick={() => showVenue(venue)}
+            key={idx}
+            ref={hoveredVenue === venue ? hoveredRed : undefined}
+            onMouseOver={() => {
+              setHoveredVenue(venue);
+              setShowVenueTooltip(true);
+            }}
+            onMouseLeave={() => setShowVenueTooltip(false)}
+          >
+            <span className="img-vcenter-helper" />
+            <img
+              className="venue-icon"
+              src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+              alt={`${venue.name} Icon`}
+            />
+            {selectedVenueId === venue.id && <div className="selected" />}
+          </div>
+        ))}
+        <Overlay target={hoveredRed.current} show={showVenueTooltip}>
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                padding: "10px",
+              }}
+            >
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-venue-title">{hoveredVenue?.name}</div>
+                  <div className="playa-venue-people">{numberOfUsers}</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </Overlay>
+      </>
+    );
+  }, [
+    hoveredVenue,
+    numberOfUsers,
+    selectedVenueId,
+    showVenue,
+    showVenueTooltip,
+    venues,
+  ]);
+
+  const avatarLayer = useMemo(
+    () => <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />,
+    [walkMode, setMyLocation]
+  );
+
+  const mapContainer = useMemo(() => {
     const translateX = Math.min(
       PLAYA_MARGIN_X / zoom,
       -1 *
-      Math.min(
-        (centerX * zoom - dimensions.width / 2) / zoom,
-        PLAYA_WIDTH_AND_HEIGHT -
-        dimensions.width / zoom +
-        PLAYA_MARGIN_X / zoom
-      )
+        Math.min(
+          (centerX * zoom - dimensions.width / 2) / zoom,
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.width / zoom +
+            PLAYA_MARGIN_X / zoom
+        )
     );
     const translateY = Math.min(
       PLAYA_MARGIN_TOP / zoom,
       -1 *
-      Math.min(
-        (centerY * zoom - dimensions.height / 2) / zoom,
-        PLAYA_WIDTH_AND_HEIGHT -
-        dimensions.height / zoom +
-        PLAYA_MARGIN_BOTTOM / zoom
-      )
+        Math.min(
+          (centerY * zoom - dimensions.height / 2) / zoom,
+          PLAYA_WIDTH_AND_HEIGHT -
+            dimensions.height / zoom +
+            PLAYA_MARGIN_BOTTOM / zoom
+        )
     );
+    return (
+      <div
+        className="map-container"
+        ref={mapRef}
+        style={{
+          transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+          transition: `transform ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
+        }}
+      >
+        {playaContent}
+        {avatarLayer}
+      </div>
+    );
+  }, [
+    avatarLayer,
+    centerX,
+    centerY,
+    dimensions.height,
+    dimensions.width,
+    playaContent,
+    zoom,
+  ]);
 
+  return useMemo(() => {
     return (
       <>
         <div className="playa-banner">
@@ -403,12 +507,12 @@ const Playa = () => {
               {atEdgeMessage}
             </>
           ) : (
-              <>
-                PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
-                alteration by placement team as we build the playa together. Have
-                fun!
+            <>
+              PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
+              alteration by placement team as we build the playa together. Have
+              fun!
             </>
-            )}
+          )}
         </div>
         {isUserVenueOwner && (
           <div
@@ -425,7 +529,7 @@ const Playa = () => {
                 <div
                   className={`playa-dust-storm-btn${
                     dustStorm ? "-activated" : ""
-                    }`}
+                  }`}
                 />
               </div>
             </div>
@@ -433,74 +537,12 @@ const Playa = () => {
         )}
         {dustStorm && <DustStorm />}
         <div className="playa-container">
-          <div
-            className="map-container"
-            ref={mapRef}
-            style={{
-              transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-            }}
-          >
-            <img
-              className="playa-background"
-              src={PLAYA_IMAGE}
-              alt="Playa Background Map"
-            />
-            {venues?.filter(isPlaced).map((venue, idx) => (
-              <div
-                className="venue"
-                style={{
-                  top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
-                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
-                  position: "absolute",
-                }}
-                onClick={() => showVenue(venue)}
-                key={idx}
-                ref={hoveredVenue === venue ? hoveredRed : undefined}
-                onMouseOver={() => {
-                  setHoveredVenue(venue);
-                  setShowVenueTooltip(true);
-                }}
-                onMouseLeave={() => setShowVenueTooltip(false)}
-              >
-                <span className="img-vcenter-helper" />
-                <img
-                  className="venue-icon"
-                  src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                  alt={`${venue.name} Icon`}
-                />
-                {selectedVenue?.id === venue.id && <div className="selected" />}
-              </div>
-            ))}
-            <Overlay target={hoveredRed.current} show={showVenueTooltip}>
-              {({ placement, arrowProps, show: _show, popper, ...props }) => (
-                // @ts-expect-error
-                <div
-                  {...props}
-                  style={{
-                    ...props.style,
-                    padding: "10px",
-                  }}
-                >
-                  <div className="playa-venue-text">
-                    <div className="playa-venue-maininfo">
-                      <div className="playa-venue-title">
-                        {hoveredVenue?.name}
-                      </div>
-                      <div className="playa-venue-people">
-                        {users?.length ?? 0}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Overlay>
-            <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />
-          </div>
+          {mapContainer}
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
                 centeredOnMe === false ? "show" : ""
-                }`}
+              }`}
               onClick={recenter}
             >
               <div className="playa-controls-recenter-btn" />
@@ -509,14 +551,14 @@ const Playa = () => {
               <div
                 className={`playa-controls-walkmode-btn ${
                   walkMode ? "walk" : ""
-                  }`}
+                }`}
               />
             </div>
             <div className="playa-controls-zoom">
               <div
                 className={`playa-controls-zoom-in ${
                   zoom >= ZOOM_MAX ? "disabled" : ""
-                  }`}
+                }`}
                 onClick={() =>
                   setZoom((zoom) => Math.min(zoom * ZOOM_INCREMENT, ZOOM_MAX))
                 }
@@ -524,7 +566,7 @@ const Playa = () => {
               <div
                 className={`playa-controls-zoom-out ${
                   zoom <= minZoom() ? "disabled" : ""
-                  }`}
+                }`}
                 onClick={() =>
                   setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }
@@ -565,30 +607,22 @@ const Playa = () => {
       </>
     );
   }, [
-    hideVenue,
-    hoveredVenue,
-    selectedVenue,
-    showModal,
-    showVenue,
-    showVenueTooltip,
-    user,
-    users,
-    venues,
-    walkMode,
-    toggleWalkMode,
-    centerX,
-    centerY,
-    centeredOnMe,
-    recenter,
-    setMyLocation,
+    zoom,
     atEdge,
     atEdgeMessage,
-    dimensions,
-    zoom,
     isUserVenueOwner,
     dustStorm,
-    changeDustStorm,
+    mapContainer,
+    centeredOnMe,
+    recenter,
+    toggleWalkMode,
+    walkMode,
+    showModal,
+    hideVenue,
+    selectedVenue,
+    user,
     showEventSchedule,
+    changeDustStorm,
   ]);
 };
 
