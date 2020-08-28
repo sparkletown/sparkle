@@ -22,7 +22,7 @@ export const DEFAULT_USER_LIST_LIMIT = 22;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
-export const PLAYA_AVATAR_SIZE = 50;
+export const PLAYA_AVATAR_SIZE = 30;
 export const PLAYA_VENUE_SIZE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 export const PLAYA_IMAGE = "/maps/playa4k.jpg";
