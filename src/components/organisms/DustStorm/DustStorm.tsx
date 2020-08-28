@@ -68,7 +68,7 @@ export const DustStorm = () => {
   }, []);
 
   return (
-    <div className={`duststorm-container show`}>
+    <div className="duststorm-container show">
       <div className="modal-content">
         <h3 className="italic">Dust Storm ahead!</h3>
         <p>
