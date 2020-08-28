@@ -16,6 +16,7 @@ export interface ParticipantProps {
   style: CSSProperties | undefined;
   audio?: boolean;
   video?: boolean;
+  local?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -30,6 +31,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   style,
   audio,
   video,
+  local,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -116,11 +118,15 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
       const videoTrack = videoTracks[0];
       if (videoTrack && videoRef.current) {
         videoTrack.attach(videoRef.current);
+        videoRef.current.style.visibility = "visible";
       }
     } else if (video === false) {
       const videoTrack = videoTracks[0];
       if (videoTrack) {
         videoTrack.detach();
+      }
+      if (videoRef.current) {
+        videoRef.current.style.visibility = "hidden";
       }
     }
   }, [participant, video, videoTracks]);
@@ -139,7 +145,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     <div className="participant" style={style}>
       {videos}
       <div className="name" onClick={() => setSelectedUserProfile(user)}>
-        {user.partyName}
+        {user.partyName} {local ? "(you)" : ""}
       </div>
       {children}
     </div>

@@ -53,6 +53,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
       style={style}
+      local
     >
       <div className="leave" onClick={() => leave()}>
         <div className="btn" />
