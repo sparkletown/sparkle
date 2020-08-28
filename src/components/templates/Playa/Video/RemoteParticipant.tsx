@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Participant, { ParticipantProps } from "./Participant";
 
 type RemoteParticipantProps = ParticipantProps & {
-  host: boolean;
   remove: () => void;
 };
 

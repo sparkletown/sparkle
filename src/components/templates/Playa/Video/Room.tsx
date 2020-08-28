@@ -107,10 +107,11 @@ const Room: React.FC<RoomProps> = ({
         participant={room.localParticipant}
         user={users[user.uid]}
         setSelectedUserProfile={setSelectedUserProfile}
+        host={host}
         leave={leave}
       />
     ) : null;
-  }, [room, user, users, maxWidth, setSelectedUserProfile, leave]);
+  }, [room, user, users, maxWidth, setSelectedUserProfile, host, leave]);
 
   const others = useMemo(
     () =>

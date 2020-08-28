@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useState,
   useLayoutEffect,
-  RefObject,
+  forwardRef,
 } from "react";
 import {
   UserState,
@@ -27,26 +27,27 @@ interface PropsType {
   setBikeMode: (bikeMode: boolean | undefined) => void;
   setVideoState: (state: string | undefined) => void;
   setAvatarVisible: (visibility: boolean) => void;
-  ref: RefObject<HTMLDivElement>;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
 const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 
-export const MyAvatar: React.FunctionComponent<PropsType> = ({
-  serverSentState,
-  bike,
-  videoState,
-  onClick,
-  onMouseOver,
-  onMouseLeave,
-  sendUpdatedState,
-  setMyLocation,
-  setBikeMode,
-  setVideoState,
-  setAvatarVisible,
-  ref,
-}) => {
+const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
+  {
+    serverSentState,
+    bike,
+    videoState,
+    onClick,
+    onMouseOver,
+    onMouseLeave,
+    sendUpdatedState,
+    setMyLocation,
+    setBikeMode,
+    setVideoState,
+    setAvatarVisible,
+  },
+  ref
+) => {
   const { profile } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
@@ -160,7 +161,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   const visible = stateBoolean(state, UserStateKey.Visible) !== false;
 
   return visible ? (
-    <>
+    <div className="avatar-container" ref={ref}>
       <div
         className="avatar me"
         style={{
@@ -170,7 +171,6 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
         onClick={onClick}
-        ref={ref}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />
@@ -199,8 +199,10 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           left: state.x - PLAYA_AVATAR_SIZE / 4,
         }}
       />
-    </>
+    </div>
   ) : (
     <></>
   );
 };
+
+export default forwardRef(MyAvatar);

@@ -47,9 +47,9 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   // The host has to also be in the room before we show the video chat
   // This allows the host to disband the video chat by leaving it
   const roomOwner = partygoers[profile.video.inRoomOwnedBy];
-  const hostIsInRoom =
+  const roomOwnerIsInRoom =
     roomOwner.video?.inRoomOwnedBy === profile.video.inRoomOwnedBy;
-  if (!hostIsInRoom) return <></>;
+  if (!roomOwnerIsInRoom) return <></>;
 
   const roomName = ROOM_PREFIX + profile.video.inRoomOwnedBy;
   const host = user.uid === profile.video.inRoomOwnedBy;

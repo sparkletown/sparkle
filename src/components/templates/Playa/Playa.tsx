@@ -45,12 +45,13 @@ import { UserVideoState } from "types/RelayMessage";
 export type MenuConfig = {
   prompt?: string;
   choices?: MenuChoice[];
+  cancelable: boolean;
   onHide?: () => void;
 };
 
 type MenuChoice = {
   text: string;
-  onClick?: () => void;
+  onClick: () => void;
 };
 
 const ZOOM_INCREMENT = 1.2;
@@ -463,7 +464,14 @@ const Playa = () => {
   );
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+
   const inVideoChat = profile && profile.video?.inRoomOwnedBy !== undefined;
+  const roomOwner = partygoers.find(
+    (partygoer) => partygoer.id === profile?.video?.inRoomOwnedBy
+  );
+  const roomOwnerIsInRoom =
+    roomOwner?.video?.inRoomOwnedBy === profile?.video?.inRoomOwnedBy;
+  const openVideoChat = inVideoChat && roomOwnerIsInRoom;
   const dustStorm = venue?.dustStorm;
 
   const changeDustStorm = useCallback(async () => {
@@ -641,12 +649,14 @@ const Playa = () => {
                           {choice.text}
                         </li>
                       ))}
-                      <li
-                        className="choice"
-                        onClick={() => document.body.click()}
-                      >
-                        Cancel
-                      </li>
+                      {menu?.cancelable && (
+                        <li
+                          className="choice"
+                          onClick={() => document.body.click()}
+                        >
+                          Cancel
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -657,6 +667,7 @@ const Playa = () => {
               setBikeMode={setBikeMode}
               videoState={videoState}
               setVideoState={setVideoState}
+              toggleVideoState={toggleVideoState}
               setAvatarVisible={setAvatarVisible}
               setMyLocation={setMyLocation}
               setSelectedUserProfile={setSelectedUserProfile}
@@ -728,11 +739,11 @@ const Playa = () => {
           </div>
         </div>
         <div
-          className={`playa-slider ${inVideoChat ? "show" : ""}`}
+          className={`playa-slider ${openVideoChat ? "show" : ""}`}
           ref={sliderRef}
         />
         <div
-          className={`playa-videochat ${inVideoChat ? "show" : ""}`}
+          className={`playa-videochat ${openVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
           <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
@@ -791,7 +802,7 @@ const Playa = () => {
     hoveredUser,
     showMenu,
     menu,
-    inVideoChat,
+    openVideoChat,
     videoChatHeight,
   ]);
 };
