@@ -650,7 +650,8 @@ $playa-mode-badge-icon-size: 9px;
           display: inline-block;
         }
 
-        .mic {
+        .mic,
+        .audio {
           .btn.on {
             background-image: url("./img/playa-controls-audio-on.png");
           }
@@ -659,7 +660,8 @@ $playa-mode-badge-icon-size: 9px;
           }
         }
 
-        .camera {
+        .camera,
+        .video {
           .btn.on {
             background-image: url("./img/playa-controls-video-on.png");
           }
