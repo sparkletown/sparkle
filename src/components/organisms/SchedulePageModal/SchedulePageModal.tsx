@@ -106,16 +106,22 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   }, [openVenues]);
 
   const [date, setDate] = useState(0);
+  console.log(openVenues);
 
   return (
     <div>
       <div className="/modal-content /modal-content-events">
-        <h3 className="italic">One time events</h3>
+        <div style={{ display: "flex" }}>
+          <div>
+            <h3 className="italic">One time events</h3>
+          </div>
+          {!openVenues && <div className="spinner-border" />}
+        </div>
         <div className="modal-tabs">
           {orderedEvents.map((day, idx) => (
             <button
               key={formatDate(day?.dateDay.getTime())}
-              className="modal-tab selected"
+              className={`button ${idx === date ? "selected" : ""}`}
               style={{ width: 100 }}
               onClick={() => setDate(idx)}
             >
@@ -167,15 +173,21 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
                     )}
                   </div>
                   {Date.now() > event.event.start_utc_seconds * 1000 && (
-                    <span className="event-badge-live">Live</span>
+                    <div className="event-badge-live">Live</div>
                   )}
+                  <div style={{ marginTop: 10 }}>Venue: {event.venue.name}</div>
                 </div>
                 <div className="event-text">
                   <h5>{event.event.name}</h5>
                   <p className="small">{event.event.description}</p>
-                  <a href={`/in/playa/${event.venue.id}`} className="small">
-                    {event.venue.name}
-                  </a>
+                  {Date.now() > event.event.start_utc_seconds * 1000 && (
+                    <a
+                      href={`/in/playa/${event.venue.id}`}
+                      className="btn btn-primary button-join-now"
+                    >
+                      Join Now
+                    </a>
+                  )}
                 </div>
               </div>
             ))}
