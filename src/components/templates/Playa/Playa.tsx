@@ -102,6 +102,7 @@ const Playa = () => {
   const [centeredOnMe, setCenteredOnMe] = useState<boolean>();
   const [atEdge, setAtEdge] = useState<boolean>();
   const [atEdgeMessage, setAtEdgeMessage] = useState<string>();
+  const playaRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
@@ -135,8 +136,12 @@ const Playa = () => {
   useEffect(() => {
     const updateDimensions = () => {
       setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth,
+        height: playaRef?.current
+          ? playaRef.current.clientHeight
+          : window.innerHeight,
+        width: playaRef?.current
+          ? playaRef.current.clientWidth
+          : window.innerWidth,
       });
       setZoom((zoom) => Math.max(minZoom(), zoom));
       if (autoAdjustVideoChatHeight) {
@@ -371,6 +376,7 @@ const Playa = () => {
     let movedSoFarY = 0;
     let dragging = false;
     const sliderDragStart = (event: MouseEvent) => {
+      setAutoAdjustVideoChatHeight(false);
       dragStartY = event.clientY;
       movedSoFarY = 0;
       dragging = true;
@@ -391,7 +397,10 @@ const Playa = () => {
         sliderDrag(event);
       }
     };
-    const sliderDragEnd = () => (dragging = false);
+    const sliderDragEnd = () => {
+      dragging = false;
+      window.dispatchEvent(new Event("resize"));
+    };
     sliderRef.current.addEventListener("mousedown", sliderDragStart);
     window.addEventListener("mousemove", sliderDragMove);
     window.addEventListener("mouseup", sliderDragEnd);
@@ -514,7 +523,7 @@ const Playa = () => {
           </div>
         )}
         {dustStorm && <DustStorm />}
-        <div className="playa-container">
+        <div className="playa-container" ref={playaRef}>
           <div
             className="map-container"
             ref={mapRef}
