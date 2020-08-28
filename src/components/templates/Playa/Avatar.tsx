@@ -10,10 +10,9 @@ interface PropsType {
   y: number;
   videoState: string | undefined;
   bike: boolean;
-  onClick: () => void;
-  onMouseOver: () => void;
-  onMouseLeave: () => void;
-  hoverRef: React.Ref<HTMLDivElement> | undefined;
+  onClick: (event: React.MouseEvent) => void;
+  onMouseOver: (event: React.MouseEvent) => void;
+  onMouseLeave: (event: React.MouseEvent) => void;
 }
 
 export const Avatar: React.FunctionComponent<PropsType> = ({
@@ -25,7 +24,6 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
   onClick,
   onMouseOver,
   onMouseLeave,
-  hoverRef,
 }) => {
   if (!user) return <></>;
 
@@ -35,7 +33,6 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       onClick={onClick}
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
-      ref={hoverRef}
     >
       <div
         className="avatar they"

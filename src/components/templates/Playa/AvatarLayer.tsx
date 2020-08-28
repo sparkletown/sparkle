@@ -25,32 +25,37 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
 import { User, VideoState } from "types/User";
 import { MyAvatar } from "./MyAvatar";
-import { Overlay } from "react-bootstrap";
 import { useFirebase } from "react-redux-firebase";
-
-type MenuConfig = {
-  prompt?: string;
-  choices?: MenuChoice[];
-};
-
-type MenuChoice = {
-  text: string;
-  onClick: () => void;
-};
+import { MenuConfig } from "./Playa";
 
 interface PropsType {
-  bikeMode: boolean;
+  bikeMode: boolean | undefined;
+  setBikeMode: (bikeMode: boolean | undefined) => void;
   videoState: string | undefined;
   setVideoState: (state: string | undefined) => void;
+  setAvatarVisible: (visibility: boolean) => void;
   setMyLocation(x: number, y: number): void;
   setSelectedUserProfile: (user: WithId<User>) => void;
+  setShowUserTooltip: (showUserTooltip: boolean) => void;
+  setHoveredUser: (hoveredUser: User) => void;
+  setShowMenu: (showMenu: boolean) => void;
+  setMenu: (menu: MenuConfig) => void;
+  overlayTargetRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
   bikeMode,
+  setBikeMode,
   videoState,
+  setVideoState,
+  setAvatarVisible,
   setMyLocation,
   setSelectedUserProfile,
+  setShowUserTooltip,
+  setHoveredUser,
+  setMenu,
+  setShowMenu,
+  overlayTargetRef,
 }) => {
   useConnectPartyGoers();
 
@@ -60,12 +65,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
-  const [hoveredUser, setHoveredUser] = useState<User | null>();
-  const [hovered, setHovered] = useState(false);
-  const hoverRef = useRef<HTMLDivElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const [menu, setMenu] = useState<MenuConfig>();
-  const [menuUser, setMenuUser] = useState<User>();
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -120,8 +119,14 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           let hasChanges = false;
           for (const uid of Object.keys(update.updates)) {
             if (uid === user.uid) {
+              const serverSentState = update.updates[uid];
               setMyServerSentState((myServerSentState) =>
-                myServerSentState ? myServerSentState : update.updates[uid]
+                myServerSentState ? myServerSentState : serverSentState
+              );
+              setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
+              setVideoState(serverSentState?.state?.[UserStateKey.Video]);
+              setAvatarVisible(
+                stateBoolean(serverSentState, UserStateKey.Visible) !== false
               );
             } else {
               userStateMapRef.current[uid] = update.updates[uid];
@@ -147,7 +152,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       ws.close();
       setUserStateMap({});
     };
-  }, [user]);
+  }, [user, setBikeMode, setVideoState, setAvatarVisible]);
 
   const selfUserProfile = user?.uid
     ? partygoers.find((pg) => pg.id === user.uid)
@@ -248,22 +253,17 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               y={userStateMap[uid].y}
               videoState={videoState}
               bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
-              onClick={() => {
+              onClick={(event: React.MouseEvent) => {
                 setMenu(menu);
-                setMenuUser(avatarUser);
+                overlayTargetRef.current = event.target as HTMLDivElement;
+                setShowMenu(true);
               }}
-              onMouseOver={() => {
+              onMouseOver={(event: React.MouseEvent) => {
                 setHoveredUser(avatarUser);
-                setHovered(true);
+                overlayTargetRef.current = event.target as HTMLDivElement;
+                setShowUserTooltip(true);
               }}
-              onMouseLeave={() => setHovered(false)}
-              hoverRef={
-                menuUser === avatarUser
-                  ? menuRef
-                  : hovered && hoveredUser === avatarUser
-                  ? hoverRef
-                  : undefined
-              }
+              onMouseLeave={() => setShowUserTooltip(false)}
               key={uid}
             />
           );
@@ -273,10 +273,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       user,
       userStateMap,
       setSelectedUserProfile,
-      hovered,
-      hoveredUser,
       joinUserVideoChat,
-      menuUser,
+      setShowUserTooltip,
+      setHoveredUser,
+      setShowMenu,
+      setMenu,
+      overlayTargetRef,
     ]
   );
 
@@ -285,49 +287,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       <>
         {myAvatar}
         {avatars}
-        <Overlay target={hoverRef.current} show={hovered}>
-          {({ placement, arrowProps, show: _show, popper, ...props }) => (
-            // @ts-expect-error
-            <div {...props} style={{ ...props.style, padding: "10px" }}>
-              <div className="playa-venue-text">
-                <div className="playa-venue-maininfo">
-                  <div className="playa-user-title">
-                    {hoveredUser?.partyName}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </Overlay>
-        <Overlay
-          target={menuRef.current}
-          show={!!menuUser}
-          rootClose
-          onHide={() => setMenuUser(undefined)}
-          placement="right-start"
-        >
-          {({ placement, arrowProps, show: _show, popper, ...props }) => (
-            // @ts-expect-error
-            <div {...props} style={{ ...props.style, padding: "10px" }}>
-              <div className="overlay-menu">
-                <div className="prompt">{menu?.prompt}</div>
-                <ul>
-                  {menu?.choices?.map((choice, index) => (
-                    <li className="choice" onClick={choice.onClick} key={index}>
-                      {choice.text}
-                    </li>
-                  ))}
-                  <li className="choice" onClick={document.body.click}>
-                    Cancel
-                  </li>
-                </ul>
-              </div>
-            </div>
-          )}
-        </Overlay>
       </>
     ),
-    [myAvatar, avatars, hoveredUser, hovered, menu, menuUser]
+    [myAvatar, avatars]
   );
 };
 

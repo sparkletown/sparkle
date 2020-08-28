@@ -12,7 +12,7 @@ import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
-  bike: boolean;
+  bike: boolean | undefined;
   videoState: string | undefined;
   onClick: () => void;
   sendUpdatedState: (state: UserState) => void;
@@ -124,7 +124,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       if (!needsUpdate) return state;
 
       if (state.state) {
-        state.state[UserStateKey.Bike] = bike.toString();
+        if (bike) state.state[UserStateKey.Bike] = bike.toString();
         if (videoState) state.state[UserStateKey.Video] = videoState;
       }
       console.log("sending updated state");

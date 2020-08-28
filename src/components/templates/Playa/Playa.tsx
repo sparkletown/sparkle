@@ -42,6 +42,16 @@ import VideoChatLayer from "./VideoChatLayer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { UserVideoState } from "types/RelayMessage";
 
+export type MenuConfig = {
+  prompt?: string;
+  choices?: MenuChoice[];
+};
+
+type MenuChoice = {
+  text: string;
+  onClick: () => void;
+};
+
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
@@ -97,8 +107,10 @@ const Playa = () => {
     height: window.innerHeight,
     width: window.innerWidth,
   });
-  const [bikeMode, setBikeMode] = useState(false);
+  const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
   const [videoState, setVideoState] = useState<string>();
+  // REVISIT: show a modal when you leave & go elsewhere on playa. Need to send this to the relay when clicking a "join venue" button.
+  const [avatarVisible, setAvatarVisible] = useState(true);
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -300,10 +312,14 @@ const Playa = () => {
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
+  const [showUserTooltip, setShowUserTooltip] = useState(false);
+  const [hoveredUser, setHoveredUser] = useState<User | null>();
+  const [showMenu, setShowMenu] = useState(false);
+  const [menu, setMenu] = useState<MenuConfig>();
+  const overlayTargetRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
-  const hoveredRed = useRef<HTMLDivElement>(null);
 
-  // Forces a rerender after `hoveredVenue` and `hoveredRed` changed
+  // Forces a rerender after `hoveredVenue` and `venueRef` changed
   // Otherwise changing the ref does not trigger a rerender
   // And the Overlay position is always one tick late
   // (next to the previously hovered venue)
@@ -468,9 +484,9 @@ const Playa = () => {
                 }}
                 onClick={() => showVenue(venue)}
                 key={idx}
-                ref={hoveredVenue === venue ? hoveredRed : undefined}
-                onMouseOver={() => {
+                onMouseOver={(event: React.MouseEvent) => {
                   setHoveredVenue(venue);
+                  overlayTargetRef.current = event.target as HTMLDivElement;
                   setShowVenueTooltip(true);
                 }}
                 onMouseLeave={() => setShowVenueTooltip(false)}
@@ -484,7 +500,10 @@ const Playa = () => {
                 {selectedVenue?.id === venue.id && <div className="selected" />}
               </div>
             ))}
-            <Overlay target={hoveredRed.current} show={showVenueTooltip}>
+            <Overlay
+              target={overlayTargetRef}
+              show={showVenueTooltip && !showUserTooltip && !showMenu}
+            >
               {({ placement, arrowProps, show: _show, popper, ...props }) => (
                 // @ts-expect-error
                 <div
@@ -507,12 +526,71 @@ const Playa = () => {
                 </div>
               )}
             </Overlay>
+            <Overlay
+              target={overlayTargetRef}
+              show={!showVenueTooltip && showUserTooltip && !showMenu}
+            >
+              {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                // @ts-expect-error
+                <div {...props} style={{ ...props.style, padding: "10px" }}>
+                  <div className="playa-venue-text">
+                    <div className="playa-venue-maininfo">
+                      <div className="playa-user-title">
+                        {hoveredUser?.partyName}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </Overlay>
+            <Overlay
+              target={overlayTargetRef}
+              show={!showVenueTooltip && !showUserTooltip && showMenu}
+              rootClose
+              onHide={() => setShowMenu(false)}
+            >
+              {({ placement, arrowProps, show: _show, popper, ...props }) => (
+                // @ts-expect-error
+                <div {...props} style={{ ...props.style, padding: "10px" }}>
+                  <div className="playa-menu">
+                    <div className="prompt">{menu?.prompt}</div>
+                    <ul className="choices">
+                      {menu?.choices?.map((choice, index) => (
+                        <li
+                          className="choice"
+                          onClick={() => {
+                            choice.onClick();
+                            document.body.click();
+                          }}
+                          key={index}
+                        >
+                          {choice.text}
+                        </li>
+                      ))}
+                      <li
+                        className="choice"
+                        onClick={() => document.body.click()}
+                      >
+                        Cancel
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </Overlay>
             <AvatarLayer
               bikeMode={bikeMode}
+              setBikeMode={setBikeMode}
               videoState={videoState}
               setVideoState={setVideoState}
+              setAvatarVisible={setAvatarVisible}
               setMyLocation={setMyLocation}
               setSelectedUserProfile={setSelectedUserProfile}
+              setShowUserTooltip={setShowUserTooltip}
+              setHoveredUser={setHoveredUser}
+              setShowMenu={setShowMenu}
+              setMenu={setMenu}
+              overlayTargetRef={overlayTargetRef}
             />
           </div>
           <div className="playa-controls">
@@ -625,6 +703,10 @@ const Playa = () => {
     changeDustStorm,
     selectedUserProfile,
     showEventSchedule,
+    showUserTooltip,
+    hoveredUser,
+    showMenu,
+    menu,
   ]);
 };
 
