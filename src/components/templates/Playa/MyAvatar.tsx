@@ -18,6 +18,9 @@ interface PropsType {
   onMouseLeave: (event: React.MouseEvent) => void;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
+  setBikeMode: (bikeMode: boolean | undefined) => void;
+  setVideoState: (state: string | undefined) => void;
+  setAvatarVisible: (visibility: boolean) => void;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
@@ -32,6 +35,9 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   onMouseLeave,
   sendUpdatedState,
   setMyLocation,
+  setBikeMode,
+  setVideoState,
+  setAvatarVisible,
 }) => {
   const { profile } = useUser();
   const [state, setState] = useState<UserState>();
@@ -41,8 +47,19 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
     if (!serverSentState || stateInitialized.current) return;
     setState(serverSentState);
     setMyLocation(serverSentState.x, serverSentState.y);
+    setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
+    setVideoState(serverSentState?.state?.[UserStateKey.Video]);
+    setAvatarVisible(
+      stateBoolean(serverSentState, UserStateKey.Visible) !== false
+    );
     stateInitialized.current = true;
-  }, [serverSentState, setMyLocation]);
+  }, [
+    serverSentState,
+    setMyLocation,
+    setBikeMode,
+    setVideoState,
+    setAvatarVisible,
+  ]);
 
   useLayoutEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};

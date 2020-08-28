@@ -124,11 +124,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               setMyServerSentState((myServerSentState) =>
                 myServerSentState ? myServerSentState : serverSentState
               );
-              setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
-              setVideoState(serverSentState?.state?.[UserStateKey.Video]);
-              setAvatarVisible(
-                stateBoolean(serverSentState, UserStateKey.Visible) !== false
-              );
             } else {
               userStateMapRef.current[uid] = update.updates[uid];
               hasChanges = true;
@@ -168,6 +163,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           videoState={videoState}
           sendUpdatedState={sendUpdatedState}
           setMyLocation={setMyLocation}
+          setBikeMode={setBikeMode}
+          setVideoState={setVideoState}
+          setAvatarVisible={setAvatarVisible}
           onClick={() => setSelectedUserProfile(selfUserProfile)}
           onMouseOver={(event: React.MouseEvent) => {
             setHoveredUser(selfUserProfile);
@@ -183,6 +181,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       videoState,
       sendUpdatedState,
       setMyLocation,
+      setBikeMode,
+      setVideoState,
+      setAvatarVisible,
       selfUserProfile,
       setSelectedUserProfile,
       setHoveredUser,
