@@ -586,6 +586,7 @@ $playa-mode-badge-icon-size: 9px;
 
   .room {
     height: 100%;
+
     .participant {
       height: 100%;
       position: relative;
@@ -641,7 +642,9 @@ $playa-mode-badge-icon-size: 9px;
         text-align: center;
 
         .mic,
-        .camera {
+        .audio,
+        .camera,
+        .video {
           width: 40px;
           height: 40px;
           margin: 0 4px;

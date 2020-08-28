@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  CSSProperties,
+} from "react";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -7,6 +13,9 @@ export interface ParticipantProps {
   participant: Video.Participant;
   user: WithId<User>;
   setSelectedUserProfile: (user: WithId<User>) => void;
+  style: CSSProperties | undefined;
+  audio?: boolean;
+  video?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -18,6 +27,9 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   user,
   children,
   setSelectedUserProfile,
+  style,
+  audio,
+  video,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -85,6 +97,34 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     }
   }, [audioTracks]);
 
+  useEffect(() => {
+    if (audio === true) {
+      const audioTrack = audioTracks[0];
+      if (audioTrack && audioRef.current) {
+        audioTrack.attach(audioRef.current);
+      }
+    } else if (audio === false) {
+      const audioTrack = audioTracks[0];
+      if (audioTrack) {
+        audioTrack.detach();
+      }
+    }
+  }, [participant, audio, audioTracks]);
+
+  useEffect(() => {
+    if (video === true) {
+      const videoTrack = videoTracks[0];
+      if (videoTrack && videoRef.current) {
+        videoTrack.attach(videoRef.current);
+      }
+    } else if (video === false) {
+      const videoTrack = videoTracks[0];
+      if (videoTrack) {
+        videoTrack.detach();
+      }
+    }
+  }, [participant, video, videoTracks]);
+
   const videos = useMemo(
     () => (
       <>
@@ -96,7 +136,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   );
 
   return (
-    <div className="participant">
+    <div className="participant" style={style}>
       {videos}
       <div className="name" onClick={() => setSelectedUserProfile(user)}>
         {user.partyName}

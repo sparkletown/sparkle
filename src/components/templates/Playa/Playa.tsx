@@ -78,6 +78,7 @@ const PLAYA_MARGIN_X = 75;
 const PLAYA_MARGIN_TOP = 60;
 // Let the playa scroll at the bottom, accounting for navbar padding and zooming the avatar
 const PLAYA_MARGIN_BOTTOM = 180;
+const VIDEO_CHAT_MIN_HEIGHT = 180;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -109,7 +110,7 @@ const Playa = () => {
     width: window.innerWidth,
   });
   const [videoChatHeight, setVideoChatHeight] = useState(
-    window.innerHeight / 4
+    Math.max(VIDEO_CHAT_MIN_HEIGHT, window.innerHeight / 4)
   );
   const [autoAdjustVideoChatHeight, setAutoAdjustVideoChatHeight] = useState(
     true
@@ -145,7 +146,9 @@ const Playa = () => {
       });
       setZoom((zoom) => Math.max(minZoom(), zoom));
       if (autoAdjustVideoChatHeight) {
-        setVideoChatHeight(window.innerHeight / 4);
+        setVideoChatHeight(
+          Math.max(VIDEO_CHAT_MIN_HEIGHT, window.innerHeight / 4)
+        );
       }
     };
     window.addEventListener("resize", updateDimensions);
@@ -386,7 +389,10 @@ const Playa = () => {
       if (!dragging) return;
       const diffY = dragStartY - event.clientY;
       setVideoChatHeight((prev) => {
-        const next = prev + diffY - movedSoFarY;
+        const next = Math.max(
+          VIDEO_CHAT_MIN_HEIGHT,
+          prev + diffY - movedSoFarY
+        );
         return next;
       });
       movedSoFarY = diffY;

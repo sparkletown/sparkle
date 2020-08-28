@@ -10,6 +10,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   user,
   setSelectedUserProfile,
   leave,
+  style,
 }) => {
   const [mic, setMic] = useState(true);
   const [camera, setCamera] = useState(true);
@@ -51,6 +52,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       participant={participant}
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
+      style={style}
     >
       <div className="leave" onClick={() => leave()}>
         <div className="btn" />
