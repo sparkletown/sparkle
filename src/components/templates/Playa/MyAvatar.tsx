@@ -8,13 +8,14 @@ import {
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
-import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
-  onClick: () => void;
+  onClick: (event: React.MouseEvent) => void;
+  onMouseOver: (event: React.MouseEvent) => void;
+  onMouseLeave: (event: React.MouseEvent) => void;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
 }
@@ -26,15 +27,15 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
   bike,
   videoState,
+  onClick,
+  onMouseOver,
+  onMouseLeave,
   sendUpdatedState,
   setMyLocation,
-  onClick,
 }) => {
   const { profile } = useUser();
-  const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -140,14 +141,13 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
   return visible ? (
     <>
       <div
-        ref={ref}
         className="avatar me"
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
         }}
-        onMouseOver={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
+        onMouseOver={onMouseOver}
+        onMouseLeave={onMouseLeave}
         onClick={onClick}
       >
         <div className="border-helper">
@@ -177,20 +177,6 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           left: state.x - PLAYA_AVATAR_SIZE / 4,
         }}
       />
-      <Overlay target={ref.current} show={showTooltip}>
-        {({ placement, arrowProps, show: _show, popper, ...props }) => (
-          // @ts-expect-error
-          <div {...props} style={{ ...props.style, padding: "10px" }}>
-            <div className="playa-venue-text">
-              <div className="playa-venue-maininfo">
-                <div className="playa-user-title">
-                  {profile?.partyName} (you)
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </Overlay>
     </>
   ) : (
     <></>

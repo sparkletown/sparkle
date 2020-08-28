@@ -312,11 +312,13 @@ const Playa = () => {
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
+  const venueRef = useRef<HTMLDivElement | null>(null);
   const [showUserTooltip, setShowUserTooltip] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<User | null>();
+  const userRef = useRef<HTMLDivElement | null>(null);
   const [showMenu, setShowMenu] = useState(false);
   const [menu, setMenu] = useState<MenuConfig>();
-  const overlayTargetRef = useRef<HTMLDivElement | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
 
   // Forces a rerender after `hoveredVenue` and `venueRef` changed
@@ -486,7 +488,7 @@ const Playa = () => {
                 key={idx}
                 onMouseOver={(event: React.MouseEvent) => {
                   setHoveredVenue(venue);
-                  overlayTargetRef.current = event.target as HTMLDivElement;
+                  venueRef.current = event.target as HTMLDivElement;
                   setShowVenueTooltip(true);
                 }}
                 onMouseLeave={() => setShowVenueTooltip(false)}
@@ -501,7 +503,7 @@ const Playa = () => {
               </div>
             ))}
             <Overlay
-              target={overlayTargetRef}
+              target={venueRef.current}
               show={showVenueTooltip && !showUserTooltip && !showMenu}
             >
               {({ placement, arrowProps, show: _show, popper, ...props }) => (
@@ -527,7 +529,7 @@ const Playa = () => {
               )}
             </Overlay>
             <Overlay
-              target={overlayTargetRef}
+              target={userRef.current}
               show={!showVenueTooltip && showUserTooltip && !showMenu}
             >
               {({ placement, arrowProps, show: _show, popper, ...props }) => (
@@ -544,8 +546,8 @@ const Playa = () => {
               )}
             </Overlay>
             <Overlay
-              target={overlayTargetRef}
-              show={!showVenueTooltip && !showUserTooltip && showMenu}
+              target={menuRef.current}
+              show={showMenu}
               rootClose
               onHide={() => setShowMenu(false)}
             >
@@ -590,7 +592,8 @@ const Playa = () => {
               setHoveredUser={setHoveredUser}
               setShowMenu={setShowMenu}
               setMenu={setMenu}
-              overlayTargetRef={overlayTargetRef}
+              userRef={userRef}
+              menuRef={menuRef}
             />
           </div>
           <div className="playa-controls">

@@ -40,7 +40,8 @@ interface PropsType {
   setHoveredUser: (hoveredUser: User) => void;
   setShowMenu: (showMenu: boolean) => void;
   setMenu: (menu: MenuConfig) => void;
-  overlayTargetRef: React.MutableRefObject<HTMLDivElement | null>;
+  userRef: React.MutableRefObject<HTMLDivElement | null>;
+  menuRef: React.MutableRefObject<HTMLDivElement | null>;
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
@@ -55,7 +56,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   setHoveredUser,
   setMenu,
   setShowMenu,
-  overlayTargetRef,
+  userRef,
+  menuRef,
 }) => {
   useConnectPartyGoers();
 
@@ -168,6 +170,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           sendUpdatedState={sendUpdatedState}
           setMyLocation={setMyLocation}
           onClick={() => setSelectedUserProfile(selfUserProfile)}
+          onMouseOver={(event: React.MouseEvent) => {
+            setHoveredUser(selfUserProfile);
+            userRef.current = event.target as HTMLDivElement;
+            setShowUserTooltip(true);
+          }}
+          onMouseLeave={() => setShowUserTooltip(false)}
         />
       ) : undefined,
     [
@@ -178,6 +186,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       setMyLocation,
       selfUserProfile,
       setSelectedUserProfile,
+      setHoveredUser,
+      setShowUserTooltip,
+      userRef,
     ]
   );
 
@@ -255,12 +266,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
               onClick={(event: React.MouseEvent) => {
                 setMenu(menu);
-                overlayTargetRef.current = event.target as HTMLDivElement;
+                menuRef.current = event.target as HTMLDivElement;
                 setShowMenu(true);
               }}
               onMouseOver={(event: React.MouseEvent) => {
                 setHoveredUser(avatarUser);
-                overlayTargetRef.current = event.target as HTMLDivElement;
+                userRef.current = event.target as HTMLDivElement;
                 setShowUserTooltip(true);
               }}
               onMouseLeave={() => setShowUserTooltip(false)}
@@ -276,9 +287,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       joinUserVideoChat,
       setShowUserTooltip,
       setHoveredUser,
+      userRef,
       setShowMenu,
       setMenu,
-      overlayTargetRef,
+      menuRef,
     ]
   );
 
