@@ -112,6 +112,8 @@ type VenueDetailsPartProps = {
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
@@ -163,6 +165,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
                 venue={venue}
                 showCreateEventModal={showCreateEventModal}
                 setShowCreateEventModal={setShowCreateEventModal}
+                editedEvent={editedEvent}
+                setEditedEvent={setEditedEvent}
               />
             )}
             venue={venue}
@@ -376,6 +380,8 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   showCreateEventModal,
   setShowCreateEventModal,
+  editedEvent,
+  setEditedEvent,
 }) => {
   useFirestoreConnect([
     {
@@ -389,7 +395,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
 
   const events = useSelector((state) => state.firestore.ordered.events);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+  //const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 
@@ -427,7 +433,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
           <input
             name="Event search bar"
             className="input-block search-event-input"
-            placeholder="Search for en event"
+            placeholder="Search for an event"
             onChange={(e) => setFilterText(e.target.value)}
             value={filterText}
           />
@@ -480,7 +486,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setEditedEvent(venueEvent);
+                              setEditedEvent && setEditedEvent(venueEvent);
                               setShowCreateEventModal(true);
                             }}
                           >
@@ -490,7 +496,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setEditedEvent(venueEvent);
+                              setEditedEvent && setEditedEvent(venueEvent);
                               setShowDeleteEventModal(true);
                             }}
                           >
@@ -518,7 +524,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
-          setEditedEvent(undefined);
+          setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
         event={editedEvent}
@@ -528,7 +534,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
         show={showDeleteEventModal}
         onHide={() => {
           setShowDeleteEventModal(false);
-          setEditedEvent(undefined);
+          setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
         event={editedEvent}
