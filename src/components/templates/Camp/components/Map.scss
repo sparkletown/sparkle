@@ -34,7 +34,8 @@ $border-radius: 28px;
 }
 
 .playa-venue {
-  //position: absolute;
+  display: flex;
+  justify-content: center;
   z-index: 1;
   width: 100%;
   height: 100%;
@@ -90,24 +91,13 @@ $border-radius: 28px;
       }
     }
   }
-  .room-on-left-side {
-    float: left;
-    margin-left: 0px;
-  }
-  .room-on-right-side {
-    float: right;
-    margin-right: 0px;
-  }
-  .room-on-bottom-side {
-    bottom: calc(100% + 60px);
-  }
-  .room-on-bottom-side-expanded {
-    bottom: calc(100% + 175px);
-  }
 
   .playa-venue-text {
     z-index: 200;
-    position: relative;
+    float: right;
+    top: calc(50% - 10px);
+    position: absolute;
+    margin: 0 auto;
     background-color: darken($sand, 5%);
     border-radius: 20px;
     margin-top: 10px;
