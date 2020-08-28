@@ -26,7 +26,7 @@ export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;
 export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
 export const ROOM_IMAGE_WIDTH_PX = 300;
-export const GIF_IMAGE_WIDTH_PX = 30;
+export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
