@@ -19,12 +19,14 @@ export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_sou
 export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const DEFAULT_USER_LIST_LIMIT = 22;
+export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;
 export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
 export const ROOM_IMAGE_WIDTH_PX = 300;
+export const GIF_IMAGE_WIDTH_PX = 30;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;

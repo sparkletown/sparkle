@@ -10,7 +10,10 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
+  GIF_IMAGE_WIDTH_PX,
+  GIF_RESIZER_URL,
 } from "settings";
+import jimp from "jimp";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_VENUE_SIZE) / 2,
@@ -20,11 +23,23 @@ const initialMapIconPlacement: VenueInput["placement"] = {
 type Question = VenueInput["profileQuestions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
-  Yup.mixed<FileList>().test(
-    name,
-    "Image required",
-    (val: FileList) => !required || val.length > 0
-  );
+  Yup.mixed<FileList>()
+    .test(
+      name,
+      "Image required",
+      (val: FileList) => !required || val.length > 0
+    )
+    .test(
+      name,
+      `Please resize GIF to (${GIF_IMAGE_WIDTH_PX}px,${GIF_IMAGE_WIDTH_PX}px). You can do this at ${GIF_RESIZER_URL} `,
+      async (val?: FileList) => {
+        if (!val || val.length === 0) return true;
+        const file = val[0];
+        if (file.type !== "image/gif") return true;
+        const jimpImage = await jimp.read(URL.createObjectURL(file));
+        return jimpImage.bitmap.width <= GIF_IMAGE_WIDTH_PX;
+      }
+    );
 
 const urlIfNoFileValidation = (fieldName: string) =>
   Yup.string().when(
