@@ -20,7 +20,6 @@ interface PropsType {
 const OverlayMenu: React.FunctionComponent<React.PropsWithChildren<
   PropsType
 >> = ({ config, children }) => {
-  console.log("children", children);
   const menu = (
     <div className="overlay-menu">
       <div className="prompt">{config.prompt}</div>
@@ -39,7 +38,7 @@ const OverlayMenu: React.FunctionComponent<React.PropsWithChildren<
       rootClose
       overlay={menu}
     >
-      {children}
+      <div>{children}</div>
     </OverlayTrigger>
   );
 };
