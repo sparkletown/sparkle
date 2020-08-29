@@ -76,7 +76,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
           .filter((ve) =>
             // some events will span multiple days. Pick events for which `day` is between the event start and end
             {
-              if (ve.event.start_utc_seconds && ve.event.duration_minutes) {
+              if (ve?.event?.start_utc_seconds && ve?.event?.duration_minutes) {
                 return isWithinInterval(day, {
                   start: startOfDay(
                     new Date(ve.event.start_utc_seconds * 1000)
