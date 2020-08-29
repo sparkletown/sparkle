@@ -20,7 +20,6 @@ const CreateEditPopUp: React.FunctionComponent = () => {
           <a
             href={CREATE_EDIT_URL}
             rel="noopener noreferrer"
-            target="_blank"
             className="btn btn-primary join-button"
             style={{ fontSize: 14 }}
           >

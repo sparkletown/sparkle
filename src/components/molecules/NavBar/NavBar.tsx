@@ -127,7 +127,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     onClick={() => (window.location.href = "/in/playa")}
                     className="playa-link"
                   >
-                    Go to playa
+                    Back to playa
                   </span>
                 )}
                 <div className="navbar-links">
