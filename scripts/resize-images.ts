@@ -6,6 +6,25 @@
     - ensure APP_PREFIX is set to co-reality-staging or co-reality-map
     - set BACKUP to true to backup all images from firebase (in logical directory structure)
     - set BACKUP to false to set resize all images to width COMPRESSION_WIDTH_PX and auto height
+    - tsconfig.json should contain
+
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "moduleResolution": "Node",
+    "traceResolution": false,
+    "allowJs": false,
+    "esModuleInterop": true,
+    "declaration": false,
+    "noResolve": false,
+    "noImplicitAny": false,
+    "removeComments": true,
+    "strictNullChecks": false,
+    "sourceMap": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  }
+}
 
     once configured, in a terminal, run: npx ts-node resize-images.ts
 */
