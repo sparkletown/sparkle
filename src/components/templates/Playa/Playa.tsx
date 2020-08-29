@@ -478,7 +478,159 @@ const Playa = () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
   }, []);
 
-  return useMemo(() => {
+  const playaContent = useMemo(() => {
+    return (
+      <>
+        <img
+          className="playa-background"
+          src={PLAYA_IMAGE}
+          alt="Playa Background Map"
+        />
+        {venues?.filter(isPlaced).map((venue, idx) => (
+          <div
+            className="venue"
+            style={{
+              top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
+              left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+              position: "absolute",
+            }}
+            onClick={() => showVenue(venue)}
+            key={idx}
+            onMouseOver={(event: React.MouseEvent) => {
+              setHoveredVenue(venue);
+              venueRef.current = event.target as HTMLDivElement;
+              setShowVenueTooltip(true);
+            }}
+            onMouseLeave={() => setShowVenueTooltip(false)}
+          >
+            <span className="img-vcenter-helper" />
+            <img
+              className="venue-icon"
+              src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+              alt={`${venue.name} Icon`}
+            />
+            {selectedVenue?.id === venue.id && <div className="selected" />}
+          </div>
+        ))}
+        <Overlay
+          target={venueRef.current}
+          show={showVenueTooltip && !showUserTooltip && !showMenu}
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                padding: "10px",
+              }}
+            >
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-venue-title">{hoveredVenue?.name}</div>
+                  <div className="playa-venue-people">{users?.length ?? 0}</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </Overlay>
+        <Overlay
+          target={userRef.current}
+          show={!showVenueTooltip && showUserTooltip && !showMenu}
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-user-title">
+                    {hoveredUser?.partyName}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </Overlay>
+        <Overlay
+          target={menuRef.current}
+          show={showMenu}
+          rootClose
+          onHide={() => {
+            if (menu?.onHide) {
+              menu.onHide();
+            }
+            setShowMenu(false);
+          }}
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="playa-menu">
+                <div className="prompt">{menu?.prompt}</div>
+                <ul className="choices">
+                  {menu?.choices?.map((choice, index) => (
+                    <li
+                      className="choice"
+                      onClick={() => {
+                        if (choice.onClick) choice.onClick();
+                        document.body.click();
+                      }}
+                      key={index}
+                    >
+                      {choice.text}
+                    </li>
+                  ))}
+                  {menu?.cancelable && (
+                    <li
+                      className="choice"
+                      onClick={() => document.body.click()}
+                    >
+                      Cancel
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          )}
+        </Overlay>
+      </>
+    );
+  }, [
+    hoveredUser,
+    hoveredVenue,
+    menu,
+    selectedVenue,
+    showMenu,
+    showUserTooltip,
+    showVenueTooltip,
+    users,
+    venues,
+    showVenue,
+  ]);
+
+  const avatarLayer = useMemo(
+    () => (
+      <AvatarLayer
+        bikeMode={bikeMode}
+        setBikeMode={setBikeMode}
+        videoState={videoState}
+        setVideoState={setVideoState}
+        toggleVideoState={toggleVideoState}
+        setAvatarVisible={setAvatarVisible}
+        setMyLocation={setMyLocation}
+        setSelectedUserProfile={setSelectedUserProfile}
+        setShowUserTooltip={setShowUserTooltip}
+        setHoveredUser={setHoveredUser}
+        setShowMenu={setShowMenu}
+        setMenu={setMenu}
+        userRef={userRef}
+        menuRef={menuRef}
+      />
+    ),
+    [bikeMode, setMyLocation, toggleVideoState, videoState]
+  );
+
+  const mapContainer = useMemo(() => {
     const translateX = Math.min(
       PLAYA_MARGIN_X / zoom,
       -1 *
@@ -500,6 +652,29 @@ const Playa = () => {
         )
     );
 
+    return (
+      <div
+        className="map-container"
+        ref={mapRef}
+        style={{
+          transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+        }}
+      >
+        {playaContent}
+        {avatarLayer}
+      </div>
+    );
+  }, [
+    avatarLayer,
+    centerX,
+    centerY,
+    dimensions.width,
+    dimensions.height,
+    playaContent,
+    zoom,
+  ]);
+
+  return useMemo(() => {
     return (
       <>
         <div className="playa-banner">
@@ -539,146 +714,7 @@ const Playa = () => {
         )}
         {dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
-          <div
-            className="map-container"
-            ref={mapRef}
-            style={{
-              transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-            }}
-          >
-            <img
-              className="playa-background"
-              src={PLAYA_IMAGE}
-              alt="Playa Background Map"
-            />
-            {venues?.filter(isPlaced).map((venue, idx) => (
-              <div
-                className="venue"
-                style={{
-                  top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
-                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
-                  position: "absolute",
-                }}
-                onClick={() => showVenue(venue)}
-                key={idx}
-                onMouseOver={(event: React.MouseEvent) => {
-                  setHoveredVenue(venue);
-                  venueRef.current = event.target as HTMLDivElement;
-                  setShowVenueTooltip(true);
-                }}
-                onMouseLeave={() => setShowVenueTooltip(false)}
-              >
-                <span className="img-vcenter-helper" />
-                <img
-                  className="venue-icon"
-                  src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                  alt={`${venue.name} Icon`}
-                />
-                {selectedVenue?.id === venue.id && <div className="selected" />}
-              </div>
-            ))}
-            <Overlay
-              target={venueRef.current}
-              show={showVenueTooltip && !showUserTooltip && !showMenu}
-            >
-              {({ placement, arrowProps, show: _show, popper, ...props }) => (
-                // @ts-expect-error
-                <div
-                  {...props}
-                  style={{
-                    ...props.style,
-                    padding: "10px",
-                  }}
-                >
-                  <div className="playa-venue-text">
-                    <div className="playa-venue-maininfo">
-                      <div className="playa-venue-title">
-                        {hoveredVenue?.name}
-                      </div>
-                      <div className="playa-venue-people">
-                        {users?.length ?? 0}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Overlay>
-            <Overlay
-              target={userRef.current}
-              show={!showVenueTooltip && showUserTooltip && !showMenu}
-            >
-              {({ placement, arrowProps, show: _show, popper, ...props }) => (
-                // @ts-expect-error
-                <div {...props} style={{ ...props.style, padding: "10px" }}>
-                  <div className="playa-venue-text">
-                    <div className="playa-venue-maininfo">
-                      <div className="playa-user-title">
-                        {hoveredUser?.partyName}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </Overlay>
-            <Overlay
-              target={menuRef.current}
-              show={showMenu}
-              rootClose
-              onHide={() => {
-                if (menu?.onHide) {
-                  menu.onHide();
-                }
-                setShowMenu(false);
-              }}
-            >
-              {({ placement, arrowProps, show: _show, popper, ...props }) => (
-                // @ts-expect-error
-                <div {...props} style={{ ...props.style, padding: "10px" }}>
-                  <div className="playa-menu">
-                    <div className="prompt">{menu?.prompt}</div>
-                    <ul className="choices">
-                      {menu?.choices?.map((choice, index) => (
-                        <li
-                          className="choice"
-                          onClick={() => {
-                            if (choice.onClick) choice.onClick();
-                            document.body.click();
-                          }}
-                          key={index}
-                        >
-                          {choice.text}
-                        </li>
-                      ))}
-                      {menu?.cancelable && (
-                        <li
-                          className="choice"
-                          onClick={() => document.body.click()}
-                        >
-                          Cancel
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              )}
-            </Overlay>
-            <AvatarLayer
-              bikeMode={bikeMode}
-              setBikeMode={setBikeMode}
-              videoState={videoState}
-              setVideoState={setVideoState}
-              toggleVideoState={toggleVideoState}
-              setAvatarVisible={setAvatarVisible}
-              setMyLocation={setMyLocation}
-              setSelectedUserProfile={setSelectedUserProfile}
-              setShowUserTooltip={setShowUserTooltip}
-              setHoveredUser={setHoveredUser}
-              setShowMenu={setShowMenu}
-              setMenu={setMenu}
-              userRef={userRef}
-              menuRef={menuRef}
-            />
-          </div>
+          {mapContainer}
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
@@ -771,39 +807,26 @@ const Playa = () => {
     );
   }, [
     hideVenue,
-    hoveredVenue,
     selectedVenue,
     showModal,
-    showVenue,
-    showVenueTooltip,
     user,
-    users,
-    venues,
     bikeMode,
     toggleBikeMode,
     videoState,
-    setVideoState,
     toggleVideoState,
-    centerX,
-    centerY,
     centeredOnMe,
     recenter,
-    setMyLocation,
     atEdge,
     atEdgeMessage,
-    dimensions,
     zoom,
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
     selectedUserProfile,
     showEventSchedule,
-    showUserTooltip,
-    hoveredUser,
-    showMenu,
-    menu,
     openVideoChat,
     videoChatHeight,
+    mapContainer,
   ]);
 };
 
