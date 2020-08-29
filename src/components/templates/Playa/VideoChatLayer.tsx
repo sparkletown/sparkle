@@ -69,7 +69,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   return (
     <Room
       roomName={roomName}
-      host={host}
+      hostUid={profile.video.inRoomOwnedBy}
       setSelectedUserProfile={setSelectedUserProfile}
       leave={leave}
       removeParticipant={removeParticipant}

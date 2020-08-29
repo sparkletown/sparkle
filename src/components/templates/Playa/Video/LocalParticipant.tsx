@@ -9,7 +9,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   participant,
   user,
   setSelectedUserProfile,
-  host,
+  isHost,
   leave,
   style,
 }) => {
@@ -54,7 +54,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
       style={style}
-      host={host}
+      isHost={isHost}
       local
     >
       <div className="leave" onClick={() => leave()}>

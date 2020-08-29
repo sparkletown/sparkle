@@ -3,15 +3,17 @@ import Participant, { ParticipantProps } from "./Participant";
 
 type RemoteParticipantProps = ParticipantProps & {
   remove: () => void;
+  showHostControls: boolean;
 };
 
 const RemoteParticipant: React.FunctionComponent<RemoteParticipantProps> = ({
   participant,
   user,
-  setSelectedUserProfile,
-  host,
-  remove,
+  isHost,
   style,
+  setSelectedUserProfile,
+  remove,
+  showHostControls,
 }) => {
   const [audio, setAudio] = useState(true);
   const [video, setVideo] = useState(true);
@@ -22,10 +24,11 @@ const RemoteParticipant: React.FunctionComponent<RemoteParticipantProps> = ({
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
       style={style}
+      isHost={isHost}
       audio={audio}
       video={video}
     >
-      {host && (
+      {showHostControls && (
         <div className="remove" onClick={() => remove()}>
           Remove
         </div>

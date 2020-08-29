@@ -624,6 +624,7 @@ $playa-mode-badge-icon-size: 9px;
       .leave {
         width: 40px;
         border-radius: 50%;
+        margin: 4px;
 
         .btn {
           background-image: url("./img/playa-controls-exit.png");
@@ -643,6 +644,7 @@ $playa-mode-badge-icon-size: 9px;
         bottom: 0;
         left: 0;
         right: 0;
+        margin: 4px;
         text-align: center;
 
         .mic,

@@ -10,7 +10,7 @@ import { User } from "types/User";
 
 interface RoomProps {
   roomName: string;
-  host: boolean;
+  hostUid: string;
   setSelectedUserProfile: (user: WithId<User>) => void;
   leave: () => void;
   removeParticipant: (uid: string) => void;
@@ -18,7 +18,7 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps> = ({
   roomName,
-  host,
+  hostUid,
   setSelectedUserProfile,
   leave,
   removeParticipant,
@@ -107,31 +107,35 @@ const Room: React.FC<RoomProps> = ({
         participant={room.localParticipant}
         user={users[user.uid]}
         setSelectedUserProfile={setSelectedUserProfile}
-        host={host}
+        isHost={hostUid === user.uid}
         leave={leave}
       />
     ) : null;
-  }, [room, user, users, maxWidth, setSelectedUserProfile, host, leave]);
+  }, [room, user, users, maxWidth, setSelectedUserProfile, hostUid, leave]);
 
   const others = useMemo(
     () =>
-      participants
-        .filter((p) => !!p)
-        .map((participant, index) => (
-          <RemoteParticipant
-            style={{ maxWidth }}
-            participant={participant}
-            user={users[participant.identity]}
-            setSelectedUserProfile={setSelectedUserProfile}
-            host={host}
-            remove={() => removeParticipant(participant.identity)}
-            key={index}
-          />
-        )),
+      user
+        ? participants
+            .filter((p) => !!p)
+            .map((participant, index) => (
+              <RemoteParticipant
+                style={{ maxWidth }}
+                participant={participant}
+                user={users[participant.identity]}
+                setSelectedUserProfile={setSelectedUserProfile}
+                isHost={hostUid === participant.identity}
+                showHostControls={hostUid === user.uid}
+                remove={() => removeParticipant(participant.identity)}
+                key={index}
+              />
+            ))
+        : null,
     [
       participants,
+      user,
       users,
-      host,
+      hostUid,
       maxWidth,
       setSelectedUserProfile,
       removeParticipant,
