@@ -280,7 +280,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         profile?.video?.requestingToJoinUid === partygoer.id &&
         partygoer.video?.acceptingRequestFromUid === user.uid
     );
-    if (accepter) {
+    if (accepter?.id) {
       joinUserVideoChat(accepter.id);
     }
 
