@@ -243,49 +243,33 @@ const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
-  const suspectedLocation = useMemo(() => {
-    const suspectedVenue = venues?.find(
-      (v) =>
-        v.name === user.room ||
-        (isCampVenue(v) && v.rooms.find((r) => r.title === user.room))
-    );
-
-    if (!suspectedVenue) {
-      return undefined;
-    }
-
-    if (suspectedVenue.name === user.room) {
-      return {
-        venueId: user.room,
-        roomTitle: undefined,
-      };
-    }
-    return {
-      venueId: suspectedVenue.id,
-      venueName: suspectedVenue.name,
-      roomTitle: user.room,
-    };
-  }, [user.room, venues]);
+  const suspectedLocation = useMemo(
+    () => ({
+      venue: venues?.find((v) => v.name === user.room),
+      camp: venues?.find(
+        (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)
+      ),
+    }),
+    [user.room, venues]
+  );
 
   if (!user.room || !venues) {
     return <></>;
   }
 
-  if (!suspectedLocation) {
-    return <>This burner has gone walkabout. Location unguessable</>;
+  if (suspectedLocation.venue) {
+    return (
+      <Link to={venueInsideUrl(suspectedLocation.venue.id)}>{user.room}</Link>
+    );
   }
-
-  const suspectedLocationLink =
-    user.room === PLAYA_VENUE_NAME
-      ? venueInsideUrl(suspectedLocation.venueId)
-      : suspectedLocation.roomTitle
-      ? venuePreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
-      : venuePlayaPreviewUrl(suspectedLocation.venueId);
-
-  const suspectedLocationText = suspectedLocation.roomTitle
-    ? `Room ${suspectedLocation.roomTitle}, in Camp ${suspectedLocation.venueName}`
-    : user.room;
-  return <Link to={suspectedLocationLink}>{suspectedLocationText}</Link>;
+  if (suspectedLocation.camp) {
+    return (
+      <Link to={venuePreviewUrl(suspectedLocation.camp.id, user.room)}>
+        Room {user.room}, in camp {suspectedLocation.camp.name}
+      </Link>
+    );
+  }
+  return <>This burner has gone walkabout. Location unguessable</>;
 };
 
 export default UserProfileModal;

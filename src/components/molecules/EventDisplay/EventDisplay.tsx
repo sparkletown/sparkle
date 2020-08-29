@@ -7,6 +7,7 @@ import {
   daysFromEndOfEvent,
 } from "utils/time";
 import "./EventDisplay.scss";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   event: firebase.firestore.DocumentData;
@@ -68,7 +69,7 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
         </p>
         {Date.now() > event.start_utc_seconds * 1000 && joinNowButton && (
           <a
-            href={`/in/playa/${venue.id}`}
+            href={venueInsideUrl(venue.id)}
             className="btn btn-primary button-join-now"
           >
             Join Now

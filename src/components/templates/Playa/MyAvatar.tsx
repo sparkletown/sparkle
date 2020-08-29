@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useLayoutEffect,
+  forwardRef,
+} from "react";
 import {
   UserState,
   UserStateKey,
@@ -27,19 +33,22 @@ const ARROW_MOVE_INCREMENT_PX_WALK = 6;
 const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 const KEY_INTERACTION_THROTTLE_MS = 25;
 
-export const MyAvatar: React.FunctionComponent<PropsType> = ({
-  serverSentState,
-  bike,
-  videoState,
-  onClick,
-  onMouseOver,
-  onMouseLeave,
-  sendUpdatedState,
-  setMyLocation,
-  setBikeMode,
-  setVideoState,
-  setAvatarVisible,
-}) => {
+const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
+  {
+    serverSentState,
+    bike,
+    videoState,
+    onClick,
+    onMouseOver,
+    onMouseLeave,
+    sendUpdatedState,
+    setMyLocation,
+    setBikeMode,
+    setVideoState,
+    setAvatarVisible,
+  },
+  ref
+) => {
   const { profile } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
@@ -158,6 +167,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
+      ref={ref}
     >
       <div
         className="avatar me"
@@ -198,3 +208,5 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
     <></>
   );
 };
+
+export default forwardRef(MyAvatar);
