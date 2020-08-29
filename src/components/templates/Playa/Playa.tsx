@@ -406,7 +406,7 @@ const Playa = () => {
               up the Playa. If we’ve moved your camp, art piece or experience,
               we hope you like your new spot. Please email us if you’d rather be
               somewhere else or if you have any other needs!
-              <a href="mailto:bm.sparkleverse@gmail.com">
+              <a href="mailto:sparkleverse.bm@gmail.com">
                 bm.sparkleverse@gmail.com
               </a>
             </>
