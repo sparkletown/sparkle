@@ -115,11 +115,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   className="logo-img"
                 />
               </Link>
-              <div className="button-container create-button-container">
-                <Link to="/admin" className="create-button">
-                  Create/Edit
-                </Link>
-              </div>
             </div>
             {user ? (
               <>

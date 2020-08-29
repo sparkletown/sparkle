@@ -43,6 +43,7 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
+import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 
 export type MenuConfig = {
   prompt?: string;
@@ -689,20 +690,14 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
-        <div className="playa-banner">
-          {atEdge ? (
+        {atEdge && (
+          <div className="playa-banner">
             <>
               <strong>{`You're at the edge of the map.`}</strong>{" "}
               {atEdgeMessage}
             </>
-          ) : (
-            <>
-              PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
-              alteration by placement team as we build the playa together. Have
-              fun!
-            </>
-          )}
-        </div>
+          </div>
+        )}
         {isUserVenueOwner && (
           <div
             style={{
@@ -779,11 +774,14 @@ const Playa = () => {
               chatInputPlaceholder="Chat"
             />
           </div>
-          <div className="donate-pop-up">
-            <DonatePopUp />
-          </div>
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          </div>
+          <div className="create-edit-pop-up">
+            <CreateEditPopUp />
+          </div>
+          <div className="donate-pop-up">
+            <DonatePopUp />
           </div>
         </div>
         <div

@@ -5,6 +5,7 @@ import {
   faAmbulance,
   faAngleDoubleRight,
   faHeart,
+  faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
@@ -56,6 +57,14 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
           />
         ) : venueLogoPath === "heart" && !isLeftColumnExpanded ? (
           <FontAwesomeIcon icon={faHeart} size="2x" className={`band-logo`} />
+        ) : venueLogoPath === "create" ? (
+          <FontAwesomeIcon
+            icon={faEdit}
+            size="2x"
+            className={`band-logo ${
+              isLeftColumnExpanded ? "expanded-popup" : ""
+            }`}
+          />
         ) : (
           <img
             src={venueLogoPath}

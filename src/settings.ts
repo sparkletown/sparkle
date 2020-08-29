@@ -20,6 +20,8 @@ export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const CREATE_EDIT_URL = "/admin";
+export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;

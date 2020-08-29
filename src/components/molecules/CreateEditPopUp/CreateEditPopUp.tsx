@@ -1,50 +1,47 @@
 import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
-import "./SparkleFairiesPopUp.scss";
-import { PLAYA_INFO_URL, REALITY_RANGERS_URL } from "../../../../src/settings";
+import { CREATE_EDIT_URL, SPARKLEVERSITY_URL } from "../../../settings";
 
-interface PropsType {
-  setShowEventSchedule: Function;
-}
-
-const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
-  setShowEventSchedule,
-}) => {
+const CreateEditPopUp: React.FunctionComponent = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
     <InformationLeftColumn
-      venueLogoPath={"ambulance"}
+      venueLogoPath={"create"}
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
-      <InformationCard title="Information">
+      <InformationCard title="Create &amp; Edit on the Playa">
         <div style={{ textAlign: "center" }}>
-          <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>
-          <a
-            href={PLAYA_INFO_URL}
-            rel="noopener noreferrer"
-            target="_blank"
-            className="btn btn-primary join-button"
-            style={{ fontSize: 14 }}
-          >
-            Playa Information Booth
-          </a>
-          <div className="title">Call a Ranger</div>
-          <p className="title-sidebar">It's OK to need help!</p>
           <p className="title-sidebar">
-            Rangers and harm reduction volunteers are available 24/7 to provide
-            support &amp; assistance, if you need it.
+            Welcome to the online burn. You can still build in the SparkleVerse!
           </p>
           <a
-            href={REALITY_RANGERS_URL}
+            href={CREATE_EDIT_URL}
             rel="noopener noreferrer"
             target="_blank"
             className="btn btn-primary join-button"
             style={{ fontSize: 14 }}
           >
-            Launch Ranger Chat
+            Create &amp; Edit
+          </a>
+          <div className="title">Help With Creating And Hosting</div>
+          <p className="title-sidebar">
+            Want more help with creating and editing in SparklVerse?
+          </p>
+          <p className="title-sidebar">
+            We have created many resources to help you get started and host
+            amazing experiences. We call it the SparkleVersity.
+          </p>
+          <a
+            href={SPARKLEVERSITY_URL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            Check Out SparkleVersity
           </a>
         </div>
       </InformationCard>
@@ -52,4 +49,4 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default SparkleFairiesPopUp;
+export default CreateEditPopUp;
