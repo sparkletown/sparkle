@@ -74,7 +74,7 @@ const ArtPiece = () => {
           chatInputPlaceholder="Chat"
         />
       </div>
-      <div className="sparkle-fairie">
+      <div className="sparkle-fairies">
         <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
       </div>
       <Modal
