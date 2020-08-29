@@ -29,9 +29,9 @@ interface PropsType {
   setAvatarVisible: (visibility: boolean) => void;
 }
 
-const ARROW_MOVE_INCREMENT_PX_WALK = 18;
-const ARROW_MOVE_INCREMENT_PX_BIKE = 60;
-export const KEY_INTERACTION_THROTTLE_MS = 150;
+const ARROW_MOVE_INCREMENT_PX_WALK = 6;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
+const KEY_INTERACTION_THROTTLE_MS = 25;
 
 const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   {
@@ -168,7 +168,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
-          transition: `all ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
         }}
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}

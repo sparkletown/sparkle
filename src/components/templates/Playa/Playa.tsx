@@ -43,7 +43,6 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
-import { KEY_INTERACTION_THROTTLE_MS } from "./MyAvatar";
 
 export type MenuConfig = {
   prompt?: string;
@@ -671,7 +670,6 @@ const Playa = () => {
         ref={mapRef}
         style={{
           transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-          transition: `transform ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
         }}
       >
         {playaContent}
