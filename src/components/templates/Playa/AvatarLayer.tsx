@@ -18,7 +18,7 @@ import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import MyAvatar from "./MyAvatar";
+import { MyAvatar } from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
 import { MenuConfig } from "./Playa";
 
@@ -179,8 +179,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
           setAvatarVisible={setAvatarVisible}
-          onClick={() => {
+          onClick={(event: React.MouseEvent) => {
             setMenu(menu);
+            menuRef.current = event.target as HTMLDivElement;
             setShowMenu(true);
           }}
           onMouseOver={(event: React.MouseEvent) => {
@@ -189,7 +190,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             setShowUserTooltip(true);
           }}
           onMouseLeave={() => setShowUserTooltip(false)}
-          ref={menuRef}
         />
       ) : undefined,
     [

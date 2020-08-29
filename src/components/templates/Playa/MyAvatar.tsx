@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  forwardRef,
-} from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import {
   UserState,
   UserStateKey,
@@ -33,22 +27,19 @@ const ARROW_MOVE_INCREMENT_PX_WALK = 6;
 const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 const KEY_INTERACTION_THROTTLE_MS = 25;
 
-const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
-  {
-    serverSentState,
-    bike,
-    videoState,
-    onClick,
-    onMouseOver,
-    onMouseLeave,
-    sendUpdatedState,
-    setMyLocation,
-    setBikeMode,
-    setVideoState,
-    setAvatarVisible,
-  },
-  ref
-) => {
+export const MyAvatar: React.FunctionComponent<PropsType> = ({
+  serverSentState,
+  bike,
+  videoState,
+  onClick,
+  onMouseOver,
+  onMouseLeave,
+  sendUpdatedState,
+  setMyLocation,
+  setBikeMode,
+  setVideoState,
+  setAvatarVisible,
+}) => {
   const { profile } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
@@ -162,16 +153,18 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   const visible = stateBoolean(state, UserStateKey.Visible) !== false;
 
   return visible ? (
-    <div className="avatar-container" ref={ref}>
+    <div
+      className="avatar-container"
+      onMouseOver={onMouseOver}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+    >
       <div
         className="avatar me"
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
         }}
-        onMouseOver={onMouseOver}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />
@@ -205,5 +198,3 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     <></>
   );
 };
-
-export default forwardRef(MyAvatar);
