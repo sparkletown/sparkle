@@ -196,10 +196,10 @@ const Playa = () => {
           Math.max(
             minZoom(),
             z +
-              delta *
-                (trackpad
-                  ? TRACKPAD_ZOOM_INCREMENT_DELTA
-                  : WHEEL_ZOOM_INCREMENT_DELTA)
+            delta *
+            (trackpad
+              ? TRACKPAD_ZOOM_INCREMENT_DELTA
+              : WHEEL_ZOOM_INCREMENT_DELTA)
           ),
           ZOOM_MAX
         )
@@ -374,22 +374,22 @@ const Playa = () => {
     const translateX = Math.min(
       PLAYA_MARGIN_X / zoom,
       -1 *
-        Math.min(
-          (centerX * zoom - dimensions.width / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT -
-            dimensions.width / zoom +
-            PLAYA_MARGIN_X / zoom
-        )
+      Math.min(
+        (centerX * zoom - dimensions.width / 2) / zoom,
+        PLAYA_WIDTH_AND_HEIGHT -
+        dimensions.width / zoom +
+        PLAYA_MARGIN_X / zoom
+      )
     );
     const translateY = Math.min(
       PLAYA_MARGIN_TOP / zoom,
       -1 *
-        Math.min(
-          (centerY * zoom - dimensions.height / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT -
-            dimensions.height / zoom +
-            PLAYA_MARGIN_BOTTOM / zoom
-        )
+      Math.min(
+        (centerY * zoom - dimensions.height / 2) / zoom,
+        PLAYA_WIDTH_AND_HEIGHT -
+        dimensions.height / zoom +
+        PLAYA_MARGIN_BOTTOM / zoom
+      )
     );
 
     return (
@@ -401,16 +401,12 @@ const Playa = () => {
               {atEdgeMessage}
             </>
           ) : (
-            <>
-              Happy Saturday, burners! We’re doing some placement today to tidy
-              up the Playa. If we’ve moved your camp, art piece or experience,
-              we hope you like your new spot. Please email us if you’d rather be
-              somewhere else or if you have any other needs!
-              <a href="mailto:bm.sparkleverse@gmail.com">
-                bm.sparkleverse@gmail.com
-              </a>
+              <>
+                PLAYA UNDER CONSTRUCTION. It’s build week: locations subject to
+                alteration by placement team as we build the playa together. Have
+                fun!
             </>
-          )}
+            )}
         </div>
         {isUserVenueOwner && (
           <div
@@ -427,7 +423,7 @@ const Playa = () => {
                 <div
                   className={`playa-dust-storm-btn${
                     dustStorm ? "-activated" : ""
-                  }`}
+                    }`}
                 />
               </div>
             </div>
@@ -502,7 +498,7 @@ const Playa = () => {
             <div
               className={`playa-controls-recenter ${
                 centeredOnMe === false ? "show" : ""
-              }`}
+                }`}
               onClick={recenter}
             >
               <div className="playa-controls-recenter-btn" />
@@ -511,14 +507,14 @@ const Playa = () => {
               <div
                 className={`playa-controls-walkmode-btn ${
                   walkMode ? "walk" : ""
-                }`}
+                  }`}
               />
             </div>
             <div className="playa-controls-zoom">
               <div
                 className={`playa-controls-zoom-in ${
                   zoom >= ZOOM_MAX ? "disabled" : ""
-                }`}
+                  }`}
                 onClick={() =>
                   setZoom((zoom) => Math.min(zoom * ZOOM_INCREMENT, ZOOM_MAX))
                 }
@@ -526,7 +522,7 @@ const Playa = () => {
               <div
                 className={`playa-controls-zoom-out ${
                   zoom <= minZoom() ? "disabled" : ""
-                }`}
+                  }`}
                 onClick={() =>
                   setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }
