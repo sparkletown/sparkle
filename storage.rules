@@ -5,7 +5,8 @@ service firebase.storage {
         allow read
     }
     match /users/{uid}/{allPaths=**} {
-        allow read, write, update: if request.auth.uid == uid
+        allow read
+        allow write, update: if request.auth.uid == uid
     }
   }
 }

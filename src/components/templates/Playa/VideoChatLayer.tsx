@@ -34,7 +34,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
 
   const removed = partygoers[
     roomOwnerUid
-  ].video?.removedParticipantUids?.includes(user.uid);
+  ]?.video?.removedParticipantUids?.includes(user.uid);
 
   if (removed) {
     leave();

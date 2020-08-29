@@ -45,6 +45,7 @@ import {
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
 import { VenueOwnersModal } from "./VenueOwnersModal";
+import { dateEventTimeFormat } from "../../utils/time";
 
 dayjs.extend(advancedFormat);
 
@@ -461,11 +462,10 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
                     <div className="date">
-                      {`${dayjs(startingDate).format("ha")}-${dayjs(
-                        endingDate
-                      ).format("ha")} ${dayjs(startingDate).format(
-                        "dddd MMMM Do"
-                      )}`}
+                      {`${dateEventTimeFormat(
+                        startingDate
+                      )}-${dateEventTimeFormat(endingDate)}
+                      ${dayjs(startingDate).format("dddd MMMM Do")}`}
                     </div>
                     <div className="event-description">
                       {venueEvent.description}

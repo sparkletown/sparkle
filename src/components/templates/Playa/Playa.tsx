@@ -41,6 +41,9 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import VideoChatLayer from "./VideoChatLayer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { UserVideoState } from "types/RelayMessage";
+import { unstable_batchedUpdates } from "react-dom";
+import { useSynchronizedRef } from "hooks/useSynchronizedRef";
+import { KEY_INTERACTION_THROTTLE_MS } from "./MyAvatar";
 
 export type MenuConfig = {
   prompt?: string;
@@ -131,6 +134,9 @@ const Playa = () => {
       prev === UserVideoState.Open ? UserVideoState.Locked : UserVideoState.Open
     );
   }, []);
+
+  const myXRef = useSynchronizedRef(myX);
+  const myYRef = useSynchronizedRef(myY);
 
   const { user, profile } = useUser();
 
@@ -422,10 +428,12 @@ const Playa = () => {
   }, [sliderRef]);
 
   const recenter = useCallback(() => {
-    if (myX === undefined || myY === undefined) return;
-    setCenterX(myX);
-    setCenterY(myY);
-  }, [myX, myY]);
+    unstable_batchedUpdates(() => {
+      if (myXRef.current === undefined || myYRef.current === undefined) return;
+      setCenterX(myXRef.current);
+      setCenterY(myYRef.current);
+    });
+  }, [myXRef, myYRef]);
 
   const getNearbyVenue = useCallback(
     (x: number, y: number) => {
@@ -450,15 +458,17 @@ const Playa = () => {
 
   const setMyLocation = useMemo(
     () => (x: number, y: number) => {
-      setCenterX(x);
-      setCenterY(y);
-      setMyX(x);
-      setMyY(y);
-      const nearbyVenue = getNearbyVenue(x, y);
-      if (nearbyVenue) {
-        setHoveredVenue(nearbyVenue);
-      }
-      setShowVenueTooltip(!!nearbyVenue);
+      unstable_batchedUpdates(() => {
+        setCenterX(x);
+        setCenterY(y);
+        setMyX(x);
+        setMyY(y);
+        const nearbyVenue = getNearbyVenue(x, y);
+        if (nearbyVenue) {
+          setHoveredVenue(nearbyVenue);
+        }
+        setShowVenueTooltip(!!nearbyVenue);
+      });
     },
     [getNearbyVenue]
   );
@@ -477,6 +487,9 @@ const Playa = () => {
   const changeDustStorm = useCallback(async () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
   }, []);
+
+  const numberOfUsers = users?.length ?? 0;
+  const selectedVenueId = selectedVenue?.id;
 
   const playaContent = useMemo(() => {
     return (
@@ -509,7 +522,7 @@ const Playa = () => {
               src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
               alt={`${venue.name} Icon`}
             />
-            {selectedVenue?.id === venue.id && <div className="selected" />}
+            {selectedVenueId === venue.id && <div className="selected" />}
           </div>
         ))}
         <Overlay
@@ -528,7 +541,7 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{hoveredVenue?.name}</div>
-                  <div className="playa-venue-people">{users?.length ?? 0}</div>
+                  <div className="playa-venue-people">{numberOfUsers}</div>
                 </div>
               </div>
             </div>
@@ -599,11 +612,11 @@ const Playa = () => {
     hoveredUser,
     hoveredVenue,
     menu,
-    selectedVenue,
+    numberOfUsers,
+    selectedVenueId,
     showMenu,
     showUserTooltip,
     showVenueTooltip,
-    users,
     venues,
     showVenue,
   ]);
@@ -658,6 +671,7 @@ const Playa = () => {
         ref={mapRef}
         style={{
           transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+          transition: `transform ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
         }}
       >
         {playaContent}

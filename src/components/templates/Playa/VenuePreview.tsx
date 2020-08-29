@@ -12,6 +12,7 @@ import { peopleAttending } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
+import img from "./img/pickspace-thumbnail_camp.png";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -129,6 +130,17 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
             backgroundSize: "cover",
           }}
         >
+          <img
+            src={
+              venue.template === "zoomroom"
+                ? "/pickspace-thumbnail_zoom.png"
+                : venue.template === "themecamp"
+                ? "/pickspace-thumbnail_camp.png"
+                : "/pickspace-thumbnail_art.png"
+            }
+            alt="pic of camp/artpiece/zoom"
+            className="img-venue"
+          />
           <div className="title-container">
             <img
               className="host-icon"
