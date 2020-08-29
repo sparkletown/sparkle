@@ -153,8 +153,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     choices: [
       {
         text: `${
-          videoState === UserVideoState.Open ? "Block" : "Allow"
-        } video chat requests`,
+          videoState === UserVideoState.Open ? "Closed" : "Open"
+        } to video chat`,
         onClick: () => toggleVideoState(),
       },
       {
@@ -376,8 +376,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             : {
                 prompt:
                   avatarUser.partyName +
-                  (videoState === UserVideoState.Locked
-                    ? " (unavailable for video chat)"
+                  (videoState !== UserVideoState.Open
+                    ? "\n\n(Closed to video chat)"
                     : ""),
                 choices: [
                   {
