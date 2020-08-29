@@ -4,6 +4,7 @@
   width: 100%;
   max-width: 100%;
   background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
   transform: translateY(-800px);
   transition: all 1000ms cubic-bezier(0.23, 1, 0.32, 1);
 
