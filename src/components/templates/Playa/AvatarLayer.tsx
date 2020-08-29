@@ -18,7 +18,7 @@ import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { MyAvatar } from "./MyAvatar";
+import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
 import { MenuConfig } from "./Playa";
 
@@ -63,6 +63,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
+  const myAvatarRef = useRef<HTMLDivElement>(null);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -153,8 +154,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     choices: [
       {
         text: `${
-          videoState === UserVideoState.Open ? "Closed" : "Open"
-        } to video chat`,
+          videoState === UserVideoState.Open ? "Deny" : "Allow"
+        } video chat requets`,
         onClick: () => toggleVideoState(),
       },
       {
@@ -190,6 +191,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             setShowUserTooltip(true);
           }}
           onMouseLeave={() => setShowUserTooltip(false)}
+          ref={myAvatarRef}
         />
       ) : undefined,
     [
@@ -305,6 +307,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           onClose: () => declineJoinRequest(asker.id),
         };
         setMenu(menu);
+        menuRef.current = myAvatarRef.current;
         setShowMenu(true);
       }
     }
@@ -320,15 +323,25 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     );
     if (decliner) {
       const menu = {
-        prompt: `${decliner.partyName} politely refused your request to chat.\n\nAsk them to enable video!`,
+        prompt: `${decliner.partyName} politely refused your request to video chat.\n\nYou can still message them!`,
         choices: [{ text: "OK", onClick: () => ackDecline(decliner.id) }],
         cancelable: false,
         onHide: () => ackDecline(decliner.id),
       };
       setMenu(menu);
+      menuRef.current = myAvatarRef.current;
       setShowMenu(true);
     }
-  }, [firebase, partygoers, profile, setMenu, setShowMenu, user, videoState]);
+  }, [
+    firebase,
+    partygoers,
+    profile,
+    setMenu,
+    menuRef,
+    setShowMenu,
+    user,
+    videoState,
+  ]);
 
   const avatars = useMemo(() => {
     const askToJoin = (uid: string) => {
@@ -394,8 +407,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             y={userStateMap[uid].y}
             videoState={videoState}
             bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
-            onClick={() => {
+            onClick={(event: React.MouseEvent) => {
               setMenu(menu);
+              menuRef.current = event.target as HTMLDivElement;
               setShowMenu(true);
             }}
             onMouseOver={(event: React.MouseEvent) => {
@@ -417,6 +431,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     setShowUserTooltip,
     setHoveredUser,
     userRef,
+    menuRef,
     setShowMenu,
     setMenu,
     firebase,
