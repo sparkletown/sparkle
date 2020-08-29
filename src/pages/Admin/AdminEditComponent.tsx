@@ -1,6 +1,5 @@
 import React, {
   useState,
-  CSSProperties,
   useMemo,
   useEffect,
   useCallback,
@@ -11,6 +10,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_IMAGE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
@@ -410,8 +410,8 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               snapToGrid={false}
               iconsMap={iconsMap ?? {}}
               backgroundImage={PLAYA_IMAGE}
-              iconImageStyle={styles.iconImage}
-              draggableIconImageStyle={styles.draggableIconImage}
+              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venueId={venueId}
               otherIconsStyle={{ opacity: 0.4 }}
               backgroundImageStyle={{ width: "unset" }}
@@ -471,22 +471,6 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
       </>
     </form>
   );
-};
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-    zIndex: 1,
-  },
 };
 
 export default AdminEditComponent;

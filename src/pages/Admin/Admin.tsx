@@ -6,7 +6,13 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useMemo, useState, CSSProperties, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
@@ -41,6 +47,7 @@ import {
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
@@ -222,6 +229,17 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   ]);
   const history = useHistory();
   const match = useRouteMatch();
+  const placementDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
+    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
+
+    placementDivRef.current?.scrollTo(
+      (venue.placement?.x ?? 0) - clientWidth / 2,
+      (venue.placement?.y ?? 0) - clientHeight / 2
+    );
+  }, [venue]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
@@ -251,7 +269,11 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                   How your experience appears on the playa
                 </h4>
                 <div className="container venue-entrance-experience-container">
-                  <div className="playa-container">
+                  <div
+                    className="playa-container"
+                    ref={placementDivRef}
+                    style={{ width: "100%", height: 1000, overflow: "scroll" }}
+                  >
                     <PlayaContainer
                       rounded
                       interactive={false}
@@ -271,8 +293,14 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                       }
                       coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
                       backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={styles.iconImage}
-                      draggableIconImageStyle={styles.draggableIconImage}
+                      iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+                      draggableIconImageStyle={
+                        PLAYA_VENUE_STYLES.draggableIconImage
+                      }
+                      containerStyle={{
+                        width: PLAYA_WIDTH_AND_HEIGHT,
+                        height: PLAYA_WIDTH_AND_HEIGHT,
+                      }}
                       venueId={venue.id}
                       otherIconsStyle={{ opacity: 0.4 }}
                     />
@@ -580,18 +608,3 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-  },
-};

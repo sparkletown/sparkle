@@ -10,9 +10,9 @@ import { useUser } from "hooks/useUser";
 import React, {
   useCallback,
   useMemo,
-  CSSProperties,
   useEffect,
   useState,
+  useRef,
 } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -33,6 +33,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -84,6 +85,18 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   useEffect(() => {
     register("placement");
   }, [register]);
+
+  const placementDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
+    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
+
+    placementDivRef.current?.scrollTo(
+      (state?.detailsPage?.venue.placement?.x ?? 0) - clientWidth / 2,
+      (state?.detailsPage?.venue.placement?.y ?? 0) - clientHeight / 2
+    );
+  }, [state]);
 
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
@@ -197,7 +210,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             to reach out if you want it moved.
           </p>
         )}
-        <div className="playa">
+        <div
+          className="playa"
+          ref={placementDivRef}
+          style={{ width: "100%", height: 1000, overflow: "scroll" }}
+        >
           <PlayaContainer
             rounded
             interactive={!isAdminPlaced}
@@ -207,30 +224,19 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             snapToGrid={false}
             iconsMap={iconsMap ?? {}}
             backgroundImage={PLAYA_IMAGE}
-            iconImageStyle={styles.iconImage}
-            draggableIconImageStyle={styles.draggableIconImage}
+            iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+            draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
             venueId={venueId}
             otherIconsStyle={{ opacity: 0.4 }}
+            containerStyle={{
+              width: PLAYA_WIDTH_AND_HEIGHT,
+              height: PLAYA_WIDTH_AND_HEIGHT,
+            }}
           />
         </div>
       </div>
     </div>
   );
-};
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-  },
 };
 
 interface DetailsFormLeftProps {
@@ -306,7 +312,20 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             ) : null}
           </div>
         ) : (
-          <input type="hidden" name="name" ref={register} value={values.name} />
+          <div className="input-container">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Your {templateType}: {values.name}
+            </h4>
+            <input
+              type="hidden"
+              name="name"
+              ref={register}
+              value={values.name}
+            />
+            <span className="input-info">
+              The URL of your venue will be: <b>{urlSafeName}</b>
+            </span>
+          </div>
         )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>

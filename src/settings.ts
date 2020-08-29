@@ -7,6 +7,7 @@ import {
   PROJECT_ID,
 } from "./secrets";
 import { venueLandingUrl } from "utils/url";
+import { CSSProperties } from "react";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -37,6 +38,26 @@ export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 export const PLAYA_IMAGE = "/maps/playa4k.jpg";
 export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
+export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
+  iconImage: {
+    width: PLAYA_VENUE_SIZE,
+    height: PLAYA_VENUE_SIZE,
+    overflow: "hidden",
+    borderRadius: "25%",
+    background: "rgba(147, 124, 99, 0.2)",
+    border: "2px solid rgba(147, 124, 99, 0.2)",
+    animation: "ripple 4s linear infinite",
+  },
+  draggableIconImage: {
+    width: PLAYA_VENUE_SIZE * 1.5,
+    height: PLAYA_VENUE_SIZE * 1.5,
+    overflow: "hidden",
+    borderRadius: "25%",
+    background: "rgba(147, 124, 99, 0.2)",
+    border: "2px solid rgba(147, 124, 99, 0.2)",
+    animation: "ripple 4s linear infinite",
+  },
+};
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,

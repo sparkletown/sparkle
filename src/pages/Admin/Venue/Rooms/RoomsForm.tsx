@@ -1,15 +1,10 @@
-import React, {
-  CSSProperties,
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import {
   ALL_VENUE_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_ICON_SIDE_PERCENTAGE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
@@ -325,8 +320,8 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               snapToGrid={false}
               iconsMap={currentRoomIcon}
               backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
-              iconImageStyle={styles.iconImage}
-              draggableIconImageStyle={styles.draggableIconImage}
+              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venue={venue}
               currentRoomIndex={editingRoomIndex}
               otherIconsStyle={{ opacity: 0.4 }}
@@ -336,21 +331,6 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       </div>
     </div>
   );
-};
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-  },
 };
 
 interface SubmitButtonProps {
