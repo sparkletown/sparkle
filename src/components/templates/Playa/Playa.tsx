@@ -123,7 +123,7 @@ const Playa = () => {
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
   const [videoState, setVideoState] = useState<string>();
   // REVISIT: show a modal when you leave & go elsewhere on playa. Need to send this to the relay when clicking a "join venue" button.
-  const [avatarVisible, setAvatarVisible] = useState(true);
+  const [, /*avatarVisible, */ setAvatarVisible] = useState(true);
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
