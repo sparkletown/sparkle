@@ -407,7 +407,7 @@ const Playa = () => {
               we hope you like your new spot. Please email us if you’d rather be
               somewhere else or if you have any other needs!
               <a href="mailto:sparkleverse.bm@gmail.com">
-                bm.sparkleverse@gmail.com
+                sparkleverse.bm@gmail.com
               </a>
             </>
           )}
