@@ -363,7 +363,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 prompt: `Wanna join ${avatarUser.partyName}'s video chat?`,
                 choices: [
                   {
-                    text: `Ask ${avatarUser.partyName} to join`,
+                    text: `Ask to join ${avatarUser.partyName}`,
                     onClick: () => askToJoin(avatarUser.id),
                   },
                   {
