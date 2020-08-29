@@ -3,6 +3,7 @@ import { User } from "types/User";
 import { RestrictedChatMessage } from "components/context/ChatContext";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { WithId } from "utils/id";
+import { getLinkFromText } from "../../../utils/getLinkFromText";
 
 interface MessageProps {
   sender: WithId<User>;
@@ -28,7 +29,7 @@ export const Message: React.FC<MessageProps> = ({
         width={profileImageSize}
         height={profileImageSize}
       />
-      <div className="message-bubble">{message.text}</div>
+      <div className="message-bubble">{getLinkFromText(message.text)}</div>
     </div>
   );
 };

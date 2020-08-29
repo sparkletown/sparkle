@@ -7,6 +7,8 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { Modal } from "react-bootstrap";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -24,6 +26,7 @@ const ArtPiece = () => {
   }));
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
 
@@ -40,10 +43,12 @@ const ArtPiece = () => {
         >
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}.</p>
-            <p className="short-description-sidebar">
+            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p>{venue.config?.landingPageConfig.description}</p>
+            <p style={{ fontSize: 13 }}>
+              {venue.config?.landingPageConfig.description}
+            </p>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
@@ -69,9 +74,18 @@ const ArtPiece = () => {
           chatInputPlaceholder="Chat"
         />
       </div>
-      <div className="sparkle-fairie">
-        <SparkleFairiesPopUp />
+      <div className="sparkle-fairies">
+        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
       </div>
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </WithNavigationBar>
   );
 };

@@ -6,7 +6,13 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useMemo, useState, CSSProperties, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
@@ -41,10 +47,12 @@ import {
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
 import { VenueOwnersModal } from "./VenueOwnersModal";
+import { dateEventTimeFormat } from "../../utils/time";
 
 dayjs.extend(advancedFormat);
 
@@ -110,6 +118,10 @@ type VenueDetailsProps = {
 type VenueDetailsPartProps = {
   venue: WithId<Venue>;
   roomIndex?: number;
+  showCreateEventModal: boolean;
+  setShowCreateEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
@@ -123,6 +135,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   );
 
   const venue = venues[venueId];
+  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   if (!venue) {
     return <>{`Oops, seems we can't find your venue!`}</>;
@@ -154,7 +168,15 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         <Switch>
           <Route
             path={`${match.url}/events`}
-            render={() => <EventsComponent venue={venue} />}
+            render={() => (
+              <EventsComponent
+                venue={venue}
+                showCreateEventModal={showCreateEventModal}
+                setShowCreateEventModal={setShowCreateEventModal}
+                editedEvent={editedEvent}
+                setEditedEvent={setEditedEvent}
+              />
+            )}
             venue={venue}
           />
           <Route
@@ -169,11 +191,26 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <Route
             path={`${match.url}`}
             render={() => (
-              <VenueInfoComponent venue={venue} roomIndex={roomIndex} />
+              <VenueInfoComponent
+                venue={venue}
+                roomIndex={roomIndex}
+                showCreateEventModal={showCreateEventModal}
+                setShowCreateEventModal={setShowCreateEventModal}
+              />
             )}
           />
         </Switch>
       </div>
+      <AdminEvent
+        show={showCreateEventModal}
+        onHide={() => {
+          setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+        template={venue.template}
+      />
     </>
   );
 };
@@ -181,6 +218,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
   roomIndex,
+  showCreateEventModal,
+  setShowCreateEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -188,8 +227,22 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
   const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
     push,
   ]);
+  const history = useHistory();
+  const match = useRouteMatch();
+  const placementDivRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
+    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
+
+    placementDivRef.current?.scrollTo(
+      (venue.placement?.x ?? 0) - clientWidth / 2,
+      (venue.placement?.y ?? 0) - clientHeight / 2
+    );
+  }, [venue]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
   const editText =
@@ -216,7 +269,11 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                   How your experience appears on the playa
                 </h4>
                 <div className="container venue-entrance-experience-container">
-                  <div className="playa-container">
+                  <div
+                    className="playa-container"
+                    ref={placementDivRef}
+                    style={{ width: "100%", height: 1000, overflow: "scroll" }}
+                  >
                     <PlayaContainer
                       rounded
                       interactive={false}
@@ -236,8 +293,14 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                       }
                       coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
                       backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={styles.iconImage}
-                      draggableIconImageStyle={styles.draggableIconImage}
+                      iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+                      draggableIconImageStyle={
+                        PLAYA_VENUE_STYLES.draggableIconImage
+                      }
+                      containerStyle={{
+                        width: PLAYA_WIDTH_AND_HEIGHT,
+                        height: PLAYA_WIDTH_AND_HEIGHT,
+                      }}
                       venueId={venue.id}
                       otherIconsStyle={{ opacity: 0.4 }}
                     />
@@ -291,6 +354,16 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                 {deleteText}
               </button>
             )}
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                history.push(`${match.url}/events`);
+                setShowCreateEventModal(true);
+              }}
+              style={{ marginBottom: 10, width: "100%" }}
+            >
+              Create an Event
+            </button>
             <Link
               to={{ search: "manageUsers=true" }}
               className="btn btn-primary"
@@ -318,11 +391,27 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         onHide={onManageUsersModalHide}
         venue={venue}
       />
+      <AdminEvent
+        show={showCreateEventModal}
+        onHide={() => {
+          setShowCreateEventModal(false);
+          setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
+        template={venue.template}
+      />
     </>
   );
 };
 
-const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
+const EventsComponent: React.FC<VenueDetailsPartProps> = ({
+  venue,
+  showCreateEventModal,
+  setShowCreateEventModal,
+  editedEvent,
+  setEditedEvent,
+}) => {
   useFirestoreConnect([
     {
       collection: "venues",
@@ -334,9 +423,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
   ]);
 
   const events = useSelector((state) => state.firestore.ordered.events);
-  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 
@@ -374,7 +461,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
           <input
             name="Event search bar"
             className="input-block search-event-input"
-            placeholder="Search for en event"
+            placeholder="Search for an event"
             onChange={(e) => setFilterText(e.target.value)}
             value={filterText}
           />
@@ -403,11 +490,10 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
                     <div className="date">
-                      {`${dayjs(startingDate).format("ha")}-${dayjs(
-                        endingDate
-                      ).format("ha")} ${dayjs(startingDate).format(
-                        "dddd MMMM Do"
-                      )}`}
+                      {`${dateEventTimeFormat(
+                        startingDate
+                      )}-${dateEventTimeFormat(endingDate)}
+                      ${dayjs(startingDate).format("dddd MMMM Do")}`}
                     </div>
                     <div className="event-description">
                       {venueEvent.description}
@@ -427,7 +513,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setEditedEvent(venueEvent);
+                              setEditedEvent && setEditedEvent(venueEvent);
                               setShowCreateEventModal(true);
                             }}
                           >
@@ -437,7 +523,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
                             role="link"
                             className="btn btn-primary buy-tickets-button"
                             onClick={() => {
-                              setEditedEvent(venueEvent);
+                              setEditedEvent && setEditedEvent(venueEvent);
                               setShowDeleteEventModal(true);
                             }}
                           >
@@ -465,7 +551,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
-          setEditedEvent(undefined);
+          setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
         event={editedEvent}
@@ -475,7 +561,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({ venue }) => {
         show={showDeleteEventModal}
         onHide={() => {
           setShowDeleteEventModal(false);
-          setEditedEvent(undefined);
+          setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
         event={editedEvent}
@@ -522,18 +608,3 @@ const Admin: React.FC = () => {
 };
 
 export default Admin;
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-  },
-};

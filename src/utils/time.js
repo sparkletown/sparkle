@@ -131,3 +131,9 @@ export const daysFromStartOfEvent = (utcSeconds) => {
   const differenceInDays = differenceInTime / (1000 * 3600 * 24);
   return Math.round(differenceInDays);
 };
+
+export const dateEventTimeFormat = (date) => {
+  const hh = String(date.getHours()).padStart(2, "0");
+  const mm = String(date.getMinutes()).padStart(2, "0");
+  return hh + ":" + mm;
+};

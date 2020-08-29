@@ -1,8 +1,16 @@
 import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
+import "./SparkleFairiesPopUp.scss";
+import { PLAYA_INFO_URL, REALITY_RANGERS_URL } from "../../../../src/settings";
 
-const SparkleFairiesPopUp = () => {
+interface PropsType {
+  setShowEventSchedule: Function;
+}
+
+const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
+  setShowEventSchedule,
+}) => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
@@ -11,21 +19,34 @@ const SparkleFairiesPopUp = () => {
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
-      <InformationCard title="Call the Sparkle Fairies">
-        <p className="title-sidebar">{`It's ok to need help!`}</p>
-        <p className="short-description-sidebar">
-          {`Sparkle Fairies (also knows as "reality rangers") are here to help if you need us. Whether you're feeling down, need a hug, have an issue with someone at the burn or taken too much of something, we're here to help.`}
-        </p>
-        <p>{`We're discreet, loving and here for you!`}</p>
-        <a
-          href="https://www.theguardian.com"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="btn btn-primary join-button"
-          style={{ fontSize: 16 }}
-        >
-          Go to private zoom
-        </a>
+      <InformationCard title="Information">
+        <div style={{ textAlign: "center" }}>
+          <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>
+          <a
+            href={PLAYA_INFO_URL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            Playa Information Booth
+          </a>
+          <div className="title">Call a Ranger</div>
+          <p className="title-sidebar">It's OK to need help!</p>
+          <p className="title-sidebar">
+            Rangers and harm reduction volunteers are available 24/7 to provide
+            support &amp; assistance, if you need it.
+          </p>
+          <a
+            href={REALITY_RANGERS_URL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            Launch Ranger Chat
+          </a>
+        </div>
       </InformationCard>
     </InformationLeftColumn>
   );

@@ -17,8 +17,10 @@ function getStyles(
     left,
     opacity: isDragging ? 0 : 1,
     height: isDragging ? 0 : "",
+    borderRadius: "25%",
+    background: "rgba(147, 124, 99, 0.2)",
+    border: "2px solid rgba(147, 124, 99, 0.2)",
     animation: "ripple 4s linear infinite",
-    borderRadius: "50%",
   };
 }
 

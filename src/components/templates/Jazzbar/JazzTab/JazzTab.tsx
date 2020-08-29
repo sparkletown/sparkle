@@ -11,7 +11,7 @@ import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import Room from "components/organisms/Room";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import React, { useContext, useEffect, useState } from "react";

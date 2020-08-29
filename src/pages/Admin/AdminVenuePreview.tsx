@@ -6,7 +6,7 @@ import { useQuery } from "hooks/useQuery";
 import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "components/templates/ArtPiece/ArtPiece";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -80,8 +80,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               coordinatesBoundary={100}
               iconsMap={{}}
               backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
-              iconImageStyle={styles.iconImage}
-              draggableIconImageStyle={styles.draggableIconImage}
+              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venue={campVenue}
             />
           </div>
@@ -228,19 +228,4 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
       )}
     </div>
   );
-};
-
-const styles: Record<string, CSSProperties> = {
-  iconImage: {
-    width: 60,
-    height: 60,
-    overflow: "hidden",
-    borderRadius: 30,
-  },
-  draggableIconImage: {
-    width: 70,
-    height: 70,
-    overflow: "hidden",
-    borderRadius: 35,
-  },
 };

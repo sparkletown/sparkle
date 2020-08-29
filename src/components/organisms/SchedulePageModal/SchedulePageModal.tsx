@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
 import "./SchedulePageModal.scss";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
-import {
-  formatDate,
-  formatHourAndMinute,
-  daysFromEndOfEvent,
-  daysFromStartOfEvent,
-} from "../../../utils/time";
+import { formatDate } from "../../../utils/time";
+import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -110,12 +106,17 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   return (
     <div>
       <div className="/modal-content /modal-content-events">
-        <h3 className="italic">One time events</h3>
+        <div style={{ display: "flex" }}>
+          <div>
+            <h3 className="italic">One time events</h3>
+          </div>
+          {typeof openVenues !== "object" && <div className="spinner-border" />}
+        </div>
         <div className="modal-tabs">
           {orderedEvents.map((day, idx) => (
             <button
-              key={formatDate(day?.dateDay.getTime() / 1000)}
-              className="modal-tab selected"
+              key={formatDate(day?.dateDay.getTime())}
+              className={`button ${idx === date ? "selected" : ""}`}
               style={{ width: 100 }}
               onClick={() => setDate(idx)}
             >
@@ -123,61 +124,15 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
             </button>
           ))}
         </div>
-        <div className="events-list events-list_monday">
+        <div className="events-list events-list_monday" style={{ height: 480 }}>
           {orderedEvents[date] &&
             orderedEvents[date].events.map((event) => (
-              <div
-                key={event.event.name}
-                className={`event ${
-                  Date.now() > event.event.start_utc_seconds * 1000
-                    ? "event_live"
-                    : ""
-                }`}
-              >
-                <div className="event-time">
-                  <div className="event-time-start">
-                    {daysFromStartOfEvent(event.event.start_utc_seconds) === 0
-                      ? "Starts today at:"
-                      : daysFromStartOfEvent(event.event.start_utc_seconds) > 0
-                      ? `Started ${daysFromStartOfEvent(
-                          event.event.start_utc_seconds
-                        )} days ago at:`
-                      : `Starts in ${-daysFromStartOfEvent(
-                          event.event.start_utc_seconds
-                        )} days at:`}
-                  </div>
-                  <div>
-                    {formatHourAndMinute(event.event.start_utc_seconds)}
-                  </div>
-                  <div className="event-time-end">
-                    {daysFromEndOfEvent(
-                      event.event.start_utc_seconds,
-                      event.event.duration_minutes
-                    ) === 0
-                      ? "Ends today at:"
-                      : `Ends in ${daysFromEndOfEvent(
-                          event.event.start_utc_seconds,
-                          event.event.duration_minutes
-                        )} days at:`}
-                  </div>
-                  <div>
-                    {formatHourAndMinute(
-                      event.event.start_utc_seconds +
-                        event.event.duration_minutes * 60
-                    )}
-                  </div>
-                  {Date.now() > event.event.start_utc_seconds * 1000 && (
-                    <span className="event-badge-live">Live</span>
-                  )}
-                </div>
-                <div className="event-text">
-                  <h5>{event.event.name}</h5>
-                  <p className="small">{event.event.description}</p>
-                  <a href={`/in/playa/${event.venue.id}`} className="small">
-                    {event.venue.name}
-                  </a>
-                </div>
-              </div>
+              <EventDisplay
+                key={event.event.name + Math.random().toString()}
+                event={event.event}
+                venue={event.venue}
+                joinNowButton
+              />
             ))}
         </div>
       </div>

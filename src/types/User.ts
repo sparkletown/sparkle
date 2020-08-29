@@ -6,6 +6,16 @@ interface Experience {
 //@debt typing I think this is correct from Room.tsx, need to confirm
 type UserExperienceData = Record<string, Experience>;
 
+// Store all things related to video chat where they can't be tampered with by other users
+export type VideoState = {
+  inRoomOwnedBy?: string;
+  removedParticipantUids?: string[];
+  requestingToJoinUid?: string;
+  acceptingRequestFromUid?: string;
+  decliningRequestsFromUids?: string[];
+  ackedDeclinesFromUids?: string[];
+};
+
 export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
@@ -18,4 +28,5 @@ export interface User {
   // @debt typing - user also has a dynamic set of attributes for the question answers
   // currently not possible to type them properly
   // [question: string]: string;
+  video?: VideoState;
 }

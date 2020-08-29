@@ -115,11 +115,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   className="logo-img"
                 />
               </Link>
-              <div className="button-container create-button-container">
-                <Link to="/admin" className="create-button">
-                  Create/Edit
-                </Link>
-              </div>
             </div>
             {user ? (
               <>
@@ -132,16 +127,19 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     onClick={() => (window.location.href = "/in/playa")}
                     className="playa-link"
                   >
-                    Go to playa
+                    Back to playa
                   </span>
                 )}
                 <div className="navbar-links">
-                  <div className="button-container create-button-container navbar-link-schedule">
-                    <div
-                      className="create-button"
-                      onClick={() => setShowEventSchedule(true)}
-                    >
-                      Event Schedule
+                  <div className="button-container navbar-link-schedule">
+                    <div onClick={() => setShowEventSchedule(true)}>
+                      <img
+                        src={"/navbar-link-events.png"}
+                        className="profile-icon"
+                        alt="radio"
+                        width="40"
+                        height="40"
+                      />
                     </div>
                   </div>
                   {hasUpcomingEvents && (
@@ -238,6 +236,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <Modal
         show={showEventSchedule}
         onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
       >
         <Modal.Body>
           <SchedulePageModal />

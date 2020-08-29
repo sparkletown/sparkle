@@ -77,3 +77,8 @@
   padding: 0 15px;
   background-color: $dark;
 }
+
+.custom-dialog {
+  width: 700px;
+  max-width: none !important;
+}

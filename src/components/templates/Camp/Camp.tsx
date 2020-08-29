@@ -16,6 +16,8 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { peopleAttending } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
+import { Modal } from "react-bootstrap";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -23,6 +25,7 @@ const Camp: React.FC = () => {
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
@@ -36,9 +39,9 @@ const Camp: React.FC = () => {
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-      acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
-      return acc;
-    }, {})
+        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        return acc;
+      }, {})
     : {};
 
   const modalHidden = useCallback(() => {
@@ -122,11 +125,20 @@ const Camp: React.FC = () => {
         />
       </div>
       <div className="sparkle-fairies">
-        <SparkleFairiesPopUp />
+        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
       </div>
       <div className="info-drawer-camp">
         <InfoDrawer venue={venue} />
       </div>
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

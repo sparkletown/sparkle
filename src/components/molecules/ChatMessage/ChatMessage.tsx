@@ -2,9 +2,10 @@ import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
 import { User } from "types/User";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { ChatMessage } from "components/context/ChatContext";
 import { WithId } from "utils/id";
+import { getLinkFromText } from "../../../utils/getLinkFromText";
 
 interface PropsType {
   chat: ChatMessage;
@@ -80,7 +81,7 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
             sender === "you" ? "right-side" : ""
           }`}
         >
-          {chat.text}
+          {getLinkFromText(chat.text)}
         </div>
         <div
           className={`chat-timestamp ${sender === "you" ? "right-side" : ""}`}

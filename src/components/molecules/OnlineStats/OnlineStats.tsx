@@ -9,17 +9,17 @@ import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCommentDots } from "@fortawesome/free-solid-svg-icons";
+import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
 
-interface PoLuckButtonProps {
+interface PotLuckButtonProps {
   openVenues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
-const PotLuckButton: React.FC<PoLuckButtonProps> = ({
+const PotLuckButton: React.FC<PotLuckButtonProps> = ({
   openVenues,
   afterSelect,
 }) => {
@@ -161,6 +161,8 @@ const OnlineStats: React.FC = () => {
                         eventsNow={currentEvents}
                         venue={venue}
                         showButton={true}
+                        futureEvents={false}
+                        joinNowButton={false}
                       />
                     </div>
                   ))}
@@ -226,7 +228,7 @@ const OnlineStats: React.FC = () => {
         >
           <span>
             {openVenues.length} venues open now / {onlineUsers.length} burners
-            live
+            live <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
       )}

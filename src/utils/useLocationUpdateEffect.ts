@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import firebase, { UserInfo } from "firebase";
+import firebase, { UserInfo } from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
 

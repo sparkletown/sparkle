@@ -7,6 +7,7 @@ import {
   PROJECT_ID,
 } from "./secrets";
 import { venueLandingUrl } from "utils/url";
+import { CSSProperties } from "react";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -16,15 +17,47 @@ export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Playa";
 export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
+export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
+export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const DEFAULT_USER_LIST_LIMIT = 22;
+export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const CREATE_EDIT_URL = "/admin";
+export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
+
+export const LOGO_IMAGE_WIDTH_PX = 200;
+export const BANNER_IMAGE_WIDTH_PX = 600;
+export const MAP_ICON_WIDTH_PX = 100;
+export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
+export const ROOM_IMAGE_WIDTH_PX = 300;
+export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels
 export const PLAYA_WIDTH_AND_HEIGHT = 4000;
-export const PLAYA_AVATAR_SIZE = 50;
-export const PLAYA_VENUE_SIZE = 50;
+export const PLAYA_AVATAR_SIZE = 30;
+export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 export const PLAYA_IMAGE = "/maps/playa4k.jpg";
 export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
+export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
+  iconImage: {
+    width: PLAYA_VENUE_SIZE,
+    height: PLAYA_VENUE_SIZE,
+    overflow: "hidden",
+    borderRadius: "25%",
+    background: "rgba(147, 124, 99, 0.2)",
+    border: "2px solid rgba(147, 124, 99, 0.2)",
+    animation: "ripple 4s linear infinite",
+  },
+  draggableIconImage: {
+    width: PLAYA_VENUE_SIZE * 1.5,
+    height: PLAYA_VENUE_SIZE * 1.5,
+    overflow: "hidden",
+    borderRadius: "25%",
+    background: "rgba(147, 124, 99, 0.2)",
+    border: "2px solid rgba(147, 124, 99, 0.2)",
+    animation: "ripple 4s linear infinite",
+  },
+};
 
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,

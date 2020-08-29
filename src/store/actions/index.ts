@@ -1,5 +1,5 @@
 import { leaveRoom } from "utils/useLocationUpdateEffect";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { Dispatch } from "hooks/useDispatch";
 import { ToggleButtonGroup } from "react-bootstrap";
 

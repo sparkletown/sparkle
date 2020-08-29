@@ -54,7 +54,9 @@ $sand: #937c63;
       }
       &.selected {
         opacity: 1;
-        font-weight: 500;
+        font-weight: bold;
+        color: yellow;
+        outline: none;
         &:after {
           content: "";
           position: absolute;
@@ -64,64 +66,6 @@ $sand: #937c63;
           background-color: white;
           left: 0;
           bottom: -1px;
-        }
-      }
-    }
-  }
-  .events-list {
-    height: 480px;
-    overflow-y: auto;
-    .event {
-      margin-bottom: 5px;
-      padding: 16px;
-      display: flex;
-      &:nth-child(even) {
-        background-color: rgba($dark, 0.5);
-      }
-      &.event_live {
-        background-color: rgba($primary, 0.2);
-        .event-time,
-        .event-text h5 {
-          color: $primary;
-        }
-      }
-
-      .event-time {
-        margin-right: 10px;
-        .event-time-start,
-        .event-time-end {
-          font-size: 0.9em;
-          display: inline-block;
-          width: 165px;
-          &.event-time-end {
-            opacity: 0.5;
-          }
-        }
-        .event-badge-live {
-          display: block;
-          margin-top: 6px;
-          border-radius: 16px;
-          background-color: rgba($primary, 0.2);
-          text-align: center;
-          color: $white;
-          padding: 2px 0;
-          font-weight: 500;
-        }
-      }
-      .event-text {
-        .h5 {
-          margin-top: 0;
-          margin: 0;
-        }
-        a {
-          font-weight: normal;
-          margin-top: 0.5rem;
-          display: inline-block;
-          color: white;
-          text-decoration: underline;
-          &:hover {
-            opacity: 0.7;
-          }
         }
       }
     }

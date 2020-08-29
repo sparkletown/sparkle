@@ -1,40 +1,66 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
-import { UserState } from "types/RelayMessage";
+import {
+  UserState,
+  UserStateKey,
+  UserVideoState,
+  stateBoolean,
+} from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
-import { Overlay } from "react-bootstrap";
 
 interface PropsType {
   serverSentState: UserState | undefined;
-  walkMode: boolean;
-  onClick: () => void;
+  bike: boolean | undefined;
+  videoState: string | undefined;
+  onClick: (event: React.MouseEvent) => void;
+  onMouseOver: (event: React.MouseEvent) => void;
+  onMouseLeave: (event: React.MouseEvent) => void;
   sendUpdatedState: (state: UserState) => void;
   setMyLocation: (x: number, y: number) => void;
+  setBikeMode: (bikeMode: boolean | undefined) => void;
+  setVideoState: (state: string | undefined) => void;
+  setAvatarVisible: (visibility: boolean) => void;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
 const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
+const KEY_INTERACTION_THROTTLE_MS = 25;
 
 export const MyAvatar: React.FunctionComponent<PropsType> = ({
   serverSentState,
-  walkMode,
+  bike,
+  videoState,
+  onClick,
+  onMouseOver,
+  onMouseLeave,
   sendUpdatedState,
   setMyLocation,
-  onClick,
+  setBikeMode,
+  setVideoState,
+  setAvatarVisible,
 }) => {
   const { profile } = useUser();
-  const ref = useRef<HTMLDivElement>(null);
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
-  const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
     setState(serverSentState);
     setMyLocation(serverSentState.x, serverSentState.y);
+    setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
+    setVideoState(serverSentState?.state?.[UserStateKey.Video]);
+    setAvatarVisible(
+      stateBoolean(serverSentState, UserStateKey.Visible) !== false
+    );
     stateInitialized.current = true;
-  }, [serverSentState, setMyLocation]);
+  }, [
+    serverSentState,
+    setMyLocation,
+    setBikeMode,
+    setVideoState,
+    setAvatarVisible,
+  ]);
 
   useLayoutEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};
@@ -49,9 +75,9 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         default:
           return;
       }
-      const moveIncrement = walkMode
-        ? ARROW_MOVE_INCREMENT_PX_WALK
-        : ARROW_MOVE_INCREMENT_PX_BIKE;
+      const moveIncrement = bike
+        ? ARROW_MOVE_INCREMENT_PX_BIKE
+        : ARROW_MOVE_INCREMENT_PX_WALK;
       setState((state) => {
         if (state) {
           let needsUpdate = false;
@@ -93,7 +119,7 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
         }
         return state;
       });
-    }, 50);
+    }, KEY_INTERACTION_THROTTLE_MS);
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
@@ -101,22 +127,44 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
       window.removeEventListener("keydown", keyListener);
       window.removeEventListener("keyup", keyListener);
     };
-  }, [walkMode, sendUpdatedState]);
+  }, [bike, sendUpdatedState]);
+
+  useEffect(() => {
+    setState((state) => {
+      if (!state) return state;
+      const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
+      const video = state?.state?.[UserStateKey.Video];
+      const needsUpdate = bike !== onBike || video !== videoState;
+      if (!needsUpdate) return state;
+
+      if (state.state) {
+        if (bike !== undefined)
+          state.state[UserStateKey.Bike] = bike.toString();
+        if (videoState !== undefined)
+          state.state[UserStateKey.Video] = videoState;
+      }
+      sendUpdatedState(state);
+      return { ...state };
+    });
+  }, [bike, videoState, sendUpdatedState]);
 
   if (!profile || !state) return <></>;
 
-  return (
-    <>
+  const visible = stateBoolean(state, UserStateKey.Visible) !== false;
+
+  return visible ? (
+    <div
+      className="avatar-container"
+      onMouseOver={onMouseOver}
+      onMouseLeave={onMouseLeave}
+      onClick={onClick}
+    >
       <div
-        ref={ref}
         className="avatar me"
         style={{
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
         }}
-        onMouseOver={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        onClick={onClick}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />
@@ -128,20 +176,25 @@ export const MyAvatar: React.FunctionComponent<PropsType> = ({
           />
         </div>
       </div>
-      <Overlay target={ref.current} show={showTooltip}>
-        {({ placement, arrowProps, show: _show, popper, ...props }) => (
-          // @ts-expect-error
-          <div {...props} style={{ ...props.style, padding: "10px" }}>
-            <div className="playa-venue-text">
-              <div className="playa-venue-maininfo">
-                <div className="playa-user-title">
-                  {profile?.partyName} (you)
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </Overlay>
-    </>
+      <div
+        className={`chatzone ${
+          videoState === UserVideoState.Locked ? "locked" : ""
+        }
+        ${videoState === UserVideoState.Open ? "open" : ""}`}
+        style={{
+          top: state.y - PLAYA_AVATAR_SIZE * 1.5,
+          left: state.x - PLAYA_AVATAR_SIZE * 1.5,
+        }}
+      />
+      <div
+        className={`mode-badge ${bike ? "bike" : "walk"}`}
+        style={{
+          top: state.y + PLAYA_AVATAR_SIZE / 3,
+          left: state.x - PLAYA_AVATAR_SIZE / 4,
+        }}
+      />
+    </div>
+  ) : (
+    <></>
   );
 };

@@ -66,7 +66,7 @@ const VenuePage = () => {
   const isEventFinished =
     event &&
     currentTimestamp >
-    event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
@@ -84,18 +84,18 @@ const VenuePage = () => {
   useFirestoreConnect(
     user
       ? {
-        collection: "privatechats",
-        doc: user.uid,
-        subcollections: [{ collection: "chats" }],
-        storeAs: "privatechats",
-      }
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
       : undefined
   );
 
   if (!user) {
     return (
       <WithNavigationBar>
-        <AuthenticationModal show={true} onHide={() => { }} showAuth="login" />
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
       </WithNavigationBar>
     );
   }
