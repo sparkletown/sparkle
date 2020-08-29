@@ -279,8 +279,8 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     user.room === PLAYA_VENUE_NAME
       ? venueInsideUrl(suspectedLocation.venueId)
       : suspectedLocation.roomTitle
-        ? venuePreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
-        : venuePlayaPreviewUrl(suspectedLocation.venueId);
+      ? venuePreviewUrl(suspectedLocation.venueId, suspectedLocation.roomTitle)
+      : venuePlayaPreviewUrl(suspectedLocation.venueId);
 
   const suspectedLocationText = suspectedLocation.roomTitle
     ? `Room ${suspectedLocation.roomTitle}, in Camp ${suspectedLocation.venueName}`

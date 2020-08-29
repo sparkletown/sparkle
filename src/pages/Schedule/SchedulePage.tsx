@@ -25,7 +25,6 @@ const DAYS_AHEAD = 100;
 export const SchedulePage = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
-  console.log("SchedulePage -> openVenues", openVenues);
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -87,8 +86,6 @@ export const SchedulePage = () => {
 
     return dates;
   }, [openVenues]);
-
-  console.log("SchedulePage -> orderedEvents", orderedEvents);
 
   return (
     <WithNavigationBar fullscreen>

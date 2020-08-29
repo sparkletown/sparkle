@@ -36,10 +36,25 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import firebase from "firebase/app";
+import { User } from "types/User";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import VideoChatLayer from "./VideoChatLayer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
-import { KEY_INTERACTION_THROTTLE_MS } from "./MyAvatar";
+
+export type MenuConfig = {
+  prompt?: string;
+  choices?: MenuChoice[];
+  cancelable: boolean;
+  onHide?: () => void;
+};
+
+type MenuChoice = {
+  text: string;
+  onClick: () => void;
+};
 
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
@@ -48,7 +63,7 @@ const TRACKPAD_ZOOM_INCREMENT_DELTA = 0.02;
 const ZOOM_MAX = 3;
 const GATE_X = 1416;
 const GATE_Y = 3689;
-const VENUE_NEARBY_DISTANCE = 80;
+const VENUE_NEARBY_DISTANCE = 250;
 const EDGE_MESSAGES = [
   "Some call it the digital trash fence.",
   "Daft Punk plays in an hour!",
@@ -67,6 +82,7 @@ const PLAYA_MARGIN_X = 75;
 const PLAYA_MARGIN_TOP = 60;
 // Let the playa scroll at the bottom, accounting for navbar padding and zooming the avatar
 const PLAYA_MARGIN_BOTTOM = 180;
+const VIDEO_CHAT_MIN_HEIGHT = 180;
 
 const isPlaced = (venue: Venue) => {
   return venue && venue.placement && venue.placement.x && venue.placement.y;
@@ -78,6 +94,9 @@ const minZoom = () =>
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
@@ -88,30 +107,56 @@ const Playa = () => {
   const [centeredOnMe, setCenteredOnMe] = useState<boolean>();
   const [atEdge, setAtEdge] = useState<boolean>();
   const [atEdgeMessage, setAtEdgeMessage] = useState<string>();
+  const playaRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
   const [dimensions, setDimensions] = React.useState({
     height: window.innerHeight,
     width: window.innerWidth,
   });
-  const [walkMode, setWalkMode] = useState(true);
+  const [videoChatHeight, setVideoChatHeight] = useState(
+    Math.max(VIDEO_CHAT_MIN_HEIGHT, window.innerHeight / 4)
+  );
+  const [autoAdjustVideoChatHeight, setAutoAdjustVideoChatHeight] = useState(
+    true
+  );
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
+  const [videoState, setVideoState] = useState<string>();
+  // REVISIT: show a modal when you leave & go elsewhere on playa. Need to send this to the relay when clicking a "join venue" button.
+  const [avatarVisible, setAvatarVisible] = useState(true);
+
+  const toggleBikeMode = useCallback(() => {
+    setBikeMode(!bikeMode);
+  }, [bikeMode]);
+  const toggleVideoState = useCallback(() => {
+    setVideoState((prev) =>
+      prev === UserVideoState.Open ? UserVideoState.Locked : UserVideoState.Open
+    );
+  }, []);
+
   const myXRef = useSynchronizedRef(myX);
   const myYRef = useSynchronizedRef(myY);
 
-  const toggleWalkMode = useCallback(() => {
-    setWalkMode(!walkMode);
-  }, [walkMode]);
-
-  const { user } = useUser();
+  const { user, profile } = useUser();
 
   useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
   useEffect(() => {
     const updateDimensions = () => {
       setDimensions({
-        height: window.innerHeight,
-        width: window.innerWidth,
+        height: playaRef?.current
+          ? playaRef.current.clientHeight
+          : window.innerHeight,
+        width: playaRef?.current
+          ? playaRef.current.clientWidth
+          : window.innerWidth,
       });
       setZoom((zoom) => Math.max(minZoom(), zoom));
+      if (autoAdjustVideoChatHeight) {
+        setVideoChatHeight(
+          Math.max(VIDEO_CHAT_MIN_HEIGHT, window.innerHeight / 4)
+        );
+      }
     };
     window.addEventListener("resize", updateDimensions);
     return () => {
@@ -292,10 +337,16 @@ const Playa = () => {
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
+  const venueRef = useRef<HTMLDivElement | null>(null);
+  const [showUserTooltip, setShowUserTooltip] = useState(false);
+  const [hoveredUser, setHoveredUser] = useState<User | null>();
+  const userRef = useRef<HTMLDivElement | null>(null);
+  const [showMenu, setShowMenu] = useState(false);
+  const [menu, setMenu] = useState<MenuConfig>();
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
-  const hoveredRed = useRef<HTMLDivElement>(null);
 
-  // Forces a rerender after `hoveredVenue` and `hoveredRed` changed
+  // Forces a rerender after `hoveredVenue` and `venueRef` changed
   // Otherwise changing the ref does not trigger a rerender
   // And the Overlay position is always one tick late
   // (next to the previously hovered venue)
@@ -327,6 +378,53 @@ const Playa = () => {
       return newAtEdge;
     });
   }, [centerX, centerY, myX, myY]);
+
+  useEffect(() => {
+    if (!sliderRef.current) return;
+
+    let dragStartY = 0;
+    let movedSoFarY = 0;
+    let dragging = false;
+    const sliderDragStart = (event: MouseEvent) => {
+      setAutoAdjustVideoChatHeight(false);
+      dragStartY = event.clientY;
+      movedSoFarY = 0;
+      dragging = true;
+      event.preventDefault();
+    };
+    const sliderDrag = throttle((event: MouseEvent) => {
+      if (!dragging) return;
+      const diffY = dragStartY - event.clientY;
+      setVideoChatHeight((prev) => {
+        const next = Math.max(
+          VIDEO_CHAT_MIN_HEIGHT,
+          prev + diffY - movedSoFarY
+        );
+        return next;
+      });
+      movedSoFarY = diffY;
+    }, 25);
+    const sliderDragMove = (event: MouseEvent) => {
+      if (dragging) {
+        event.preventDefault();
+        sliderDrag(event);
+      }
+    };
+    const sliderDragEnd = () => {
+      dragging = false;
+      window.dispatchEvent(new Event("resize"));
+    };
+    sliderRef.current.addEventListener("mousedown", sliderDragStart);
+    window.addEventListener("mousemove", sliderDragMove);
+    window.addEventListener("mouseup", sliderDragEnd);
+
+    const sliderRefCurrent = sliderRef.current;
+    return () => {
+      sliderRefCurrent.removeEventListener("mousedown", sliderDragStart);
+      window.removeEventListener("mousemove", sliderDrag);
+      window.removeEventListener("mouseup", sliderDragEnd);
+    };
+  }, [sliderRef]);
 
   const recenter = useCallback(() => {
     unstable_batchedUpdates(() => {
@@ -375,6 +473,14 @@ const Playa = () => {
   );
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+
+  const inVideoChat = profile && profile.video?.inRoomOwnedBy !== undefined;
+  const roomOwner = partygoers.find(
+    (partygoer) => partygoer.id === profile?.video?.inRoomOwnedBy
+  );
+  const roomOwnerIsInRoom =
+    roomOwner?.video?.inRoomOwnedBy === profile?.video?.inRoomOwnedBy;
+  const openVideoChat = inVideoChat && roomOwnerIsInRoom;
   const dustStorm = venue?.dustStorm;
 
   const changeDustStorm = useCallback(async () => {
@@ -402,9 +508,9 @@ const Playa = () => {
             }}
             onClick={() => showVenue(venue)}
             key={idx}
-            ref={hoveredVenue === venue ? hoveredRed : undefined}
-            onMouseOver={() => {
+            onMouseOver={(event: React.MouseEvent) => {
               setHoveredVenue(venue);
+              venueRef.current = event.target as HTMLDivElement;
               setShowVenueTooltip(true);
             }}
             onMouseLeave={() => setShowVenueTooltip(false)}
@@ -418,7 +524,10 @@ const Playa = () => {
             {selectedVenueId === venue.id && <div className="selected" />}
           </div>
         ))}
-        <Overlay target={hoveredRed.current} show={showVenueTooltip}>
+        <Overlay
+          target={venueRef.current}
+          show={showVenueTooltip && !showUserTooltip && !showMenu}
+        >
           {({ placement, arrowProps, show: _show, popper, ...props }) => (
             // @ts-expect-error
             <div
@@ -437,20 +546,100 @@ const Playa = () => {
             </div>
           )}
         </Overlay>
+        <Overlay
+          target={userRef.current}
+          show={!showVenueTooltip && showUserTooltip && !showMenu}
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="playa-venue-text">
+                <div className="playa-venue-maininfo">
+                  <div className="playa-user-title">
+                    {hoveredUser?.partyName}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </Overlay>
+        <Overlay
+          target={menuRef.current}
+          show={showMenu}
+          rootClose
+          onHide={() => {
+            if (menu?.onHide) {
+              menu.onHide();
+            }
+            setShowMenu(false);
+          }}
+        >
+          {({ placement, arrowProps, show: _show, popper, ...props }) => (
+            // @ts-expect-error
+            <div {...props} style={{ ...props.style, padding: "10px" }}>
+              <div className="playa-menu">
+                <div className="prompt">{menu?.prompt}</div>
+                <ul className="choices">
+                  {menu?.choices?.map((choice, index) => (
+                    <li
+                      className="choice"
+                      onClick={() => {
+                        if (choice.onClick) choice.onClick();
+                        document.body.click();
+                      }}
+                      key={index}
+                    >
+                      {choice.text}
+                    </li>
+                  ))}
+                  {menu?.cancelable && (
+                    <li
+                      className="choice"
+                      onClick={() => document.body.click()}
+                    >
+                      Cancel
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
+          )}
+        </Overlay>
       </>
     );
   }, [
+    hoveredUser,
     hoveredVenue,
+    menu,
     numberOfUsers,
     selectedVenueId,
-    showVenue,
+    showMenu,
+    showUserTooltip,
     showVenueTooltip,
     venues,
+    showVenue,
   ]);
 
   const avatarLayer = useMemo(
-    () => <AvatarLayer walkMode={walkMode} setMyLocation={setMyLocation} />,
-    [walkMode, setMyLocation]
+    () => (
+      <AvatarLayer
+        bikeMode={bikeMode}
+        setBikeMode={setBikeMode}
+        videoState={videoState}
+        setVideoState={setVideoState}
+        toggleVideoState={toggleVideoState}
+        setAvatarVisible={setAvatarVisible}
+        setMyLocation={setMyLocation}
+        setSelectedUserProfile={setSelectedUserProfile}
+        setShowUserTooltip={setShowUserTooltip}
+        setHoveredUser={setHoveredUser}
+        setShowMenu={setShowMenu}
+        setMenu={setMenu}
+        userRef={userRef}
+        menuRef={menuRef}
+      />
+    ),
+    [bikeMode, setMyLocation, toggleVideoState, videoState]
   );
 
   const mapContainer = useMemo(() => {
@@ -474,13 +663,13 @@ const Playa = () => {
             PLAYA_MARGIN_BOTTOM / zoom
         )
     );
+
     return (
       <div
         className="map-container"
         ref={mapRef}
         style={{
           transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
-          transition: `transform ${KEY_INTERACTION_THROTTLE_MS / 1000}s linear`,
         }}
       >
         {playaContent}
@@ -491,8 +680,8 @@ const Playa = () => {
     avatarLayer,
     centerX,
     centerY,
-    dimensions.height,
     dimensions.width,
+    dimensions.height,
     playaContent,
     zoom,
   ]);
@@ -524,7 +713,7 @@ const Playa = () => {
             }}
             onClick={() => changeDustStorm()}
           >
-            <div className="playa-controls" style={{ bottom: 270, right: 30 }}>
+            <div className="playa-controls" style={{ bottom: 320, right: 30 }}>
               <div className={`playa-controls-recenter show`}>
                 <div
                   className={`playa-dust-storm-btn${
@@ -536,7 +725,7 @@ const Playa = () => {
           </div>
         )}
         {dustStorm && <DustStorm />}
-        <div className="playa-container">
+        <div className="playa-container" ref={playaRef}>
           {mapContainer}
           <div className="playa-controls">
             <div
@@ -547,10 +736,17 @@ const Playa = () => {
             >
               <div className="playa-controls-recenter-btn" />
             </div>
-            <div className={"playa-controls-walkmode"} onClick={toggleWalkMode}>
+            <div className={"playa-controls-bikemode"} onClick={toggleBikeMode}>
               <div
-                className={`playa-controls-walkmode-btn ${
-                  walkMode ? "walk" : ""
+                className={`playa-controls-bikemode-btn ${
+                  bikeMode ? "bike" : ""
+                }`}
+              />
+            </div>
+            <div className={"playa-controls-video"} onClick={toggleVideoState}>
+              <div
+                className={`playa-controls-video-btn ${
+                  videoState === UserVideoState.Open ? "on" : "off"
                 }`}
               />
             </div>
@@ -590,11 +786,26 @@ const Playa = () => {
             <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
         </div>
+        <div
+          className={`playa-slider ${openVideoChat ? "show" : ""}`}
+          ref={sliderRef}
+        />
+        <div
+          className={`playa-videochat ${openVideoChat ? "show" : ""}`}
+          style={{ height: videoChatHeight }}
+        >
+          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
+        </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
             <VenuePreview user={user} venue={selectedVenue} />
           )}
         </Modal>
+        <UserProfileModal
+          show={selectedUserProfile !== undefined}
+          onHide={() => setSelectedUserProfile(undefined)}
+          userProfile={selectedUserProfile}
+        />
         <Modal
           show={showEventSchedule}
           onHide={() => setShowEventSchedule(false)}
@@ -607,22 +818,27 @@ const Playa = () => {
       </>
     );
   }, [
-    zoom,
-    atEdge,
-    atEdgeMessage,
-    isUserVenueOwner,
-    dustStorm,
-    mapContainer,
-    centeredOnMe,
-    recenter,
-    toggleWalkMode,
-    walkMode,
-    showModal,
     hideVenue,
     selectedVenue,
+    showModal,
     user,
-    showEventSchedule,
+    bikeMode,
+    toggleBikeMode,
+    videoState,
+    toggleVideoState,
+    centeredOnMe,
+    recenter,
+    atEdge,
+    atEdgeMessage,
+    zoom,
+    isUserVenueOwner,
+    dustStorm,
     changeDustStorm,
+    selectedUserProfile,
+    showEventSchedule,
+    openVideoChat,
+    videoChatHeight,
+    mapContainer,
   ]);
 };
 

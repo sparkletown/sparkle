@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import "./SchedulePageModal.scss";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
 import { formatDate } from "../../../utils/time";
