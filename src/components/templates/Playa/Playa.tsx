@@ -774,14 +774,14 @@ const Playa = () => {
               chatInputPlaceholder="Chat"
             />
           </div>
-          <div className="sparkle-fairies">
-            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          <div className="donate-pop-up">
+            <DonatePopUp />
           </div>
           <div className="create-edit-pop-up">
             <CreateEditPopUp />
           </div>
-          <div className="donate-pop-up">
-            <DonatePopUp />
+          <div className="sparkle-fairies">
+            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
         </div>
         <div

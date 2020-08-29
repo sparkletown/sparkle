@@ -28,11 +28,9 @@ const CreateEditPopUp: React.FunctionComponent = () => {
           </a>
           <div className="title">Help With Creating And Hosting</div>
           <p className="title-sidebar">
-            Want more help with creating and editing in SparklVerse?
-          </p>
-          <p className="title-sidebar">
-            We have created many resources to help you get started and host
-            amazing experiences. We call it the SparkleVersity.
+            Want more help creating in SparklVerse? We have resources to help
+            you get started and host amazing experiences. We call it the
+            SparkleVersity.
           </p>
           <a
             href={SPARKLEVERSITY_URL}
