@@ -165,6 +165,26 @@ const Playa = () => {
     };
   });
 
+  const loadedInitialState = useRef(false);
+  useEffect(() => {
+    if (!loadedInitialState.current) {
+      try {
+        const storedState = localStorage.getItem("playa");
+        if (storedState) {
+          const state = JSON.parse(storedState);
+          setZoom(Math.max(minZoom(), Math.min(state.zoom, ZOOM_MAX)));
+          setCenterX(state.x);
+          setCenterY(state.y);
+          loadedInitialState.current = true;
+        }
+      } catch {}
+    }
+    localStorage.setItem(
+      "playa",
+      JSON.stringify({ zoom, x: centerX, y: centerY })
+    );
+  }, [zoom, centerX, centerY, setZoom]);
+
   useLayoutEffect(() => {
     let dragging = false;
     let movedSoFarX = 0;
