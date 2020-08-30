@@ -57,6 +57,12 @@ type MenuChoice = {
   onClick: () => void;
 };
 
+export type Shout = {
+  created_at: number;
+  created_by: string;
+  text: string;
+};
+
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
@@ -134,6 +140,11 @@ const Playa = () => {
       prev === UserVideoState.Open ? UserVideoState.Locked : UserVideoState.Open
     );
   }, []);
+
+  const [movingUp, setMovingUp] = useState(false);
+  const [movingDown, setMovingDown] = useState(false);
+  const [movingLeft, setMovingLeft] = useState(false);
+  const [movingRight, setMovingRight] = useState(false);
 
   const myXRef = useSynchronizedRef(myX);
   const myYRef = useSynchronizedRef(myY);
@@ -366,6 +377,18 @@ const Playa = () => {
   const [menu, setMenu] = useState<MenuConfig>();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
+  const [shoutText, setShoutText] = useState("");
+
+  const shout = useCallback(() => {
+    if (!user || !shoutText || !shoutText.length) return;
+    const shout: Shout = {
+      created_at: new Date().getTime(),
+      created_by: user.uid,
+      text: shoutText,
+    };
+    firebase.firestore().collection(`experiences/playa/shouts`).add(shout);
+    setShoutText("");
+  }, [user, shoutText]);
 
   // Forces a rerender after `hoveredVenue` and `venueRef` changed
   // Otherwise changing the ref does not trigger a rerender
@@ -644,6 +667,10 @@ const Playa = () => {
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
         setAvatarVisible={setAvatarVisible}
+        movingUp={movingUp}
+        movingDown={movingDown}
+        movingLeft={movingLeft}
+        movingRight={movingRight}
         setMyLocation={setMyLocation}
         setSelectedUserProfile={setSelectedUserProfile}
         setShowUserTooltip={setShowUserTooltip}
@@ -654,7 +681,16 @@ const Playa = () => {
         menuRef={menuRef}
       />
     ),
-    [bikeMode, setMyLocation, toggleVideoState, videoState]
+    [
+      bikeMode,
+      movingUp,
+      movingDown,
+      movingLeft,
+      movingRight,
+      setMyLocation,
+      toggleVideoState,
+      videoState,
+    ]
   );
 
   const mapContainer = useMemo(() => {
@@ -736,6 +772,70 @@ const Playa = () => {
         {dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
+          {centeredOnMe && (
+            <div className="avatar-controls">
+              <div
+                className="up"
+                onMouseDown={(event) => {
+                  setMovingUp(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingUp(true);
+                  event.preventDefault();
+                }}
+                onMouseUp={() => setMovingUp(false)}
+                onTouchEnd={() => setMovingUp(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="down"
+                onMouseDown={(event) => {
+                  setMovingDown(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingDown(true);
+                  event.preventDefault();
+                }}
+                onMouseUp={() => setMovingDown(false)}
+                onTouchEnd={() => setMovingDown(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="left"
+                onMouseDown={(event) => {
+                  setMovingLeft(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingLeft(true);
+                  event.preventDefault();
+                }}
+                onMouseUp={() => setMovingLeft(false)}
+                onTouchEnd={() => setMovingLeft(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="right"
+                onMouseDown={(event) => {
+                  setMovingRight(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingRight(true);
+                  event.preventDefault();
+                }}
+                onMouseUp={() => setMovingRight(false)}
+                onTouchEnd={() => setMovingRight(false)}
+              >
+                <div className="btn" />
+              </div>
+            </div>
+          )}
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
@@ -777,9 +877,23 @@ const Playa = () => {
                 }
               ></div>
             </div>
-            <div className="playa-controls-shout">
+            <div className="playa-controls-shout" onClick={() => shout()}>
               <div className="playa-controls-shout-btn"></div>
             </div>
+            <form
+              onSubmit={(event) => {
+                shout();
+                event.preventDefault();
+              }}
+            >
+              <input
+                type="text"
+                className="playa-controls-shout-text"
+                placeholder="Shout across the playa..."
+                value={shoutText}
+                onChange={(event) => setShoutText(event.target.value)}
+              />
+            </form>
           </div>
           <div className="chat-pop-up">
             <ChatDrawer
@@ -840,6 +954,8 @@ const Playa = () => {
     toggleVideoState,
     centeredOnMe,
     recenter,
+    shout,
+    shoutText,
     atEdge,
     atEdgeMessage,
     zoom,

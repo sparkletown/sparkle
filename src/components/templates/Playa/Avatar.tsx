@@ -3,6 +3,7 @@ import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { PLAYA_AVATAR_SIZE } from "settings";
+import { Shout } from "./Playa";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -10,6 +11,7 @@ interface PropsType {
   y: number;
   videoState: string | undefined;
   bike: boolean;
+  shouts: Shout[];
   onClick: (event: React.MouseEvent) => void;
   onMouseOver: (event: React.MouseEvent) => void;
   onMouseLeave: (event: React.MouseEvent) => void;
@@ -21,6 +23,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
   y,
   videoState,
   bike,
+  shouts,
   onClick,
   onMouseOver,
   onMouseLeave,
@@ -68,6 +71,18 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           left: x - PLAYA_AVATAR_SIZE / 4,
         }}
       />
+      {shouts?.map((shout, index) => (
+        <div
+          className="shout"
+          style={{
+            top: y,
+            left: x,
+          }}
+          key={index}
+        >
+          {shout.text}
+        </div>
+      ))}
     </div>
   );
 };

@@ -14,11 +14,17 @@ import {
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
+import { Shout } from "./Playa";
 
 interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
+  shouts: Shout[];
+  movingUp: boolean;
+  movingDown: boolean;
+  movingLeft: boolean;
+  movingRight: boolean;
   onClick: (event: React.MouseEvent) => void;
   onMouseOver: (event: React.MouseEvent) => void;
   onMouseLeave: (event: React.MouseEvent) => void;
@@ -32,12 +38,18 @@ interface PropsType {
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
 const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
 const KEY_INTERACTION_THROTTLE_MS = 25;
+const ARROW_INTERACTION_THROTTLE_MS = 100;
 
 const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   {
     serverSentState,
     bike,
     videoState,
+    shouts,
+    movingUp,
+    movingDown,
+    movingLeft,
+    movingRight,
     onClick,
     onMouseOver,
     onMouseLeave,
@@ -70,6 +82,55 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setVideoState,
     setAvatarVisible,
   ]);
+
+  const arrowMoveInervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useLayoutEffect(() => {
+    const buttonMove = throttle(() => {
+      const moveIncrement = bike
+        ? ARROW_MOVE_INCREMENT_PX_BIKE
+        : ARROW_MOVE_INCREMENT_PX_WALK;
+      setState((state) => {
+        if (!state) return state;
+        let needsUpdate = false;
+        if (movingLeft && !movingRight) {
+          state.x = Math.max(0, state.x - moveIncrement);
+          needsUpdate = true;
+        }
+        if (movingRight && !movingLeft) {
+          state.x = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            state.x + moveIncrement
+          );
+          needsUpdate = true;
+        }
+        if (movingUp && !movingDown) {
+          state.y = Math.max(0, state.y - moveIncrement);
+          needsUpdate = true;
+        }
+        if (movingDown && !movingUp) {
+          state.y = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            state.y + moveIncrement
+          );
+          needsUpdate = true;
+        }
+        if (needsUpdate) {
+          sendUpdatedState(state);
+        }
+        return needsUpdate ? { ...state } : state;
+      });
+    });
+    if (movingUp || movingDown || movingLeft || movingRight) {
+      arrowMoveInervalRef.current = setInterval(
+        buttonMove,
+        ARROW_INTERACTION_THROTTLE_MS
+      );
+    } else if (arrowMoveInervalRef.current) {
+      clearInterval(arrowMoveInervalRef.current);
+      arrowMoveInervalRef.current = null;
+    }
+  }, [bike, movingUp, movingDown, movingRight, movingLeft, sendUpdatedState]);
 
   useLayoutEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};
@@ -203,6 +264,18 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           left: state.x - PLAYA_AVATAR_SIZE / 4,
         }}
       />
+      {shouts?.map((shout, index) => (
+        <div
+          className="shout"
+          style={{
+            top: state.y,
+            left: state.x,
+          }}
+          key={index}
+        >
+          {shout.text}
+        </div>
+      ))}
     </div>
   ) : (
     <></>
