@@ -21,7 +21,7 @@ const Step4 = () => {
           <ReactMic
             record={showMicrophone} // defaults -> false.  Set to true to begin recording
             visualSetting="frequencyBars" // defaults -> "sinewave".  Other option is "frequencyBars
-            strokeColor={"red"} // sinewave or frequency bar color
+            strokeColor="#937c63" // sinewave or frequency bar color
             backgroundColor="black"
             className="microphone"
           />
@@ -33,7 +33,7 @@ const Step4 = () => {
           </button>
           <button
             className={`btn btn-primary btn-block btn-centered`}
-            onClick={() => history.push(`/enter/step5`)}
+            onClick={() => history.push(`/enter/step6b`)}
           >
             Continue
           </button>
