@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 import { QuestionsFormData } from "./Questions";
+import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 type LocationUpdateData = {
   lastSeenAt: number;
@@ -17,6 +18,7 @@ const updateUserProfile = (
     | ProfileFormData
     | QuestionsFormData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
+    | RegisterData
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;

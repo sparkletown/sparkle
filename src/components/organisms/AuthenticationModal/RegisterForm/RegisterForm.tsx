@@ -5,6 +5,8 @@ import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
+import dayjs from "dayjs";
+import { updateUserProfile } from "pages/Account/helpers";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -16,6 +18,7 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
+  date_of_birth: string;
   code: string;
 }
 
@@ -23,6 +26,11 @@ export interface CodeOfConductQuestion {
   name: keyof CodeOfConductFormData;
   text: string;
   link?: string;
+}
+
+export interface RegisterData {
+  codes_used: string[];
+  date_of_birth: string;
 }
 
 const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
@@ -65,23 +73,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     try {
       await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signUp(data);
+      console.log("signUp", auth);
       if (auth.user) {
-        firebase
-          .firestore()
-          .doc(`users/${auth.user.uid}`)
-          .get()
-          .then((doc) => {
-            if (auth.user && doc.exists) {
-              firebase
-                .firestore()
-                .doc(`users/${auth.user.uid}`)
-                .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.code],
-                });
-            }
-          });
+        updateUserProfile(auth.user.uid, {
+          codes_used: [data.code],
+          date_of_birth: data.date_of_birth,
+        });
       }
-
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
       history.push(`/enter/step2`);
@@ -141,6 +139,27 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             Password must contain letters and numbers
           </span>
           {errors.password && errors.password.type === "required" && (
+            <span className="input-error">Password is required</span>
+          )}
+        </div>
+        <div className="input-group">
+          <input
+            name="date_of_birth"
+            className="input-block input-centered"
+            type="date"
+            max={dayjs().subtract(18, "year").format("YYYY-MM-DD")}
+            ref={register}
+          />
+          <span
+            className={`input-${
+              errors.date_of_birth && errors.date_of_birth.type === "pattern"
+                ? "error"
+                : "info"
+            }`}
+          >
+            You must be at least 18 years old to continue
+          </span>
+          {errors.date_of_birth && errors.date_of_birth.type === "required" && (
             <span className="input-error">Password is required</span>
           )}
         </div>
