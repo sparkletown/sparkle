@@ -758,29 +758,61 @@ const Playa = () => {
             <div className="avatar-controls">
               <div
                 className="up"
-                onMouseDown={() => setMovingUp(true)}
+                onMouseDown={(event) => {
+                  setMovingUp(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingUp(true);
+                  event.preventDefault();
+                }}
                 onMouseUp={() => setMovingUp(false)}
+                onTouchEnd={() => setMovingUp(false)}
               >
                 <div className="btn" />
               </div>
               <div
                 className="down"
-                onMouseDown={() => setMovingDown(true)}
+                onMouseDown={(event) => {
+                  setMovingDown(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingDown(true);
+                  event.preventDefault();
+                }}
                 onMouseUp={() => setMovingDown(false)}
+                onTouchEnd={() => setMovingDown(false)}
               >
                 <div className="btn" />
               </div>
               <div
                 className="left"
-                onMouseDown={() => setMovingLeft(true)}
+                onMouseDown={(event) => {
+                  setMovingLeft(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingLeft(true);
+                  event.preventDefault();
+                }}
                 onMouseUp={() => setMovingLeft(false)}
+                onTouchEnd={() => setMovingLeft(false)}
               >
                 <div className="btn" />
               </div>
               <div
                 className="right"
-                onMouseDown={() => setMovingRight(true)}
+                onMouseDown={(event) => {
+                  setMovingRight(true);
+                  event.preventDefault();
+                }}
+                onTouchStart={(event) => {
+                  setMovingRight(true);
+                  event.preventDefault();
+                }}
                 onMouseUp={() => setMovingRight(false)}
+                onTouchEnd={() => setMovingRight(false)}
               >
                 <div className="btn" />
               </div>
