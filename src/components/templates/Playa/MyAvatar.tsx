@@ -187,7 +187,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         </div>
       </div>
       <div
-        className={`chatzone ${
+        className={`chatzone me ${
           videoState === UserVideoState.Locked ? "locked" : ""
         }
         ${videoState === UserVideoState.Open ? "open" : ""}`}
