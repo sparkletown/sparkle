@@ -217,7 +217,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     if (!user) return;
 
-    const joinUserVideoChat = (uid: string) => {
+    const joinRoomOwnedBy = (uid: string) => {
       if (!user) return;
       firebase
         .firestore()
@@ -300,7 +300,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         partygoer.video?.acceptingRequestFromUid === user.uid
     );
     if (accepter?.id) {
-      joinUserVideoChat(accepter.id);
+      joinRoomOwnedBy(accepter.video?.inRoomOwnedBy ?? accepter.id);
     }
 
     // Menus to show
@@ -312,25 +312,35 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       (partygoer) => partygoer.video?.invitingUid === user.uid
     );
     if (inviter?.id) {
-      const menu = {
-        prompt: `${inviter.partyName} invited you to join their chat`,
-        choices: [
-          {
-            text: "Join them!",
-            onClick: () =>
-              joinUserVideoChat(inviter.video?.inRoomOwnedBy ?? inviter.id),
-          },
-          {
-            text: "Refuse politely",
-            onClick: () => declineRequestFrom(inviter.id),
-          },
-        ],
-        cancelable: false,
-        onClose: () => declineRequestFrom(inviter.id),
-      };
-      setMenu(menu);
-      menuRef.current = myAvatarRef.current;
-      setShowMenu(true);
+      if (videoState === UserVideoState.Open) {
+        acceptRequestFrom(inviter.id);
+        joinRoomOwnedBy(inviter.video?.inRoomOwnedBy ?? inviter.id);
+      } else {
+        const hostUser = partygoers.find(
+          (partygoer) => partygoer.id === inviter.video?.inRoomOwnedBy
+        );
+        const menu = {
+          prompt: `${inviter.partyName} invited you to join ${
+            hostUser ? `${hostUser.partyName}'s` : "their"
+          } chat`,
+          choices: [
+            {
+              text: "Join them!",
+              onClick: () =>
+                joinRoomOwnedBy(inviter.video?.inRoomOwnedBy ?? inviter.id),
+            },
+            {
+              text: "Refuse politely",
+              onClick: () => declineRequestFrom(inviter.id),
+            },
+          ],
+          cancelable: false,
+          onClose: () => declineRequestFrom(inviter.id),
+        };
+        setMenu(menu);
+        menuRef.current = myAvatarRef.current;
+        setShowMenu(true);
+      }
     }
 
     // Show a menu if someone has asked to join our chat
@@ -339,16 +349,22 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     );
     if (asker) {
       if (videoState === UserVideoState.Open) {
-        console.log("got ask from ", asker.id, "accepting");
         acceptRequestFrom(asker.id);
-        joinUserVideoChat(user.uid);
+        if (!profile?.video?.inRoomOwnedBy) {
+          joinRoomOwnedBy(user.uid);
+        }
       } else {
         const menu = {
           prompt: `${asker.partyName} would like to join your chat`,
           choices: [
             {
               text: "Accept",
-              onClick: () => acceptRequestFrom(asker.id),
+              onClick: () => {
+                acceptRequestFrom(asker.id);
+                if (!profile?.video?.inRoomOwnedBy) {
+                  joinRoomOwnedBy(user.uid);
+                }
+              },
             },
             {
               text: "Refuse politely",
@@ -463,14 +479,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         .update({ video: profile.video });
     };
 
-    const joinRoomOwnedBy = (uid: string) => {
-      if (!user || !profile?.video) return;
-      firebase
-        .firestore()
-        .doc(`users/${user.uid}`)
-        .update({ video: { inRoomOwnedBy: uid } });
-    };
-
     return Object.keys(userStateMap)
       .sort()
       .filter(
@@ -503,7 +511,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         };
         const joinInstantlyChoice = (uid: string) => ({
           text: "Join them!",
-          onClick: () => joinRoomOwnedBy(uid),
+          onClick: () => askToJoin(uid),
         });
 
         const meIsMarkedAsInAChat = profile?.video?.inRoomOwnedBy !== undefined;
@@ -550,12 +558,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 ],
                 cancelable: true,
               };
-              if (meIsInAChat) {
-                menu?.choices?.push(inviteThemToJoinYourChatChoice);
-              }
             } else {
               menu = {
-                prompt: `${avatarUser.partyName}: open to chat!`,
+                prompt: `${avatarUser.partyName}: host of an open chat`,
                 choices: [
                   joinInstantlyChoice(avatarUser.id),
                   inviteThemToJoinYourChatChoice,
@@ -578,9 +583,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               };
             } else {
               menu = {
-                prompt: `${avatarUser.partyName}: ready to chat!`,
+                prompt: `${avatarUser.partyName}: in an open chat owned by ${theirChatHostUser?.partyName}`,
                 choices: [
-                  joinInstantlyChoice(avatarUser.id),
+                  joinInstantlyChoice(theirChatHostUser?.id || ""),
                   inviteThemToJoinYourChatChoice,
                 ],
                 cancelable: true,
@@ -608,13 +613,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           } else if (theirChatIsOpen) {
             return {
               prompt: `${avatarUser.partyName}: open to chat!`,
-              choices: [
-                {
-                  text: "Join them!",
-                  onClick: () => askToJoin(avatarUser.id),
-                },
-                inviteThemToJoinYourChatChoice,
-              ],
+              choices: [joinInstantlyChoice(avatarUser.id)],
               cancelable: true,
             };
           }
