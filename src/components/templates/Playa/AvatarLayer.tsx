@@ -426,7 +426,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     if (!user) return;
 
     const askToJoin = (uid: string) => {
-      if (!user || !profile?.video) return;
+      if (!user || !profile) return;
+      if (!profile.video) profile.video = {};
       profile.video.askingToJoinUid = uid;
       if (profile.video.decliningRequestsFromUids?.includes(uid)) {
         profile.video.decliningRequestsFromUids.splice(
@@ -448,7 +449,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
 
     const inviteToJoin = (uid: string) => {
-      if (!user || !profile?.video) return;
+      if (!user || !profile) return;
+      if (!profile.video) profile.video = {};
       profile.video.invitingUid = uid;
       if (profile.video.decliningRequestsFromUids?.includes(uid)) {
         profile.video.decliningRequestsFromUids.splice(
