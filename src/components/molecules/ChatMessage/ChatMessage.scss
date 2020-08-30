@@ -27,7 +27,7 @@
     }
   }
 
-  .buble {
+  .bubble {
     padding: 10px;
     border-radius: 10px;
     color: $black;
@@ -40,6 +40,11 @@
     }
     &.room {
       background: $pink;
+    }
+
+    span,
+    a {
+      margin: 0 2px;
     }
   }
 }

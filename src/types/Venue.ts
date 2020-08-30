@@ -48,6 +48,7 @@ export interface Venue {
   placementRequests?: string;
   radioStations?: string[];
   dustStorm?: boolean;
+  bannerMessage?: string;
 }
 
 export interface VenuePlacement {

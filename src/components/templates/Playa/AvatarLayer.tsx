@@ -599,6 +599,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
               }`,
               choices: [
+                viewProfileChoice,
                 askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
                 inviteThemToJoinYourChatChoice,
               ],
@@ -639,7 +640,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           }
           return {
             prompt: `${avatarUser.partyName}: open to chat`,
-            choices: [inviteThemToJoinYourChatChoice],
+            choices: [viewProfileChoice, inviteThemToJoinYourChatChoice],
             cancelable: true,
           };
         };
