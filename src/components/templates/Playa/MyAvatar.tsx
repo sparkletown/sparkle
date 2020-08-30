@@ -167,7 +167,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
       onClick={onClick}
-      ref={ref}
     >
       <div
         className="avatar me"
@@ -175,6 +174,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           top: state.y - PLAYA_AVATAR_SIZE / 2,
           left: state.x - PLAYA_AVATAR_SIZE / 2,
         }}
+        ref={ref}
       >
         <div className="border-helper">
           <span className="img-vcenter-helper" />
