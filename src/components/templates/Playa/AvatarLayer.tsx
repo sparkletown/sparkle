@@ -534,32 +534,25 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
         const askToJoinTheirChatMenus: () => MenuConfig = () => {
           let menu: MenuConfig;
-          if (theyAreHostOfTheirChat) {
+          if (theirHostsChatIsLocked) {
             menu = {
-              prompt: `${avatarUser.partyName}: in a chat`,
+              prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
+                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+              }`,
+              choices: [viewProfileChoice],
+              cancelable: true,
+            };
+          } else {
+            menu = {
+              prompt: `${avatarUser.partyName}: in an open chat hosted by ${
+                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+              }`,
               choices: [
                 askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
                 inviteThemToJoinYourChatChoice,
               ],
               cancelable: true,
             };
-          } else {
-            if (theirHostsChatIsLocked) {
-              menu = {
-                prompt: `${avatarUser.partyName}: in a locked chat owned by ${theirChatHostUser?.partyName}`,
-                choices: [viewProfileChoice],
-                cancelable: true,
-              };
-            } else {
-              menu = {
-                prompt: `${avatarUser.partyName}: in an open chat owned by ${theirChatHostUser?.partyName}`,
-                choices: [
-                  askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
-                  inviteThemToJoinYourChatChoice,
-                ],
-                cancelable: true,
-              };
-            }
           }
           return menu;
         };
