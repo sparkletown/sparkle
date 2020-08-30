@@ -755,7 +755,7 @@ const Playa = () => {
             <div className={"playa-controls-video"} onClick={toggleVideoState}>
               <div
                 className={`playa-controls-video-btn ${
-                  videoState === UserVideoState.Open ? "on" : "off"
+                  videoState === UserVideoState.Locked ? "off" : "on"
                 }`}
               />
             </div>
