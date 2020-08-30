@@ -20,7 +20,7 @@ import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
-import { MenuConfig } from "./Playa";
+import { MenuConfig, Shout } from "./Playa";
 
 interface PropsType {
   bikeMode: boolean | undefined;
@@ -69,6 +69,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const firebase = useFirebase();
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
+  const [shouts, setShouts] = useState<Shout[]>([]);
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
@@ -93,6 +94,26 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     },
     [user, setMyLocation]
   );
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection(`experiences/playa/shouts`)
+      .where("created_at", ">", new Date().getTime())
+      .onSnapshot(function (snapshot) {
+        snapshot.docChanges().forEach(function (change) {
+          if (change.type === "added") {
+            const newShout = change.doc.data() as Shout;
+            setShouts((prevShouts) => [...prevShouts, newShout]);
+            setTimeout(() => {
+              setShouts((prevShouts) => {
+                return prevShouts.filter((r) => r !== newShout);
+              });
+            }, 15 * 1000);
+          }
+        });
+      });
+  }, [firebase, setShouts]);
 
   useEffect(() => {
     if (!user) return;
@@ -184,6 +205,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           serverSentState={myServerSentState}
           bike={bikeMode}
           videoState={videoState}
+          shouts={shouts.filter(
+            (shout) => shout.created_by === selfUserProfile.id
+          )}
           sendUpdatedState={sendUpdatedState}
           movingUp={movingUp}
           movingDown={movingDown}
@@ -211,6 +235,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       myServerSentState,
       bikeMode,
       videoState,
+      shouts,
       sendUpdatedState,
       setMyLocation,
       setBikeMode,
@@ -486,6 +511,17 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         .update({ video: profile.video });
     };
 
+    const shoutsByUid = shouts.reduce<{ [key: string]: Shout[] }>(
+      (map, shout) => {
+        if (!map[shout.created_by]) {
+          map[shout.created_by] = [];
+        }
+        map[shout.created_by].push(shout);
+        return map;
+      },
+      {}
+    );
+
     return Object.keys(userStateMap)
       .sort()
       .filter(
@@ -616,6 +652,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             y={userStateMap[uid].y}
             videoState={videoState}
             bike={stateBoolean(userStateMap[uid], UserStateKey.Bike) === true}
+            shouts={shoutsByUid[uid]}
             onClick={(event: React.MouseEvent) => {
               setMenu(generateMenu());
               menuRef.current = event.target as HTMLDivElement;
@@ -643,6 +680,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     menuRef,
     setShowMenu,
     setMenu,
+    shouts,
     firebase,
   ]);
 

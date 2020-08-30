@@ -183,6 +183,35 @@ $playa-mode-badge-icon-size: 9px;
     right: 0px;
     top: $navbar-height * 2;
   }
+
+  .shout {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: none;
+    font-size: 44px;
+    position: absolute;
+    border-radius: 22px;
+    padding: 6px 10px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    font-size: 22px;
+
+    padding-left: 44px;
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      left: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-image: url("./img/playa-controls-shout.png");
+      background-repeat: no-repeat;
+      background-size: 20px 20px;
+      background-position: center;
+    }
+  }
 }
 
 .playa-venue-text {
@@ -544,10 +573,25 @@ $playa-mode-badge-icon-size: 9px;
       }
     }
   }
+  .playa-controls-shout-text {
+    position: absolute;
+    right: 50px;
+    bottom: 0;
+    width: 300px;
+    background-color: rgba($sand, 0.8);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    text-align: left;
+
+    &:focus {
+      box-shadow: 0 0 0 2px $sand;
+    }
+    &::placeholder {
+      color: rgba(white, 0.8);
+    }
+  }
 }
 
 .avatar-controls {
-  text-emphasis-color: blue;
   .up,
   .down,
   .left,

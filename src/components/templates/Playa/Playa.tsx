@@ -57,6 +57,12 @@ type MenuChoice = {
   onClick: () => void;
 };
 
+export type Shout = {
+  created_at: number;
+  created_by: string;
+  text: string;
+};
+
 const ZOOM_INCREMENT = 1.2;
 const DOUBLE_CLICK_ZOOM_INCREMENT = 1.5;
 const WHEEL_ZOOM_INCREMENT_DELTA = 0.05;
@@ -371,6 +377,18 @@ const Playa = () => {
   const [menu, setMenu] = useState<MenuConfig>();
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
+  const [shoutText, setShoutText] = useState("");
+
+  const shout = useCallback(() => {
+    if (!user || !shoutText || !shoutText.length) return;
+    const shout: Shout = {
+      created_at: new Date().getTime(),
+      created_by: user.uid,
+      text: shoutText,
+    };
+    firebase.firestore().collection(`experiences/playa/shouts`).add(shout);
+    setShoutText("");
+  }, [user, shoutText]);
 
   // Forces a rerender after `hoveredVenue` and `venueRef` changed
   // Otherwise changing the ref does not trigger a rerender
@@ -859,9 +877,23 @@ const Playa = () => {
                 }
               ></div>
             </div>
-            <div className="playa-controls-shout">
+            <div className="playa-controls-shout" onClick={() => shout()}>
               <div className="playa-controls-shout-btn"></div>
             </div>
+            <form
+              onSubmit={(event) => {
+                shout();
+                event.preventDefault();
+              }}
+            >
+              <input
+                type="text"
+                className="playa-controls-shout-text"
+                placeholder="Shout across the playa..."
+                value={shoutText}
+                onChange={(event) => setShoutText(event.target.value)}
+              />
+            </form>
           </div>
           <div className="chat-pop-up">
             <ChatDrawer
@@ -922,6 +954,8 @@ const Playa = () => {
     toggleVideoState,
     centeredOnMe,
     recenter,
+    shout,
+    shoutText,
     atEdge,
     atEdgeMessage,
     zoom,

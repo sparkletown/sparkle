@@ -14,11 +14,13 @@ import {
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
+import { Shout } from "./Playa";
 
 interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
+  shouts: Shout[];
   movingUp: boolean;
   movingDown: boolean;
   movingLeft: boolean;
@@ -43,6 +45,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     serverSentState,
     bike,
     videoState,
+    shouts,
     movingUp,
     movingDown,
     movingLeft,
@@ -261,6 +264,18 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           left: state.x - PLAYA_AVATAR_SIZE / 4,
         }}
       />
+      {shouts?.map((shout, index) => (
+        <div
+          className="shout"
+          style={{
+            top: state.y,
+            left: state.x,
+          }}
+          key={index}
+        >
+          {shout.text}
+        </div>
+      ))}
     </div>
   ) : (
     <></>
