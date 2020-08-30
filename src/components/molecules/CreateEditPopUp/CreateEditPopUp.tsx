@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
-import { CREATE_EDIT_URL, SPARKLEVERSITY_URL } from "../../../settings";
+import {
+  CREATE_EDIT_URL,
+  SPARKLEVERSITY_URL,
+  SPARKLEVERSE_COMMUNITY_URL,
+} from "../../../settings";
 
 const CreateEditPopUp: React.FunctionComponent = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
@@ -39,6 +43,20 @@ const CreateEditPopUp: React.FunctionComponent = () => {
             style={{ fontSize: 14 }}
           >
             Check Out SparkleVersity
+          </a>
+          <div className="title">Join the Community</div>
+          <p className="title-sidebar">
+            Our facebook group is the place to connect to fellow burners,
+            discover and learn.
+          </p>
+          <a
+            href={SPARKLEVERSE_COMMUNITY_URL}
+            rel="noopener noreferrer"
+            target="_blank"
+            className="btn btn-primary join-button"
+            style={{ fontSize: 14 }}
+          >
+            SparkleVerse Community
           </a>
         </div>
       </InformationCard>
