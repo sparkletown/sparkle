@@ -15,6 +15,7 @@ import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
+import { getLinkFromText } from "utils/getLinkFromText";
 
 interface PropsType {
   serverSentState: UserState | undefined;
@@ -273,7 +274,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           }}
           key={index}
         >
-          {shout.text}
+          {getLinkFromText(shout.text)}
         </div>
       ))}
     </div>

@@ -642,7 +642,7 @@ input.btn.btn-primary.btn-success {
       rgba($white, 0.05) 100%
     );
 
-    .buble {
+    .bubble {
       padding: 10px;
       border-radius: 10px;
       color: $white;
@@ -655,6 +655,11 @@ input.btn.btn-primary.btn-success {
       }
       &.room {
         background: $dark;
+      }
+
+      span,
+      a {
+        margin: 0 2px;
       }
     }
   }
@@ -772,4 +777,11 @@ span.link {
 
 .flex-one {
   flex: 1;
+}
+
+.split-words {
+  span,
+  a {
+    margin: 0 2px;
+  }
 }

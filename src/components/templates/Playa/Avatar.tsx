@@ -4,6 +4,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { PLAYA_AVATAR_SIZE } from "settings";
 import { Shout } from "./Playa";
+import { getLinkFromText } from "utils/getLinkFromText";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -80,7 +81,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           }}
           key={index}
         >
-          {shout.text}
+          {getLinkFromText(shout.text)}
         </div>
       ))}
     </div>

@@ -44,6 +44,7 @@ import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
+import { getLinkFromText } from "utils/getLinkFromText";
 
 export type MenuConfig = {
   prompt?: string;
@@ -740,11 +741,18 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
+        {venue?.bannerMessage && (
+          <div className="playa-banner split-words">
+            <>
+              <strong>SparkleVerse Announcement:</strong>{" "}
+              {getLinkFromText(venue.bannerMessage)}
+            </>
+          </div>
+        )}
         {atEdge && (
           <div className="playa-banner">
             <>
-              <strong>{`You're at the edge of the map.`}</strong>{" "}
-              {atEdgeMessage}
+              <strong>You're at the edge of the map.</strong> {atEdgeMessage}
             </>
           </div>
         )}
@@ -967,6 +975,7 @@ const Playa = () => {
     inVideoChat,
     videoChatHeight,
     mapContainer,
+    venue,
   ]);
 };
 
