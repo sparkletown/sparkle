@@ -495,7 +495,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           onClick: () => askToJoin(uid),
         });
         const inviteThemToJoinYourChatChoice = {
-          text: "Invite them to your chat",
+          text: "Invite them to chat",
           onClick: () => inviteToJoin(uid),
         };
 
@@ -565,7 +565,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         const generateMenu: () => MenuConfig = () => {
           if (theirChatIsLocked) {
             return {
-              prompt: `${avatarUser.partyName}: in a locked chat`,
+              prompt: `${avatarUser.partyName}: ${
+                theyAreInAChat
+                  ? "in a locked video chat"
+                  : "not allowing video chat"
+              }`,
               choices: [viewProfileChoice],
               cancelable: true,
             };
