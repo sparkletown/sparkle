@@ -7,6 +7,7 @@ $side-padding: 30px;
 $border-radius: 28px;
 $large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
 $login-max-width: 540px;
+$login-wide-max-width: 1140px;
 
 .checkbox {
   display: block;
@@ -162,7 +163,6 @@ $login-max-width: 540px;
   }
   .step-container {
     max-height: 100%;
-    overflow: hidden;
     position: absolute;
     top: 10%;
     left: 20%;
@@ -282,9 +282,7 @@ $login-max-width: 540px;
     }
   }
   .step6b-container {
-    top: 50%;
-    bottom: 20%;
-    max-width: $login-max-width;
+    max-width: $login-wide-max-width;
     margin: 0 auto;
     padding: $side-padding;
     background-color: $dark;
@@ -293,6 +291,42 @@ $login-max-width: 540px;
     border-radius: $border-radius;
     .step6b-welcome-message {
       margin-bottom: 30px;
+    }
+  }
+
+  .navigation-guide {
+    text-align: left;
+    .heading {
+      .navigating-header {
+        font-size: 4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: $sand;
+      }
+      .logo-container {
+        text-align: right;
+        vertical-align: middle;
+        height: 100%;
+
+        .logo {
+          margin-top: 1rem;
+        }
+      }
+    }
+    .content {
+      .action-title {
+        font-size: 2.4rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: rgb(228, 204, 99);
+      }
+      .action-details {
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+    }
+    .cta {
+      margin-top: 2rem;
     }
   }
 }
