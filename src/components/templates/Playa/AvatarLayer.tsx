@@ -482,7 +482,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           1
         );
       }
-      console.log("askToJoin", profile.video);
       firebase
         .firestore()
         .doc(`users/${user.uid}`)
