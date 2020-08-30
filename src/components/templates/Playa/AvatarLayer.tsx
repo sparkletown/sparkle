@@ -546,6 +546,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 prompt: `${avatarUser.partyName}: in a locked chat`,
                 choices: [
                   askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
+                  inviteThemToJoinYourChatChoice,
                 ],
                 cancelable: true,
               };
@@ -555,32 +556,33 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             } else {
               menu = {
                 prompt: `${avatarUser.partyName}: open to chat!`,
-                choices: [joinInstantlyChoice(avatarUser.id)],
+                choices: [
+                  joinInstantlyChoice(avatarUser.id),
+                  inviteThemToJoinYourChatChoice,
+                ],
                 cancelable: true,
               };
-              if (meIsInAChat) {
-                menu?.choices?.push(inviteThemToJoinYourChatChoice);
-              }
             }
           } else {
             if (theirChatIsLocked) {
               menu = {
-                prompt: `${avatarUser.partyName}: in a locked chat owned by ${theirChatHostUser?.partyName}`,
+                prompt: `${avatarUser.partyName}: in a chat owned by ${theirChatHostUser?.partyName}`,
                 choices: [
                   askToJoinThemChoice(
                     theirChatHostUser?.partyName,
                     theirChatHostUser?.id || ""
                   ),
+                  inviteThemToJoinYourChatChoice,
                 ],
                 cancelable: true,
               };
-              if (meIsInAChat) {
-                menu?.choices?.push(inviteThemToJoinYourChatChoice);
-              }
             } else {
               menu = {
                 prompt: `${avatarUser.partyName}: ready to chat!`,
-                choices: [joinInstantlyChoice(avatarUser.id)],
+                choices: [
+                  joinInstantlyChoice(avatarUser.id),
+                  inviteThemToJoinYourChatChoice,
+                ],
                 cancelable: true,
               };
             }
@@ -611,6 +613,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                   text: "Join them!",
                   onClick: () => askToJoin(avatarUser.id),
                 },
+                inviteThemToJoinYourChatChoice,
               ],
               cancelable: true,
             };
