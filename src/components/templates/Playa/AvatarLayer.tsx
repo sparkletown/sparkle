@@ -29,6 +29,10 @@ interface PropsType {
   setVideoState: (state: string | undefined) => void;
   toggleVideoState: () => void;
   setAvatarVisible: (visibility: boolean) => void;
+  movingUp: boolean;
+  movingDown: boolean;
+  movingLeft: boolean;
+  movingRight: boolean;
   setMyLocation(x: number, y: number): void;
   setSelectedUserProfile: (user: WithId<User>) => void;
   setShowUserTooltip: (showUserTooltip: boolean) => void;
@@ -46,6 +50,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   setVideoState,
   toggleVideoState,
   setAvatarVisible,
+  movingUp,
+  movingDown,
+  movingLeft,
+  movingRight,
   setMyLocation,
   setSelectedUserProfile,
   setShowUserTooltip,
@@ -177,6 +185,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           bike={bikeMode}
           videoState={videoState}
           sendUpdatedState={sendUpdatedState}
+          movingUp={movingUp}
+          movingDown={movingDown}
+          movingLeft={movingLeft}
+          movingRight={movingRight}
           setMyLocation={setMyLocation}
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
@@ -204,6 +216,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       setBikeMode,
       setVideoState,
       setAvatarVisible,
+      movingUp,
+      movingDown,
+      movingLeft,
+      movingRight,
       selfUserProfile,
       setHoveredUser,
       setShowUserTooltip,

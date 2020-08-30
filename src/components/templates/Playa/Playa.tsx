@@ -135,6 +135,11 @@ const Playa = () => {
     );
   }, []);
 
+  const [movingUp, setMovingUp] = useState(false);
+  const [movingDown, setMovingDown] = useState(false);
+  const [movingLeft, setMovingLeft] = useState(false);
+  const [movingRight, setMovingRight] = useState(false);
+
   const myXRef = useSynchronizedRef(myX);
   const myYRef = useSynchronizedRef(myY);
 
@@ -644,6 +649,10 @@ const Playa = () => {
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
         setAvatarVisible={setAvatarVisible}
+        movingUp={movingUp}
+        movingDown={movingDown}
+        movingLeft={movingLeft}
+        movingRight={movingRight}
         setMyLocation={setMyLocation}
         setSelectedUserProfile={setSelectedUserProfile}
         setShowUserTooltip={setShowUserTooltip}
@@ -654,7 +663,16 @@ const Playa = () => {
         menuRef={menuRef}
       />
     ),
-    [bikeMode, setMyLocation, toggleVideoState, videoState]
+    [
+      bikeMode,
+      movingUp,
+      movingDown,
+      movingLeft,
+      movingRight,
+      setMyLocation,
+      toggleVideoState,
+      videoState,
+    ]
   );
 
   const mapContainer = useMemo(() => {
@@ -736,6 +754,38 @@ const Playa = () => {
         {dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
+          {centeredOnMe && (
+            <div className="avatar-controls">
+              <div
+                className="up"
+                onMouseDown={() => setMovingUp(true)}
+                onMouseUp={() => setMovingUp(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="down"
+                onMouseDown={() => setMovingDown(true)}
+                onMouseUp={() => setMovingDown(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="left"
+                onMouseDown={() => setMovingLeft(true)}
+                onMouseUp={() => setMovingLeft(false)}
+              >
+                <div className="btn" />
+              </div>
+              <div
+                className="right"
+                onMouseDown={() => setMovingRight(true)}
+                onMouseUp={() => setMovingRight(false)}
+              >
+                <div className="btn" />
+              </div>
+            </div>
+          )}
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
