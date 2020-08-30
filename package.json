@@ -15,6 +15,7 @@
     "@types/qs": "^6.9.3",
     "@types/react-resize-detector": "^4.2.0",
     "@types/ws": "^7.2.6",
+    "axios": "^0.20.0",
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.5.0",
     "date-fns": "^2.12.0",

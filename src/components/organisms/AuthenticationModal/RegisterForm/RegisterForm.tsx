@@ -3,6 +3,8 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
+import { CODE_CHECK_URL } from "secrets";
+import axios from "axios";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -14,6 +16,7 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
+  code: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -60,12 +63,34 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await signUp(data);
+      await axios.get(CODE_CHECK_URL + data.code);
+      const auth = await signUp(data);
+      if (auth.user) {
+        firebase
+          .firestore()
+          .doc(`users/${auth.user.uid}`)
+          .get()
+          .then((doc) => {
+            if (auth.user && doc.exists) {
+              firebase
+                .firestore()
+                .doc(`users/${auth.user.uid}`)
+                .update({
+                  codes_used: [...(doc.data()?.codes_used || []), data.code],
+                });
+            }
+          });
+      }
+
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
       history.push(`/enter/step2`);
     } catch (error) {
-      setError("email", "firebase", error.message);
+      if (error.response?.status === 404) {
+        setError("code", "validation", `Code ${data.code} is not valid`);
+      } else {
+        setError("email", "firebase", error.message);
+      }
     }
   };
 
@@ -117,6 +142,28 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           </span>
           {errors.password && errors.password.type === "required" && (
             <span className="input-error">Password is required</span>
+          )}
+        </div>
+        <div className="input-group">
+          <input
+            name="code"
+            className="input-block input-centered"
+            type="code"
+            placeholder="Unique Code From Your Email"
+            ref={register({
+              required: true,
+            })}
+          />
+          {errors.code && (
+            <span className="input-error">
+              {errors.code.type === "required" ? (
+                <>
+                  Enter the unique code from your email. The code is required.
+                </>
+              ) : (
+                errors.code.message
+              )}
+            </span>
           )}
         </div>
         {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
