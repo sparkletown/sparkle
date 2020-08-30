@@ -496,12 +496,6 @@ const Playa = () => {
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
 
   const inVideoChat = profile && profile.video?.inRoomOwnedBy !== undefined;
-  const roomOwner = partygoers.find(
-    (partygoer) => partygoer.id === profile?.video?.inRoomOwnedBy
-  );
-  const roomOwnerIsInRoom =
-    roomOwner?.video?.inRoomOwnedBy === profile?.video?.inRoomOwnedBy;
-  const openVideoChat = inVideoChat && roomOwnerIsInRoom;
   const dustStorm = venue?.dustStorm;
 
   const changeDustStorm = useCallback(async () => {
@@ -761,7 +755,7 @@ const Playa = () => {
             <div className={"playa-controls-video"} onClick={toggleVideoState}>
               <div
                 className={`playa-controls-video-btn ${
-                  videoState === UserVideoState.Open ? "on" : "off"
+                  videoState === UserVideoState.Locked ? "off" : "on"
                 }`}
               />
             </div>
@@ -805,11 +799,11 @@ const Playa = () => {
           </div>
         </div>
         <div
-          className={`playa-slider ${openVideoChat ? "show" : ""}`}
+          className={`playa-slider ${inVideoChat ? "show" : ""}`}
           ref={sliderRef}
         />
         <div
-          className={`playa-videochat ${openVideoChat ? "show" : ""}`}
+          className={`playa-videochat ${inVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
           <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
@@ -854,7 +848,7 @@ const Playa = () => {
     changeDustStorm,
     selectedUserProfile,
     showEventSchedule,
-    openVideoChat,
+    inVideoChat,
     videoChatHeight,
     mapContainer,
   ]);

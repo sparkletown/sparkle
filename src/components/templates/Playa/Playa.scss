@@ -60,7 +60,7 @@ $playa-mode-badge-icon-size: 9px;
         display: block;
         background-color: $chat-open;
       }
-      &.locked {
+      &.me.locked {
         display: block;
         background-color: $chat-closed;
       }
