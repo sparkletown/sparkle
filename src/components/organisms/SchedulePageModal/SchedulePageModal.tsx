@@ -101,7 +101,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       <div className="/modal-content /modal-content-events">
         <div style={{ display: "flex" }}>
           <div>
-            <h3 className="italic">One time events</h3>
+            <h3 className="italic">Sparkleverse Schedule of One-time Events</h3>
           </div>
           {typeof openVenues !== "object" && <div className="spinner-border" />}
         </div>
