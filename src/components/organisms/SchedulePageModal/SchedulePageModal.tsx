@@ -23,15 +23,7 @@ type DatedEvents = Array<{
 const DAYS_AHEAD = 7;
 const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
-interface PropsType {
-  show?: boolean;
-  onHide?: () => void;
-}
-
-export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
-  show,
-  onHide,
-}) => {
+export const SchedulePageModal: React.FunctionComponent = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
 
