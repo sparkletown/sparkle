@@ -185,14 +185,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     prompt: `${selfUserProfile?.partyName} (you) - available actions:`,
     choices: [
       {
-        text:
-          videoState === UserVideoState.Locked
-            ? "Require consent for video chat"
-            : "Disallow video chat requests",
+        text: `${
+          videoState === UserVideoState.Locked ? "Allow" : "Disallow"
+        } video chat requests`,
         onClick: () => toggleVideoState(),
       },
       {
-        text: "View Profile",
+        text: "View My Profile",
         onClick: () => {
           if (selfUserProfile) setSelectedUserProfile(selfUserProfile);
         },
@@ -205,7 +204,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id
   ) {
     menu.choices.push({
-      text: "Start your own chat\n(you can invite others)",
+      text: "Start a video chat\n(you can invite others)",
       onClick: () => {
         if (selfUserProfile) {
           firebase
