@@ -28,7 +28,8 @@ interface PropsType {
   videoState: string | undefined;
   setVideoState: (state: string | undefined) => void;
   toggleVideoState: () => void;
-  setAvatarVisible: (visibility: boolean) => void;
+  away: boolean | undefined;
+  setAway: (visibility: boolean) => void;
   movingUp: boolean;
   movingDown: boolean;
   movingLeft: boolean;
@@ -49,7 +50,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   videoState,
   setVideoState,
   toggleVideoState,
-  setAvatarVisible,
+  away,
+  setAway,
   movingUp,
   movingDown,
   movingLeft,
@@ -175,7 +177,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       ws.close();
       setUserStateMap({});
     };
-  }, [user, setBikeMode, setVideoState, setAvatarVisible, sendUpdatedState]);
+  }, [user, setBikeMode, setVideoState, setAway, sendUpdatedState]);
 
   const selfUserProfile = user?.uid
     ? partygoers.find((pg) => pg.id === user.uid)
@@ -225,6 +227,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           serverSentState={myServerSentState}
           bike={bikeMode}
           videoState={videoState}
+          away={away}
           shouts={shouts.filter(
             (shout) => shout.created_by === selfUserProfile.id
           )}
@@ -236,7 +239,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setMyLocation={setMyLocation}
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
-          setAvatarVisible={setAvatarVisible}
+          setAway={setAway}
           onClick={(event: React.MouseEvent) => {
             setMenu(menu);
             menuRef.current = event.target as HTMLDivElement;
@@ -255,12 +258,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       myServerSentState,
       bikeMode,
       videoState,
+      away,
       shouts,
       sendUpdatedState,
       setMyLocation,
       setBikeMode,
       setVideoState,
-      setAvatarVisible,
+      setAway,
       movingUp,
       movingDown,
       movingLeft,
@@ -513,9 +517,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       .map((uid) => {
         const avatarUser = partygoers.find((partygoer) => partygoer.id === uid);
         if (!avatarUser) return <></>;
-        const visible =
-          stateBoolean(userStateMap[uid], UserStateKey.Visible) !== false;
-        if (!visible) return <></>;
+        const away =
+          stateBoolean(userStateMap[uid], UserStateKey.Away) !== true;
+        if (away) return <></>;
         const videoState = userStateMap[uid].state?.[UserStateKey.Video];
 
         const viewProfileChoice = {

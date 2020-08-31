@@ -16,11 +16,13 @@ import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
+import ifvisible from "ifvisible.js";
 
 interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
+  away: boolean | undefined;
   shouts: Shout[];
   movingUp: boolean;
   movingDown: boolean;
@@ -33,7 +35,7 @@ interface PropsType {
   setMyLocation: (x: number, y: number) => void;
   setBikeMode: (bikeMode: boolean | undefined) => void;
   setVideoState: (state: string | undefined) => void;
-  setAvatarVisible: (visibility: boolean) => void;
+  setAway: (away: boolean) => void;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
@@ -46,6 +48,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     serverSentState,
     bike,
     videoState,
+    away,
     shouts,
     movingUp,
     movingDown,
@@ -58,7 +61,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setMyLocation,
     setBikeMode,
     setVideoState,
-    setAvatarVisible,
+    setAway,
   },
   ref
 ) => {
@@ -72,17 +75,12 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setMyLocation(serverSentState.x, serverSentState.y);
     setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
     setVideoState(serverSentState?.state?.[UserStateKey.Video]);
-    setAvatarVisible(
-      stateBoolean(serverSentState, UserStateKey.Visible) !== false
+    setAway(
+      stateBoolean(serverSentState, UserStateKey.Away) === true ||
+        !ifvisible.now()
     );
     stateInitialized.current = true;
-  }, [
-    serverSentState,
-    setMyLocation,
-    setBikeMode,
-    setVideoState,
-    setAvatarVisible,
-  ]);
+  }, [serverSentState, setMyLocation, setBikeMode, setVideoState, setAway]);
 
   const arrowMoveInervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -203,9 +201,14 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   useEffect(() => {
     setState((state) => {
       if (!state) return state;
-      const onBike = state?.state?.[UserStateKey.Bike] === true.toString();
-      const video = state?.state?.[UserStateKey.Video];
-      const needsUpdate = bike !== onBike || video !== videoState;
+      const relayStateBike =
+        state?.state?.[UserStateKey.Bike] === true.toString();
+      const relayStateVideo = state?.state?.[UserStateKey.Video];
+      const relayStateAway = state?.state?.[UserStateKey.Away];
+      const needsUpdate =
+        bike !== relayStateBike ||
+        videoState !== relayStateVideo ||
+        away !== relayStateAway;
       if (!needsUpdate) return state;
 
       if (!state.state) {
@@ -214,16 +217,15 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       if (bike !== undefined) state.state[UserStateKey.Bike] = bike.toString();
       if (videoState !== undefined)
         state.state[UserStateKey.Video] = videoState;
+      if (away !== undefined) state.state[UserStateKey.Away] = away.toString();
       sendUpdatedState(state);
       return { ...state };
     });
-  }, [bike, videoState, sendUpdatedState]);
+  }, [bike, videoState, away, sendUpdatedState]);
 
-  if (!profile || !state) return <></>;
+  if (!profile || !state || away) return <></>;
 
-  const visible = stateBoolean(state, UserStateKey.Visible) !== false;
-
-  return visible ? (
+  return (
     <div
       className="avatar-container"
       onMouseOver={onMouseOver}
@@ -278,8 +280,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         </div>
       ))}
     </div>
-  ) : (
-    <></>
   );
 };
 
