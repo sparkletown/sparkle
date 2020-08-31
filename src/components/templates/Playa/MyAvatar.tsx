@@ -16,13 +16,13 @@ import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
-import ifvisible from "ifvisible.js";
 
 interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
   away: boolean | undefined;
+  heartbeat: number | undefined;
   shouts: Shout[];
   movingUp: boolean;
   movingDown: boolean;
@@ -36,6 +36,7 @@ interface PropsType {
   setBikeMode: (bikeMode: boolean | undefined) => void;
   setVideoState: (state: string | undefined) => void;
   setAway: (away: boolean) => void;
+  setHeartbeat: (heartbeat: number | undefined) => void;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 6;
@@ -49,6 +50,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     bike,
     videoState,
     away,
+    heartbeat,
     shouts,
     movingUp,
     movingDown,
@@ -62,6 +64,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setBikeMode,
     setVideoState,
     setAway,
+    setHeartbeat,
   },
   ref
 ) => {
@@ -75,14 +78,24 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setMyLocation(serverSentState.x, serverSentState.y);
     setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
     setVideoState(serverSentState?.state?.[UserStateKey.Video]);
-    setAway(
-      stateBoolean(serverSentState, UserStateKey.Away) === true ||
-        !ifvisible.now()
+    setAway(stateBoolean(serverSentState, UserStateKey.Away) === true);
+    const heartbeat = parseInt(
+      serverSentState?.state?.[UserStateKey.Heartbeat] || ""
     );
+    if (heartbeat > 0) {
+      setHeartbeat(heartbeat);
+    }
     stateInitialized.current = true;
-  }, [serverSentState, setMyLocation, setBikeMode, setVideoState, setAway]);
+  }, [
+    serverSentState,
+    setMyLocation,
+    setBikeMode,
+    setVideoState,
+    setAway,
+    setHeartbeat,
+  ]);
 
-  const arrowMoveInervalRef = useRef<NodeJS.Timeout | null>(null);
+  const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useLayoutEffect(() => {
     const buttonMove = throttle(() => {
@@ -121,13 +134,13 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       });
     });
     if (movingUp || movingDown || movingLeft || movingRight) {
-      arrowMoveInervalRef.current = setInterval(
+      arrowMoveIntervalRef.current = setInterval(
         buttonMove,
         ARROW_INTERACTION_THROTTLE_MS
       );
-    } else if (arrowMoveInervalRef.current) {
-      clearInterval(arrowMoveInervalRef.current);
-      arrowMoveInervalRef.current = null;
+    } else if (arrowMoveIntervalRef.current) {
+      clearInterval(arrowMoveIntervalRef.current);
+      arrowMoveIntervalRef.current = null;
     }
   }, [bike, movingUp, movingDown, movingRight, movingLeft, sendUpdatedState]);
 
@@ -205,10 +218,12 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         state?.state?.[UserStateKey.Bike] === true.toString();
       const relayStateVideo = state?.state?.[UserStateKey.Video];
       const relayStateAway = state?.state?.[UserStateKey.Away];
+      const relayStateHeartbeat = state?.state?.[UserStateKey.Heartbeat];
       const needsUpdate =
         bike !== relayStateBike ||
         videoState !== relayStateVideo ||
-        away !== relayStateAway;
+        away !== relayStateAway ||
+        heartbeat !== relayStateHeartbeat;
       if (!needsUpdate) return state;
 
       if (!state.state) {
@@ -218,10 +233,12 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       if (videoState !== undefined)
         state.state[UserStateKey.Video] = videoState;
       if (away !== undefined) state.state[UserStateKey.Away] = away.toString();
+      if (heartbeat !== undefined)
+        state.state[UserStateKey.Heartbeat] = heartbeat.toString();
       sendUpdatedState(state);
       return { ...state };
     });
-  }, [bike, videoState, away, sendUpdatedState]);
+  }, [bike, videoState, away, heartbeat, sendUpdatedState]);
 
   if (!profile || !state || away) return <></>;
 

@@ -132,6 +132,7 @@ const Playa = () => {
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
   const [videoState, setVideoState] = useState<string>();
   const [away, setAway] = useState(false);
+  const [heartbeat, setHeartbeat] = useState<number>();
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -158,14 +159,17 @@ const Playa = () => {
     };
     const heartbeat = () => {
       setAway(false);
+      setHeartbeat(new Date().getTime());
     };
     ifvisible.on("idle", idle);
+    ifvisible.on("focus", heartbeat);
     ifvisible.on("wakeup", heartbeat);
-    const loop = ifvisible.onEvery(10, heartbeat);
+    const loop = ifvisible.onEvery(2, heartbeat);
     return () => {
       ifvisible.off("idle", idle);
+      ifvisible.off("focus", heartbeat);
       ifvisible.off("wakeup", heartbeat);
-      if (loop) {
+      if (loop && loop.stop) {
         loop.stop();
       }
     };
@@ -688,6 +692,8 @@ const Playa = () => {
         toggleVideoState={toggleVideoState}
         away={away}
         setAway={setAway}
+        heartbeat={heartbeat}
+        setHeartbeat={setHeartbeat}
         movingUp={movingUp}
         movingDown={movingDown}
         movingLeft={movingLeft}
@@ -706,6 +712,7 @@ const Playa = () => {
       bikeMode,
       videoState,
       away,
+      heartbeat,
       movingUp,
       movingDown,
       movingLeft,

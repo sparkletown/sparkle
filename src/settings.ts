@@ -26,6 +26,9 @@ export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 
+// Hide inactive avatars on playa
+export const MAX_IDLE_TIME_MS = 60 * 2 * 1000;
+
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;

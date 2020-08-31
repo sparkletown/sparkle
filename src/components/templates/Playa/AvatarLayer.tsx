@@ -12,7 +12,7 @@ import {
   stateBoolean,
   UserVideoState,
 } from "types/RelayMessage";
-import { DEFAULT_WS_RELAY_URL } from "settings";
+import { DEFAULT_WS_RELAY_URL, MAX_IDLE_TIME_MS } from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
@@ -30,6 +30,8 @@ interface PropsType {
   toggleVideoState: () => void;
   away: boolean | undefined;
   setAway: (visibility: boolean) => void;
+  heartbeat: number | undefined;
+  setHeartbeat: (heartbeat: number | undefined) => void;
   movingUp: boolean;
   movingDown: boolean;
   movingLeft: boolean;
@@ -52,6 +54,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   toggleVideoState,
   away,
   setAway,
+  setHeartbeat,
+  heartbeat,
   movingUp,
   movingDown,
   movingLeft,
@@ -228,6 +232,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           bike={bikeMode}
           videoState={videoState}
           away={away}
+          heartbeat={heartbeat}
           shouts={shouts.filter(
             (shout) => shout.created_by === selfUserProfile.id
           )}
@@ -240,6 +245,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
           setAway={setAway}
+          setHeartbeat={setHeartbeat}
           onClick={(event: React.MouseEvent) => {
             setMenu(menu);
             menuRef.current = event.target as HTMLDivElement;
@@ -259,12 +265,14 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       bikeMode,
       videoState,
       away,
+      heartbeat,
       shouts,
       sendUpdatedState,
       setMyLocation,
       setBikeMode,
       setVideoState,
       setAway,
+      setHeartbeat,
       movingUp,
       movingDown,
       movingLeft,
@@ -507,6 +515,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       {}
     );
 
+    const now = new Date().getTime();
+    const earliestHeartbeat = now - MAX_IDLE_TIME_MS;
+
     return Object.keys(userStateMap)
       .sort()
       .filter(
@@ -516,10 +527,19 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       )
       .map((uid) => {
         const avatarUser = partygoers.find((partygoer) => partygoer.id === uid);
-        if (!avatarUser) return <></>;
+        if (!avatarUser) return <React.Fragment key={uid} />;
+
         const away =
-          stateBoolean(userStateMap[uid], UserStateKey.Away) !== true;
-        if (away) return <></>;
+          stateBoolean(userStateMap[uid], UserStateKey.Away) === true;
+        if (away) return <React.Fragment key={uid} />;
+
+        const heartbeat = parseInt(
+          userStateMap[uid]?.state?.[UserStateKey.Heartbeat] || ""
+        );
+        const hasHeartbeat = heartbeat > 0;
+        if (hasHeartbeat && heartbeat < earliestHeartbeat)
+          return <React.Fragment key={uid} />;
+
         const videoState = userStateMap[uid].state?.[UserStateKey.Video];
 
         const viewProfileChoice = {
