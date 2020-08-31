@@ -13,7 +13,7 @@ const Step1 = () => {
   return (
     <div className="splash-page-container">
       <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
-      <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+      <AuthenticationModal show={true} onHide={() => {}} showAuth="register" />
     </div>
   );
 };

@@ -95,11 +95,7 @@ const VenuePage = () => {
   if (!user) {
     return (
       <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
       </WithNavigationBar>
     );
   }
