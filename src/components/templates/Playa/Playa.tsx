@@ -45,6 +45,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { getLinkFromText } from "utils/getLinkFromText";
+import ifvisible from "ifvisible.js";
 
 export type MenuConfig = {
   prompt?: string;
@@ -130,8 +131,7 @@ const Playa = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
   const [videoState, setVideoState] = useState<string>();
-  // REVISIT: show a modal when you leave & go elsewhere on playa. Need to send this to the relay when clicking a "join venue" button.
-  const [, /*avatarVisible, */ setAvatarVisible] = useState(true);
+  const [away, setAway] = useState(false);
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -151,6 +151,25 @@ const Playa = () => {
   const myYRef = useSynchronizedRef(myY);
 
   const { user, profile } = useUser();
+
+  useEffect(() => {
+    const idle = () => {
+      setAway(true);
+    };
+    const heartbeat = () => {
+      setAway(false);
+    };
+    ifvisible.on("idle", idle);
+    ifvisible.on("wakeup", heartbeat);
+    const loop = ifvisible.onEvery(10, heartbeat);
+    return () => {
+      ifvisible.off("idle", idle);
+      ifvisible.off("wakeup", heartbeat);
+      if (loop) {
+        loop.stop();
+      }
+    };
+  });
 
   useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
@@ -667,7 +686,8 @@ const Playa = () => {
         videoState={videoState}
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
-        setAvatarVisible={setAvatarVisible}
+        away={away}
+        setAway={setAway}
         movingUp={movingUp}
         movingDown={movingDown}
         movingLeft={movingLeft}
@@ -684,13 +704,14 @@ const Playa = () => {
     ),
     [
       bikeMode,
+      videoState,
+      away,
       movingUp,
       movingDown,
       movingLeft,
       movingRight,
       setMyLocation,
       toggleVideoState,
-      videoState,
     ]
   );
 
