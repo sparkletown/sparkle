@@ -114,6 +114,7 @@ const Playa = () => {
   const [myX, setMyX] = useState<number>();
   const [myY, setMyY] = useState<number>();
   const [centeredOnMe, setCenteredOnMe] = useState<boolean>();
+  const [meIsLocated, setMeIsLocated] = useState(false);
   const [atEdge, setAtEdge] = useState<boolean>();
   const [atEdgeMessage, setAtEdgeMessage] = useState<string>();
   const playaRef = useRef<HTMLDivElement>(null);
@@ -530,6 +531,7 @@ const Playa = () => {
         setCenterY(y);
         setMyX(x);
         setMyY(y);
+        setMeIsLocated(true);
         const nearbyVenue = getNearbyVenue(x, y);
         if (nearbyVenue) {
           setHoveredVenue(nearbyVenue);
@@ -808,7 +810,7 @@ const Playa = () => {
         {dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
-          {centeredOnMe && (
+          {meIsLocated && (
             <div className="avatar-controls">
               <div
                 className="up"
@@ -875,7 +877,7 @@ const Playa = () => {
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
-                centeredOnMe === false ? "show" : ""
+                meIsLocated && centeredOnMe === false ? "show" : ""
               }`}
               onClick={recenter}
             >
@@ -980,6 +982,7 @@ const Playa = () => {
     bikeMode,
     toggleBikeMode,
     centeredOnMe,
+    meIsLocated,
     recenter,
     shout,
     shoutText,
