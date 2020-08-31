@@ -192,7 +192,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         onClick: () => toggleVideoState(),
       },
       {
-        text: "Join your own chat",
+        text: "Start chat (you can invite others)",
         onClick: () => {
           if (selfUserProfile) {
             firebase
@@ -392,6 +392,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               if (!profile?.video?.inRoomOwnedBy) {
                 joinRoomOwnedBy(user.uid);
               }
+              document.body.click();
             },
           },
           {
