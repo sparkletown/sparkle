@@ -113,6 +113,7 @@ $playa-mode-badge-icon-size: 9px;
     border-radius: 25%;
     text-align: center;
     overflow: hidden;
+    z-index: 1;
 
     .venue-icon {
       max-width: 100%;
