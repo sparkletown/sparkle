@@ -21,23 +21,16 @@ type DatedEvents = Array<{
 }>;
 
 const DAYS_AHEAD = 7;
+const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
-interface PropsType {
-  show?: boolean;
-  onHide?: () => void;
-}
-
-export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
-  show,
-  onHide,
-}) => {
+export const SchedulePageModal: React.FunctionComponent = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
 
   useEffect(() => {
     const getOnlineStats = firebase
       .functions()
-      .httpsCallable("stats-getAllEvents");
+      .httpsCallable("stats-getLiveAndFutureEvents");
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
@@ -50,7 +43,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
     updateStats();
     const id = setInterval(() => {
       updateStats();
-    }, 60 * 1000);
+    }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
   }, []);
 
@@ -108,7 +101,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
       <div className="/modal-content /modal-content-events">
         <div style={{ display: "flex" }}>
           <div>
-            <h3 className="italic">One time events</h3>
+            <h3 className="italic">Sparkleverse Schedule of One-time Events</h3>
           </div>
           {typeof openVenues !== "object" && <div className="spinner-border" />}
         </div>
