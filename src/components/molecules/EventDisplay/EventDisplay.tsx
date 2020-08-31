@@ -7,7 +7,7 @@ import {
   daysFromEndOfEvent,
 } from "utils/time";
 import "./EventDisplay.scss";
-import { venueInsideUrl } from "utils/url";
+import { venueInsideUrl, venuePlayaPreviewUrl } from "utils/url";
 
 interface PropsType {
   event: firebase.firestore.DocumentData;
@@ -59,7 +59,9 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
         {Date.now() > event.start_utc_seconds * 1000 && joinNowButton && (
           <div className="event-badge-live">Live</div>
         )}
-        <div style={{ marginTop: 10 }}>Venue: {venue.name}</div>
+        <div style={{ marginTop: 10 }}>
+          Venue: <a href={venuePlayaPreviewUrl(venue.id)}>{venue.name}</a>
+        </div>
       </div>
       <div className="event-text">
         <h5>{event.name}</h5>

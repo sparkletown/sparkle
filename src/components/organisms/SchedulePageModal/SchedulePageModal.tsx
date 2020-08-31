@@ -21,6 +21,7 @@ type DatedEvents = Array<{
 }>;
 
 const DAYS_AHEAD = 7;
+const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
 interface PropsType {
   show?: boolean;
@@ -50,7 +51,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
     updateStats();
     const id = setInterval(() => {
       updateStats();
-    }, 60 * 1000);
+    }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
   }, []);
 
