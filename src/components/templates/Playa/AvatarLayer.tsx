@@ -200,20 +200,19 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ],
     cancelable: true,
   };
-  if (!selfUserProfile?.video?.inRoomOwnedBy) {
+  if (
+    !selfUserProfile?.video?.inRoomOwnedBy ||
+    selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id
+  ) {
     menu.choices.push({
-      text: "Start chat (you can invite others)",
+      text: "Start your own chat\n(you can invite others)",
       onClick: () => {
         if (selfUserProfile) {
           firebase
             .firestore()
             .doc(`users/${selfUserProfile.id}`)
             .update({
-              video: {
-                ...profile?.video,
-                removedParticipantUids: [],
-                inRoomOwnedBy: selfUserProfile.id,
-              },
+              video: { inRoomOwnedBy: selfUserProfile.id },
             });
         }
       },
@@ -340,7 +339,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const accepter = partygoers.find(
       (partygoer) =>
         profile?.video?.askingToJoinUid === partygoer.id &&
-        partygoer.video?.acceptingRequestFromUid === user.uid
+        partygoer.video?.acceptingRequestFromUid === user.uid &&
+        partygoer.id !== user.uid
     );
     if (accepter?.id) {
       joinRoomOwnedBy(accepter.video?.inRoomOwnedBy ?? accepter.id);
@@ -353,7 +353,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const inviter = partygoers.find(
       (partygoer) =>
         partygoer.video?.invitingUid === user.uid &&
-        !declinedInvites.includes(partygoer.video?.invitingUid)
+        !declinedInvites.includes(partygoer.video?.invitingUid) &&
+        partygoer.id !== user.uid
     );
     if (inviter?.id) {
       const menu = {
@@ -381,7 +382,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const asker = partygoers.find(
       (partygoer) =>
         partygoer.video?.askingToJoinUid === user.uid &&
-        !declinedAsks.includes(partygoer.id)
+        !declinedAsks.includes(partygoer.id) &&
+        partygoer.id !== user.uid
     );
     if (asker) {
       const menu = {
@@ -414,7 +416,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const remover = partygoers.find(
       (partygoer) =>
         partygoer?.video?.removedParticipantUids?.includes(user.uid) &&
-        !ackedRemoves.includes(partygoer.id)
+        !ackedRemoves.includes(partygoer.id) &&
+        partygoer.id !== user.uid
     );
     if (remover) {
       const menu = {
