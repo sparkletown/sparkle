@@ -860,13 +860,6 @@ const Playa = () => {
                 }`}
               />
             </div>
-            <div className={"playa-controls-video"} onClick={toggleVideoState}>
-              <div
-                className={`playa-controls-video-btn ${
-                  videoState === UserVideoState.Locked ? "off" : "on"
-                }`}
-              />
-            </div>
             <div className="playa-controls-zoom">
               <div
                 className={`playa-controls-zoom-in ${
@@ -958,8 +951,6 @@ const Playa = () => {
     user,
     bikeMode,
     toggleBikeMode,
-    videoState,
-    toggleVideoState,
     centeredOnMe,
     recenter,
     shout,
