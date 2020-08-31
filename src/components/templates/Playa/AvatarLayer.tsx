@@ -192,23 +192,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         onClick: () => toggleVideoState(),
       },
       {
-        text: "Start chat (you can invite others)",
-        onClick: () => {
-          if (selfUserProfile) {
-            firebase
-              .firestore()
-              .doc(`users/${selfUserProfile.id}`)
-              .update({
-                video: {
-                  ...profile?.video,
-                  removedParticipantUids: [],
-                  inRoomOwnedBy: selfUserProfile.id,
-                },
-              });
-          }
-        },
-      },
-      {
         text: "View Profile",
         onClick: () => {
           if (selfUserProfile) setSelectedUserProfile(selfUserProfile);
@@ -217,6 +200,25 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ],
     cancelable: true,
   };
+  if (!selfUserProfile?.video?.inRoomOwnedBy) {
+    menu.choices.push({
+      text: "Start chat (you can invite others)",
+      onClick: () => {
+        if (selfUserProfile) {
+          firebase
+            .firestore()
+            .doc(`users/${selfUserProfile.id}`)
+            .update({
+              video: {
+                ...profile?.video,
+                removedParticipantUids: [],
+                inRoomOwnedBy: selfUserProfile.id,
+              },
+            });
+        }
+      },
+    });
+  }
 
   const myAvatar = useMemo(
     () =>
