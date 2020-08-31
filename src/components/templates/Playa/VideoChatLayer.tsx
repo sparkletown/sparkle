@@ -29,9 +29,8 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   };
 
   const leave = () => {
-    updateVideoState({
-      removedParticipantUids: [],
-    });
+    profile.video = {};
+    updateVideoState({});
   };
 
   const removed = partygoers[
