@@ -13,9 +13,6 @@ export type VideoState = {
   invitingUid?: string;
   askingToJoinUid?: string;
   acceptingRequestFromUid?: string;
-  decliningRequestsFromUids?: string[];
-  ackedDeclinesFromUids?: string[];
-  ackedRemovesFromUids?: string[];
 };
 
 export interface User {

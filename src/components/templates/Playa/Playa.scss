@@ -113,6 +113,7 @@ $playa-mode-badge-icon-size: 9px;
     border-radius: 25%;
     text-align: center;
     overflow: hidden;
+    z-index: 1;
 
     .venue-icon {
       max-width: 100%;
@@ -343,6 +344,7 @@ $playa-mode-badge-icon-size: 9px;
       font-weight: 700;
       text-decoration: none;
       color: rgba(0, 0, 0, 0.7);
+      white-space: pre-wrap;
 
       &:hover {
         background: rgba($sand, 0.5);

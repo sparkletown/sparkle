@@ -70,6 +70,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
   const [myServerSentState, setMyServerSentState] = useState<UserState>();
   const [shouts, setShouts] = useState<Shout[]>([]);
+  const [declinedInvites, setDeclinedInvites] = useState<string[]>([]);
+  const [declinedAsks, setDeclinedAsks] = useState<string[]>([]);
+  const [ackedRemoves, setAckedRemoves] = useState<string[]>([]);
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
@@ -197,6 +200,24 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ],
     cancelable: true,
   };
+  if (
+    !selfUserProfile?.video?.inRoomOwnedBy ||
+    selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id
+  ) {
+    menu.choices.push({
+      text: "Start your own chat\n(you can invite others)",
+      onClick: () => {
+        if (selfUserProfile) {
+          firebase
+            .firestore()
+            .doc(`users/${selfUserProfile.id}`)
+            .update({
+              video: { inRoomOwnedBy: selfUserProfile.id },
+            });
+        }
+      },
+    });
+  }
 
   const myAvatar = useMemo(
     () =>
@@ -264,7 +285,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       firebase
         .firestore()
         .doc(`users/${user.uid}`)
-        .update({ video: { inRoomOwnedBy: uid } });
+        .update({
+          video: {
+            ...profile?.video,
+            removedParticipantUids: [],
+            inRoomOwnedBy: uid,
+          },
+        });
     };
 
     const acceptRequestFrom = (uid: string) => {
@@ -279,67 +306,41 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         .update({ video: profile.video });
     };
 
-    const declineRequestFrom = (uid: string) => {
-      if (!user) return;
-      if (
-        !profile?.video ||
-        (profile.video.decliningRequestsFromUids &&
-          profile.video.decliningRequestsFromUids.includes(uid))
-      ) {
-        return;
-      }
-      if (!profile.video.decliningRequestsFromUids) {
-        profile.video.decliningRequestsFromUids = [];
-      }
-      profile.video.decliningRequestsFromUids.push(uid);
-      firebase
-        .firestore()
-        .doc(`users/${user.uid}`)
-        .update({ video: profile.video });
+    const declineAsk = (uid: string) => {
+      setDeclinedAsks((declined) => {
+        if (declined?.includes(uid)) {
+          return declined;
+        }
+        declined.push(uid);
+        return [...declined];
+      });
     };
 
-    const ackDecline = (uid: string) => {
-      if (!user) return;
-      if (
-        !profile?.video ||
-        (profile.video.ackedDeclinesFromUids &&
-          profile.video.ackedDeclinesFromUids.includes(uid))
-      ) {
-        return;
-      }
-      if (!profile.video.ackedDeclinesFromUids) {
-        profile.video.ackedDeclinesFromUids = [];
-      }
-      profile.video.ackedDeclinesFromUids.push(uid);
-      firebase
-        .firestore()
-        .doc(`users/${user.uid}`)
-        .update({ video: profile.video });
+    const declineInvite = (uid: string) => {
+      setDeclinedInvites((declined) => {
+        if (declined?.includes(uid)) {
+          return declined;
+        }
+        declined.push(uid);
+        return [...declined];
+      });
     };
 
     const ackRemove = (uid: string) => {
-      if (!user) return;
-      if (
-        !profile?.video ||
-        (profile.video.ackedRemovesFromUids &&
-          profile.video.ackedRemovesFromUids.includes(uid))
-      ) {
-        return;
-      }
-      if (!profile.video.ackedRemovesFromUids) {
-        profile.video.ackedRemovesFromUids = [];
-      }
-      profile.video.ackedRemovesFromUids.push(uid);
-      firebase
-        .firestore()
-        .doc(`users/${user.uid}`)
-        .update({ video: profile.video });
+      setAckedRemoves((acked) => {
+        if (acked?.includes(uid)) {
+          return acked;
+        }
+        acked.push(uid);
+        return [...acked];
+      });
     };
 
     const accepter = partygoers.find(
       (partygoer) =>
         profile?.video?.askingToJoinUid === partygoer.id &&
-        partygoer.video?.acceptingRequestFromUid === user.uid
+        partygoer.video?.acceptingRequestFromUid === user.uid &&
+        partygoer.id !== user.uid
     );
     if (accepter?.id) {
       joinRoomOwnedBy(accepter.video?.inRoomOwnedBy ?? accepter.id);
@@ -348,19 +349,16 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     // Menus to show
     // 1. Received invitation to join chat
     // 2. Someone asked to join your chat
-    // 3. You got refused politely
-    // 4. You were removed from the chat
+    // 3. You were removed from the chat
     const inviter = partygoers.find(
-      (partygoer) => partygoer.video?.invitingUid === user.uid
+      (partygoer) =>
+        partygoer.video?.invitingUid === user.uid &&
+        !declinedInvites.includes(partygoer.video?.invitingUid) &&
+        partygoer.id !== user.uid
     );
     if (inviter?.id) {
-      const hostUser = partygoers.find(
-        (partygoer) => partygoer.id === inviter.video?.inRoomOwnedBy
-      );
       const menu = {
-        prompt: `${inviter.partyName} invited you to join ${
-          hostUser ? `${hostUser.partyName}'s` : "their"
-        } chat`,
+        prompt: `${inviter.partyName} invited you to join their chat`,
         choices: [
           {
             text: "Join them!",
@@ -369,11 +367,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           },
           {
             text: "Refuse politely",
-            onClick: () => declineRequestFrom(inviter.id),
+            onClick: () => declineInvite(inviter.id),
           },
         ],
         cancelable: false,
-        onClose: () => declineRequestFrom(inviter.id),
+        onClose: () => declineInvite(inviter.id),
       };
       setMenu(menu);
       menuRef.current = myAvatarRef.current;
@@ -382,7 +380,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
     // Show a menu if someone has asked to join our chat
     const asker = partygoers.find(
-      (partygoer) => partygoer.video?.askingToJoinUid === user.uid
+      (partygoer) =>
+        partygoer.video?.askingToJoinUid === user.uid &&
+        !declinedAsks.includes(partygoer.id) &&
+        partygoer.id !== user.uid
     );
     if (asker) {
       const menu = {
@@ -395,39 +396,16 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               if (!profile?.video?.inRoomOwnedBy) {
                 joinRoomOwnedBy(user.uid);
               }
+              document.body.click();
             },
           },
           {
             text: "Refuse politely",
-            onClick: () => declineRequestFrom(asker.id),
+            onClick: () => declineAsk(asker.id),
           },
         ],
         cancelable: false,
-        onClose: () => declineRequestFrom(asker.id),
-      };
-      setMenu(menu);
-      menuRef.current = myAvatarRef.current;
-      setShowMenu(true);
-    }
-
-    // Inform if there was a decline
-    const decliner = partygoers.find(
-      (partygoer) =>
-        partygoer?.video?.decliningRequestsFromUids?.includes(user.uid) &&
-        (!profile?.video?.ackedDeclinesFromUids ||
-          !profile.video.ackedDeclinesFromUids.includes(partygoer.id))
-    );
-    if (decliner) {
-      const menu = {
-        prompt: `${decliner.partyName} politely refused your request.\n\nYou can still message them!`,
-        choices: [
-          {
-            text: "OK",
-            onClick: () => ackDecline(decliner.id),
-          },
-        ],
-        cancelable: false,
-        onHide: () => ackDecline(decliner.id),
+        onClose: () => declineAsk(asker.id),
       };
       setMenu(menu);
       menuRef.current = myAvatarRef.current;
@@ -438,8 +416,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const remover = partygoers.find(
       (partygoer) =>
         partygoer?.video?.removedParticipantUids?.includes(user.uid) &&
-        (!profile?.video?.ackedRemovesFromUids ||
-          !profile.video.ackedRemovesFromUids.includes(partygoer.id))
+        !ackedRemoves.includes(partygoer.id) &&
+        partygoer.id !== user.uid
     );
     if (remover) {
       const menu = {
@@ -461,6 +439,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     setShowMenu,
     user,
     videoState,
+    ackedRemoves,
+    declinedAsks,
+    declinedInvites,
   ]);
 
   const avatars = useMemo(() => {
@@ -470,12 +451,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       if (!user || !profile) return;
       if (!profile.video) profile.video = {};
       profile.video.askingToJoinUid = uid;
-      if (profile.video.decliningRequestsFromUids?.includes(uid)) {
-        profile.video.decliningRequestsFromUids.splice(
-          profile.video.decliningRequestsFromUids.indexOf(uid),
-          1
-        );
-      }
+      setDeclinedAsks((asks) => {
+        if (asks?.includes(uid)) {
+          asks.splice(asks.indexOf(uid), 1);
+        }
+        return asks;
+      });
       if (profile.video.removedParticipantUids?.includes(uid)) {
         profile.video.removedParticipantUids.splice(
           profile.video.removedParticipantUids.indexOf(uid),
@@ -492,12 +473,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       if (!user || !profile) return;
       if (!profile.video) profile.video = {};
       profile.video.invitingUid = uid;
-      if (profile.video.decliningRequestsFromUids?.includes(uid)) {
-        profile.video.decliningRequestsFromUids.splice(
-          profile.video.decliningRequestsFromUids.indexOf(uid),
-          1
-        );
-      }
+      setDeclinedInvites((declines) => {
+        if (declines?.includes(uid)) {
+          declines.splice(declines.indexOf(uid), 1);
+        }
+        return declines;
+      });
       if (profile.video.removedParticipantUids?.includes(uid)) {
         profile.video.removedParticipantUids.splice(
           profile.video.removedParticipantUids.indexOf(uid),
@@ -544,7 +525,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           partyName: string | undefined,
           uid: string
         ) => ({
-          text: `Ask to join their chat`,
+          text: `Ask to join them in ${partyName}'s chat`,
           onClick: () => askToJoin(uid),
         });
         const inviteThemToJoinYourChatChoice = {
@@ -583,59 +564,41 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           userStateMap[avatarUser.id]?.state?.[UserStateKey.Video] ===
           UserVideoState.Locked;
 
-        const askToJoinTheirChatMenus: () => MenuConfig = () => {
-          let menu: MenuConfig;
-          if (theirHostsChatIsLocked) {
-            menu = {
-              prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
-                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-              }`,
-              choices: [viewProfileChoice],
-              cancelable: true,
-            };
-          } else {
-            menu = {
-              prompt: `${avatarUser.partyName}: in an open chat hosted by ${
-                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-              }`,
-              choices: [
-                viewProfileChoice,
-                askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
-                inviteThemToJoinYourChatChoice,
-              ],
-              cancelable: true,
-            };
-          }
-          return menu;
-        };
-
         const generateMenu: () => MenuConfig = () => {
           if (theirChatIsLocked) {
             return {
-              prompt: `${avatarUser.partyName}: ${
-                theyAreInAChat
-                  ? "in a locked video chat"
-                  : "not allowing video chat"
-              }`,
+              prompt: `${avatarUser.partyName}: not allowing video chat`,
               choices: [viewProfileChoice],
               cancelable: true,
             };
           }
-          if (meIsInAChat) {
-            if (theyAreInAChat) {
-              if (theyAreInAChatWithMe) {
-                return {
-                  prompt: `${avatarUser.partyName}: currently chatting with this person`,
-                  choices: [viewProfileChoice],
-                  cancelable: true,
-                };
-              } else {
-                return askToJoinTheirChatMenus();
-              }
-            }
-          } else {
-            if (theyAreInAChat) {
-              return askToJoinTheirChatMenus();
+          if (meIsInAChat && theyAreInAChat && theyAreInAChatWithMe) {
+            return {
+              prompt: `${avatarUser.partyName}: currently chatting with this person`,
+              choices: [viewProfileChoice],
+              cancelable: true,
+            };
+          }
+          if (theyAreInAChat) {
+            if (theirHostsChatIsLocked) {
+              return {
+                prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [viewProfileChoice],
+                cancelable: true,
+              };
+            } else {
+              return {
+                prompt: `${avatarUser.partyName}: in an open chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [
+                  viewProfileChoice,
+                  askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
+                ],
+                cancelable: true,
+              };
             }
           }
           return {

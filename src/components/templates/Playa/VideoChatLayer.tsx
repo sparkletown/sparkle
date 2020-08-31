@@ -28,8 +28,8 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     firebase.firestore().doc(`users/${user.uid}`).update({ video: update });
   };
 
-  // Host leaving ends the chat
   const leave = () => {
+    profile.video = {};
     updateVideoState({});
   };
 
@@ -55,8 +55,8 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
       removed.push(uid);
     }
     updateVideoState({
-      removedParticipantUids: removed,
       ...profile.video,
+      removedParticipantUids: removed,
     });
   };
 
