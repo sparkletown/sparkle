@@ -79,6 +79,13 @@ const eventIsLiveOrInFuture = (event, now) => {
   return eventIsTransient && (eventIsInFuture || eventIsNow);
 };
 
+exports.getAllEvents = functions.https.onCall(async (data, context) => {
+  throw new functions.https.HttpsError(
+    "outdated",
+    "use getLiveAndFutureEvents instead"
+  );
+});
+
 exports.getLiveAndFutureEvents = functions.https.onCall(
   async (data, context) => {
     try {
