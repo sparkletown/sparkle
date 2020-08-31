@@ -192,6 +192,23 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         onClick: () => toggleVideoState(),
       },
       {
+        text: "Join your own chat",
+        onClick: () => {
+          if (selfUserProfile) {
+            firebase
+              .firestore()
+              .doc(`users/${selfUserProfile.id}`)
+              .update({
+                video: {
+                  ...profile?.video,
+                  removedParticipantUids: [],
+                  inRoomOwnedBy: selfUserProfile.id,
+                },
+              });
+          }
+        },
+      },
+      {
         text: "View Profile",
         onClick: () => {
           if (selfUserProfile) setSelectedUserProfile(selfUserProfile);
@@ -267,7 +284,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       firebase
         .firestore()
         .doc(`users/${user.uid}`)
-        .update({ video: { inRoomOwnedBy: uid } });
+        .update({
+          video: {
+            ...profile?.video,
+            removedParticipantUids: [],
+            inRoomOwnedBy: uid,
+          },
+        });
     };
 
     const acceptRequestFrom = (uid: string) => {
@@ -496,7 +519,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           partyName: string | undefined,
           uid: string
         ) => ({
-          text: `Ask to join their chat`,
+          text: `Ask to join them in ${partyName}'s chat`,
           onClick: () => askToJoin(uid),
         });
         const inviteThemToJoinYourChatChoice = {
@@ -535,59 +558,41 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           userStateMap[avatarUser.id]?.state?.[UserStateKey.Video] ===
           UserVideoState.Locked;
 
-        const askToJoinTheirChatMenus: () => MenuConfig = () => {
-          let menu: MenuConfig;
-          if (theirHostsChatIsLocked) {
-            menu = {
-              prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
-                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-              }`,
-              choices: [viewProfileChoice],
-              cancelable: true,
-            };
-          } else {
-            menu = {
-              prompt: `${avatarUser.partyName}: in an open chat hosted by ${
-                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-              }`,
-              choices: [
-                viewProfileChoice,
-                askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
-                inviteThemToJoinYourChatChoice,
-              ],
-              cancelable: true,
-            };
-          }
-          return menu;
-        };
-
         const generateMenu: () => MenuConfig = () => {
           if (theirChatIsLocked) {
             return {
-              prompt: `${avatarUser.partyName}: ${
-                theyAreInAChat
-                  ? "in a locked video chat"
-                  : "not allowing video chat"
-              }`,
+              prompt: `${avatarUser.partyName}: not allowing video chat`,
               choices: [viewProfileChoice],
               cancelable: true,
             };
           }
-          if (meIsInAChat) {
-            if (theyAreInAChat) {
-              if (theyAreInAChatWithMe) {
-                return {
-                  prompt: `${avatarUser.partyName}: currently chatting with this person`,
-                  choices: [viewProfileChoice],
-                  cancelable: true,
-                };
-              } else {
-                return askToJoinTheirChatMenus();
-              }
-            }
-          } else {
-            if (theyAreInAChat) {
-              return askToJoinTheirChatMenus();
+          if (meIsInAChat && theyAreInAChat && theyAreInAChatWithMe) {
+            return {
+              prompt: `${avatarUser.partyName}: currently chatting with this person`,
+              choices: [viewProfileChoice],
+              cancelable: true,
+            };
+          }
+          if (theyAreInAChat) {
+            if (theirHostsChatIsLocked) {
+              return {
+                prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [viewProfileChoice],
+                cancelable: true,
+              };
+            } else {
+              return {
+                prompt: `${avatarUser.partyName}: in an open chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [
+                  viewProfileChoice,
+                  askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
+                ],
+                cancelable: true,
+              };
             }
           }
           return {
