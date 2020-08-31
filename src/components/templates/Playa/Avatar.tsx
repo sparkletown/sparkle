@@ -74,7 +74,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       />
       {shouts?.map((shout, index) => (
         <div
-          className="shout"
+          className="shout split-words"
           style={{
             top: y,
             left: x,

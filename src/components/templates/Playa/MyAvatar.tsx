@@ -267,7 +267,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       />
       {shouts?.map((shout, index) => (
         <div
-          className="shout"
+          className="shout split-words"
           style={{
             top: state.y,
             left: state.x,
