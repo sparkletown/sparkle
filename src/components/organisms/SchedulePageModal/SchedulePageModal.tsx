@@ -37,7 +37,7 @@ export const SchedulePageModal: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     const getOnlineStats = firebase
       .functions()
-      .httpsCallable("stats-getAllEvents");
+      .httpsCallable("stats-getLiveAndFutureEvents");
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {

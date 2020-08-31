@@ -3,14 +3,7 @@ const functions = require("firebase-functions");
 
 const ONE_MINUTE = 60 * 1000;
 const ONE_HOUR = 60 * ONE_MINUTE;
-
-const eventIsNow = (event, now) => {
-  const nowSeconds = now / 1000;
-  return (
-    nowSeconds > event.start_utc_seconds &&
-    nowSeconds < 60 * event.duration_minutes + event.start_utc_seconds
-  );
-};
+const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6; // transient events are a maximum of 6 hours
 
 // Someone snuck by our client side validation! Naughty naughty!
 const sanitizeEvent = (event, now) => {
@@ -18,6 +11,14 @@ const sanitizeEvent = (event, now) => {
     event.start_utc_seconds = now / 1000;
   }
   return event;
+};
+
+const eventIsNow = (event, now) => {
+  const nowSeconds = now / 1000;
+  return (
+    nowSeconds > event.start_utc_seconds &&
+    nowSeconds < 60 * event.duration_minutes + event.start_utc_seconds
+  );
 };
 
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
@@ -64,41 +65,53 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   return { onlineUsers, openVenues };
 });
 
-exports.getAllEvents = functions.https.onCall(async (data, context) => {
-  try {
-    const now = new Date().getTime();
+const eventIsLiveOrInFuture = (event, now) => {
+  const nowSeconds = now / 1000;
 
-    let openVenues = [];
-    const venues = await admin.firestore().collection("venues").get();
-    await Promise.all(
-      venues.docs.map(async (venue) => {
-        const template = venue.data().template;
-        const openWithoutEvents =
-          template === "artpiece" || template === "themecamp";
-        try {
-          const events = await venue.ref.collection("events").get();
-          const allEvents = events.docs.map((event) =>
-            sanitizeEvent(event.data(), now)
-          );
-          const venueHasEvents = allEvents.length > 0;
+  const eventIsTransient =
+    event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
 
-          if (venueHasEvents || openWithoutEvents) {
-            const venueWithId = venue.data();
-            venueWithId.id = venue.id;
+  const eventIsInFuture = nowSeconds < event.start_utc_seconds;
+
+  const eventEndSeconds = 60 * event.duration_minutes + event.start_utc_seconds;
+  const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
+
+  return eventIsTransient && (eventIsInFuture || eventIsNow);
+};
+
+exports.getLiveAndFutureEvents = functions.https.onCall(
+  async (data, context) => {
+    try {
+      const now = new Date().getTime();
+
+      let openVenues = [];
+      const venues = await admin.firestore().collection("venues").get();
+      await Promise.all(
+        venues.docs.map(async (venue) => {
+          const template = venue.data().template;
+          try {
+            const events = await venue.ref.collection("events").get();
+            const liveAndFutureEvents = events.docs
+              .map((eventRef) => sanitizeEvent(eventRef.data(), now))
+              .filter((event) => eventIsLiveOrInFuture(event, now));
+
+            if (!liveAndFutureEvents) return;
+
+            const venueWithId = { ...venue.data(), id: venue.id };
             openVenues.push({
               venue: venueWithId,
-              currentEvents: allEvents,
+              currentEvents: liveAndFutureEvents,
             });
+          } catch (e) {
+            console.log("error", e);
           }
-        } catch (e) {
-          console.log("error", e);
-        }
-      })
-    );
+        })
+      );
 
-    return { openVenues };
-  } catch (error) {
-    console.log(error);
-    console.error(error);
+      return { openVenues };
+    } catch (error) {
+      console.log(error);
+      console.error(error);
+    }
   }
-});
+);
