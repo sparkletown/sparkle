@@ -381,9 +381,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     // Show a menu if someone has asked to join our chat
     const asker = partygoers.find(
       (partygoer) =>
-        partygoer.video?.askingToJoinUid === user.uid &&
+        partygoer.video &&
+        partygoer.video.askingToJoinUid === user.uid &&
         !declinedAsks.includes(partygoer.id) &&
-        partygoer.id !== user.uid
+        partygoer.id !== user.uid &&
+        partygoer.video.inRoomOwnedBy !== profile?.video?.inRoomOwnedBy
     );
     if (asker) {
       const menu = {
