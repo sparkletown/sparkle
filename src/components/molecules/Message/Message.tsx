@@ -29,7 +29,9 @@ export const Message: React.FC<MessageProps> = ({
         width={profileImageSize}
         height={profileImageSize}
       />
-      <div className="message-bubble">{getLinkFromText(message.text)}</div>
+      <div className="message-bubble split-words">
+        {getLinkFromText(message.text)}
+      </div>
     </div>
   );
 };

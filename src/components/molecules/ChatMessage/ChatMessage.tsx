@@ -77,7 +77,7 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
         }`}
       >
         <div
-          className={`bubble ${chat.type} ${
+          className={`bubble split-words ${chat.type} ${
             sender === "you" ? "right-side" : ""
           }`}
         >
