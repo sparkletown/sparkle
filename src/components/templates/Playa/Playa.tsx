@@ -877,7 +877,7 @@ const Playa = () => {
           <div className="playa-controls">
             <div
               className={`playa-controls-recenter ${
-                meIsLocated && centeredOnMe === false ? "show" : ""
+                centeredOnMe === false ? "show" : ""
               }`}
               onClick={recenter}
             >
