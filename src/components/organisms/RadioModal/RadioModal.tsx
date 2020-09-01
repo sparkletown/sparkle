@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./RadioModal.scss";
 
 interface PropsType {
@@ -15,6 +15,22 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     sound?.play();
   }, [sound]);
+
+  const loadedInitialState = useRef(false);
+  useEffect(() => {
+    const storageKey = "Radio";
+    if (!loadedInitialState.current) {
+      try {
+        const storedState = localStorage.getItem(storageKey);
+        if (storedState) {
+          const state = JSON.parse(storedState);
+          setVolume(state.volume);
+          loadedInitialState.current = true;
+        }
+      } catch {}
+    }
+    localStorage.setItem(storageKey, JSON.stringify({ volume }));
+  }, [volume, setVolume, sound]);
 
   useEffect(() => {
     if (sound) sound.volume = volume / 100;
