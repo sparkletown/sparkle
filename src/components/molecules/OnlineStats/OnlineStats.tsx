@@ -5,6 +5,7 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
 import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
@@ -14,15 +15,26 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
+import { peopleAttending } from "utils/venue";
+import { useSelector } from "hooks/useSelector";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 
 interface PotLuckButtonProps {
   openVenues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
+
+interface AttendanceVenueEvent {
+  venue: WithId<AnyVenue>;
+  currentEvents: Array<VenueEvent>;
+  attendance: number;
+}
+
 const PotLuckButton: React.FC<PotLuckButtonProps> = ({
   openVenues,
   afterSelect,
 }) => {
+  useConnectPartyGoers();
   // const history = useHistory();
   const goToRandomVenue = useCallback(() => {
     if (!openVenues) return;
@@ -50,6 +62,7 @@ const OnlineStats: React.FC = () => {
   const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>(
     []
   );
+  const [liveEvents, setLiveEvents] = useState<Array<VenueEvent>>([]);
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
@@ -57,16 +70,36 @@ const OnlineStats: React.FC = () => {
     WithId<User>
   >();
 
+  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+
   useEffect(() => {
     const getOnlineStats = firebase
       .functions()
       .httpsCallable("stats-getOnlineStats");
+
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
           const { onlineUsers, openVenues } = result.data as OnlineStatsData;
+          const liveEvents: Array<VenueEvent> = [];
+          const venuesWithAttendance: AttendanceVenueEvent[] = [];
+          openVenues.forEach(
+            (venue: {
+              venue: WithId<AnyVenue>;
+              currentEvents: Array<VenueEvent>;
+            }) => {
+              const venueAttendance = peopleAttending(partygoers, venue.venue);
+              liveEvents.push(...venue.currentEvents);
+              venuesWithAttendance.push({
+                ...venue,
+                attendance: venueAttendance ? venueAttendance.length : 0,
+              });
+            }
+          );
+          venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
           setOnlineUsers(onlineUsers);
-          setOpenVenues(openVenues);
+          setOpenVenues(venuesWithAttendance);
+          setLiveEvents(liveEvents);
           setLoaded(true);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
@@ -227,8 +260,9 @@ const OnlineStats: React.FC = () => {
           rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
-            {openVenues.length} venues open now / {onlineUsers.length} burners
-            live <FontAwesomeIcon icon={faSearch} />
+            {liveEvents.length} live events / {openVenues.length} total venues /{" "}
+            {onlineUsers.length} live participants
+            <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
       )}
