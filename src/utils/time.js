@@ -69,7 +69,7 @@ export function oneHourAfterTimestamp(timestamp) {
 }
 
 export function formatUtcSeconds(utcSeconds) {
-  return format(new Date(utcSeconds * 1000), "p");
+  return utcSeconds ? format(new Date(utcSeconds * 1000), "p") : "(unknown)";
 }
 
 const getEventStartingTimeInSeconds = (event, startUtcSeconds) => {

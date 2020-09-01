@@ -1,6 +1,6 @@
 import React from "react";
 import { RoomAttendance } from "./RoomAttendance";
-import { formatMinute } from "utils/time";
+import { formatUtcSeconds } from "utils/time";
 import { CampRoomData } from "types/CampRoomData";
 import { useSelector } from "hooks/useSelector";
 import { getCurrentEvent } from "utils/event";
@@ -53,7 +53,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
             <h6 className="primary">{eventToDisplay.name}</h6>
             <p className="small primary">by {eventToDisplay.host}</p>
             <p className="small primary">
-              {formatMinute(eventToDisplay.start_utc_seconds)}
+              {formatUtcSeconds(eventToDisplay?.start_utc_seconds)}
             </p>
           </>
         )}
