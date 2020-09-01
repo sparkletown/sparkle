@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
-
 import "./Map.scss";
+import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
+import { useUser } from "../../../../hooks/useUser";
 
 interface PropsType {
   venue: CampVenue;
@@ -17,6 +18,7 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
+  const { user } = useUser();
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
   const [roomHovered, setRoomHovered] = useState<string | undefined>(undefined);
 
@@ -36,6 +38,10 @@ export const Map: React.FC<PropsType> = ({
 
   const getRoomUrl = (roomUrl: string) => {
     return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
+
+  const roomEnter = (room: CampRoomData) => {
+    room && user && enterRoom(user, room.title);
   };
 
   return (
@@ -92,6 +98,7 @@ export const Map: React.FC<PropsType> = ({
                     <div className="playa-venue-actions">
                       <a
                         className="btn btn-block btn-small btn-primary"
+                        onClick={() => roomEnter(room)}
                         href={getRoomUrl(room.url)}
                         target="_blank"
                         rel="noopener noreferrer"
