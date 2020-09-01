@@ -27,7 +27,8 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   }));
 
   if (!room) {
-    return <>Loading...</>;
+    // return <>Loading...</>;
+    return <></>;
   }
 
   const usersToDisplay =

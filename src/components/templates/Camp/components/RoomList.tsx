@@ -38,9 +38,9 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
 
   return (
     <>
-      <div>
+      {/*<div>
         <h5>{`What's on now: ${currentRooms.length} rooms open`}</h5>
-      </div>
+      </div>*/}
       <div className="rooms-container">
         {currentRooms.map((room) => (
           <RoomCard
