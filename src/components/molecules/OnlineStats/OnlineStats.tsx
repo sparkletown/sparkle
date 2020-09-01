@@ -109,7 +109,7 @@ const OnlineStats: React.FC = () => {
       updateStats();
     }, 5 * 60 * 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [partygoers]);
   const fuseVenues = useMemo(
     () =>
       openVenues
