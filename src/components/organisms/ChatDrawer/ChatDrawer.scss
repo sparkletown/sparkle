@@ -51,4 +51,21 @@
     color: $primaryColor;
     font-size: 30px;
   }
+
+  .band-reaction-container {
+    &::-webkit-scrollbar-track {
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: rgba($white, 0);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      background-color: rgba($white, 0.4);
+    }
+  }
 }

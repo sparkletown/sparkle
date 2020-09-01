@@ -695,12 +695,29 @@ span.link {
     padding: 10px 20px;
     border-radius: 22px;
     width: 100%;
+    word-wrap: break-word;
   }
   .message {
     display: flex;
-
     img {
       margin-right: 20px;
+    }
+    .timestamp {
+      color: $concrete;
+    }
+    &.chat-message {
+      flex-direction: column;
+      .sender-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 3px;
+        img {
+          margin-right: 10px;
+        }
+        .timestamp {
+          margin-left: 10px;
+        }
+      }
     }
   }
 
