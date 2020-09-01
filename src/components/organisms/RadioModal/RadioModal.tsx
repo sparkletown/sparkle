@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "./RadioModal.scss";
 
 interface PropsType {
@@ -16,16 +16,32 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
     sound?.play();
   }, [sound]);
 
+  const loadedInitialState = useRef(false);
+  useEffect(() => {
+    const storageKey = "Radio";
+    if (!loadedInitialState.current) {
+      try {
+        const storedState = localStorage.getItem(storageKey);
+        if (storedState) {
+          const state = JSON.parse(storedState);
+          setVolume(state.volume);
+          loadedInitialState.current = true;
+        }
+      } catch {}
+    }
+    localStorage.setItem(storageKey, JSON.stringify({ volume }));
+  }, [volume, setVolume, sound]);
+
   useEffect(() => {
     if (sound) sound.volume = volume / 100;
   }, [volume, sound]);
 
   return (
     <div className="radio-modal-container">
-      <div className="title-radio">Burning radio</div>
+      <div className="title-radio">Shouting Fire Radio</div>
       <div className="text-radio">
-        Listen to the official Burning Man Information Radio while you explore
-        the Playa!
+        We recommend turning on the global burner radio station as you rove
+        round the Playa!
       </div>
       <img
         className="img-radio"
