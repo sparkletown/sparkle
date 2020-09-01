@@ -131,15 +131,9 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </span>
                 )}
                 <div className="navbar-links">
-                  <div className="button-container navbar-link-schedule">
+                  <div className="profile-icon button-container navbar-link-schedule">
                     <div onClick={() => setShowEventSchedule(true)}>
-                      <img
-                        src={"/navbar-link-events.png"}
-                        className="profile-icon"
-                        alt="radio"
-                        width="40"
-                        height="40"
-                      />
+                      Live Schedule
                     </div>
                   </div>
                   {hasUpcomingEvents && (
@@ -177,26 +171,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     placement="bottom-end"
                     overlay={radioPopover}
                     rootClose={true}
+                    defaultShow={true}
                   >
-                    <div className="navbar-link-profile">
-                      {volume === 0 ? (
-                        <img
-                          src={"/navbar-link-radio-off.png"}
-                          className="profile-icon"
-                          alt="radio"
-                          width="40"
-                          height="40"
-                        />
-                      ) : (
-                        <img
-                          src={"/navbar-link-radio.png"}
-                          className="profile-icon"
-                          alt="radio"
-                          width="40"
-                          height="40"
-                        />
-                      )}
-                    </div>
+                    <div
+                      className={`profile-icon navbar-link-radio ${
+                        volume === 0 && "off"
+                      }`}
+                    ></div>
                   </OverlayTrigger>
                   <OverlayTrigger
                     trigger="click"
