@@ -65,6 +65,7 @@ const ArtPiece = () => {
               roomName={venue.name}
               setUserList={() => null}
               hasChairs={false}
+              defaultMute={true}
             />
           </div>
         </div>
@@ -72,6 +73,7 @@ const ArtPiece = () => {
           title={"Art Piece Chat"}
           roomName={venue.name}
           chatInputPlaceholder="Chat"
+          defaultShow={true}
         />
       </div>
       <div className="sparkle-fairies">
