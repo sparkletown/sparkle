@@ -93,6 +93,14 @@ input.btn {
       background-color: darken($primary, 14%);
     }
   }
+  &.btn-secondary {
+    color: $white;
+    background-color: rgba(124, 70, 251, 0.4);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    &:hover {
+      background-color: rgba(124, 70, 251, 0.8);
+    }
+  }
   &.btn-danger {
     color: $white;
     background: $danger-gradient;

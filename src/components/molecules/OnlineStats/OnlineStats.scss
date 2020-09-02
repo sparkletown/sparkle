@@ -53,27 +53,92 @@
         flex-wrap: wrap;
         overflow: auto;
         padding: 20px 0;
+        h5 {
+          font-weight: 300;
+          opacity: 0.6;
+        }
 
-        .venue-card {
-          border: 2px solid black;
-          background-color: rgba(0, 0, 0, 0.9);
-          border-radius: 30px;
-          overflow: hidden;
-          width: calc(25% - 20px); // minus margin on each side
-          height: 500px;
-          margin: 10px;
+        .venues-container-live,
+        .venues-container-all {
           display: flex;
           flex-direction: column;
-          padding: 10px;
+          margin-bottom: 1rem;
+          display: flex;
+          flex-wrap: wrap;
+          overflow: auto;
+          padding: 20px 0;
+        }
+
+        .venue-card {
+          width: calc(25% - 15px);
+          margin-right: 15px;
+          margin-bottom: 15px;
+          background-color: $dark;
+          height: auto;
+          border-radius: 30px;
+          border: 0;
+          padding: 12px;
+          cursor: pointer;
 
           &:hover {
-            background-color: rgba(30, 30, 30, 0.9);
-            cursor: pointer;
+            box-shadow: 0 20px 30px rgba($black, 0.2);
+            background-color: lighten($dark, 2%);
+            .img-container {
+              box-shadow: 0 4px 8px rgba($black, 0.4);
+            }
           }
 
           .venue-name {
-            font-size: larger;
-            font-weight: bold;
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            font-style: italic;
+            margin-bottom: 4px;
+          }
+          .venue-subtitle {
+            display: block;
+
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .whatson-container {
+            padding-top: 4px;
+          }
+          .whatson-title-container {
+            display: block;
+            color: yellow;
+            font-size: 0.8rem;
+            opacity: 0.6;
+            margin-bottom: 4px;
+          }
+          .whatson-description-container-title {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+          }
+          .whatson-description-container-description {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .centered-flex {
+            .btn {
+              display: block;
+              margin-bottom: 0;
+              margin-top: 10px;
+            }
           }
 
           .img-container {
