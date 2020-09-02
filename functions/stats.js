@@ -23,17 +23,6 @@ const eventIsNow = (event, now) => {
 
 exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
-  const userLastSeenLimit = (now - ONE_HOUR) / 1000;
-  const users = await admin
-    .firestore()
-    .collection("users")
-    .where("lastSeenAt", ">", userLastSeenLimit)
-    .get();
-  const onlineUsers = users.docs.map((doc) => {
-    const userWithId = doc.data();
-    userWithId.id = doc.id;
-    return userWithId;
-  });
 
   let openVenues = [];
   const venues = await admin.firestore().collection("venues").get();
@@ -62,7 +51,7 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
         });
     })
   );
-  return { onlineUsers, openVenues };
+  return { openVenues };
 });
 
 const eventIsLiveOrInFuture = (event, now) => {
