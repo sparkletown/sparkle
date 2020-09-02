@@ -20,7 +20,7 @@ import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 
 interface PotLuckButtonProps {
-  openVenues?: Array<WithId<AnyVenue>>;
+  venues?: Array<WithId<AnyVenue>>;
   afterSelect: () => void;
 }
 
@@ -31,21 +31,19 @@ interface AttendanceVenueEvent {
 }
 
 const PotLuckButton: React.FC<PotLuckButtonProps> = ({
-  openVenues,
+  venues,
   afterSelect,
 }) => {
   useConnectPartyGoers();
-  // const history = useHistory();
   const goToRandomVenue = useCallback(() => {
-    if (!openVenues) return;
-    const randomVenue = openVenues[getRandomInt(openVenues?.length - 1)];
+    if (!venues) return;
+    const randomVenue = venues[getRandomInt(venues?.length - 1)];
     afterSelect();
 
     // there is a bug in useConnectCurrentVenue that does not update correctly on url change
-    // history.push(venueInsideUrl(randomVenue.id));
     window.location.href = venuePlayaPreviewUrl(randomVenue.id);
-  }, [/*history,*/ openVenues, afterSelect]);
-  if (!openVenues) {
+  }, [venues, afterSelect]);
+  if (!venues) {
     return <></>;
   }
   return (
@@ -56,8 +54,8 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
 };
 
 const OnlineStats: React.FC = () => {
-  const [onlineUsers, setOnlineUsers] = useState<
-    OnlineStatsData["onlineUsers"]
+  const [venuesWithAttendance, setVenuesWithAttendance] = useState<
+    OnlineStatsData["openVenues"]
   >([]);
   const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>(
     []
@@ -80,26 +78,8 @@ const OnlineStats: React.FC = () => {
     const updateStats = () => {
       getOnlineStats()
         .then((result) => {
-          const { onlineUsers, openVenues } = result.data as OnlineStatsData;
-          const liveEvents: Array<VenueEvent> = [];
-          const venuesWithAttendance: AttendanceVenueEvent[] = [];
-          openVenues.forEach(
-            (venue: {
-              venue: WithId<AnyVenue>;
-              currentEvents: Array<VenueEvent>;
-            }) => {
-              const venueAttendance = peopleAttending(partygoers, venue.venue);
-              liveEvents.push(...venue.currentEvents);
-              venuesWithAttendance.push({
-                ...venue,
-                attendance: venueAttendance ? venueAttendance.length : 0,
-              });
-            }
-          );
-          venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
-          setOnlineUsers(onlineUsers);
-          setOpenVenues(venuesWithAttendance);
-          setLiveEvents(liveEvents);
+          const { openVenues } = result.data as OnlineStatsData;
+          setOpenVenues(openVenues);
           setLoaded(true);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
@@ -109,11 +89,33 @@ const OnlineStats: React.FC = () => {
       updateStats();
     }, 5 * 60 * 1000);
     return () => clearInterval(id);
-  }, [partygoers]);
+  }, []);
+
+  useEffect(() => {
+    const liveEvents: Array<VenueEvent> = [];
+    const venuesWithAttendance: AttendanceVenueEvent[] = [];
+    openVenues.forEach(
+      (venue: {
+        venue: WithId<AnyVenue>;
+        currentEvents: Array<VenueEvent>;
+      }) => {
+        const venueAttendance = peopleAttending(partygoers, venue.venue);
+        liveEvents.push(...venue.currentEvents);
+        venuesWithAttendance.push({
+          ...venue,
+          attendance: venueAttendance ? venueAttendance.length : 0,
+        });
+      }
+    );
+    venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
+    setVenuesWithAttendance(venuesWithAttendance);
+    setLiveEvents(liveEvents);
+  }, [openVenues, partygoers]);
+
   const fuseVenues = useMemo(
     () =>
-      openVenues
-        ? new Fuse(openVenues, {
+      venuesWithAttendance
+        ? new Fuse(venuesWithAttendance, {
             keys: [
               "venue.name",
               "venue.config.landingPageConfig.subtitle",
@@ -121,35 +123,35 @@ const OnlineStats: React.FC = () => {
             ],
           })
         : undefined,
-    [openVenues]
+    [venuesWithAttendance]
   );
   const fuseUsers = useMemo(
     () =>
-      new Fuse(onlineUsers, {
+      new Fuse(partygoers, {
         keys: ["partyName"],
       }),
-    [onlineUsers]
+    [partygoers]
   );
 
   const filteredVenues = useMemo(() => {
-    if (filterVenueText === "") return openVenues;
-    const resultOfSearch: typeof openVenues = [];
+    if (filterVenueText === "") return venuesWithAttendance;
+    const resultOfSearch: typeof venuesWithAttendance = [];
     fuseVenues &&
       fuseVenues
         .search(filterVenueText)
         .forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
-  }, [fuseVenues, filterVenueText, openVenues]);
+  }, [fuseVenues, filterVenueText, venuesWithAttendance]);
 
   const filteredUsers = useMemo(() => {
-    if (filterUsersText === "") return onlineUsers;
-    const resultOfSearch: typeof onlineUsers = [];
+    if (filterUsersText === "") return partygoers;
+    const resultOfSearch: WithId<User>[] = [];
     fuseUsers &&
       fuseUsers
         .search(filterUsersText)
         .forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
-  }, [fuseUsers, filterUsersText, onlineUsers]);
+  }, [fuseUsers, filterUsersText, partygoers]);
 
   const popover = useMemo(
     () =>
@@ -159,7 +161,7 @@ const OnlineStats: React.FC = () => {
             <div className="stats-outer-container">
               <div className="stats-modal-container">
                 <div className="open-venues">
-                  {openVenues?.length || 0} venues open now
+                  {venuesWithAttendance?.length || 0} venues open now
                 </div>
                 <div className="search-container">
                   <input
@@ -170,7 +172,7 @@ const OnlineStats: React.FC = () => {
                     value={filterVenueText}
                   />
                   <PotLuckButton
-                    openVenues={openVenues.map((ov) => ov.venue)}
+                    venues={venuesWithAttendance.map((v) => v.venue)}
                     // Force popover to close
                     afterSelect={() => document.body.click()}
                   />
@@ -203,7 +205,7 @@ const OnlineStats: React.FC = () => {
               </div>
               <div className="users-container">
                 <div className="online-users">
-                  {onlineUsers.length} burners live
+                  {partygoers.length} burners live
                 </div>
                 <div className="search-container">
                   <input
@@ -244,8 +246,8 @@ const OnlineStats: React.FC = () => {
       filterVenueText,
       filterUsersText,
       filteredVenues,
-      openVenues,
-      onlineUsers,
+      venuesWithAttendance,
+      partygoers,
       filteredUsers,
     ]
   );
@@ -260,8 +262,8 @@ const OnlineStats: React.FC = () => {
           rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
-            {liveEvents.length} live events / {openVenues.length} total venues /{" "}
-            {onlineUsers.length} live participants
+            {liveEvents.length} live events / {venuesWithAttendance.length}{" "}
+            total venues / {partygoers.length} live participants
             <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
