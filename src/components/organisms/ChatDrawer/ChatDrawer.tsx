@@ -20,17 +20,19 @@ interface PropsType {
   roomName: string;
   chatInputPlaceholder: string;
   title: string;
+  defaultShow?: boolean;
 }
 
 const ChatDrawer: React.FC<PropsType> = ({
   roomName,
   chatInputPlaceholder,
   title,
+  defaultShow,
 }) => {
   const { user } = useUser();
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
-  const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(false);
+  const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(defaultShow);
 
   useEffect(() => {
     if (isMessageToTheBarSent) {
