@@ -18,6 +18,7 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { Venue } from "types/Venue";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -153,6 +154,17 @@ const OnlineStats: React.FC = () => {
     return resultOfSearch;
   }, [fuseUsers, filterUsersText, partygoers]);
 
+  const liveVenues = filteredVenues.filter(
+    (venue) => venue.currentEvents.length
+  );
+  const allVenues = filteredVenues.filter(
+    (venue) => !venue.currentEvents.length
+  );
+  const getVenueAttendance = (venue: Venue) => {
+    const attendance = peopleAttending(partygoers, venue);
+    return attendance ? attendance.length : 0;
+  };
+
   const popover = useMemo(
     () =>
       loaded ? (
@@ -178,29 +190,76 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="venues-container">
-                  {filteredVenues.map(({ venue, currentEvents }, index) => (
-                    <div className="venue-card" key={index}>
-                      <span className="venue-name">{venue.name}</span>
-                      <span className="venue-subtitle">
-                        {venue.config?.landingPageConfig.subtitle}
-                      </span>
-                      <div className="img-container">
-                        <img
-                          className="venue-icon"
-                          src={venue.host.icon}
-                          alt={venue.name}
-                          title={venue.name}
-                        />
-                      </div>
-                      <VenueInfoEvents
-                        eventsNow={currentEvents}
-                        venue={venue}
-                        showButton={true}
-                        futureEvents={false}
-                        joinNowButton={false}
-                      />
+                  <div>
+                    {liveVenues.length && (
+                      <>
+                        <h5>
+                          {liveVenues.length}{" "}
+                          {liveVenues.length === 1 ? "Venue" : "Venues"} with
+                          live events now
+                        </h5>
+                        <div className="venues-container">
+                          {liveVenues.map(({ venue, currentEvents }, index) => (
+                            <div className="venue-card" key={index}>
+                              <div className="img-container">
+                                <img
+                                  className="venue-icon"
+                                  src={venue.host.icon}
+                                  alt={venue.name}
+                                  title={venue.name}
+                                />
+                              </div>
+                              <span className="venue-name">{venue.name}</span>
+                              <span className="venue-people">
+                                <b>{getVenueAttendance(venue)}</b> people in
+                                this room
+                              </span>
+                              <span className="venue-subtitle">
+                                {venue.config?.landingPageConfig.subtitle}
+                              </span>
+
+                              <VenueInfoEvents
+                                eventsNow={currentEvents}
+                                venue={venue}
+                                showButton={true}
+                                futureEvents={false}
+                                joinNowButton={false}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <div>
+                    <h5>All venues</h5>
+                    <div className="venues-container">
+                      {allVenues.map(({ venue }, index) => (
+                        <div className="venue-card" key={index}>
+                          <div className="img-container">
+                            <img
+                              className="venue-icon"
+                              src={venue.host.icon}
+                              alt={venue.name}
+                              title={venue.name}
+                            />
+                          </div>
+                          <span className="venue-name">{venue.name}</span>
+                          <span className="venue-subtitle">
+                            {venue.config?.landingPageConfig.subtitle}
+                          </span>
+
+                          <VenueInfoEvents
+                            eventsNow={[]}
+                            venue={venue}
+                            showButton={true}
+                            futureEvents={false}
+                            joinNowButton={false}
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </div>
                 </div>
               </div>
               <div className="users-container">
@@ -248,7 +307,10 @@ const OnlineStats: React.FC = () => {
       filteredVenues,
       venuesWithAttendance,
       partygoers,
+      openVenues,
       filteredUsers,
+      allVenues,
+      liveVenues,
     ]
   );
 
@@ -263,7 +325,7 @@ const OnlineStats: React.FC = () => {
         >
           <span>
             {liveEvents.length} live events / {venuesWithAttendance.length}{" "}
-            total venues / {partygoers.length} live participants
+            total venues / {partygoers.length} live burners
             <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
