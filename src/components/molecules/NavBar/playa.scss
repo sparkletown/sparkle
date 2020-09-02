@@ -111,7 +111,6 @@ $sand: #937c63;
     }
 
     .playa-link {
-      font-weight: 700;
       letter-spacing: 1.5px;
       font-size: 1.3em;
       cursor: pointer;
@@ -126,7 +125,7 @@ $sand: #937c63;
       display: block;
       height: 100%;
       max-width: 500px;
-      background-color: transparent;
+      background-color: rgba(0, 0, 0, 0.1);
       cursor: pointer;
       &:after {
         content: "";
@@ -140,18 +139,37 @@ $sand: #937c63;
         background-size: 74px 64px;
       }
       &:hover {
-        background-color: darken($sand, 5%);
+        background-color: rgba(0, 0, 0, 0.2);
         &:after {
           background-position: 0 -16px;
         }
       }
-      span {
+      span,
+      .playa-link {
         display: block;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         line-height: 66px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+      }
+      .search-icon {
+        margin-right: 10px;
+      }
+    }
+  }
+
+  &.nonplaya {
+    background-color: $black;
+    .navbar-container {
+      .navbar-dropdown-middle {
+        background-color: rgba(255, 255, 255, 0.1);
+        &:after {
+          content: none;
+        }
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.2);
+        }
       }
     }
   }
