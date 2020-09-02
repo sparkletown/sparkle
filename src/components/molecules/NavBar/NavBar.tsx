@@ -123,7 +123,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   return (
     <>
       <header>
-        <div className="navbar navbar_playa">
+        <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="navbar-logo">
               <Link to={redirectionUrl || "/in/playa"}>
@@ -136,18 +136,18 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
             </div>
             {user ? (
               <>
-                {isOnPlaya ? (
-                  <div className="navbar-dropdown-middle">
+                <div className="navbar-dropdown-middle">
+                  {isOnPlaya ? (
                     <OnlineStats />
-                  </div>
-                ) : (
-                  <span
-                    onClick={() => (window.location.href = "/in/playa")}
-                    className="playa-link"
-                  >
-                    Back to playa
-                  </span>
-                )}
+                  ) : (
+                    <span
+                      onClick={() => (window.location.href = "/in/playa")}
+                      className="playa-link"
+                    >
+                      Back to the Playa
+                    </span>
+                  )}
+                </div>
                 <div className="navbar-links">
                   <div className="profile-icon button-container navbar-link-schedule">
                     <div onClick={() => setShowEventSchedule(true)}>
