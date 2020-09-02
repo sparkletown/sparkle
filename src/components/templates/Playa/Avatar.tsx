@@ -39,7 +39,9 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       onMouseLeave={onMouseLeave}
     >
       <div
-        className="avatar they"
+        className={`avatar they ${
+          videoState === UserVideoState.Open ? "chat-open" : ""
+        }`}
         style={{
           top: y - PLAYA_AVATAR_SIZE / 2,
           left: x - PLAYA_AVATAR_SIZE / 2,
@@ -53,12 +55,9 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           title={user.partyName}
         />
       </div>
-      {videoState && (
+      {user.video?.inRoomOwnedBy && (
         <div
-          className={`chatzone ${
-            videoState === UserVideoState.Locked ? "locked" : ""
-          }
-        ${videoState === UserVideoState.Open ? "open" : ""}`}
+          className="chatzone open"
           style={{
             top: y - PLAYA_AVATAR_SIZE * 1.5,
             left: x - PLAYA_AVATAR_SIZE * 1.5,

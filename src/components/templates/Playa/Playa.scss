@@ -1,8 +1,8 @@
 @import "scss/constants.scss";
 
 $sand: #937c63;
-$playa-mode-badge-size: 15px;
-$playa-mode-badge-icon-size: 9px;
+$playa-mode-badge-size: 12px;
+$playa-mode-badge-icon-size: 6px;
 
 .playa-container {
   width: 100%;
@@ -45,6 +45,10 @@ $playa-mode-badge-icon-size: 9px;
       &.they {
         border: 2px solid white;
         background: $sand;
+
+        &.chat-open {
+          border: 2px solid $chat-open;
+        }
       }
     }
 
@@ -359,15 +363,15 @@ $playa-mode-badge-icon-size: 9px;
 @keyframes live-ripple {
   0% {
     box-shadow: 0 0 0 0 rgba($playa-venue-live, 0.4),
-      0 0 0 0.25em rgba($playa-venue-live, 0.4),
-      0 0 0 0.75em rgba($playa-venue-live, 0.4),
-      0 0 0 1.25em rgba($playa-venue-live, 0.4);
+      0 0 0 0.125em rgba($playa-venue-live, 0.4),
+      0 0 0 0.375em rgba($playa-venue-live, 0.4),
+      0 0 0 0.625em rgba($playa-venue-live, 0.4);
   }
   100% {
     box-shadow: 0 0 0 0.5em rgba($playa-venue-live, 0.4),
-      0 0 0 0.75em rgba($playa-venue-live, 0.4),
-      0 0 0 1.25em rgba($playa-venue-live, 0.4),
-      0 0 0 2em rgba($playa-venue-live, 0);
+      0 0 0 0.375em rgba($playa-venue-live, 0.4),
+      0 0 0 0.625em rgba($playa-venue-live, 0.4),
+      0 0 0 1em rgba($playa-venue-live, 0);
   }
 }
 
