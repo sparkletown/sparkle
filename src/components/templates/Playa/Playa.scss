@@ -114,6 +114,7 @@ $playa-mode-badge-icon-size: 9px;
     text-align: center;
     overflow: hidden;
     z-index: 1;
+    opacity: 0.75;
 
     .venue-icon {
       max-width: 100%;
@@ -128,6 +129,13 @@ $playa-mode-badge-icon-size: 9px;
       right: 0;
       animation: ripple 4s linear infinite;
       border-radius: 25%;
+      opacity: 1;
+    }
+
+    &.live {
+      border: 2px solid $playa-venue-live;
+      animation: live-ripple 4s linear infinite;
+      opacity: 1;
     }
   }
 
@@ -345,6 +353,21 @@ $playa-mode-badge-icon-size: 9px;
         background: rgba($sand, 0.5);
       }
     }
+  }
+}
+
+@keyframes live-ripple {
+  0% {
+    box-shadow: 0 0 0 0 rgba($playa-venue-live, 0.4),
+      0 0 0 0.25em rgba($playa-venue-live, 0.4),
+      0 0 0 0.75em rgba($playa-venue-live, 0.4),
+      0 0 0 1.25em rgba($playa-venue-live, 0.4);
+  }
+  100% {
+    box-shadow: 0 0 0 0.5em rgba($playa-venue-live, 0.4),
+      0 0 0 0.75em rgba($playa-venue-live, 0.4),
+      0 0 0 1.25em rgba($playa-venue-live, 0.4),
+      0 0 0 2em rgba($playa-venue-live, 0);
   }
 }
 
