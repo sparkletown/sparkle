@@ -320,9 +320,9 @@ const OnlineStats: React.FC = () => {
           rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
+            <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
             {liveEvents.length} live events / {venuesWithAttendance.length}{" "}
             total venues / {partygoers.length} live burners
-            <FontAwesomeIcon icon={faSearch} />
           </span>
         </OverlayTrigger>
       )}
