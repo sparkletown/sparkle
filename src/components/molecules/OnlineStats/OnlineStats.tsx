@@ -217,9 +217,9 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="people">
-                  {filteredUsers.map((user) => (
+                  {filteredUsers.map((user, index) => (
                     <div
-                      key={user.id}
+                      key={index}
                       className="user-row"
                       onClick={() => setSelectedUserProfile(user)}
                     >
