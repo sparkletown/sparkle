@@ -17,6 +17,7 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
+  REFETCH_SCHEDULE_MS,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -46,6 +47,7 @@ import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { getLinkFromText } from "utils/getLinkFromText";
 import ifvisible from "ifvisible.js";
+import { OnlineStatsData } from "types/OnlineStatsData";
 
 export type MenuConfig = {
   prompt?: string;
@@ -392,6 +394,26 @@ const Playa = () => {
     }
   }, [camp, venues, showVenue]);
 
+  const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>();
+  useEffect(() => {
+    const getOnlineStats = firebase
+      .functions()
+      .httpsCallable("stats-getLiveAndFutureEvents");
+    const updateStats = () => {
+      getOnlineStats()
+        .then((result) => {
+          const { openVenues } = result.data as OnlineStatsData;
+          setOpenVenues(openVenues);
+        })
+        .catch(() => {}); // REVISIT: consider a bug report tool
+    };
+    updateStats();
+    const id = setInterval(() => {
+      updateStats();
+    }, REFETCH_SCHEDULE_MS);
+    return () => clearInterval(id);
+  }, []);
+
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
   const venueRef = useRef<HTMLDivElement | null>(null);
@@ -555,6 +577,7 @@ const Playa = () => {
   const selectedVenueId = selectedVenue?.id;
 
   const playaContent = useMemo(() => {
+    const now = new Date().getTime();
     return (
       <>
         <img
@@ -564,7 +587,21 @@ const Playa = () => {
         />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
-            className="venue"
+            className={`venue ${
+              (peopleAttending(partygoers, venue)?.length || 0) > 0 ||
+              !!openVenues?.find(
+                (ov) =>
+                  ov.venue.id === venue.id &&
+                  !!ov.currentEvents.find(
+                    (ve) =>
+                      now / 1000 >= ve.start_utc_seconds &&
+                      now / 1000 <
+                        60 * ve.duration_minutes + ve.start_utc_seconds
+                  )
+              )
+                ? "live"
+                : ""
+            }`}
             style={{
               top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
               left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
@@ -681,7 +718,9 @@ const Playa = () => {
     showUserTooltip,
     showVenueTooltip,
     venues,
+    openVenues,
     showVenue,
+    partygoers,
   ]);
 
   const avatarLayer = useMemo(

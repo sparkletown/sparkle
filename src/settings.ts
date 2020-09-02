@@ -28,6 +28,8 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
+// How often to refresh events schedule
+export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;
