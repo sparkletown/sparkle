@@ -825,27 +825,7 @@ const Playa = () => {
             </>
           </div>
         )}
-        {isUserVenueOwner && (
-          <div
-            style={{
-              position: "absolute",
-              width: 50,
-              height: 50,
-              zIndex: 5000,
-            }}
-            onClick={() => changeDustStorm()}
-          >
-            <div className="playa-controls" style={{ bottom: 320, right: 30 }}>
-              <div className={`playa-controls-recenter show`}>
-                <div
-                  className={`playa-dust-storm-btn${
-                    dustStorm ? "-activated" : ""
-                  }`}
-                />
-              </div>
-            </div>
-          </div>
-        )}
+
         {dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
@@ -914,6 +894,18 @@ const Playa = () => {
             </div>
           )}
           <div className="playa-controls">
+            {isUserVenueOwner && (
+              <div
+                className={`playa-controls-recenter show`}
+                onClick={changeDustStorm}
+              >
+                <div
+                  className={`playa-dust-storm-btn${
+                    dustStorm ? "-activated" : ""
+                  }`}
+                />
+              </div>
+            )}
             <div
               className={`playa-controls-recenter ${
                 centeredOnMe === false ? "show" : ""
