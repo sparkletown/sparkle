@@ -383,6 +383,17 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
     });
 });
 
+exports.adminUpdateBannerMessage = functions.https.onCall(
+  async (data, context) => {
+    await checkUserIsPlayaOwner(context.auth.token.user_id);
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(PLAYA_VENUE_ID)
+      .update({ bannerMessage: data.bannerMessage || null });
+  }
+);
+
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
   (updated &&
