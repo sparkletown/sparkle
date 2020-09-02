@@ -11,8 +11,9 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
   profileData,
   profileDataId,
   bartender,
+  defaultMute = false,
 }) => {
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(defaultMute);
 
   useEffect(() => {
     if (muted) {

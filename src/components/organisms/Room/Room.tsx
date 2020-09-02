@@ -13,6 +13,7 @@ interface RoomProps {
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   hasChairs?: boolean;
+  defaultMute?: boolean;
 }
 
 const Room: React.FC<RoomProps> = ({
@@ -20,6 +21,7 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   hasChairs = true,
+  defaultMute,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
@@ -130,10 +132,11 @@ const Room: React.FC<RoomProps> = ({
           profileData={profileData}
           profileDataId={room.localParticipant.identity}
           bartender={meIsBartender}
+          defaultMute={defaultMute}
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData]);
+  }, [meIsBartender, room, profileData, defaultMute]);
 
   const othersComponents = useMemo(
     () =>
