@@ -35,7 +35,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       onClick={onClick}
       id={`room-card-${room.title}`}
     >
-      <div className="card-animation card-animation_music">
+      <div>
         <span className="icon-1"></span>
         <span className="icon-2"></span>
         <span className="icon-3"></span>
