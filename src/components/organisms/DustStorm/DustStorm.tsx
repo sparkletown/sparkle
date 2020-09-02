@@ -70,12 +70,12 @@ export const DustStorm = () => {
   return (
     <div className="duststorm-container show">
       <div className="modal-content">
-        <h3 className="italic">Dust Storm ahead!</h3>
+        <h3 className="italic">Dust storm alert!</h3>
         <p>
-          All navigation is impossible! You have one option and one option only:
-          to head to the nearest space and hang out there for the duration of
-          the sand storm!
+          Goggles on, now! A dust storm is blowing over the Playa. The harsh
+          sands blight your eyes.
         </p>
+        <p>Your only option is to seek shelter in a nearby venue!</p>
         <PotLuck
           openVenues={openVenues.map((ov) => ov.venue)}
           // Force popover to close
