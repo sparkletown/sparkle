@@ -132,7 +132,7 @@ $playa-mode-badge-icon-size: 9px;
       opacity: 1;
     }
 
-    .live {
+    &.live {
       border: 2px solid $playa-venue-live;
       animation: live-ripple 4s linear infinite;
       opacity: 1;
