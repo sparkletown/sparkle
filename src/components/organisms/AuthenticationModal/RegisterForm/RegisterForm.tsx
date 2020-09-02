@@ -73,7 +73,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     try {
       await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signUp(data);
-      console.log("signUp", auth);
       if (auth.user) {
         updateUserProfile(auth.user.uid, {
           codes_used: [data.code],
