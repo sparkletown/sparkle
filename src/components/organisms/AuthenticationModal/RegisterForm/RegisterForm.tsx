@@ -73,7 +73,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     try {
       await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signUp(data);
-      console.log("signUp", auth);
       if (auth.user) {
         updateUserProfile(auth.user.uid, {
           codes_used: [data.code],
@@ -168,7 +167,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             name="code"
             className="input-block input-centered"
             type="code"
-            placeholder="Unique Code From Your Email"
+            placeholder="Ticket Code From Your Email"
             ref={register({
               required: true,
             })}
@@ -177,7 +176,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">
               {errors.code.type === "required" ? (
                 <>
-                  Enter the unique code from your email. The code is required.
+                  Enter the ticket code from your email. The code is required.
                 </>
               ) : (
                 errors.code.message
