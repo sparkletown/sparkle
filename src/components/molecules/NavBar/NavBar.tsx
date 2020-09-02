@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import "./playa.scss";
@@ -21,6 +21,7 @@ import {
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
 import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
+import { useRadio } from "hooks/useRadio";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -73,7 +74,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     </Popover>
   );
 
-  const [volume, setVolume] = useState<number>(0);
   const sound = useMemo(
     () =>
       radioStations && radioStations.length
@@ -82,13 +82,31 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     [radioStations]
   );
 
+  const { volume, setVolume } = useRadio(sound);
+
   const radioPopover = (
     <Popover id="radio-popover">
       <Popover.Content>
-        <RadioModal volume={volume} setVolume={setVolume} sound={sound} />
+        <RadioModal volume={volume} setVolume={setVolume} />
       </Popover.Content>
     </Popover>
   );
+
+  const radioFirstPlayStateLoaded = useRef(false);
+  const showRadioOverlay = useMemo(() => {
+    if (!radioFirstPlayStateLoaded.current) {
+      const radioFirstPlayStorageKey = "radioFirstPlay";
+      const radioFirstPlayState = localStorage.getItem(
+        radioFirstPlayStorageKey
+      );
+      if (!radioFirstPlayState) {
+        localStorage.setItem(radioFirstPlayStorageKey, JSON.stringify(true));
+        return true;
+      }
+      radioFirstPlayStateLoaded.current = true;
+    }
+    return false;
+  }, [radioFirstPlayStateLoaded]);
 
   const numberOfUnreadMessages = useMemo(() => {
     return (
@@ -171,7 +189,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     placement="bottom-end"
                     overlay={radioPopover}
                     rootClose={true}
-                    defaultShow={true}
+                    defaultShow={showRadioOverlay}
                   >
                     <div
                       className={`profile-icon navbar-link-radio ${
