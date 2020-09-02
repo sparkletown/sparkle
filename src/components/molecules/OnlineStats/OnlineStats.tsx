@@ -18,7 +18,6 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import { Venue } from "types/Venue";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -160,10 +159,6 @@ const OnlineStats: React.FC = () => {
   const allVenues = filteredVenues.filter(
     (venue) => !venue.currentEvents.length
   );
-  const getVenueAttendance = (venue: Venue) => {
-    const attendance = peopleAttending(partygoers, venue);
-    return attendance ? attendance.length : 0;
-  };
 
   const popover = useMemo(
     () =>
@@ -211,8 +206,11 @@ const OnlineStats: React.FC = () => {
                               </div>
                               <span className="venue-name">{venue.name}</span>
                               <span className="venue-people">
-                                <b>{getVenueAttendance(venue)}</b> people in
-                                this room
+                                <b>
+                                  {peopleAttending(partygoers, venue)?.length ??
+                                    0}
+                                </b>{" "}
+                                people in this room
                               </span>
                               <span className="venue-subtitle">
                                 {venue.config?.landingPageConfig.subtitle}
@@ -304,11 +302,9 @@ const OnlineStats: React.FC = () => {
       loaded,
       filterVenueText,
       filterUsersText,
-      filteredVenues,
+      filteredUsers,
       venuesWithAttendance,
       partygoers,
-      openVenues,
-      filteredUsers,
       allVenues,
       liveVenues,
     ]
