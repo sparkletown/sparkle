@@ -59,6 +59,7 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
               <a
                 className="btn btn-primary join-button"
                 href={room.url.includes("http") ? room.url : "//" + room.url}
+                onClick={enter}
                 target="_blank"
                 rel="noopener noreferrer"
               >
