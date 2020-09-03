@@ -356,14 +356,14 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       firebase
         .firestore()
         .doc(`experiences/playa/chatRequests/${id}`)
-        .update({ fromUserJoined: true });
+        .update({ fromJoined: true });
     };
 
     const setChatRequestToJoined = (id: string) => {
       firebase
         .firestore()
         .doc(`experiences/playa/chatRequests/${id}`)
-        .update({ toUserJoined: true });
+        .update({ toJoined: true });
     };
 
     const ackRemove = (uid: string) => {
