@@ -13,7 +13,6 @@ import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
   PLAYA_TEMPLATES,
-  PLAYA_IMAGE,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
@@ -48,6 +47,7 @@ import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopU
 import { getLinkFromText } from "utils/getLinkFromText";
 import ifvisible from "ifvisible.js";
 import { OnlineStatsData } from "types/OnlineStatsData";
+import { PlayaBackground } from "./PlayaBackground";
 
 export type MenuConfig = {
   prompt?: string;
@@ -579,11 +579,7 @@ const Playa = () => {
     const now = new Date().getTime();
     return (
       <>
-        <img
-          className="playa-background"
-          src={PLAYA_IMAGE}
-          alt="Playa Background Map"
-        />
+        <PlayaBackground />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
             className={`venue ${

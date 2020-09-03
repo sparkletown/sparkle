@@ -22,6 +22,7 @@ import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
 import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
 import { useRadio } from "hooks/useRadio";
+import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -70,6 +71,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     <Popover id="profile-popover">
       <Popover.Content>
         <ProfilePopoverContent />
+      </Popover.Content>
+    </Popover>
+  );
+
+  const giftPopover = (
+    <Popover id="gift-popover">
+      <Popover.Content>
+        <GiftTicketModal />
       </Popover.Content>
     </Popover>
   );
@@ -166,6 +175,16 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={giftPopover}
+                    rootClose={true}
+                  >
+                    <span className="private-chat-icon">
+                      <div className="navbar-link-gift"></div>
+                    </span>
+                  </OverlayTrigger>
                   {profile && (
                     <OverlayTrigger
                       trigger="click"
