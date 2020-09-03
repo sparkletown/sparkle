@@ -8,7 +8,6 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
 

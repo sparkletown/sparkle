@@ -2,7 +2,6 @@ import React from "react";
 
 import { CampRoomData } from "types/CampRoomData";
 import RoomCard from "./RoomCard";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
 
