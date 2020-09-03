@@ -445,10 +445,11 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
-  const users = useMemo(
-    () => hoveredVenue && peopleAttending(partygoers, hoveredVenue),
-    [partygoers, hoveredVenue]
-  );
+  // Removed for now as attendance counting is inaccurate and is confusing people
+  // const users = useMemo(
+  //   () => hoveredVenue && peopleAttending(partygoers, hoveredVenue),
+  //   [partygoers, hoveredVenue]
+  // );
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -572,7 +573,7 @@ const Playa = () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
   }, []);
 
-  const numberOfUsers = users?.length ?? 0;
+  // const numberOfUsers = users?.length ?? 0;
   const selectedVenueId = selectedVenue?.id;
 
   const playaContent = useMemo(() => {
@@ -636,6 +637,7 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{hoveredVenue?.name}</div>
+                  {/* <div className="playa-venue-people">{numberOfUsers}</div> */}
                 </div>
               </div>
             </div>
@@ -698,7 +700,7 @@ const Playa = () => {
     hoveredUser,
     hoveredVenue,
     menu,
-    numberOfUsers,
+    // numberOfUsers, // Removed for now as it is inaccurate
     selectedVenueId,
     showMenu,
     showUserTooltip,
