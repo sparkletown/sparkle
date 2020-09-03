@@ -3,6 +3,7 @@ export enum ChatRequestState {
   Declined = "Declined",
   Accepted = "Accepted",
   Completed = "Completed",
+  Canceled = "Canceled",
 }
 
 export enum ChatRequestType {

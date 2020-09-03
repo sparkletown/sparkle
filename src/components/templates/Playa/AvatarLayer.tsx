@@ -376,6 +376,18 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       });
     };
 
+    const cancelPendingChatRequestsExcept = (id: string) => {
+      chatRequests
+        ?.filter(
+          (r) =>
+            r.id !== id &&
+            (r.state === ChatRequestState.Asked ||
+              r.state === ChatRequestState.Accepted) &&
+            (r.fromUid === user.uid || r.toUid === user.uid)
+        )
+        .map((r) => setChatRequestState(r.id, ChatRequestState.Canceled));
+    };
+
     // Inform if you were removed
     const remover = partygoers.find(
       (partygoer) =>
@@ -439,11 +451,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                   chatRequest.type === ChatRequestType.JoinTheirChat
                     ? "Join them!"
                     : "Let them in!",
-                onClick: () =>
+                onClick: () => {
+                  cancelPendingChatRequestsExcept(chatRequest.id);
                   setChatRequestState(
                     chatRequest.id,
                     ChatRequestState.Accepted
-                  ),
+                  );
+                },
               },
               {
                 text: "Refuse politely",
@@ -482,10 +496,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         case ChatRequestState.Accepted:
           // Join the rooms only once
           if (chatRequest.fromUid === user.uid && !chatRequest.fromJoined) {
+            cancelPendingChatRequestsExcept(chatRequest.id);
             joinRoomOwnedBy(chatRequest.toJoinRoomOwnedByUid);
             setChatRequestFromJoined(chatRequest.id);
           }
           if (chatRequest.toUid === user.uid && !chatRequest.toJoined) {
+            cancelPendingChatRequestsExcept(chatRequest.id);
             joinRoomOwnedBy(chatRequest.toJoinRoomOwnedByUid);
             setChatRequestToJoined(chatRequest.id);
           }
