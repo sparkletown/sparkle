@@ -18,10 +18,12 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
+  useConnectCurrentEvent();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
