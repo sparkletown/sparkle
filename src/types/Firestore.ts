@@ -11,6 +11,7 @@ import { PartyMapVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
 import { CampVenue } from "./CampVenue";
+import { ChatRequest } from "./ChatRequest";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -76,5 +77,6 @@ export interface Firestore {
     statsOpenVenues?: Array<WithId<AnyVenue>>;
     allUsers?: Array<WithId<User>>;
     userModalVisits?: Array<WithId<UserVisit>>;
+    chatRequests?: Array<WithId<ChatRequest>>;
   };
 }

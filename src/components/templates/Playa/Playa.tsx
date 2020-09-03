@@ -52,7 +52,6 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 export type MenuConfig = {
   prompt?: string;
   choices?: MenuChoice[];
-  cancelable: boolean;
   onHide?: () => void;
 };
 
@@ -693,14 +692,6 @@ const Playa = () => {
                       {choice.text}
                     </li>
                   ))}
-                  {menu?.cancelable && (
-                    <li
-                      className="choice"
-                      onClick={() => document.body.click()}
-                    >
-                      Cancel
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
