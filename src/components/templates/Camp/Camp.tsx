@@ -1,6 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { PartyTitle } from "../PartyMap/components";
@@ -18,12 +17,9 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
-  useConnectCurrentVenue();
-  useConnectCurrentEvent();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();

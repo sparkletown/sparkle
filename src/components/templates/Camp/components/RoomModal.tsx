@@ -8,7 +8,6 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
 
@@ -19,7 +18,6 @@ interface PropsType {
 }
 
 export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
-  useConnectCurrentVenue();
   const { user } = useUser();
   const { users, venueEvents } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
