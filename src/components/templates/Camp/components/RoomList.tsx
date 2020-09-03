@@ -19,8 +19,6 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  useConnectCurrentVenue();
-
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);

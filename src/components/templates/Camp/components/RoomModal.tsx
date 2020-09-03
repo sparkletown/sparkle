@@ -19,7 +19,6 @@ interface PropsType {
 }
 
 export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
-  useConnectCurrentVenue();
   const { user } = useUser();
   const { users, venueEvents } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
