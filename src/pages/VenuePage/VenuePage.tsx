@@ -5,13 +5,12 @@ import ArtPiece from "components/templates/ArtPiece";
 import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
 import PartyMap from "components/templates/PartyMap";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import FriendShipPage from "pages/FriendShipPage";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -24,7 +23,8 @@ import { PlayaRouter } from "components/templates/Playa/Router";
 import { CampRouter } from "components/templates/Camp/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+import getQueryParameters from "utils/getQueryParameters";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -32,6 +32,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
 
 const VenuePage = () => {
   const { venueId } = useParams();
+  const firebase = useFirestore();
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
 
@@ -78,9 +79,17 @@ const VenuePage = () => {
   useLocationUpdateEffect(user, venueName ?? "");
 
   useConnectPartyGoers();
-  useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
+  useEffect(() => {
+    const venueIdFromParams = getQueryParameters(window.location.search)
+      ?.venueId;
+    firebase.get({
+      collection: "venues",
+      doc: venueId ? venueId : venueIdFromParams,
+      storeAs: "currentVenue",
+    });
+  }, [firebase, venueId]);
   useFirestoreConnect(
     user
       ? {
