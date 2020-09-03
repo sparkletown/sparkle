@@ -21,6 +21,8 @@ import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
 import { MenuConfig, Shout } from "./Playa";
+import Switch from "react-switch";
+import "./AvatarLayer.scss";
 
 interface PropsType {
   bikeMode: boolean | undefined;
@@ -180,20 +182,34 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ? partygoers.find((pg) => pg.id === user.uid)
     : undefined;
 
-  const menu = {
-    prompt: `${selfUserProfile?.partyName} (you) - available actions:`,
+  const menu: MenuConfig = {
+    // prompt: `${selfUserProfile?.partyName} (you) - available actions:`,
+    prompt: "This is your avatar",
     choices: [
       {
-        text: `${
-          videoState === UserVideoState.Locked ? "Allow" : "Disallow"
-        } video chat requests`,
-        onClick: () => toggleVideoState(),
-      },
-      {
-        text: "View My Profile",
+        text: "My Profile",
         onClick: () => {
           if (selfUserProfile) setSelectedUserProfile(selfUserProfile);
         },
+      },
+      {
+        text: (
+          <div className="video-chat-text-row">
+            <Switch
+              height={20}
+              width={40}
+              checkedIcon={false}
+              uncheckedIcon={false}
+              onChange={() => {}}
+              checked={videoState !== UserVideoState.Locked}
+            />
+            <div className="video-chat-text">
+              {videoState === UserVideoState.Locked ? "closed" : "open"} to
+              video chat
+            </div>
+          </div>
+        ),
+        onClick: () => toggleVideoState(),
       },
     ],
     cancelable: true,
@@ -202,19 +218,36 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     !selfUserProfile?.video?.inRoomOwnedBy ||
     selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id
   ) {
-    menu.choices.push({
-      text: "Start a video chat\n(you can invite others)",
-      onClick: () => {
-        if (selfUserProfile) {
-          firebase
-            .firestore()
-            .doc(`users/${selfUserProfile.id}`)
-            .update({
-              video: { inRoomOwnedBy: selfUserProfile.id },
-            });
-        }
-      },
-    });
+    menu.choices &&
+      menu.choices.unshift({
+        text: "Start a group video chat",
+        onClick: () => {
+          if (videoState === UserVideoState.Locked) {
+            toggleVideoState();
+          }
+          if (selfUserProfile) {
+            firebase
+              .firestore()
+              .doc(`users/${selfUserProfile.id}`)
+              .update({
+                video: { inRoomOwnedBy: selfUserProfile.id },
+              });
+          }
+        },
+      });
+  } else {
+    menu.choices &&
+      menu.choices.unshift({
+        text: "Stop the group video chat",
+        onClick: () => {
+          if (selfUserProfile) {
+            firebase
+              .firestore()
+              .doc(`users/${selfUserProfile.id}`)
+              .update({ video: {} });
+          }
+        },
+      });
   }
 
   const myAvatar = useMemo(
@@ -360,7 +393,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         !declinedInvites.includes(partygoer.id) &&
         partygoer.id !== user.uid
     );
-    if (inviter?.id) {
+    if (inviter?.id && inviter.video?.inRoomOwnedBy) {
       const menu = {
         prompt: `${inviter.partyName} invited you to join their chat`,
         choices: [
@@ -536,18 +569,18 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         const videoState = userStateMap[uid].state?.[UserStateKey.Video];
 
         const viewProfileChoice = {
-          text: "View profile & message them",
+          text: `${avatarUser.partyName}'s profile`,
           onClick: () => setSelectedUserProfile(avatarUser),
         };
         const askToJoinThemChoice = (
           partyName: string | undefined,
           uid: string
         ) => ({
-          text: `Ask to join them in ${partyName}'s chat`,
+          text: `Ask to join ${partyName}'s chat`,
           onClick: () => askToJoin(uid),
         });
         const inviteThemToJoinYourChatChoice = {
-          text: "Invite them to chat",
+          text: "Invite to join your video chat",
           onClick: () => inviteToJoin(uid),
         };
 
@@ -597,6 +630,29 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               cancelable: true,
             };
           }
+          if (theyAreInAChat && meIsInAChat) {
+            if (theirHostsChatIsLocked) {
+              return {
+                prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [viewProfileChoice],
+                cancelable: true,
+              };
+            } else {
+              return {
+                prompt: `${avatarUser.partyName}: in an open chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [
+                  askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
+                  inviteThemToJoinYourChatChoice,
+                  viewProfileChoice,
+                ],
+                cancelable: true,
+              };
+            }
+          }
           if (theyAreInAChat) {
             if (theirHostsChatIsLocked) {
               return {
@@ -612,8 +668,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [
-                  viewProfileChoice,
                   askToJoinThemChoice(avatarUser.partyName, avatarUser.id),
+                  viewProfileChoice,
                 ],
                 cancelable: true,
               };

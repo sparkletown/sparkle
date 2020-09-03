@@ -1,8 +1,9 @@
 @import "scss/constants.scss";
 
 $sand: #937c63;
-$playa-mode-badge-size: 15px;
-$playa-mode-badge-icon-size: 9px;
+$playa-mode-badge-size: 12px;
+$playa-mode-badge-icon-size: 6px;
+$playa-profile-name-size: 30px;
 
 .playa-container {
   width: 100%;
@@ -26,6 +27,47 @@ $playa-mode-badge-icon-size: 9px;
       z-index: 1;
       transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       overflow: hidden;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+
+      .profile-image {
+        width: 100%;
+      }
+
+      &.me {
+        background: $gradient;
+        padding: 2px;
+
+        .border-helper {
+          background: $sand;
+          border-radius: inherit;
+          height: 100%;
+          overflow: hidden;
+        }
+      }
+      &.they {
+        border: 2px solid white;
+        background: $sand;
+      }
+    }
+
+    .avatar-small {
+      position: absolute;
+      display: flex;
+      justify-self: center;
+      justify-content: center;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      z-index: 1;
+      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
+
+      &:hover {
+        transform: scale(1.2);
+      }
 
       .profile-image {
         width: 100%;
@@ -56,10 +98,38 @@ $playa-mode-badge-icon-size: 9px;
       transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       display: none;
 
-      &.open {
+      &.open-me {
         display: block;
-        background-color: $chat-open;
+        -webkit-animation: blinkingBackground 1s infinite; /* Safari 4+ */
+        -moz-animation: blinkingBackground 1s infinite; /* Fx 5+ */
+        -o-animation: blinkingBackground 1s infinite; /* Opera 12+ */
+        animation: blinkingBackground 1s infinite; /* IE 10+, Fx 29+ */
+
+        @keyframes blinkingBackground {
+          25% {
+            background-color: $chat-open;
+          }
+          50% {
+            background-color: "transparent";
+          }
+          75% {
+            background-color: $chat-open;
+          }
+          100% {
+            background-color: "transparent";
+          }
+        }
       }
+
+      &.open-other {
+        display: block;
+      }
+
+      &.busy {
+        display: block;
+        background-color: $chat-busy;
+      }
+
       &.me.locked {
         display: block;
         background-color: $chat-closed;
@@ -67,6 +137,21 @@ $playa-mode-badge-icon-size: 9px;
       &:hover {
         transform: scale(1.2);
       }
+    }
+
+    .avatar-name-container {
+      position: absolute;
+      display: flex;
+      border-radius: 10px;
+      font-size: 4px;
+      justify-content: center;
+      align-items: center;
+      height: $playa-mode-badge-size / 2;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      color: white;
+      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+      overflow: hidden;
     }
 
     .mode-badge {
