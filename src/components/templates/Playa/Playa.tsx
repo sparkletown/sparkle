@@ -57,7 +57,7 @@ export type MenuConfig = {
 };
 
 type MenuChoice = {
-  text: string;
+  text: JSX.Element | string;
   onClick: () => void;
 };
 
@@ -689,14 +689,6 @@ const Playa = () => {
                       {choice.text}
                     </li>
                   ))}
-                  {menu?.cancelable && (
-                    <li
-                      className="choice"
-                      onClick={() => document.body.click()}
-                    >
-                      Cancel
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
