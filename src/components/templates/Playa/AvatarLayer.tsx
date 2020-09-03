@@ -364,7 +364,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const inviter = partygoers.find(
       (partygoer) =>
         partygoer.video?.invitingUid === user.uid &&
-        !declinedInvites.includes(partygoer.video?.invitingUid) &&
+        !declinedInvites.includes(partygoer.id) &&
         partygoer.id !== user.uid
     );
     if (inviter?.id) {
