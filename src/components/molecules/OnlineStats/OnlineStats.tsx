@@ -168,7 +168,7 @@ const OnlineStats: React.FC = () => {
             <div className="stats-outer-container">
               <div className="stats-modal-container">
                 <div className="open-venues">
-                  {venuesWithAttendance?.length || 0} venues open now
+                  {venuesWithAttendance?.length || 0} venues on playa
                 </div>
                 <div className="search-container">
                   <input
@@ -321,8 +321,7 @@ const OnlineStats: React.FC = () => {
         >
           <span>
             <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
-            {liveEvents.length} live events / {venuesWithAttendance.length}{" "}
-            total venues / {partygoers.length} live burners
+            {liveEvents.length} live events / {partygoers.length} burners online
           </span>
         </OverlayTrigger>
       )}
