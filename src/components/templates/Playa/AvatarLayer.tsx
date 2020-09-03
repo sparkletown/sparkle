@@ -322,7 +322,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       doc: "playa",
       subcollections: [{ collection: "chatRequests" }],
       storeAs: "chatRequests",
-      orderBy: ["created_at", "asc"],
+      orderBy: ["createdAt", "asc"],
     },
   ]);
   const chatRequests = useSelector(
