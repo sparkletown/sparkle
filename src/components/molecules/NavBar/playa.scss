@@ -60,7 +60,8 @@ $sand: #937c63;
       .navbar-link-profile,
       .navbar-link-menu,
       .navbar-link-radio,
-      .navbar-link-schedule {
+      .navbar-link-schedule,
+      .navbar-link-gift {
         display: block;
         height: 40px;
         width: 40px;
@@ -106,6 +107,10 @@ $sand: #937c63;
           font-size: 0.9rem;
           font-weight: 500;
           text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+        }
+        &.navbar-link-gift {
+          background-image: url(/navbar-link-gift.png);
+          background-size: 40px 40px;
         }
       }
     }
