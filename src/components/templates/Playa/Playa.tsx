@@ -52,12 +52,11 @@ import { PlayaBackground } from "./PlayaBackground";
 export type MenuConfig = {
   prompt?: string;
   choices?: MenuChoice[];
-  cancelable: boolean;
   onHide?: () => void;
 };
 
 type MenuChoice = {
-  text: string;
+  text: JSX.Element | string;
   onClick: () => void;
 };
 
@@ -637,7 +636,6 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{hoveredVenue?.name}</div>
-                  <div className="playa-venue-people">{numberOfUsers}</div>
                 </div>
               </div>
             </div>
@@ -689,14 +687,6 @@ const Playa = () => {
                       {choice.text}
                     </li>
                   ))}
-                  {menu?.cancelable && (
-                    <li
-                      className="choice"
-                      onClick={() => document.body.click()}
-                    >
-                      Cancel
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
