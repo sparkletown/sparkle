@@ -649,6 +649,28 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 prompt: `${avatarUser.partyName}: in an open chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
+                choices: [
+                  askToJoinThemChoice,
+                  inviteThemToJoinYourChatChoice,
+                  viewProfileChoice,
+                ],
+                cancelable: true,
+              };
+            }
+          }
+          if (theyAreInAChat) {
+            if (theirHostsChatIsLocked) {
+              return {
+                prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
+                choices: [viewProfileChoice],
+              };
+            } else {
+              return {
+                prompt: `${avatarUser.partyName}: in an open chat hosted by ${
+                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+                }`,
                 choices: [viewProfileChoice, askToJoinThemChoice],
               };
             }
