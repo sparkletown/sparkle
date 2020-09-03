@@ -26,7 +26,6 @@ $playa-profile-name-size: 30px;
       height: $playa-avatar-size;
       z-index: 1;
       transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
-      overflow: hidden;
 
       &:hover {
         transform: scale(1.2);
@@ -141,6 +140,9 @@ $playa-profile-name-size: 30px;
 
     .avatar-name-container {
       position: absolute;
+      bottom: -7px;
+      left: 50%;
+      transform: translate(-50%, 0);
       display: flex;
       border-radius: 10px;
       font-size: 4px;
@@ -152,6 +154,8 @@ $playa-profile-name-size: 30px;
       color: white;
       transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       overflow: hidden;
+      white-space: nowrap;
+      padding: 3px;
     }
 
     .mode-badge {

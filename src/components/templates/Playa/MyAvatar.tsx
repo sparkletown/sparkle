@@ -313,6 +313,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }}
         ref={ref}
       >
+        <div className={`avatar-name-container`}>{profile.partyName}</div>
         <div className="border-helper">
           <span className="img-vcenter-helper" />
           <img
@@ -338,15 +339,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           left: state.x - PLAYA_AVATAR_SIZE * 1.5,
         }}
       />
-      <div
-        className={`avatar avatar-name-container`}
-        style={{
-          top: state.y + PLAYA_AVATAR_SIZE / 2,
-          left: state.x - PLAYA_AVATAR_SIZE / 2,
-        }}
-      >
-        {profile.partyName}
-      </div>
+
       {shouts?.map((shout, index) => (
         <div
           className="shout split-words"
