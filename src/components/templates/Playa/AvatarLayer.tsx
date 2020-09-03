@@ -22,6 +22,7 @@ import MyAvatar from "./MyAvatar";
 import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { MenuConfig, Shout } from "./Playa";
 import Switch from "react-switch";
+import "./AvatarLayer.scss";
 import {
   ChatRequest,
   ChatRequestState,
@@ -184,7 +185,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ? partygoers.find((pg) => pg.id === user.uid)
     : undefined;
 
-  const menu = {
+  const menu: MenuConfig = {
+    // prompt: `${selfUserProfile?.partyName} (you) - available actions:`,
     prompt: "This is your avatar",
     choices: [
       {
@@ -213,28 +215,28 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         onClick: () => toggleVideoState(),
       },
     ],
-    cancelable: true,
   };
   if (
     !selfUserProfile?.video?.inRoomOwnedBy ||
     selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id
   ) {
-    menu.choices.push({
-      text: "Start a group video chat",
-      onClick: () => {
-        if (videoState === UserVideoState.Locked) {
-          toggleVideoState();
-        }
-        if (selfUserProfile) {
-          firebase
-            .firestore()
-            .doc(`users/${selfUserProfile.id}`)
-            .update({
-              video: { inRoomOwnedBy: selfUserProfile.id },
-            });
-        }
-      },
-    });
+    menu.choices &&
+      menu.choices.unshift({
+        text: "Start a group video chat",
+        onClick: () => {
+          if (videoState === UserVideoState.Locked) {
+            toggleVideoState();
+          }
+          if (selfUserProfile) {
+            firebase
+              .firestore()
+              .doc(`users/${selfUserProfile.id}`)
+              .update({
+                video: { inRoomOwnedBy: selfUserProfile.id },
+              });
+          }
+        },
+      });
   } else {
     menu.choices &&
       menu.choices.unshift({
@@ -371,7 +373,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       const menu = {
         prompt: `${remover.partyName} removed you from the chat.`,
         choices: [{ text: "OK", onClick: () => ackRemove(remover.id) }],
-        cancelable: false,
         onHide: () => ackRemove(remover.id),
       };
       setMenu(menu);
@@ -627,24 +628,21 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             return {
               prompt: `${avatarUser.partyName}: not allowing video chat`,
               choices: [viewProfileChoice],
-              cancelable: true,
             };
           }
           if (meIsInAChat && theyAreInAChat && theyAreInAChatWithMe) {
             return {
               prompt: `${avatarUser.partyName}: currently chatting with this person`,
               choices: [viewProfileChoice],
-              cancelable: true,
             };
           }
-          if (theyAreInAChat) {
+          if (theyAreInAChat && meIsInAChat) {
             if (theirHostsChatIsLocked) {
               return {
                 prompt: `${avatarUser.partyName}: in a locked chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [viewProfileChoice],
-                cancelable: true,
               };
             } else {
               return {
@@ -652,14 +650,12 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [viewProfileChoice, askToJoinThemChoice],
-                cancelable: true,
               };
             }
           }
           return {
             prompt: `${avatarUser.partyName}: open to chat`,
             choices: [viewProfileChoice, inviteThemToJoinYourChatChoice],
-            cancelable: true,
           };
         };
 

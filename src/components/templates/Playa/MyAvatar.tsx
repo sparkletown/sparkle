@@ -8,14 +8,15 @@ import React, {
 import {
   UserState,
   UserStateKey,
-  UserVideoState,
   stateBoolean,
+  UserVideoState,
 } from "types/RelayMessage";
 import { throttle } from "lodash";
 import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   serverSentState: UserState | undefined;
@@ -68,9 +69,10 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   },
   ref
 ) => {
-  const { profile } = useUser();
+  const { profile, user } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
+  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -240,7 +242,42 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     });
   }, [bike, videoState, away, heartbeat, sendUpdatedState]);
 
-  if (!profile || !state || away) return <></>;
+  if (!profile || !state || !user || away) return <></>;
+
+  const roomParticipants = profile.video?.inRoomOwnedBy
+    ? partygoers.filter(
+        (partygoer) =>
+          partygoer.video?.inRoomOwnedBy === profile?.video?.inRoomOwnedBy &&
+          partygoer.id !== user.uid
+      )
+    : [];
+
+  const avatarPositions: { [key: number]: { top: number; left: number } } = {
+    0: {
+      top: state.y - PLAYA_AVATAR_SIZE / 1,
+      left: state.x - PLAYA_AVATAR_SIZE / 1,
+    },
+    1: {
+      top: state.y - PLAYA_AVATAR_SIZE / 0.8,
+      left: state.x,
+    },
+    2: {
+      top: state.y - PLAYA_AVATAR_SIZE / 2,
+      left: state.x + PLAYA_AVATAR_SIZE / 1.7,
+    },
+    3: {
+      top: state.y + PLAYA_AVATAR_SIZE * 0.3,
+      left: state.x + PLAYA_AVATAR_SIZE / 3,
+    },
+    4: {
+      top: state.y + PLAYA_AVATAR_SIZE * 0.5,
+      left: state.x - PLAYA_AVATAR_SIZE / 1.7,
+    },
+    5: {
+      top: state.y - PLAYA_AVATAR_SIZE / 6,
+      left: state.x - PLAYA_AVATAR_SIZE * 1.2,
+    },
+  };
 
   return (
     <div
@@ -249,6 +286,25 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
+      {profile.video?.inRoomOwnedBy === user.uid &&
+        roomParticipants.length &&
+        roomParticipants.map((participant, index) => {
+          return (
+            <div
+              key={index}
+              className="avatar-small"
+              style={avatarPositions[index]}
+              ref={ref}
+            >
+              <img
+                className="profile-image"
+                src={participant?.pictureUrl}
+                alt={""}
+                title={""}
+              />
+            </div>
+          );
+        })}
       <div
         className="avatar me"
         style={{
@@ -270,20 +326,27 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       <div
         className={`chatzone me ${
           videoState === UserVideoState.Locked ? "locked" : ""
-        }
-        ${videoState === UserVideoState.Open ? "open" : ""}`}
+        } ${
+          (videoState === UserVideoState.Open &&
+            !profile.video?.inRoomOwnedBy) ||
+          !videoState
+            ? "open-me"
+            : ""
+        } ${profile.video?.inRoomOwnedBy ? "busy" : ""}`}
         style={{
           top: state.y - PLAYA_AVATAR_SIZE * 1.5,
           left: state.x - PLAYA_AVATAR_SIZE * 1.5,
         }}
       />
       <div
-        className={`mode-badge ${bike ? "bike" : "walk"}`}
+        className={`avatar avatar-name-container`}
         style={{
-          top: state.y + PLAYA_AVATAR_SIZE / 3,
-          left: state.x - PLAYA_AVATAR_SIZE / 4,
+          top: state.y + PLAYA_AVATAR_SIZE / 2,
+          left: state.x - PLAYA_AVATAR_SIZE / 2,
         }}
-      />
+      >
+        {profile.partyName}
+      </div>
       {shouts?.map((shout, index) => (
         <div
           className="shout split-words"

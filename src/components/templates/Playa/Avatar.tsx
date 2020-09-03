@@ -58,7 +58,13 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           className={`chatzone ${
             videoState === UserVideoState.Locked ? "locked" : ""
           }
-        ${videoState === UserVideoState.Open ? "open" : ""}`}
+            ${
+              (videoState === UserVideoState.Open &&
+                !user.video?.inRoomOwnedBy) ||
+              !videoState
+                ? "open-other"
+                : ""
+            } ${user.video?.inRoomOwnedBy ? "busy" : ""}`}
           style={{
             top: y - PLAYA_AVATAR_SIZE * 1.5,
             left: x - PLAYA_AVATAR_SIZE * 1.5,
