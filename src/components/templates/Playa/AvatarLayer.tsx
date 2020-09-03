@@ -124,11 +124,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       });
   }, [firebase, setShouts]);
 
+  const wsInitedRef = useRef(false);
   useEffect(() => {
-    if (!user) return;
+    if (!user || wsInitedRef.current) return;
 
     let unmounting = false;
-    let ws: WebSocket;
     const newWebSocket = () => {
       const newWs = new WebSocket(WS_RELAY_URL || DEFAULT_WS_RELAY_URL);
 
@@ -144,7 +144,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       newWs.onclose = () => {
         if (!unmounting) {
           setTimeout(() => {
-            ws = newWebSocket(); // @debt possible leak, consider a WeakRef
+            newWebSocket(); // @debt possible leak, consider a WeakRef
           }, 1000);
         }
       };
@@ -171,16 +171,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           );
         }
       };
-
-      return newWs;
     };
-
-    ws = newWebSocket();
-    return () => {
-      unmounting = true;
-      ws.close();
-      setUserStateMap({});
-    };
+    newWebSocket();
+    wsInitedRef.current = true;
   }, [user, setBikeMode, setVideoState, setAway, sendUpdatedState]);
 
   const selfUserProfile = user?.uid
