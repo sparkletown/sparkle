@@ -52,7 +52,6 @@ import { PlayaBackground } from "./PlayaBackground";
 export type MenuConfig = {
   prompt?: string;
   choices?: MenuChoice[];
-  cancelable: boolean;
   onHide?: () => void;
 };
 

@@ -10,9 +10,6 @@ type UserExperienceData = Record<string, Experience>;
 export type VideoState = {
   inRoomOwnedBy?: string;
   removedParticipantUids?: string[];
-  invitingUid?: string;
-  askingToJoinUid?: string;
-  acceptingRequestFromUid?: string;
 };
 
 export interface User {
