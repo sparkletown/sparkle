@@ -439,6 +439,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
       switch (chatRequest.state) {
         case ChatRequestState.Asked:
+          let accepted = false;
           setMenu({
             prompt: `${fromUser.partyName} ${
               chatRequest.type === ChatRequestType.JoinTheirChat
@@ -452,6 +453,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                     ? "Join them!"
                     : "Let them in!",
                 onClick: () => {
+                  accepted = true;
                   cancelPendingChatRequestsExcept(chatRequest.id);
                   setChatRequestState(
                     chatRequest.id,
@@ -469,7 +471,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               },
             ],
             onHide: () => {
-              if (chatRequest.state === ChatRequestState.Asked) {
+              if (!accepted) {
                 setChatRequestState(chatRequest.id, ChatRequestState.Declined);
               }
             },
