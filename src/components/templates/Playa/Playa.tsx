@@ -636,7 +636,6 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-venue-title">{hoveredVenue?.name}</div>
-                  <div className="playa-venue-people">{numberOfUsers}</div>
                 </div>
               </div>
             </div>
