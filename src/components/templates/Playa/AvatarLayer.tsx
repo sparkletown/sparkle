@@ -348,21 +348,21 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     const setChatRequestState = (id: string, state: ChatRequestState) => {
       firebase
         .firestore()
-        .doc(`experiences/playa/chatrequests/${id}`)
+        .doc(`experiences/playa/chatRequests/${id}`)
         .update({ state });
     };
 
     const setChatRequestFromJoined = (id: string) => {
       firebase
         .firestore()
-        .doc(`experiences/playa/chatrequests/${id}`)
+        .doc(`experiences/playa/chatRequests/${id}`)
         .update({ fromUserJoined: true });
     };
 
     const setChatRequestToJoined = (id: string) => {
       firebase
         .firestore()
-        .doc(`experiences/playa/chatrequests/${id}`)
+        .doc(`experiences/playa/chatRequests/${id}`)
         .update({ toUserJoined: true });
     };
 
@@ -545,7 +545,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       };
       firebase
         .firestore()
-        .collection(`experiences/playa/chatrequests`)
+        .collection(`experiences/playa/chatRequests`)
         .add(chatRequest);
 
       // Ensure the request doesn't get blocked by stale removes
