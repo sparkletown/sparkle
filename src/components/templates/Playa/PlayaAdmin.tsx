@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 const PlayaAdmin: React.FC = () => {
-  useConnectCurrentVenue();
-
   const [bannerMessage, setBannerMessage] = useState("");
   const [error, setError] = useState<string | null>();
 

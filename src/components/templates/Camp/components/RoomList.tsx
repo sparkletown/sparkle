@@ -2,7 +2,6 @@ import React from "react";
 
 import { CampRoomData } from "types/CampRoomData";
 import RoomCard from "./RoomCard";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
 
@@ -19,8 +18,6 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  useConnectCurrentVenue();
-
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
