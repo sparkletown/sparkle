@@ -192,7 +192,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
       if (index === -1) {
         throw new HttpsError("not-found", "Room does not exist");
       } else {
-        docData.splice(index, 1);
+        docData.rooms.splice(index, 1);
       }
 
       admin.firestore().collection("venues").doc(venueId).update(docData);
