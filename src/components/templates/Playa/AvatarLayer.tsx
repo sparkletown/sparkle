@@ -624,13 +624,13 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
               avatarUser.video?.inRoomOwnedBy
                 ? avatarUser.video.inRoomOwnedBy
                 : avatarUser.id,
-              ChatRequestType.JoinTheirChat
+              ChatRequestType.JoinMyChat
             ),
         };
         const inviteThemToJoinYourChatChoice = {
           text: "Invite to join your video chat",
           onClick: () =>
-            createChatRequest(uid, user.uid, ChatRequestType.JoinMyChat),
+            createChatRequest(uid, user.uid, ChatRequestType.JoinTheirChat),
         };
 
         const meIsMarkedAsInAChat = profile?.video?.inRoomOwnedBy !== undefined;
