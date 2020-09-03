@@ -56,7 +56,7 @@ export type MenuConfig = {
 };
 
 type MenuChoice = {
-  text: string;
+  text: JSX.Element | string;
   onClick: () => void;
 };
 
