@@ -31,6 +31,9 @@ export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// How often to refresh daypart logic
+export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;
