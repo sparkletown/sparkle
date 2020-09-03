@@ -322,7 +322,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       doc: "playa",
       subcollections: [{ collection: "chatRequests" }],
       storeAs: "chatRequests",
-      orderBy: ["created_at", "asc"],
+      orderBy: ["createdAt", "asc"],
     },
   ]);
   const chatRequests = useSelector(
@@ -468,8 +468,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                   ),
               },
             ],
-            onHide: () =>
-              setChatRequestState(chatRequest.id, ChatRequestState.Declined),
+            onHide: () => {
+              if (chatRequest.state === ChatRequestState.Asked) {
+                setChatRequestState(chatRequest.id, ChatRequestState.Declined);
+              }
+            },
           });
           menuRef.current = myAvatarRef.current;
           setShowMenu(true);
