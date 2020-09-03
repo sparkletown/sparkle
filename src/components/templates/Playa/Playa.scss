@@ -49,6 +49,7 @@ $playa-profile-name-size: 30px;
       &.they {
         border: 2px solid white;
         background: $sand;
+        overflow: hidden;
       }
     }
 
@@ -140,7 +141,7 @@ $playa-profile-name-size: 30px;
 
     .avatar-name-container {
       position: absolute;
-      bottom: -7px;
+      top: -7px;
       left: 50%;
       transform: translate(-50%, 0);
       display: flex;

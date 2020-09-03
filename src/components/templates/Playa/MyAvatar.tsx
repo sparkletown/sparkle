@@ -339,6 +339,13 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           left: state.x - PLAYA_AVATAR_SIZE * 1.5,
         }}
       />
+      <div
+        className={`mode-badge ${bike ? "bike" : "walk"}`}
+        style={{
+          top: state.y + PLAYA_AVATAR_SIZE / 3,
+          left: state.x - PLAYA_AVATAR_SIZE / 4,
+        }}
+      />
 
       {shouts?.map((shout, index) => (
         <div
