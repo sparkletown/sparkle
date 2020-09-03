@@ -23,6 +23,7 @@ import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -192,144 +193,171 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     ]
   );
 
-  return (
-    <div className="page">
-      <div className="page-side">
-        <div className="page-container-left">
-          <div className="page-container-left-content">
-            <form
-              className="full-height-container"
-              onSubmit={handleSubmit(onSubmit)}
-            >
-              <div className="scrollable-content">
-                <h4 className="italic">{`${
-                  editingRoom ? "Edit your" : "Add a"
-                } room`}</h4>
-                <p className="small light" style={{ marginBottom: "2rem" }}>
-                  You can update everything in this form at a later date on the
-                  edit page
-                </p>
-                <div className="input-container">
-                  <div className="input-title">Name your Room</div>
-                  <input
-                    disabled={disable}
-                    name="title"
-                    ref={register}
-                    className="align-left"
-                    placeholder={`My room title`}
-                  />
-                  {errors.title && (
-                    <span className="input-error">{errors.title.message}</span>
-                  )}
-                </div>
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-                <div className="input-container">
-                  <div className="input-title">
-                    Upload an image for how your room should appear on the camp
-                    map
+  return (
+    <>
+      <div className="page">
+        <div className="page-side">
+          <div className="page-container-left">
+            <div className="page-container-left-content">
+              <form
+                className="full-height-container"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div className="scrollable-content">
+                  <h4 className="italic">{`${
+                    editingRoom ? "Edit your" : "Add a"
+                  } room`}</h4>
+                  <p className="small light" style={{ marginBottom: "2rem" }}>
+                    You can update everything in this form at a later date on
+                    the edit page
+                  </p>
+                  <div className="input-container">
+                    <div className="input-title">Name your Room</div>
+                    <input
+                      disabled={disable}
+                      name="title"
+                      ref={register}
+                      className="align-left"
+                      placeholder={`My room title`}
+                    />
+                    {errors.title && (
+                      <span className="input-error">
+                        {errors.title.message}
+                      </span>
+                    )}
                   </div>
-                  <ImageInput
-                    disabled={disable}
-                    name={"image_file"}
-                    image={values.image_file}
-                    remoteUrlInputName={"image_url"}
-                    remoteImageUrl={values.image_url}
-                    containerClassName="input-square-container"
-                    ref={register}
-                    error={errors.image_file || errors.image_url}
-                  />
-                </div>
-                <div className="input-container">
-                  <div className="input-title">Give your room a subtitle</div>
-                  <input
-                    name="subtitle"
-                    disabled={disable}
-                    ref={register}
-                    className="align-left"
-                    placeholder={`My room subtitle`}
-                  />
-                  {errors.subtitle && (
-                    <span className="input-error">
-                      {errors.subtitle.message}
-                    </span>
-                  )}
-                </div>
-                <div className="input-container">
-                  <div className="input-title">About your room</div>
-                  <textarea
-                    disabled={disable}
-                    name={"about"}
-                    ref={register}
-                    className="wide-input-block input-centered align-left"
-                    placeholder={"Describe your room in detail"}
-                  />
-                  {errors.about && (
-                    <span className="input-error">{errors.about.message}</span>
-                  )}
-                </div>
-                <div className="input-container">
-                  <div className="input-title">The room url</div>
-                  <input
-                    disabled={disable}
-                    name={"url"}
-                    ref={register}
-                    className="wide-input-block align-left"
-                    placeholder={"The url this room will redirect to"}
-                  />
-                  {errors.url && (
-                    <span className="input-error">{errors.url.message}</span>
-                  )}
-                </div>
-              </div>
-              <div className="page-container-left-bottombar">
-                <div />
-                <div>
-                  <SubmitButton
-                    editing={!!editingRoom}
-                    isSubmitting={isSubmitting}
-                  />
-                </div>
-                {formError && (
-                  <div className="input-error">
-                    {"An error occured when saving your form"}
+
+                  <div className="input-container">
+                    <div className="input-title">
+                      Upload an image for how your room should appear on the
+                      camp map
+                    </div>
+                    <ImageInput
+                      disabled={disable}
+                      name={"image_file"}
+                      image={values.image_file}
+                      remoteUrlInputName={"image_url"}
+                      remoteImageUrl={values.image_url}
+                      containerClassName="input-square-container"
+                      ref={register}
+                      error={errors.image_file || errors.image_url}
+                    />
                   </div>
-                )}
-              </div>
-            </form>
+                  <div className="input-container">
+                    <div className="input-title">Give your room a subtitle</div>
+                    <input
+                      name="subtitle"
+                      disabled={disable}
+                      ref={register}
+                      className="align-left"
+                      placeholder={`My room subtitle`}
+                    />
+                    {errors.subtitle && (
+                      <span className="input-error">
+                        {errors.subtitle.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="input-container">
+                    <div className="input-title">About your room</div>
+                    <textarea
+                      disabled={disable}
+                      name={"about"}
+                      ref={register}
+                      className="wide-input-block input-centered align-left"
+                      placeholder={"Describe your room in detail"}
+                    />
+                    {errors.about && (
+                      <span className="input-error">
+                        {errors.about.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className="input-container">
+                    <div className="input-title">The room url</div>
+                    <input
+                      disabled={disable}
+                      name={"url"}
+                      ref={register}
+                      className="wide-input-block align-left"
+                      placeholder={"The url this room will redirect to"}
+                    />
+                    {errors.url && (
+                      <span className="input-error">{errors.url.message}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="page-container-left-bottombar">
+                  <div />
+                  <div>
+                    <SubmitButton
+                      editing={!!editingRoom}
+                      isSubmitting={isSubmitting}
+                    />
+                    {editingRoom && !isSubmitting && (
+                      <button
+                        type={"button"}
+                        className="btn btn-danger"
+                        onClick={() => setShowDeleteModal(true)}
+                      >
+                        Delete room
+                      </button>
+                    )}
+                  </div>
+                  {formError && (
+                    <div className="input-error">
+                      {"An error occured when saving your form"}
+                    </div>
+                  )}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div className="page-side preview">
+          <h4
+            className="italic"
+            style={{ textAlign: "center", fontSize: "22px" }}
+          >
+            Position your room in the camp
+          </h4>
+          <p>
+            First upload or select the icon you would like to appear in your
+            camp, then drag it around to position it
+          </p>
+          <div className="playa">
+            {venue.mapBackgroundImageUrl && (
+              <CampContainer
+                interactive
+                resizable
+                coordinatesBoundary={100}
+                onChange={onBoxChange}
+                snapToGrid={false}
+                iconsMap={currentRoomIcon}
+                backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
+                iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+                draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
+                venue={venue}
+                currentRoomIndex={editingRoomIndex}
+                otherIconsStyle={{ opacity: 0.4 }}
+              />
+            )}
           </div>
         </div>
       </div>
-      <div className="page-side preview">
-        <h4
-          className="italic"
-          style={{ textAlign: "center", fontSize: "22px" }}
-        >
-          Position your room in the camp
-        </h4>
-        <p>
-          First upload or select the icon you would like to appear in your camp,
-          then drag it around to position it
-        </p>
-        <div className="playa">
-          {venue.mapBackgroundImageUrl && (
-            <CampContainer
-              interactive
-              resizable
-              coordinatesBoundary={100}
-              onChange={onBoxChange}
-              snapToGrid={false}
-              iconsMap={currentRoomIcon}
-              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
-              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venue={venue}
-              currentRoomIndex={editingRoomIndex}
-              otherIconsStyle={{ opacity: 0.4 }}
-            />
-          )}
-        </div>
-      </div>
-    </div>
+      {!!editingRoom && (
+        <RoomDeleteModal
+          show={showDeleteModal}
+          onHide={() => {
+            setShowDeleteModal(false);
+          }}
+          venueId={venueId}
+          room={editingRoom}
+        />
+      )}
+    </>
   );
 };
 
@@ -347,10 +375,8 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
       <span className="sr-only">Loading...</span>
     </div>
   ) : (
-    <input
-      className="btn btn-primary"
-      type="submit"
-      value={editing ? "Update room" : "Create room"}
-    />
+    <button className="btn btn-primary" type="submit">
+      {editing ? "Update room" : "Create room"}
+    </button>
   );
 };
