@@ -352,6 +352,20 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         .update({ state });
     };
 
+    const setChatRequestFromJoined = (id: string) => {
+      firebase
+        .firestore()
+        .doc(`experiences/playa/chatrequests/${id}`)
+        .update({ fromUserJoined: true });
+    };
+
+    const setChatRequestToJoined = (id: string) => {
+      firebase
+        .firestore()
+        .doc(`experiences/playa/chatrequests/${id}`)
+        .update({ toUserJoined: true });
+    };
+
     const ackRemove = (uid: string) => {
       setAckedRemoves((acked) => {
         if (acked?.includes(uid)) {
@@ -466,12 +480,16 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setShowMenu(true);
           break;
         case ChatRequestState.Accepted:
-          joinRoomOwnedBy(chatRequest.toJoinRoomOwnedByUid);
-          if (
-            fromUser.video?.inRoomOwnedBy ===
-              chatRequest.toJoinRoomOwnedByUid &&
-            toUser.video?.inRoomOwnedBy === chatRequest.toJoinRoomOwnedByUid
-          ) {
+          // Join the rooms only once
+          if (chatRequest.fromUid === user.uid && !chatRequest.fromJoined) {
+            joinRoomOwnedBy(chatRequest.toJoinRoomOwnedByUid);
+            setChatRequestFromJoined(chatRequest.id);
+          }
+          if (chatRequest.toUid === user.uid && !chatRequest.toJoined) {
+            joinRoomOwnedBy(chatRequest.toJoinRoomOwnedByUid);
+            setChatRequestToJoined(chatRequest.id);
+          }
+          if (chatRequest.fromJoined && chatRequest.toJoined) {
             setChatRequestState(chatRequest.id, ChatRequestState.Completed);
           }
           break;
@@ -506,6 +524,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         type,
         state: ChatRequestState.Asked,
         createdAt: new Date().getTime(),
+        fromJoined: false,
+        toJoined: false,
       };
       firebase
         .firestore()

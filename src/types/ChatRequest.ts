@@ -17,4 +17,6 @@ export type ChatRequest = {
   type: ChatRequestType;
   state: ChatRequestState;
   createdAt: number;
+  fromJoined: boolean;
+  toJoined: boolean;
 };
