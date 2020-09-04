@@ -89,12 +89,6 @@ const CENTER_CAMP: Point = {
   radius: 94,
   evaluator: clockEvaluator,
 };
-const TEMPLE: Point = {
-  x: 2141,
-  y: 1567,
-  name: "Temple",
-  evaluator: clockEvaluator,
-};
 const NORTHWEST_SATELLITE: Point = {
   x: 1485,
   y: 677,
@@ -117,7 +111,6 @@ const DEEP_PLAYA: Point = {
 const POINTS: Point[] = [
   MAN,
   CENTER_CAMP,
-  TEMPLE,
   NORTHWEST_SATELLITE,
   SOUTHEAST_SATELLITE,
   DEEP_PLAYA,
