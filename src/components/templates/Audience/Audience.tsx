@@ -116,15 +116,17 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         className="audience-container"
         style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
       >
-        <div className="video">
-          <iframe
-            className="frame"
-            src={venue?.iframeUrl}
-            title="Video"
-            frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+        <div className="video-container">
+          <div className="video">
+            <iframe
+              className="frame"
+              src={venue?.iframeUrl}
+              title="Video"
+              frameBorder="0"
+              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          </div>
         </div>
         <div className="audience">
           {Array.from(Array(rowCount)).map((_, untranslatedRowIndex) => {
