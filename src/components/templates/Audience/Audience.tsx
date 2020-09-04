@@ -109,10 +109,12 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         });
     };
 
+    console.log("venue", venue, venue?.mapBackgroundImageUrl);
+
     return (
       <div
         className="audience-container"
-        style={{ backgroundImage: venue?.mapBackgroundImageUrl }}
+        style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
       >
         <div className="video">
           <iframe
