@@ -1,6 +1,8 @@
 interface Experience {
-  bartender: User;
-  table: string;
+  bartender?: User;
+  table?: string;
+  row?: number;
+  column?: number;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm
