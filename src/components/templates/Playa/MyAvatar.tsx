@@ -16,7 +16,8 @@ import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
-import { useSelector } from "hooks/useSelector";
+import AvatarPartygoers from "./AvatarPartygoers";
+import AvatarImage from "./AvatarImage";
 
 interface PropsType {
   serverSentState: UserState | undefined;
@@ -72,7 +73,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   const { profile, user } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -244,40 +244,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
 
   if (!profile || !state || !user || away) return <></>;
 
-  const roomParticipants = profile.video?.inRoomOwnedBy
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.video?.inRoomOwnedBy === profile?.video?.inRoomOwnedBy &&
-          partygoer.id !== user.uid
-      )
-    : [];
-
-  const avatarPositions: { [key: number]: { top: number; left: number } } = {
-    0: {
-      top: state.y - PLAYA_AVATAR_SIZE / 1,
-      left: state.x - PLAYA_AVATAR_SIZE / 1,
-    },
-    1: {
-      top: state.y - PLAYA_AVATAR_SIZE / 0.8,
-      left: state.x,
-    },
-    2: {
-      top: state.y - PLAYA_AVATAR_SIZE / 2,
-      left: state.x + PLAYA_AVATAR_SIZE / 1.7,
-    },
-    3: {
-      top: state.y + PLAYA_AVATAR_SIZE * 0.3,
-      left: state.x + PLAYA_AVATAR_SIZE / 3,
-    },
-    4: {
-      top: state.y + PLAYA_AVATAR_SIZE * 0.5,
-      left: state.x - PLAYA_AVATAR_SIZE / 1.7,
-    },
-    5: {
-      top: state.y - PLAYA_AVATAR_SIZE / 6,
-      left: state.x - PLAYA_AVATAR_SIZE * 1.2,
-    },
-  };
+  const isVideoRoomOwnedByMe = profile.video?.inRoomOwnedBy === user.uid;
 
   return (
     <div
@@ -286,25 +253,9 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       onMouseLeave={onMouseLeave}
       onClick={onClick}
     >
-      {profile.video?.inRoomOwnedBy === user.uid &&
-        roomParticipants.length &&
-        roomParticipants.map((participant, index) => {
-          return (
-            <div
-              key={index}
-              className="avatar-small"
-              style={avatarPositions[index]}
-              ref={ref}
-            >
-              <img
-                className="profile-image"
-                src={participant?.pictureUrl}
-                alt={""}
-                title={""}
-              />
-            </div>
-          );
-        })}
+      {isVideoRoomOwnedByMe && (
+        <AvatarPartygoers state={state} user={{ id: user.uid, ...profile }} />
+      )}
       <div
         className="avatar me"
         style={{
@@ -313,15 +264,12 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }}
         ref={ref}
       >
-        <div className={`avatar-name-container`}>{profile.partyName}</div>
+        {!isVideoRoomOwnedByMe && (
+          <div className={`avatar-name-container`}>{profile.partyName}</div>
+        )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />
-          <img
-            className="profile-image"
-            src={profile?.pictureUrl}
-            alt={profile?.partyName}
-            title={profile?.partyName}
-          />
+          <AvatarImage user={{ ...profile, id: user.uid }} />
         </div>
       </div>
       <div
@@ -333,12 +281,27 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           !videoState
             ? "open-me"
             : ""
-        } ${profile.video?.inRoomOwnedBy ? "busy" : ""}`}
+        } ${
+          isVideoRoomOwnedByMe
+            ? "busy-me"
+            : profile.video?.inRoomOwnedBy
+            ? "busy"
+            : ""
+        }
+        `}
         style={{
           top: state.y - PLAYA_AVATAR_SIZE * 1.5,
           left: state.x - PLAYA_AVATAR_SIZE * 1.5,
         }}
-      />
+      >
+        {isVideoRoomOwnedByMe && (
+          <div className="video_chat-status">
+            {profile.partyName}&apos;s
+            <br />
+            live video chat
+          </div>
+        )}
+      </div>
       <div
         className={`mode-badge ${bike ? "bike" : "walk"}`}
         style={{

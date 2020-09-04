@@ -49,6 +49,7 @@ export interface Venue {
   radioStations?: string[];
   dustStorm?: boolean;
   bannerMessage?: string;
+  playaIcon?: PlayaIcon;
 }
 
 export interface VenuePlacement {
@@ -61,6 +62,13 @@ export interface VenuePlacement {
 export enum VenuePlacementState {
   SelfPlaced = "SELF_PLACED",
   AdminPlaced = "ADMIN_PLACED",
+}
+
+export interface PlayaIcon {
+  x: number;
+  y: number;
+  fire: boolean;
+  visible: boolean;
 }
 
 export const urlFromImage = (

@@ -20,6 +20,7 @@ $primary: #7c46fb;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba(#6f43ff, 0.35);
+$chat-busy-me: rgba(#ffffff, 0.35);
 $gradient: linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
   124deg,
@@ -35,3 +36,5 @@ $playa-width-and-height: 4000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 24px;
 $playa-venue-live: rgb(125, 223, 194);
+
+$profile-image-bg-color: #999999;

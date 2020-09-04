@@ -4,7 +4,7 @@ import "./loading.scss";
 
 const quotes = [
   "Navigating dust storms...",
-  "Roadtripping accross Nevada...",
+  "Roadtripping across Nevada...",
   "In a traffic jam in Gerlach...",
   "Biking out to deep playa...",
   "Fixing tyre punctures...",
