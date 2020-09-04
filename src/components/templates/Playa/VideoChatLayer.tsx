@@ -70,7 +70,6 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
             type="button"
             className="btn btn-danger btn-sm"
             onClick={leave}
-            // onClick={host ? leave : () => removeParticipant(user.uid)}
           >
             {host ? "Stop the group video chat" : `Leave video chat`}
           </button>
