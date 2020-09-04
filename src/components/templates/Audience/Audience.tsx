@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import firebase from "firebase/app";
 import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
@@ -38,7 +38,7 @@ type PropsType = {};
 // Hardcode these for now; let's make them dynamic so occupancy cannot exceed 80%
 // Always have an odd number of columns.
 const MIN_COLUMNS = 17;
-const MIN_ROWS = 12;
+const MIN_ROWS = 13;
 
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
@@ -133,7 +133,10 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     partygoersBySeat[row][column] = partygoer;
     seatedPartygoers++;
   });
-  setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers));
+
+  useEffect(() => setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers)), [
+    seatedPartygoers,
+  ]);
 
   return useMemo(() => {
     const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
@@ -142,7 +145,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
     const translateColumn = (untranslatedColumnIndex: number) =>
-      (untranslatedColumnIndex = Math.floor(columnsForSizedAuditorium / 2));
+      untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
     const isSeat = (translatedRow: number, translatedColumn: number) => {
       const isInFireLaneColumn = translatedColumn === 0;
@@ -203,7 +206,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
               (_, untranslatedRowIndex) => {
                 const row = translateRow(untranslatedRowIndex);
                 return (
-                  <div className="seat-row">
+                  <div key={untranslatedRowIndex} className="seat-row">
                     {Array.from(Array(columnsForSizedAuditorium)).map(
                       (_, untranslatedColumnIndex) => {
                         const column = translateColumn(untranslatedColumnIndex);
@@ -215,6 +218,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                           : null;
                         return (
                           <div
+                            key={untranslatedColumnIndex}
                             className={seat ? "seat" : "not-seat"}
                             onClick={() =>
                               seat && seatedPartygoer !== null
@@ -247,12 +251,14 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
               }
             )}
           </div>
-          <ChatDrawer
-            title={`${venue.name ?? "Audience"} Chat`}
-            roomName={venue.name}
-            chatInputPlaceholder="Chat"
-            defaultShow={true}
-          />
+          <div className="chat-container">
+            <ChatDrawer
+              title={`${venue.name ?? "Audience"} Chat`}
+              roomName={venue.name}
+              chatInputPlaceholder="Chat"
+              defaultShow={true}
+            />
+          </div>
           <UserProfileModal
             show={selectedUserProfile !== undefined}
             onHide={() => setSelectedUserProfile(undefined)}

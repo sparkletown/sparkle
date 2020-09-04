@@ -2,16 +2,22 @@
   background-attachment: fixed;
   background-position: center 46%;
   position: relative;
+  display: flex;
+  flex: 1;
+  -webkit-flex: 1;
+  -ms-flex: 1;
 
   .video-container {
-    position: absolute;
+    position: fixed;
     left: 50%;
-    top: 5%;
+    top: 28%;
     width: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     .video {
       position: relative;
-      left: -50%;
       width: 100%;
       padding-bottom: 50%;
       float: left;
@@ -24,5 +30,66 @@
         left: 0;
       }
     }
+  }
+
+  .audience {
+    display: flex;
+    flex: 1;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    flex-direction: column;
+
+    .seat-row {
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .seat {
+      display: flex;
+      border-radius: 100%;
+      width: 5vh;
+      height: 5vh;
+      margin: 0.7vh;
+      justify-content: center;
+      align-content: center;
+      background-color: rgba(0, 0, 0, 0.2);
+      color: white;
+      user-select: none;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+      }
+
+      &:active {
+        background-color: rgba(0, 0, 0, 0.6);
+        cursor: pointer;
+      }
+    }
+
+    .not-seat {
+      display: flex;
+      border-radius: 100%;
+      width: 5vh;
+      height: 5vh;
+      margin: 0.7vh;
+      justify-content: center;
+      align-content: center;
+      background-color: rgba(0, 0, 0, 0);
+      user-select: none;
+    }
+
+    .add-participant-button {
+      font-size: 3vh;
+      align-self: center;
+    }
+  }
+
+  .chat-container {
+    position: absolute;
+    right: 0;
+    top: 35px;
   }
 }
