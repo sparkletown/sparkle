@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
 import { WS_RELAY_URL } from "secrets";
 import { useUser } from "hooks/useUser";
 import {
@@ -28,6 +28,7 @@ import {
   ChatRequestState,
   ChatRequestType,
 } from "types/ChatRequest";
+import { LocationContext } from "components/context/LocationContext";
 
 interface PropsType {
   bikeMode: boolean | undefined;
@@ -87,6 +88,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const userStateMapRef = useRef(userStateMap);
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
+  const locationContext = useContext(LocationContext);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
@@ -94,6 +96,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () => (state: UserState) => {
       if (!user) return;
       setMyLocation(state.x, state.y);
+      locationContext?.setLocation({ x: state.x, y: state.y });
 
       if (wsRef.current) {
         const update: UpdateWsMessage = {
@@ -106,7 +109,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         console.error("Warning: no ability to relay location");
       }
     },
-    [user, setMyLocation]
+    [user, setMyLocation, locationContext]
   );
 
   useEffect(() => {

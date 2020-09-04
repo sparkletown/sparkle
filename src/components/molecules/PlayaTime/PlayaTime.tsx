@@ -33,7 +33,7 @@ const PlayaTime: React.FC = () => {
   return (
     <div className="playa_time-container">
       <FontAwesomeIcon icon={faClock} className="playa_time-icon" />{" "}
-      {currentTime} on the Playa
+      {currentTime} on Playa
     </div>
   );
 };

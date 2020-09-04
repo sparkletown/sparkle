@@ -1,4 +1,5 @@
 import { ChatContextWrapper } from "components/context/ChatContext";
+import { LocationContextWrapper } from "components/context/LocationContext";
 import CountDown from "components/molecules/CountDown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import ArtPiece from "components/templates/ArtPiece";
@@ -210,7 +211,11 @@ const VenuePage = () => {
 
   return (
     <ChatContextWrapper>
-      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
+      <LocationContextWrapper>
+        <WithNavigationBar fullscreen={fullscreen}>
+          {template}
+        </WithNavigationBar>
+      </LocationContextWrapper>
     </ChatContextWrapper>
   );
 };
