@@ -24,6 +24,7 @@ import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePag
 import { useRadio } from "hooks/useRadio";
 import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
 import PlayaTime from "../PlayaTime";
+import PlayaAddress from "../PlayaAddress";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -145,8 +146,9 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   />
                 </Link>
               </div>
-              <div className="navbar-playa_time">
+              <div className="navbar-info">
                 <PlayaTime />
+                <PlayaAddress />
               </div>
             </div>
             {user ? (

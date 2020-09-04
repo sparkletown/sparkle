@@ -24,7 +24,7 @@ import "scss/global.scss";
 
 import AppRouter from "components/organisms/AppRouter";
 
-import { roomReducer } from "./store/reducers";
+import { roomReducer, locationReducer } from "./store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
 import { DndProvider } from "react-dnd";
@@ -62,6 +62,7 @@ const rootReducer = combineReducers({
   firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
   firestore: firestoreReducer as Reducer<Firestore>,
   room: roomReducer,
+  location: locationReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

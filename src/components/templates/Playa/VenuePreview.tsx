@@ -13,6 +13,7 @@ import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import img from "./img/pickspace-thumbnail_camp.png";
+import { playaAddress } from "utils/address";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -179,6 +180,12 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
         <div className="description">
           {venue.config?.landingPageConfig?.description}
         </div>
+        {venue.placement?.x && venue.placement?.y && (
+          <div className="address">
+            <strong>Address on playa:</strong>{" "}
+            {playaAddress(venue.placement.x, venue.placement.y)}
+          </div>
+        )}
         <VenueInfoEvents
           eventsNow={eventsNow}
           venue={venue}
