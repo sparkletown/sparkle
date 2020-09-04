@@ -18,6 +18,7 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { playaAddress } from "utils/address";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -212,6 +213,15 @@ const OnlineStats: React.FC = () => {
                                 </b>{" "}
                                 people in this room
                               </span>
+                              {venue.placement && (
+                                <span className="venue-address">
+                                  Address:{" "}
+                                  {playaAddress(
+                                    venue.placement.x,
+                                    venue.placement.y
+                                  )}
+                                </span>
+                              )}
                               <span className="venue-subtitle">
                                 {venue.config?.landingPageConfig.subtitle}
                               </span>
