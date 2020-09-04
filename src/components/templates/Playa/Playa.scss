@@ -110,13 +110,13 @@ $playa-profile-name-size: 30px;
             background-color: $chat-open;
           }
           50% {
-            background-color: "transparent";
+            background-color: transparent;
           }
           75% {
             background-color: $chat-open;
           }
           100% {
-            background-color: "transparent";
+            background-color: transparent;
           }
         }
       }
@@ -129,6 +129,27 @@ $playa-profile-name-size: 30px;
         display: block;
         background-color: $chat-busy;
       }
+      &.busy-me {
+        -webkit-animation: blinkingBusyBackground 1s infinite; /* Safari 4+ */
+        -moz-animation: blinkingBusyBackground 1s infinite; /* Fx 5+ */
+        -o-animation: blinkingBusyBackground 1s infinite; /* Opera 12+ */
+        animation: blinkingBusyBackground 1s infinite; /* IE 10+, Fx 29+ */
+
+        @keyframes blinkingBusyBackground {
+          25% {
+            background-color: $chat-busy-me;
+          }
+          50% {
+            background-color: transparent;
+          }
+          75% {
+            background-color: $chat-busy-me;
+          }
+          100% {
+            background-color: transparent;
+          }
+        }
+      }
 
       &.me.locked {
         display: block;
@@ -137,6 +158,25 @@ $playa-profile-name-size: 30px;
       &:hover {
         transform: scale(1.2);
       }
+    }
+    .video_chat-status {
+      position: absolute;
+      top: -18px;
+      top: -29px;
+      left: 50%;
+      transform: translate(-50%, 0);
+      text-align: center;
+      display: flex;
+      border-radius: 10px;
+      font-size: 9px;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+      color: white;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 3px 8px;
     }
 
     .avatar-name-container {
@@ -469,7 +509,7 @@ $playa-profile-name-size: 30px;
 
 .playa-menu {
   position: relative;
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   margin-top: 10px;

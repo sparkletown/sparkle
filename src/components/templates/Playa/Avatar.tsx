@@ -5,6 +5,7 @@ import { WithId } from "utils/id";
 import { PLAYA_AVATAR_SIZE } from "settings";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
+import AvatarPartygoers from "./AvatarPartygoers";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -31,6 +32,8 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
 }) => {
   if (!user) return <></>;
 
+  const isVideoRoomOwnedByMe = user.video?.inRoomOwnedBy === user.id;
+
   return (
     <div
       className="avatar-container"
@@ -38,6 +41,9 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       onMouseOver={onMouseOver}
       onMouseLeave={onMouseLeave}
     >
+      {isVideoRoomOwnedByMe && (
+        <AvatarPartygoers state={{ x, y }} user={user} />
+      )}
       <div
         className="avatar they"
         style={{
@@ -53,7 +59,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           title={user.partyName}
         />
       </div>
-      {videoState && (
+      {(videoState || isVideoRoomOwnedByMe) && (
         <div
           className={`chatzone ${
             videoState === UserVideoState.Locked ? "locked" : ""
@@ -64,12 +70,27 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
               !videoState
                 ? "open-other"
                 : ""
-            } ${user.video?.inRoomOwnedBy ? "busy" : ""}`}
+            } ${
+            isVideoRoomOwnedByMe
+              ? "busy-me"
+              : user.video?.inRoomOwnedBy
+              ? "busy"
+              : ""
+          }
+            `}
           style={{
             top: y - PLAYA_AVATAR_SIZE * 1.5,
             left: x - PLAYA_AVATAR_SIZE * 1.5,
           }}
-        />
+        >
+          {isVideoRoomOwnedByMe && (
+            <div className="video_chat-status">
+              {user.partyName}&apos;s
+              <br />
+              live video chat
+            </div>
+          )}
+        </div>
       )}
       <div
         className={`mode-badge ${bike ? "bike" : "walk"}`}
