@@ -10,7 +10,6 @@ const RemoteParticipant: React.FunctionComponent<RemoteParticipantProps> = ({
   participant,
   user,
   isHost,
-  style,
   setSelectedUserProfile,
   remove,
   showHostControls,
@@ -23,7 +22,6 @@ const RemoteParticipant: React.FunctionComponent<RemoteParticipantProps> = ({
       participant={participant}
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
-      style={style}
       isHost={isHost}
       audio={audio}
       video={video}
