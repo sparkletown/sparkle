@@ -33,23 +33,24 @@ $playa-profile-name-size: 30px;
 
       .profile-image {
         width: 100%;
+        background-color: $profile-image-bg-color;
       }
-
+      .border-helper {
+        border-radius: inherit;
+        height: 100%;
+        overflow: hidden;
+        background-color: $profile-image-bg-color;
+      }
       &.me {
         background: $gradient;
         padding: 2px;
-
-        .border-helper {
-          background: $sand;
-          border-radius: inherit;
-          height: 100%;
-          overflow: hidden;
-        }
       }
       &.they {
         border: 2px solid white;
         background: $sand;
-        overflow: hidden;
+        .avatar-name-container {
+          top: -9px;
+        }
       }
     }
 
@@ -71,6 +72,7 @@ $playa-profile-name-size: 30px;
 
       .profile-image {
         width: 100%;
+        background-color: $profile-image-bg-color;
       }
 
       &.me {
@@ -130,10 +132,10 @@ $playa-profile-name-size: 30px;
         background-color: $chat-busy;
       }
       &.busy-me {
-        -webkit-animation: blinkingBusyBackground 1s infinite; /* Safari 4+ */
-        -moz-animation: blinkingBusyBackground 1s infinite; /* Fx 5+ */
-        -o-animation: blinkingBusyBackground 1s infinite; /* Opera 12+ */
-        animation: blinkingBusyBackground 1s infinite; /* IE 10+, Fx 29+ */
+        -webkit-animation: blinkingBusyBackground 2s infinite; /* Safari 4+ */
+        -moz-animation: blinkingBusyBackground 2s infinite; /* Fx 5+ */
+        -o-animation: blinkingBusyBackground 2s infinite; /* Opera 12+ */
+        animation: blinkingBusyBackground 2s infinite; /* IE 10+, Fx 29+ */
 
         @keyframes blinkingBusyBackground {
           25% {

@@ -6,6 +6,7 @@ import { PLAYA_AVATAR_SIZE } from "settings";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
 import AvatarPartygoers from "./AvatarPartygoers";
+import AvatarImage from "./AvatarImage";
 
 interface PropsType {
   user: WithId<User> | undefined;
@@ -51,13 +52,13 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
           left: x - PLAYA_AVATAR_SIZE / 2,
         }}
       >
-        <span className="img-vcenter-helper" />
-        <img
-          className="profile-image"
-          src={user.pictureUrl}
-          alt={user.partyName}
-          title={user.partyName}
-        />
+        {!isVideoRoomOwnedByMe && (
+          <div className={`avatar-name-container`}>{user.partyName}</div>
+        )}
+        <div className="border-helper">
+          <span className="img-vcenter-helper" />
+          <AvatarImage user={user} />
+        </div>
       </div>
       {(videoState || isVideoRoomOwnedByMe) && (
         <div
