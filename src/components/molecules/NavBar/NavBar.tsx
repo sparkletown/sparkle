@@ -23,6 +23,7 @@ import OnlineStats from "../OnlineStats";
 import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
 import { useRadio } from "hooks/useRadio";
 import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
+import PlayaTime from "../PlayaTime";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -134,14 +135,19 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       <header>
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
-            <div className="navbar-logo">
-              <Link to={redirectionUrl || "/in/playa"}>
-                <img
-                  src={SPARKLEVERSE_LOGO_URL}
-                  alt="Logo"
-                  className="logo-img"
-                />
-              </Link>
+            <div className="navbar-logo_container">
+              <div className="navbar-logo">
+                <Link to={redirectionUrl || "/in/playa"}>
+                  <img
+                    src={SPARKLEVERSE_LOGO_URL}
+                    alt="Logo"
+                    className="logo-img"
+                  />
+                </Link>
+              </div>
+              <div className="navbar-playa_time">
+                <PlayaTime />
+              </div>
             </div>
             {user ? (
               <>

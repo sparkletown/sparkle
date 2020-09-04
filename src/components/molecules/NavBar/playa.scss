@@ -37,15 +37,21 @@ $sand: #937c63;
     margin-right: auto;
     background-color: transparent;
 
+    .navbar-logo_container {
+      display: flex;
+      align-items: center;
+    }
     .navbar-logo {
       padding: 14px 20px;
       display: flex;
-      width: 500px;
       justify-content: space-between;
       align-items: center;
       img {
         width: 240px;
       }
+    }
+    .navbar-playa_time {
+      padding: 4px 10px 0 10px;
     }
 
     .navbar-links {
