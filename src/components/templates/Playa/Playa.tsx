@@ -621,6 +621,20 @@ const Playa = () => {
             {selectedVenueId === venue.id && <div className="selected" />}
           </div>
         ))}
+        {venue?.playaIcon?.visible === true && (
+          <div
+            className="playa-icon"
+            style={{ left: venue.playaIcon.x, top: venue.playaIcon.y }}
+          >
+            {venue.playaIcon.fire && (
+              <div className="fire">
+                {Array.from(Array(50)).map(() => (
+                  <div className="particle" />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         <Overlay
           target={venueRef.current}
           show={showVenueTooltip && !showUserTooltip && !showMenu}
@@ -705,6 +719,7 @@ const Playa = () => {
     showMenu,
     showUserTooltip,
     showVenueTooltip,
+    venue,
     venues,
     openVenues,
     showVenue,
