@@ -221,7 +221,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                             key={untranslatedColumnIndex}
                             className={seat ? "seat" : "not-seat"}
                             onClick={() =>
-                              seat && seatedPartygoer !== null
+                              seat && seatedPartygoer === null
                                 ? takeSeat(row, column)
                                 : seatedPartygoer !== null
                                 ? setSelectedUserProfile(seatedPartygoer)
