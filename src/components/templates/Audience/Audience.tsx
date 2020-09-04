@@ -37,7 +37,7 @@ type PropsType = {};
 const MIN_COLUMNS = 17;
 const MIN_ROWS = 12;
 
-export const Audience: React.FunctionComponent<PropsType> = ({}) => {
+export const Audience: React.FunctionComponent<PropsType> = () => {
   const { venueId } = useParams();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
@@ -51,11 +51,6 @@ export const Audience: React.FunctionComponent<PropsType> = ({}) => {
   // Use state when this becomes dynamic
   const rowCount = MIN_ROWS;
   const columnCount = MIN_COLUMNS;
-
-  const translateRow = (untranslatedRowIndex: number) =>
-    untranslatedRowIndex - Math.floor(rowCount / 2);
-  const translateColumn = (untranslatedColumnIndex: number) =>
-    (untranslatedColumnIndex = Math.floor(columnCount / 2));
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
@@ -76,43 +71,60 @@ export const Audience: React.FunctionComponent<PropsType> = ({}) => {
     partygoersBySeat[row][column] = partygoer;
   });
 
-  const isSeat = (row: number, column: number) => {
-    const isInFireLaneColumn = column === 0;
-    if (isInFireLaneColumn) return false;
+  const iframeUrl = venue?.iframeUrl;
 
-    const isInVideoRow = Math.abs(row) <= Math.floor(rowCount / 4);
-    const isInVideoColumn = Math.abs(column) <= Math.floor(columnCount / 4);
-    const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
-    return !isInVideoCarveOut;
-  };
+  return useMemo(() => {
+    const translateRow = (untranslatedRowIndex: number) =>
+      untranslatedRowIndex - Math.floor(rowCount / 2);
+    const translateColumn = (untranslatedColumnIndex: number) =>
+      (untranslatedColumnIndex = Math.floor(columnCount / 2));
 
-  const takeSeat = (row: number, column: number) => {
-    if (!user || !profile) return;
-    const doc = `users/${user.uid}`;
-    const existingData = profile?.data;
-    const update = {
-      data: {
-        ...existingData,
-        [venueId]: {
-          row,
-          column,
-        },
-      },
+    const isSeat = (row: number, column: number) => {
+      const isInFireLaneColumn = column === 0;
+      if (isInFireLaneColumn) return false;
+
+      const isInVideoRow = Math.abs(row) <= Math.floor(rowCount / 4);
+      const isInVideoColumn = Math.abs(column) <= Math.floor(columnCount / 4);
+      const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
+      return !isInVideoCarveOut;
     };
-    const firestore = firebase.firestore();
-    firestore
-      .doc(doc)
-      .update(update)
-      .catch(() => {
-        firestore.doc(doc).set(update);
-      });
-  };
 
-  return useMemo(
-    () => (
-      <div className="audience-container">
+    const takeSeat = (row: number, column: number) => {
+      if (!user || !profile) return;
+      const doc = `users/${user.uid}`;
+      const existingData = profile?.data;
+      const update = {
+        data: {
+          ...existingData,
+          [venueId]: {
+            row,
+            column,
+          },
+        },
+      };
+      const firestore = firebase.firestore();
+      firestore
+        .doc(doc)
+        .update(update)
+        .catch(() => {
+          firestore.doc(doc).set(update);
+        });
+    };
+
+    return (
+      <div
+        className="audience-container"
+        stye={{ backgroundImage: venue?.mapBackgroundImageUrl }}
+      >
         <div className="video">
-          <iframe src={venue?.iframeUrl} />
+          <iframe
+            className="frame"
+            src={iframeUrl}
+            title="Video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </div>
         <div className="audience">
           {Array.from(Array(rowCount)).map((_, untranslatedRowIndex) => {
@@ -137,15 +149,18 @@ export const Audience: React.FunctionComponent<PropsType> = ({}) => {
                             : null
                         }
                       >
-                        {seatedPartygoer && (
+                        {seat && seatedPartygoer && (
                           <div className="user">
                             <img
                               className="profile-image"
                               src={seatedPartygoer.pictureUrl}
                               title={`${seatedPartygoer}'s profile image`}
-                              alt={`${seatedPartygoer}'s profile image`}
+                              alt={`${seatedPartygoer}'s profile`}
                             />
                           </div>
+                        )}
+                        {seat && !seatedPartygoer && (
+                          <span className="add-participant-button">+</span>
                         )}
                       </div>
                     );
@@ -161,7 +176,16 @@ export const Audience: React.FunctionComponent<PropsType> = ({}) => {
           userProfile={selectedUserProfile}
         />
       </div>
-    ),
-    []
-  );
+    );
+  }, [
+    user,
+    profile,
+    venueId,
+    iframeUrl,
+    columnCount,
+    rowCount,
+    partygoersBySeat,
+    selectedUserProfile,
+    setSelectedUserProfile,
+  ]);
 };
