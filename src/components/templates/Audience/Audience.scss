@@ -1,4 +1,28 @@
 .audience-container {
   background-attachment: fixed;
   background-position: center 46%;
+  position: relative;
+
+  .video-container {
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    width: 40%;
+
+    .video {
+      position: relative;
+      left: -50%;
+      width: 100%;
+      padding-bottom: 50%;
+      float: left;
+      height: 0;
+
+      .frame {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+      }
+    }
+  }
 }

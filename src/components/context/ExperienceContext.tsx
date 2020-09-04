@@ -12,6 +12,8 @@ export enum EmojiReactionType {
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
+  burn = "burn",
+  sparkle = "sparkle",
 }
 
 export type TextReactionType = "messageToTheBand";
@@ -24,6 +26,8 @@ export const ReactionsTextMap = {
   [EmojiReactionType.laugh]: "😂",
   [EmojiReactionType.thatsjazz]: "🎹",
   [EmojiReactionType.boo]: "👻",
+  [EmojiReactionType.burn]: "🔥",
+  [EmojiReactionType.sparkle]: "✨",
 };
 
 export const Reactions = [

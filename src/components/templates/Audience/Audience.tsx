@@ -8,6 +8,9 @@ import { useParams } from "react-router-dom";
 import "./Audience.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { useUser } from "hooks/useUser";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 
 type PropsType = {};
 
@@ -109,73 +112,82 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         });
     };
 
-    console.log("venue", venue, venue?.mapBackgroundImageUrl);
+    if (!venue) return <></>;
 
     return (
-      <div
-        className="audience-container"
-        style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
-      >
-        <div className="video">
-          <iframe
-            className="frame"
-            src={venue?.iframeUrl}
-            title="Video"
-            frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
+      <ExperienceContextWrapper venueName={venueId}>
+        <div
+          className="audience-container"
+          style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
+        >
+          <div className="video-container">
+            <div className="video">
+              <iframe
+                className="frame"
+                src={venue?.iframeUrl}
+                title="Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+          <div className="audience">
+            {Array.from(Array(rowCount)).map((_, untranslatedRowIndex) => {
+              const row = translateRow(untranslatedRowIndex);
+              return (
+                <div className="seat-row">
+                  {Array.from(Array(columnCount)).map(
+                    (_, untranslatedColumnIndex) => {
+                      const column = translateColumn(untranslatedColumnIndex);
+                      const seat = isSeat(row, column);
+                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                        ? partygoersBySeat[row][column]
+                        : null;
+                      return (
+                        <div
+                          className={seat ? "seat" : "not-seat"}
+                          onClick={() =>
+                            seat && seatedPartygoer !== null
+                              ? takeSeat(row, column)
+                              : seatedPartygoer !== null
+                              ? setSelectedUserProfile(seatedPartygoer)
+                              : null
+                          }
+                        >
+                          {seat && seatedPartygoer && (
+                            <div className="user">
+                              <UserProfilePicture
+                                user={seatedPartygoer}
+                                setSelectedUserProfile={setSelectedUserProfile}
+                                imageSize={undefined}
+                              />
+                            </div>
+                          )}
+                          {seat && !seatedPartygoer && (
+                            <span className="add-participant-button">+</span>
+                          )}
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <ChatDrawer
+            title={`${venue.name ?? "Audience"} Chat`}
+            roomName={venue.name}
+            chatInputPlaceholder="Chat"
+            defaultShow={true}
+          />
+          <UserProfileModal
+            show={selectedUserProfile !== undefined}
+            onHide={() => setSelectedUserProfile(undefined)}
+            userProfile={selectedUserProfile}
           />
         </div>
-        <div className="audience">
-          {Array.from(Array(rowCount)).map((_, untranslatedRowIndex) => {
-            const row = translateRow(untranslatedRowIndex);
-            return (
-              <div className="seat-row">
-                {Array.from(Array(columnCount)).map(
-                  (_, untranslatedColumnIndex) => {
-                    const column = translateColumn(untranslatedColumnIndex);
-                    const seat = isSeat(row, column);
-                    const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                      ? partygoersBySeat[row][column]
-                      : null;
-                    return (
-                      <div
-                        className={seat ? "seat" : "not-seat"}
-                        onClick={() =>
-                          seat && seatedPartygoer !== null
-                            ? takeSeat(row, column)
-                            : seatedPartygoer !== null
-                            ? setSelectedUserProfile(seatedPartygoer)
-                            : null
-                        }
-                      >
-                        {seat && seatedPartygoer && (
-                          <div className="user">
-                            <img
-                              className="profile-image"
-                              src={seatedPartygoer.pictureUrl}
-                              title={`${seatedPartygoer}'s profile image`}
-                              alt={`${seatedPartygoer}'s profile`}
-                            />
-                          </div>
-                        )}
-                        {seat && !seatedPartygoer && (
-                          <span className="add-participant-button">+</span>
-                        )}
-                      </div>
-                    );
-                  }
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <UserProfileModal
-          show={selectedUserProfile !== undefined}
-          onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile}
-        />
-      </div>
+      </ExperienceContextWrapper>
     );
   }, [
     user,

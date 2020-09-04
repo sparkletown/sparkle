@@ -14,7 +14,7 @@ import { WithId } from "utils/id";
 type UserProfilePictureProp = {
   user: WithId<User>;
   setSelectedUserProfile: (user: WithId<User>) => void;
-  imageSize: number;
+  imageSize: number | undefined;
   isAudioEffectDisabled?: boolean;
 };
 

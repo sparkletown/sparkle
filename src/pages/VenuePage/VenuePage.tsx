@@ -204,6 +204,7 @@ const VenuePage = () => {
       break;
     case VenueTemplate.audience:
       template = <Audience />;
+      fullscreen = true;
       break;
   }
 
