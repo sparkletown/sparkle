@@ -17,9 +17,17 @@ const distance = (x1: number, y1: number, x2: number, y2: number) =>
   Math.floor(Math.hypot(x2 - x1, y2 - y1));
 
 const clockTime = (cx: number, cy: number, tox: number, toy: number) => {
-  const hours = (Math.atan2(cy - toy, tox - cx) * 6) / Math.PI + 6;
-  const minutes = (hours - Math.floor(hours)) * 60;
-  return `${Math.floor(hours)}:${Math.floor(minutes)}`;
+  const CLOCK_ROTATION_HOURS = 0.6; // Because the city is 18 degrees off-axis
+  const hours =
+    (Math.atan2(cy - toy, cx - tox) * 6) / Math.PI - 3 - CLOCK_ROTATION_HOURS;
+  const wholeHours = Math.floor(hours);
+  const displayHours =
+    wholeHours === 0 ? 12 : wholeHours < 0 ? wholeHours + 12 : wholeHours;
+  const minutes = (hours - wholeHours) * 60;
+  const wholeMinutes = Math.floor(minutes);
+  const zeroPaddedMinutes =
+    wholeMinutes < 10 ? `0${wholeMinutes}` : wholeMinutes;
+  return `${displayHours}:${zeroPaddedMinutes}`;
 };
 
 const clockEvaluator = (x: number, y: number, point: Point) => {
@@ -83,25 +91,25 @@ const CENTER_CAMP: Point = {
 };
 const TEMPLE: Point = {
   x: 2141,
-  y: 2485,
+  y: 1567,
   name: "Temple",
   evaluator: clockEvaluator,
 };
 const NORTHWEST_SATELLITE: Point = {
   x: 1485,
   y: 677,
-  name: "Northwest Satellite",
+  name: "Northwest ✨",
   evaluator: clockEvaluator,
 };
 const SOUTHEAST_SATELLITE: Point = {
   x: 2468,
   y: 3132,
-  name: "Southeast Satellite",
+  name: "Southeast ✨",
   evaluator: clockEvaluator,
 };
 const DEEP_PLAYA: Point = {
   x: 2254,
-  y: 2485,
+  y: 1261,
   name: "Deep Playa",
   evaluator: () => "Deep Playa",
 };
