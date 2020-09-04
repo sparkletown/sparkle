@@ -40,6 +40,27 @@ type PropsType = {};
 const MIN_COLUMNS = 17;
 const MIN_ROWS = 12;
 
+// capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
+// Columns decreases by one because of the digital fire lane.
+// The video is 50% x 50% so it takes up 1/4 of the seats.
+// Because both MIN_COLUMNS-1 and MIN_ROWS are both even, we don't need Math.floor to guarantee integer result..
+// And we always add row above&below and a column left&right
+// So auditorium size 1 has 1 extra outlined row and column around its outside versus auditorium size 0.
+// The same is true for auditoriumn size 2 - it has an extra row and column around it versus auditorium size 1.
+const capacity = (auditoriumSize: number) =>
+  (MIN_COLUMNS - 1 + auditoriumSize * 2) *
+  (MIN_ROWS + auditoriumSize * 2) *
+  0.75;
+
+// Never let the auditorium get more than 80% full
+const requiredAuditoriumSize = (occupants: number) => {
+  let size = 0;
+  while (size < 10 && capacity(size) * 0.8 < occupants) {
+    size++;
+  }
+  return size;
+};
+
 export const Audience: React.FunctionComponent<PropsType> = () => {
   const { venueId } = useParams();
   const { user, profile } = useUser();
@@ -51,13 +72,15 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     WithId<User>
   >();
 
-  // Use state when this becomes dynamic
-  const rowCount = MIN_ROWS;
-  const columnCount = MIN_COLUMNS;
+  // Auditorium size 0 is MIN_COLUMNS x MIN_ROWS
+  // Size 1 is MIN_ROWSx2 x MIN_COLUMNS+2
+  // Size 2 is MIN_ROWSx4 x MIN_COLUMNS+4 and so on
+  const [auditoriumSize, setAuditoriumSize] = useState(0);
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
   const partygoersBySeat: WithId<User>[][] = [];
+  let seatedPartygoers = 0;
   partygoers.forEach((partygoer) => {
     if (
       !partygoer?.data ||
@@ -72,25 +95,32 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       partygoersBySeat[row] = [];
     }
     partygoersBySeat[row][column] = partygoer;
+    seatedPartygoers++;
   });
+  setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers));
 
   return useMemo(() => {
-    const translateRow = (untranslatedRowIndex: number) =>
-      untranslatedRowIndex - Math.floor(rowCount / 2);
-    const translateColumn = (untranslatedColumnIndex: number) =>
-      (untranslatedColumnIndex = Math.floor(columnCount / 2));
+    const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
+    const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
 
-    const isSeat = (row: number, column: number) => {
-      const isInFireLaneColumn = column === 0;
+    const translateRow = (untranslatedRowIndex: number) =>
+      untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
+    const translateColumn = (untranslatedColumnIndex: number) =>
+      (untranslatedColumnIndex = Math.floor(columnsForSizedAuditorium / 2));
+
+    const isSeat = (translatedRow: number, translatedColumn: number) => {
+      const isInFireLaneColumn = translatedColumn === 0;
       if (isInFireLaneColumn) return false;
 
-      const isInVideoRow = Math.abs(row) <= Math.floor(rowCount / 4);
-      const isInVideoColumn = Math.abs(column) <= Math.floor(columnCount / 4);
+      const isInVideoRow =
+        Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 4);
+      const isInVideoColumn =
+        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 4);
       const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
       return !isInVideoCarveOut;
     };
 
-    const takeSeat = (row: number, column: number) => {
+    const takeSeat = (translatedRow: number, translatedColumn: number) => {
       if (!user || !profile) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
@@ -98,8 +128,8 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         data: {
           ...existingData,
           [venueId]: {
-            row,
-            column,
+            row: translatedRow,
+            column: translatedColumn,
           },
         },
       };
@@ -133,47 +163,53 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
             </div>
           </div>
           <div className="audience">
-            {Array.from(Array(rowCount)).map((_, untranslatedRowIndex) => {
-              const row = translateRow(untranslatedRowIndex);
-              return (
-                <div className="seat-row">
-                  {Array.from(Array(columnCount)).map(
-                    (_, untranslatedColumnIndex) => {
-                      const column = translateColumn(untranslatedColumnIndex);
-                      const seat = isSeat(row, column);
-                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                        ? partygoersBySeat[row][column]
-                        : null;
-                      return (
-                        <div
-                          className={seat ? "seat" : "not-seat"}
-                          onClick={() =>
-                            seat && seatedPartygoer !== null
-                              ? takeSeat(row, column)
-                              : seatedPartygoer !== null
-                              ? setSelectedUserProfile(seatedPartygoer)
-                              : null
-                          }
-                        >
-                          {seat && seatedPartygoer && (
-                            <div className="user">
-                              <UserProfilePicture
-                                user={seatedPartygoer}
-                                setSelectedUserProfile={setSelectedUserProfile}
-                                imageSize={undefined}
-                              />
-                            </div>
-                          )}
-                          {seat && !seatedPartygoer && (
-                            <span className="add-participant-button">+</span>
-                          )}
-                        </div>
-                      );
-                    }
-                  )}
-                </div>
-              );
-            })}
+            {Array.from(Array(rowsForSizedAuditorium)).map(
+              (_, untranslatedRowIndex) => {
+                const row = translateRow(untranslatedRowIndex);
+                return (
+                  <div className="seat-row">
+                    {Array.from(Array(columnsForSizedAuditorium)).map(
+                      (_, untranslatedColumnIndex) => {
+                        const column = translateColumn(untranslatedColumnIndex);
+                        const seat = isSeat(row, column);
+                        const seatedPartygoer = partygoersBySeat?.[row]?.[
+                          column
+                        ]
+                          ? partygoersBySeat[row][column]
+                          : null;
+                        return (
+                          <div
+                            className={seat ? "seat" : "not-seat"}
+                            onClick={() =>
+                              seat && seatedPartygoer !== null
+                                ? takeSeat(row, column)
+                                : seatedPartygoer !== null
+                                ? setSelectedUserProfile(seatedPartygoer)
+                                : null
+                            }
+                          >
+                            {seat && seatedPartygoer && (
+                              <div className="user">
+                                <UserProfilePicture
+                                  user={seatedPartygoer}
+                                  setSelectedUserProfile={
+                                    setSelectedUserProfile
+                                  }
+                                  imageSize={undefined}
+                                />
+                              </div>
+                            )}
+                            {seat && !seatedPartygoer && (
+                              <span className="add-participant-button">+</span>
+                            )}
+                          </div>
+                        );
+                      }
+                    )}
+                  </div>
+                );
+              }
+            )}
           </div>
           <ChatDrawer
             title={`${venue.name ?? "Audience"} Chat`}
@@ -194,8 +230,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     profile,
     venue,
     venueId,
-    columnCount,
-    rowCount,
+    auditoriumSize,
     partygoersBySeat,
     selectedUserProfile,
     setSelectedUserProfile,
