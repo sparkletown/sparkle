@@ -71,8 +71,6 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     partygoersBySeat[row][column] = partygoer;
   });
 
-  const iframeUrl = venue?.iframeUrl;
-
   return useMemo(() => {
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowCount / 2);
@@ -114,12 +112,12 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     return (
       <div
         className="audience-container"
-        stye={{ backgroundImage: venue?.mapBackgroundImageUrl }}
+        style={{ backgroundImage: venue?.mapBackgroundImageUrl }}
       >
         <div className="video">
           <iframe
             className="frame"
-            src={iframeUrl}
+            src={venue?.iframeUrl}
             title="Video"
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -180,8 +178,8 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   }, [
     user,
     profile,
+    venue,
     venueId,
-    iframeUrl,
     columnCount,
     rowCount,
     partygoersBySeat,
