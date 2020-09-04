@@ -20,7 +20,7 @@ const AvatarImage: React.FC<PropsType> = ({ user }) => {
     } else {
       setPictureUrl(user.pictureUrl);
     }
-  }, [user]);
+  }, [user.pictureUrl, user.id]);
 
   return (
     <img

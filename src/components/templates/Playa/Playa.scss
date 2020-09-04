@@ -132,6 +132,7 @@ $playa-profile-name-size: 30px;
         background-color: $chat-busy;
       }
       &.busy-me {
+        display: block;
         -webkit-animation: blinkingBusyBackground 2s infinite; /* Safari 4+ */
         -moz-animation: blinkingBusyBackground 2s infinite; /* Fx 5+ */
         -o-animation: blinkingBusyBackground 2s infinite; /* Opera 12+ */
