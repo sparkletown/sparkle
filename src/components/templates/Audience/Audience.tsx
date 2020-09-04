@@ -47,11 +47,47 @@ const MIN_ROWS = 12;
 // And we always add row above&below and a column left&right
 // So auditorium size 1 has 1 extra outlined row and column around its outside versus auditorium size 0.
 // The same is true for auditoriumn size 2 - it has an extra row and column around it versus auditorium size 1.
+
+// Example:
+
+// size 0
+//
+//   s s s s s s s s . s s s s s s s s
+//   s s s s s s s s . s s s s s s s s
+//   s s s s s s s s . s s s s s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . s s s s
+//   s s s s s s s s . s s s s s s s s
+//   s s s s s s s s . s s s s s s s s
+//   s s s s s s s s . s s s s s s s s
+
+// size 1
+//
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s . . . . . . . . . . . s s s s
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s s s s s s . s s s s s s s s s
+//   s s s s s s s s s . s s s s s s s s s
+
+// But it takes up the same amount of space.
+
 const capacity = (auditoriumSize: number) =>
   (MIN_COLUMNS - 1 + auditoriumSize * 2) *
   (MIN_ROWS + auditoriumSize * 2) *
   0.75;
-
 // Never let the auditorium get more than 80% full
 const requiredAuditoriumSize = (occupants: number) => {
   let size = 0;
