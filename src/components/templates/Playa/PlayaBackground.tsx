@@ -21,7 +21,7 @@ export const PlayaBackground: React.FC = () => {
       if (ptHour >= 9 && ptHour < 18) {
         setDaypartClassName("daypart-day");
       }
-      if (ptHour >= 18 && ptHour < 20) {
+      if (ptHour >= 18 && ptHour < 21) {
         setDaypartClassName("daypart-evening");
       }
       if (ptHour >= 21 || ptHour < 5) {
