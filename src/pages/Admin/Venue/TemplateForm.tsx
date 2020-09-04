@@ -15,6 +15,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.partymap]: undefined,
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
+  [VenueTemplate.audience]: undefined,
 };
 
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
@@ -29,6 +30,7 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.partymap]: undefined,
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
+  [VenueTemplate.audience]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {

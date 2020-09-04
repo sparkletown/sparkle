@@ -1,6 +1,6 @@
 interface Experience {
-  bartender?: User;
-  table?: string;
+  bartender: User;
+  table: string;
   row?: number;
   column?: number;
 }
