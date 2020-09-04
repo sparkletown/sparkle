@@ -17,6 +17,7 @@ import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
 import AvatarPartygoers from "./AvatarPartygoers";
+import AvatarImage from "./AvatarImage";
 
 interface PropsType {
   serverSentState: UserState | undefined;
@@ -268,12 +269,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />
-          <img
-            className="profile-image"
-            src={profile?.pictureUrl}
-            alt={profile?.partyName}
-            title={profile?.partyName}
-          />
+          <AvatarImage user={{ ...profile, id: user.uid }} />
         </div>
       </div>
       <div

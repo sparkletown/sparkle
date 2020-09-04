@@ -170,3 +170,19 @@ export const DEFAULT_REDIRECT_URL =
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
 export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
+
+export const USE_RANDOM_AVATAR = true;
+export const RANDOM_AVATARS = [
+  "avatar-01.png",
+  "avatar-02.png",
+  "avatar-03.png",
+  "avatar-04.png",
+  "avatar-05.png",
+  "avatar-06.png",
+  "avatar-07.png",
+  "avatar-08.png",
+  "avatar-09.png",
+  "avatar-10.png",
+  "avatar-11.png",
+  "avatar-12.png",
+];

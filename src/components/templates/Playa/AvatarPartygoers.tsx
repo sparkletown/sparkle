@@ -4,6 +4,7 @@ import { PLAYA_AVATAR_SIZE } from "../../../settings";
 import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
+import AvatarImage from "./AvatarImage";
 interface PropsType {
   user: WithId<User>;
   state: UserState;
@@ -57,12 +58,7 @@ const AvatarPartygoers: React.FC<PropsType> = ({ user, state }) => {
           className="avatar-small"
           style={avatarPositions[index]}
         >
-          <img
-            className="profile-image"
-            src={participant?.pictureUrl}
-            alt={""}
-            title={""}
-          />
+          <AvatarImage user={participant} />
         </div>
       ))}
     </>
