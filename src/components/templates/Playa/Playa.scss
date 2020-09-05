@@ -158,6 +158,8 @@ $playa-profile-name-size: 30px;
 
       &.me.locked {
         display: block;
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
         background-color: $chat-closed;
       }
       &:hover {
