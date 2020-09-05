@@ -67,6 +67,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   const { profile, user } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
+  const stateRef = useRef(state);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -94,41 +95,39 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const buttonMove = throttle(() => {
+    const buttonMove = () => {
+      if (!stateRef.current) return;
       const moveIncrement = bike
         ? ARROW_MOVE_INCREMENT_PX_BIKE
         : ARROW_MOVE_INCREMENT_PX_WALK;
-      setState((state) => {
-        if (!state) return state;
-        let needsUpdate = false;
-        if (movingLeft && !movingRight) {
-          state.x = Math.max(0, state.x - moveIncrement);
-          needsUpdate = true;
-        }
-        if (movingRight && !movingLeft) {
-          state.x = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
-            state.x + moveIncrement
-          );
-          needsUpdate = true;
-        }
-        if (movingUp && !movingDown) {
-          state.y = Math.max(0, state.y - moveIncrement);
-          needsUpdate = true;
-        }
-        if (movingDown && !movingUp) {
-          state.y = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
-            state.y + moveIncrement
-          );
-          needsUpdate = true;
-        }
-        if (needsUpdate) {
-          sendUpdatedState(state);
-        }
-        return needsUpdate ? { ...state } : state;
-      });
-    });
+      let needsUpdate = false;
+      if (movingLeft && !movingRight) {
+        stateRef.current.x = Math.max(0, stateRef.current.x - moveIncrement);
+        needsUpdate = true;
+      }
+      if (movingRight && !movingLeft) {
+        stateRef.current.x = Math.min(
+          PLAYA_WIDTH_AND_HEIGHT - 1,
+          stateRef.current.x + moveIncrement
+        );
+        needsUpdate = true;
+      }
+      if (movingUp && !movingDown) {
+        stateRef.current.y = Math.max(0, stateRef.current.y - moveIncrement);
+        needsUpdate = true;
+      }
+      if (movingDown && !movingUp) {
+        stateRef.current.y = Math.min(
+          PLAYA_WIDTH_AND_HEIGHT - 1,
+          stateRef.current.y + moveIncrement
+        );
+        needsUpdate = true;
+      }
+      if (needsUpdate) {
+        setState({ ...stateRef.current });
+        sendUpdatedState(stateRef.current);
+      }
+    };
     if (movingUp || movingDown || movingLeft || movingRight) {
       arrowMoveIntervalRef.current = setInterval(
         buttonMove,
@@ -143,53 +142,51 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   useEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};
     const move = throttle(() => {
-      setState((state) => {
-        let needsUpdate = false;
-        if (state) {
-          const moveIncrement = bike
-            ? ARROW_MOVE_INCREMENT_PX_BIKE
-            : ARROW_MOVE_INCREMENT_PX_WALK;
+      let needsUpdate = false;
+      if (stateRef.current) {
+        const moveIncrement = bike
+          ? ARROW_MOVE_INCREMENT_PX_BIKE
+          : ARROW_MOVE_INCREMENT_PX_WALK;
 
-          // Work around possible bad state that can happen in the presence of scroll jank
-          if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
-            pressedKeys["ArrowLeft"] = false;
-            pressedKeys["ArrowRight"] = false;
-          }
-          if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
-            pressedKeys["ArrowUp"] = false;
-            pressedKeys["ArrowDown"] = false;
-          }
-          if (pressedKeys["ArrowLeft"]) {
-            state.x = Math.max(0, state.x - moveIncrement);
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowRight"]) {
-            state.x = Math.min(
-              PLAYA_WIDTH_AND_HEIGHT - 1,
-              state.x + moveIncrement
-            );
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowUp"]) {
-            state.y = Math.max(0, state.y - moveIncrement);
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowDown"]) {
-            state.y = Math.min(
-              PLAYA_WIDTH_AND_HEIGHT - 1,
-              state.y + moveIncrement
-            );
-            needsUpdate = true;
-          }
+        // Work around possible bad state that can happen in the presence of scroll jank
+        if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
+          pressedKeys["ArrowLeft"] = false;
+          pressedKeys["ArrowRight"] = false;
         }
-        if (state && needsUpdate) {
-          sendUpdatedState(state);
+        if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
+          pressedKeys["ArrowUp"] = false;
+          pressedKeys["ArrowDown"] = false;
         }
-        if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
-          requestAnimationFrame(move);
+        if (pressedKeys["ArrowLeft"]) {
+          stateRef.current.x = Math.max(0, stateRef.current.x - moveIncrement);
+          needsUpdate = true;
         }
-        return state && needsUpdate ? { ...state } : state;
-      });
+        if (pressedKeys["ArrowRight"]) {
+          stateRef.current.x = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            stateRef.current.x + moveIncrement
+          );
+          needsUpdate = true;
+        }
+        if (pressedKeys["ArrowUp"]) {
+          stateRef.current.y = Math.max(0, stateRef.current.y - moveIncrement);
+          needsUpdate = true;
+        }
+        if (pressedKeys["ArrowDown"]) {
+          stateRef.current.y = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            stateRef.current.y + moveIncrement
+          );
+          needsUpdate = true;
+        }
+      }
+      if (stateRef.current && needsUpdate) {
+        setState({ ...stateRef.current });
+        sendUpdatedState(stateRef.current);
+      }
+      if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
+        requestAnimationFrame(move);
+      }
     }, KEY_INTERACTION_THROTTLE_MS);
     const keyListener = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -218,6 +215,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   useEffect(() => {
     setState((state) => {
       if (!state) return state;
+      stateRef.current = state;
       const relayStateBike =
         state?.state?.[UserStateKey.Bike] === true.toString();
       const relayStateVideo = state?.state?.[UserStateKey.Video];
