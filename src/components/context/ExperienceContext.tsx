@@ -66,6 +66,20 @@ export const Reactions = [
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",
   },
+  {
+    name: "burn",
+    text: ReactionsTextMap[EmojiReactionType.burn],
+    type: EmojiReactionType.burn,
+    ariaLabel: "burn-emoji",
+    audioPath: "/sounds/thatsjazz.mp3",
+  },
+  {
+    name: "sparkle",
+    text: ReactionsTextMap[EmojiReactionType.sparkle],
+    type: EmojiReactionType.sparkle,
+    ariaLabel: "sparkle-emoji",
+    audioPath: "/sounds/boo.mp3",
+  },
 ];
 
 interface BaseReaction {
