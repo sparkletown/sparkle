@@ -252,6 +252,10 @@ $playa-profile-name-size: 30px;
       top: 50%;
       left: 40%;
 
+      &.clickable {
+        cursor: pointer;
+      }
+
       &.playa-icon1 {
         background-image: url("./img/playa-icon1.png");
       }

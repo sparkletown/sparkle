@@ -71,6 +71,8 @@ export interface PlayaIcon {
   fire: boolean;
   visible: boolean;
   className: string;
+  clickable: boolean;
+  venueId: string;
 }
 
 export const urlFromImage = (
