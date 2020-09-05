@@ -6,6 +6,7 @@ import Room from "./Video/Room";
 import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 import { PROJECT_ID } from "secrets";
+import "./VideoChatLayer.scss";
 
 type PropsType = {
   setSelectedUserProfile: (user: WithId<User>) => void;
@@ -32,10 +33,8 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     profile.video = {};
     updateVideoState({});
   };
-
-  const removed = partygoers[
-    roomOwnerUid
-  ]?.video?.removedParticipantUids?.includes(user.uid);
+  const roomOwner = partygoers[roomOwnerUid];
+  const removed = roomOwner?.video?.removedParticipantUids?.includes(user.uid);
 
   if (removed) {
     leave();
@@ -61,13 +60,31 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Room
-      roomName={roomName}
-      hostUid={profile.video.inRoomOwnedBy}
-      setSelectedUserProfile={setSelectedUserProfile}
-      leave={leave}
-      removeParticipant={removeParticipant}
-    />
+    <div className="video_chat-container">
+      <div className="video_chat-header">
+        <h6 className="video_chat-title">
+          {roomOwner.partyName}&apos;s live video chat
+        </h6>
+        <div className="btn-group btn-group-sm">
+          <button
+            type="button"
+            className="btn btn-danger btn-sm"
+            onClick={leave}
+          >
+            {host ? "Stop the group video chat" : "Leave video chat"}
+          </button>
+        </div>
+      </div>
+      <div className="video_chat-room_container">
+        <Room
+          roomName={roomName}
+          hostUid={profile.video.inRoomOwnedBy}
+          setSelectedUserProfile={setSelectedUserProfile}
+          leave={leave}
+          removeParticipant={removeParticipant}
+        />
+      </div>
+    </div>
   );
 };
 

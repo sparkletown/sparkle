@@ -11,7 +11,6 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   setSelectedUserProfile,
   isHost,
   leave,
-  style,
 }) => {
   const [mic, setMic] = useState(true);
   const [camera, setCamera] = useState(true);
@@ -53,7 +52,6 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       participant={participant}
       user={user}
       setSelectedUserProfile={setSelectedUserProfile}
-      style={style}
       isHost={isHost}
       local
     >
