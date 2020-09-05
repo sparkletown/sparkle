@@ -36,7 +36,7 @@ const clockEvaluator = (x: number, y: number, point: Point) => {
     return point.name;
   } else {
     const clock = clockTime(point.x, point.y, x, y);
-    return `${clock} @ ${distanceFromCenter} playa-pixels from ${point.name}`;
+    return `${clock}, ${distanceFromCenter} playa-pixels from ${point.name}`;
   }
 };
 
@@ -53,7 +53,7 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
     distanceFromTheMan < ESPLANADE_DISTANCE ||
     distanceFromTheMan >= ESPLANADE_DISTANCE + STREET_WIDTH * 6
   ) {
-    return `Open Playa @ ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
+    return `Open Playa, ${distanceFromTheMan} playa-pixels from The Man @ ${clockFromTheMan}`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH) {
     return `${clockFromTheMan} & A`;
