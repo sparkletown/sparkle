@@ -38,6 +38,8 @@ const getLink = (venue: WithId<Venue>) => {
         : "//" + venue.zoomUrl;
       targetLink = "_blank";
       break;
+    default:
+      urlLink = venueInsideUrl(venue.id);
   }
   return { urlLink, targetLink };
 };
