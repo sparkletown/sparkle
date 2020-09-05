@@ -1,5 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
-import firebase from "firebase/app";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
+import firebase, { UserInfo } from "firebase/app";
 import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -10,9 +16,18 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { useUser } from "hooks/useUser";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { ExperienceContextWrapper } from "components/context/ExperienceContext";
+import {
+  ExperienceContext,
+  EmojiReactionType,
+  TextReactionType,
+  Reactions,
+} from "components/context/ExperienceContext";
 
 type PropsType = {};
+
+type ReactionType =
+  | { reaction: EmojiReactionType }
+  | { reaction: TextReactionType; text: string };
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -108,6 +123,23 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     WithId<User>
   >();
 
+  const experienceContext = useContext(ExperienceContext);
+  const createReaction = (reaction: ReactionType, user: UserInfo) => ({
+    created_at: new Date().getTime(),
+    created_by: user.uid,
+    ...reaction,
+  });
+  const reactionClicked = useCallback(
+    (user: UserInfo, reaction: EmojiReactionType) => {
+      console.log(experienceContext);
+      experienceContext &&
+        experienceContext.addReaction(createReaction({ reaction }, user));
+      console.log("clicked", experienceContext);
+      setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
+    },
+    [experienceContext]
+  );
+
   // Auditorium size 0 is MIN_COLUMNS x MIN_ROWS
   // Size 1 is MIN_ROWSx2 x MIN_COLUMNS+2
   // Size 2 is MIN_ROWSx4 x MIN_COLUMNS+4 and so on
@@ -152,9 +184,9 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       if (isInFireLaneColumn) return false;
 
       const isInVideoRow =
-        Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 4);
+        Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 3);
       const isInVideoColumn =
-        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 4);
+        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 3);
       const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
       return !isInVideoCarveOut;
     };
@@ -184,7 +216,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     if (!venue) return <></>;
 
     return (
-      <ExperienceContextWrapper venueName={venueId}>
+      <>
         <div
           className="audience-container"
           style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
@@ -199,6 +231,20 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
+            </div>
+            <div className="reaction-container">
+              {Reactions.map((reaction) => (
+                <button
+                  key={reaction.name}
+                  className="reaction"
+                  onClick={() => user && reactionClicked(user, reaction.type)}
+                  id={`send-reaction-${reaction.type}`}
+                >
+                  <span role="img" aria-label={reaction.ariaLabel}>
+                    {reaction.text}
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
           <div className="audience">
@@ -232,6 +278,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                               <div className="user">
                                 <UserProfilePicture
                                   user={seatedPartygoer}
+                                  profileStyle={"profile-avatar"}
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }
@@ -265,16 +312,16 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
             userProfile={selectedUserProfile}
           />
         </div>
-      </ExperienceContextWrapper>
+      </>
     );
   }, [
+    auditoriumSize,
+    venue,
+    selectedUserProfile,
     user,
     profile,
-    venue,
     venueId,
-    auditoriumSize,
+    reactionClicked,
     partygoersBySeat,
-    selectedUserProfile,
-    setSelectedUserProfile,
   ]);
 };

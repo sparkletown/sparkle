@@ -30,6 +30,32 @@
         left: 0;
       }
     }
+
+    .reaction-container {
+      display: flex;
+      position: fixed;
+      flex: 1;
+      left: 20%;
+      width: 60%;
+      bottom: -50px;
+      height: 50px;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      background-color: #1a1d24;
+      flex-direction: row;
+      justify-content: space-around;
+
+      .reaction {
+        background-color: transparent;
+        border-color: transparent;
+        font-size: 33px;
+        top: -25px;
+        right: -20px;
+        width: 50px;
+        animation: sway 2200ms 1200ms ease-in-out;
+        z-index: 1000;
+      }
+    }
   }
 
   .audience {
@@ -91,5 +117,16 @@
     position: absolute;
     right: 0;
     top: 35px;
+  }
+
+  .user {
+    width: 5vh;
+    height: 5vh;
+  }
+
+  .profile-avatar {
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
   }
 }

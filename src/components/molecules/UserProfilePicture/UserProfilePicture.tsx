@@ -15,6 +15,7 @@ type UserProfilePictureProp = {
   user: WithId<User>;
   setSelectedUserProfile: (user: WithId<User>) => void;
   imageSize: number | undefined;
+  profileStyle?: string;
   isAudioEffectDisabled?: boolean;
 };
 
@@ -22,6 +23,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   setSelectedUserProfile,
   imageSize,
+  profileStyle,
   isAudioEffectDisabled,
 }) => {
   const experienceContext = useContext(ExperienceContext);
@@ -37,23 +39,25 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className="profile-picture-container">
-      <img
-        onClick={() => setSelectedUserProfile(user)}
-        key={user.id}
-        className="profile-icon"
-        src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
-        title={user.partyName}
-        alt={`${user.partyName} profile`}
-        width={imageSize}
-        height={imageSize}
-      />
+      <div className="user">
+        <img
+          onClick={() => setSelectedUserProfile(user)}
+          key={user.id}
+          className={profileStyle}
+          src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
+          title={user.partyName}
+          alt={`${user.partyName} profile`}
+          width={imageSize}
+          height={imageSize}
+        />
+      </div>
       {Reactions.map(
-        (reaction) =>
+        (reaction, index) =>
           experienceContext &&
           experienceContext.reactions.find(
             (r) => r.created_by === user.id && r.reaction === reaction.type
           ) && (
-            <div className="reaction-container">
+            <div key={index} className="reaction-container">
               <span
                 className={`reaction ${reaction.name}`}
                 role="img"
@@ -82,6 +86,10 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       )}
     </div>
   );
+};
+
+UserProfilePicture.defaultProps = {
+  profileStyle: "profile-icon",
 };
 
 export default UserProfilePicture;

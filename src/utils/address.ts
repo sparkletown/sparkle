@@ -36,7 +36,7 @@ const clockEvaluator = (x: number, y: number, point: Point) => {
     return point.name;
   } else {
     const clock = clockTime(point.x, point.y, x, y);
-    return `${clock}, ${distanceFromCenter} playa-pixels from ${point.name}`;
+    return `${clock} @ ${distanceFromCenter} playa-pixels from ${point.name}`;
   }
 };
 
@@ -53,7 +53,7 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
     distanceFromTheMan < ESPLANADE_DISTANCE ||
     distanceFromTheMan >= ESPLANADE_DISTANCE + STREET_WIDTH * 6
   ) {
-    return `Open Playa, ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
+    return `Open Playa @ ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH) {
     return `${clockFromTheMan} & A`;
@@ -73,7 +73,7 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 6) {
     return `${clockFromTheMan} & F`;
   }
-  return `Open Playa, ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
+  return `Open Playa @ ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
 };
 
 const MAN: Point = {
@@ -87,12 +87,6 @@ const CENTER_CAMP: Point = {
   y: 2179,
   name: "Center Camp",
   radius: 94,
-  evaluator: clockEvaluator,
-};
-const TEMPLE: Point = {
-  x: 2141,
-  y: 1567,
-  name: "Temple",
   evaluator: clockEvaluator,
 };
 const NORTHWEST_SATELLITE: Point = {
@@ -117,7 +111,6 @@ const DEEP_PLAYA: Point = {
 const POINTS: Point[] = [
   MAN,
   CENTER_CAMP,
-  TEMPLE,
   NORTHWEST_SATELLITE,
   SOUTHEAST_SATELLITE,
   DEEP_PLAYA,
