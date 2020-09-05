@@ -624,8 +624,20 @@ const Playa = () => {
         ))}
         {venue?.playaIcon?.visible === true && (
           <div
-            className="playa-icon"
+            className={`playa-icon ${venue.playaIcon.className} ${
+              venue.playaIcon.clickable ? "clickable" : ""
+            }`}
             style={{ left: venue.playaIcon.x, top: venue.playaIcon.y }}
+            onClick={() => {
+              if (venue.playaIcon?.clickable && !!venue.playaIcon?.venueId) {
+                const manVenue = venues?.find(
+                  (v) => venue?.playaIcon?.venueId === v.id
+                );
+                if (!!manVenue) {
+                  showVenue(manVenue);
+                }
+              }
+            }}
           >
             {venue.playaIcon.fire && (
               <div className="fire">
@@ -633,6 +645,9 @@ const Playa = () => {
                   <div className="particle" />
                 ))}
               </div>
+            )}
+            {venue?.playaIcon?.clickable && (
+              <div className="clickable-banner">Click Me Now!</div>
             )}
           </div>
         )}
