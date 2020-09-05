@@ -71,14 +71,14 @@ export const Reactions = [
     text: ReactionsTextMap[EmojiReactionType.burn],
     type: EmojiReactionType.burn,
     ariaLabel: "burn-emoji",
-    audioPath: "/sounds/thatsjazz.mp3",
+    audioPath: "/sounds/burn.mpeg",
   },
   {
     name: "sparkle",
     text: ReactionsTextMap[EmojiReactionType.sparkle],
     type: EmojiReactionType.sparkle,
     ariaLabel: "sparkle-emoji",
-    audioPath: "/sounds/boo.mp3",
+    audioPath: "/sounds/sparkle.mpeg",
   },
 ];
 
@@ -125,7 +125,7 @@ export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
               setReactions((prevReactions) => {
                 return prevReactions.filter((r) => r !== newReaction);
               });
-            }, 2000);
+            }, 4000);
           }
         });
       });
