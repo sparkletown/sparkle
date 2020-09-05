@@ -102,10 +102,10 @@ $playa-profile-name-size: 30px;
 
       &.open-me {
         display: block;
-        -webkit-animation: blinkingBackground 1s infinite; /* Safari 4+ */
-        -moz-animation: blinkingBackground 1s infinite; /* Fx 5+ */
-        -o-animation: blinkingBackground 1s infinite; /* Opera 12+ */
-        animation: blinkingBackground 1s infinite; /* IE 10+, Fx 29+ */
+        -webkit-animation: blinkingBackground 2s infinite; /* Safari 4+ */
+        -moz-animation: blinkingBackground 2s infinite; /* Fx 5+ */
+        -o-animation: blinkingBackground 2s infinite; /* Opera 12+ */
+        animation: blinkingBackground 2s infinite; /* IE 10+, Fx 29+ */
 
         @keyframes blinkingBackground {
           25% {

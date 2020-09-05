@@ -20,15 +20,20 @@ export const canBeDeleted = (venue: Venue): boolean =>
 export const canHavePlacement = (venue: Venue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
+export const peopleByLastSeenIn = (users: Array<WithId<User>> | undefined) => {
+  const result: { [lastSeenIn: string]: WithId<User>[] } = {};
+  for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
+    if (!(user.lastSeenIn in result)) result[user.lastSeenIn] = [];
+    result[user.lastSeenIn].push(user);
+  }
+  return result;
+};
+
 export const peopleAttending = (
-  users: Array<WithId<User>> | undefined,
+  peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
   venue: Venue
 ) =>
-  users
-    ?.filter((u) => u.id !== undefined)
-    .filter((p) =>
-      [
-        venue.name,
-        ...(isCampVenue(venue) ? venue.rooms?.map((r) => r.title) : []),
-      ].includes(p.lastSeenIn)
-    );
+  [
+    venue.name,
+    ...(isCampVenue(venue) ? venue.rooms?.map((r) => r.title) : []),
+  ].flatMap((place) => peopleByLastSeenIn[place] ?? []);
