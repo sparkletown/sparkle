@@ -1,3 +1,5 @@
+$light: #ffffff;
+
 .audience-container {
   background-attachment: fixed;
   background-position: center 46%;
@@ -11,9 +13,10 @@
     position: fixed;
     left: 50%;
     top: 28%;
-    width: 40%;
+    width: 45%;
     top: 50%;
     left: 50%;
+
     transform: translate(-50%, -50%);
 
     .video {
@@ -28,6 +31,9 @@
         height: 100%;
         position: absolute;
         left: 0;
+        border-width: 1px black;
+        border-radius: 15px;
+        box-shadow: 2px 2px 20px $light;
       }
     }
 
@@ -41,6 +47,7 @@
       height: 50px;
       border-bottom-left-radius: 20px;
       border-bottom-right-radius: 20px;
+      box-shadow: 2px 2px 20px $light;
       background-color: #1a1d24;
       flex-direction: row;
       justify-content: space-around;
@@ -55,6 +62,10 @@
         animation: sway 2200ms 1200ms ease-in-out;
         z-index: 1000;
       }
+
+      .instructions {
+        align-self: center;
+      }
     }
   }
 
@@ -66,31 +77,31 @@
     padding-top: 30px;
     padding-bottom: 30px;
     flex-direction: column;
+    justify-content: space-between;
 
     .seat-row {
       display: flex;
-      justify-content: space-around;
+      justify-content: space-between;
     }
 
     .seat {
       display: flex;
       border-radius: 100%;
-      width: 5vh;
-      height: 5vh;
-      margin: 0.7vh;
+      width: 4vh;
+      height: 4vh;
       justify-content: center;
       align-content: center;
-      background-color: rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 255, 255, 0.2);
       color: white;
       user-select: none;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.4);
+        background-color: rgba(255, 255, 255, 0.4);
         cursor: pointer;
       }
 
       &:active {
-        background-color: rgba(0, 0, 0, 0.6);
+        background-color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
       }
     }
@@ -98,9 +109,8 @@
     .not-seat {
       display: flex;
       border-radius: 100%;
-      width: 5vh;
-      height: 5vh;
-      margin: 0.7vh;
+      width: 4vh;
+      height: 4vh;
       justify-content: center;
       align-content: center;
       background-color: rgba(0, 0, 0, 0);
@@ -108,6 +118,7 @@
     }
 
     .add-participant-button {
+      color: black;
       font-size: 3vh;
       align-self: center;
     }
@@ -120,8 +131,8 @@
   }
 
   .user {
-    width: 5vh;
-    height: 5vh;
+    width: 4vh;
+    height: 4vh;
   }
 
   .profile-avatar {

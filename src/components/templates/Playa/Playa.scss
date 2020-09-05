@@ -14,7 +14,6 @@ $playa-profile-name-size: 30px;
   .map-container {
     margin-top: 0;
     position: relative;
-    transition: all 0.3s;
     transform-origin: top left;
     width: $playa-width-and-height;
     height: $playa-width-and-height;
@@ -25,7 +24,6 @@ $playa-profile-name-size: 30px;
       width: $playa-avatar-size;
       height: $playa-avatar-size;
       z-index: 1;
-      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
 
       &:hover {
         transform: scale(1.2);
@@ -44,6 +42,8 @@ $playa-profile-name-size: 30px;
       &.me {
         background: $gradient;
         padding: 2px;
+        width: $playa-avatar-size * 1.5;
+        height: $playa-avatar-size * 1.5;
       }
       &.they {
         border: 2px solid white;
@@ -63,7 +63,6 @@ $playa-profile-name-size: 30px;
       width: 20px;
       height: 20px;
       z-index: 1;
-      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       overflow: hidden;
 
       &:hover {
@@ -97,15 +96,16 @@ $playa-profile-name-size: 30px;
       border-radius: 50%;
       width: $playa-avatar-size * 3;
       height: $playa-avatar-size * 3;
-      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       display: none;
 
       &.open-me {
         display: block;
-        -webkit-animation: blinkingBackground 1s infinite; /* Safari 4+ */
-        -moz-animation: blinkingBackground 1s infinite; /* Fx 5+ */
-        -o-animation: blinkingBackground 1s infinite; /* Opera 12+ */
-        animation: blinkingBackground 1s infinite; /* IE 10+, Fx 29+ */
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
+        -webkit-animation: blinkingBackground 2s infinite; /* Safari 4+ */
+        -moz-animation: blinkingBackground 2s infinite; /* Fx 5+ */
+        -o-animation: blinkingBackground 2s infinite; /* Opera 12+ */
+        animation: blinkingBackground 2s infinite; /* IE 10+, Fx 29+ */
 
         @keyframes blinkingBackground {
           25% {
@@ -133,6 +133,8 @@ $playa-profile-name-size: 30px;
       }
       &.busy-me {
         display: block;
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
         -webkit-animation: blinkingBusyBackground 2s infinite; /* Safari 4+ */
         -moz-animation: blinkingBusyBackground 2s infinite; /* Fx 5+ */
         -o-animation: blinkingBusyBackground 2s infinite; /* Opera 12+ */
@@ -156,6 +158,8 @@ $playa-profile-name-size: 30px;
 
       &.me.locked {
         display: block;
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
         background-color: $chat-closed;
       }
       &:hover {
@@ -196,7 +200,6 @@ $playa-profile-name-size: 30px;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
       color: white;
-      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       overflow: hidden;
       white-space: nowrap;
       padding: 3px;
@@ -209,7 +212,6 @@ $playa-profile-name-size: 30px;
       height: $playa-mode-badge-size;
       background-color: white;
       z-index: 1;
-      transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
       overflow: hidden;
 
       &:before {

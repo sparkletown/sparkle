@@ -12,7 +12,7 @@ import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { peopleAttending } from "utils/venue";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
@@ -31,7 +31,7 @@ const Camp: React.FC = () => {
   }));
 
   const usersInCamp = useMemo(
-    () => venue && peopleAttending(partygoers, venue),
+    () => venue && peopleAttending(peopleByLastSeenIn(partygoers), venue),
     [partygoers, venue]
   );
 

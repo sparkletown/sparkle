@@ -50,6 +50,7 @@ export interface Venue {
   dustStorm?: boolean;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
+  miniAvatars?: boolean;
 }
 
 export interface VenuePlacement {
