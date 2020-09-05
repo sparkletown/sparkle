@@ -8,7 +8,7 @@ import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
-import { peopleAttending } from "utils/venue";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
@@ -46,7 +46,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const users: typeof partygoers = useMemo(
-    () => peopleAttending(partygoers, venue) ?? [],
+    () => peopleAttending(peopleByLastSeenIn(partygoers), venue) ?? [],
     [partygoers, venue]
   );
 
