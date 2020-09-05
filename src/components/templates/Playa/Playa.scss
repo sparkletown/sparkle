@@ -268,6 +268,24 @@ $playa-profile-name-size: 30px;
       &.playa-icon4 {
         background-image: url("./img/playa-icon4.png");
       }
+
+      .clickable-banner {
+        position: absolute;
+        top: -65px;
+        left: -86px;
+        width: 400px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        height: auto;
+        transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
+        padding: 6px 10px;
+        font-weight: 500;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        text-transform: uppercase;
+        font-size: 40px;
+      }
     }
     .fire {
       font-size: 24px;

@@ -646,6 +646,9 @@ const Playa = () => {
                 ))}
               </div>
             )}
+            {venue?.playaIcon?.clickable && (
+              <div className="clickable-banner">Click Me Now!</div>
+            )}
           </div>
         )}
         <Overlay
