@@ -41,10 +41,10 @@ interface PropsType {
   setHeartbeat: (heartbeat: number | undefined) => void;
 }
 
-const ARROW_MOVE_INCREMENT_PX_WALK = 6;
-const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
-const KEY_INTERACTION_THROTTLE_MS = 25;
-const ARROW_INTERACTION_THROTTLE_MS = 100;
+const ARROW_MOVE_INCREMENT_PX_WALK = 2;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 7;
+const KEY_INTERACTION_THROTTLE_MS = 16;
+const ARROW_INTERACTION_THROTTLE_MS = 16;
 
 const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   {
@@ -99,7 +99,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
 
   const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const buttonMove = throttle(() => {
       const moveIncrement = bike
         ? ARROW_MOVE_INCREMENT_PX_BIKE
@@ -146,25 +146,16 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     }
   }, [bike, movingUp, movingDown, movingRight, movingLeft, sendUpdatedState]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};
-    const keyListener = throttle((event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowLeft":
-        case "ArrowRight":
-        case "ArrowUp":
-        case "ArrowDown":
-          pressedKeys[event.key] = event.type === "keydown";
-          break;
-        default:
-          return;
-      }
-      const moveIncrement = bike
-        ? ARROW_MOVE_INCREMENT_PX_BIKE
-        : ARROW_MOVE_INCREMENT_PX_WALK;
+    const move = throttle(() => {
       setState((state) => {
+        let needsUpdate = false;
         if (state) {
-          let needsUpdate = false;
+          const moveIncrement = bike
+            ? ARROW_MOVE_INCREMENT_PX_BIKE
+            : ARROW_MOVE_INCREMENT_PX_WALK;
+
           // Work around possible bad state that can happen in the presence of scroll jank
           if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
             pressedKeys["ArrowLeft"] = false;
@@ -196,14 +187,31 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
             );
             needsUpdate = true;
           }
-          if (needsUpdate) {
-            sendUpdatedState(state);
-          }
-          return needsUpdate ? { ...state } : state;
         }
-        return state;
+        if (state && needsUpdate) {
+          sendUpdatedState(state);
+        }
+        if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
+          requestAnimationFrame(move);
+        }
+        return state && needsUpdate ? { ...state } : state;
       });
     }, KEY_INTERACTION_THROTTLE_MS);
+    const keyListener = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "ArrowUp":
+        case "ArrowDown":
+          pressedKeys[event.key] = event.type === "keydown";
+          break;
+        default:
+          return;
+      }
+      if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
+        requestAnimationFrame(move);
+      }
+    };
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
