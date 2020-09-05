@@ -97,13 +97,9 @@ const Room: React.FC<RoomProps> = ({
     };
   }, [roomName, token]);
 
-  const attendees = 1 + participants.filter((p) => !!p).length;
-  const maxWidth = `${100 / attendees}%`;
-
   const me = useMemo(() => {
     return room && user ? (
       <LocalParticipant
-        style={{ maxWidth }}
         participant={room.localParticipant}
         user={users[user.uid]}
         setSelectedUserProfile={setSelectedUserProfile}
@@ -111,7 +107,7 @@ const Room: React.FC<RoomProps> = ({
         leave={leave}
       />
     ) : null;
-  }, [room, user, users, maxWidth, setSelectedUserProfile, hostUid, leave]);
+  }, [room, user, users, setSelectedUserProfile, hostUid, leave]);
 
   const others = useMemo(
     () =>
@@ -120,7 +116,6 @@ const Room: React.FC<RoomProps> = ({
             .filter((p) => !!p)
             .map((participant, index) => (
               <RemoteParticipant
-                style={{ maxWidth }}
                 participant={participant}
                 user={users[participant.identity]}
                 setSelectedUserProfile={setSelectedUserProfile}
@@ -136,7 +131,6 @@ const Room: React.FC<RoomProps> = ({
       user,
       users,
       hostUid,
-      maxWidth,
       setSelectedUserProfile,
       removeParticipant,
     ]

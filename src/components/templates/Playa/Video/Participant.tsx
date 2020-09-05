@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  CSSProperties,
-} from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -13,7 +7,6 @@ export interface ParticipantProps {
   participant: Video.Participant;
   user: WithId<User>;
   setSelectedUserProfile: (user: WithId<User>) => void;
-  style: CSSProperties | undefined;
   audio?: boolean;
   video?: boolean;
   local?: boolean;
@@ -29,7 +22,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   user,
   children,
   setSelectedUserProfile,
-  style,
   audio,
   video,
   local,
@@ -150,7 +142,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     : "";
 
   return (
-    <div className="participant" style={style}>
+    <div className="participant">
       {videos}
       <div className="name" onClick={() => setSelectedUserProfile(user)}>
         {user.partyName} {detail}
