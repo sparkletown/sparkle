@@ -70,6 +70,7 @@ export interface PlayaIcon {
   y: number;
   fire: boolean;
   visible: boolean;
+  className: string;
 }
 
 export const urlFromImage = (

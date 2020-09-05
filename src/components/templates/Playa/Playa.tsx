@@ -624,7 +624,7 @@ const Playa = () => {
         ))}
         {venue?.playaIcon?.visible === true && (
           <div
-            className="playa-icon"
+            className={`playa-icon ${venue.playaIcon.className}`}
             style={{ left: venue.playaIcon.x, top: venue.playaIcon.y }}
           >
             {venue.playaIcon.fire && (

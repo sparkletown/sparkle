@@ -246,12 +246,24 @@ $playa-profile-name-size: 30px;
       z-index: 4;
       height: 175px;
       width: 213px;
-      background-image: url("./img/playa-icon.png");
       background-repeat: no-repeat;
       background-size: cover;
       background-position: center;
       top: 50%;
       left: 40%;
+
+      &.playa-icon1 {
+        background-image: url("./img/playa-icon1.png");
+      }
+      &.playa-icon2 {
+        background-image: url("./img/playa-icon2.png");
+      }
+      &.playa-icon3 {
+        background-image: url("./img/playa-icon3.png");
+      }
+      &.playa-icon4 {
+        background-image: url("./img/playa-icon4.png");
+      }
     }
     .fire {
       font-size: 24px;
