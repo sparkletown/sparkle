@@ -259,8 +259,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       <div
         className="avatar me"
         style={{
-          top: state.y - PLAYA_AVATAR_SIZE / 2,
-          left: state.x - PLAYA_AVATAR_SIZE / 2,
+          top: state.y - PLAYA_AVATAR_SIZE * 0.75,
+          left: state.x - PLAYA_AVATAR_SIZE * 0.75,
         }}
         ref={ref}
       >
@@ -290,8 +290,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }
         `}
         style={{
-          top: state.y - PLAYA_AVATAR_SIZE * 1.5,
-          left: state.x - PLAYA_AVATAR_SIZE * 1.5,
+          top: state.y - PLAYA_AVATAR_SIZE * 2.25,
+          left: state.x - PLAYA_AVATAR_SIZE * 2.25,
         }}
       >
         {isVideoRoomOwnedByMe && (

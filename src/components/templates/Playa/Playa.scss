@@ -42,6 +42,8 @@ $playa-profile-name-size: 30px;
       &.me {
         background: $gradient;
         padding: 2px;
+        width: $playa-avatar-size * 1.5;
+        height: $playa-avatar-size * 1.5;
       }
       &.they {
         border: 2px solid white;
@@ -98,6 +100,8 @@ $playa-profile-name-size: 30px;
 
       &.open-me {
         display: block;
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
         -webkit-animation: blinkingBackground 2s infinite; /* Safari 4+ */
         -moz-animation: blinkingBackground 2s infinite; /* Fx 5+ */
         -o-animation: blinkingBackground 2s infinite; /* Opera 12+ */
@@ -129,6 +133,8 @@ $playa-profile-name-size: 30px;
       }
       &.busy-me {
         display: block;
+        width: $playa-avatar-size * 4.5;
+        height: $playa-avatar-size * 4.5;
         -webkit-animation: blinkingBusyBackground 2s infinite; /* Safari 4+ */
         -moz-animation: blinkingBusyBackground 2s infinite; /* Fx 5+ */
         -o-animation: blinkingBusyBackground 2s infinite; /* Opera 12+ */
