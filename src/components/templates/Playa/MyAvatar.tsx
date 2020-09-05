@@ -1,10 +1,4 @@
-import React, {
-  useRef,
-  useEffect,
-  useState,
-  useLayoutEffect,
-  forwardRef,
-} from "react";
+import React, { useRef, useEffect, useState, forwardRef } from "react";
 import {
   UserState,
   UserStateKey,
@@ -41,10 +35,10 @@ interface PropsType {
   setHeartbeat: (heartbeat: number | undefined) => void;
 }
 
-const ARROW_MOVE_INCREMENT_PX_WALK = 6;
-const ARROW_MOVE_INCREMENT_PX_BIKE = 20;
-const KEY_INTERACTION_THROTTLE_MS = 25;
-const ARROW_INTERACTION_THROTTLE_MS = 100;
+const ARROW_MOVE_INCREMENT_PX_WALK = 2;
+const ARROW_MOVE_INCREMENT_PX_BIKE = 7;
+const KEY_INTERACTION_THROTTLE_MS = 16;
+const ARROW_INTERACTION_THROTTLE_MS = 16;
 
 const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   {
@@ -73,6 +67,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   const { profile, user } = useUser();
   const [state, setState] = useState<UserState>();
   const stateInitialized = useRef(false);
+  const stateRef = useRef(state);
 
   useEffect(() => {
     if (!serverSentState || stateInitialized.current) return;
@@ -99,42 +94,40 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
 
   const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useLayoutEffect(() => {
-    const buttonMove = throttle(() => {
+  useEffect(() => {
+    const buttonMove = () => {
+      if (!stateRef.current) return;
       const moveIncrement = bike
         ? ARROW_MOVE_INCREMENT_PX_BIKE
         : ARROW_MOVE_INCREMENT_PX_WALK;
-      setState((state) => {
-        if (!state) return state;
-        let needsUpdate = false;
-        if (movingLeft && !movingRight) {
-          state.x = Math.max(0, state.x - moveIncrement);
-          needsUpdate = true;
-        }
-        if (movingRight && !movingLeft) {
-          state.x = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
-            state.x + moveIncrement
-          );
-          needsUpdate = true;
-        }
-        if (movingUp && !movingDown) {
-          state.y = Math.max(0, state.y - moveIncrement);
-          needsUpdate = true;
-        }
-        if (movingDown && !movingUp) {
-          state.y = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
-            state.y + moveIncrement
-          );
-          needsUpdate = true;
-        }
-        if (needsUpdate) {
-          sendUpdatedState(state);
-        }
-        return needsUpdate ? { ...state } : state;
-      });
-    });
+      let needsUpdate = false;
+      if (movingLeft && !movingRight) {
+        stateRef.current.x = Math.max(0, stateRef.current.x - moveIncrement);
+        needsUpdate = true;
+      }
+      if (movingRight && !movingLeft) {
+        stateRef.current.x = Math.min(
+          PLAYA_WIDTH_AND_HEIGHT - 1,
+          stateRef.current.x + moveIncrement
+        );
+        needsUpdate = true;
+      }
+      if (movingUp && !movingDown) {
+        stateRef.current.y = Math.max(0, stateRef.current.y - moveIncrement);
+        needsUpdate = true;
+      }
+      if (movingDown && !movingUp) {
+        stateRef.current.y = Math.min(
+          PLAYA_WIDTH_AND_HEIGHT - 1,
+          stateRef.current.y + moveIncrement
+        );
+        needsUpdate = true;
+      }
+      if (needsUpdate) {
+        setState({ ...stateRef.current });
+        sendUpdatedState(stateRef.current);
+      }
+    };
     if (movingUp || movingDown || movingLeft || movingRight) {
       arrowMoveIntervalRef.current = setInterval(
         buttonMove,
@@ -146,9 +139,56 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     }
   }, [bike, movingUp, movingDown, movingRight, movingLeft, sendUpdatedState]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const pressedKeys: { [key: string]: boolean } = {};
-    const keyListener = throttle((event: KeyboardEvent) => {
+    const move = throttle(() => {
+      let needsUpdate = false;
+      if (stateRef.current) {
+        const moveIncrement = bike
+          ? ARROW_MOVE_INCREMENT_PX_BIKE
+          : ARROW_MOVE_INCREMENT_PX_WALK;
+
+        // Work around possible bad state that can happen in the presence of scroll jank
+        if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
+          pressedKeys["ArrowLeft"] = false;
+          pressedKeys["ArrowRight"] = false;
+        }
+        if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
+          pressedKeys["ArrowUp"] = false;
+          pressedKeys["ArrowDown"] = false;
+        }
+        if (pressedKeys["ArrowLeft"]) {
+          stateRef.current.x = Math.max(0, stateRef.current.x - moveIncrement);
+          needsUpdate = true;
+        }
+        if (pressedKeys["ArrowRight"]) {
+          stateRef.current.x = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            stateRef.current.x + moveIncrement
+          );
+          needsUpdate = true;
+        }
+        if (pressedKeys["ArrowUp"]) {
+          stateRef.current.y = Math.max(0, stateRef.current.y - moveIncrement);
+          needsUpdate = true;
+        }
+        if (pressedKeys["ArrowDown"]) {
+          stateRef.current.y = Math.min(
+            PLAYA_WIDTH_AND_HEIGHT - 1,
+            stateRef.current.y + moveIncrement
+          );
+          needsUpdate = true;
+        }
+      }
+      if (stateRef.current && needsUpdate) {
+        setState({ ...stateRef.current });
+        sendUpdatedState(stateRef.current);
+      }
+      if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
+        requestAnimationFrame(move);
+      }
+    }, KEY_INTERACTION_THROTTLE_MS);
+    const keyListener = (event: KeyboardEvent) => {
       switch (event.key) {
         case "ArrowLeft":
         case "ArrowRight":
@@ -159,51 +199,10 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         default:
           return;
       }
-      const moveIncrement = bike
-        ? ARROW_MOVE_INCREMENT_PX_BIKE
-        : ARROW_MOVE_INCREMENT_PX_WALK;
-      setState((state) => {
-        if (state) {
-          let needsUpdate = false;
-          // Work around possible bad state that can happen in the presence of scroll jank
-          if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
-            pressedKeys["ArrowLeft"] = false;
-            pressedKeys["ArrowRight"] = false;
-          }
-          if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
-            pressedKeys["ArrowUp"] = false;
-            pressedKeys["ArrowDown"] = false;
-          }
-          if (pressedKeys["ArrowLeft"]) {
-            state.x = Math.max(0, state.x - moveIncrement);
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowRight"]) {
-            state.x = Math.min(
-              PLAYA_WIDTH_AND_HEIGHT - 1,
-              state.x + moveIncrement
-            );
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowUp"]) {
-            state.y = Math.max(0, state.y - moveIncrement);
-            needsUpdate = true;
-          }
-          if (pressedKeys["ArrowDown"]) {
-            state.y = Math.min(
-              PLAYA_WIDTH_AND_HEIGHT - 1,
-              state.y + moveIncrement
-            );
-            needsUpdate = true;
-          }
-          if (needsUpdate) {
-            sendUpdatedState(state);
-          }
-          return needsUpdate ? { ...state } : state;
-        }
-        return state;
-      });
-    }, KEY_INTERACTION_THROTTLE_MS);
+      if (Object.keys(pressedKeys).find((k) => pressedKeys[k] === true)) {
+        requestAnimationFrame(move);
+      }
+    };
 
     window.addEventListener("keydown", keyListener);
     window.addEventListener("keyup", keyListener);
@@ -216,6 +215,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   useEffect(() => {
     setState((state) => {
       if (!state) return state;
+      stateRef.current = state;
       const relayStateBike =
         state?.state?.[UserStateKey.Bike] === true.toString();
       const relayStateVideo = state?.state?.[UserStateKey.Video];
@@ -259,8 +259,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       <div
         className="avatar me"
         style={{
-          top: state.y - PLAYA_AVATAR_SIZE / 2,
-          left: state.x - PLAYA_AVATAR_SIZE / 2,
+          top: state.y - PLAYA_AVATAR_SIZE * 0.75,
+          left: state.x - PLAYA_AVATAR_SIZE * 0.75,
         }}
         ref={ref}
       >
@@ -290,8 +290,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }
         `}
         style={{
-          top: state.y - PLAYA_AVATAR_SIZE * 1.5,
-          left: state.x - PLAYA_AVATAR_SIZE * 1.5,
+          top: state.y - PLAYA_AVATAR_SIZE * 2.25,
+          left: state.x - PLAYA_AVATAR_SIZE * 2.25,
         }}
       >
         {isVideoRoomOwnedByMe && (

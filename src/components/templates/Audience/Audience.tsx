@@ -52,8 +52,8 @@ type ReactionType =
 
 // Hardcode these for now; let's make them dynamic so occupancy cannot exceed 80%
 // Always have an odd number of columns.
-const MIN_COLUMNS = 17;
-const MIN_ROWS = 13;
+const MIN_COLUMNS = 49;
+const MIN_ROWS = 21;
 
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
@@ -122,6 +122,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+  const [userSeated, setUserSeated] = useState<boolean>(false);
 
   const experienceContext = useContext(ExperienceContext);
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
@@ -131,10 +132,8 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   });
   const reactionClicked = useCallback(
     (user: UserInfo, reaction: EmojiReactionType) => {
-      console.log(experienceContext);
       experienceContext &&
         experienceContext.addReaction(createReaction({ reaction }, user));
-      console.log("clicked", experienceContext);
       setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
     },
     [experienceContext]
@@ -163,6 +162,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       partygoersBySeat[row] = [];
     }
     partygoersBySeat[row][column] = partygoer;
+    partygoer.id === user?.uid && !userSeated && setUserSeated(true);
     seatedPartygoers++;
   });
 
@@ -186,7 +186,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       const isInVideoRow =
         Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 3);
       const isInVideoColumn =
-        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 3);
+        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 4);
       const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
       return !isInVideoCarveOut;
     };
@@ -195,6 +195,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       if (!user || !profile) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
+      setUserSeated(true);
       const update = {
         data: {
           ...existingData,
@@ -215,6 +216,12 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
 
     if (!venue) return <></>;
 
+    const burningReactions = Reactions.filter(
+      (reaction) =>
+        reaction.type !== EmojiReactionType.boo &&
+        reaction.type !== EmojiReactionType.thatsjazz
+    );
+
     return (
       <>
         <div
@@ -233,18 +240,24 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
               />
             </div>
             <div className="reaction-container">
-              {Reactions.map((reaction) => (
-                <button
-                  key={reaction.name}
-                  className="reaction"
-                  onClick={() => user && reactionClicked(user, reaction.type)}
-                  id={`send-reaction-${reaction.type}`}
-                >
-                  <span role="img" aria-label={reaction.ariaLabel}>
-                    {reaction.text}
-                  </span>
-                </button>
-              ))}
+              {userSeated ? (
+                burningReactions.map((reaction) => (
+                  <button
+                    key={reaction.name}
+                    className="reaction"
+                    onClick={() => user && reactionClicked(user, reaction.type)}
+                    id={`send-reaction-${reaction.type}`}
+                  >
+                    <span role="img" aria-label={reaction.ariaLabel}>
+                      {reaction.text}
+                    </span>
+                  </button>
+                ))
+              ) : (
+                <div className="instructions">
+                  Click on an empty seat to claim it!
+                </div>
+              )}
             </div>
           </div>
           <div className="audience">
@@ -282,6 +295,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }
+                                  miniAvatars={venue?.miniAvatars}
                                   imageSize={undefined}
                                 />
                               </div>
@@ -317,6 +331,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   }, [
     auditoriumSize,
     venue,
+    userSeated,
     selectedUserProfile,
     user,
     profile,

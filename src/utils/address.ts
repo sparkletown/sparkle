@@ -51,26 +51,29 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
     clockFromTheMan.startsWith("12:") ||
     clockFromTheMan.startsWith("1:") ||
     distanceFromTheMan < ESPLANADE_DISTANCE ||
-    distanceFromTheMan >= ESPLANADE_DISTANCE + STREET_WIDTH * 6
+    distanceFromTheMan >= ESPLANADE_DISTANCE + STREET_WIDTH * 7
   ) {
     return `Open Playa, ${distanceFromTheMan} playa-pixels from The Man @ ${clockFromTheMan}`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH) {
-    return `${clockFromTheMan} & A`;
+    return `${clockFromTheMan} & Esplanade`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 2) {
-    return `${clockFromTheMan} & B`;
+    return `${clockFromTheMan} & A`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 3) {
-    return `${clockFromTheMan} & C`;
+    return `${clockFromTheMan} & B`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 4) {
-    return `${clockFromTheMan} & D`;
+    return `${clockFromTheMan} & C`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 5) {
-    return `${clockFromTheMan} & E`;
+    return `${clockFromTheMan} & D`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 6) {
+    return `${clockFromTheMan} & E`;
+  }
+  if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 7) {
     return `${clockFromTheMan} & F`;
   }
   return `Open Playa @ ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;

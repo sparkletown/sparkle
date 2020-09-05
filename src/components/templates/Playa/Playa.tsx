@@ -30,7 +30,7 @@ import { throttle } from "lodash";
 import AvatarLayer from "./AvatarLayer";
 
 import "./Playa.scss";
-import { peopleAttending } from "utils/venue";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -578,13 +578,14 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers);
     return (
       <>
         <PlayaBackground />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
             className={`venue ${
-              (peopleAttending(partygoers, venue)?.length || 0) > 0 ||
+              (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
               !!openVenues?.find(
                 (ov) =>
                   ov.venue.id === venue.id &&

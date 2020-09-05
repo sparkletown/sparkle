@@ -66,6 +66,20 @@ export const Reactions = [
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",
   },
+  {
+    name: "burn",
+    text: ReactionsTextMap[EmojiReactionType.burn],
+    type: EmojiReactionType.burn,
+    ariaLabel: "burn-emoji",
+    audioPath: "/sounds/burn.mpeg",
+  },
+  {
+    name: "sparkle",
+    text: ReactionsTextMap[EmojiReactionType.sparkle],
+    type: EmojiReactionType.sparkle,
+    ariaLabel: "sparkle-emoji",
+    audioPath: "/sounds/sparkle.mpeg",
+  },
 ];
 
 interface BaseReaction {
@@ -111,7 +125,7 @@ export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
               setReactions((prevReactions) => {
                 return prevReactions.filter((r) => r !== newReaction);
               });
-            }, 2000);
+            }, 4000);
           }
         });
       });

@@ -15,7 +15,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
-import { peopleAttending } from "utils/venue";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { playaAddress } from "utils/address";
@@ -95,12 +95,13 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers);
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
         currentEvents: Array<VenueEvent>;
       }) => {
-        const venueAttendance = peopleAttending(partygoers, venue.venue);
+        const venueAttendance = peopleAttending(peopleByLastSeen, venue.venue);
         liveEvents.push(...venue.currentEvents);
         venuesWithAttendance.push({
           ...venue,
@@ -160,6 +161,7 @@ const OnlineStats: React.FC = () => {
   const allVenues = filteredVenues.filter(
     (venue) => !venue.currentEvents.length
   );
+  const peopleByLastSeen = peopleByLastSeenIn(partygoers);
 
   const popover = useMemo(
     () =>
@@ -208,8 +210,8 @@ const OnlineStats: React.FC = () => {
                               <span className="venue-name">{venue.name}</span>
                               <span className="venue-people">
                                 <b>
-                                  {peopleAttending(partygoers, venue)?.length ??
-                                    0}
+                                  {peopleAttending(peopleByLastSeen, venue)
+                                    ?.length ?? 0}
                                 </b>{" "}
                                 people in this room
                               </span>
@@ -317,6 +319,7 @@ const OnlineStats: React.FC = () => {
       partygoers,
       allVenues,
       liveVenues,
+      peopleByLastSeen,
     ]
   );
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { User } from "types/User";
 
 import {
@@ -7,7 +7,11 @@ import {
   MessageToTheBandReaction,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  USE_RANDOM_AVATAR,
+  RANDOM_AVATARS,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 
@@ -17,6 +21,7 @@ type UserProfilePictureProp = {
   imageSize: number | undefined;
   profileStyle?: string;
   isAudioEffectDisabled?: boolean;
+  miniAvatars?: boolean;
 };
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -25,11 +30,26 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   imageSize,
   profileStyle,
   isAudioEffectDisabled,
+  miniAvatars,
 }) => {
   const experienceContext = useContext(ExperienceContext);
   const { muteReactions } = useSelector((state) => ({
     muteReactions: state.room.mute,
   }));
+
+  const [pictureUrl, setPictureUrl] = useState("");
+  useEffect(() => {
+    if (USE_RANDOM_AVATAR || !user.pictureUrl) {
+      const randomUrl =
+        "/avatars/" +
+        RANDOM_AVATARS[
+          Math.floor(user.id.charCodeAt(0) % RANDOM_AVATARS.length)
+        ];
+      setPictureUrl(randomUrl);
+    } else {
+      setPictureUrl(user.pictureUrl);
+    }
+  }, [user.pictureUrl, user.id]);
 
   const typedReaction = experienceContext?.reactions ?? [];
 
@@ -44,7 +64,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           onClick={() => setSelectedUserProfile(user)}
           key={user.id}
           className={profileStyle}
-          src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
+          src={
+            miniAvatars ? pictureUrl : user.pictureUrl || DEFAULT_PROFILE_IMAGE
+          }
           title={user.partyName}
           alt={`${user.partyName} profile`}
           width={imageSize}
@@ -90,6 +112,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
 UserProfilePicture.defaultProps = {
   profileStyle: "profile-icon",
+  miniAvatars: false,
 };
 
 export default UserProfilePicture;
