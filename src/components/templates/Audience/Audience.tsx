@@ -233,13 +233,13 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       <>
         <div
           className="audience-container"
-          style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
+          style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
         >
           <div className="video-container">
             <div className="video">
               <iframe
                 className="frame"
-                src={venue?.iframeUrl}
+                src={venue.iframeUrl}
                 title="Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
@@ -269,7 +269,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                 </>
               ) : (
                 <div className="instructions">
-                  Click on an empty seat to claim it!
+                  Welcome! Click on an empty seat to claim it!
                 </div>
               )}
             </div>
@@ -309,7 +309,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }
-                                  miniAvatars={venue?.miniAvatars}
+                                  miniAvatars={venue.miniAvatars}
                                   imageSize={undefined}
                                 />
                               </div>
