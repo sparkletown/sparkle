@@ -12,7 +12,7 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
 }) => {
   return (
     <div className="radio-modal-container">
-      <div className="title-radio">Shouting Fire Radio</div>
+      <div className="title-radio">Playa Radio</div>
       <div className="text-radio">
         We recommend turning on the global burner radio station as you rove
         round the Playa!
