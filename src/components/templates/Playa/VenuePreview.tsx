@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
-import { Venue } from "types/Venue";
+import { Venue, VenuePlacementState } from "types/Venue";
 import "./VenuePreview.scss";
 import { BURN_VENUE_TEMPLATES } from "settings";
 import UserList from "components/molecules/UserList";
@@ -18,6 +18,7 @@ import { playaAddress } from "utils/address";
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
   venue: WithId<Venue>;
+  allowHideVenue: boolean;
 }
 
 const nowSeconds = new Date().getTime() / 1000;
@@ -44,7 +45,11 @@ const getLink = (venue: WithId<Venue>) => {
   return { urlLink, targetLink };
 };
 
-const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
+const VenuePreview: React.FC<VenuePreviewProps> = ({
+  user,
+  venue,
+  allowHideVenue,
+}) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const users: typeof partygoers = useMemo(
@@ -74,6 +79,24 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
       break;
     case VenueTemplate.artpiece:
       joinButtonText = "View the art";
+      break;
+  }
+
+  const hideVenue = async () => {
+    await firebase.functions().httpsCallable("venue-adminHideVenue")(venue);
+  };
+
+  const isHideable =
+    venue.placement?.state === VenuePlacementState.SelfPlaced ||
+    venue.placement?.state === VenuePlacementState.AdminPlaced;
+
+  let hideButtonText = "MOOP this venue";
+  switch (venue.template) {
+    case VenueTemplate.themecamp:
+      hideButtonText = "MOOP this camp";
+      break;
+    case VenueTemplate.artpiece:
+      hideButtonText = "MOOP this art";
       break;
   }
 
@@ -169,6 +192,14 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({ user, venue }) => {
               >
                 {joinButtonText}
               </a>
+              {allowHideVenue && isHideable && (
+                <button
+                  className="btn btn-primary hide-button"
+                  onClick={hideVenue}
+                >
+                  {hideButtonText}
+                </button>
+              )}
             </div>
           </div>
         </div>

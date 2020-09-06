@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
-import { Venue, VenuePlacement } from "types/Venue";
+import { Venue, VenuePlacement, VenuePlacementState } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
@@ -96,7 +96,14 @@ const PLAYA_MARGIN_BOTTOM = 180;
 const VIDEO_CHAT_MIN_HEIGHT = 180;
 
 const isPlaced = (venue: Venue) => {
-  return venue && venue.placement && venue.placement.x && venue.placement.y;
+  return (
+    venue &&
+    venue.placement &&
+    venue.placement.x &&
+    venue.placement.y &&
+    (venue.placement.state === VenuePlacementState.AdminPlaced ||
+      venue.placement.state === VenuePlacementState.SelfPlaced)
+  );
 };
 
 const minZoom = () =>
@@ -987,7 +994,11 @@ const Playa = () => {
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
-            <VenuePreview user={user} venue={selectedVenue} />
+            <VenuePreview
+              user={user}
+              venue={selectedVenue}
+              allowHideVenue={isUserVenueOwner === true}
+            />
           )}
         </Modal>
         <UserProfileModal

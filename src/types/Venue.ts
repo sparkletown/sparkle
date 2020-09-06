@@ -64,6 +64,7 @@ export interface VenuePlacement {
 export enum VenuePlacementState {
   SelfPlaced = "SELF_PLACED",
   AdminPlaced = "ADMIN_PLACED",
+  Hidden = "HIDDEN",
 }
 
 export interface PlayaIcon {

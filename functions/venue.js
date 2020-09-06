@@ -20,6 +20,7 @@ const VALID_TEMPLATES = [
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
+  Hidden: "HIDDEN",
 };
 
 const createVenueData = (data, context) => {
@@ -379,6 +380,25 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
         updated.placement.notes = notes;
       }
 
+      admin.firestore().collection("venues").doc(venueId).update(updated);
+    });
+});
+
+exports.adminHideVenue = functions.https.onCall(async (data, context) => {
+  const venueId = data.id;
+  checkAuth(context);
+  await checkUserIsPlayaOwner(context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const updated = doc.data();
+      updated.placement.state = PlacementState.Hidden;
       admin.firestore().collection("venues").doc(venueId).update(updated);
     });
 });
