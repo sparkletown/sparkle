@@ -9,6 +9,7 @@ type ExperienceContextType = {
 export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
+  wolf = "wolf",
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
@@ -23,6 +24,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 export const ReactionsTextMap = {
   [EmojiReactionType.heart]: "❤️",
   [EmojiReactionType.clap]: "👏",
+  [EmojiReactionType.wolf]: "🐺",
   [EmojiReactionType.laugh]: "😂",
   [EmojiReactionType.thatsjazz]: "🎹",
   [EmojiReactionType.boo]: "👻",
@@ -44,6 +46,13 @@ export const Reactions = [
     type: EmojiReactionType.clap,
     ariaLabel: "clap-emoji",
     audioPath: "/sounds/clap.mp3",
+  },
+  {
+    name: "wolf",
+    text: ReactionsTextMap[EmojiReactionType.wolf],
+    type: EmojiReactionType.wolf,
+    ariaLabel: "wolf-emoji",
+    audioPath: "/sounds/wolf.mp3",
   },
   {
     name: "laugh",
