@@ -7,15 +7,15 @@
     animation: fade-in-and-out 4500ms ease;
 
     .messageToBand {
-      animation: pulse 3s ease infinite;
+      animation: pulse 4s ease infinite;
       font-size: 20px;
       top: -15px;
       right: none;
       width: fit-content;
       background: $white;
       color: $black;
-      border-radius: 22px;
-      padding: 10px;
+      border-radius: 10px;
+      padding: 6px 10px;
     }
   }
 
