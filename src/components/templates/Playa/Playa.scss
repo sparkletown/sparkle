@@ -268,6 +268,12 @@ $playa-profile-name-size: 30px;
       &.playa-icon4 {
         background-image: url("./img/playa-icon4.png");
       }
+      &.playa-icon5 {
+        background-image: url("./img/playa-icon5.png");
+        width: 300px;
+        height: 232px;
+        transform: skewX(-14deg) rotate(9deg);
+      }
 
       .clickable-banner {
         position: absolute;

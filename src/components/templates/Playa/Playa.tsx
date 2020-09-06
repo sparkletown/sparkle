@@ -48,6 +48,7 @@ import { getLinkFromText } from "utils/getLinkFromText";
 import ifvisible from "ifvisible.js";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { PlayaBackground } from "./PlayaBackground";
+import { PlayaIconComponent } from "./PlayaIcon";
 
 export type MenuConfig = {
   prompt?: string;
@@ -622,35 +623,16 @@ const Playa = () => {
             {selectedVenueId === venue.id && <div className="selected" />}
           </div>
         ))}
-        {venue?.playaIcon?.visible === true && (
-          <div
-            className={`playa-icon ${venue.playaIcon.className} ${
-              venue.playaIcon.clickable ? "clickable" : ""
-            }`}
-            style={{ left: venue.playaIcon.x, top: venue.playaIcon.y }}
-            onClick={() => {
-              if (venue.playaIcon?.clickable && !!venue.playaIcon?.venueId) {
-                const manVenue = venues?.find(
-                  (v) => venue?.playaIcon?.venueId === v.id
-                );
-                if (!!manVenue) {
-                  showVenue(manVenue);
-                }
-              }
-            }}
-          >
-            {venue.playaIcon.fire && (
-              <div className="fire">
-                {Array.from(Array(50)).map(() => (
-                  <div className="particle" />
-                ))}
-              </div>
-            )}
-            {venue?.playaIcon?.clickable && (
-              <div className="clickable-banner">Click Me Now!</div>
-            )}
-          </div>
-        )}
+        <PlayaIconComponent
+          playaIcon={venue?.playaIcon}
+          venues={venues}
+          showVenue={showVenue}
+        />
+        <PlayaIconComponent
+          playaIcon={venue?.playaIcon2}
+          venues={venues}
+          showVenue={showVenue}
+        />
         <Overlay
           target={venueRef.current}
           show={showVenueTooltip && !showUserTooltip && !showMenu}
