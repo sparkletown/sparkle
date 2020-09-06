@@ -52,8 +52,8 @@ type ReactionType =
 
 // Hardcode these for now; let's make them dynamic so occupancy cannot exceed 80%
 // Always have an odd number of columns.
-const MIN_COLUMNS = 17;
-const MIN_ROWS = 11;
+const MIN_COLUMNS = 25;
+const MIN_ROWS = 19;
 
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
