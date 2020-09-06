@@ -22,12 +22,17 @@ import {
   TextReactionType,
   Reactions,
 } from "components/context/ExperienceContext";
+import { useForm } from "react-hook-form";
 
 type PropsType = {};
 
 type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
+
+interface ChatOutDataType {
+  text: string;
+}
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -138,6 +143,20 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     [experienceContext]
   );
 
+  const [isShoutSent, setIsShoutSent] = useState(false);
+
+  useEffect(() => {
+    if (isShoutSent) {
+      setTimeout(() => {
+        setIsShoutSent(false);
+      }, 2000);
+    }
+  }, [isShoutSent, setIsShoutSent]);
+
+  const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
+    mode: "onSubmit",
+  });
+
   // Auditorium size 0 is MIN_COLUMNS x MIN_ROWS
   // Size 1 is MIN_ROWSx2 x MIN_COLUMNS+2
   // Size 2 is MIN_ROWSx4 x MIN_COLUMNS+4 and so on
@@ -218,6 +237,19 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       takeSeat(null, null);
     };
 
+    const onSubmit = async (data: ChatOutDataType) => {
+      setIsShoutSent(true);
+      experienceContext &&
+        user &&
+        experienceContext.addReaction(
+          createReaction(
+            { reaction: "messageToTheBand", text: data.text },
+            user
+          )
+        );
+      reset();
+    };
+
     if (!venue || !profile) return <></>;
 
     const burningReactions = Reactions.filter(
@@ -246,26 +278,50 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                 allowFullScreen
               />
             </div>
-            <div className="reaction-container">
+            <div className={`reaction-container ${userSeated ? "seated" : ""}`}>
               {userSeated ? (
                 <>
-                  {burningReactions.map((reaction) => (
-                    <button
-                      key={reaction.name}
-                      className="reaction"
-                      onClick={() =>
-                        user && reactionClicked(user, reaction.type)
-                      }
-                      id={`send-reaction-${reaction.type}`}
-                    >
-                      <span role="img" aria-label={reaction.ariaLabel}>
-                        {reaction.text}
-                      </span>
+                  <div className="emoji-container">
+                    {burningReactions.map((reaction) => (
+                      <button
+                        key={reaction.name}
+                        className="reaction"
+                        onClick={() =>
+                          user && reactionClicked(user, reaction.type)
+                        }
+                        id={`send-reaction-${reaction.type}`}
+                      >
+                        <span role="img" aria-label={reaction.ariaLabel}>
+                          {reaction.text}
+                        </span>
+                      </button>
+                    ))}
+                    <button className="leave-seat-button" onClick={leaveSeat}>
+                      Leave Seat
                     </button>
-                  ))}
-                  <button className="leave-seat-button" onClick={leaveSeat}>
-                    Leave Seat
-                  </button>
+                  </div>
+                  <div className="shout-container">
+                    <form
+                      onSubmit={handleSubmit(onSubmit)}
+                      className="shout-form"
+                    >
+                      <input
+                        name="text"
+                        className="text"
+                        placeholder="Shout out to the crowd"
+                        ref={register({ required: true })}
+                      />
+                      <input
+                        className={`shout-button ${
+                          isShoutSent ? "btn-success" : ""
+                        } `}
+                        type="submit"
+                        id={`send-shout-out-${venue.name}`}
+                        value={isShoutSent ? "Sent!" : "Send"}
+                        disabled={isShoutSent}
+                      />
+                    </form>
+                  </div>
                 </>
               ) : (
                 <div className="instructions">
@@ -351,5 +407,10 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     venueId,
     reactionClicked,
     partygoersBySeat,
+    handleSubmit,
+    isShoutSent,
+    experienceContext,
+    register,
+    reset,
   ]);
 };

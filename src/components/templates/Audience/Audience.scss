@@ -49,44 +49,80 @@ $light: #ffffff;
       border-bottom-right-radius: 20px;
       box-shadow: 2px 2px 20px $light;
       background-color: #1a1d24;
-      flex-direction: row;
+      flex-direction: column;
       justify-content: space-around;
-
-      .reaction {
-        background-color: transparent;
-        border-color: transparent;
-        font-size: 33px;
-        top: -25px;
-        right: -20px;
-        width: 50px;
-        animation: sway 2200ms 1200ms ease-in-out;
-        z-index: 1000;
-      }
 
       .instructions {
         align-self: center;
       }
 
-      .leave-seat-button {
-        display: inline-block;
-        font-weight: 700;
-        text-decoration: none;
-        border-radius: 8px;
-        text-align: center;
-        font-size: 1em;
-        transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-        line-height: 1.5;
-        border: 1px solid transparent;
-        color: #000000;
-        transform: translateY(0);
-        cursor: pointer;
-        padding: 6px 10px;
-        margin: 6px;
-        background: rgb(0, 0, 0);
-        color: white;
+      &.seated {
+        bottom: -100px;
+        height: 100px;
+      }
 
-        &:hover {
-          background-color: rgba(255, 255, 255, 0.5);
+      .emoji-container {
+        display: flex;
+        flex: 1;
+        justify-content: space-around;
+
+        .reaction {
+          background-color: transparent;
+          border-color: transparent;
+          font-size: 33px;
+          top: -25px;
+          right: -20px;
+          width: 50px;
+          animation: sway 2200ms 1200ms ease-in-out;
+          z-index: 1000;
+        }
+
+        .leave-seat-button {
+          display: inline-block;
+          font-weight: 700;
+          text-decoration: none;
+          border-radius: 8px;
+          text-align: center;
+          font-size: 1em;
+          transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+          line-height: 1.5;
+          border: 1px solid transparent;
+          color: #000000;
+          transform: translateY(0);
+          cursor: pointer;
+          padding: 4px 10px;
+          margin: 6px;
+          background: rgb(0, 0, 0);
+          color: white;
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+          }
+        }
+      }
+
+      .shout-container {
+        margin: 0 8px 4px 8px;
+        padding-bottom: 4px;
+
+        .shout-form {
+          display: flex;
+
+          input {
+            margin: 0 8px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            padding: 10px;
+          }
+
+          .text {
+            flex: 3;
+          }
+          .shout-button {
+            flex: 1;
+          }
         }
       }
     }
