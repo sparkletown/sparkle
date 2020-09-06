@@ -39,6 +39,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const [pictureUrl, setPictureUrl] = useState("");
   useEffect(() => {
+    if (!user.id) return;
     if (USE_RANDOM_AVATAR || !user.pictureUrl) {
       const randomUrl =
         "/avatars/" +
