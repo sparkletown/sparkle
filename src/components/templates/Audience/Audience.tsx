@@ -226,8 +226,8 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         reaction.type !== EmojiReactionType.thatsjazz
     );
     const userSeated =
-      typeof profile.data?.[venueId].row === "number" &&
-      typeof profile.data?.[venueId].row === "number";
+      typeof profile.data?.[venueId]?.row === "number" &&
+      typeof profile.data?.[venueId]?.row === "number";
 
     return (
       <>
