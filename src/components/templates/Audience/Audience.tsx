@@ -52,8 +52,8 @@ type ReactionType =
 
 // Hardcode these for now; let's make them dynamic so occupancy cannot exceed 80%
 // Always have an odd number of columns.
-const MIN_COLUMNS = 49;
-const MIN_ROWS = 21;
+const MIN_COLUMNS = 17;
+const MIN_ROWS = 11;
 
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
@@ -122,7 +122,6 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  const [userSeated, setUserSeated] = useState<boolean>(false);
 
   const experienceContext = useContext(ExperienceContext);
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
@@ -162,7 +161,6 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       partygoersBySeat[row] = [];
     }
     partygoersBySeat[row][column] = partygoer;
-    partygoer.id === user?.uid && !userSeated && setUserSeated(true);
     seatedPartygoers++;
   });
 
@@ -191,11 +189,13 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       return !isInVideoCarveOut;
     };
 
-    const takeSeat = (translatedRow: number, translatedColumn: number) => {
+    const takeSeat = (
+      translatedRow: number | null,
+      translatedColumn: number | null
+    ) => {
       if (!user || !profile) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
-      setUserSeated(true);
       const update = {
         data: {
           ...existingData,
@@ -214,13 +214,20 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
         });
     };
 
-    if (!venue) return <></>;
+    const leaveSeat = () => {
+      takeSeat(null, null);
+    };
+
+    if (!venue || !profile) return <></>;
 
     const burningReactions = Reactions.filter(
       (reaction) =>
         reaction.type !== EmojiReactionType.boo &&
         reaction.type !== EmojiReactionType.thatsjazz
     );
+    const userSeated =
+      typeof profile.data?.[venueId].row === "number" &&
+      typeof profile.data?.[venueId].row === "number";
 
     return (
       <>
@@ -241,18 +248,25 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
             </div>
             <div className="reaction-container">
               {userSeated ? (
-                burningReactions.map((reaction) => (
-                  <button
-                    key={reaction.name}
-                    className="reaction"
-                    onClick={() => user && reactionClicked(user, reaction.type)}
-                    id={`send-reaction-${reaction.type}`}
-                  >
-                    <span role="img" aria-label={reaction.ariaLabel}>
-                      {reaction.text}
-                    </span>
+                <>
+                  {burningReactions.map((reaction) => (
+                    <button
+                      key={reaction.name}
+                      className="reaction"
+                      onClick={() =>
+                        user && reactionClicked(user, reaction.type)
+                      }
+                      id={`send-reaction-${reaction.type}`}
+                    >
+                      <span role="img" aria-label={reaction.ariaLabel}>
+                        {reaction.text}
+                      </span>
+                    </button>
+                  ))}
+                  <button className="leave-seat-button" onClick={leaveSeat}>
+                    Leave Seat
                   </button>
-                ))
+                </>
               ) : (
                 <div className="instructions">
                   Click on an empty seat to claim it!
@@ -331,7 +345,6 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   }, [
     auditoriumSize,
     venue,
-    userSeated,
     selectedUserProfile,
     user,
     profile,
