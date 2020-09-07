@@ -63,7 +63,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     <div className="video_chat-container">
       <div className="video_chat-header">
         <h6 className="video_chat-title">
-          {roomOwner.partyName}&apos;s live video chat
+          {roomOwner?.partyName}&apos;s live video chat
         </h6>
         <div className="btn-group btn-group-sm">
           <button
