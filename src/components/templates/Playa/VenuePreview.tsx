@@ -14,6 +14,7 @@ import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import img from "./img/pickspace-thumbnail_camp.png";
 import { playaAddress } from "utils/address";
+import { Modal } from "react-bootstrap";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -52,6 +53,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
 }) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
+  const [showHiddenModal, setShowHiddenModal] = useState(false);
+
   const users: typeof partygoers = useMemo(
     () => peopleAttending(peopleByLastSeenIn(partygoers), venue) ?? [],
     [partygoers, venue]
@@ -84,6 +87,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
 
   const hideVenue = async () => {
     await firebase.functions().httpsCallable("venue-adminHideVenue")(venue);
+    setShowHiddenModal(true);
   };
 
   const isHideable =
@@ -99,6 +103,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       hideButtonText = "MOOP this art";
       break;
   }
+
+  const venueHiddenText = "Returned to dust! Thanks for your creativity!";
 
   const { urlLink, targetLink } = getLink(venue);
 
@@ -234,6 +240,18 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           joinNowButton
         />
       </div>
+      <Modal show={showHiddenModal} onHide={() => setShowHiddenModal(false)}>
+        <div className="venue-hidden-content">
+          <p>{venueHiddenText}</p>
+          <button
+            type="button"
+            className="btn btn-primary btn-block btn-centered"
+            onClick={() => setShowHiddenModal(false)}
+          >
+            OK
+          </button>
+        </div>
+      </Modal>
     </>
   );
 };
