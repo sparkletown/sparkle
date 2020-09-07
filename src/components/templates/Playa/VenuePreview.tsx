@@ -105,7 +105,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   }
 
   const venueHiddenText =
-    "Returned to dust! Thanks for your creativity!\n\n(To restore, save its placement in the Placement tool.)";
+    "Returned to dust! Thanks for your creativity!\n\nTo undo, select the venue in the Placement tool then click save.";
 
   const { urlLink, targetLink } = getLink(venue);
 
