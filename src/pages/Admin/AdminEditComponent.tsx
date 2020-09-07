@@ -36,7 +36,14 @@ type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 type FormErrors = FieldErrors<Required<FormValues>>;
 
 const isUnplaced = (venue: Venue) => {
-  return !venue?.placement?.state;
+  return (
+    !venue?.placement?.state ||
+    ![
+      VenuePlacementState.SelfPlaced,
+      VenuePlacementState.AdminPlaced,
+      VenuePlacementState.Hidden,
+    ].includes(venue?.placement?.state)
+  );
 };
 
 const isSelfPlaced = (venue: Venue) => {
@@ -45,6 +52,10 @@ const isSelfPlaced = (venue: Venue) => {
 
 const isPlaced = (venue: Venue) => {
   return venue?.placement?.state === VenuePlacementState.AdminPlaced;
+};
+
+const isHidden = (venue: Venue) => {
+  return venue?.placement?.state === VenuePlacementState.Hidden;
 };
 
 const createFirestorePlacementInput = async (
@@ -119,6 +130,7 @@ const AdminEditComponent: React.FC = () => {
     venues,
   ]);
   const placedVenues = useMemo(() => venues?.filter(isPlaced), [venues]);
+  const hiddenVenues = useMemo(() => venues?.filter(isHidden), [venues]);
   const defaultValues = useMemo(() => editPlacementCastSchema.cast(venue), [
     venue,
   ]);
@@ -239,7 +251,27 @@ const AdminEditComponent: React.FC = () => {
           ) : (
             <div className="heading">
               Select a venue on the right to begin the placement process. You
-              can also edit venues/rooms from this panel.
+              can also edit venues/rooms from this panel. The order of the
+              right-hand sidebar is:
+              <ul>
+                <li>The venue you're currently editing</li>
+                <li>
+                  Self-placed venues, created and drag-and-dropped into place by
+                  the placement team.
+                </li>
+                <li>
+                  Formally placed venues, placement team has already processed
+                  these. Owners cannot move them.
+                </li>
+                <li>
+                  Hidden venues, which can be restored to admin-placed just by
+                  saving them.
+                </li>
+                <li>
+                  Unplaced venues, which don't have placement info. (They are
+                  probably meant to be that way)
+                </li>
+              </ul>
             </div>
           )}
         </div>
@@ -249,18 +281,6 @@ const AdminEditComponent: React.FC = () => {
         <ul className="venuelist">
           {!venue && <li>(no venue selected)</li>}
           {venue && <li className="selected">{venue.name}</li>}
-        </ul>
-        <div className="title">Unplaced Venues</div>
-        <ul className="venuelist">
-          {unplacedVenues?.map((venue, index) => (
-            <li
-              key={index}
-              onClick={() => setVenueId(venue.id)}
-              className={venue.id === venueId ? "selected" : ""}
-            >
-              {venue.name}
-            </li>
-          ))}
         </ul>
         <div className="title">Self-placed Venues</div>
         <ul className="venuelist">
@@ -277,6 +297,30 @@ const AdminEditComponent: React.FC = () => {
         <div className="title">Formally Placed Venues</div>
         <ul className="venuelist">
           {placedVenues?.map((venue, index) => (
+            <li
+              key={index}
+              onClick={() => setVenueId(venue.id)}
+              className={venue.id === venueId ? "selected" : ""}
+            >
+              {venue.name}
+            </li>
+          ))}
+        </ul>
+        <div className="title">Hidden Venues</div>
+        <ul className="venuelist">
+          {hiddenVenues?.map((venue, index) => (
+            <li
+              key={index}
+              onClick={() => setVenueId(venue.id)}
+              className={venue.id === venueId ? "selected" : ""}
+            >
+              {venue.name}
+            </li>
+          ))}
+        </ul>
+        <div className="title">Unplaced Venues</div>
+        <ul className="venuelist">
+          {unplacedVenues?.map((venue, index) => (
             <li
               key={index}
               onClick={() => setVenueId(venue.id)}
