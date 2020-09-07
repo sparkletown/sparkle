@@ -194,7 +194,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
               </a>
               {allowHideVenue && isHideable && (
                 <button
-                  className="btn btn-primary hide-button"
+                  className="btn btn-primary btn-danger hide-button"
                   onClick={hideVenue}
                 >
                   {hideButtonText}
