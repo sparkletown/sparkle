@@ -87,7 +87,6 @@ const password = "";
     await page.waitFor(2000);
 
     if (pageNum >= resumeFromPage) {
-
       let i = 1;
 
       while (i <= numberOfReports) {
