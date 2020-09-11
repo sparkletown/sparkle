@@ -60,5 +60,9 @@ service cloud.firestore {
     match /purchases/{restOfPath=**} {
       allow read,write: if true;
     }
+    match /roles/{roleId} {
+      allow read: if true;
+      allow write: if false;
+    }
   }
 }
