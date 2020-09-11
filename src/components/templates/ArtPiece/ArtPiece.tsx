@@ -9,6 +9,7 @@ import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { IS_BURN } from "settings";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -76,9 +77,11 @@ const ArtPiece = () => {
           defaultShow={true}
         />
       </div>
-      <div className="sparkle-fairies">
-        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
-      </div>
+      {IS_BURN && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+        </div>
+      )}
       <Modal
         show={showEventSchedule}
         onHide={() => setShowEventSchedule(false)}

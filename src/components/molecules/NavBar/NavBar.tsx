@@ -19,6 +19,7 @@ import {
   PLAYA_VENUE_NAME,
   ALL_BURN_TEMPLATES,
   SPARKLE_LOGO_URL,
+  IS_BURN,
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
@@ -133,9 +134,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
-  const isBurn = false;
   const isBurnTemplate =
-    !!venue?.template && isBurn && ALL_BURN_TEMPLATES.includes(venue.template);
+    !!venue?.template && IS_BURN && ALL_BURN_TEMPLATES.includes(venue.template);
 
   return (
     <>

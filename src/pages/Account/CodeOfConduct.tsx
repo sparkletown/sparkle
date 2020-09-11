@@ -10,6 +10,7 @@ import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
+import { IS_BURN } from "settings";
 
 interface PropsType {
   location: RouterLocation;
@@ -80,8 +81,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
 
   venue && updateTheme(venue);
 
-  const isBurn = false;
-  const codeOfConductQuestions = isBurn
+  const codeOfConductQuestions = IS_BURN
     ? BURN_CODE_OF_CONDUCT_QUESTIONS
     : venue.code_of_conduct_questions;
 

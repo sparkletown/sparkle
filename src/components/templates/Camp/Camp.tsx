@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
-import { BURN_START_UTC_SECONDS } from "settings";
+import { BURN_START_UTC_SECONDS, IS_BURN } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
@@ -118,13 +118,15 @@ const Camp: React.FC = () => {
       <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
-          title={"Camp Chat"}
+          title={`${venue.name} Chat`}
           chatInputPlaceholder="Chat"
         />
       </div>
-      <div className="sparkle-fairies">
-        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
-      </div>
+      {IS_BURN && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+        </div>
+      )}
       <div className="info-drawer-camp">
         <InfoDrawer venue={venue} />
       </div>

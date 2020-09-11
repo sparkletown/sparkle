@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
+import { IS_BURN } from "settings";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -34,14 +35,12 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const isBurn = false;
-
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      if (isBurn) history.push("/in/playa");
+      if (IS_BURN) history.push("/in/playa");
     } catch (error) {
       setError("email", "firebase", error.message);
     }
