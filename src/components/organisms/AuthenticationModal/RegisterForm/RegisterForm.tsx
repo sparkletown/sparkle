@@ -181,6 +181,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
+      <div className="secondary-action">
+        {`Forgot your password?`}
+        <br />
+        <span className="link" onClick={displayPasswordResetForm}>
+          Reset your password
+        </span>
+      </div>
     </div>
   );
 };
