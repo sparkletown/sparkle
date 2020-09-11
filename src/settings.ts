@@ -13,6 +13,7 @@ export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Playa";
@@ -152,6 +153,17 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
       "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
     ],
   },
+];
+
+export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.playa,
+  VenueTemplate.preplaya,
+  VenueTemplate.zoomroom,
+  VenueTemplate.artcar,
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
 ];
 
 export const FIREBASE_CONFIG = {
