@@ -34,12 +34,14 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
+  const isBurn = false;
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       await signIn(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push("/in/playa");
+      if (isBurn) history.push("/in/playa");
     } catch (error) {
       setError("email", "firebase", error.message);
     }

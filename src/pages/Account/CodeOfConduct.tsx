@@ -30,7 +30,7 @@ export interface CodeOfConductQuestion {
   link?: string;
 }
 
-const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
+const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
   {
     name: "commonDecency",
     text:
@@ -80,13 +80,18 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
 
   venue && updateTheme(venue);
 
+  const isBurn = false;
+  const codeOfConductQuestions = isBurn
+    ? BURN_CODE_OF_CONDUCT_QUESTIONS
+    : venue.code_of_conduct_questions;
+
   return (
     <div className="page-container code-of-conduct-container">
       <div className="kansas-smittys-logo"></div>
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
+          {codeOfConductQuestions.map((q) => (
             <div className="input-group" key={q.name}>
               <label
                 htmlFor={q.name}

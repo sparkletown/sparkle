@@ -65,12 +65,14 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     mode: "onChange",
   });
 
+  const isBurn = false;
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await signUp(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push(`/enter/step2`);
+      history.push(isBurn ? "/enter/step2" : "/account/questions");
     } catch (error) {
       setError("email", "firebase", error.message);
     }
