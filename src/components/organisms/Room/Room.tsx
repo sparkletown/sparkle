@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useKeyedSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
 
 interface RoomProps {
@@ -13,6 +13,7 @@ interface RoomProps {
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   hasChairs?: boolean;
+  defaultMute?: boolean;
 }
 
 const Room: React.FC<RoomProps> = ({
@@ -20,6 +21,7 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   hasChairs = true,
+  defaultMute,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
@@ -27,14 +29,14 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
-  const { users } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.partygoers,
-    }),
-    ["users"]
-  );
+  const users = useSelector((state) => state.firestore.data.partygoers);
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
+
+  useEffect(
+    () => setParticipantCount && setParticipantCount(participants.length),
+    [participants.length, setParticipantCount]
+  );
 
   useEffect(() => {
     (async () => {
@@ -61,9 +63,6 @@ const Room: React.FC<RoomProps> = ({
         ...prevParticipants.filter((p) => p.identity !== participant.identity),
         participant,
       ]);
-      if (setParticipantCount) {
-        setParticipantCount(participants.length + 2);
-      }
     };
 
     const participantDisconnected = (participant: Video.Participant) => {
@@ -75,9 +74,6 @@ const Room: React.FC<RoomProps> = ({
         }
         return prevParticipants.filter((p) => p !== participant);
       });
-      if (setParticipantCount) {
-        setParticipantCount(participants.length + 1);
-      }
     };
 
     Video.connect(token, {
@@ -88,12 +84,6 @@ const Room: React.FC<RoomProps> = ({
       room.on("participantConnected", participantConnected);
       room.on("participantDisconnected", participantDisconnected);
       room.participants.forEach(participantConnected);
-      // [1, 2, 3, 4, 5, 6, 7,8,9,10,11,12,13,14,15,16].forEach(() =>
-      //   participantConnected(room.localParticipant)
-      // );
-      if (setParticipantCount) {
-        setParticipantCount(room.participants.size + 1);
-      }
     });
 
     return () => {
@@ -105,7 +95,7 @@ const Room: React.FC<RoomProps> = ({
         localRoom.disconnect();
       }
     };
-  }, [roomName, setRoom, token, participants.length, setParticipantCount]);
+  }, [roomName, token, setParticipantCount]);
 
   useEffect(() => {
     if (!room) return;
@@ -115,10 +105,6 @@ const Room: React.FC<RoomProps> = ({
       users[room.localParticipant.identity],
     ]);
   }, [participants, setUserList, users, room]);
-
-  if (!token) {
-    return <></>;
-  }
 
   // Ordering of participants:
   // 1. Me
@@ -134,59 +120,80 @@ const Room: React.FC<RoomProps> = ({
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
-  const capacity = 2 + participants.length + (participants.length % 2);
 
-  const meComponent = room ? (
-    <div className={`participant-container-${capacity}`}>
-      <LocalParticipant
-        key={room.localParticipant.sid}
-        participant={room.localParticipant}
-        profileData={users[room.localParticipant.identity]}
-        bartender={meIsBartender}
-      />
-    </div>
-  ) : null;
+  const profileData = room ? users[room.localParticipant.identity] : undefined;
 
-  const othersComponents = participants.map((participant, index) => {
-    if (!participant) {
-      return null;
-    }
-
-    const bartender = !!meIsBartender
-      ? users[participant.identity]?.data?.[roomName]?.bartender
-      : undefined;
-
-    return (
-      <div
-        key={participant.identity}
-        className={`participant-container-${capacity}`}
-      >
-        <Participant
-          key={`${participant.sid}-${index}`}
-          participant={participant}
-          profileData={users[participant.identity]}
-          bartender={bartender}
+  const meComponent = useMemo(() => {
+    return room && profileData ? (
+      <div className={`participant-container`}>
+        <LocalParticipant
+          key={room.localParticipant.sid}
+          participant={room.localParticipant}
+          profileData={profileData}
+          profileDataId={room.localParticipant.identity}
+          bartender={meIsBartender}
+          defaultMute={defaultMute}
         />
       </div>
-    );
-  });
+    ) : null;
+  }, [meIsBartender, room, profileData, defaultMute]);
 
-  const emptyComponents = hasChairs
-    ? [...Array(participants.length % 2)].map((e, index) => (
-        <div
-          key={`empty-participant-${index}`}
-          className={`participant-container-${capacity}`}
-        >
-          <img
-            className="empty-chair-image"
-            src="/empty-chair.png"
-            alt="empty chair"
-          />
-        </div>
-      ))
-    : [];
+  const othersComponents = useMemo(
+    () =>
+      participants.map((participant, index) => {
+        if (!participant) {
+          return null;
+        }
 
-  return <>{[meComponent, ...othersComponents, ...emptyComponents]}</>;
+        const bartender = !!meIsBartender
+          ? users[participant.identity]?.data?.[roomName]?.bartender
+          : undefined;
+
+        return (
+          <div key={participant.identity} className={`participant-container`}>
+            <Participant
+              key={`${participant.sid}-${index}`}
+              participant={participant}
+              profileData={users[participant.identity]}
+              profileDataId={participant.identity}
+              bartender={bartender}
+            />
+          </div>
+        );
+      }),
+    [meIsBartender, participants, roomName, users]
+  );
+
+  const emptyComponents = useMemo(
+    () =>
+      hasChairs
+        ? Array(participants.length % 2).map((e, index) => (
+            <div
+              key={`empty-participant-${index}`}
+              className={`participant-container`}
+            >
+              <img
+                className="empty-chair-image"
+                src="/empty-chair.png"
+                alt="empty chair"
+              />
+            </div>
+          ))
+        : [],
+    [hasChairs, participants.length]
+  );
+
+  if (!token) {
+    return <></>;
+  }
+
+  return (
+    <>
+      {meComponent}
+      {othersComponents}
+      {emptyComponents}
+    </>
+  );
 };
 
 export default Room;

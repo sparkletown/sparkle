@@ -4,10 +4,10 @@ import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 import "./PrivateRecipientSearchInput.scss";
 import { useSelector } from "hooks/useSelector";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
+import { WithId } from "utils/id";
 
 interface PropsType {
-  setSelectedUser: (user: User) => void;
+  setSelectedUser: (user: WithId<User>) => void;
 }
 
 const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
@@ -16,16 +16,14 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchValue, setSearchValue] = useState<string>("");
-  const onClickOnUserInSearchInput = (user: User) => {
+  const onClickOnUserInSearchInput = (user: WithId<User>) => {
     setSearchValue("");
     setSelectedUser(user);
   };
 
   const { userArray } = useSelector((state) => ({
-    userArray: state.firestore.ordered.users,
+    userArray: state.firestore.ordered.partygoers,
   }));
-
-  useConnectRecentUsers();
 
   return (
     <div className="private-recipient-search-input-container">
@@ -55,6 +53,7 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
                 .filter((u) =>
                   u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
                 )
+                .filter((u) => u.id !== undefined)
                 .map((u) => (
                   <Dropdown.Item
                     onClick={() => onClickOnUserInSearchInput(u)}

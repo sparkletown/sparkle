@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
@@ -10,6 +9,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 interface PropsType {
   venueName: string;
@@ -53,7 +53,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   TableComponent,
   joinMessage,
 }) => {
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
   const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [joiningTable, setJoiningTable] = useState("");
@@ -63,7 +65,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     return `${venueName}-table${i + 1}`;
   };
 
-  useFirestoreConnect({ collection: "experiences", doc: venueName });
   const { user, profile } = useUser();
   const { users, experience, usersById } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,

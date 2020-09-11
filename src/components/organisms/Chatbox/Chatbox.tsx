@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
@@ -10,9 +10,9 @@ import "./Chatbox.scss";
 import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
-import { useKeyedSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
-import useConnectRecentUsers from "hooks/useConnectRecentUsers";
+import { WithId } from "utils/id";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -21,7 +21,7 @@ const RECENT_MESSAGE_COUNT = 200;
 interface PropsType {
   isInProfileModal?: boolean;
   displayNameOfDiscussionPartnerAsTitle?: boolean;
-  discussionPartner?: User;
+  discussionPartner?: WithId<User>;
   room?: string;
 }
 
@@ -34,24 +34,21 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const [isRecipientChangeBlocked, setIsRecipientChangeBlocked] = useState(
     false
   );
-  const [privateRecipient, setPrivateRecipient] = useState<User>();
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [privateRecipient, setPrivateRecipient] = useState<WithId<User>>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [chatboxMessageType, setChatboxMessageType] = useState(
     room ? "room" : "global"
   );
 
-  useConnectRecentUsers();
-
   const { user } = useUser();
-  const { users, userArray, chats, privateChats } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.users,
-      userArray: state.firestore.ordered.users,
-      chats: state.firestore.ordered.venueChats,
-      privateChats: state.firestore.ordered.privatechats,
-    }),
-    ["users"]
+  const chats = useSelector((state) => state.firestore.ordered.venueChats);
+  const privateChats = useSelector(
+    (state) => state.firestore.ordered.privatechats
   );
+  const users = useSelector((state) => state.firestore.data.partygoers);
+  const userArray = useSelector((state) => state.firestore.ordered.partygoers);
 
   useFirestoreConnect({
     collection: "privatechats",
@@ -64,35 +61,39 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const listOfChats =
-    chats &&
-    privateChats &&
-    (isInProfileModal ? privateChats : [...privateChats, ...chats]);
+  const chatsToDisplay = useMemo(() => {
+    const listOfChats =
+      chats &&
+      privateChats &&
+      (isInProfileModal ? privateChats : [...privateChats, ...chats]);
 
-  let chatsToDisplay =
-    listOfChats &&
-    listOfChats
-      .filter(isChatValid)
-      .filter((chat) =>
-        room
-          ? //@ts-ignore
-            chat.type === "global" || //@debt can privateChats or venueChats ever be global?
-            (chat.type === "room" && chat.to === room)
-          : true
-      )
-      .concat()
-      .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf()))
-      .slice(0, RECENT_MESSAGE_COUNT);
+    let chatsToDisplay =
+      listOfChats &&
+      listOfChats
+        .filter(isChatValid)
+        .filter((chat) =>
+          room
+            ? //@ts-ignore
+              chat.type === "global" || //@debt can privateChats or venueChats ever be global?
+              (chat.type === "room" && chat.to === room)
+            : true
+        )
+        .concat()
+        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf()))
+        .slice(0, RECENT_MESSAGE_COUNT);
 
-  if (user && isInProfileModal && discussionPartner) {
-    chatsToDisplay =
-      chatsToDisplay &&
-      chatsToDisplay.filter(
-        (chat) =>
-          (chat.from === discussionPartner?.id && chat.to === user.uid) ||
-          (chat.to === discussionPartner?.id && chat.from === user.uid)
-      );
-  }
+    if (user && isInProfileModal && discussionPartner) {
+      chatsToDisplay =
+        chatsToDisplay &&
+        chatsToDisplay.filter(
+          (chat) =>
+            (chat.from === discussionPartner?.id && chat.to === user.uid) ||
+            (chat.to === discussionPartner?.id && chat.from === user.uid)
+        );
+    }
+
+    return chatsToDisplay;
+  }, [chats, privateChats, discussionPartner, isInProfileModal, user, room]);
 
   const changeChatboxMessageType = (type: string) => {
     setIsRecipientChangeBlocked(true);
@@ -107,22 +108,19 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       setPrivateRecipient(undefined);
       if (!isInProfileModal && lastChat && lastChat.type === "private") {
         if (lastChat?.to === user.uid) {
-          setPrivateRecipient({ ...users[lastChat?.from] });
+          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.from));
         } else {
-          setPrivateRecipient({ ...users[lastChat?.to] });
+          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.to));
         }
       }
     }
-    // chatsToDisplay is computed with chats and privateChats, it does not need to be a dependency
-    // eslint-disable-next-line
   }, [
+    chatsToDisplay,
     setPrivateRecipient,
-    chats,
-    privateChats,
     isInProfileModal,
     isRecipientChangeBlocked,
     user,
-    users,
+    userArray,
   ]);
 
   return (
@@ -221,6 +219,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                               ?.toLowerCase()
                               .includes(searchValue.toLowerCase())
                           )
+                          .filter((u) => u.id !== undefined)
                           .map((u) => (
                             <Dropdown.Item
                               onClick={() => setPrivateRecipient(u)}
@@ -260,7 +259,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                 user &&
                 chatsToDisplay.map((chat) => (
                   <ChatMessage
-                    key={chat.ts_utc.valueOf()}
+                    key={`${chat.ts_utc.valueOf()}-${chat.id}`}
                     user={user}
                     users={users}
                     setSelectedUserProfile={setSelectedUserProfile}

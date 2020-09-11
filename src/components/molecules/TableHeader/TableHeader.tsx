@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import React, { useCallback, useEffect } from "react";
 import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
 import { User } from "types/User";
@@ -24,10 +23,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       state.firestore.data.experiences[venueName],
     users: state.firestore.ordered.partygoers,
   }));
-  useFirestoreConnect({
-    collection: "experiences",
-    doc: venueName,
-  });
 
   const tableOfUser = seatedAtTable
     ? JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable)
@@ -51,8 +46,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  window.onbeforeunload = () => leaveSeat();
-
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
@@ -74,8 +67,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     firestoreUpdate(doc, update);
   };
 
-  // useWindowUnloadEffect(() => leaveSeat(), true);
-
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
     const doc = `users/${user.uid}`;
@@ -92,6 +83,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     await firestoreUpdate(doc, update);
     setSeatedAtTable("");
   }, [user, profile, venueName, setSeatedAtTable]);
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", leaveSeat);
+    return () => {
+      window.removeEventListener("beforeunload", leaveSeat, false);
+    };
+  }, [leaveSeat]);
 
   return (
     <div className="row no-margin at-table table-header">

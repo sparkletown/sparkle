@@ -2,15 +2,17 @@ import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import "./ChatMessage.scss";
 import { User } from "types/User";
-import { UserInfo } from "firebase";
+import { UserInfo } from "firebase/app";
 import { ChatMessage } from "components/context/ChatContext";
+import { WithId } from "utils/id";
+import { getLinkFromText } from "../../../utils/getLinkFromText";
 
 interface PropsType {
   chat: ChatMessage;
   users: Record<string, User>;
   isInProfileModal: boolean;
   setSelectedUserProfile: (
-    value: React.SetStateAction<User | undefined>
+    value: React.SetStateAction<WithId<User> | undefined>
   ) => void;
   user: UserInfo;
   withoutSenderInformation?: boolean;
@@ -75,11 +77,11 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
         }`}
       >
         <div
-          className={`buble ${chat.type} ${
+          className={`bubble split-words ${chat.type} ${
             sender === "you" ? "right-side" : ""
           }`}
         >
-          {chat.text}
+          {getLinkFromText(chat.text)}
         </div>
         <div
           className={`chat-timestamp ${sender === "you" ? "right-side" : ""}`}

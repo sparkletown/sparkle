@@ -105,7 +105,7 @@ describe("Smoke Test", function () {
     cy.get('input[value="Enter the event"]').click();
     // END VENUE CODE OF CONDUCT
 
-    cy.url().should("eq", "https://staging.sparkle.space/v/kansassmittys/live");
+    cy.url().should("eq", "https://staging.sparkle.space/in/kansassmittys");
 
     // JAZZBAR INTERACTIONS
     // cy.get(

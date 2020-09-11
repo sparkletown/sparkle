@@ -4,22 +4,16 @@ import {
   faMicrophoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Video from "twilio-video";
-import { User } from "types/User";
-import Participant from "./Participant";
+import Participant, { ParticipantProps } from "./Participant";
 
-interface LocalParticipantProps {
-  participant: Video.Participant;
-  profileData: User;
-  bartender?: User;
-}
-
-const LocalParticipant: React.FC<LocalParticipantProps> = ({
+const LocalParticipant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
+  profileDataId,
   bartender,
+  defaultMute = false,
 }) => {
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(defaultMute);
 
   useEffect(() => {
     if (muted) {
@@ -41,6 +35,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     <Participant
       participant={participant}
       profileData={profileData}
+      profileDataId={profileDataId}
       bartender={bartender}
     >
       <div className="mute-container">

@@ -9,9 +9,12 @@ type ExperienceContextType = {
 export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
+  wolf = "wolf",
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
+  burn = "burn",
+  sparkle = "sparkle",
 }
 
 export type TextReactionType = "messageToTheBand";
@@ -21,9 +24,12 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 export const ReactionsTextMap = {
   [EmojiReactionType.heart]: "❤️",
   [EmojiReactionType.clap]: "👏",
+  [EmojiReactionType.wolf]: "🐺",
   [EmojiReactionType.laugh]: "😂",
   [EmojiReactionType.thatsjazz]: "🎹",
   [EmojiReactionType.boo]: "👻",
+  [EmojiReactionType.burn]: "🔥",
+  [EmojiReactionType.sparkle]: "✨",
 };
 
 export const Reactions = [
@@ -40,6 +46,13 @@ export const Reactions = [
     type: EmojiReactionType.clap,
     ariaLabel: "clap-emoji",
     audioPath: "/sounds/clap.mp3",
+  },
+  {
+    name: "wolf",
+    text: ReactionsTextMap[EmojiReactionType.wolf],
+    type: EmojiReactionType.wolf,
+    ariaLabel: "wolf-emoji",
+    audioPath: "/sounds/wolf.mp3",
   },
   {
     name: "laugh",
@@ -61,6 +74,20 @@ export const Reactions = [
     type: EmojiReactionType.boo,
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",
+  },
+  {
+    name: "burn",
+    text: ReactionsTextMap[EmojiReactionType.burn],
+    type: EmojiReactionType.burn,
+    ariaLabel: "burn-emoji",
+    audioPath: "/sounds/burn.mpeg",
+  },
+  {
+    name: "sparkle",
+    text: ReactionsTextMap[EmojiReactionType.sparkle],
+    type: EmojiReactionType.sparkle,
+    ariaLabel: "sparkle-emoji",
+    audioPath: "/sounds/sparkle.mpeg",
   },
 ];
 
@@ -107,7 +134,7 @@ export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
               setReactions((prevReactions) => {
                 return prevReactions.filter((r) => r !== newReaction);
               });
-            }, 2000);
+            }, 4000);
           }
         });
       });

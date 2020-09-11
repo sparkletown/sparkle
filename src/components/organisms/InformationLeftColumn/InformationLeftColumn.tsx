@@ -1,23 +1,36 @@
-import React, { useState } from "react";
+import React from "react";
 import "./InformationLeftColumn.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAmbulance,
+  faAngleDoubleRight,
+  faHeart,
+  faEdit,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface PropsType {
   venueLogoPath: string;
   children: React.ReactNode;
+  isLeftColumnExpanded: boolean;
+  setIsLeftColumnExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
   venueLogoPath,
   children,
+  isLeftColumnExpanded,
+  setIsLeftColumnExpanded,
 }) => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-
   return (
     <div className="information-left-column-container">
       <div
-        className={`left-column ${isLeftColumnExpanded ? "expanded" : ""}`}
+        className={`left-column ${
+          !isLeftColumnExpanded
+            ? ""
+            : venueLogoPath === "heart"
+            ? "expanded-donation"
+            : "expanded-popup"
+        }`}
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
         id="expand-venue-information"
       >
@@ -28,11 +41,39 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
           </div>
         </div>
-        <img
-          src={venueLogoPath}
-          alt="experience-logo"
-          className={`band-logo ${isLeftColumnExpanded ? "expanded" : ""}`}
-        />
+        {venueLogoPath === "ambulance" ? (
+          <FontAwesomeIcon
+            icon={faAmbulance}
+            size="2x"
+            className={`band-logo ${
+              isLeftColumnExpanded ? "expanded-popup" : ""
+            }`}
+          />
+        ) : venueLogoPath === "heart" && isLeftColumnExpanded ? (
+          <img
+            src="/imageDonate1.png"
+            alt="experience-logo"
+            className={`expanded-popup`}
+          />
+        ) : venueLogoPath === "heart" && !isLeftColumnExpanded ? (
+          <FontAwesomeIcon icon={faHeart} size="2x" className={`band-logo`} />
+        ) : venueLogoPath === "create" ? (
+          <FontAwesomeIcon
+            icon={faEdit}
+            size="2x"
+            className={`band-logo ${
+              isLeftColumnExpanded ? "expanded-popup" : ""
+            }`}
+          />
+        ) : (
+          <img
+            src={venueLogoPath}
+            alt="experience-logo"
+            className={`band-logo ${
+              isLeftColumnExpanded ? "expanded-popup" : ""
+            }`}
+          />
+        )}
         {isLeftColumnExpanded && <>{children}</>}
       </div>
     </div>

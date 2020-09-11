@@ -12,7 +12,12 @@ service cloud.firestore {
     }
     match /users/{userId} {
       allow read: if true;
-      allow write: if request.auth.uid != null;
+      allow write: if request.auth.uid == userId;
+
+      match /visits/{venueId} {
+        allow read: if true;
+        allow write: if request.auth.uid == userId;
+      }
     }
     match /chatsv3/{chatId} {
       allow write, read: if request.auth.uid != null;
@@ -33,16 +38,30 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if true;
     }
-    match /venues/{restOfPath=**} {
+    match /venues/{venue} {
       allow read: if true;
-      allow write: if request.auth.uid != null;
-    }
-    match /purchases/{restOfPath=**} {
-      allow read: if request.auth.uid != null && resource.data.userId == request.auth.uid;
-      allow write: if false;
+
+      function venueData() {
+        return get(/databases/$(database)/documents/venues/$(venue)).data
+      }
+
+      match /events/{event} {
+        allow read: if true;
+        allow write: if request.auth.uid in venueData().owners;
+      }
+      match /chats/{restOfPath=**} {
+        allow read,create: if request.auth.uid != null;
+      }
     }
     match /customers/{userId} {
       allow read: if false;
+      allow write: if false;
+    }
+    match /purchases/{restOfPath=**} {
+      allow read,write: if true;
+    }
+    match /roles/{roleId} {
+      allow read: if true;
       allow write: if false;
     }
   }

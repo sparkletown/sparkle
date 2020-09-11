@@ -18,6 +18,7 @@ body {
   justify-content: center;
   font-family: "Rubik", sans-serif;
   height: 100vh;
+  overscroll-behavior-x: none;
 }
 
 * {
@@ -92,6 +93,23 @@ input.btn {
       background-color: darken($primary, 14%);
     }
   }
+  &.btn-secondary {
+    color: $white;
+    background-color: rgba(124, 70, 251, 0.4);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    &:hover {
+      background-color: rgba(124, 70, 251, 0.8);
+    }
+  }
+  &.btn-danger {
+    color: $white;
+    background: $danger-gradient;
+    border-color: rgba(0, 0, 0, 0);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    &:hover {
+      background-color: darken($red, 14%);
+    }
+  }
 
   &.btn-small {
     padding: 6px 12px;
@@ -138,7 +156,7 @@ button.btn {
   color: $black;
   transform: translateY(0);
 
-  &:hover {
+  &:hover:enabled {
     transform: translateY(-1px);
     background-image: linear-gradient(
       0deg,
@@ -284,6 +302,7 @@ textarea {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
+  max-width: 100%;
 }
 
 a {
@@ -311,7 +330,7 @@ h4 {
 }
 
 .sparkle-navbar-icon {
-  width: 130px;
+  width: 300px;
 }
 
 .primary {
@@ -354,7 +373,7 @@ h4 {
   display: flex;
   padding: 5px 30px;
   height: calc(100vh - 50px);
-  width: 100vw;
+  width: 100%;
   & > * + * {
     margin-left: 10px;
   }
@@ -427,6 +446,8 @@ h4 {
 
   .youtube-video {
     transition: all 0.1s linear;
+    background-color: $dark;
+    color: white;
   }
 }
 
@@ -629,7 +650,7 @@ input.btn.btn-primary.btn-success {
       rgba($white, 0.05) 100%
     );
 
-    .buble {
+    .bubble {
       padding: 10px;
       border-radius: 10px;
       color: $white;
@@ -682,12 +703,29 @@ span.link {
     padding: 10px 20px;
     border-radius: 22px;
     width: 100%;
+    word-wrap: break-word;
   }
   .message {
     display: flex;
-
     img {
       margin-right: 20px;
+    }
+    .timestamp {
+      color: $concrete;
+    }
+    &.chat-message {
+      flex-direction: column;
+      .sender-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 3px;
+        img {
+          margin-right: 10px;
+        }
+        .timestamp {
+          margin-left: 10px;
+        }
+      }
     }
   }
 
@@ -759,4 +797,11 @@ span.link {
 
 .flex-one {
   flex: 1;
+}
+
+.split-words {
+  span,
+  a {
+    margin: 0 2px;
+  }
 }

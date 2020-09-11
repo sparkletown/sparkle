@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { User } from "types/User";
 
 import {
@@ -7,26 +7,50 @@ import {
   MessageToTheBandReaction,
 } from "components/context/ExperienceContext";
 import "./UserProfilePicture.scss";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  USE_RANDOM_AVATAR,
+  RANDOM_AVATARS,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 type UserProfilePictureProp = {
-  user: User;
-  setSelectedUserProfile: (user: User) => void;
-  imageSize: number;
+  user: WithId<User>;
+  setSelectedUserProfile: (user: WithId<User>) => void;
+  imageSize: number | undefined;
+  profileStyle?: string;
   isAudioEffectDisabled?: boolean;
+  miniAvatars?: boolean;
 };
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
   setSelectedUserProfile,
   imageSize,
+  profileStyle,
   isAudioEffectDisabled,
+  miniAvatars,
 }) => {
   const experienceContext = useContext(ExperienceContext);
   const { muteReactions } = useSelector((state) => ({
     muteReactions: state.room.mute,
   }));
+
+  const [pictureUrl, setPictureUrl] = useState("");
+  useEffect(() => {
+    if (!user.id) return;
+    if (USE_RANDOM_AVATAR || !user.pictureUrl) {
+      const randomUrl =
+        "/avatars/" +
+        RANDOM_AVATARS[
+          Math.floor(user.id.charCodeAt(0) % RANDOM_AVATARS.length)
+        ];
+      setPictureUrl(randomUrl);
+    } else {
+      setPictureUrl(user.pictureUrl);
+    }
+  }, [user.pictureUrl, user.id]);
 
   const typedReaction = experienceContext?.reactions ?? [];
 
@@ -36,23 +60,27 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className="profile-picture-container">
-      <img
-        onClick={() => setSelectedUserProfile(user)}
-        key={user.id}
-        className="profile-icon"
-        src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
-        title={user.partyName}
-        alt={`${user.partyName} profile`}
-        width={imageSize}
-        height={imageSize}
-      />
+      <div className="user">
+        <img
+          onClick={() => setSelectedUserProfile(user)}
+          key={user.id}
+          className={profileStyle}
+          src={
+            miniAvatars ? pictureUrl : user.pictureUrl || DEFAULT_PROFILE_IMAGE
+          }
+          title={user.partyName}
+          alt={`${user.partyName} profile`}
+          width={imageSize}
+          height={imageSize}
+        />
+      </div>
       {Reactions.map(
-        (reaction) =>
+        (reaction, index) =>
           experienceContext &&
           experienceContext.reactions.find(
             (r) => r.created_by === user.id && r.reaction === reaction.type
           ) && (
-            <div className="reaction-container">
+            <div key={index} className="reaction-container">
               <span
                 className={`reaction ${reaction.name}`}
                 role="img"
@@ -81,6 +109,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       )}
     </div>
   );
+};
+
+UserProfilePicture.defaultProps = {
+  profileStyle: "profile-icon",
+  miniAvatars: false,
 };
 
 export default UserProfilePicture;

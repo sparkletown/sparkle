@@ -18,4 +18,22 @@
     display: flex;
     flex-wrap: wrap;
   }
+  .title-sidebar {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  .short-description-sidebar {
+    font-size: 15px;
+    font-weight: bold;
+  }
+}
+.sparkle-fairies {
+  position: fixed;
+  top: 250px;
+  left: 0px;
+}
+.donate-popup {
+  position: fixed;
+  top: 370px;
+  left: 0px;
 }

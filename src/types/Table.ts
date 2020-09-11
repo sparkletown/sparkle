@@ -1,4 +1,5 @@
 import { User } from "types/User";
+import { WithId } from "utils/id";
 
 export interface Table {
   title?: string;
@@ -14,8 +15,8 @@ export interface TableComponentPropsType {
   table: Table;
   tableLocked: (table: string) => boolean;
   experienceName: string;
-  users: User[];
-  setSelectedUserProfile: (user: User) => void;
+  users: Array<WithId<User>>;
+  setSelectedUserProfile: (user: WithId<User>) => void;
   tableCapacity?: number;
   onJoinClicked: (table: string, locked: boolean, videoRoom: string) => void;
   nameOfVideoRoom: string;

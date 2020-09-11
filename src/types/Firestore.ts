@@ -9,8 +9,10 @@ import { VenueEvent } from "./VenueEvent";
 import { Table } from "./Table";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { Reaction } from "components/context/ExperienceContext";
-import { WithId, WithoutId } from "utils/id";
-import { Tidy } from "./Tidy";
+import { WithId } from "utils/id";
+import { CampVenue } from "./CampVenue";
+import { ChatRequest } from "./ChatRequest";
+import { Role } from "./Role";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -27,8 +29,11 @@ interface Experience {
 }
 
 type VenueTimestamps = Record<keyof VenueStatus, number>;
+export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
-type UserWithoutId = Tidy<WithoutId<User>>;
+interface UserVisit {
+  timeSpent: number;
+}
 
 export interface Firestore {
   status: {
@@ -37,22 +42,26 @@ export interface Firestore {
     timestamps: VenueTimestamps;
   };
   data: {
-    currentVenue: Venue | PartyMapVenue;
+    currentVenue?: AnyVenue;
     currentEvent: Record<string, VenueEvent>;
     venueChats: Record<string, RestrictedChatMessage> | null;
     venueEvents: Record<string, VenueEvent>;
     userPurchaseHistory: Record<string, Purchase>;
-    partygoers: Record<string, UserWithoutId>;
-    users: Record<string, UserWithoutId>;
+    partygoers: Record<string, User>;
+    users: Record<string, User>;
     privatechats: Record<string, PrivateChatMessage>;
     experiences: Record<string, Experience>;
     eventPurchase: Record<string, Purchase>;
     reactions: Record<string, Reaction>;
-    venues?: Record<string, Venue>;
+    venues?: Record<string, AnyVenue>;
     events?: Record<string, VenueEvent>;
+    playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
+    allUsers?: Record<string, User>;
+    userModalVisits?: Record<string, UserVisit>;
+    roles: Record<string, Role>;
   };
   ordered: {
-    currentVenue: Array<WithId<Venue | PartyMapVenue>>;
+    currentVenue: Array<WithId<AnyVenue>>;
     currentEvent: Array<WithId<VenueEvent>>;
     venueChats: Array<WithId<RestrictedChatMessage>>;
     venueEvents: Array<WithId<VenueEvent>>;
@@ -63,7 +72,13 @@ export interface Firestore {
     experiences: Array<WithId<Experience>>;
     eventPurchase: Array<WithId<Purchase>>;
     reactions: Array<WithId<Reaction>>;
-    venues?: Array<WithId<Venue>>;
+    venues?: Array<WithId<AnyVenue>>;
     events?: Array<WithId<VenueEvent>>;
+    playaVenues?: Array<WithId<AnyVenue>>;
+    statsOnlineUsers?: Array<WithId<User>>;
+    statsOpenVenues?: Array<WithId<AnyVenue>>;
+    allUsers?: Array<WithId<User>>;
+    userModalVisits?: Array<WithId<UserVisit>>;
+    chatRequests?: Array<WithId<ChatRequest>>;
   };
 }

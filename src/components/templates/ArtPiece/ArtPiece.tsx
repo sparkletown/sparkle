@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./ArtPiece.scss";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
@@ -6,21 +6,48 @@ import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { Modal } from "react-bootstrap";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+
+export const ConvertToEmbeddableUrl = (string: string | undefined) => {
+  if (string?.includes("youtube")) {
+    return string?.replace("watch?v=", "embed/");
+  } else if (string?.includes("vimeo") && !string?.includes("player")) {
+    return string?.replace("vimeo.com/", "player.vimeo.com/video/");
+  } else {
+    return string?.includes("http") ? string : "//" + string;
+  }
+};
 
 const ArtPiece = () => {
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
 
+  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+  const [showEventSchedule, setShowEventSchedule] = useState(false);
+
+  if (!venue) return <>Loading...</>;
+
+  const iFrameUrl = ConvertToEmbeddableUrl(
+    venue.iframeUrl ?? venue.embedIframeUrl
+  );
   return (
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn venueLogoPath={venue ? venue.host.icon : ""}>
+        <InformationLeftColumn
+          venueLogoPath={venue?.host.icon ?? ""}
+          isLeftColumnExpanded={isLeftColumnExpanded}
+          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
+        >
           <InformationCard title="About the venue">
-            <p>
-              {venue.name}.
-              <br />
-              {` It's a real piece of art.`}
+            <p className="title-sidebar">{venue.name}.</p>
+            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
+              {venue.config?.landingPageConfig.subtitle}
+            </p>
+            <p style={{ fontSize: 13 }}>
+              {venue.config?.landingPageConfig.description}
             </p>
           </InformationCard>
         </InformationLeftColumn>
@@ -28,7 +55,7 @@ const ArtPiece = () => {
           <iframe
             className="youtube-video"
             title="art-piece-video"
-            src={venue.iframeUrl}
+            src={iFrameUrl}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -38,11 +65,29 @@ const ArtPiece = () => {
               roomName={venue.name}
               setUserList={() => null}
               hasChairs={false}
+              defaultMute={true}
             />
           </div>
         </div>
-        <ChatDrawer roomName={venue.name} chatInputPlaceholder="Chat" />
+        <ChatDrawer
+          title={"Art Piece Chat"}
+          roomName={venue.name}
+          chatInputPlaceholder="Chat"
+          defaultShow={true}
+        />
       </div>
+      <div className="sparkle-fairies">
+        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+      </div>
+      <Modal
+        show={showEventSchedule}
+        onHide={() => setShowEventSchedule(false)}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </WithNavigationBar>
   );
 };

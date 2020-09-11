@@ -2,7 +2,8 @@
   "projects": {
     "default": "co-reality-map",
     "staging": "co-reality-staging",
-    "prod": "co-reality-map"
+    "prod": "co-reality-map",
+    "sparkleverse": "sparkle-verse"
   },
   "targets": {
     "co-reality-map": {
@@ -29,6 +30,13 @@
       "hosting": {
         "staging": [
           "co-reality-staging"
+        ]
+      }
+    },
+    "sparkle-verse": {
+      "hosting": {
+        "sparkleverse": [
+          "sparkle-verse"
         ]
       }
     }

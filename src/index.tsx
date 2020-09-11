@@ -24,16 +24,11 @@ import "scss/global.scss";
 
 import AppRouter from "components/organisms/AppRouter";
 
-import { roomReducer } from "./store/reducers";
+import { roomReducer, locationReducer } from "./store/reducers";
 import trackingMiddleware from "./middleware/tracking";
-import {
-  API_KEY,
-  APP_ID,
-  MEASUREMENT_ID,
-  BUCKET_URL,
-  PROJECT_ID,
-} from "./secrets";
 import * as serviceWorker from "./serviceWorker";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -41,22 +36,17 @@ import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
+import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
+import { FIREBASE_CONFIG, DEFAULT_REDIRECT_URL } from "settings";
 
-const firebaseConfig = {
-  apiKey: API_KEY,
-  appId: APP_ID,
-  measurementId: MEASUREMENT_ID,
-  projectId: PROJECT_ID,
-  storageBucket: BUCKET_URL,
-};
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
 
-firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(FIREBASE_CONFIG);
 const analytics = firebase.analytics();
 firebase.auth();
 firebase.firestore();
@@ -72,6 +62,7 @@ const rootReducer = combineReducers({
   firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
   firestore: firestoreReducer as Reducer<Firestore>,
   room: roomReducer,
+  location: locationReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
@@ -96,19 +87,21 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const auth = useSelector((state) => state.firebase.auth);
-  if (!isLoaded(auth)) return <div>Loading...</div>;
+  if (!isLoaded(auth)) return <LoadingPage />;
   return <>{children}</>;
 };
 
 render(
   <Elements stripe={stripePromise}>
-    <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-        <AuthIsLoaded>
-          <AppRouter />
-        </AuthIsLoaded>
-      </ReactReduxFirebaseProvider>
-    </Provider>
+    <DndProvider backend={HTML5Backend}>
+      <Provider store={store}>
+        <ReactReduxFirebaseProvider {...rrfProps}>
+          <AuthIsLoaded>
+            <AppRouter defaultRedirect={DEFAULT_REDIRECT_URL} />
+          </AuthIsLoaded>
+        </ReactReduxFirebaseProvider>
+      </Provider>
+    </DndProvider>
   </Elements>,
   document.getElementById("root")
 );

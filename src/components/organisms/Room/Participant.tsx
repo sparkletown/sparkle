@@ -6,10 +6,12 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 import { User } from "types/User";
 
-interface ParticipantProps {
+export interface ParticipantProps {
   participant: Video.Participant;
   profileData: User;
+  profileDataId: string;
   bartender?: User;
+  defaultMute?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -19,13 +21,15 @@ type Track = VideoTracks[number] | AudioTracks[number];
 const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   participant,
   profileData,
+  profileDataId,
   bartender,
   children,
+  defaultMute = false,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
   const [showProfile, setShowProfile] = useState(false);
-  const [muted, setMuted] = useState(false);
+  const [muted, setMuted] = useState(defaultMute);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -124,13 +128,11 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           imageSize={40}
         />
       </div>
-      {showProfile && (
-        <UserProfileModal
-          show
-          onHide={() => setShowProfile(false)}
-          userProfile={profileData}
-        />
-      )}
+      <UserProfileModal
+        show={showProfile}
+        onHide={() => setShowProfile(false)}
+        userProfile={{ ...profileData, id: participant.identity }}
+      />
       {children}
       <div className="mute-other-container">
         <div onClick={() => setMuted(!muted)} id="mute-myself">

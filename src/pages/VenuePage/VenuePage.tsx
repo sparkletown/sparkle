@@ -1,28 +1,39 @@
-import React, { useState } from "react";
-import useUpdateLocationEffect from "utils/useLocationUpdateEffect";
+import { ChatContextWrapper } from "components/context/ChatContext";
+import CountDown from "components/molecules/CountDown";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import ArtPiece from "components/templates/ArtPiece";
 import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
 import PartyMap from "components/templates/PartyMap";
-import FriendShipPage from "pages/FriendShipPage";
-import ArtPiece from "components/templates/ArtPiece";
-import { ChatContextWrapper } from "components/context/ChatContext";
-import { updateTheme } from "./helpers";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useParams, useHistory } from "react-router-dom";
-import { VenueTemplate } from "types/VenueTemplate";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import CountDown from "components/molecules/CountDown";
-import { useUser } from "hooks/useUser";
-import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import FriendShipPage from "pages/FriendShipPage";
+import React, { useState, useEffect } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { VenueTemplate } from "types/VenueTemplate";
+import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
-
+import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
+import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
+import { PlayaRouter } from "components/templates/Playa/Router";
+import { CampRouter } from "components/templates/Camp/Router";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+import getQueryParameters from "utils/getQueryParameters";
+import AudienceContainer from "components/templates/Audience/AudienceContainer";
+
+const hasPaidEvents = (template: VenueTemplate) => {
+  return template === VenueTemplate.jazzbar;
+};
 
 const VenuePage = () => {
   const { venueId } = useParams();
+  const firebase = useFirestore();
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
 
@@ -61,35 +72,71 @@ const VenuePage = () => {
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
-    user && isUserAMember(user.email, venue?.config?.memberEmails);
+    user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   const venueName = venue && venue.name;
-  useUpdateLocationEffect(user, venueName);
+  // Camp and PartyMap needs to be able to modify this
+  // Currently does not work with roome
+  useLocationUpdateEffect(user, venueName ?? "");
 
   useConnectPartyGoers();
-  useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
+  useEffect(() => {
+    const venueIdFromParams = getQueryParameters(window.location.search)
+      ?.venueId;
+    firebase.get({
+      collection: "venues",
+      doc: venueId ? venueId : venueIdFromParams,
+      storeAs: "currentVenue",
+    });
+  }, [firebase, venueId]);
+  useFirestoreConnect(
+    user
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
+
+  if (!user) {
+    return (
+      <WithNavigationBar>
+        <AuthenticationModal
+          show={true}
+          onHide={() => {}}
+          showAuth="register"
+        />
+      </WithNavigationBar>
+    );
+  }
+
+  if (!venue) {
+    return <LoadingPage />;
+  }
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!isUserVenueOwner) {
+  if (hasPaidEvents(venue.template) && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
 
     if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
-      return <>Loading...</>;
+      return <LoadingPage />;
     }
 
     if (
-      !isMember &&
-      ((event.price > 0 &&
+      (!isMember &&
+        event.price > 0 &&
         userPurchaseHistoryRequestStatus &&
         !hasUserBoughtTicket) ||
-        isEventFinished)
+      isEventFinished
     ) {
       return <>Forbidden</>;
     }
@@ -105,7 +152,7 @@ const VenuePage = () => {
   }
 
   if (profile === undefined) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   if (!(profile?.partyName && profile?.pictureUrl)) {
@@ -113,6 +160,7 @@ const VenuePage = () => {
   }
 
   let template;
+  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzbarRouter />;
@@ -123,17 +171,46 @@ const VenuePage = () => {
     case VenueTemplate.partymap:
       template = <PartyMap />;
       break;
-    case VenueTemplate.artPiece:
+    case VenueTemplate.artpiece:
       template = <ArtPiece />;
+      break;
+    case VenueTemplate.themecamp:
+      template = <CampRouter />;
+      break;
+    case VenueTemplate.playa:
+    case VenueTemplate.preplaya:
+      template = <PlayaRouter />;
+      fullscreen = true;
+      break;
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.performancevenue:
+    case VenueTemplate.artcar:
+      if (venue.zoomUrl) {
+        window.location.replace(venue.zoomUrl);
+      }
+      template = (
+        <p>
+          Venue {venue.name} should redirect to a URL, but none was set.
+          <br />
+          <button
+            role="link"
+            className="btn btn-primary"
+            onClick={() => history.goBack()}
+          >
+            Go Back
+          </button>
+        </p>
+      );
+      break;
+    case VenueTemplate.audience:
+      template = <AudienceContainer venueName={venue.name} />;
+      fullscreen = true;
       break;
   }
 
   return (
     <ChatContextWrapper>
-      {isUserVenueOwner && (
-        <div className="preview-indication">This is a preview of an event</div>
-      )}
-      {template}
+      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
     </ChatContextWrapper>
   );
 };

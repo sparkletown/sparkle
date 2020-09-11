@@ -3,16 +3,21 @@
 import { TypedUseSelectorHook, useSelector as _useSelector } from "react-redux";
 import { RootState } from "index";
 import { WithId } from "utils/id";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 
 export const useSelector: TypedUseSelectorHook<RootState> = _useSelector;
+
+type SubRecordType = Record<string, object>;
+type AllOtherTypes = Array<any> | string | number | boolean;
+type RecordType = Record<string, AllOtherTypes | SubRecordType>;
 
 export const useKeyedSelector = <T extends RecordType, Q extends keyof T>(
   callback: (state: RootState) => T,
   keys: ReadonlyArray<Q>
 ) => {
+  const keysRef = useRef(keys);
   const result = useSelector(callback);
-  return useMemo(() => withKeyedData(result, keys), [result, keys]);
+  return useMemo(() => withKeyedData(result, keysRef.current), [result]);
 };
 
 type WithKeys<T extends Record<string, object>> = {
@@ -35,10 +40,6 @@ const addIdsToObjectValues = <T extends Record<string, object>>(obj: T) =>
     const valueAtKey = obj[key];
     return { ...acc, [key]: { ...valueAtKey, id: key } };
   }, obj) as WithKeys<T>;
-
-type SubRecordType = Record<string, object>;
-type AllOtherTypes = Array<any> | string | number | boolean;
-type RecordType = Record<string, AllOtherTypes | SubRecordType>;
 
 export const withKeyedData = <T extends RecordType, Q extends keyof T>(
   data: T,

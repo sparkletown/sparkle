@@ -58,7 +58,7 @@ class TimeRange(object):
 class Config():
 	# REVISIT: move to command-line args
 	# Party start/duration/end
-	START = datetime(2020,7,25,12,0,0,0)
+	START = datetime(2020,8,8,12,0,0,0)
 	END = START + timedelta(hours=12)
 	SEGMENTS = {
 		'Whole party': TimeRange(START, START + timedelta(hours=8)),
@@ -143,6 +143,17 @@ class Config():
 		'Time Warp Party 10': 'The Centuripede',
 		'Time Warp Party 11': 'Pre-Pocalyptic Pussy Cat Pirates',
 		'Time Warp Party 12': 'Entrance Experience Part 2',
+		'End of the Universe 1': 'Apocalyse Meow Cabaret',
+		'End of the Universe 2': 'Worm Whole',
+		'End of the Universe 3': 'Wish Upon A Star',
+		'End of the Universe 4': 'XNN Colony Fantasea Rocket',
+		'End of the Universe 5': 'Stardust',
+		'End of the Universe 6': 'Space Loo',
+		'End of the Universe 7': 'Goddess Galaxy',
+		'End of the Universe 8': 'Shake Your Assteroid',
+		'End of the Universe 10': 'The Oat Milky Way',
+		'End of the Universe 11': 'Powered By SparkleVerse',
+		'End of the Universe 12': 'Escape Pod',
 	}
 	ROOM_TIMEZONE_OFFSETS = {
 		'Moon Rock Room- Live performers and deep space hitchhikers': timedelta(hours=-1),
@@ -230,11 +241,11 @@ class ZoomReportParser():
 
 		visit = TimeRange(join_time, leave_time)
 		self._all_visits.append({'room': room, 'user': user, 'visit': visit})
-		
+
 		if user not in self._visits_by_user:
 			self._visits_by_user[user] = []
 		self._visits_by_user[user].append({'room': room, 'visit': visit})
-		
+
 		self._all_joins.append(join_time)
 		self._all_leaves.append(leave_time)
 
@@ -287,7 +298,7 @@ class ZoomReportParser():
 
 			join_time_parsed = datetime.strptime(join_time_str, '%I:%M %p')
 			join_time = meeting_start_datetime + timedelta(hours=join_time_parsed.hour, minutes=join_time_parsed.minute, seconds=join_time_parsed.second)
-			
+
 			leave_time_parsed = datetime.strptime(leave_time_str, '%I:%M %p')
 			leave_time = meeting_start_datetime + timedelta(hours=leave_time_parsed.hour, minutes=leave_time_parsed.minute, seconds=leave_time_parsed.second)
 
@@ -498,7 +509,7 @@ class ZoomReportParser():
 				y.append(tally)
 			log.debug("Recorded {0} joins and {1} leaves for room {2}".format(total_joins, total_leaves, room))
 			y_rooms.append(y)
-		
+
 		y_all = []
 		tally = 0
 		join_index = 0

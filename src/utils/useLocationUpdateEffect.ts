@@ -1,7 +1,9 @@
 import { useEffect } from "react";
-import { UserInfo } from "firebase";
+import firebase, { UserInfo } from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
+
+const LOCATION_INCREMENT_SECONDS = 10;
 
 export const updateLocationData = (user: UserInfo, roomName: string | null) => {
   updateUserProfile(user.uid, {
@@ -18,7 +20,7 @@ export const leaveRoom = (user: UserInfo) => {
   updateLocationData(user, null);
 };
 
-const useLocationUpdateEffect = (
+export const useLocationUpdateEffect = (
   user: UserInfo | undefined,
   roomName: string
 ) => {
@@ -26,7 +28,32 @@ const useLocationUpdateEffect = (
     if (!user || !roomName) return;
 
     updateLocationData(user, roomName);
+    const intervalId = setInterval(
+      () => updateLocationData(user, roomName),
+      5 * 60 * 1000
+    );
+
+    return () => clearInterval(intervalId);
+  }, [user, roomName]);
+
+  useEffect(() => {
+    // Time spent is currently counted multiple time if multiple tabs are open
+    if (!user || !roomName) return;
+
+    const firestore = firebase.firestore();
+    const doc = `users/${user.uid}/visits/${roomName}`;
+    const increment = firebase.firestore.FieldValue.increment(
+      LOCATION_INCREMENT_SECONDS
+    );
+
+    const intervalId = setInterval(() => {
+      return firestore
+        .doc(doc)
+        .update({ timeSpent: increment })
+        .catch(() => {
+          firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
+        });
+    }, LOCATION_INCREMENT_SECONDS * 1000);
+    return () => clearInterval(intervalId);
   }, [user, roomName]);
 };
-
-export default useLocationUpdateEffect;

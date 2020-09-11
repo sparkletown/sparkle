@@ -1,1 +1,1 @@
-export { default } from "./ProfileModal";
+export { ProfilePopoverContent } from "./ProfilePopoverContent";

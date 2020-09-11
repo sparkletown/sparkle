@@ -5,16 +5,16 @@
   flex-direction: column;
   transition: all 0.2s linear;
   flex-basis: 0;
-  margin-top: 40px;
   background: $dark;
   height: 100px;
   padding: 10px;
   border-radius: 22px 0 0 22px;
   cursor: pointer;
+  box-shadow: 0 0 30px #000000;
 
   &.expanded {
-    height: calc(100% - 60px);
-    width: 500px;
+    height: calc(100vh - #{$navbar-height * 2});
+    width: 420px;
     cursor: default;
   }
 
@@ -50,5 +50,22 @@
   .chat-icon {
     color: $primaryColor;
     font-size: 30px;
+  }
+
+  .band-reaction-container {
+    &::-webkit-scrollbar-track {
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: rgba($white, 0);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 2px;
+      background-color: rgba($white, 0.4);
+    }
   }
 }

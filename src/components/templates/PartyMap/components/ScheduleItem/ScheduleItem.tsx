@@ -1,11 +1,11 @@
 import React from "react";
-import { EventData } from "types/EventData";
+import { RoomEventData } from "types/RoomEventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 
 interface PropsType {
   startUtcSeconds: number;
-  event: EventData[0];
+  event: RoomEventData[0];
   isCurrentEvent: boolean;
   enterRoom: () => void;
   roomUrl: string;
@@ -40,11 +40,7 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             by <b>{event.host}</b>
           </div>
         </div>
-        <div className="event-description">
-          {(event.text || "").split("\n").map((p: any) => (
-            <p>{p}</p>
-          ))}
-        </div>
+        <div className="event-description">{event.text}</div>
       </div>
       {isCurrentEvent && (
         <div className="entry-room-button">
@@ -56,7 +52,7 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Live
+            On Now
           </a>
         </div>
       )}

@@ -1,0 +1,70 @@
+@import "scss/constants.scss";
+
+.venue-info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  .whats-on-container {
+    padding: 10px 20px;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    flex: 1;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: larger;
+    font-weight: bold;
+
+    .title-container {
+      display: flex;
+      align-items: center;
+      font-size: 25px;
+      img {
+        height: 25px;
+        margin-right: 5px;
+      }
+    }
+
+    .description-container {
+      margin-top: 10px;
+      color: $concrete;
+
+      .yellow {
+        color: $bright-yellow;
+      }
+    }
+  }
+
+  .btn-primary {
+    background-image: none;
+    background-color: $bright-yellow;
+    color: $black;
+    font-weight: bold;
+    font-size: larger;
+  }
+}
+
+.whatson-container {
+  padding-top: 4px;
+}
+.whatson-title-container {
+  display: block;
+  color: yellow;
+  font-size: 0.8rem;
+  opacity: 0.6;
+  margin-bottom: 4px;
+}
+.whatson-description-container-title {
+  display: block;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.whatson-description-container-description {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-bottom: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

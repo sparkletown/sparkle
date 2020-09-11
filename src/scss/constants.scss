@@ -10,10 +10,31 @@ $red: #bc271a;
 $pink: #df9e9b;
 $green: #4bcc4b;
 $yellow: #ffe600;
+$bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
 $stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
 
 $primary: #7c46fb;
+$chat-open: rgba(80, 227, 194, 0.35);
+$chat-closed: rgba(dodgerblue, 0.35);
+$chat-busy: rgba(#6f43ff, 0.35);
+$chat-busy-me: rgba(#ffffff, 0.35);
 $gradient: linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%);
+$danger-gradient: linear-gradient(
+  124deg,
+  #e15a5a 0%,
+  #e30e2f 50%,
+  #f60053 100%
+);
+$admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+
+$navbar-height: 66px;
+$ripple-color: chocolate;
+$playa-width-and-height: 4000px;
+$playa-venue-size: 40px;
+$playa-avatar-size: 24px;
+$playa-venue-live: rgb(125, 223, 194);
+
+$profile-image-bg-color: #999999;

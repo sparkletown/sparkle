@@ -7,4 +7,5 @@ secrets.*.js
 *.log
 
 .runtimeconfig.json
+.runtimeconfig.*.json
 serviceAccount.json

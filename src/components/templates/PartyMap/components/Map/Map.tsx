@@ -13,14 +13,14 @@ interface PropsType {
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
-const Map: React.FC<PropsType> = ({
+export const Map: React.FC<PropsType> = ({
   config,
   attendances,
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
   if (!config) {
-    return <>{`"Loading map..."`}</>;
+    return <>Loading map...</>;
   }
 
   const openRoomModal = (room: RoomData) => {
@@ -73,5 +73,3 @@ const Map: React.FC<PropsType> = ({
     </>
   );
 };
-
-export default Map;
