@@ -17,6 +17,8 @@ import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
   PLAYA_VENUE_NAME,
+  ALL_BURN_TEMPLATES,
+  SPARKLE_LOGO_URL,
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
@@ -131,6 +133,9 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
+  const isBurnTemplate =
+    !!venue?.template && ALL_BURN_TEMPLATES.includes(venue.template);
+
   return (
     <>
       <header>
@@ -140,37 +145,47 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               <div className="navbar-logo">
                 <Link to={redirectionUrl || "/in/playa"}>
                   <img
-                    src={SPARKLEVERSE_LOGO_URL}
+                    src={
+                      isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL
+                    }
                     alt="Logo"
-                    className="logo-img"
+                    className={`logo-img ${
+                      isBurnTemplate ? "sparkleverse" : "sparkle"
+                    }`}
                   />
                 </Link>
               </div>
-              <div className="navbar-info">
-                <PlayaTime />
-                <PlayaAddress />
-              </div>
+              {isBurnTemplate && (
+                <div className="navbar-info">
+                  <PlayaTime />
+                  <PlayaAddress />
+                </div>
+              )}
             </div>
             {user ? (
               <>
-                <div className="navbar-dropdown-middle">
-                  {isOnPlaya ? (
-                    <OnlineStats />
-                  ) : (
-                    <span
-                      onClick={() => (window.location.href = "/in/playa")}
-                      className="playa-link"
-                    >
-                      Back to the Playa
-                    </span>
-                  )}
-                </div>
-                <div className="navbar-links">
-                  <div className="profile-icon button-container navbar-link-schedule">
-                    <div onClick={() => setShowEventSchedule(true)}>
-                      Live Schedule
-                    </div>
+                {isBurnTemplate && (
+                  <div className="navbar-dropdown-middle">
+                    {isOnPlaya ? (
+                      <OnlineStats />
+                    ) : (
+                      <span
+                        onClick={() => (window.location.href = "/in/playa")}
+                        className="playa-link"
+                      >
+                        Back to the Playa
+                      </span>
+                    )}
                   </div>
+                )}
+                <div className="navbar-links">
+                  {isBurnTemplate && (
+                    <div className="profile-icon button-container navbar-link-schedule">
+                      <div onClick={() => setShowEventSchedule(true)}>
+                        Live Schedule
+                      </div>
+                    </div>
+                  )}
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -183,16 +198,18 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={giftPopover}
-                    rootClose={true}
-                  >
-                    <span className="private-chat-icon">
-                      <div className="navbar-link-gift"></div>
-                    </span>
-                  </OverlayTrigger>
+                  {isBurnTemplate && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom-end"
+                      overlay={giftPopover}
+                      rootClose={true}
+                    >
+                      <span className="private-chat-icon">
+                        <div className="navbar-link-gift"></div>
+                      </span>
+                    </OverlayTrigger>
+                  )}
                   {profile && (
                     <OverlayTrigger
                       trigger="click"
@@ -211,19 +228,21 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={radioPopover}
-                    rootClose={true}
-                    defaultShow={showRadioOverlay}
-                  >
-                    <div
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
-                    ></div>
-                  </OverlayTrigger>
+                  {isBurnTemplate && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom-end"
+                      overlay={radioPopover}
+                      rootClose={true}
+                      defaultShow={showRadioOverlay}
+                    >
+                      <div
+                        className={`profile-icon navbar-link-radio ${
+                          volume === 0 && "off"
+                        }`}
+                      ></div>
+                    </OverlayTrigger>
+                  )}
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
