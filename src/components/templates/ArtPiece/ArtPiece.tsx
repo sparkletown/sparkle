@@ -76,9 +76,11 @@ const ArtPiece = () => {
           defaultShow={true}
         />
       </div>
-      <div className="sparkle-fairies">
-        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
-      </div>
+      {isBurn && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+        </div>
+      )}
       <Modal
         show={showEventSchedule}
         onHide={() => setShowEventSchedule(false)}

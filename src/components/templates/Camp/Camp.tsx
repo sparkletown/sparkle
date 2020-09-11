@@ -118,13 +118,15 @@ const Camp: React.FC = () => {
       <div className="chat-pop-up" style={{ zIndex: 100 }}>
         <ChatDrawer
           roomName={venue.name}
-          title={"Camp Chat"}
+          title={`${venue.name} Chat`}
           chatInputPlaceholder="Chat"
         />
       </div>
-      <div className="sparkle-fairies">
-        <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
-      </div>
+      {isBurn && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+        </div>
+      )}
       <div className="info-drawer-camp">
         <InfoDrawer venue={venue} />
       </div>
