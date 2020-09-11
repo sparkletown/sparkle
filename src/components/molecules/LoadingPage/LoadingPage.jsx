@@ -11,10 +11,13 @@ const quotes = [
   "Reimagining the real...",
 ];
 
+const isBurn = false;
+
 export const LoadingPage = () => {
   const [quote, setQuote] = useState();
 
   useEffect(() => {
+    if (!isBurn) return;
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     const id = setInterval(() => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
