@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
-import { BURN_START_UTC_SECONDS } from "settings";
+import { BURN_START_UTC_SECONDS, IS_BURN } from "settings";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
@@ -122,7 +122,7 @@ const Camp: React.FC = () => {
           chatInputPlaceholder="Chat"
         />
       </div>
-      {isBurn && (
+      {IS_BURN && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
         </div>

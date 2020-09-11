@@ -9,6 +9,10 @@ import {
 import { venueLandingUrl } from "utils/url";
 import { CSSProperties } from "react";
 
+const SPARKLEVERSE_PROJECT_ID = "sparkle-verse";
+export const IS_BURN =
+  process.env.IS_BURN === "true" || PROJECT_ID === SPARKLEVERSE_PROJECT_ID;
+
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
@@ -174,10 +178,9 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_REDIRECT_URL =
-  FIREBASE_CONFIG.projectId === "co-reality-map"
-    ? venueLandingUrl("kansassmittys")
-    : "/enter";
+export const DEFAULT_REDIRECT_URL = IS_BURN
+  ? "/enter"
+  : venueLandingUrl("kansassmittys");
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up

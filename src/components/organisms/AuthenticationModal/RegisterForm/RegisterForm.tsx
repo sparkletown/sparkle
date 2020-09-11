@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
 import dayjs from "dayjs";
+import { IS_BURN } from "settings";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -65,14 +66,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     mode: "onChange",
   });
 
-  const isBurn = false;
-
   const onSubmit = async (data: RegisterFormData) => {
     try {
       await signUp(data);
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push(isBurn ? "/enter/step2" : "/account/questions");
+      history.push(IS_BURN ? "/enter/step2" : "/account/questions");
     } catch (error) {
       setError("email", "firebase", error.message);
     }

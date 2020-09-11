@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { IS_BURN } from "settings";
 
 import "./loading.scss";
 
@@ -11,13 +12,11 @@ const quotes = [
   "Reimagining the real...",
 ];
 
-const isBurn = false;
-
 export const LoadingPage = () => {
   const [quote, setQuote] = useState();
 
   useEffect(() => {
-    if (!isBurn) return;
+    if (!IS_BURN) return;
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     const id = setInterval(() => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
