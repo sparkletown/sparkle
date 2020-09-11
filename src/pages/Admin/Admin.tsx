@@ -53,6 +53,7 @@ import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 import { dateEventTimeFormat } from "../../utils/time";
+import useRoles from "hooks/useRoles";
 
 dayjs.extend(advancedFormat);
 
@@ -585,6 +586,13 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
+  const roles = useRoles();
+  if (!roles) {
+    return <>Loading...</>;
+  }
+  if (!("admin" in roles)) {
+    return <>Forbidden</>;
+  }
 
   return (
     <WithNavigationBar fullscreen>
