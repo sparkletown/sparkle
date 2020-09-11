@@ -133,8 +133,9 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
+  const isBurn = false;
   const isBurnTemplate =
-    !!venue?.template && ALL_BURN_TEMPLATES.includes(venue.template);
+    !!venue?.template && isBurn && ALL_BURN_TEMPLATES.includes(venue.template);
 
   return (
     <>
