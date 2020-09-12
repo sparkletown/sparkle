@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 interface PropsType {
   displayRegisterForm: () => void;

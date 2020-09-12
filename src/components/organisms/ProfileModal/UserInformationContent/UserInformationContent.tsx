@@ -3,7 +3,8 @@ import { useUser } from "hooks/useUser";
 import React from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { DEFAULT_PROFILE_IMAGE, IS_BURN } from "settings";
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 

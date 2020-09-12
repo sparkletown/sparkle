@@ -10,7 +10,7 @@ import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 interface PropsType {
   location: RouterLocation;

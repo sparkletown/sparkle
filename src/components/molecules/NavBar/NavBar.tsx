@@ -19,8 +19,8 @@ import {
   PLAYA_VENUE_NAME,
   ALL_BURN_TEMPLATES,
   SPARKLE_LOGO_URL,
-  IS_BURN,
 } from "settings";
+import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
 import OnlineStats from "../OnlineStats";
 import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";

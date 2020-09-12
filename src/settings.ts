@@ -5,13 +5,10 @@ import {
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
+  IS_BURN,
 } from "./secrets";
 import { venueLandingUrl } from "utils/url";
 import { CSSProperties } from "react";
-
-const SPARKLEVERSE_PROJECT_ID = "sparkle-verse";
-export const IS_BURN =
-  process.env.IS_BURN === "true" || PROJECT_ID === SPARKLEVERSE_PROJECT_ID;
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";

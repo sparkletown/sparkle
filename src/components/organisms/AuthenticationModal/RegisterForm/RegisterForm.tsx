@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
 import dayjs from "dayjs";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 interface PropsType {
   displayLoginForm: () => void;
