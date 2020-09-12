@@ -13,7 +13,7 @@ const quotes = [
 ];
 
 export const LoadingPage = () => {
-  const [quote, setQuote] = useState();
+  const [quote, setQuote] = useState("Loading...");
 
   useEffect(() => {
     if (!IS_BURN) return;

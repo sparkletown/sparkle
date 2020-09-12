@@ -29,7 +29,7 @@ import {
   ChatRequestType,
 } from "types/ChatRequest";
 import { useDispatch } from "react-redux";
-import { UPDATE_LOCATION } from "store/actions";
+import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
 
 interface PropsType {

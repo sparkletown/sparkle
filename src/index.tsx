@@ -24,7 +24,7 @@ import "scss/global.scss";
 
 import AppRouter from "components/organisms/AppRouter";
 
-import { roomReducer, locationReducer } from "./store/reducers";
+import { VenueTemplateReducers, MiscReducers } from "store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
 import { DndProvider } from "react-dnd";
@@ -61,8 +61,8 @@ if (window.location.hostname === "localhost") {
 const rootReducer = combineReducers({
   firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
   firestore: firestoreReducer as Reducer<Firestore>,
-  room: roomReducer,
-  location: locationReducer,
+  ...VenueTemplateReducers,
+  ...MiscReducers,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
