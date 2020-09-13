@@ -45,8 +45,10 @@ admin.initializeApp({
     [
       "Email",
       "Party Name",
+      "Account Creation",
       "Last Sign In",
-      "Total Duration",
+      "Session Duration",
+      "Account Lifetime Duration",
       "Codes Used",
       "Valid Codes Used",
       "Distinct Codes Used",
@@ -60,10 +62,13 @@ admin.initializeApp({
   firestoreUsers.docs.forEach((doc) => {
     const user = allUsers.find((u) => u.uid === doc.id);
     const partyName = doc.data().partyName;
+    const creationTime = new Date(user.metadata.creationTime).getTime();
     const lastSignInTime = new Date(user.metadata.lastSignInTime).getTime();
     const lastSeenAt = (doc.data().lastSeenAt || 0) * 1000;
     const sessionLengthDays =
       Math.max(0, lastSeenAt - lastSignInTime) / (3600 * 1000 * 24);
+    const lifetimeDays =
+      Math.max(0, lastSeenAt - creationTime) / (3600 * 1000 * 24);
     const codesUsed = doc.data().codes_used ?? [];
     const validCodesUsed = codesUsed.filter((code) =>
       validCodes.includes(code)
@@ -76,8 +81,10 @@ admin.initializeApp({
       [
         user?.email ?? doc.id,
         partyName,
+        new Date(creationTime).toISOString(),
         new Date(lastSignInTime).toISOString(),
         sessionLengthDays,
+        lifetimeDays,
         codesUsed.length,
         validCodesUsed.length,
         distinctCodesUsed.length,
