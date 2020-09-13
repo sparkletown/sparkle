@@ -54,6 +54,7 @@ admin.initializeApp({
       "Distinct Codes Used",
       "Valid Distinct Codes Used",
       "Invalid Distinct Codes Used",
+      "Codes Used List",
     ]
       .map((heading) => `"${heading}"`)
       .join(",")
@@ -90,6 +91,7 @@ admin.initializeApp({
         distinctCodesUsed.length,
         validDistincCodesUsed.length,
         distinctCodesUsed.length - validDistincCodesUsed.length,
+        codesUsed.join("\\,"),
       ]
         .map((v) => `"${v}"`)
         .join(",")
