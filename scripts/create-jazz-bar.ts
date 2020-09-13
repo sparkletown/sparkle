@@ -16,7 +16,7 @@ Example: node ${process.argv[1]} co-reality-map jazzyjeff https://youtube.com/em
 }
 
 const argv = process.argv.slice(2);
-if (argv.length < 2) {
+if (argv.length < 6) {
   usage();
 }
 
