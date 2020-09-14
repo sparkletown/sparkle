@@ -12,6 +12,7 @@ import { Reaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
 import { CampVenue } from "./CampVenue";
 import { ChatRequest } from "./ChatRequest";
+import { Role } from "./Role";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -57,6 +58,7 @@ export interface Firestore {
     playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
     allUsers?: Record<string, User>;
     userModalVisits?: Record<string, UserVisit>;
+    roles: Record<string, Role>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;

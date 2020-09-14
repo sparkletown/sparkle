@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
-import Chatbox from "components/organisms/Chatbox";
 import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -121,9 +120,6 @@ const PartyMap = () => {
               setSelectedRoom={setSelectedRoom}
               setIsRoomModalOpen={setIsRoomModalOpen}
             />
-          </div>
-          <div className="col-5 chat-wrapper">
-            <Chatbox />
           </div>
         </div>
       </div>

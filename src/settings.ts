@@ -5,6 +5,7 @@ import {
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
+  IS_BURN,
 } from "./secrets";
 import { venueLandingUrl } from "utils/url";
 import { CSSProperties } from "react";
@@ -13,6 +14,7 @@ export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Playa";
@@ -39,7 +41,7 @@ export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;
 export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
 export const ROOM_IMAGE_WIDTH_PX = 300;
-export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 250; // 250kB
+export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels
@@ -154,6 +156,17 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.playa,
+  VenueTemplate.preplaya,
+  VenueTemplate.zoomroom,
+  VenueTemplate.artcar,
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+];
+
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
@@ -162,10 +175,9 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_REDIRECT_URL =
-  FIREBASE_CONFIG.projectId === "co-reality-map"
-    ? venueLandingUrl("kansassmittys")
-    : "/enter";
+export const DEFAULT_REDIRECT_URL = IS_BURN
+  ? "/enter"
+  : venueLandingUrl("kansassmittys");
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up

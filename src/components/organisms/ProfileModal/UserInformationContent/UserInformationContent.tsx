@@ -4,6 +4,7 @@ import React from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 
@@ -29,7 +30,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
-    history.push("/enter");
+    history.push(IS_BURN ? "/enter" : "/");
   };
 
   if (!user) return <></>;

@@ -131,6 +131,18 @@ class Config():
 		'Journey to the Center of the Earth 10': 'The Last Campfire',
 		'Journey to the Center of the Earth 11': 'The Landfill / Sedi Mental / Meta More Peak',
 		'Journey to the Center of the Earth 12': 'The International Grace Station',
+		'Time Warp Party 1': 'Temporal-Mental Time Machine',
+		'Time Warp Party 2': 'The Infinite Theatre',
+		'Time Warp Party 3': 'Time Heals',
+		'Time Warp Party 4': 'World of Woodstock',
+		'Time Warp Party 5': 'Remember the Times',
+		'Time Warp Party 6': 'Utopiyeah',
+		'Time Warp Party 7': 'Antimatter Evacuation Chute',
+		'Time Warp Party 8': 'The Present',
+		'Time Warp Party 9': 'DDP Disco Doge',
+		'Time Warp Party 10': 'The Centuripede',
+		'Time Warp Party 11': 'Pre-Pocalyptic Pussy Cat Pirates',
+		'Time Warp Party 12': 'Entrance Experience Part 2',
 		'End of the Universe 1': 'Apocalyse Meow Cabaret',
 		'End of the Universe 2': 'Worm Whole',
 		'End of the Universe 3': 'Wish Upon A Star',
@@ -229,11 +241,11 @@ class ZoomReportParser():
 
 		visit = TimeRange(join_time, leave_time)
 		self._all_visits.append({'room': room, 'user': user, 'visit': visit})
-		
+
 		if user not in self._visits_by_user:
 			self._visits_by_user[user] = []
 		self._visits_by_user[user].append({'room': room, 'visit': visit})
-		
+
 		self._all_joins.append(join_time)
 		self._all_leaves.append(leave_time)
 
@@ -286,7 +298,7 @@ class ZoomReportParser():
 
 			join_time_parsed = datetime.strptime(join_time_str, '%I:%M %p')
 			join_time = meeting_start_datetime + timedelta(hours=join_time_parsed.hour, minutes=join_time_parsed.minute, seconds=join_time_parsed.second)
-			
+
 			leave_time_parsed = datetime.strptime(leave_time_str, '%I:%M %p')
 			leave_time = meeting_start_datetime + timedelta(hours=leave_time_parsed.hour, minutes=leave_time_parsed.minute, seconds=leave_time_parsed.second)
 
@@ -497,7 +509,7 @@ class ZoomReportParser():
 				y.append(tally)
 			log.debug("Recorded {0} joins and {1} leaves for room {2}".format(total_joins, total_leaves, room))
 			y_rooms.append(y)
-		
+
 		y_all = []
 		tally = 0
 		join_index = 0
