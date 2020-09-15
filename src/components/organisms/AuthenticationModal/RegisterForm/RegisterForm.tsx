@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import dayjs from "dayjs";
-import { updateUserProfile } from "pages/Account/helpers";
+import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 
 interface PropsType {
@@ -75,7 +75,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signUp(data);
       if (auth.user) {
-        updateUserProfile(auth.user.uid, {
+        updateUserPrivate(auth.user.uid, {
           codes_used: [data.code],
           date_of_birth: data.date_of_birth,
         });

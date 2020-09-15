@@ -45,13 +45,13 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       if (auth.user) {
         firebase
           .firestore()
-          .doc(`users/${auth.user.uid}`)
+          .doc(`userprivate/${auth.user.uid}`)
           .get()
           .then((doc) => {
             if (auth.user && doc.exists) {
               firebase
                 .firestore()
-                .doc(`users/${auth.user.uid}`)
+                .doc(`userprivate/${auth.user.uid}`)
                 .update({
                   codes_used: [...(doc.data()?.codes_used || []), data.code],
                 });
