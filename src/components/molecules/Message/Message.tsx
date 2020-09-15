@@ -10,12 +10,16 @@ interface MessageProps {
   sender: WithId<User>;
   message: RestrictedChatMessage;
   onClick: () => void;
+  deletable: boolean;
+  onDelete: () => void;
 }
 
 export const Message: React.FC<MessageProps> = ({
   sender,
   message,
   onClick,
+  deletable,
+  onDelete,
 }) => {
   const profileImageSize = 30;
   return (
@@ -37,6 +41,11 @@ export const Message: React.FC<MessageProps> = ({
         <div>
           {sender.partyName}{" "}
           <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
+          {deletable && (
+            <button className="btn-link delete-button" onClick={onDelete}>
+              Delete
+            </button>
+          )}
         </div>
       </div>
       <div className="message-bubble split-words">

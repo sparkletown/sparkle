@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
+import firebase from "firebase/app";
 import { MessageList } from "components/molecules/MessageList";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
@@ -11,6 +12,8 @@ import {
   faCommentDots,
   faAngleDoubleLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import useRoles from "hooks/useRoles";
+import { useParams } from "react-router-dom";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -30,6 +33,10 @@ const ChatDrawer: React.FC<PropsType> = ({
   defaultShow,
 }) => {
   const { user } = useUser();
+  const { venueId } = useParams();
+  const roles = useRoles();
+  const venue = useSelector((state) => state.firestore.data.currentVenue);
+
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
   const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(defaultShow);
@@ -59,10 +66,25 @@ const ChatDrawer: React.FC<PropsType> = ({
     () =>
       chats &&
       chats
-        .filter((message) => message.type === "room" && message.to === roomName)
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.type === "room" &&
+            message.to === roomName
+        )
         .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
     [chats, roomName]
   );
+
+  const allowDelete =
+    ("admin" in roles || (user && venue?.owners?.includes(user.uid))) ?? false;
+
+  function deleteMessage(id: string) {
+    firebase
+      .firestore()
+      .doc(`venues/${venueId}/chats/${id}`)
+      .update({ deleted: true });
+  }
 
   return (
     <div
@@ -99,7 +121,13 @@ const ChatDrawer: React.FC<PropsType> = ({
               isMessageToTheBandSent={isMessageToTheBarSent}
             />
             <div>
-              {chatsToDisplay && <MessageList messages={chatsToDisplay} />}
+              {chatsToDisplay && (
+                <MessageList
+                  messages={chatsToDisplay}
+                  allowDelete={allowDelete}
+                  deleteMessage={deleteMessage}
+                />
+              )}
             </div>
           </div>
         </div>

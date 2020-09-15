@@ -22,6 +22,7 @@ interface BaseChatMessage {
   from: string;
   text: string;
   ts_utc: Time;
+  deleted?: boolean;
 }
 
 interface BaseNonGlobalChatMessage extends BaseChatMessage {
