@@ -242,16 +242,19 @@ const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
+  useFirestoreConnect("venues");
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: venues?.find((v) => v.name === user.room),
+      venue: venues?.find(
+        (v) => v.id === user.lastSeenIn || v.name === user.room
+      ),
       camp: venues?.find(
         (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)
       ),
     }),
-    [user.room, venues]
+    [user, venues]
   );
 
   if (!user.room || !venues) {
@@ -260,7 +263,9 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
   if (suspectedLocation.venue) {
     return (
-      <Link to={venueInsideUrl(suspectedLocation.venue.id)}>{user.room}</Link>
+      <Link to={venueInsideUrl(suspectedLocation.venue.id)}>
+        {suspectedLocation.venue.name}
+      </Link>
     );
   }
   if (suspectedLocation.camp) {
