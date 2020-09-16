@@ -48,6 +48,9 @@ $sand: #937c63;
       align-items: center;
       img {
         width: 240px;
+        &.sparkle {
+          width: 180px;
+        }
       }
     }
     .navbar-info {
