@@ -15,7 +15,7 @@ import { useUser } from "hooks/useUser";
 import { updateTheme } from "pages/VenuePage/helpers";
 import React, { useEffect, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Firestore } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
