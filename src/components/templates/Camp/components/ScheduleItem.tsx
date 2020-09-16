@@ -24,7 +24,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
       </div>
       <div>
         {formatUtcSeconds(
-          event.start_utc_seconds + (event.duration_minutes + 60)
+          event.start_utc_seconds + event.duration_minutes * 60
         )}
       </div>
     </div>

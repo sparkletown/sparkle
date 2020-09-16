@@ -47,22 +47,12 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
               style={{
                 display: "flex",
                 flexDirection: "column",
-                height: "100px",
                 flexWrap: "wrap",
                 marginTop: 10,
               }}
             >
               <h2 className="room-modal-title">{room.title}</h2>
               <div className="room-modal-subtitle">{room.subtitle}</div>
-              <a
-                className="btn btn-primary join-button"
-                href={room.url.includes("http") ? room.url : "//" + room.url}
-                onClick={enter}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Enter the room
-              </a>
             </div>
             <div className="row ongoing-event-row">
               <div className="col">

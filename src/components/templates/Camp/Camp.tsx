@@ -18,9 +18,16 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { useUser } from "hooks/useUser";
+import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
+
+import "./Camp.scss";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
+  const { user } = useUser();
+  const { venueId } = useParams();
+  useLocationUpdateEffect(user, venueId);
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
@@ -81,6 +88,7 @@ const Camp: React.FC = () => {
       )}
       <div className="col">
         <div className="starting-indication">
+          {venue.description?.text}{" "}
           {venue.description?.program_url && (
             <a
               href={venue.description.program_url}

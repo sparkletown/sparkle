@@ -312,18 +312,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   })}
                 </>
               )}
-            {isUserVenueOwner && (
-              <InformationCard title="Check how an event looks like in your venue">
-                <div className="button-container">
-                  <div>This is a fake event. Only you can see it.</div>
-                  <Link to={venueInsideUrl(venueId)}>
-                    <button role="link" className="btn btn-primary">
-                      Enter as an admin
-                    </button>
-                  </Link>
-                </div>
-              </InformationCard>
-            )}
           </div>
         </div>
       </div>
