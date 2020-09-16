@@ -6,6 +6,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { DEFAULT_USER_LIST_LIMIT } from "../../../settings";
+import { IS_BURN } from "secrets";
 
 interface PropsType {
   users: Array<WithId<User>>;
@@ -44,7 +45,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
           <p>
             <span className="bold">{users.length}</span>{" "}
             {users.length === 1 ? "person" : "people"}{" "}
-            {isCamp ? "in the camp" : activity}
+            {isCamp && IS_BURN ? "in the camp" : activity}
           </p>
           {!disableSeeAll && users.length > limit && (
             <p
