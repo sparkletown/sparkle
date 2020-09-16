@@ -4,6 +4,10 @@ function isUpdateRestrictedToField(request, field) {
     return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]);
 }
 
+function role(name) {
+  return get(/databases/$(database)/documents/roles/$(role)).data
+}
+
 service cloud.firestore {
   match /databases/{database}/documents {
     match /config/{configFile} {
@@ -18,6 +22,9 @@ service cloud.firestore {
         allow read: if true;
         allow write: if request.auth.uid == userId;
       }
+    }
+    match /userprivate/{userId} {
+      allow read,write: if request.auth.uid == userId;
     }
     match /chatsv3/{chatId} {
       allow write, read: if request.auth.uid != null;
@@ -51,6 +58,8 @@ service cloud.firestore {
       }
       match /chats/{restOfPath=**} {
         allow read,create: if request.auth.uid != null;
+        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
+          isUpdateRestrictedToField(request, 'deleted');
       }
     }
     match /customers/{userId} {

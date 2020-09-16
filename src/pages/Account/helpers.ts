@@ -11,14 +11,13 @@ type LocationUpdateData = {
   room: string | null; // legacy
 };
 
-const updateUserProfile = (
+export const updateUserProfile = (
   userId: string,
   profileData:
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
-    | RegisterData
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
@@ -30,4 +29,16 @@ const updateUserProfile = (
     });
 };
 
-export { updateUserProfile };
+export const updateUserPrivate = (
+  userId: string,
+  privateData: RegisterData
+) => {
+  const firestore = firebase.firestore();
+  const doc = `userprivate/${userId}`;
+  return firestore
+    .doc(doc)
+    .update(privateData)
+    .catch(() => {
+      firestore.doc(doc).set(privateData);
+    });
+};

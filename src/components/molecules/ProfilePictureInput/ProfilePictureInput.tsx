@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
@@ -24,6 +24,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const firebase = useFirebase();
+  const uploadRef = useRef<HTMLInputElement>(null);
 
   const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
@@ -46,7 +47,10 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   };
   return (
     <div className="profile-picture-upload-form">
-      <div className="profile-picture-preview-container">
+      <div
+        className="profile-picture-preview-container"
+        onClick={() => uploadRef.current?.click()}
+      >
         <img
           src={pictureUrl || "/default-profile-pic.png"}
           className="profile-icon profile-picture-preview"
@@ -59,6 +63,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         name="profilePicture"
         onChange={handleFileChange}
         className="profile-picture-input"
+        ref={uploadRef}
       />
       <label htmlFor="profile-picture-input" className="profile-picture-button">
         Upload your profile pic

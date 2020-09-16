@@ -2,8 +2,11 @@ import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { CODE_CHECK_URL } from "secrets";
+import axios from "axios";
 import dayjs from "dayjs";
+import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 
 interface PropsType {
@@ -17,6 +20,7 @@ interface RegisterFormData {
   email: string;
   password: string;
   date_of_birth: string;
+  code: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -50,6 +54,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
+  const { venueId } = useParams();
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -68,12 +73,27 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await signUp(data);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
+      const auth = await signUp(data);
+      if (IS_BURN && auth.user) {
+        updateUserPrivate(auth.user.uid, {
+          codes_used: [data.code],
+          date_of_birth: data.date_of_birth,
+        });
+      }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push(IS_BURN ? "/enter/step2" : "/account/questions");
+      history.push(
+        IS_BURN ? "/enter/step2" : `/account/questions?venueId=${venueId}`
+      );
     } catch (error) {
-      setError("email", "firebase", error.message);
+      if (error.response?.status === 404) {
+        setError("code", "validation", `Code ${data.code} is not valid`);
+      } else if (error.response?.status >= 500) {
+        setError("code", "validation", `Error checking code: ${error.message}`);
+      } else {
+        setError("email", "firebase", error.message);
+      }
     }
   };
 
@@ -127,54 +147,82 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <div className="input-group">
-          <input
-            name="date_of_birth"
-            className="input-block input-centered"
-            type="date"
-            max={dayjs().subtract(18, "year").format("YYYY-MM-DD")}
-            ref={register}
-          />
-          <span
-            className={`input-${
-              errors.date_of_birth && errors.date_of_birth.type === "pattern"
-                ? "error"
-                : "info"
-            }`}
-          >
-            You must be at least 18 years old to continue
-          </span>
-          {errors.date_of_birth && errors.date_of_birth.type === "required" && (
-            <span className="input-error">Password is required</span>
-          )}
-        </div>
-        {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
-          <div className="input-group" key={q.name}>
-            <label
-              htmlFor={q.name}
-              className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
-            >
-              {q.link && (
-                <a href={q.link} target="_blank" rel="noopener noreferrer">
-                  {q.text}
-                </a>
-              )}
-              {!q.link && q.text}
-            </label>
+        {IS_BURN && (
+          <div className="input-group">
             <input
-              type="checkbox"
-              name={q.name}
-              id={q.name}
+              name="date_of_birth"
+              className="input-block input-centered"
+              type="date"
+              max={dayjs().subtract(18, "year").format("YYYY-MM-DD")}
+              ref={register}
+            />
+            <span
+              className={`input-${
+                errors.date_of_birth && errors.date_of_birth.type === "pattern"
+                  ? "error"
+                  : "info"
+              }`}
+            >
+              You must be at least 18 years old to continue
+            </span>
+            {errors.date_of_birth &&
+              errors.date_of_birth.type === "required" && (
+                <span className="input-error">Date of birth is required</span>
+              )}
+          </div>
+        )}
+        {IS_BURN && (
+          <div className="input-group">
+            <input
+              name="code"
+              className="input-block input-centered"
+              type="code"
+              placeholder="Ticket Code From Your Email"
               ref={register({
                 required: true,
               })}
             />
-            {/* @ts-ignore @debt questions should be typed if possible */}
-            {q.name in errors && errors[q.name].type === "required" && (
-              <span className="input-error">Required</span>
+            {errors.code && (
+              <span className="input-error">
+                {errors.code.type === "required" ? (
+                  <>
+                    Enter the ticket code from your email. The code is required.
+                  </>
+                ) : (
+                  errors.code.message
+                )}
+              </span>
             )}
           </div>
-        ))}
+        )}
+        {IS_BURN &&
+          CODE_OF_CONDUCT_QUESTIONS.map((q) => (
+            <div className="input-group" key={q.name}>
+              <label
+                htmlFor={q.name}
+                className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
+              >
+                {q.link && (
+                  <a href={q.link} target="_blank" rel="noopener noreferrer">
+                    {q.text}
+                  </a>
+                )}
+                {!q.link && q.text}
+              </label>
+              <input
+                type="checkbox"
+                name={q.name}
+                id={q.name}
+                ref={register({
+                  required: true,
+                })}
+              />
+              {/* @ts-ignore @debt questions should be typed if possible */}
+              {q.name in errors && errors[q.name].type === "required" && (
+                <span className="input-error">Required</span>
+              )}
+            </div>
+          ))}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"

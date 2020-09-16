@@ -7,10 +7,16 @@ import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 
 interface MessageListProps {
-  messages: RestrictedChatMessage[];
+  messages: WithId<RestrictedChatMessage>[];
+  allowDelete: boolean;
+  deleteMessage: (id: string) => void;
 }
 
-export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+export const MessageList: React.FC<MessageListProps> = ({
+  messages,
+  allowDelete,
+  deleteMessage,
+}) => {
   const usersById = useSelector((state) => state.firestore.data.partygoers);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -33,6 +39,14 @@ export const MessageList: React.FC<MessageListProps> = ({ messages }) => {
                       ...usersById[message.from],
                       id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
                     })
+                  }
+                  deletable={allowDelete}
+                  onDelete={() =>
+                    window.confirm(
+                      `Are you sure you want to delete "${message.text}" from ${
+                        usersById[message.from]
+                      }?`
+                    ) && deleteMessage(message.id)
                   }
                 />
               )}

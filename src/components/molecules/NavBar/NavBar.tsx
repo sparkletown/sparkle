@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef } from "react";
 import firebase from "firebase/app";
 import "./NavBar.scss";
 import "./playa.scss";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory, useParams } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isChatValid } from "validation";
@@ -28,6 +28,7 @@ import { useRadio } from "hooks/useRadio";
 import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
 import PlayaTime from "../PlayaTime";
 import PlayaAddress from "../PlayaAddress";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -35,6 +36,7 @@ interface PropsType {
 
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
+  const { venueId } = useParams();
   const { venue, privateChats, radioStations } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     privateChats: state.firestore.ordered.privatechats,
@@ -144,7 +146,9 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           <div className="navbar-container">
             <div className="navbar-logo_container">
               <div className="navbar-logo">
-                <Link to={redirectionUrl || "/in/playa"}>
+                <Link
+                  to={redirectionUrl ?? venueId ? venueInsideUrl(venueId) : "/"}
+                >
                   <img
                     src={
                       isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL

@@ -175,9 +175,10 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
+export const DEFAULT_VENUE = "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
-  : venueLandingUrl("kansassmittys");
+  : venueLandingUrl(DEFAULT_VENUE);
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up

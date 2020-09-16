@@ -43,7 +43,7 @@ const ArtPiece = () => {
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
           <InformationCard title="About the venue">
-            <p className="title-sidebar">{venue.name}.</p>
+            <p className="title-sidebar">{venue.name}</p>
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>
