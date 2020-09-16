@@ -9,7 +9,7 @@ import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 export const ConvertToEmbeddableUrl = (string: string | undefined) => {
   if (string?.includes("youtube")) {
@@ -43,7 +43,7 @@ const ArtPiece = () => {
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
           <InformationCard title="About the venue">
-            <p className="title-sidebar">{venue.name}.</p>
+            <p className="title-sidebar">{venue.name}</p>
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>

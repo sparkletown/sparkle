@@ -12,7 +12,7 @@ export interface CampVenue extends Venue {
     name: string;
   };
   description?: {
-    // text: string;
+    text: string;
     program_url?: string;
   };
   name: string;

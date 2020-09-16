@@ -21,7 +21,7 @@ export const InfoDrawer: React.FunctionComponent<PropsType> = ({ venue }) => {
           className="title-sidebar"
           style={{ fontSize: 21, fontWeight: "bold" }}
         >
-          {venue.name}.
+          {venue.name}
         </p>
         <p className="short-description-sidebar" style={{ fontSize: 18 }}>
           {venue.config?.landingPageConfig.subtitle}

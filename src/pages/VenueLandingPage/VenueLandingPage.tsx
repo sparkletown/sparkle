@@ -76,7 +76,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) =>
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-      Date.now() / 1000
+        Date.now() / 1000 && event.price > 0
   );
 
   venue && updateTheme(venue);
@@ -144,6 +144,15 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 buttonText={venue.config?.landingPageConfig.joinButtonText}
               />
             </div>
+          )}
+          {(!futureOrOngoingVenueEvents ||
+            futureOrOngoingVenueEvents.length === 0) && (
+            <button
+              className="btn btn-primary btn-block btn-centered"
+              onClick={() => (window.location.href = venueInsideUrl(venueId))}
+            >
+              Join the event
+            </button>
           )}
         </div>
         <div className="row">
@@ -303,18 +312,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   })}
                 </>
               )}
-            {isUserVenueOwner && (
-              <InformationCard title="Check how an event looks like in your venue">
-                <div className="button-container">
-                  <div>This is a fake event. Only you can see it.</div>
-                  <Link to={venueInsideUrl(venueId)}>
-                    <button role="link" className="btn btn-primary">
-                      Enter as an admin
-                    </button>
-                  </Link>
-                </div>
-              </InformationCard>
-            )}
           </div>
         </div>
       </div>

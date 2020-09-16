@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 import "./loading.scss";
 
@@ -13,7 +13,7 @@ const quotes = [
 ];
 
 export const LoadingPage = () => {
-  const [quote, setQuote] = useState();
+  const [quote, setQuote] = useState("Loading...");
 
   useEffect(() => {
     if (!IS_BURN) return;

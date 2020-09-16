@@ -10,7 +10,7 @@ import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
-import { IS_BURN } from "settings";
+import { IS_BURN } from "secrets";
 
 interface PropsType {
   location: RouterLocation;
@@ -77,6 +77,13 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
 
   if (!venue) {
     return <>Loading...</>;
+  }
+
+  if (
+    !venue.code_of_conduct_questions ||
+    venue.code_of_conduct_questions.length === 0
+  ) {
+    proceed();
   }
 
   venue && updateTheme(venue);

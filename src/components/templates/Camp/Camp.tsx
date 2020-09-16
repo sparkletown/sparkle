@@ -1,7 +1,8 @@
 import React, { useState, useCallback, useMemo, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
-import { BURN_START_UTC_SECONDS, IS_BURN } from "settings";
+import { BURN_START_UTC_SECONDS } from "settings";
+import { IS_BURN } from "secrets";
 import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
@@ -17,9 +18,16 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { useUser } from "hooks/useUser";
+import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
+
+import "./Camp.scss";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
+  const { user } = useUser();
+  const { venueId } = useParams();
+  useLocationUpdateEffect(user, venueId);
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
@@ -80,6 +88,7 @@ const Camp: React.FC = () => {
       )}
       <div className="col">
         <div className="starting-indication">
+          {venue.description?.text}{" "}
           {venue.description?.program_url && (
             <a
               href={venue.description.program_url}

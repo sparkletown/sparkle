@@ -5,13 +5,10 @@ import {
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
+  IS_BURN,
 } from "./secrets";
 import { venueLandingUrl } from "utils/url";
 import { CSSProperties } from "react";
-
-const SPARKLEVERSE_PROJECT_ID = "sparkle-verse";
-export const IS_BURN =
-  process.env.IS_BURN === "true" || PROJECT_ID === SPARKLEVERSE_PROJECT_ID;
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -178,9 +175,10 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
+export const DEFAULT_VENUE = "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
-  : venueLandingUrl("kansassmittys");
+  : venueLandingUrl(DEFAULT_VENUE);
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up

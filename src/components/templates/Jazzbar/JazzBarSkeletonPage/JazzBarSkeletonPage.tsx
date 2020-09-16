@@ -28,7 +28,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
         >
           <InformationCard title="About the venue">
             <p>
-              Kansas Smitty’s.
+              Kansas Smitty’s
               <br />
               {` It's a band and it's a bar.`}
             </p>
