@@ -77,7 +77,9 @@ const ChatDrawer: React.FC<PropsType> = ({
   );
 
   const allowDelete =
-    ("admin" in roles || (user && venue?.owners?.includes(user.uid))) ?? false;
+    ((roles && "admin" in roles) ||
+      (user && venue?.owners?.includes(user.uid))) ??
+    false;
 
   function deleteMessage(id: string) {
     firebase
