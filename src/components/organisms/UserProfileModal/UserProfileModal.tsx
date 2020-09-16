@@ -18,6 +18,7 @@ import { PLAYA_VENUE_NAME } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
+import { IS_BURN } from "secrets";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -100,7 +101,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </h6>
             </div>
           </div>
-          <Badges user={fullUserProfile} />
+          {IS_BURN && <Badges user={fullUserProfile} />}
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
