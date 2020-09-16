@@ -144,7 +144,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           <div className="navbar-container">
             <div className="navbar-logo_container">
               <div className="navbar-logo">
-                <Link to={redirectionUrl || "/in/playa"}>
+                <Link to={redirectionUrl || "/"}>
                   <img
                     src={
                       isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL
