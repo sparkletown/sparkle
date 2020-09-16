@@ -40,9 +40,9 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signIn(data);
-      if (auth.user) {
+      if (IS_BURN && auth.user) {
         firebase
           .firestore()
           .doc(`userprivate/${auth.user.uid}`)
@@ -64,6 +64,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     } catch (error) {
       if (error.response?.status === 404) {
         setError("code", "validation", `Code ${data.code} is not valid`);
+      } else if (error.response?.status >= 500) {
+        setError("code", "validation", `Error checking code: ${error.message}`);
       } else {
         setError("email", "firebase", error.message);
       }
@@ -108,28 +110,30 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <div className="input-group">
-          <input
-            name="code"
-            className="input-block input-centered"
-            type="code"
-            placeholder="Ticket Code From Your Email"
-            ref={register({
-              required: true,
-            })}
-          />
-          {errors.code && (
-            <span className="input-error">
-              {errors.code.type === "required" ? (
-                <>
-                  Enter the ticket code from your email. The code is required.
-                </>
-              ) : (
-                errors.code.message
-              )}
-            </span>
-          )}
-        </div>
+        {IS_BURN && (
+          <div className="input-group">
+            <input
+              name="code"
+              className="input-block input-centered"
+              type="code"
+              placeholder="Ticket Code From Your Email"
+              ref={register({
+                required: true,
+              })}
+            />
+            {errors.code && (
+              <span className="input-error">
+                {errors.code.type === "required" ? (
+                  <>
+                    Enter the ticket code from your email. The code is required.
+                  </>
+                ) : (
+                  errors.code.message
+                )}
+              </span>
+            )}
+          </div>
+        )}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"

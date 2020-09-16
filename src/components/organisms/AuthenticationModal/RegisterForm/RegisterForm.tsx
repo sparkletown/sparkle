@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -54,6 +54,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
+  const { venueId } = useParams();
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -72,20 +73,24 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
       const auth = await signUp(data);
       if (auth.user) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.code],
+          codes_used: IS_BURN ? [data.code] : [],
           date_of_birth: data.date_of_birth,
         });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push(IS_BURN ? "/enter/step2" : "/account/questions");
+      history.push(
+        IS_BURN ? "/enter/step2" : `/account/questions?venueId=${venueId}`
+      );
     } catch (error) {
       if (error.response?.status === 404) {
         setError("code", "validation", `Code ${data.code} is not valid`);
+      } else if (error.response?.status >= 500) {
+        setError("code", "validation", `Error checking code: ${error.message}`);
       } else {
         setError("email", "firebase", error.message);
       }
@@ -163,28 +168,30 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <div className="input-group">
-          <input
-            name="code"
-            className="input-block input-centered"
-            type="code"
-            placeholder="Ticket Code From Your Email"
-            ref={register({
-              required: true,
-            })}
-          />
-          {errors.code && (
-            <span className="input-error">
-              {errors.code.type === "required" ? (
-                <>
-                  Enter the ticket code from your email. The code is required.
-                </>
-              ) : (
-                errors.code.message
-              )}
-            </span>
-          )}
-        </div>
+        {IS_BURN && (
+          <div className="input-group">
+            <input
+              name="code"
+              className="input-block input-centered"
+              type="code"
+              placeholder="Ticket Code From Your Email"
+              ref={register({
+                required: true,
+              })}
+            />
+            {errors.code && (
+              <span className="input-error">
+                {errors.code.type === "required" ? (
+                  <>
+                    Enter the ticket code from your email. The code is required.
+                  </>
+                ) : (
+                  errors.code.message
+                )}
+              </span>
+            )}
+          </div>
+        )}
         {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
           <div className="input-group" key={q.name}>
             <label

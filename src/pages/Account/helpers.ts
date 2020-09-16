@@ -18,7 +18,6 @@ export const updateUserProfile = async (
     | ProfileFormData
     | QuestionsFormData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
-    | RegisterData
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;

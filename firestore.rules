@@ -24,8 +24,7 @@ service cloud.firestore {
       }
     }
     match /userprivate/{userId} {
-      allow read: if request.auth.uid == userId;
-      allow write: if request.auth.uid == userId;
+      allow read,write: if request.auth.uid == userId;
     }
     match /chatsv3/{chatId} {
       allow write, read: if request.auth.uid != null;
