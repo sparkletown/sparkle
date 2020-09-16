@@ -79,6 +79,13 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     return <>Loading...</>;
   }
 
+  if (
+    !venue.code_of_conduct_questions ||
+    venue.code_of_conduct_questions.length === 0
+  ) {
+    proceed();
+  }
+
   venue && updateTheme(venue);
 
   const codeOfConductQuestions = IS_BURN

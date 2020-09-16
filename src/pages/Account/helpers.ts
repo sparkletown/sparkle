@@ -11,9 +11,9 @@ type LocationUpdateData = {
   room: string | null; // legacy
 };
 
-export const updateUserProfile = async (
+export const updateUserProfile = (
   userId: string,
-  data:
+  profileData:
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
@@ -21,19 +21,24 @@ export const updateUserProfile = async (
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
-  try {
-    return firestore.doc(doc).update(data);
-  } catch (e) {
-    firestore.doc(doc).set(data);
-  }
+  return firestore
+    .doc(doc)
+    .update(profileData)
+    .catch(() => {
+      firestore.doc(doc).set(profileData);
+    });
 };
 
-export const updateUserPrivate = async (userId: string, data: RegisterData) => {
+export const updateUserPrivate = (
+  userId: string,
+  privateData: RegisterData
+) => {
   const firestore = firebase.firestore();
   const doc = `userprivate/${userId}`;
-  try {
-    return firestore.doc(doc).update(data);
-  } catch (e) {
-    firestore.doc(doc).set(data);
-  }
+  return firestore
+    .doc(doc)
+    .update(privateData)
+    .catch(() => {
+      firestore.doc(doc).set(privateData);
+    });
 };
