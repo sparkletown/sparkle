@@ -12,7 +12,11 @@ import {
   stateBoolean,
   UserVideoState,
 } from "types/RelayMessage";
-import { DEFAULT_WS_RELAY_URL, MAX_IDLE_TIME_MS } from "settings";
+import {
+  DEFAULT_WS_RELAY_URL,
+  MAX_IDLE_TIME_MS,
+  PLAYA_VENUE_NAME,
+} from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
@@ -323,7 +327,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   useFirestoreConnect([
     {
       collection: "experiences",
-      doc: "playa",
+      doc: PLAYA_VENUE_NAME,
       subcollections: [{ collection: "chatRequests" }],
       storeAs: "chatRequests",
       orderBy: ["createdAt", "asc"],
