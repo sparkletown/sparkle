@@ -214,7 +214,7 @@ const Playa = () => {
   useEffect(() => {
     if (!loadedInitialState.current) {
       try {
-        const storedState = localStorage.getItem("playa");
+        const storedState = localStorage.getItem(PLAYA_VENUE_NAME);
         if (storedState) {
           const state = JSON.parse(storedState);
           setZoom(Math.max(minZoom(), Math.min(state.zoom, ZOOM_MAX)));
@@ -225,7 +225,7 @@ const Playa = () => {
       } catch {}
     }
     localStorage.setItem(
-      "playa",
+      PLAYA_VENUE_NAME,
       JSON.stringify({ zoom, x: centerX, y: centerY })
     );
   }, [zoom, centerX, centerY, setZoom]);
@@ -373,7 +373,7 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user && updateLocationData(user, "playa");
+    user && updateLocationData(user, PLAYA_VENUE_NAME);
   }, [setShowModal, user]);
 
   const distanceToVenue = (
