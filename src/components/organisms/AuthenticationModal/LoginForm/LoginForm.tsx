@@ -16,7 +16,6 @@ interface PropsType {
 interface LoginFormData {
   email: string;
   password: string;
-  code: string;
 }
 
 const LoginForm: React.FunctionComponent<PropsType> = ({
@@ -40,7 +39,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signIn(data);
       if (IS_BURN && auth.user) {
         firebase
@@ -53,7 +52,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
                 .firestore()
                 .doc(`userprivate/${auth.user.uid}`)
                 .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.code],
+                  codes_used: [...(doc.data()?.codes_used || []), data.email],
                 });
             }
           });
@@ -63,9 +62,17 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       if (IS_BURN) history.push("/in/playa");
     } catch (error) {
       if (error.response?.status === 404) {
-        setError("code", "validation", `Code ${data.code} is not valid`);
+        setError(
+          "email",
+          "validation",
+          `Email ${data.email} does not have a ticket; get your ticket at https://qkt.io/seed2020`
+        );
       } else if (error.response?.status >= 500) {
-        setError("code", "validation", `Error checking code: ${error.message}`);
+        setError(
+          "email",
+          "validation",
+          `Error checking ticket: ${error.message}`
+        );
       } else {
         setError("email", "firebase", error.message);
       }
@@ -110,30 +117,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="code"
-              className="input-block input-centered"
-              type="code"
-              placeholder="Ticket Code From Your Email"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.code && (
-              <span className="input-error">
-                {errors.code.type === "required" ? (
-                  <>
-                    Enter the ticket code from your email. The code is required.
-                  </>
-                ) : (
-                  errors.code.message
-                )}
-              </span>
-            )}
-          </div>
-        )}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
