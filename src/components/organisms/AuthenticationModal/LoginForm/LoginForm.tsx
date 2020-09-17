@@ -5,6 +5,7 @@ import { useFirebase } from "react-redux-firebase";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
+import { TICKET_URL } from "settings";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -65,7 +66,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at https://qkt.io/seed2020`
+          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
         );
       } else if (error.response?.status >= 500) {
         setError(

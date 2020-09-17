@@ -8,6 +8,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
+import { TICKET_URL } from "settings";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -90,7 +91,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at https://qkt.io/seed2020`
+          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
         );
       } else if (error.response?.status >= 500) {
         setError(
