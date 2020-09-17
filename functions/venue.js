@@ -3,7 +3,7 @@ const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
-const PLAYA_VENUE_ID = "playa";
+const PLAYA_VENUE_ID = "paddock";
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [
@@ -208,7 +208,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   await admin
     .firestore()
     .collection("venues")
-    .doc("playa")
+    .doc(PLAYA_VENUE_ID)
     .get()
     .then(async (doc) => {
       if (!doc || !doc.exists) {
@@ -216,7 +216,11 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
       }
       const updated = doc.data();
       updated.dustStorm = !updated.dustStorm;
-      admin.firestore().collection("venues").doc("playa").update(updated);
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(PLAYA_VENUE_ID)
+        .update(updated);
 
       // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
       // Fetch the doc again, in case anything changed meanwhile.
@@ -228,7 +232,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
         await admin
           .firestore()
           .collection("venues")
-          .doc("playa")
+          .doc(PLAYA_VENUE_ID)
           .get()
           .then((doc) => {
             if (doc && doc.exists) {
@@ -237,7 +241,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
               admin
                 .firestore()
                 .collection("venues")
-                .doc("playa")
+                .doc(PLAYA_VENUE_ID)
                 .update(updated);
             }
           });

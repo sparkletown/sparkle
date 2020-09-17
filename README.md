@@ -19,12 +19,15 @@ npm run build
 ### Firebase functions
 
 ```bash
+npm install -g firebase-tools@latest
+
 cd functions
 npm install
 firebase login
 firebase use staging
 firebase functions:config:get
 ```
+
 Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with:
 
 ```bash
@@ -42,11 +45,13 @@ stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/
 ```
 
 You should see
+
 ```
 > Ready! Your webhook signing secret is {YOUR_LOCAL_SIGNING_SECRET_KEY} (^C to quit)
 ```
 
 Copy this value and add it to the file `functions/secrets.js`.
+
 ```js
 // functions/secrets.js
 ...
@@ -54,24 +59,28 @@ const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
 ```
 
 ## Git flow
+
 To contribute to the code base, please follow these steps:
- - create a branch from staging
- - code
- - create a pull request on staging
+
+- create a branch from staging
+- code
+- create a pull request on staging
 
 Then, to deploy functionalities to production, **merge staging into master**.
 
 > When adding a quick fix to production:
->  - create a branch from master
->  - code
->  - create a pull request on master
->  - create a branch from staging
->  - cherry-pick the commit
->  - create a pull request on staging
+>
+> - create a branch from master
+> - code
+> - create a pull request on master
+> - create a branch from staging
+> - cherry-pick the commit
+> - create a pull request on staging
 
 ## Deploying
 
 tl;dr:
+
 ```
 npm i -g firebase-tools # only need this once
 firebase login # only need this once
@@ -79,12 +88,12 @@ npm run build && firebase deploy
 ```
 
 You can do a faster deploy by deploying just hosting:
+
 ```
 npm run build && firebase deploy --only hosting
 ```
 
 **NOTE:** You may get a warning about deleting the function `checkAdminPassword`; this is a function from [co-reality-admin](https://github.com/co-reality/co-reality-admin) and will be folded into this repo in future. In the meantime please don't delete this function.
-
 
 ## Uploading config for an event
 
@@ -95,6 +104,7 @@ To upload a new config, use `scripts/upload.sh`:
 ```
 $ scripts/upload.sh co-reality-5 user@name.com password
 ```
+
 This will upload the JSON object exported from `configs/co-reality-5.js` to the Firestore document `config/co-reality-5`.
 
 Watching for changes:
@@ -108,7 +118,7 @@ $ VENUE=co-reality-5; fswatch -o configs/${VENUE}.js | xargs -n1 -I{} ./scripts/
 
 You can use a quick shell script while editing the map, to speed up the process of seeing your changes on the map:
 
-* Edit `scripts/config-upload.js` to replace the code that prompts for username and password, with the username and password you would type:
+- Edit `scripts/config-upload.js` to replace the code that prompts for username and password, with the username and password you would type:
 
 ```
 read(username)
@@ -124,13 +134,13 @@ const username = 'email@address.com`
 const password = 'password'
 ```
 
-* Run the automatic upload script:
+- Run the automatic upload script:
 
 ```
 $ CONFIG=co-reality-6; fswatch -o configs/${CONFIG}.js| xargs -n1 -I{} ./scripts/upload.sh ${CONFIG}
 ```
 
-* Be careful not to commit or push your script change, since it contains your password!
+- Be careful not to commit or push your script change, since it contains your password!
 
 ## Obtaining email addresses from firebase
 

@@ -17,7 +17,7 @@ export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
-export const PLAYA_VENUE_NAME = "Playa";
+export const PLAYA_VENUE_NAME = "Paddock";
 export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
 export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
@@ -27,6 +27,7 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
+export const TICKET_URL = "https://qkt.io/seed2020";
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
@@ -175,7 +176,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "hirespace";
+export const DEFAULT_VENUE = IS_BURN ? "paddock" : "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);

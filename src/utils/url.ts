@@ -7,7 +7,7 @@ export const venueInsideUrl = (venueId: string) => {
 };
 
 export const venuePlayaPreviewUrl = (venueId: string) => {
-  return `${venueInsideUrl("playa")}/${venueId}`;
+  return `${venueInsideUrl("paddock")}/${venueId}`;
 };
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {

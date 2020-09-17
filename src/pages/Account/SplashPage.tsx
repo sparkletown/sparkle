@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import { venueInsideUrl } from "utils/url";
 import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
@@ -21,7 +21,9 @@ const SplashPage = () => {
   const showSchedule = !!queryParams.get("schedule");
 
   const onSubmit = () => {
-    history.push(user ? venueInsideUrl("playa") : "/enter/step1");
+    history.push(
+      user ? venueInsideUrl(PLAYA_VENUE_NAME.toLowerCase()) : "/enter/step1"
+    );
   };
 
   const onHideSchedule = useCallback(() => {

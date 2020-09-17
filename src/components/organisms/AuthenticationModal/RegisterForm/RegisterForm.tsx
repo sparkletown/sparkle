@@ -8,6 +8,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
+import { TICKET_URL } from "settings";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -20,7 +21,6 @@ interface RegisterFormData {
   email: string;
   password: string;
   date_of_birth: string;
-  code: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -73,11 +73,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signUp(data);
       if (IS_BURN && auth.user) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.code],
+          codes_used: [data.email],
           date_of_birth: data.date_of_birth,
         });
       }
@@ -88,9 +88,17 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       );
     } catch (error) {
       if (error.response?.status === 404) {
-        setError("code", "validation", `Code ${data.code} is not valid`);
+        setError(
+          "email",
+          "validation",
+          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+        );
       } else if (error.response?.status >= 500) {
-        setError("code", "validation", `Error checking code: ${error.message}`);
+        setError(
+          "email",
+          "validation",
+          `Error checking ticket: ${error.message}`
+        );
       } else {
         setError("email", "firebase", error.message);
       }
@@ -169,30 +177,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               errors.date_of_birth.type === "required" && (
                 <span className="input-error">Date of birth is required</span>
               )}
-          </div>
-        )}
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="code"
-              className="input-block input-centered"
-              type="code"
-              placeholder="Ticket Code From Your Email"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.code && (
-              <span className="input-error">
-                {errors.code.type === "required" ? (
-                  <>
-                    Enter the ticket code from your email. The code is required.
-                  </>
-                ) : (
-                  errors.code.message
-                )}
-              </span>
-            )}
           </div>
         )}
         {IS_BURN &&
