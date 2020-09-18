@@ -45,12 +45,13 @@ export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
-// playa is 4000x4000 pixels
-export const PLAYA_WIDTH_AND_HEIGHT = 4000;
+// playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
+export const PLAYA_WIDTH_AND_HEIGHT = 2000;
 export const PLAYA_AVATAR_SIZE = 24;
 export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/maps/playa4k.jpg";
+// Burning Seed: playa is named paddock
+export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
 export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   iconImage: {
