@@ -10,16 +10,7 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { IS_BURN } from "secrets";
-
-export const ConvertToEmbeddableUrl = (string: string | undefined) => {
-  if (string?.includes("youtube")) {
-    return string?.replace("watch?v=", "embed/");
-  } else if (string?.includes("vimeo") && !string?.includes("player")) {
-    return string?.replace("vimeo.com/", "player.vimeo.com/video/");
-  } else {
-    return string?.includes("http") ? string : "//" + string;
-  }
-};
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 
 const ArtPiece = () => {
   const { venue } = useSelector((state) => ({
