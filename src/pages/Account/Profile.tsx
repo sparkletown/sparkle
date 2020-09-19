@@ -53,7 +53,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <h2>Well done! Now create your profile</h2>
         <p>
           {IS_BURN ? (
-            <>This will give you access to the Playa and all the fun venues!</>
+            <>
+              This will give you access to the Paddock and all the fun venues!
+            </>
           ) : (
             <>This will be your public profile in the party</>
           )}

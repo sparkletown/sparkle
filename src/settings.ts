@@ -116,14 +116,14 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Playa",
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Paddock",
     ],
   },
   {
     template: VenueTemplate.themecamp,
     name: "Theme Camp",
     description: [
-      "Add your camp to the Playa in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "Add your camp to the Paddock in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
 
@@ -131,7 +131,7 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
-      "Embed any 2-D or 3-D art experience on the Playa with this special template, which allows viewers to chat to each other as they experience your art.",
+      "Embed any 2-D or 3-D art experience on the Paddock with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
 ];
@@ -147,7 +147,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.artcar,
     name: "Art Car",
-    description: ["Create a space on the Playa that moves around."],
+    description: ["Create a space on the Paddock that moves around."],
   },
   {
     template: VenueTemplate.performancevenue,

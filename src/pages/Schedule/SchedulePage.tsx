@@ -6,6 +6,8 @@ import _ from "lodash";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import "./SchedulePage.scss";
 import { Link } from "react-router-dom";
+import { DEFAULT_VENUE } from "settings";
+import { venueInsideUrl } from "utils/url";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -120,7 +122,11 @@ export const SchedulePage = () => {
                     <td>{dayEvent.event.name}</td>
                     <td>{dayEvent.event.description}</td>
                     <td>
-                      <Link to={`/in/playa/${dayEvent.venue.id}`}>
+                      <Link
+                        to={`${venueInsideUrl(DEFAULT_VENUE)}/${
+                          dayEvent.venue.id
+                        }`}
+                      >
                         {dayEvent.venue.name}
                       </Link>
                     </td>

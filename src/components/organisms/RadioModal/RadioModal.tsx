@@ -15,7 +15,7 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
       <div className="title-radio">Playa Radio</div>
       <div className="text-radio">
         We recommend turning on the global burner radio station as you rove
-        round the Playa!
+        round the Paddock!
       </div>
       <img
         className="img-radio"

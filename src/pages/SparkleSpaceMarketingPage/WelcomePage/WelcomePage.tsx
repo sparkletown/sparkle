@@ -90,9 +90,9 @@ const WelcomePage: React.FunctionComponent = () => {
                 alt="Powerful tools"
               />
               <p>
-                Populate the playa with your camp, art, host performances (DJs,
-                talks) etc using simple yet powerful space-creation tools and
-                templates
+                Populate the paddock with your camp, art, host performances
+                (DJs, talks) etc using simple yet powerful space-creation tools
+                and templates
               </p>
             </div>
           </div>

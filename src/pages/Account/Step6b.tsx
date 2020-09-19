@@ -1,19 +1,20 @@
 import React from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { DEFAULT_VENUE, PLAYA_IMAGE } from "settings";
 import { useHistory } from "react-router-dom";
+import { venueInsideUrl } from "utils/url";
 
 const Step6 = () => {
   const history = useHistory();
   return (
     <div className="splash-page-container">
-      <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
+      <img className="playa-img" src={PLAYA_IMAGE} alt="Background Map" />
       <div className="step-container step6b-container">
         <div className="navigation-guide">
           <div className="row heading">
             <div className="col-md-8">
-              <span className="navigating-header">Navigating the playa.</span>
+              <span className="navigating-header">Navigating the paddock.</span>
             </div>
             <div className="col-md-4 logo-container">
               <img
@@ -65,7 +66,7 @@ const Step6 = () => {
                 </div>
                 <div className="col-xl-8 col-lg-12">
                   <span className="action-details">
-                    Use the arrow keys to move your avatar around the playa.
+                    Use the arrow keys to move your avatar around the paddock.
                   </span>
                 </div>
               </div>
@@ -99,12 +100,12 @@ const Step6 = () => {
               <div className="col-md-12">
                 <div className="step6b-welcome-message">
                   Welcome to the Burn. Use the arrows on your keyboard or the
-                  webpage to navigate the Playa, or use the search bar above, or
-                  just click directly on venues to explore.
+                  webpage to navigate the paddock, or use the search bar above,
+                  or just click directly on venues to explore.
                 </div>
                 <button
                   className={`btn btn-primary btn-block btn-centered`}
-                  onClick={() => history.push(`/in/playa`)}
+                  onClick={() => history.push(venueInsideUrl(DEFAULT_VENUE))}
                 >
                   Next
                 </button>
