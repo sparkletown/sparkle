@@ -19,6 +19,7 @@ import {
   PLAYA_VENUE_NAME,
   ALL_BURN_TEMPLATES,
   SPARKLE_LOGO_URL,
+  DEFAULT_VENUE,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -175,10 +176,12 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       <OnlineStats />
                     ) : (
                       <span
-                        onClick={() => (window.location.href = "/in/playa")}
+                        onClick={() =>
+                          (window.location.href = venueInsideUrl(DEFAULT_VENUE))
+                        }
                         className="playa-link"
                       >
-                        Back to the Playa
+                        Back to the Paddock
                       </span>
                     )}
                   </div>

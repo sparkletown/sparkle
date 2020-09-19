@@ -19,7 +19,7 @@ const Step5 = () => {
           >
             <h3>Normal Mode</h3>
             <div>
-              Enter the playa straight waya and start exploring the venues.
+              Enter the paddock straight away and start exploring the venues.
             </div>
           </div>
           <div
@@ -29,7 +29,7 @@ const Step5 = () => {
             <h3>Heroic Mode</h3>
             <div>
               Enter an art car with other users and make some friends before
-              entering the playa.
+              entering the paddock.
             </div>
           </div>
         </div>
