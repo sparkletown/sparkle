@@ -19,7 +19,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal show={show} onHide={closeVideoModal}>
+    <Modal show={show} onHide={closeVideoModal} centered={true} size={"xl"}>
       <div className="video-modal-container">
         <div className="content">
           <iframe

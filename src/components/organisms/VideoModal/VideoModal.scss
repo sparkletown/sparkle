@@ -3,39 +3,21 @@
 .video-modal-container {
   padding: 20px;
 
-  .save-card-form-container {
+  .content {
     display: flex;
-    align-items: center;
+    padding-left: 70px;
+    flex-grow: 1;
     flex-direction: column;
-    margin: 20px 0;
+    overflow: auto;
+  }
+
+  .youtube-video {
     width: 100%;
-
-    button {
-      padding: 10px;
-      margin-top: 10px;
-    }
+    min-height: 500px;
   }
-
-  h2.centered {
-    text-align: center;
-  }
-
-  .secondary-action {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-
-    .form {
-      width: 100%;
-      text-align: center;
-    }
-  }
+}
+.modal-content {
+  width: 100%;
+  height: 100%;
+  max-width: unset;
 }
