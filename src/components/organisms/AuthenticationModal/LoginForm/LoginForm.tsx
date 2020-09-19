@@ -5,7 +5,8 @@ import { useFirebase } from "react-redux-firebase";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
-import { TICKET_URL } from "settings";
+import { DEFAULT_VENUE, TICKET_URL } from "settings";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -60,7 +61,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      if (IS_BURN) history.push("/in/playa");
+      if (IS_BURN) history.push(venueInsideUrl(DEFAULT_VENUE));
     } catch (error) {
       if (error.response?.status === 404) {
         setError(

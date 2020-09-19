@@ -175,7 +175,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
       <div className="visits">
         <div className="visit-item">
           <span className="visit-item__value">{playaTime} hrs</span>
-          <span className="visit-item__label">spent on the Playa</span>
+          <span className="visit-item__label">spent on the Paddock</span>
         </div>
         <div className="separator"></div>
         <div className="visit-item">

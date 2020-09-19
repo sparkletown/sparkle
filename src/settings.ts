@@ -45,12 +45,13 @@ export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
-// playa is 4000x4000 pixels
-export const PLAYA_WIDTH_AND_HEIGHT = 4000;
+// playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
+export const PLAYA_WIDTH_AND_HEIGHT = 2000;
 export const PLAYA_AVATAR_SIZE = 24;
 export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/maps/playa4k.jpg";
+// Burning Seed: playa is named paddock
+export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
 export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   iconImage: {
@@ -115,14 +116,14 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Playa",
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Paddock",
     ],
   },
   {
     template: VenueTemplate.themecamp,
     name: "Theme Camp",
     description: [
-      "Add your camp to the Playa in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "Add your camp to the Paddock in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
 
@@ -130,7 +131,7 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
-      "Embed any 2-D or 3-D art experience on the Playa with this special template, which allows viewers to chat to each other as they experience your art.",
+      "Embed any 2-D or 3-D art experience on the Paddock with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
 ];
@@ -146,7 +147,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.artcar,
     name: "Art Car",
-    description: ["Create a space on the Playa that moves around."],
+    description: ["Create a space on the Paddock that moves around."],
   },
   {
     template: VenueTemplate.performancevenue,
