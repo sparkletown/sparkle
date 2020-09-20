@@ -591,7 +591,7 @@ const Admin: React.FC = () => {
     return <>Loading...</>;
   }
   if (!("admin" in roles)) {
-    return <>Forbidden</>;
+    //return <>Forbidden</>;
   }
 
   return (
