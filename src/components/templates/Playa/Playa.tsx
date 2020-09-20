@@ -410,7 +410,12 @@ const Playa = () => {
       getOnlineStats()
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
+          setOpenVenues(
+            profile?.kidsMode
+              ? openVenues.filter((v) => !v.venue.adultContent)
+              : openVenues
+          );
+          //setOpenVenues(openVenues);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
     };

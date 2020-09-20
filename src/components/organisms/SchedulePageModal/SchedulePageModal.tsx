@@ -37,7 +37,11 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       getOnlineStats()
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
+          setOpenVenues(
+            profile?.kidsMode
+              ? openVenues.filter((v) => !v.venue.adultContent)
+              : openVenues
+          );
           setLoaded(true);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
@@ -72,21 +76,18 @@ export const SchedulePageModal: React.FunctionComponent = () => {
             // some events will span multiple days. Pick events for which `day` is between the event start and end
             {
               if (ve?.event?.start_utc_seconds && ve?.event?.duration_minutes) {
-                return (
-                  isWithinInterval(day, {
-                    start: startOfDay(
-                      new Date(ve.event.start_utc_seconds * 1000)
-                    ),
-                    end: endOfDay(
-                      new Date(
-                        (ve.event.start_utc_seconds +
-                          ve.event.duration_minutes * 60) *
-                          1000
-                      )
-                    ),
-                  }) &&
-                  (!profile?.kidsMode || !ve?.venue?.adultContent)
-                );
+                return isWithinInterval(day, {
+                  start: startOfDay(
+                    new Date(ve.event.start_utc_seconds * 1000)
+                  ),
+                  end: endOfDay(
+                    new Date(
+                      (ve.event.start_utc_seconds +
+                        ve.event.duration_minutes * 60) *
+                        1000
+                    )
+                  ),
+                });
               } else return undefined;
             }
           )
