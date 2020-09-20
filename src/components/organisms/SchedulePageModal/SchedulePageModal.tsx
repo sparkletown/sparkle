@@ -51,7 +51,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [profile]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
