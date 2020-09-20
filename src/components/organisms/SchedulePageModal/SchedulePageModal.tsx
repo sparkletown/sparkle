@@ -7,6 +7,7 @@ import _ from "lodash";
 import { formatDate } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { REFETCH_SCHEDULE_MS } from "settings";
+import { useUser } from "hooks/useUser";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -26,6 +27,7 @@ const DAYS_AHEAD = 7;
 export const SchedulePageModal: React.FunctionComponent = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
+  const { profile } = useUser();
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -70,18 +72,21 @@ export const SchedulePageModal: React.FunctionComponent = () => {
             // some events will span multiple days. Pick events for which `day` is between the event start and end
             {
               if (ve?.event?.start_utc_seconds && ve?.event?.duration_minutes) {
-                return isWithinInterval(day, {
-                  start: startOfDay(
-                    new Date(ve.event.start_utc_seconds * 1000)
-                  ),
-                  end: endOfDay(
-                    new Date(
-                      (ve.event.start_utc_seconds +
-                        ve.event.duration_minutes * 60) *
-                        1000
-                    )
-                  ),
-                });
+                return (
+                  isWithinInterval(day, {
+                    start: startOfDay(
+                      new Date(ve.event.start_utc_seconds * 1000)
+                    ),
+                    end: endOfDay(
+                      new Date(
+                        (ve.event.start_utc_seconds +
+                          ve.event.duration_minutes * 60) *
+                          1000
+                      )
+                    ),
+                  }) &&
+                  (!profile?.kidsMode || !ve?.venue?.adultContent)
+                );
               } else return undefined;
             }
           )

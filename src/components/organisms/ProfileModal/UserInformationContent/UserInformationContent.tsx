@@ -7,6 +7,7 @@ import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
+import { updateUserProfile } from "pages/Account/helpers";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -35,6 +36,12 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
   if (!user) return <></>;
 
+  const toggleKidsMode = () => {
+    if (profile) {
+      profile.kidsMode = !profile?.kidsMode;
+      updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
+    }
+  };
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
@@ -84,6 +91,20 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         value="Log out"
         onClick={logout}
         type="button"
+      />
+
+      <label
+        htmlFor={"chk-kidsMode"}
+        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
+      >
+        Kids Mode
+      </label>
+      <input
+        type="checkbox"
+        name={"kidsMode"}
+        id={"chk-kidsMode"}
+        defaultChecked={profile?.kidsMode || false}
+        onClick={() => toggleKidsMode()}
       />
     </>
   );
