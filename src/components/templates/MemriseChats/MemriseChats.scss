@@ -1,0 +1,74 @@
+.container {
+  display: flex;
+  flex: 1;
+}
+
+.memrise-chats-container {
+  display: flex;
+  flex: 1;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.room {
+  border: 1px white solid;
+  border-radius: 14px;
+}
+
+.seat-row {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.seat {
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
+  border-radius: 100%;
+
+  &:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+  .user {
+    width: 3vh;
+    height: 3vh;
+  }
+
+  .profile-avatar {
+    border-radius: 100%;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.not-seat {
+  width: 3vh;
+  height: 3vh;
+  background-color: white;
+  opacity: 0.1;
+  border-radius: 100%;
+
+  &:hover {
+    opacity: 0.4;
+    cursor: pointer;
+  }
+
+  &:active {
+    opacity: 0.6;
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+}
+
+.chat-container {
+  position: absolute;
+  right: 0;
+  top: 70px;
+}

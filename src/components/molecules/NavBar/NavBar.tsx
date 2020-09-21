@@ -19,6 +19,8 @@ import {
   PLAYA_VENUE_NAME,
   SPARKLE_LOGO_URL,
   DEFAULT_VENUE,
+  MEMRISE_LOGO_URL,
+  ALL_BURN_TEMPLATES
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -30,6 +32,7 @@ import PlayaTime from "../PlayaTime";
 import PlayaAddress from "../PlayaAddress";
 import { venueInsideUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";
+import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -141,6 +144,16 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
+  const isBurnTemplate =
+    !!venue?.template && IS_BURN && ALL_BURN_TEMPLATES.includes(venue.template);
+
+  const getHeaderLogo = () => {
+    if (venue?.template === VenueTemplate.memrisechats) {
+      return MEMRISE_LOGO_URL;
+    }
+    return isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
+  };
+
   return (
     <>
       <header>
@@ -154,11 +167,10 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   }
                 >
                   <img
-                    src={IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL}
+                    src={getHeaderLogo()}
                     alt="Logo"
-                    className={`logo-img ${
-                      IS_BURN ? "sparkleverse" : "sparkle"
-                    }`}
+                    className={`logo-img ${IS_BURN ? "sparkleverse" : "sparkle"
+                      }`}
                   />
                 </Link>
               </div>
@@ -176,15 +188,15 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     {isOnPlaya ? (
                       <OnlineStats />
                     ) : (
-                      <span
-                        onClick={() =>
-                          (window.location.href = venueInsideUrl(DEFAULT_VENUE))
-                        }
-                        className="playa-link"
-                      >
-                        Back to the {PLAYA_VENUE_NAME}
-                      </span>
-                    )}
+                        <span
+                          onClick={() =>
+                            (window.location.href = venueInsideUrl(DEFAULT_VENUE))
+                          }
+                          className="playa-link"
+                        >
+                          Back to the {PLAYA_VENUE_NAME}
+                        </span>
+                      )}
                   </div>
                 )}
                 <div className="navbar-links">
@@ -246,9 +258,8 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       defaultShow={showRadioOverlay}
                     >
                       <div
-                        className={`profile-icon navbar-link-radio ${
-                          volume === 0 && "off"
-                        }`}
+                        className={`profile-icon navbar-link-radio ${volume === 0 && "off"
+                          }`}
                       ></div>
                     </OverlayTrigger>
                   )}
@@ -274,14 +285,14 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 </div>
               </>
             ) : (
-              <div
-                className="log-in-button"
-                style={{ marginTop: "20px" }}
-                onClick={() => setIsAuthenticationModalOpen(true)}
-              >
-                Log in
-              </div>
-            )}
+                <div
+                  className="log-in-button"
+                  style={{ marginTop: "20px" }}
+                  onClick={() => setIsAuthenticationModalOpen(true)}
+                >
+                  Log in
+                </div>
+              )}
           </div>
         </div>
       </header>

@@ -26,6 +26,7 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 import getQueryParameters from "utils/getQueryParameters";
 import AudienceRouter from "components/templates/Audience/AudienceRouter";
+import MemriseChats from "components/templates/MemriseChats";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -68,7 +69,7 @@ const VenuePage = () => {
   const isEventFinished =
     event &&
     currentTimestamp >
-      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
+    event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
   const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
@@ -94,11 +95,11 @@ const VenuePage = () => {
   useFirestoreConnect(
     user
       ? {
-          collection: "privatechats",
-          doc: user.uid,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
-        }
+        collection: "privatechats",
+        doc: user.uid,
+        subcollections: [{ collection: "chats" }],
+        storeAs: "privatechats",
+      }
       : undefined
   );
 
@@ -107,7 +108,7 @@ const VenuePage = () => {
       <WithNavigationBar>
         <AuthenticationModal
           show={true}
-          onHide={() => {}}
+          onHide={() => { }}
           showAuth="register"
         />
       </WithNavigationBar>
@@ -206,6 +207,10 @@ const VenuePage = () => {
       break;
     case VenueTemplate.audience:
       template = <AudienceRouter />;
+      fullscreen = true;
+      break;
+    case VenueTemplate.memrisechats:
+      template = <MemriseChats venueName={venue.name} />;
       fullscreen = true;
       break;
   }
