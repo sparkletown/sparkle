@@ -959,7 +959,7 @@ const Playa = () => {
               <input
                 type="text"
                 className="playa-controls-shout-text"
-                placeholder="Shout across the playa..."
+                placeholder="Shout across the paddock..."
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
               />
