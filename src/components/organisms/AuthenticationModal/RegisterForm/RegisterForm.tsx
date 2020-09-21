@@ -5,7 +5,6 @@ import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory, useParams } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
-import dayjs from "dayjs";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { TICKET_URL } from "settings";

@@ -4,12 +4,18 @@ import { IS_BURN } from "secrets";
 import "./loading.scss";
 
 const quotes = [
-  "Navigating dust storms...",
-  "Roadtripping across Nevada...",
-  "In a traffic jam in Gerlach...",
-  "Biking out to deep playa...",
-  "Fixing tyre punctures...",
-  "Reimagining the real...",
+  // "Navigating dust storms...",
+  // "Roadtripping across Nevada...",
+  // "In a traffic jam in Gerlach...",
+  // "Biking out to deep playa...",
+  // "Fixing tyre punctures...",
+  // "Reimagining the real...",
+  "Dodging cow pats in the paddock...",
+  "Fighting dropbears...",
+  "Herding koalas...",
+  "Learning the local lingo...",
+  "Becoming good friends with the NEEEEEIGHBOURS...",
+  "Throwing shrimp on the barbie...",
 ];
 
 export const LoadingPage = () => {

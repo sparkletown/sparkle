@@ -164,7 +164,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               {isBurnTemplate && (
                 <div className="navbar-info">
                   <PlayaTime />
-                  <PlayaAddress />
+                  {venue?.showAddress && <PlayaAddress />}
                 </div>
               )}
             </div>
