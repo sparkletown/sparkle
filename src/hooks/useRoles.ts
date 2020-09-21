@@ -6,10 +6,7 @@ const useRoles = () => {
   const { user } = useUser();
   useFirestoreConnect({
     collection: "roles",
-    where: [
-      ["users", "array-contains", user?.uid || ""],
-      ["allowAll", "==", true],
-    ],
+    where: [["users", "array-contains", user?.uid || ""]],
   });
   const roles = useSelector((state) => state.firestore.data.roles);
   // Simplify membership checks when in no roles
