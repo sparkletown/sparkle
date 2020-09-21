@@ -20,6 +20,7 @@ import {
   ALL_BURN_TEMPLATES,
   SPARKLE_LOGO_URL,
   DEFAULT_VENUE,
+  MEMRISE_LOGO_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -30,6 +31,7 @@ import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal
 import PlayaTime from "../PlayaTime";
 import PlayaAddress from "../PlayaAddress";
 import { venueInsideUrl } from "utils/url";
+import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -140,6 +142,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const isBurnTemplate =
     !!venue?.template && IS_BURN && ALL_BURN_TEMPLATES.includes(venue.template);
 
+  const getHeaderLogo = () => {
+    if (venue?.template === VenueTemplate.memrisechats) {
+      return MEMRISE_LOGO_URL;
+    }
+    return isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
+  };
+
   return (
     <>
       <header>
@@ -151,9 +160,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   to={redirectionUrl ?? venueId ? venueInsideUrl(venueId) : "/"}
                 >
                   <img
-                    src={
-                      isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL
-                    }
+                    src={getHeaderLogo()}
                     alt="Logo"
                     className={`logo-img ${
                       isBurnTemplate ? "sparkleverse" : "sparkle"

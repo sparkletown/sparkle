@@ -10,4 +10,5 @@ export enum VenueTemplate {
   preplaya = "preplaya",
   playa = "playa",
   audience = "audience",
+  memrisechats = "memrisechats",
 }
