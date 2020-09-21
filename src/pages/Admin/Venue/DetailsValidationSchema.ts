@@ -157,6 +157,7 @@ export const validationSchema = Yup.object()
       ), // ensure questions are not empty strings
 
     placementRequests: Yup.string().notRequired(),
+    adultContent: Yup.bool().required(),
   })
   .required();
 
@@ -170,6 +171,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.description", "description")
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
+  .from("adultContent", "adultContent")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")

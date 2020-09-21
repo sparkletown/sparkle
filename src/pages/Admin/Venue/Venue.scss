@@ -157,6 +157,39 @@ $preview-margin: 30px;
 
 .input-container {
   margin-top: 20px;
+  position: relative;
+}
+
+.checkbox {
+  display: block;
+  text-align: left;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  padding: 6px 0 6px 40px;
+  &:before {
+    content: "";
+    position: absolute;
+    margin-left: -40px;
+    margin-top: -6px;
+    height: 30px;
+    width: 30px;
+    border-radius: 15px;
+    background-color: rgba($white, 0.12);
+    box-shadow: 0 0 0 2px rgba($white, 0.4);
+  }
+  &:hover {
+    &:before {
+      box-shadow: 0 0 0 2px rgba($white, 1);
+    }
+  }
+  &.checkbox-checked {
+    &:before {
+      background-color: $primaryColor;
+      box-shadow: 0 0 0 2px rgba($white, 0);
+      background-image: url("./img/checkbox-checked.png");
+      background-size: 30px 30px;
+    }
+  }
 }
 
 .input-subtext {

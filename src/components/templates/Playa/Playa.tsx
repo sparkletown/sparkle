@@ -410,7 +410,12 @@ const Playa = () => {
       getOnlineStats()
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
+          setOpenVenues(
+            profile?.kidsMode
+              ? openVenues.filter((v) => !v.venue.adultContent)
+              : openVenues
+          );
+          //setOpenVenues(openVenues);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
     };
@@ -419,7 +424,7 @@ const Playa = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [profile]);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
