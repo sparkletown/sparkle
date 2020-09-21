@@ -179,6 +179,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               values={values}
               isSubmitting={isSubmitting}
               register={register}
+              watch={watch}
               {...rest}
               onSubmit={onFormSubmit}
               editing={!!venueId}
@@ -245,6 +246,7 @@ interface DetailsFormLeftProps {
   values: FormValues;
   isSubmitting: boolean;
   register: ReturnType<typeof useForm>["register"];
+  watch: ReturnType<typeof useForm>["watch"];
   control: ReturnType<typeof useForm>["control"];
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
@@ -260,6 +262,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     values,
     isSubmitting,
     register,
+    watch,
     errors,
     previous,
     onSubmit,
@@ -358,6 +361,23 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         </div>
         <div className="input-container">
+          <label
+            htmlFor={"chkadultContent"}
+            className={`checkbox ${
+              watch("adultContent", false) && "checkbox-checked"
+            }`}
+          >
+            Restrict entry to adults aged 18+
+          </label>
+          <input
+            type="checkbox"
+            id={"chkadultContent"}
+            name={"adultContent"}
+            defaultChecked={values.adultContent}
+            ref={register}
+          />
+        </div>
+        <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Upload a banner photo
           </h4>
@@ -446,10 +466,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   className="wide-input-block input-centered align-left"
                   placeholder="https://us02web.zoom.us/j/654123654123"
                 />
-                {errors.description && (
-                  <span className="input-error">
-                    {errors.description.message}
-                  </span>
+                {errors.zoomUrl && (
+                  <span className="input-error">{errors.zoomUrl.message}</span>
                 )}
               </div>
             )}
@@ -469,9 +487,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   className="wide-input-block input-centered align-left"
                   placeholder="https://youtu.be/embed/abcDEF987w"
                 />
-                {errors.description && (
+                {errors.videoIframeUrl && (
                   <span className="input-error">
-                    {errors.description.message}
+                    {errors.videoIframeUrl.message}
                   </span>
                 )}
               </div>
@@ -492,9 +510,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                   className="wide-input-block input-centered align-left"
                   placeholder="https://3dwarehouse.sketchup.com/embed.html?mid=..."
                 />
-                {errors.description && (
+                {errors.embedIframeUrl && (
                   <span className="input-error">
-                    {errors.description.message}
+                    {errors.embedIframeUrl.message}
                   </span>
                 )}
               </div>
