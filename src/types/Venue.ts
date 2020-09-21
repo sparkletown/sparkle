@@ -53,6 +53,7 @@ export interface Venue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent: boolean;
+  showAddress?: boolean;
 }
 
 export interface VenuePlacement {
