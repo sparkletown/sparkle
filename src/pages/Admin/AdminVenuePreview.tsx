@@ -5,7 +5,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { useQuery } from "hooks/useQuery";
 import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ConvertToEmbeddableUrl } from "components/templates/ArtPiece/ArtPiece";
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
 
 interface AdminVenuePreview {

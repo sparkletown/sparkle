@@ -189,6 +189,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
                   City address: {venue.placement?.addressText}
                 </p>
               )}
+              {venue.adultContent && (
+                <p className="subtitle red">
+                  Venue has restricted entry to adults aged 18+
+                </p>
+              )}
               <p className="template-name">{templateName}</p>
               <a
                 className="btn btn-primary join-button"

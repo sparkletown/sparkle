@@ -16,12 +16,12 @@ interface CodeOfConductFormData {
   termsAndConditions: string;
 }
 
-interface CodeOfConductQuestion {
+interface PrincipleDefinition {
   name: string;
   text: string;
 }
 
-const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
+export const TEN_PRINCIPLES_LIST: PrincipleDefinition[] = [
   {
     name: "Radical Inclusion",
     text:
@@ -96,7 +96,7 @@ const Step3 = () => {
           <h2>The 10 principles of Burning Man</h2>
           <p>{`They are the community's ethos and culture as it had organically developed since the event's inception. Please read and check them`}</p>
           <form onSubmit={handleSubmit(onSubmit)} className="form">
-            {CODE_OF_CONDUCT_QUESTIONS.map((q) => (
+            {TEN_PRINCIPLES_LIST.map((q) => (
               <div className="input-group" key={q.name}>
                 <label
                   htmlFor={q.name}

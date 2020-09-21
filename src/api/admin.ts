@@ -70,6 +70,7 @@ export type VenueInput = AdvancedVenueInput &
     rooms?: Array<any>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
+    adultContent: boolean;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
