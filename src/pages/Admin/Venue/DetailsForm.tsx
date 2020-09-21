@@ -193,7 +193,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           className="italic"
           style={{ textAlign: "center", fontSize: "22px" }}
         >
-          Position your venue on the playa
+          Position your venue on the paddock
         </h4>
         {isAdminPlaced ? (
           <p className="warning">
