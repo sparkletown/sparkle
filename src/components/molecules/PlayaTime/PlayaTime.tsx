@@ -22,7 +22,7 @@ const PlayaTime: React.FC = () => {
 
   useEffect(() => {
     const updateTime = () => {
-      const pt = dayjs().tz("America/Los_Angeles");
+      const pt = dayjs().tz("Australia/Sydney");
       setCurrentTime(pt.format("h:mm a"));
     };
     updateTime();
@@ -33,7 +33,7 @@ const PlayaTime: React.FC = () => {
   return (
     <div className="playa_time-container">
       <FontAwesomeIcon icon={faClock} className="playa_time-icon" />{" "}
-      {currentTime} on Playa
+      {currentTime} in SparkleVerse
     </div>
   );
 };
