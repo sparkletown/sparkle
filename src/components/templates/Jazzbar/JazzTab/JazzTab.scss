@@ -79,6 +79,10 @@
     margin-left: 0px;
     .participant {
       width: 100%;
+
+      .mirrored {
+        transform: scale(-1, 1);
+      }
     }
   }
   .table-item {
