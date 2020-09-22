@@ -502,12 +502,15 @@ h4 {
     }
   }
 
-  video,
-  .mirrored video {
+  .videos {
     width: 100%;
     max-width: 600px;
     display: block;
     margin: 0 auto;
+
+    &.mirrored {
+      transform: scale(-1, 1);
+    }
   }
 }
 

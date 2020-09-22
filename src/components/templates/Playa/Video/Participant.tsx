@@ -143,7 +143,9 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
 
   return (
     <div className="participant">
-      <div className={user.mirrorVideo ? "mirrored" : ""}>{videos}</div>
+      <div className={`videos ${user.mirrorVideo ? "mirrored" : ""}`}>
+        {videos}
+      </div>
       <div className="name" onClick={() => setSelectedUserProfile(user)}>
         {user.partyName} {detail}
       </div>
