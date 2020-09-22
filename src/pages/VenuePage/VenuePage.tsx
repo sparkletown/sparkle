@@ -26,7 +26,7 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 import getQueryParameters from "utils/getQueryParameters";
 import AudienceRouter from "components/templates/Audience/AudienceRouter";
-import MemriseChats from "components/templates/MemriseChats";
+import AvatarGrid from "components/templates/AvatarGrid";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -209,8 +209,8 @@ const VenuePage = () => {
       template = <AudienceRouter />;
       fullscreen = true;
       break;
-    case VenueTemplate.memrisechats:
-      template = <MemriseChats venueName={venue.name} />;
+    case VenueTemplate.avatargrid:
+      template = <AvatarGrid venueName={venue.name} />;
       fullscreen = true;
       break;
   }

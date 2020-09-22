@@ -148,7 +148,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     !!venue?.template && IS_BURN && ALL_BURN_TEMPLATES.includes(venue.template);
 
   const getHeaderLogo = () => {
-    if (venue?.template === VenueTemplate.memrisechats) {
+    if (venue?.template === VenueTemplate.avatargrid) {
       return MEMRISE_LOGO_URL;
     }
     return isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;

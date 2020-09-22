@@ -6,15 +6,15 @@ import React, { useState } from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import { useParams } from "react-router-dom";
-import "./MemriseChats.scss";
+import "./AvatarGrid.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 type Props = {
   venueName: string;
 };
 
-const COLUMNS = 40;
-const ROWS = 25;
+const DEFAULT_COLUMNS = 40;
+const DEFAULT_ROWS = 25;
 
 const ROOMS = [
   {
@@ -46,7 +46,7 @@ const ROOMS = [
   },
 ];
 
-const MemriseChats = ({ venueName }: Props) => {
+const AvatarGrid = ({ venueName }: Props) => {
   const { venueId } = useParams();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
@@ -107,7 +107,7 @@ const MemriseChats = ({ venueName }: Props) => {
   return (
     <>
       <div
-        className="memrise-chats-container"
+        className="avatar-grid-container"
         style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
       >
         {/* Use venue rooms when origin is provided */}
@@ -189,7 +189,7 @@ const MemriseChats = ({ venueName }: Props) => {
       />
       <div className="chat-container">
         <ChatDrawer
-          title={`${venue.name ?? "Memrise"} Chat`}
+          title={`${venue.name ?? "Grid"} Chat`}
           roomName={venue.name}
           chatInputPlaceholder="Chat"
           defaultShow={true}
@@ -199,4 +199,4 @@ const MemriseChats = ({ venueName }: Props) => {
   );
 };
 
-export default MemriseChats;
+export default AvatarGrid;
