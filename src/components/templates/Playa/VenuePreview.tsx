@@ -13,7 +13,7 @@ import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import img from "./img/pickspace-thumbnail_camp.png";
-import { playaAddress } from "utils/address";
+// import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 
 interface VenuePreviewProps {
@@ -189,6 +189,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
                   City address: {venue.placement?.addressText}
                 </p>
               )}
+              {venue.adultContent && (
+                <p className="subtitle red">
+                  Venue has restricted entry to adults aged 18+
+                </p>
+              )}
               <p className="template-name">{templateName}</p>
               <a
                 className="btn btn-primary join-button"
@@ -219,12 +224,12 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         <div className="description">
           {venue.config?.landingPageConfig?.description}
         </div>
-        {venue.placement?.x && venue.placement?.y && (
+        {/* {venue.placement?.x && venue.placement?.y && (
           <div className="address">
             <strong>Address on playa:</strong>{" "}
             {playaAddress(venue.placement.x, venue.placement.y)}
           </div>
-        )}
+        )} */}
         <VenueInfoEvents
           eventsNow={eventsNow}
           venue={venue}

@@ -40,4 +40,5 @@ ui-debug.log
 # Reports
 reporting/env
 reporting/*.pdf
+reporting/*.txt
 reporting/cookies.json
