@@ -47,6 +47,7 @@ export interface Venue {
   mapBackgroundImageUrl?: string;
   placementRequests?: string;
   radioStations?: string[];
+  radioTitle?: string;
   dustStorm?: boolean;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
@@ -54,6 +55,7 @@ export interface Venue {
   miniAvatars?: boolean;
   adultContent: boolean;
   showAddress?: boolean;
+  showDonatePopup?: boolean;
 }
 
 export interface VenuePlacement {

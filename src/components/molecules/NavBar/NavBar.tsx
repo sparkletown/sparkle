@@ -103,7 +103,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const radioPopover = (
     <Popover id="radio-popover">
       <Popover.Content>
-        <RadioModal volume={volume} setVolume={setVolume} />
+        <RadioModal
+          volume={volume}
+          setVolume={setVolume}
+          title={venue?.radioTitle}
+        />
       </Popover.Content>
     </Popover>
   );
