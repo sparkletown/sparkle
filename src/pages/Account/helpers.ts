@@ -15,6 +15,10 @@ type KidsModeUpdateData = {
   kidsMode: boolean;
 };
 
+type MirrorVideoUpdateData = {
+  mirrorVideo: boolean;
+};
+
 export const updateUserProfile = (
   userId: string,
   profileData:
@@ -22,6 +26,7 @@ export const updateUserProfile = (
     | ProfileFormData
     | QuestionsFormData
     | KidsModeUpdateData
+    | MirrorVideoUpdateData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
 ) => {
   const firestore = firebase.firestore();

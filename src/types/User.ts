@@ -28,4 +28,5 @@ export interface User {
   // [question: string]: string;
   video?: VideoState;
   kidsMode: boolean;
+  mirrorVideo: boolean;
 }
