@@ -42,12 +42,21 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
     }
   };
+
   const toggleAnonMode = () => {
     if (profile) {
       profile.anonMode = !profile?.anonMode;
       updateUserProfile(user.uid, { anonMode: profile.anonMode });
     }
   };
+
+  const toggleMirrorVideo = () => {
+    if (profile) {
+      profile.mirrorVideo = !profile?.mirrorVideo;
+      updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
+    }
+  };
+
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
@@ -79,7 +88,32 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
-
+      <label
+        htmlFor="chk-kidsMode"
+        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
+      >
+        Kids Mode
+      </label>
+      <input
+        type="checkbox"
+        name="kidsMode"
+        id="chk-kidsMode"
+        defaultChecked={profile?.kidsMode || false}
+        onClick={() => toggleKidsMode()}
+      />
+      <label
+        htmlFor="chk-mirrorVideo"
+        className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
+      >
+        Mirror my video
+      </label>
+      <input
+        type="checkbox"
+        name="mirrorVideo"
+        id="chk-mirrorVideo"
+        defaultChecked={profile?.kidsMode || false}
+        onClick={() => toggleMirrorVideo()}
+      />
       <input
         className="btn button btn-primary"
         value="Edit profile"
@@ -97,22 +131,6 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         value="Log out"
         onClick={logout}
         type="button"
-      />
-
-      <label
-        htmlFor={"chk-kidsMode"}
-        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
-      >
-        <span className="title">Kids Mode</span>
-        <br />
-        <span className="text-container">(hide venues with 18+ content)</span>
-      </label>
-      <input
-        type="checkbox"
-        name={"kidsMode"}
-        id={"chk-kidsMode"}
-        defaultChecked={profile?.kidsMode || false}
-        onClick={() => toggleKidsMode()}
       />
       <label
         htmlFor={"chk-anonMode"}

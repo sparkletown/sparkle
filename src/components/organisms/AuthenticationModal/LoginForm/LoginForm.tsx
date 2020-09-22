@@ -101,9 +101,10 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
           )}
-          {errors.email && errors.email.type === "firebase" && (
-            <span className="input-error">{errors.email.message}</span>
-          )}
+          {errors.email &&
+            ["firebase", "validation"].includes(errors.email.type) && (
+              <span className="input-error">{errors.email.message}</span>
+            )}
         </div>
         <div className="input-group">
           <input

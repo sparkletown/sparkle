@@ -129,11 +129,15 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const videos = useMemo(
     () => (
       <>
-        <video ref={videoRef} autoPlay={true} />
+        <video
+          ref={videoRef}
+          autoPlay={true}
+          className={user.mirrorVideo ? "mirrored" : ""}
+        />
         <audio ref={audioRef} autoPlay={true} />
       </>
     ),
-    []
+    [user.mirrorVideo]
   );
 
   const detail = local

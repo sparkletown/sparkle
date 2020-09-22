@@ -54,6 +54,7 @@ import Fuse from "fuse.js";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 import { dateEventTimeFormat } from "../../utils/time";
 import useRoles from "hooks/useRoles";
+import { IS_BURN } from "secrets";
 
 dayjs.extend(advancedFormat);
 
@@ -590,7 +591,7 @@ const Admin: React.FC = () => {
   if (!roles) {
     return <>Loading...</>;
   }
-  if (!("admin" in roles)) {
+  if (!IS_BURN && !("admin" in roles)) {
     return <>Forbidden</>;
   }
 

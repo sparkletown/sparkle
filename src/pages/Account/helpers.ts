@@ -11,9 +11,16 @@ type LocationUpdateData = {
   room: string | null; // legacy
 };
 
-type ToggleModeUpdateData = {
-  kidsMode?: boolean;
-  anonMode?: boolean;
+type KidsModeUpdateData = {
+  kidsMode: boolean;
+};
+
+type AnonModeUpdateData = {
+  anonMode: boolean;
+};
+
+type MirrorVideoUpdateData = {
+  mirrorVideo: boolean;
 };
 
 export const updateUserProfile = (
@@ -22,7 +29,9 @@ export const updateUserProfile = (
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
-    | ToggleModeUpdateData
+    | AnonModeUpdateData
+    | KidsModeUpdateData
+    | MirrorVideoUpdateData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
 ) => {
   const firestore = firebase.firestore();

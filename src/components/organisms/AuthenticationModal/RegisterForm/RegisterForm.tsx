@@ -5,7 +5,6 @@ import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory, useParams } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
-import dayjs from "dayjs";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { TICKET_URL } from "settings";
@@ -20,7 +19,6 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
-  date_of_birth: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -31,7 +29,6 @@ export interface CodeOfConductQuestion {
 
 export interface RegisterData {
   codes_used: string[];
-  date_of_birth: string;
 }
 
 const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
@@ -78,7 +75,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       if (IS_BURN && auth.user) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
-          date_of_birth: data.date_of_birth,
         });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
@@ -126,9 +122,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
           )}
-          {errors.email && errors.email.type === "firebase" && (
-            <span className="input-error">{errors.email.message}</span>
-          )}
+          {errors.email &&
+            ["firebase", "validation"].includes(errors.email.type) && (
+              <span className="input-error">{errors.email.message}</span>
+            )}
         </div>
         <div className="input-group">
           <input
@@ -155,30 +152,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="date_of_birth"
-              className="input-block input-centered"
-              type="date"
-              max={dayjs().subtract(18, "year").format("YYYY-MM-DD")}
-              ref={register}
-            />
-            <span
-              className={`input-${
-                errors.date_of_birth && errors.date_of_birth.type === "pattern"
-                  ? "error"
-                  : "info"
-              }`}
-            >
-              You must be at least 18 years old to continue
-            </span>
-            {errors.date_of_birth &&
-              errors.date_of_birth.type === "required" && (
-                <span className="input-error">Date of birth is required</span>
-              )}
-          </div>
-        )}
         {IS_BURN &&
           CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>
