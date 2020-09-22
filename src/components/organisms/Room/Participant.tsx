@@ -111,16 +111,20 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const videos = useMemo(
     () => (
       <>
-        <video ref={videoRef} autoPlay={true} />
+        <video
+          ref={videoRef}
+          autoPlay={true}
+          className={profileData.mirrorVideo ? "mirrored" : ""}
+        />
         <audio ref={audioRef} autoPlay={true} />
       </>
     ),
-    []
+    [profileData.mirrorVideo]
   );
 
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
-      <div className={profileData.mirrorVideo ? "mirrored" : ""}>{videos}</div>
+      {videos}
       <div className="profile-icon">
         <UserProfilePicture
           user={{ ...profileData, id: participant.identity }}
