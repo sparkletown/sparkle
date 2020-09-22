@@ -192,6 +192,7 @@ class ZoomReportParser():
 		self.sort_data()
 		log.info("Parsing completed. Total visits: {}, Total users: {}".format(len(self._all_visits), len(self._visits_by_user.keys())))
 		self.log_debug_stats()
+		self.write_visits()
 
 	def sort_data(self):
 		self._all_joins.sort()
@@ -201,6 +202,12 @@ class ZoomReportParser():
 			self._room_leaves[room].sort()
 		for user in self._visits_by_user:
 			self._visits_by_user[user].sort(key=lambda user_visit: user_visit['visit'].start)
+
+	def write_visits(self):
+		with open("visits.txt", "w") as visits_file:
+			for user in self._visits_by_user.keys():
+				visits_file.write("{}: {}\n".format(user, ",".join([user_visit['room'] for user_visit in self._visits_by_user[user]])))
+
 
 	@staticmethod
 	def real_room_name(room, meeting_id):
