@@ -232,14 +232,18 @@ $page-max-width: 1240px;
 
     .form {
       margin-top: 2rem;
+      img {
+        cursor: pointer;
+      }
     }
-
     .principle-name {
       font-weight: bold;
       font-size: 15px;
+      cursor: pointer;
     }
     .principle-description {
       font-size: 12px;
+      cursor: pointer;
     }
     button {
       margin-top: 2rem;
