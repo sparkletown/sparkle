@@ -10,6 +10,7 @@ import "./VenueOwnerModal.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
 import { addVenueOwner } from "api/admin";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 interface VenueOwnersModalProps {
   visible: boolean;
@@ -128,8 +129,11 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     <>
       <div className="user-row">
         <div className="info-container">
-          <img src={user.pictureUrl} alt="profile pic" />
-          {user.partyName}
+          <img
+            src={user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl}
+            alt="profile pic"
+          />
+          {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
         </div>
         {!isOwner &&
           (loading ? (
