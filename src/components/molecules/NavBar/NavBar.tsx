@@ -143,7 +143,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const getHeaderLogo = () => {
-    if (venue?.template === VenueTemplate.memrisechats) {
+    if (venue?.template === VenueTemplate.avatargrid) {
       return MEMRISE_LOGO_URL;
     }
     return IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;

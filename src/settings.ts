@@ -168,7 +168,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
-  VenueTemplate.memrisechats,
+  VenueTemplate.avatargrid,
 ];
 
 export const FIREBASE_CONFIG = {
