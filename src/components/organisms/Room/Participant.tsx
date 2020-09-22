@@ -120,9 +120,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
 
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
-      <div className={`videos ${profileData.mirrorVideo ? "mirrored" : ""}`}>
-        {videos}
-      </div>
+      <div className={profileData.mirrorVideo ? "mirrored" : ""}>{videos}</div>
       <div className="profile-icon">
         <UserProfilePicture
           user={{ ...profileData, id: participant.identity }}
