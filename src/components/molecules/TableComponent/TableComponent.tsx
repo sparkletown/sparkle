@@ -40,18 +40,21 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 
         {usersSeatedAtTable &&
           usersSeatedAtTable.length >= 0 &&
-          usersSeatedAtTable.map((user) => (
-            <img
-              onClick={() => setSelectedUserProfile(user)}
-              key={user.id}
-              className="profile-icon table-participant-picture"
-              src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
-              title={user.partyName}
-              alt={`${user.partyName} profile`}
-              width={imageSize}
-              height={imageSize}
-            />
-          ))}
+          usersSeatedAtTable.map(
+            (user) =>
+              !user.anonMode && (
+                <img
+                  onClick={() => setSelectedUserProfile(user)}
+                  key={user.id}
+                  className="profile-icon table-participant-picture"
+                  src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                  title={user.partyName}
+                  alt={`${user.partyName} profile`}
+                  width={imageSize}
+                  height={imageSize}
+                />
+              )
+          )}
         {usersSeatedAtTable &&
           table.capacity &&
           table.capacity - usersSeatedAtTable.length >= 0 &&

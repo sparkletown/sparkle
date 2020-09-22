@@ -42,6 +42,12 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
     }
   };
+  const toggleAnonMode = () => {
+    if (profile) {
+      profile.anonMode = !profile?.anonMode;
+      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+    }
+  };
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
@@ -97,7 +103,9 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         htmlFor={"chk-kidsMode"}
         className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
       >
-        Kids Mode
+        <span className="title">Kids Mode</span>
+        <br />
+        <span className="text-container">(hide venues with 18+ content)</span>
       </label>
       <input
         type="checkbox"
@@ -105,6 +113,19 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         id={"chk-kidsMode"}
         defaultChecked={profile?.kidsMode || false}
         onClick={() => toggleKidsMode()}
+      />
+      <label
+        htmlFor={"chk-anonMode"}
+        className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
+      >
+        <span className="title">Anonymous Mode</span>
+      </label>
+      <input
+        type="checkbox"
+        name={"anonMode"}
+        id={"chk-anonMode"}
+        defaultChecked={profile?.anonMode || false}
+        onClick={() => toggleAnonMode()}
       />
     </>
   );

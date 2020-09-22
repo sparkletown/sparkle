@@ -11,6 +11,7 @@ import {
   DEFAULT_PROFILE_IMAGE,
   USE_RANDOM_AVATAR,
   RANDOM_AVATARS,
+  DEFAULT_PARTY_NAME,
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
@@ -40,7 +41,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const [pictureUrl, setPictureUrl] = useState("");
   useEffect(() => {
     if (!user.id) return;
-    if (USE_RANDOM_AVATAR || !user.pictureUrl) {
+    if (user.anonMode) {
+      setPictureUrl(DEFAULT_PROFILE_IMAGE);
+    } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
       const randomUrl =
         "/avatars/" +
         RANDOM_AVATARS[
@@ -50,7 +53,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     } else {
       setPictureUrl(user.pictureUrl);
     }
-  }, [user.pictureUrl, user.id]);
+  }, [user.pictureUrl, user.id, user.anonMode]);
 
   const typedReaction = experienceContext?.reactions ?? [];
 
@@ -68,8 +71,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           src={
             miniAvatars ? pictureUrl : user.pictureUrl || DEFAULT_PROFILE_IMAGE
           }
-          title={user.partyName}
-          alt={`${user.partyName} profile`}
+          alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+          title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
           width={imageSize}
           height={imageSize}
         />

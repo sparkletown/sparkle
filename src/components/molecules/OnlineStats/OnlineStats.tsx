@@ -286,22 +286,26 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="people">
-                  {filteredUsers.map((user, index) => (
-                    <div
-                      key={index}
-                      className="user-row"
-                      onClick={() => setSelectedUserProfile(user)}
-                    >
-                      <div>
-                        <img src={user.pictureUrl} alt="user profile pic" />
-                        <span>{user.partyName}</span>
-                      </div>
-                      <FontAwesomeIcon
-                        icon={faCommentDots}
-                        className="chat-icon"
-                      />
-                    </div>
-                  ))}
+                  {filteredUsers.map(
+                    (user, index) =>
+                      !user.anonMode && (
+                        <div
+                          key={index}
+                          className="user-row"
+                          onClick={() => setSelectedUserProfile(user)}
+                        >
+                          <div>
+                            <img src={user.pictureUrl} alt="user profile pic" />
+                            <span>{user.partyName}</span>
+                          </div>
+
+                          <FontAwesomeIcon
+                            icon={faCommentDots}
+                            className="chat-icon"
+                          />
+                        </div>
+                      )
+                  )}
                 </div>
               </div>
             </div>
