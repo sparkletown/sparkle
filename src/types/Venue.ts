@@ -55,7 +55,7 @@ export interface Venue {
   miniAvatars?: boolean;
   adultContent: boolean;
   showAddress?: boolean;
-  showDonatePopup?: boolean;
+  showGiftATicket?: boolean;
 }
 
 export interface VenuePlacement {

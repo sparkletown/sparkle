@@ -204,7 +204,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  {IS_BURN && (
+                  {IS_BURN && venue?.showGiftATicket && (
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
