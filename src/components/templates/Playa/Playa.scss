@@ -925,7 +925,8 @@ $playa-profile-name-size: 30px;
         transform: scale(-1, 1);
       }
 
-      video {
+      video,
+      .mirrored video {
         height: 100%;
         min-height: 100%;
       }

@@ -502,7 +502,8 @@ h4 {
     }
   }
 
-  video {
+  video,
+  .mirrored video {
     width: 100%;
     max-width: 600px;
     display: block;
