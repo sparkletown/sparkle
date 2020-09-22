@@ -977,9 +977,11 @@ const Playa = () => {
               chatInputPlaceholder="Chat"
             />
           </div>
-          <div className="donate-pop-up">
-            <DonatePopUp />
-          </div>
+          {venue?.showDonatePopup && (
+            <div className="donate-pop-up">
+              <DonatePopUp />
+            </div>
+          )}
           <div className="create-edit-pop-up">
             <CreateEditPopUp />
           </div>
