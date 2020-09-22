@@ -1,7 +1,7 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
 import "./TableComponent.scss";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
@@ -40,21 +40,20 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 
         {usersSeatedAtTable &&
           usersSeatedAtTable.length >= 0 &&
-          usersSeatedAtTable.map(
-            (user) =>
-              !user.anonMode && (
-                <img
-                  onClick={() => setSelectedUserProfile(user)}
-                  key={user.id}
-                  className="profile-icon table-participant-picture"
-                  src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
-                  title={user.partyName}
-                  alt={`${user.partyName} profile`}
-                  width={imageSize}
-                  height={imageSize}
-                />
-              )
-          )}
+          usersSeatedAtTable.map((user) => (
+            <img
+              onClick={() => setSelectedUserProfile(user)}
+              key={user.id}
+              className="profile-icon table-participant-picture"
+              src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
+              title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
+              alt={`${
+                (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
+              } profile`}
+              width={imageSize}
+              height={imageSize}
+            />
+          ))}
         {usersSeatedAtTable &&
           table.capacity &&
           table.capacity - usersSeatedAtTable.length >= 0 &&
