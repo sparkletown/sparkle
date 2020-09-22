@@ -69,7 +69,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           key={user.id}
           className={profileStyle}
           src={
-            miniAvatars ? pictureUrl : user.pictureUrl || DEFAULT_PROFILE_IMAGE
+            miniAvatars
+              ? pictureUrl
+              : (!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE
           }
           alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
           title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}

@@ -1,7 +1,7 @@
 import React from "react";
 import { User } from "types/User";
 import { RestrictedChatMessage } from "components/context/ChatContext";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { WithId } from "utils/id";
 import { getLinkFromText } from "../../../utils/getLinkFromText";
 import { formatUtcSeconds } from "../../../utils/time";
@@ -32,14 +32,16 @@ export const Message: React.FC<MessageProps> = ({
           onClick={onClick}
           key={`${message.from}-messaging-the-band`}
           className="profile-icon"
-          src={sender.pictureUrl || DEFAULT_PROFILE_IMAGE}
-          title={sender.partyName}
-          alt={`${sender.partyName} profile`}
+          src={(!sender.anonMode && sender.pictureUrl) || DEFAULT_PROFILE_IMAGE}
+          title={(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}
+          alt={`${
+            (!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME
+          } profile`}
           width={profileImageSize}
           height={profileImageSize}
         />
         <div>
-          {sender.partyName}{" "}
+          {(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}{" "}
           <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
           {deletable && (
             <button className="btn-link delete-button" onClick={onDelete}>
