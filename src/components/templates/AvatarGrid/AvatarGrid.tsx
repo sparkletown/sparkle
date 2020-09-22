@@ -16,36 +16,6 @@ type Props = {
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-const ROOMS = [
-  {
-    origin: {
-      row: 1,
-      column: 1,
-    },
-    width: 3,
-    height: 4,
-    image_url: "",
-  },
-  {
-    origin: {
-      row: 5,
-      column: 5,
-    },
-    width: 5,
-    height: 5,
-    image_url: "",
-  },
-  {
-    origin: {
-      row: 20,
-      column: 20,
-    },
-    width: 5,
-    height: 5,
-    image_url: "",
-  },
-];
-
 const AvatarGrid = ({ venueName }: Props) => {
   const { venueId } = useParams();
   const { user, profile } = useUser();
@@ -104,43 +74,35 @@ const AvatarGrid = ({ venueName }: Props) => {
     return null;
   }
 
+  const columns = venue.columns ?? DEFAULT_COLUMNS;
+  const rows = venue.rows ?? DEFAULT_ROWS;
+
   return (
     <>
       <div
         className="avatar-grid-container"
         style={{ backgroundImage: `url(${venue?.mapBackgroundImageUrl})` }}
       >
-        {/* Use venue rooms when origin is provided */}
-        {ROOMS.map((room, index) => {
+        {venue.spaces?.map((room, index) => {
           return (
             <>
               <div
                 key={index}
-                className="room"
+                className="room-title"
                 style={{
-                  position: "absolute",
-                  borderWidth: 2,
-                  zIndex: 1,
-                  borderColor: "#3E3838",
-                  backgroundColor: "#3E3838",
-                  left: -22 + room.origin.row * 46.8,
-                  top: 65 - 32.3 + room.origin.column * 32.3,
+                  left: -22 + room.row * 46.8,
+                  top: 65 - 32.3 + room.column * 32.3,
                   width: room.width * 46,
-                  height: 30,
                 }}
               >
-                Name placeholder
+                {room.name}
               </div>
               <div
                 key={index}
-                className="room"
+                className="room-border"
                 style={{
-                  position: "absolute",
-                  borderWidth: 2,
-                  borderColor: "green",
-                  backgroundColor: "rgba(0,255,0,0.2)",
-                  left: -22 + room.origin.row * 46.8,
-                  top: 65 + room.origin.column * 32.3,
+                  left: -22 + room.row * 46.8,
+                  top: 65 + room.column * 32.3,
                   width: room.width * 46,
                   height: room.height * 33,
                   backgroundImage: `url(${room?.image_url})`,
@@ -149,10 +111,10 @@ const AvatarGrid = ({ venueName }: Props) => {
             </>
           );
         })}
-        {Array.from(Array(COLUMNS)).map((_, colIndex) => {
+        {Array.from(Array(columns)).map((_, colIndex) => {
           return (
             <div className="seat-row" key={colIndex}>
-              {Array.from(Array(ROWS)).map((_, rowIndex) => {
+              {Array.from(Array(rows)).map((_, rowIndex) => {
                 const column = colIndex + 1;
                 const row = rowIndex + 1;
                 const seatedPartygoer = partygoersBySeat?.[row]?.[column]

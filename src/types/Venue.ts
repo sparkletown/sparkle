@@ -2,6 +2,7 @@ import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { AvatarGridRoom } from "./AvatarGrid";
 
 interface Question {
   name: string;
@@ -53,9 +54,12 @@ export interface Venue {
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
-  adultContent: boolean;
+  adultContent?: boolean;
   showAddress?: boolean;
   showGiftATicket?: boolean;
+  columns?: number;
+  rows?: number;
+  spaces?: AvatarGridRoom[];
 }
 
 export interface VenuePlacement {
