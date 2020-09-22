@@ -11,8 +11,9 @@ type LocationUpdateData = {
   room: string | null; // legacy
 };
 
-type KidsModeUpdateData = {
-  kidsMode: boolean;
+type ToggleModeUpdateData = {
+  kidsMode?: boolean;
+  anonMode?: boolean;
 };
 
 export const updateUserProfile = (
@@ -21,7 +22,7 @@ export const updateUserProfile = (
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
-    | KidsModeUpdateData
+    | ToggleModeUpdateData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
 ) => {
   const firestore = firebase.firestore();
