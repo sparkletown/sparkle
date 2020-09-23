@@ -209,7 +209,6 @@ const VenuePage = () => {
       break;
     case VenueTemplate.avatargrid:
       template = <AvatarGrid venueName={venue.name} />;
-      fullscreen = true;
       break;
   }
 

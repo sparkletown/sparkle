@@ -1,12 +1,10 @@
 .avatar-grid-container {
   display: flex;
   flex: 1;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  flex-direction: row;
+  padding-left: 10vh;
+  padding-right: 10vh;
   justify-content: space-between;
+  flex-direction: row;
 
   .room-title {
     border: 1px white solid;
@@ -16,23 +14,26 @@
     z-index: 1;
     border-color: #3e3838;
     background-color: #3e3838;
-    height: 30;
+    text-align: center;
   }
 
   .room-border {
     position: absolute;
     border-width: 2;
+    border-radius: 14px;
     border-color: green;
     background-color: rgba(0, 255, 0, 0.2);
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   .seat-row {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
   }
 
   .seat {
+    margin: 0.5vh;
     width: 3vh;
     height: 3vh;
     background-color: white;
@@ -56,6 +57,7 @@
   }
 
   .not-seat {
+    margin: 0.5vh;
     width: 3vh;
     height: 3vh;
     background-color: white;
