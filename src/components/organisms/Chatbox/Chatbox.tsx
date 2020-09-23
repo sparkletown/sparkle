@@ -13,6 +13,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -130,10 +131,16 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
           <div className="discussion-partner-info">
             <img
               className="profile-picture"
-              src={discussionPartner.pictureUrl}
+              src={
+                discussionPartner.anonMode
+                  ? DEFAULT_PROFILE_IMAGE
+                  : discussionPartner.pictureUrl
+              }
               alt="profile"
             />
-            {discussionPartner.partyName}
+            {discussionPartner.anonMode
+              ? DEFAULT_PARTY_NAME
+              : discussionPartner.partyName}
           </div>
         ) : (
           <div className="chatbox-title">
@@ -168,13 +175,23 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     {privateRecipient ? (
                       <>
                         <img
-                          src={privateRecipient.pictureUrl}
+                          src={
+                            privateRecipient.anonMode
+                              ? DEFAULT_PROFILE_IMAGE
+                              : privateRecipient.pictureUrl
+                          }
                           className="picture-logo"
-                          alt={privateRecipient.partyName}
+                          alt={
+                            privateRecipient.anonMode
+                              ? DEFAULT_PARTY_NAME
+                              : privateRecipient.partyName
+                          }
                           width="20"
                           height="20"
                         />
-                        {privateRecipient.partyName}
+                        {privateRecipient.anonMode
+                          ? DEFAULT_PARTY_NAME
+                          : privateRecipient.partyName}
                       </>
                     ) : (
                       <>
@@ -214,10 +231,12 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     {searchValue && (
                       <ul className="list-unstyled">
                         {userArray
-                          .filter((u) =>
-                            u.partyName
-                              ?.toLowerCase()
-                              .includes(searchValue.toLowerCase())
+                          .filter(
+                            (u) =>
+                              !u.anonMode &&
+                              u.partyName
+                                ?.toLowerCase()
+                                .includes(searchValue.toLowerCase())
                           )
                           .filter((u) => u.id !== undefined)
                           .map((u) => (

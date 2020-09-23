@@ -2,7 +2,7 @@ import React from "react";
 import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { PLAYA_AVATAR_SIZE } from "settings";
+import { DEFAULT_PARTY_NAME, PLAYA_AVATAR_SIZE } from "settings";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
 import AvatarPartygoers from "./AvatarPartygoers";
@@ -53,7 +53,9 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         }}
       >
         {!isVideoRoomOwnedByMe && (
-          <div className={`avatar-name-container`}>{user.partyName}</div>
+          <div className={`avatar-name-container`}>
+            {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+          </div>
         )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />
@@ -86,7 +88,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         >
           {isVideoRoomOwnedByMe && (
             <div className="video_chat-status">
-              {user.partyName}&apos;s
+              {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}&apos;s
               <br />
               live video chat
             </div>

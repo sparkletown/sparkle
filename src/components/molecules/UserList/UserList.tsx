@@ -31,7 +31,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  users = users?.filter((user) => user.partyName && user.id); // quick fix to get rid of anonymous users
+  users = users?.filter((user) => !user.anonMode && user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,

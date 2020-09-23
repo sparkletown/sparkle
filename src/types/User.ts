@@ -27,6 +27,7 @@ export interface User {
   // currently not possible to type them properly
   // [question: string]: string;
   video?: VideoState;
-  kidsMode: boolean;
   mirrorVideo: boolean;
+  kidsMode: boolean;
+  anonMode: boolean;
 }
