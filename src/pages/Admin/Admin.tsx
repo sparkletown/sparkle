@@ -587,7 +587,7 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
-  const roles = useRoles();
+  const { roles } = useRoles();
   if (!roles) {
     return <>Loading...</>;
   }

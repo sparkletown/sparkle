@@ -34,7 +34,7 @@ const ChatDrawer: React.FC<PropsType> = ({
 }) => {
   const { user } = useUser();
   const venueId = useVenueId();
-  const roles = useRoles();
+  const { userRoles } = useRoles();
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
@@ -77,7 +77,7 @@ const ChatDrawer: React.FC<PropsType> = ({
   );
 
   const allowDelete =
-    ((roles && "admin" in roles) ||
+    ((userRoles && "admin" in userRoles) ||
       (user && venue?.owners?.includes(user.uid))) ??
     false;
 
