@@ -113,6 +113,21 @@ const AvatarGrid = ({ venueName }: Props) => {
                   top: 3.5 + room.row * 4 + "vh",
                   width: room.width * 4.3 + "vh",
                   height: room.height * 3.8 + "vh",
+                }}
+              ></div>
+              <div
+                key={index}
+                className="room-border"
+                onClick={() => {
+                  setSelectedRoom(room);
+                  setIsRoomModalOpen(true);
+                }}
+                style={{
+                  zIndex: 3,
+                  left: 17.5 + room.column * 4 + "vh",
+                  top: 3.5 + room.row * 4 + "vh",
+                  width: room.width * 4.3 + "vh",
+                  height: (room.height - 1) * 3.8 + "vh",
                   backgroundImage: `url(${room?.image_url})`,
                 }}
               ></div>
