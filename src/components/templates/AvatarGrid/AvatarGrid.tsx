@@ -8,7 +8,10 @@ import { User } from "types/User";
 import { useParams } from "react-router-dom";
 import "./AvatarGrid.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import { AvatarGridRoom } from "types/AvatarGrid";
+import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
+
 type Props = {
   venueName: string;
 };
@@ -26,6 +29,10 @@ const AvatarGrid = ({ venueName }: Props) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
+  const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
+    undefined
+  );
 
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers.forEach((partygoer) => {
@@ -41,14 +48,10 @@ const AvatarGrid = ({ venueName }: Props) => {
     if (!(row in partygoersBySeat)) {
       partygoersBySeat[row] = [];
     }
-    console.log(partygoersBySeat);
     partygoersBySeat[row][column] = partygoer;
   });
 
-  const takeSeat = (
-    translatedRow: number | null,
-    translatedColumn: number | null
-  ) => {
+  const takeSeat = (row: number, column: number) => {
     if (!user || !profile) return;
     const doc = `users/${user.uid}`;
     const existingData = profile?.data;
@@ -56,8 +59,8 @@ const AvatarGrid = ({ venueName }: Props) => {
       data: {
         ...existingData,
         [venueId]: {
-          row: translatedRow,
-          column: translatedColumn,
+          row,
+          column,
         },
       },
     };
@@ -90,9 +93,10 @@ const AvatarGrid = ({ venueName }: Props) => {
                 key={index}
                 className="room-title"
                 style={{
-                  left: -22 + room.row * 46.8,
-                  top: 65 - 32.3 + room.column * 32.3,
-                  width: room.width * 46,
+                  left: 17.5 + room.column * 4 + "vh",
+                  top: room.row * 3.9 + "vh",
+                  width: room.width * 4.3 + "vh",
+                  height: "3.5vh",
                 }}
               >
                 {room.name}
@@ -100,11 +104,15 @@ const AvatarGrid = ({ venueName }: Props) => {
               <div
                 key={index}
                 className="room-border"
+                onClick={() => {
+                  setSelectedRoom(room);
+                  setIsRoomModalOpen(true);
+                }}
                 style={{
-                  left: -22 + room.row * 46.8,
-                  top: 65 + room.column * 32.3,
-                  width: room.width * 46,
-                  height: room.height * 33,
+                  left: 17.5 + room.column * 4 + "vh",
+                  top: 3.5 + room.row * 4 + "vh",
+                  width: room.width * 4.3 + "vh",
+                  height: room.height * 3.8 + "vh",
                   backgroundImage: `url(${room?.image_url})`,
                 }}
               ></div>
@@ -154,9 +162,17 @@ const AvatarGrid = ({ venueName }: Props) => {
           title={`${venue.name ?? "Grid"} Chat`}
           roomName={venue.name}
           chatInputPlaceholder="Chat"
-          defaultShow={true}
+          defaultShow={false}
         />
       </div>
+      <RoomModal
+        show={isRoomModalOpen}
+        room={selectedRoom}
+        onHide={() => {
+          setSelectedRoom(undefined);
+          setIsRoomModalOpen(false);
+        }}
+      />
     </>
   );
 };
