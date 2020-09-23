@@ -6,6 +6,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
 import { PLAYA_VENUE_SIZE } from "settings";
+import { VenuePlacementState } from "types/Venue";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venueId?: string;
@@ -15,6 +16,11 @@ export const PlayaContainer: React.FC<PropsType> = (props) => {
   const { venueId, ...rest } = props;
   useFirestoreConnect({
     collection: "venues",
+    where: [
+      "placement.state",
+      "in",
+      [VenuePlacementState.SelfPlaced, VenuePlacementState.AdminPlaced],
+    ],
     storeAs: "playaVenues",
   });
 
