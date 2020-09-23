@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import firebase from "firebase/app";
 import { useSelector } from "hooks/useSelector";
+import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 interface ChatContextType {
   sendGlobalChat: (from: string, text: string) => void;
@@ -86,10 +87,14 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
 
   const chatCollectionName = `venues/${venue.id}/chats`;
 
+  const HIDE_BEFORE =
+    new Date().getTime() - 24 * 60 * 60 * 1000 * VENUE_CHAT_AGE_DAYS;
+
   useFirestoreConnect({
     collection: "venues",
     doc: venue.id,
     subcollections: [{ collection: "chats" }],
+    where: [["ts_utc", ">", HIDE_BEFORE]],
     storeAs: "venueChats",
   });
 
