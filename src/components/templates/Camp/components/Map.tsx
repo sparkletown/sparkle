@@ -90,7 +90,7 @@ export const Map: React.FC<PropsType> = ({
                     alt={room.title}
                   />
                 </div>
-                <div className={IS_BURN ? `playa-venue-text` : ``}>
+                <div className={`playa-venue-text`}>
                   <div className="playa-venue-maininfo">
                     <div className="playa-venue-title">{room.title}</div>
                     <div className="playa-venue-people">
