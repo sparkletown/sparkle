@@ -50,8 +50,12 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
           <ul className="floating-dropdown">
             {userArray &&
               userArray
-                .filter((u) =>
-                  u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
+                .filter(
+                  (u) =>
+                    !u.anonMode &&
+                    u.partyName
+                      ?.toLowerCase()
+                      .includes(searchValue.toLowerCase())
                 )
                 .filter((u) => u.id !== undefined)
                 .map((u) => (

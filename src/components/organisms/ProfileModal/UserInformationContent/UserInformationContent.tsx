@@ -43,6 +43,13 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const toggleAnonMode = () => {
+    if (profile) {
+      profile.anonMode = !profile?.anonMode;
+      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+    }
+  };
+
   const toggleMirrorVideo = () => {
     if (profile) {
       profile.mirrorVideo = !profile?.mirrorVideo;
@@ -124,6 +131,19 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         value="Log out"
         onClick={logout}
         type="button"
+      />
+      <label
+        htmlFor={"chk-anonMode"}
+        className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
+      >
+        <span className="title">Anonymous Mode</span>
+      </label>
+      <input
+        type="checkbox"
+        name={"anonMode"}
+        id={"chk-anonMode"}
+        defaultChecked={profile?.anonMode || false}
+        onClick={() => toggleAnonMode()}
       />
     </>
   );

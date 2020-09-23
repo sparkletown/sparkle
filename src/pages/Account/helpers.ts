@@ -15,6 +15,10 @@ type KidsModeUpdateData = {
   kidsMode: boolean;
 };
 
+type AnonModeUpdateData = {
+  anonMode: boolean;
+};
+
 type MirrorVideoUpdateData = {
   mirrorVideo: boolean;
 };
@@ -25,6 +29,7 @@ export const updateUserProfile = (
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData
+    | AnonModeUpdateData
     | KidsModeUpdateData
     | MirrorVideoUpdateData
     | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)

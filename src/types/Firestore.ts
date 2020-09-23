@@ -58,7 +58,8 @@ export interface Firestore {
     playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
     allUsers?: Record<string, User>;
     userModalVisits?: Record<string, UserVisit>;
-    roles: Record<string, Role>;
+    userRoles: Record<string, Role>;
+    allowAllRoles: Record<string, Role>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
