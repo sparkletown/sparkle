@@ -4,7 +4,6 @@ import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
 import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
 import { useUser } from "../../../../hooks/useUser";
-import RoomCard from "./RoomCard";
 import { IS_BURN } from "secrets";
 
 interface PropsType {
@@ -76,6 +75,9 @@ export const Map: React.FC<PropsType> = ({
                     prevRoomClicked === room.title ? undefined : room.title
                   );
                 }
+              }}
+              onMouseEnter={() => {
+                IS_BURN && setRoomHovered(room.title);
               }}
             >
               <div
