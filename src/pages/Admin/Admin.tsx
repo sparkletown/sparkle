@@ -262,7 +262,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            {PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
+            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
               <>
                 <h4
                   className="italic"
