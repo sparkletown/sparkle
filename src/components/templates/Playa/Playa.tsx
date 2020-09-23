@@ -381,7 +381,10 @@ const Playa = () => {
     y: number,
     venuePlacement: VenuePlacement | undefined
   ) => {
-    if (!venuePlacement) {
+    if (
+      !venuePlacement ||
+      venuePlacement.state === VenuePlacementState.Hidden
+    ) {
       return;
     }
     return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
