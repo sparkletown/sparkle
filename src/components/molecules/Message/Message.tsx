@@ -44,7 +44,10 @@ export const Message: React.FC<MessageProps> = ({
           {(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}{" "}
           <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
           {deletable && (
-            <button className="btn-link delete-button" onClick={onDelete}>
+            <button
+              className="btn btn-small btn-danger delete-button"
+              onClick={onDelete}
+            >
               Delete
             </button>
           )}

@@ -9,8 +9,8 @@ import { User } from "types/User";
 import "./VenueOwnerModal.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
-import { addVenueOwner } from "api/admin";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { addVenueOwner, removeVenueOwner } from "api/admin";
 
 interface VenueOwnersModalProps {
   visible: boolean;
@@ -117,6 +117,14 @@ const UserRow: React.FC<UserRowProps> = (props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
+  const onRemoveUserClick = useCallback(async () => {
+    setError(undefined);
+    setLoading(true);
+    await removeVenueOwner(venueId, user.id);
+    setLoading(false);
+    setError("Something went wrong. Try again.");
+  }, [venueId, user.id]);
+
   const onMakeUserClick = useCallback(async () => {
     setError(undefined);
     setLoading(true);
@@ -135,6 +143,14 @@ const UserRow: React.FC<UserRowProps> = (props) => {
           />
           {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
         </div>
+        {isOwner &&
+          (loading ? (
+            <div>Loading...</div>
+          ) : (
+            <button className="btn btn-primary" onClick={onRemoveUserClick}>
+              Remove Owner
+            </button>
+          ))}
         {!isOwner &&
           (loading ? (
             <div>Loading...</div>
