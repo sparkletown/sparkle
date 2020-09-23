@@ -257,7 +257,10 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   >
                     <div className="navbar-link-profile">
                       <img
-                        src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                        src={
+                          (!profile?.anonMode && profile?.pictureUrl) ||
+                          DEFAULT_PROFILE_IMAGE
+                        }
                         className="profile-icon"
                         alt="avatar"
                         width="40"

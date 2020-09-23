@@ -17,6 +17,7 @@ import {
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
   REFETCH_SCHEDULE_MS,
+  DEFAULT_PARTY_NAME,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -680,7 +681,9 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-user-title">
-                    {hoveredUser?.partyName}
+                    {hoveredUser?.anonMode
+                      ? DEFAULT_PARTY_NAME
+                      : hoveredUser?.partyName}
                   </div>
                 </div>
               </div>
