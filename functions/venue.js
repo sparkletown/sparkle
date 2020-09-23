@@ -135,6 +135,21 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
     });
 });
 
+exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const { venueId, ownerId } = data;
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({
+      owners: admin.firestore.FieldValue.arrayRemove(ownerId),
+    });
+});
+
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 

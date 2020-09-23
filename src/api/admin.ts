@@ -283,3 +283,9 @@ export const addVenueOwner = async (venueId: string, newOwnerId: string) =>
     venueId,
     newOwnerId,
   });
+
+export const removeVenueOwner = async (venueId: string, ownerId: string) =>
+  firebase.functions().httpsCallable("venue-removeVenueOwner")({
+    venueId,
+    ownerId,
+  });
