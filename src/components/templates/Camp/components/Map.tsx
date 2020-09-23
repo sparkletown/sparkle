@@ -4,6 +4,7 @@ import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
 import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
 import { useUser } from "../../../../hooks/useUser";
+import RoomCard from "./RoomCard";
 import { IS_BURN } from "secrets";
 
 interface PropsType {
@@ -44,6 +45,10 @@ export const Map: React.FC<PropsType> = ({
   const roomEnter = (room: CampRoomData) => {
     room && user && enterRoom(user, room.title);
   };
+  const openModal = (room: CampRoomData) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  };
 
   return (
     <>
@@ -64,17 +69,13 @@ export const Map: React.FC<PropsType> = ({
               }}
               key={room.title}
               onClick={() => {
-                if (IS_BURN) {
-                  setSelectedRoom(room);
-                  setIsRoomModalOpen(true);
+                if (!IS_BURN) {
+                  openModal(room);
                 } else {
                   setRoomClicked((prevRoomClicked) =>
                     prevRoomClicked === room.title ? undefined : room.title
                   );
                 }
-              }}
-              onMouseEnter={() => {
-                IS_BURN && setRoomHovered(room.title);
               }}
             >
               <div
