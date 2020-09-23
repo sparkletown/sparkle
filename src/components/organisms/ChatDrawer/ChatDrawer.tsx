@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useRoles from "hooks/useRoles";
 import { useParams } from "react-router-dom";
+import { SEED_START_UTC_SECONDS } from "settings";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -62,6 +63,7 @@ const ChatDrawer: React.FC<PropsType> = ({
       chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
     reset();
   };
+  const BEFORE_SEED = SEED_START_UTC_SECONDS - 5 * 1440000;
   const chatsToDisplay = useMemo(
     () =>
       chats &&
@@ -70,10 +72,11 @@ const ChatDrawer: React.FC<PropsType> = ({
           (message) =>
             message.deleted !== true &&
             message.type === "room" &&
+            message.ts_utc.toMillis() > BEFORE_SEED &&
             message.to === roomName
         )
         .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
-    [chats, roomName]
+    [chats, roomName, BEFORE_SEED]
   );
 
   const allowDelete =
