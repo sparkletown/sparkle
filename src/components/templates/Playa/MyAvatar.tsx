@@ -6,7 +6,11 @@ import {
   UserVideoState,
 } from "types/RelayMessage";
 import { throttle } from "lodash";
-import { PLAYA_WIDTH_AND_HEIGHT, PLAYA_AVATAR_SIZE } from "settings";
+import {
+  PLAYA_WIDTH_AND_HEIGHT,
+  PLAYA_AVATAR_SIZE,
+  DEFAULT_PARTY_NAME,
+} from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
@@ -265,7 +269,9 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         ref={ref}
       >
         {!isVideoRoomOwnedByMe && (
-          <div className={`avatar-name-container`}>{profile.partyName}</div>
+          <div className={`avatar-name-container`}>
+            {profile.anonMode ? DEFAULT_PARTY_NAME : profile.partyName}
+          </div>
         )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />

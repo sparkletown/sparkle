@@ -25,7 +25,11 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
 
   let openVenues = [];
-  const venues = await admin.firestore().collection("venues").get();
+  const venues = await admin
+    .firestore()
+    .collection("venues")
+    .where("placement.state", "in", ["SELF_PLACED", "ADMIN_PLACED"])
+    .get();
   await Promise.all(
     venues.docs.map(async (venue) => {
       const template = venue.data().template;
@@ -81,7 +85,11 @@ exports.getLiveAndFutureEvents = functions.https.onCall(
       const now = new Date().getTime();
 
       let openVenues = [];
-      const venues = await admin.firestore().collection("venues").get();
+      const venues = await admin
+        .firestore()
+        .collection("venues")
+        .where("placement.state", "in", ["SELF_PLACED", "ADMIN_PLACED"])
+        .get();
       await Promise.all(
         venues.docs.map(async (venue) => {
           const template = venue.data().template;

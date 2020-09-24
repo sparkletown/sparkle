@@ -21,6 +21,8 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
+  const whatsOnText = currentEvent ? "What's on now" : "What's on next";
+
   return (
     <div className="room-modal-ongoing-event-container">
       {eventToDisplay && (
@@ -31,7 +33,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            What's on now
+            {whatsOnText}
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>

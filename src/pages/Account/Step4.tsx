@@ -33,7 +33,7 @@ const Step4 = () => {
           </button>
           <button
             className={`btn btn-primary btn-block btn-centered`}
-            onClick={() => history.push(`/enter/step6`)}
+            onClick={() => history.push(`/enter/step5`)}
           >
             Continue
           </button>
