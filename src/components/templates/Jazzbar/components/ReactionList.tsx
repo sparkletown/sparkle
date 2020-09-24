@@ -46,16 +46,27 @@ const ReactionList: React.FC<ReactionListProps> = ({
               key={`${message.created_by}-messaging-the-band`}
               className="profile-icon"
               src={
-                usersById[message.created_by]?.pictureUrl ||
+                (!usersById[message.created_by]?.anonMode &&
+                  usersById[message.created_by]?.pictureUrl) ||
                 DEFAULT_PROFILE_IMAGE
               }
-              title={usersById[message.created_by]?.partyName}
-              alt={`${usersById[message.created_by]?.partyName} profile`}
+              title={
+                (!usersById[message.created_by]?.anonMode &&
+                  usersById[message.created_by]?.partyName) ||
+                DEFAULT_PARTY_NAME
+              }
+              alt={`${
+                (!usersById[message.created_by]?.anonMode &&
+                  usersById[message.created_by]?.partyName) ||
+                DEFAULT_PARTY_NAME
+              } profile`}
               width={profileImageSize}
               height={profileImageSize}
             />
             <div className="partyname-bubble">
-              {usersById[message.created_by]?.partyName || DEFAULT_PARTY_NAME}
+              {(!usersById[message.created_by]?.anonMode &&
+                usersById[message.created_by]?.partyName) ||
+                DEFAULT_PARTY_NAME}
             </div>
             <div
               className={`message-bubble ${
