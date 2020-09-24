@@ -59,7 +59,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
       case VenueTemplate.zoomroom:
         return (
           <div>
-            <span className="title">Zoom URL</span>
+            <span className="title">URL</span>
             <span className="content">
               <a href={venue.zoomUrl} target="_blank" rel="noopener noreferrer">
                 {venue.zoomUrl}
@@ -149,7 +149,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
-              Playa icon
+              Paddock icon
             </div>
             <div className="content">
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />

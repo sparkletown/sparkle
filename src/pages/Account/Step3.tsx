@@ -90,7 +90,11 @@ const Step3 = () => {
 
   return (
     <div className="splash-page-container">
-      <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
+      <img
+        className="playa-img"
+        src={PLAYA_IMAGE}
+        alt="Paddock Background Map"
+      />
       <div className="step-container ten-principles-burning">
         <div className="login-container">
           <h2>The 10 principles of Burning Man</h2>

@@ -12,7 +12,11 @@ export interface ProfileFormData {
 const Step1 = () => {
   return (
     <div className="splash-page-container">
-      <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
+      <img
+        className="playa-img"
+        src={PLAYA_IMAGE}
+        alt="Paddock Background Map"
+      />
       <AuthenticationModal show={true} onHide={() => {}} showAuth="register" />
     </div>
   );
