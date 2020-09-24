@@ -37,7 +37,7 @@ export const PlayaBackground: React.FC = () => {
     <img
       className={`playa-background ${daypartClassName}`}
       src={PLAYA_IMAGE}
-      alt="Playa Background Map"
+      alt="Paddock Background Map"
     />
   );
 };

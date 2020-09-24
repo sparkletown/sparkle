@@ -92,12 +92,15 @@ export const Map: React.FC<PropsType> = ({
                     alt={room.title}
                   />
                 </div>
+
                 <div className={`playa-venue-text`}>
                   <div className="playa-venue-maininfo">
                     <div className="playa-venue-title">{room.title}</div>
-                    <div className="playa-venue-people">
-                      {attendances[room.title] ?? 0}
-                    </div>
+                    {attendances[room.title] > 0 && (
+                      <div className="playa-venue-people">
+                        {attendances[room.title] ?? 0}
+                      </div>
+                    )}
                   </div>
                   <div className="playa-venue-secondinfo">
                     <div className="playa-venue-desc">

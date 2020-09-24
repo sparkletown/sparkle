@@ -40,7 +40,7 @@ const SplashPage = () => {
         <img
           className="playa-img"
           src={PLAYA_IMAGE}
-          alt="Playa Background Map"
+          alt="Paddock Background Map"
         />
         <div className="welcome-to-the-burn">WELCOME TO THE ONLINE BURN</div>
         <div className="step-container step0-container">
