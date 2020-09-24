@@ -47,11 +47,15 @@ export interface Venue {
   mapBackgroundImageUrl?: string;
   placementRequests?: string;
   radioStations?: string[];
+  radioTitle?: string;
   dustStorm?: boolean;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
+  adultContent: boolean;
+  showAddress?: boolean;
+  showGiftATicket?: boolean;
 }
 
 export interface VenuePlacement {
@@ -118,5 +122,6 @@ export const createJazzbar = (values: FormValues): Venue => {
     owners: [],
     profile_questions: values.profileQuestions ?? [],
     code_of_conduct_questions: [],
+    adultContent: values.adultContent || false,
   };
 };

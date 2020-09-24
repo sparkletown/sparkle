@@ -5,6 +5,8 @@ import { useFirebase } from "react-redux-firebase";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
+import { DEFAULT_VENUE, TICKET_URL } from "settings";
+import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -16,7 +18,6 @@ interface PropsType {
 interface LoginFormData {
   email: string;
   password: string;
-  code: string;
 }
 
 const LoginForm: React.FunctionComponent<PropsType> = ({
@@ -40,7 +41,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signIn(data);
       if (IS_BURN && auth.user) {
         firebase
@@ -53,19 +54,27 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
                 .firestore()
                 .doc(`userprivate/${auth.user.uid}`)
                 .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.code],
+                  codes_used: [...(doc.data()?.codes_used || []), data.email],
                 });
             }
           });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      if (IS_BURN) history.push("/in/playa");
+      if (IS_BURN) history.push(venueInsideUrl(DEFAULT_VENUE));
     } catch (error) {
       if (error.response?.status === 404) {
-        setError("code", "validation", `Code ${data.code} is not valid`);
+        setError(
+          "email",
+          "validation",
+          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+        );
       } else if (error.response?.status >= 500) {
-        setError("code", "validation", `Error checking code: ${error.message}`);
+        setError(
+          "email",
+          "validation",
+          `Error checking ticket: ${error.message}`
+        );
       } else {
         setError("email", "firebase", error.message);
       }
@@ -92,9 +101,10 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
           )}
-          {errors.email && errors.email.type === "firebase" && (
-            <span className="input-error">{errors.email.message}</span>
-          )}
+          {errors.email &&
+            ["firebase", "validation"].includes(errors.email.type) && (
+              <span className="input-error">{errors.email.message}</span>
+            )}
         </div>
         <div className="input-group">
           <input
@@ -110,30 +120,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="code"
-              className="input-block input-centered"
-              type="code"
-              placeholder="Ticket Code From Your Email"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.code && (
-              <span className="input-error">
-                {errors.code.type === "required" ? (
-                  <>
-                    Enter the ticket code from your email. The code is required.
-                  </>
-                ) : (
-                  errors.code.message
-                )}
-              </span>
-            )}
-          </div>
-        )}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"

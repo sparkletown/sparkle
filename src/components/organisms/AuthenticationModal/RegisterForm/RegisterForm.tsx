@@ -5,9 +5,9 @@ import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory, useParams } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
-import dayjs from "dayjs";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
+import { TICKET_URL } from "settings";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -19,8 +19,6 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
-  date_of_birth: string;
-  code: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -31,7 +29,6 @@ export interface CodeOfConductQuestion {
 
 export interface RegisterData {
   codes_used: string[];
-  date_of_birth: string;
 }
 
 const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
@@ -73,12 +70,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.code);
+      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signUp(data);
       if (IS_BURN && auth.user) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.code],
-          date_of_birth: data.date_of_birth,
+          codes_used: [data.email],
         });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
@@ -88,9 +84,17 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       );
     } catch (error) {
       if (error.response?.status === 404) {
-        setError("code", "validation", `Code ${data.code} is not valid`);
+        setError(
+          "email",
+          "validation",
+          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+        );
       } else if (error.response?.status >= 500) {
-        setError("code", "validation", `Error checking code: ${error.message}`);
+        setError(
+          "email",
+          "validation",
+          `Error checking ticket: ${error.message}`
+        );
       } else {
         setError("email", "firebase", error.message);
       }
@@ -118,9 +122,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           {errors.email && errors.email.type === "required" && (
             <span className="input-error">Email is required</span>
           )}
-          {errors.email && errors.email.type === "firebase" && (
-            <span className="input-error">{errors.email.message}</span>
-          )}
+          {errors.email &&
+            ["firebase", "validation"].includes(errors.email.type) && (
+              <span className="input-error">{errors.email.message}</span>
+            )}
         </div>
         <div className="input-group">
           <input
@@ -147,54 +152,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="date_of_birth"
-              className="input-block input-centered"
-              type="date"
-              max={dayjs().subtract(18, "year").format("YYYY-MM-DD")}
-              ref={register}
-            />
-            <span
-              className={`input-${
-                errors.date_of_birth && errors.date_of_birth.type === "pattern"
-                  ? "error"
-                  : "info"
-              }`}
-            >
-              You must be at least 18 years old to continue
-            </span>
-            {errors.date_of_birth &&
-              errors.date_of_birth.type === "required" && (
-                <span className="input-error">Date of birth is required</span>
-              )}
-          </div>
-        )}
-        {IS_BURN && (
-          <div className="input-group">
-            <input
-              name="code"
-              className="input-block input-centered"
-              type="code"
-              placeholder="Ticket Code From Your Email"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.code && (
-              <span className="input-error">
-                {errors.code.type === "required" ? (
-                  <>
-                    Enter the ticket code from your email. The code is required.
-                  </>
-                ) : (
-                  errors.code.message
-                )}
-              </span>
-            )}
-          </div>
-        )}
         {IS_BURN &&
           CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>

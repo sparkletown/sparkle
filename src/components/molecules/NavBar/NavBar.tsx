@@ -17,8 +17,8 @@ import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
   PLAYA_VENUE_NAME,
-  ALL_BURN_TEMPLATES,
   SPARKLE_LOGO_URL,
+  DEFAULT_VENUE,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -103,7 +103,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const radioPopover = (
     <Popover id="radio-popover">
       <Popover.Content>
-        <RadioModal volume={volume} setVolume={setVolume} />
+        <RadioModal
+          volume={volume}
+          setVolume={setVolume}
+          title={venue?.radioTitle}
+        />
       </Popover.Content>
     </Popover>
   );
@@ -136,9 +140,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
-  const isBurnTemplate =
-    !!venue?.template && IS_BURN && ALL_BURN_TEMPLATES.includes(venue.template);
-
   return (
     <>
       <header>
@@ -150,41 +151,41 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   to={redirectionUrl ?? venueId ? venueInsideUrl(venueId) : "/"}
                 >
                   <img
-                    src={
-                      isBurnTemplate ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL
-                    }
+                    src={IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL}
                     alt="Logo"
                     className={`logo-img ${
-                      isBurnTemplate ? "sparkleverse" : "sparkle"
+                      IS_BURN ? "sparkleverse" : "sparkle"
                     }`}
                   />
                 </Link>
               </div>
-              {isBurnTemplate && (
+              {IS_BURN && (
                 <div className="navbar-info">
                   <PlayaTime />
-                  <PlayaAddress />
+                  {venue?.showAddress && <PlayaAddress />}
                 </div>
               )}
             </div>
             {user ? (
               <>
-                {isBurnTemplate && (
+                {IS_BURN && (
                   <div className="navbar-dropdown-middle">
                     {isOnPlaya ? (
                       <OnlineStats />
                     ) : (
                       <span
-                        onClick={() => (window.location.href = "/in/playa")}
+                        onClick={() =>
+                          (window.location.href = venueInsideUrl(DEFAULT_VENUE))
+                        }
                         className="playa-link"
                       >
-                        Back to the Playa
+                        Back to the Paddock
                       </span>
                     )}
                   </div>
                 )}
                 <div className="navbar-links">
-                  {isBurnTemplate && (
+                  {IS_BURN && (
                     <div className="profile-icon button-container navbar-link-schedule">
                       <div onClick={() => setShowEventSchedule(true)}>
                         Live Schedule
@@ -203,7 +204,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  {isBurnTemplate && (
+                  {IS_BURN && venue?.showGiftATicket && (
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
@@ -233,7 +234,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       </span>
                     </OverlayTrigger>
                   )}
-                  {isBurnTemplate && (
+                  {IS_BURN && (
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
@@ -256,7 +257,10 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   >
                     <div className="navbar-link-profile">
                       <img
-                        src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
+                        src={
+                          (!profile?.anonMode && profile?.pictureUrl) ||
+                          DEFAULT_PROFILE_IMAGE
+                        }
                         className="profile-icon"
                         alt="avatar"
                         width="40"

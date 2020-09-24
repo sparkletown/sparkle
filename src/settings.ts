@@ -16,8 +16,9 @@ export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
+export const VENUE_CHAT_AGE_DAYS = 14;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
-export const PLAYA_VENUE_NAME = "Playa";
+export const PLAYA_VENUE_NAME = "Paddock";
 export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
 export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
@@ -27,6 +28,7 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
+export const TICKET_URL = "https://qkt.io/seed2020";
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
@@ -44,12 +46,13 @@ export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
-// playa is 4000x4000 pixels
-export const PLAYA_WIDTH_AND_HEIGHT = 4000;
+// playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
+export const PLAYA_WIDTH_AND_HEIGHT = 2000;
 export const PLAYA_AVATAR_SIZE = 24;
 export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-export const PLAYA_IMAGE = "/maps/playa4k.jpg";
+// Burning Seed: playa is named paddock
+export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
 export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   iconImage: {
@@ -114,14 +117,14 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Playa",
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Paddock",
     ],
   },
   {
     template: VenueTemplate.themecamp,
     name: "Theme Camp",
     description: [
-      "Add your camp to the Playa in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "Add your camp to the Paddock in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
 
@@ -129,7 +132,7 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
-      "Embed any 2-D or 3-D art experience on the Playa with this special template, which allows viewers to chat to each other as they experience your art.",
+      "Embed any 2-D or 3-D art experience on the Paddock with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
 ];
@@ -145,7 +148,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.artcar,
     name: "Art Car",
-    description: ["Create a space on the Playa that moves around."],
+    description: ["Create a space on the Paddock that moves around."],
   },
   {
     template: VenueTemplate.performancevenue,
@@ -175,7 +178,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "hirespace";
+export const DEFAULT_VENUE = IS_BURN ? "paddock" : "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);

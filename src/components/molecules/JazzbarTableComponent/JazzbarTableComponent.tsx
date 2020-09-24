@@ -1,6 +1,6 @@
 import React from "react";
 import { TableComponentPropsType } from "types/Table";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PROFILE_IMAGE, DEFAULT_PARTY_NAME } from "settings";
 
 const DEFAULT_TABLE_CAPACITY = 7;
 const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
@@ -28,9 +28,15 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
               onClick={() => setSelectedUserProfile(user)}
               key={`${user.lastSeenIn}-${idx}`}
               className="profile-icon"
-              src={user.pictureUrl || DEFAULT_PROFILE_IMAGE}
-              title={user.partyName}
-              alt={`${user.partyName} profile`}
+              src={
+                user.anonMode || !user.pictureUrl
+                  ? DEFAULT_PROFILE_IMAGE
+                  : user.pictureUrl
+              }
+              title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+              alt={`${
+                user.anonMode ? DEFAULT_PARTY_NAME : user.partyName
+              } profile`}
               width={imageSize}
               height={imageSize}
             />

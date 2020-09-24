@@ -5,7 +5,7 @@ function isUpdateRestrictedToField(request, field) {
 }
 
 function role(name) {
-  return get(/databases/$(database)/documents/roles/$(role)).data
+  return get(/databases/$(database)/documents/roles/$(name)).data
 }
 
 service cloud.firestore {

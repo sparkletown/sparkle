@@ -470,6 +470,10 @@ h4 {
     padding: 0;
     border-radius: 22px;
 
+    .mirrored {
+      transform: scale(-1, 1);
+    }
+
     .profile-icon {
       position: absolute;
       bottom: 0;
@@ -517,6 +521,10 @@ h4 {
       display: flex;
       flex-grow: 1;
       background: $black;
+
+      .mirrored {
+        transform: scale(-1, 1);
+      }
     }
   }
 }
@@ -533,6 +541,10 @@ h4 {
   .participant {
     display: flex;
     flex-grow: 1;
+
+    .mirrored {
+      transform: scale(-1, 1);
+    }
   }
 }
 
@@ -722,7 +734,8 @@ span.link {
         img {
           margin-right: 10px;
         }
-        .timestamp {
+        .timestamp,
+        .delete-button {
           margin-left: 10px;
         }
       }

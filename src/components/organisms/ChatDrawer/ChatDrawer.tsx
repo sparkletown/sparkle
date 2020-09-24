@@ -13,7 +13,7 @@ import {
   faAngleDoubleLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import useRoles from "hooks/useRoles";
-import { useParams } from "react-router-dom";
+import { useVenueId } from "hooks/useVenueId";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -33,8 +33,8 @@ const ChatDrawer: React.FC<PropsType> = ({
   defaultShow,
 }) => {
   const { user } = useUser();
-  const { venueId } = useParams();
-  const roles = useRoles();
+  const venueId = useVenueId();
+  const { userRoles } = useRoles();
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
@@ -77,16 +77,16 @@ const ChatDrawer: React.FC<PropsType> = ({
   );
 
   const allowDelete =
-    ((roles && "admin" in roles) ||
+    ((userRoles && "admin" in userRoles) ||
       (user && venue?.owners?.includes(user.uid))) ??
     false;
 
-  function deleteMessage(id: string) {
-    firebase
+  const deleteMessage = async (id: string) => {
+    await firebase
       .firestore()
       .doc(`venues/${venueId}/chats/${id}`)
       .update({ deleted: true });
-  }
+  };
 
   return (
     <div

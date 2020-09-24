@@ -7,6 +7,7 @@ import _ from "lodash";
 import { formatDate } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { REFETCH_SCHEDULE_MS } from "settings";
+import { useUser } from "hooks/useUser";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -26,6 +27,7 @@ const DAYS_AHEAD = 7;
 export const SchedulePageModal: React.FunctionComponent = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
+  const { profile } = useUser();
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -35,7 +37,11 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       getOnlineStats()
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
+          setOpenVenues(
+            profile?.kidsMode
+              ? openVenues.filter((v) => !v.venue.adultContent)
+              : openVenues
+          );
           setLoaded(true);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
@@ -45,7 +51,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [profile]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];

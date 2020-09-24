@@ -17,6 +17,7 @@ import {
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
   REFETCH_SCHEDULE_MS,
+  DEFAULT_PARTY_NAME,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -214,7 +215,7 @@ const Playa = () => {
   useEffect(() => {
     if (!loadedInitialState.current) {
       try {
-        const storedState = localStorage.getItem("playa");
+        const storedState = localStorage.getItem(PLAYA_VENUE_NAME);
         if (storedState) {
           const state = JSON.parse(storedState);
           setZoom(Math.max(minZoom(), Math.min(state.zoom, ZOOM_MAX)));
@@ -225,7 +226,7 @@ const Playa = () => {
       } catch {}
     }
     localStorage.setItem(
-      "playa",
+      PLAYA_VENUE_NAME,
       JSON.stringify({ zoom, x: centerX, y: centerY })
     );
   }, [zoom, centerX, centerY, setZoom]);
@@ -373,7 +374,7 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user && updateLocationData(user, "playa");
+    user && updateLocationData(user, PLAYA_VENUE_NAME);
   }, [setShowModal, user]);
 
   const distanceToVenue = (
@@ -381,7 +382,10 @@ const Playa = () => {
     y: number,
     venuePlacement: VenuePlacement | undefined
   ) => {
-    if (!venuePlacement) {
+    if (
+      !venuePlacement ||
+      venuePlacement.state === VenuePlacementState.Hidden
+    ) {
       return;
     }
     return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
@@ -410,7 +414,12 @@ const Playa = () => {
       getOnlineStats()
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
+          setOpenVenues(
+            profile?.kidsMode
+              ? openVenues.filter((v) => !v.venue.adultContent)
+              : openVenues
+          );
+          //setOpenVenues(openVenues);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
     };
@@ -419,7 +428,7 @@ const Playa = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [profile]);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
@@ -672,7 +681,9 @@ const Playa = () => {
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
                   <div className="playa-user-title">
-                    {hoveredUser?.partyName}
+                    {hoveredUser?.anonMode
+                      ? DEFAULT_PARTY_NAME
+                      : hoveredUser?.partyName}
                   </div>
                 </div>
               </div>
@@ -959,7 +970,7 @@ const Playa = () => {
               <input
                 type="text"
                 className="playa-controls-shout-text"
-                placeholder="Shout across the playa..."
+                placeholder="Shout across the paddock..."
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
               />

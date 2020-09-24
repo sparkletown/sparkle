@@ -7,6 +7,7 @@ import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
+import { updateUserProfile } from "pages/Account/helpers";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -34,6 +35,27 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   };
 
   if (!user) return <></>;
+
+  const toggleKidsMode = () => {
+    if (profile) {
+      profile.kidsMode = !profile?.kidsMode;
+      updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
+    }
+  };
+
+  const toggleAnonMode = () => {
+    if (profile) {
+      profile.anonMode = !profile?.anonMode;
+      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+    }
+  };
+
+  const toggleMirrorVideo = () => {
+    if (profile) {
+      profile.mirrorVideo = !profile?.mirrorVideo;
+      updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
+    }
+  };
 
   return (
     <>
@@ -66,7 +88,32 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
-
+      <label
+        htmlFor="chk-kidsMode"
+        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
+      >
+        Kids Mode
+      </label>
+      <input
+        type="checkbox"
+        name="kidsMode"
+        id="chk-kidsMode"
+        defaultChecked={profile?.kidsMode || false}
+        onClick={() => toggleKidsMode()}
+      />
+      <label
+        htmlFor="chk-mirrorVideo"
+        className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
+      >
+        Mirror my video
+      </label>
+      <input
+        type="checkbox"
+        name="mirrorVideo"
+        id="chk-mirrorVideo"
+        defaultChecked={profile?.kidsMode || false}
+        onClick={() => toggleMirrorVideo()}
+      />
       <input
         className="btn button btn-primary"
         value="Edit profile"
@@ -84,6 +131,19 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         value="Log out"
         onClick={logout}
         type="button"
+      />
+      <label
+        htmlFor={"chk-anonMode"}
+        className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
+      >
+        <span className="title">Anonymous Mode</span>
+      </label>
+      <input
+        type="checkbox"
+        name={"anonMode"}
+        id={"chk-anonMode"}
+        defaultChecked={profile?.anonMode || false}
+        onClick={() => toggleAnonMode()}
       />
     </>
   );

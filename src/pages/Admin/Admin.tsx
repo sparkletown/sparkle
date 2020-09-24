@@ -54,6 +54,7 @@ import Fuse from "fuse.js";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 import { dateEventTimeFormat } from "../../utils/time";
 import useRoles from "hooks/useRoles";
+import { IS_BURN } from "secrets";
 
 dayjs.extend(advancedFormat);
 
@@ -261,13 +262,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            {PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
+            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
               <>
                 <h4
                   className="italic"
                   style={{ fontSize: "30px", textAlign: "center" }}
                 >
-                  How your experience appears on the playa
+                  How your experience appears on the paddock
                 </h4>
                 <div className="container venue-entrance-experience-container">
                   <div
@@ -586,11 +587,11 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
-  const roles = useRoles();
+  const { roles } = useRoles();
   if (!roles) {
     return <>Loading...</>;
   }
-  if (!("admin" in roles)) {
+  if (!IS_BURN && !("admin" in roles)) {
     return <>Forbidden</>;
   }
 

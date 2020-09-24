@@ -18,7 +18,7 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import { playaAddress } from "utils/address";
+// import { playaAddress } from "utils/address";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -215,7 +215,7 @@ const OnlineStats: React.FC = () => {
                                 </b>{" "}
                                 people in this room
                               </span>
-                              {venue.placement && (
+                              {/* {venue.placement && (
                                 <span className="venue-address">
                                   Address:{" "}
                                   {playaAddress(
@@ -223,7 +223,7 @@ const OnlineStats: React.FC = () => {
                                     venue.placement.y
                                   )}
                                 </span>
-                              )}
+                              )} */}
                               <span className="venue-subtitle">
                                 {venue.config?.landingPageConfig.subtitle}
                               </span>
@@ -286,22 +286,26 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="people">
-                  {filteredUsers.map((user, index) => (
-                    <div
-                      key={index}
-                      className="user-row"
-                      onClick={() => setSelectedUserProfile(user)}
-                    >
-                      <div>
-                        <img src={user.pictureUrl} alt="user profile pic" />
-                        <span>{user.partyName}</span>
-                      </div>
-                      <FontAwesomeIcon
-                        icon={faCommentDots}
-                        className="chat-icon"
-                      />
-                    </div>
-                  ))}
+                  {filteredUsers.map(
+                    (user, index) =>
+                      !user.anonMode && (
+                        <div
+                          key={index}
+                          className="user-row"
+                          onClick={() => setSelectedUserProfile(user)}
+                        >
+                          <div>
+                            <img src={user.pictureUrl} alt="user profile pic" />
+                            <span>{user.partyName}</span>
+                          </div>
+
+                          <FontAwesomeIcon
+                            icon={faCommentDots}
+                            className="chat-icon"
+                          />
+                        </div>
+                      )
+                  )}
                 </div>
               </div>
             </div>

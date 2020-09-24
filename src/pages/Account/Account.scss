@@ -9,6 +9,16 @@ $large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
 $login-max-width: 540px;
 $login-wide-max-width: 1140px;
 
+$primary: #7c46fb;
+$black: #000000;
+$white: #fff;
+
+$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+
+$dark: #1a1d24;
+$modal-max-width: 540px;
+$page-max-width: 1240px;
+
 .checkbox {
   display: block;
   text-align: left;
@@ -220,16 +230,43 @@ $login-wide-max-width: 1140px;
     overflow-y: auto;
     bottom: 10%;
 
-    .form {
-      margin-top: 2rem;
-    }
-
     .principle-name {
       font-weight: bold;
       font-size: 15px;
+      cursor: pointer;
     }
     .principle-description {
       font-size: 12px;
+      cursor: pointer;
+    }
+    .form {
+      margin-top: 2rem;
+      //width: 40%;
+      padding: 1rem;
+      display: inline-block;
+      img {
+        cursor: pointer;
+      }
+      .video-name {
+        // display: inline-block;
+        // text-align: left;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .video-description {
+        // display: inline-block;
+        //text-align: left;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .video-thumb {
+        display: inline-block;
+        cursor: pointer;
+      }
+    }
+    button {
+      margin-top: 2rem;
     }
   }
   .step4-container {
@@ -327,6 +364,64 @@ $login-wide-max-width: 1140px;
     }
     .cta {
       margin-top: 2rem;
+    }
+  }
+}
+
+.modal-content {
+  width: 100%;
+  max-width: $modal-max-width;
+  margin: 0 auto;
+  padding: 20px 0 0 0;
+  background-color: $black;
+  box-shadow: $large-shadow;
+  text-align: left;
+  border-radius: $border-radius;
+  overflow: hidden;
+
+  h3 {
+    margin-bottom: 1rem;
+    padding: 0 $side-padding;
+  }
+  .modal-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    width: 100%;
+    align-items: center; /* Align Items Vertically */
+    justify-content: space-around;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba($white, 0.2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    button {
+      background-color: transparent;
+      border: none;
+      display: block;
+      position: relative;
+      color: white;
+      text-align: center;
+      padding: 4px 10px;
+      opacity: 0.7;
+      font-weight: 400;
+      &:hover {
+        opacity: 1;
+      }
+      &.selected {
+        opacity: 1;
+        font-weight: bold;
+        color: yellow;
+        outline: none;
+        &:after {
+          content: "";
+          position: absolute;
+          height: 2px;
+          border-radius: 4px;
+          width: 100%;
+          background-color: white;
+          left: 0;
+          bottom: -1px;
+        }
+      }
     }
   }
 }
