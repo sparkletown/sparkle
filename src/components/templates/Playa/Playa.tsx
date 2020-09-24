@@ -979,7 +979,7 @@ const Playa = () => {
           <div className="chat-pop-up">
             <ChatDrawer
               roomName={"PLAYA"}
-              title={"Playa Chat"}
+              title={"Paddock Chat"}
               chatInputPlaceholder="Chat"
             />
           </div>

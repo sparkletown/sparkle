@@ -44,6 +44,10 @@ export const Map: React.FC<PropsType> = ({
   const roomEnter = (room: CampRoomData) => {
     room && user && enterRoom(user, room.title);
   };
+  const openModal = (room: CampRoomData) => {
+    setSelectedRoom(room);
+    setIsRoomModalOpen(true);
+  };
 
   return (
     <>
@@ -64,9 +68,8 @@ export const Map: React.FC<PropsType> = ({
               }}
               key={room.title}
               onClick={() => {
-                if (IS_BURN) {
-                  setSelectedRoom(room);
-                  setIsRoomModalOpen(true);
+                if (!IS_BURN) {
+                  openModal(room);
                 } else {
                   setRoomClicked((prevRoomClicked) =>
                     prevRoomClicked === room.title ? undefined : room.title
@@ -89,12 +92,15 @@ export const Map: React.FC<PropsType> = ({
                     alt={room.title}
                   />
                 </div>
+
                 <div className={`playa-venue-text`}>
                   <div className="playa-venue-maininfo">
                     <div className="playa-venue-title">{room.title}</div>
-                    <div className="playa-venue-people">
-                      {attendances[room.title] ?? 0}
-                    </div>
+                    {attendances[room.title] > 0 && (
+                      <div className="playa-venue-people">
+                        {attendances[room.title] ?? 0}
+                      </div>
+                    )}
                   </div>
                   <div className="playa-venue-secondinfo">
                     <div className="playa-venue-desc">
