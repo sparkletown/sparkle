@@ -2,7 +2,11 @@ import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
 import "./DonatePopUp.scss";
-import { BURNING_MAN_DONATION_SITE } from "../../../../src/settings";
+import {
+  BURNING_MAN_DONATION_SITE,
+  BURNING_MAN_DONATION_TEXT,
+  BURNING_MAN_DONATION_TITLE,
+} from "../../../../src/settings";
 
 export const DonatePopUp = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
@@ -14,15 +18,12 @@ export const DonatePopUp = () => {
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
       <InformationCard title="Donate to Burning Man">
-        <p
-          className="title-sidebar"
-          style={{ fontSize: 15 }}
-        >{`Please consider a donation to the Burning Man Org.`}</p>
-        <p
-          className="title-sidebar"
-          style={{ fontSize: 15 }}
-        >{`The world needs burning man.
-        And burning man needs you. `}</p>
+        <p className="title-sidebar" style={{ fontSize: 15 }}>
+          {BURNING_MAN_DONATION_TITLE}
+        </p>
+        <p className="title-sidebar" style={{ fontSize: 15 }}>
+          {BURNING_MAN_DONATION_TEXT}
+        </p>
         <div className="donate-container">
           <a
             className="btn btn-primary join-button"

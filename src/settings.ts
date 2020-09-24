@@ -19,9 +19,12 @@ export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy
 export const VENUE_CHAT_AGE_DAYS = 14;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Paddock";
-export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
-export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
-export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
+export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
+export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
+export const BURNING_MAN_DONATION_SITE = `https://www.wwf.org.au`;
+export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
+export const REALITY_RANGERS_URL =
+  "https://burningseed.sparklever.se/in/redearthrangers";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
@@ -29,6 +32,7 @@ export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const TICKET_URL = "https://qkt.io/seed2020";
+export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
