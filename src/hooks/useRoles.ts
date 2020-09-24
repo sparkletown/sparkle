@@ -23,8 +23,8 @@ const useRoles = () => {
   // A value of undefined indicates data is not loaded yet.
   // undefined should be returned so callers can show loading indications
   return {
-    userRoles: userRoles === null ? [] : userRoles,
-    allowAllRoles: allowAllRoles === null ? [] : allowAllRoles,
+    userRoles: userRoles === null ? [] : Object.keys(userRoles),
+    allowAllRoles: allowAllRoles === null ? [] : Object.keys(allowAllRoles),
     roles:
       userRoles === undefined || allowAllRoles === undefined
         ? undefined
