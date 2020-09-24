@@ -20,9 +20,15 @@ interface VideoDefinition {
 }
 
 const videos: VideoDefinition[] = [
-  { name: "Welcome", text: "", video: "", type: VideoType.Entrance, thumb: "" },
   {
-    name: "Greeter",
+    name: "Welcome to Burning Seed",
+    text: "",
+    video: "https://vimeo.com/460888837",
+    type: VideoType.Entrance,
+    thumb: "https://i.vimeocdn.com/video/962490951_200x150.jpg",
+  },
+  {
+    name: "Ring the bell before you enter",
     text: "",
     video: "https://vimeo.com/459967747",
     type: VideoType.Greeter,
@@ -30,7 +36,8 @@ const videos: VideoDefinition[] = [
   },
   {
     name: "Consent",
-    text: "",
+    text:
+      "Consent is sexy - but what does consent mean? Consent is an enthusiastic yes and should be sought in our interactions with others. This may be while entering their space or theme camp, their personal space or before becoming intimately acquainted. If you don't have an enthusiastic YES - you don't have consent. And of course, consent can be withdrawn at any time.",
     video: "https://vimeo.com/459967697",
     type: VideoType.Principle,
     thumb: "https://i.vimeocdn.com/video/960929633_200x150.jpg",
@@ -117,7 +124,8 @@ const videos: VideoDefinition[] = [
   },
   {
     name: "Temple Etiquette",
-    text: "",
+    text:
+      "The emphasis and intent of the Burning Seed Temple has always been quiet and introspective - as distinct from the focus of pretty much everything else at Seed which is tipped towards self expression. The Temple Burn is a time for quiet reflection - a release from the past and a look towards the future. We ask every participant to respect the silence of the Temple Burn.",
     video: "https://vimeo.com/459972976",
     type: VideoType.Principle,
     thumb: "https://i.vimeocdn.com/video/960940429_200x150.jpg",
@@ -148,6 +156,9 @@ const Step5 = () => {
               switch (videoType) {
                 case VideoType.Entrance:
                   setVideoType(VideoType.Greeter);
+                  setVideoDef(
+                    videos.filter((v) => v.type === VideoType.Greeter)[0]
+                  );
                   break;
                 case VideoType.Greeter:
                   setVideoType(VideoType.Principle);
@@ -157,6 +168,12 @@ const Step5 = () => {
               }
             }}
           ></VideoModal>
+        )}
+        {videoType === VideoType.Principle && (
+          <div className="principle-name">
+            If you would like a deeper understanding of any of our principles,
+            take a moment to watch these videos before you enter the burn.
+          </div>
         )}
         {videos
           .filter((v) => v.type === videoType)
