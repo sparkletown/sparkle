@@ -42,6 +42,11 @@ const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
     text:
       "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
   },
+  {
+    name: "regionalBurn",
+    text:
+      "I understand this is an Australian Regional Burn guided by the Ten Principles of Burning Man",
+  },
 ];
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({

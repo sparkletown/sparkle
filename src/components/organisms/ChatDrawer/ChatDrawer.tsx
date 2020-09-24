@@ -77,7 +77,7 @@ const ChatDrawer: React.FC<PropsType> = ({
   );
 
   const allowDelete =
-    ((userRoles && "admin" in userRoles) ||
+    ((userRoles && userRoles.includes("admin")) ||
       (user && venue?.owners?.includes(user.uid))) ??
     false;
 
