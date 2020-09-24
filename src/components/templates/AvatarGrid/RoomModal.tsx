@@ -1,8 +1,6 @@
 import React from "react";
-import { getCurrentEvent } from "utils/event";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { AvatarGridRoom } from "types/AvatarGrid";
 import "./RoomModal.scss";
@@ -15,21 +13,14 @@ interface PropsType {
 
 export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { user } = useUser();
-  const { users, venueEvents } = useSelector((state) => ({
-    users: state.firestore.ordered.partygoers,
-    venueEvents: state.firestore.ordered.venueEvents,
-  }));
 
   if (!room) {
     return <></>;
   }
 
-  // function enter() {
-  //   room && user && enterRoom(user, room.name);
-  // }
-
-  // const roomEvents = venueEvents.filter((event) => event.room === room.name);
-  // const currentEvent = roomEvents && getCurrentEvent(roomEvents);
+  function enter() {
+    room && user && enterRoom(user, room.name);
+  }
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -43,7 +34,11 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
               Room is full - Come back later!
             </button>
           ) : (
-            <a className="btn btn-active btn-block" href={room.url}>
+            <a
+              className="btn btn-active btn-block"
+              href={room.url}
+              onClick={enter}
+            >
               Join the room
             </a>
           )}

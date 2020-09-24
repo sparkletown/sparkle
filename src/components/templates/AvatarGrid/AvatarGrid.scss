@@ -5,6 +5,7 @@
   padding-right: 10vh;
   justify-content: space-between;
   flex-direction: row;
+  padding-top: 38%;
 
   .room-title {
     border: 1px white solid;
@@ -16,6 +17,7 @@
     border-color: #3e3838;
     background-color: #3e3838;
     text-align: center;
+    margin-top: 38%;
   }
 
   .room-border {
@@ -26,6 +28,7 @@
     background-color: rgba(0, 255, 0, 0.2);
     background-repeat: no-repeat;
     background-size: cover;
+    margin-top: 38%;
   }
 
   .seat-row {
