@@ -6,6 +6,7 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import "./PlayaTime.scss";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CURRENT_TIME_IN_LOCATION } from "settings";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -33,7 +34,7 @@ const PlayaTime: React.FC = () => {
   return (
     <div className="playa_time-container">
       <FontAwesomeIcon icon={faClock} className="playa_time-icon" />{" "}
-      {currentTime} in SparkleVerse
+      {currentTime} in {CURRENT_TIME_IN_LOCATION}
     </div>
   );
 };
