@@ -23,6 +23,7 @@ export interface CodeOfConductFormData {
   commonDecency: string;
   tenPrinciples: string;
   termsAndConditions: string;
+  regionalBurn: string;
 }
 
 export interface CodeOfConductQuestion {
