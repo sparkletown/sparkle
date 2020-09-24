@@ -27,6 +27,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const venueId =
     getQueryParameters(window.location.search)?.venueId?.toString() ??
     DEFAULT_VENUE;
+  const returnUrl = getQueryParameters(
+    window.location.search
+  )?.returnUrl?.toString();
 
   const {
     register,
@@ -42,7 +45,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(IS_BURN ? `/enter/step3` : venueInsideUrl(venueId));
+    history.push(
+      IS_BURN ? `/enter/step3` : returnUrl ? returnUrl : venueInsideUrl(venueId)
+    );
   };
 
   const pictureUrl = watch("pictureUrl");

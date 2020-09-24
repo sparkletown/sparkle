@@ -156,7 +156,9 @@ const VenuePage = () => {
   }
 
   if (!(profile?.partyName && profile?.pictureUrl)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    history.push(
+      `/account/profile?returnUrl=${window.location.pathname}${window.location.search}`
+    );
   }
 
   let template;

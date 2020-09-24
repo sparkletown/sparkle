@@ -85,7 +85,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
       history.push(
-        IS_BURN ? "/enter/step2" : `/account/questions?venueId=${venueId}`
+        IS_BURN
+          ? "/enter/step2"
+          : `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`
       );
     } catch (error) {
       if (error.response?.status === 404) {
