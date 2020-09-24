@@ -9,7 +9,11 @@ const Step6 = () => {
   const history = useHistory();
   return (
     <div className="splash-page-container">
-      <img className="playa-img" src={PLAYA_IMAGE} alt="Background Map" />
+      <img
+        className="playa-img"
+        src={PLAYA_IMAGE}
+        alt="Paddock Background Map"
+      />
       <div className="step-container step6b-container">
         <div className="navigation-guide">
           <div className="row heading">
