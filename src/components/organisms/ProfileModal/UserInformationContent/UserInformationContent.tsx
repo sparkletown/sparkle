@@ -88,19 +88,29 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
-      <label
-        htmlFor="chk-kidsMode"
-        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
-      >
-        Kids Mode
-      </label>
-      <input
-        type="checkbox"
-        name="kidsMode"
-        id="chk-kidsMode"
-        defaultChecked={profile?.kidsMode || false}
-        onClick={() => toggleKidsMode()}
-      />
+      {IS_BURN && (
+        <>
+          <label
+            htmlFor="chk-kidsMode"
+            className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
+          >
+            Kids Mode
+          </label>
+          <input
+            type="checkbox"
+            name="kidsMode"
+            id="chk-kidsMode"
+            defaultChecked={profile?.kidsMode || false}
+            onClick={() => toggleKidsMode()}
+          />
+          <label
+            htmlFor={"chk-anonMode"}
+            className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
+          >
+            <span className="title">Anonymous Mode</span>
+          </label>
+        </>
+      )}
       <label
         htmlFor="chk-mirrorVideo"
         className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
@@ -113,6 +123,13 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         id="chk-mirrorVideo"
         defaultChecked={profile?.kidsMode || false}
         onClick={() => toggleMirrorVideo()}
+      />
+      <input
+        type="checkbox"
+        name={"anonMode"}
+        id={"chk-anonMode"}
+        defaultChecked={profile?.anonMode || false}
+        onClick={() => toggleAnonMode()}
       />
       <input
         className="btn button btn-primary"
@@ -131,19 +148,6 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         value="Log out"
         onClick={logout}
         type="button"
-      />
-      <label
-        htmlFor={"chk-anonMode"}
-        className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
-      >
-        <span className="title">Anonymous Mode</span>
-      </label>
-      <input
-        type="checkbox"
-        name={"anonMode"}
-        id={"chk-anonMode"}
-        defaultChecked={profile?.anonMode || false}
-        onClick={() => toggleAnonMode()}
       />
     </>
   );
