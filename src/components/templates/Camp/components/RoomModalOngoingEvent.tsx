@@ -42,18 +42,30 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
           <div className="event-description">{eventToDisplay.description}</div>
-          <a
-            className="btn btn-primary room-entry-button"
-            onClick={() => enterRoom()}
-            id={`enter-room-in-ongoing-event-card-${room.title}`}
-            href={room.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join the room
-          </a>
         </>
       )}
+      {!eventToDisplay && (
+        <>
+          <div className="event-description">
+            <img
+              src="/sparkle-icon.png"
+              className="sparkle-icon"
+              alt="sparkle-icon"
+            />
+            No events scheduled
+          </div>
+        </>
+      )}
+      <a
+        className="btn btn-primary room-entry-button"
+        onClick={() => enterRoom()}
+        id={`enter-room-in-ongoing-event-card-${room.title}`}
+        href={room.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Join the room
+      </a>
     </div>
   );
 };

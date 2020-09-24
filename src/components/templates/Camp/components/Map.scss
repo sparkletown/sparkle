@@ -95,16 +95,16 @@ $border-radius: 28px;
   .playa-venue-text {
     z-index: 200;
     float: right;
-    top: calc(50% - 10px);
+    bottom: 10px;
     position: absolute;
     margin: 0 auto;
-    background-color: darken($sand, 5%);
+    background-color: darken($primary, 50%);
+    opacity: 0.5;
     border-radius: 20px;
-    margin-top: 10px;
-    width: 300px;
+    width: auto;
     height: auto;
     transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
-    display: none;
+    display: block;
     .playa-venue-maininfo {
       display: flex;
       align-items: center;
