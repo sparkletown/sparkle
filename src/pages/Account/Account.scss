@@ -230,12 +230,6 @@ $page-max-width: 1240px;
     overflow-y: auto;
     bottom: 10%;
 
-    .form {
-      margin-top: 2rem;
-      img {
-        cursor: pointer;
-      }
-    }
     .principle-name {
       font-weight: bold;
       font-size: 15px;
@@ -244,6 +238,32 @@ $page-max-width: 1240px;
     .principle-description {
       font-size: 12px;
       cursor: pointer;
+    }
+    .form {
+      margin-top: 2rem;
+      //width: 40%;
+      padding: 1rem;
+      display: inline-block;
+      img {
+        cursor: pointer;
+      }
+      .video-name {
+        // display: inline-block;
+        // text-align: left;
+        font-weight: bold;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .video-description {
+        // display: inline-block;
+        //text-align: left;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .video-thumb {
+        display: inline-block;
+        cursor: pointer;
+      }
     }
     button {
       margin-top: 2rem;
