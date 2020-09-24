@@ -23,7 +23,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
     (currentEvent ? currentEvent : roomEvents[0]);
   return (
     <div className="room-modal-ongoing-event-container">
-      {eventToDisplay && (
+      {eventToDisplay && currentEvent && (
         <>
           <div className="title-container">
             <img
@@ -40,18 +40,49 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
           <div className="event-description">{eventToDisplay.description}</div>
-          <a
-            className="btn btn-primary room-entry-button"
-            onClick={() => enterRoom()}
-            id={`enter-room-in-ongoing-event-card-${room.title}`}
-            href={room.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join the room
-          </a>
         </>
       )}
+      {eventToDisplay && !currentEvent && (
+        <>
+          <div className="title-container">
+            <img
+              src="/sparkle-icon.png"
+              className="sparkle-icon"
+              alt="sparkle-icon"
+            />
+            What's on next
+          </div>
+          <div className="artist-ongoing-container">
+            <div className="event-title">{eventToDisplay.name}</div>
+            <div>
+              by <span className="artist-name">{eventToDisplay.host}</span>
+            </div>
+          </div>
+          <div className="event-description">{eventToDisplay.description}</div>
+        </>
+      )}
+      {!eventToDisplay && (
+        <>
+          <div className="event-description">
+            <img
+              src="/sparkle-icon.png"
+              className="sparkle-icon"
+              alt="sparkle-icon"
+            />
+            No events scheduled
+          </div>
+        </>
+      )}
+      <a
+        className="btn btn-primary room-entry-button"
+        onClick={() => enterRoom()}
+        id={`enter-room-in-ongoing-event-card-${room.title}`}
+        href={room.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Join the room
+      </a>
     </div>
   );
 };
