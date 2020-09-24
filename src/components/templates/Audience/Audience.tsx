@@ -9,7 +9,6 @@ import firebase, { UserInfo } from "firebase/app";
 import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { useParams } from "react-router-dom";
 
 import "./Audience.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -23,6 +22,7 @@ import {
   Reactions,
 } from "components/context/ExperienceContext";
 import { useForm } from "react-hook-form";
+import { useVenueId } from "hooks/useVenueId";
 
 type PropsType = {};
 
@@ -118,7 +118,7 @@ const requiredAuditoriumSize = (occupants: number) => {
 };
 
 export const Audience: React.FunctionComponent<PropsType> = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
@@ -168,6 +168,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   let seatedPartygoers = 0;
   partygoers.forEach((partygoer) => {
     if (
+      !venueId ||
       !partygoer?.data ||
       partygoer.data[venueId] === undefined ||
       partygoer.data[venueId].row === undefined ||
@@ -212,7 +213,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       translatedRow: number | null,
       translatedColumn: number | null
     ) => {
-      if (!user || !profile) return;
+      if (!user || !profile || !venueId) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
       const update = {
@@ -250,7 +251,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       reset();
     };
 
-    if (!venue || !profile) return <></>;
+    if (!venue || !profile || !venueId) return <></>;
 
     const burningReactions = Reactions.filter(
       (reaction) =>
