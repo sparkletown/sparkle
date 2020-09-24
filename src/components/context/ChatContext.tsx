@@ -78,6 +78,11 @@ function buildMessage(data: MessageBuilderInput): ChatMessage {
   }
 }
 
+function roundToNearestHour(ms: number) {
+  const oneHour = 60 * 60 * 1000;
+  return Math.floor(ms / oneHour) * oneHour;
+}
+
 export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
@@ -87,8 +92,9 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
 
   const chatCollectionName = `venues/${venue.id}/chats`;
 
-  const HIDE_BEFORE =
-    new Date().getTime() - 24 * 60 * 60 * 1000 * VENUE_CHAT_AGE_DAYS;
+  const HIDE_BEFORE = roundToNearestHour(
+    new Date().getTime() - 24 * 60 * 60 * 1000 * VENUE_CHAT_AGE_DAYS
+  );
 
   useFirestoreConnect({
     collection: "venues",
