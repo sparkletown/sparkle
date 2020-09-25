@@ -37,10 +37,12 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
           </p>
           <a
             href={REALITY_RANGERS_URL}
+            rel="noopener noreferrer"
+            target="_blank"
             className="btn btn-primary join-button"
             style={{ fontSize: 14 }}
           >
-            Red Earth Rangers
+            Red Earth Ranger Chat
           </a>
         </div>
       </InformationCard>

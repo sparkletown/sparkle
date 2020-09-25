@@ -24,7 +24,7 @@ export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Aus
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
 export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
 export const REALITY_RANGERS_URL =
-  "https://burningseed.sparklever.se/in/redearthrangers";
+  "https://redearthcity.zoom.us/j/5127329136?pwd=Zk9rVHhDNDJqLzJldlJ0M2VJdHBPdz09";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
