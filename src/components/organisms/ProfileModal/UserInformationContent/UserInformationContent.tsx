@@ -128,7 +128,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         type="checkbox"
         name="mirrorVideo"
         id="chk-mirrorVideo"
-        defaultChecked={profile?.kidsMode || false}
+        defaultChecked={profile?.mirrorVideo || false}
         onClick={() => toggleMirrorVideo()}
       />
       <input
