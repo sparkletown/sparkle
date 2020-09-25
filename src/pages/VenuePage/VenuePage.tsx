@@ -211,7 +211,7 @@ const VenuePage = () => {
     //   template = <AvatarGrid venueName={venue.name} />;
     //   break;
     case VenueTemplate.avatargrid:
-      template = <AvatarRouter />;
+      template = <AvatarRouter venueName={venue.name} />;
       break;
   }
 

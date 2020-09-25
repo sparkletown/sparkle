@@ -28,7 +28,7 @@ const AvatarGrid = ({ venueName }: Props) => {
     WithId<User>
   >();
 
-  const { venueId } = useParams();
+  const venueId = venueName;
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
@@ -121,20 +121,20 @@ const AvatarGrid = ({ venueName }: Props) => {
     }
     const { row, column } = currentPosition;
     if (row && column) {
-      const hitRoom = (r: number, c: number) => {
-        let isHitting = false;
-        venue?.spaces?.forEach((room) => {
-          console.log(room.row, r, room.row + room.height);
-          const isInRow =
-            room.row <= r &&
-            !(room.column + room.width - 1 < c) &&
-            !(room.column > c);
-          if (isInRow) {
-            isHitting = true;
-          }
-        });
-        return isHitting;
-      };
+      // const hitRoom = (r: number, c: number) => {
+      //   let isHitting = false;
+      //   venue?.spaces?.forEach((room) => {
+      //     console.log(room.row, r, room.row + room.height);
+      //     const isInRow =
+      //       room.row <= r &&
+      //       !(room.column + room.width - 1 < c) &&
+      //       !(room.column > c);
+      //     if (isInRow) {
+      //       isHitting = true;
+      //     }
+      //   });
+      //   return isHitting;
+      // };
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (downPress) {
         if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
@@ -147,29 +147,32 @@ const AvatarGrid = ({ venueName }: Props) => {
           return;
         }
         takeSeat(row - 1, column);
+        return;
       }
       if (leftPress) {
         if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
         takeSeat(row, column - 1);
+        return;
       }
       if (rightPress) {
         if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
         takeSeat(row, column + 1);
+        return;
       }
     }
   }, [
     downPress,
     leftPress,
     partygoersBySeat,
+    profile,
     profile?.data?.memrisechats,
     rightPress,
     takeSeat,
     upPress,
-    venue?.spaces,
   ]);
 
   if (!venue) {
