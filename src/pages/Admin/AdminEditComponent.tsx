@@ -458,7 +458,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venueId={venueId}
               otherIconsStyle={{ opacity: 0.4 }}
-              backgroundImageStyle={{ width: "unset" }}
+              //backgroundImageStyle={{ width: "unset" }}
               containerStyle={{
                 width: PLAYA_WIDTH_AND_HEIGHT,
                 height: PLAYA_WIDTH_AND_HEIGHT,
