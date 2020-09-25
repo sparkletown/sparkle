@@ -114,12 +114,12 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <video
           ref={videoRef}
           autoPlay={true}
-          className={profileData.mirrorVideo ? "mirrored" : ""}
+          className={profileData?.mirrorVideo ? "mirrored" : ""}
         />
         <audio ref={audioRef} autoPlay={true} />
       </>
     ),
-    [profileData.mirrorVideo]
+    [profileData]
   );
 
   return (

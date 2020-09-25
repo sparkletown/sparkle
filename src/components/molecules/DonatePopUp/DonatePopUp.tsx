@@ -17,10 +17,7 @@ export const DonatePopUp = () => {
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
-      <InformationCard title="Donate to Burning Man">
-        <p className="title-sidebar" style={{ fontSize: 15 }}>
-          {BURNING_MAN_DONATION_TITLE}
-        </p>
+      <InformationCard title={BURNING_MAN_DONATION_TITLE}>
         <p className="title-sidebar" style={{ fontSize: 15 }}>
           {BURNING_MAN_DONATION_TEXT}
         </p>
