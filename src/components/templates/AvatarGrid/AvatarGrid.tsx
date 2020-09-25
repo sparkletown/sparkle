@@ -137,11 +137,7 @@ const AvatarGrid = ({ venueName }: Props) => {
       };
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (downPress) {
-        if (
-          row + 1 > DEFAULT_ROWS ||
-          seatTaken(row + 1, column) ||
-          hitRoom(row + 1, column)
-        ) {
+        if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
         takeSeat(row + 1, column);
