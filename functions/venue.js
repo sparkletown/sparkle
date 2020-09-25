@@ -433,6 +433,16 @@ exports.adminUpdateBannerMessage = functions.https.onCall(
   }
 );
 
+exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
+  const { venueId, iframeUrl } = data;
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ iframeUrl: iframeUrl || null });
+});
+
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
   (updated &&

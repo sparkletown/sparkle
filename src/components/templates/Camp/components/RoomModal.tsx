@@ -35,7 +35,8 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
     room && user && enterRoom(user, room.title);
   }
 
-  const roomEvents = venueEvents.filter((event) => event.room === room.title);
+  const roomEvents =
+    venueEvents && venueEvents.filter((event) => event.room === room.title);
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   return (

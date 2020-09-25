@@ -22,6 +22,7 @@ import { useUser } from "hooks/useUser";
 import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
 
 import "./Camp.scss";
+import { createUrlSafeName } from "api/admin";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -57,7 +58,9 @@ const Camp: React.FC = () => {
   const { roomTitle } = useParams();
   useEffect(() => {
     if (roomTitle) {
-      const campRoom = venue?.rooms.find((room) => room.title === roomTitle);
+      const campRoom = venue?.rooms.find(
+        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
+      );
       if (campRoom) {
         setSelectedRoom(campRoom);
         setIsRoomModalOpen(true);

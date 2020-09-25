@@ -21,10 +21,12 @@ export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Paddock";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
-export const BURNING_MAN_DONATION_SITE = `https://www.wwf.org.au`;
+export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
 export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
+export const PLAYA_INFO_NAME = "Paddock Info Booth";
 export const REALITY_RANGERS_URL =
-  "https://burningseed.sparklever.se/in/redearthrangers";
+  "https://redearthcity.zoom.us/j/5127329136?pwd=Zk9rVHhDNDJqLzJldlJ0M2VJdHBPdz09";
+export const REALITY_RANGERS_NAME = "Red Earth Ranger Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
