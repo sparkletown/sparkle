@@ -47,7 +47,6 @@ export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 export const LOGO_IMAGE_WIDTH_PX = 200;
 export const BANNER_IMAGE_WIDTH_PX = 600;
 export const MAP_ICON_WIDTH_PX = 100;
-export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;
