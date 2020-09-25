@@ -121,26 +121,45 @@ const AvatarGrid = ({ venueName }: Props) => {
     }
     const { row, column } = currentPosition;
     if (row && column) {
+      const hitRoom = (r: number, c: number) => {
+        let isHitting = false;
+        venue?.spaces?.forEach((room) => {
+          console.log(room.row, r, room.row + room.height);
+          const isInRow =
+            room.row <= r &&
+            !(room.column + room.width - 1 < c) &&
+            !(room.column > c);
+          if (isInRow) {
+            isHitting = true;
+          }
+        });
+        return isHitting;
+      };
+      const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (downPress) {
-        if (row + 1 > DEFAULT_ROWS) {
+        if (
+          row + 1 > DEFAULT_ROWS ||
+          seatTaken(row + 1, column) ||
+          hitRoom(row + 1, column)
+        ) {
           return;
         }
         takeSeat(row + 1, column);
       }
       if (upPress) {
-        if (row - 1 < 1) {
+        if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
         takeSeat(row - 1, column);
       }
       if (leftPress) {
-        if (column - 1 < 1) {
+        if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
         takeSeat(row, column - 1);
       }
       if (rightPress) {
-        if (column + 1 > DEFAULT_COLUMNS) {
+        if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
         takeSeat(row, column + 1);
@@ -149,10 +168,12 @@ const AvatarGrid = ({ venueName }: Props) => {
   }, [
     downPress,
     leftPress,
+    partygoersBySeat,
     profile?.data?.memrisechats,
     rightPress,
     takeSeat,
     upPress,
+    venue?.spaces,
   ]);
 
   if (!venue) {
@@ -226,14 +247,17 @@ const AvatarGrid = ({ venueName }: Props) => {
                 const seatedPartygoer = partygoersBySeat?.[row]?.[column]
                   ? partygoersBySeat[row][column]
                   : null;
+                const isMe = seatedPartygoer?.id === user?.uid;
                 return (
                   <div
                     className={seatedPartygoer ? "seat" : "not-seat"}
-                    onClick={() => takeSeat(row, column)}
+                    onClick={() =>
+                      !seatedPartygoer ? takeSeat(row, column) : null
+                    }
                     key={`row${rowIndex}`}
                   >
                     {seatedPartygoer && (
-                      <div className="user">
+                      <div className={isMe ? "user me" : "user"}>
                         <UserProfilePicture
                           user={seatedPartygoer}
                           profileStyle={"profile-avatar"}
