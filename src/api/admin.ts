@@ -8,7 +8,6 @@ import {
   LOGO_IMAGE_WIDTH_PX,
   BANNER_IMAGE_WIDTH_PX,
   MAP_ICON_WIDTH_PX,
-  MAP_BACKGROUND_IMAGE_WIDTH_PX,
   ROOM_IMAGE_WIDTH_PX,
 } from "settings";
 
@@ -89,9 +88,9 @@ export type PlacementInput = {
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-const compressImage = async (file: File, compressionWidth: number) => {
+const compressImage = async (file: File, compressionWidth?: number) => {
   // cannot resize gifs
-  if (file.type === "image/gif") return file;
+  if (file.type === "image/gif" || compressionWidth === undefined) return file;
 
   const jimpImage = await jimp.read(URL.createObjectURL(file));
 
@@ -104,7 +103,7 @@ const compressImage = async (file: File, compressionWidth: number) => {
 };
 
 type ImageConfig = {
-  compressionWidth: number;
+  compressionWidth?: number;
 };
 
 const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
@@ -134,7 +133,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     {
       fileKey: "mapBackgroundImageFile",
       urlKey: "mapBackgroundImageUrl",
-      compressionWidth: MAP_BACKGROUND_IMAGE_WIDTH_PX,
     },
   ];
 
