@@ -14,6 +14,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
+import { getDaysAgoInSeconds } from "utils/time";
+import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -62,6 +64,14 @@ const ChatDrawer: React.FC<PropsType> = ({
       chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
     reset();
   };
+
+  function roundToNearestHour(seconds: number) {
+    const oneHour = 60 * 60;
+    return Math.floor(seconds / oneHour) * oneHour;
+  }
+  const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+  const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+
   const chatsToDisplay = useMemo(
     () =>
       chats &&
@@ -70,10 +80,11 @@ const ChatDrawer: React.FC<PropsType> = ({
           (message) =>
             message.deleted !== true &&
             message.type === "room" &&
-            message.to === roomName
+            message.to === roomName &&
+            message.ts_utc.seconds > HIDE_BEFORE
         )
         .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
-    [chats, roomName]
+    [chats, roomName, HIDE_BEFORE]
   );
 
   const allowDelete =
