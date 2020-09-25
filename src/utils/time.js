@@ -109,6 +109,10 @@ export function getHoursAgoInSeconds(hours) {
   return new Date().getTime() / 1000 - hours * 60 * 60;
 }
 
+export function getDaysAgoInSeconds(days) {
+  return getHoursAgoInSeconds(days * 24);
+}
+
 export const formatHourAndMinute = (utcSeconds) => {
   const date = new Date(utcSeconds * 1000);
   const hh = String(date.getHours()).padStart(2, "0");

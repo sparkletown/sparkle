@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import InformationCard from "../InformationCard";
 import "./SparkleFairiesPopUp.scss";
-import { PLAYA_INFO_URL, REALITY_RANGERS_URL } from "../../../../src/settings";
+import {
+  PLAYA_INFO_NAME,
+  PLAYA_INFO_URL,
+  REALITY_RANGERS_NAME,
+  REALITY_RANGERS_URL,
+} from "../../../../src/settings";
 
 interface PropsType {
   setShowEventSchedule: Function;
@@ -24,12 +29,10 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
           <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>
           <a
             href={PLAYA_INFO_URL}
-            rel="noopener noreferrer"
-            target="_blank"
             className="btn btn-primary join-button"
             style={{ fontSize: 14 }}
           >
-            Playa Information Booth
+            {PLAYA_INFO_NAME}
           </a>
           <div className="title">Call a Ranger</div>
           <p className="title-sidebar">It's OK to need help!</p>
@@ -44,7 +47,7 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
             className="btn btn-primary join-button"
             style={{ fontSize: 14 }}
           >
-            Launch Ranger Chat
+            {REALITY_RANGERS_NAME}
           </a>
         </div>
       </InformationCard>

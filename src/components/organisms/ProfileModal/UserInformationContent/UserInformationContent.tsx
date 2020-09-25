@@ -107,8 +107,15 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             htmlFor={"chk-anonMode"}
             className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
           >
-            <span className="title">Anonymous Mode</span>
+            Anonymous Mode
           </label>
+          <input
+            type="checkbox"
+            name={"anonMode"}
+            id={"chk-anonMode"}
+            defaultChecked={profile?.anonMode || false}
+            onClick={() => toggleAnonMode()}
+          />
         </>
       )}
       <label
@@ -121,15 +128,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         type="checkbox"
         name="mirrorVideo"
         id="chk-mirrorVideo"
-        defaultChecked={profile?.kidsMode || false}
+        defaultChecked={profile?.mirrorVideo || false}
         onClick={() => toggleMirrorVideo()}
-      />
-      <input
-        type="checkbox"
-        name={"anonMode"}
-        id={"chk-anonMode"}
-        defaultChecked={profile?.anonMode || false}
-        onClick={() => toggleAnonMode()}
       />
       <input
         className="btn button btn-primary"
