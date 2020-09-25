@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
 import { useFirestoreConnect } from "react-redux-firebase";
+import { PLAYA_VENUE_NAME } from "settings";
 
 const WelcomePage: React.FunctionComponent = () => {
   useFirestoreConnect("marketingemails");
@@ -65,12 +66,12 @@ const WelcomePage: React.FunctionComponent = () => {
         <div className="row card-container">
           <div className="col-md-4">
             <div className="info-card">
-              <h3 className="card-title">1. Digital Playa Map</h3>
+              <h3 className="card-title">1. Digital {PLAYA_VENUE_NAME} Map</h3>
               <img
                 className="image-in-card"
                 src="/marketing-page/digital-playa-map.jpg"
-                title="Digital Playa Map image"
-                alt="Digital Playa Map"
+                title={`Digital ${PLAYA_VENUE_NAME} Map image`}
+                alt={`Digital ${PLAYA_VENUE_NAME} Map`}
               />
               <p>
                 A 2-D browser-based map for roaming in shared adventures through
@@ -90,9 +91,9 @@ const WelcomePage: React.FunctionComponent = () => {
                 alt="Powerful tools"
               />
               <p>
-                Populate the paddock with your camp, art, host performances
-                (DJs, talks) etc using simple yet powerful space-creation tools
-                and templates
+                Populate the {PLAYA_VENUE_NAME} with your camp, art, host
+                performances (DJs, talks) etc using simple yet powerful
+                space-creation tools and templates
               </p>
             </div>
           </div>

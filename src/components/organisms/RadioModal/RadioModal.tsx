@@ -1,4 +1,5 @@
 import React from "react";
+import { PLAYA_VENUE_NAME } from "settings";
 import "./RadioModal.scss";
 
 interface PropsType {
@@ -14,10 +15,10 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
 }) => {
   return (
     <div className="radio-modal-container">
-      <div className="title-radio">{title ?? "Playa Radio"}</div>
+      <div className="title-radio">{title ?? `${PLAYA_VENUE_NAME} Radio`}</div>
       <div className="text-radio">
         We recommend turning on the global burner radio station as you rove
-        round the Paddock!
+        round the {PLAYA_VENUE_NAME}!
       </div>
       <img
         className="img-radio"

@@ -11,6 +11,7 @@ import {
   PLAYA_VENUE_SIZE,
   PLAYA_IMAGE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
@@ -234,7 +235,9 @@ const AdminEditComponent: React.FC = () => {
           </div>
         )}
         <div className="venue-preview">
-          <h4 className="heading">Drag-and-Drop Playa Placement</h4>
+          <h4 className="heading">
+            Drag-and-Drop {PLAYA_VENUE_NAME} Placement
+          </h4>
           {venue && venueId && iconsMap ? (
             <PlacementForm
               onSubmit={onSubmit}

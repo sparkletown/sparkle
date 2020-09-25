@@ -48,6 +48,7 @@ import {
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
@@ -268,7 +269,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
                   className="italic"
                   style={{ fontSize: "30px", textAlign: "center" }}
                 >
-                  How your experience appears on the paddock
+                  How your experience appears on the {PLAYA_VENUE_NAME}
                 </h4>
                 <div className="container venue-entrance-experience-container">
                   <div
