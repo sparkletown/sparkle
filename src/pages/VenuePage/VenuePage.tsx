@@ -212,7 +212,6 @@ const VenuePage = () => {
     //   break;
     case VenueTemplate.avatargrid:
       template = <AvatarRouter />;
-      fullscreen = true;
       break;
   }
 
