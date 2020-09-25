@@ -49,14 +49,14 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
               isLeftColumnExpanded ? "expanded-popup" : ""
             }`}
           />
-        ) : venueLogoPath === "heart" && isLeftColumnExpanded ? (
-          <img
-            src="/imageDonate1.png"
-            alt="experience-logo"
-            className={`expanded-popup`}
+        ) : venueLogoPath === "heart" ? (
+          <FontAwesomeIcon
+            icon={faHeart}
+            size="2x"
+            className={`band-logo ${
+              isLeftColumnExpanded ? "expanded-popup" : ""
+            }`}
           />
-        ) : venueLogoPath === "heart" && !isLeftColumnExpanded ? (
-          <FontAwesomeIcon icon={faHeart} size="2x" className={`band-logo`} />
         ) : venueLogoPath === "create" ? (
           <FontAwesomeIcon
             icon={faEdit}
