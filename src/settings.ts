@@ -21,7 +21,7 @@ export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Paddock";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
-export const BURNING_MAN_DONATION_SITE = `https://www.wwf.org.au`;
+export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
 export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
 export const REALITY_RANGERS_URL =
   "https://burningseed.sparklever.se/in/redearthrangers";
