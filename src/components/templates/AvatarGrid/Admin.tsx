@@ -2,20 +2,22 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
 
-const PlayaAdmin: React.FC = () => {
+const AvatarAdmin: React.FC = () => {
   const [bannerMessage, setBannerMessage] = useState("");
   const [error, setError] = useState<string | null>();
 
-  const playaVenue = useSelector((state) => state.firestore.data.currentVenue);
-  const PLAYA_VENUE_ID = "paddock";
+  const currentVenue = useSelector(
+    (state) => state.firestore.data.currentVenue
+  );
+  const FIREBASE_VENUE_ID = "memrisechats";
 
   useEffect(() => {
-    setBannerMessage(playaVenue?.bannerMessage || "");
-  }, [playaVenue]);
+    setBannerMessage(currentVenue?.bannerMessage || "");
+  }, [currentVenue]);
 
   const updateBanner = (message: string | null) => {
     const params = {
-      venueId: PLAYA_VENUE_ID,
+      venueId: FIREBASE_VENUE_ID,
       bannerMessage: message ? message : "",
     };
     firebase
@@ -30,7 +32,7 @@ const PlayaAdmin: React.FC = () => {
   return (
     <>
       <div className="row">
-        <h4>Playa Admin</h4>
+        <h4>Memrise Admin</h4>
       </div>
       <div className="edit-banner">
         <label htmlFor="bannerMessage">Banner Message:</label>
@@ -55,4 +57,4 @@ const PlayaAdmin: React.FC = () => {
   );
 };
 
-export default PlayaAdmin;
+export default AvatarAdmin;
