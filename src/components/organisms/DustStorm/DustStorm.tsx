@@ -9,7 +9,8 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import {
   ZOOM_URL_TEMPLATES,
   EMBED_IFRAME_TEMPLATES,
-  PLAYA_VENUE_NAME,
+  DUST_STORM_TEXT_1,
+  DUST_STORM_TEXT_2,
 } from "settings";
 
 interface PotLuckProps {
@@ -75,11 +76,8 @@ export const DustStorm = () => {
     <div className="duststorm-container show">
       <div className="modal-content">
         <h3 className="italic">Dust storm alert!</h3>
-        <p>
-          Goggles on, now! A dust storm is blowing over the {PLAYA_VENUE_NAME}.
-          The harsh sands blight your eyes.
-        </p>
-        <p>Your only option is to seek shelter in a nearby venue!</p>
+        <p>{DUST_STORM_TEXT_1}</p>
+        <p>{DUST_STORM_TEXT_2}</p>
         <PotLuck
           openVenues={openVenues.map((ov) => ov.venue)}
           // Force popover to close
