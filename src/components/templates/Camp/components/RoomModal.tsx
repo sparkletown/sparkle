@@ -10,6 +10,7 @@ import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
 
 import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
+import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 
 interface PropsType {
   show: boolean;
@@ -36,7 +37,14 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   }
 
   const roomEvents =
-    venueEvents && venueEvents.filter((event) => event.room === room.title);
+    venueEvents &&
+    venueEvents.filter(
+      (event) =>
+        event.room === room.title &&
+        event.start_utc_seconds +
+          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+          new Date().getTime() / 1000
+    );
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   return (

@@ -32,7 +32,9 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               <img src="/sparkle-icon.png" alt="sparkle icon" />
               <span
                 style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
-              >{`What's next`}</span>
+              >
+                What's next
+              </span>
             </div>
             <div className="description-container">
               {eventsNow.length > 0 ? (
@@ -58,15 +60,15 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               <div className="whatson-container">
                 <div className="whatson-title-container">What's on now</div>
                 <div className="whatson-description-container">
-                  {eventsNow.map((event) => (
-                    <>
+                  {eventsNow.map((event, idx) => (
+                    <React.Fragment key={idx}>
                       <div className="whatson-description-container-title">
                         {event.name}
                       </div>
                       <div className="whatson-description-container-description">
                         {event.description}
                       </div>
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
