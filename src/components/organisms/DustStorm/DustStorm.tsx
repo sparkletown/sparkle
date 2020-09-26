@@ -75,10 +75,7 @@ export const DustStorm = () => {
     <div className="duststorm-container show">
       <div className="modal-content">
         <h3 className="italic">Dust storm alert!</h3>
-        <p>
-          Goggles on, now! A dust storm is blowing over the {PLAYA_VENUE_NAME}.
-          The harsh sands blight your eyes.
-        </p>
+        <p>A dust storm is ripping across the {PLAYA_VENUE_NAME}!</p>
         <p>Your only option is to seek shelter in a nearby venue!</p>
         <PotLuck
           openVenues={openVenues.map((ov) => ov.venue)}
