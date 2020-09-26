@@ -3,7 +3,6 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { IS_BURN } from "secrets";
-import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
