@@ -51,7 +51,7 @@ export const Map: React.FC<PropsType> = ({
 
   return (
     <>
-      <div id="map" className="map-container">
+      <div id="map" className="col map-container">
         {rooms.map((room, idx) => {
           const left = room.x_percent;
           const top = room.y_percent;
