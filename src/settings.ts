@@ -36,6 +36,10 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 export const TICKET_URL = "https://qkt.io/seed2020";
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 
+export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
+export const DUST_STORM_TEXT_2 =
+  "Your only option is to seek shelter in a nearby venue!";
+
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
 // How often to refresh events schedule
@@ -44,9 +48,6 @@ export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
-export const LOGO_IMAGE_WIDTH_PX = 200;
-export const BANNER_IMAGE_WIDTH_PX = 600;
-export const MAP_ICON_WIDTH_PX = 100;
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;

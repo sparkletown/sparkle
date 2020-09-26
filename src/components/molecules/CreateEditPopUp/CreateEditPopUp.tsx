@@ -5,6 +5,7 @@ import {
   CREATE_EDIT_URL,
   SPARKLEVERSITY_URL,
   SPARKLEVERSE_COMMUNITY_URL,
+  PLAYA_VENUE_NAME,
 } from "../../../settings";
 
 const CreateEditPopUp: React.FunctionComponent = () => {
@@ -16,7 +17,7 @@ const CreateEditPopUp: React.FunctionComponent = () => {
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
-      <InformationCard title="Create &amp; Edit on the Paddock">
+      <InformationCard title={`Create & Edit on the ${PLAYA_VENUE_NAME}`}>
         <div style={{ textAlign: "center" }}>
           <p className="title-sidebar">
             Welcome to the online burn. You can still build in the SparkleVerse!

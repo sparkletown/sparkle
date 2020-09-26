@@ -1,7 +1,7 @@
 import React from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 
 const Step6 = () => {
   return (
@@ -9,7 +9,7 @@ const Step6 = () => {
       <img
         className="playa-img"
         src={PLAYA_IMAGE}
-        alt="Paddock Background Map"
+        alt={`${PLAYA_VENUE_NAME} Background Map`}
       />
       <div className="step-container step4-container">
         <div className="login-container">

@@ -6,7 +6,12 @@ import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
-import { ZOOM_URL_TEMPLATES, EMBED_IFRAME_TEMPLATES } from "settings";
+import {
+  ZOOM_URL_TEMPLATES,
+  EMBED_IFRAME_TEMPLATES,
+  DUST_STORM_TEXT_1,
+  DUST_STORM_TEXT_2,
+} from "settings";
 
 interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
@@ -71,11 +76,8 @@ export const DustStorm = () => {
     <div className="duststorm-container show">
       <div className="modal-content">
         <h3 className="italic">Dust storm alert!</h3>
-        <p>
-          Goggles on, now! A dust storm is blowing over the Playa. The harsh
-          sands blight your eyes.
-        </p>
-        <p>Your only option is to seek shelter in a nearby venue!</p>
+        <p>{DUST_STORM_TEXT_1}</p>
+        <p>{DUST_STORM_TEXT_2}</p>
         <PotLuck
           openVenues={openVenues.map((ov) => ov.venue)}
           // Force popover to close
