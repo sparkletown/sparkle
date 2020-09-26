@@ -69,40 +69,26 @@ const Camp: React.FC = () => {
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
-    <div
-      className="camp-container"
-      style={{ marginLeft: 100, marginRight: 100 }}
-    >
+    <div className="camp-container">
       <div className="small-right-margin">
-        <PartyTitle
-          startUtcSeconds={BURN_START_UTC_SECONDS}
-          withCountDown={false}
-        />
+        <h1 className="title">{venue.name}</h1>
       </div>
-      {usersInCamp && (
+      <div className="row">
         <div className="col">
-          <UserList
-            users={usersInCamp}
-            imageSize={50}
-            disableSeeAll={false}
-            isCamp={true}
-          />
+          <div className="starting-indication">
+            {venue.description?.text}{" "}
+            {venue.description?.program_url && (
+              <a
+                href={venue.description.program_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Event Program here
+              </a>
+            )}
+          </div>
+          <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
         </div>
-      )}
-      <div className="col">
-        <div className="starting-indication">
-          {venue.description?.text}{" "}
-          {venue.description?.program_url && (
-            <a
-              href={venue.description.program_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Event Program here
-            </a>
-          )}
-        </div>
-        <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
       </div>
       <div className="row">
         <Map
@@ -111,6 +97,18 @@ const Camp: React.FC = () => {
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
+      </div>
+      <div className="row">
+        {usersInCamp && (
+          <div className="col">
+            <UserList
+              users={usersInCamp}
+              imageSize={50}
+              disableSeeAll={false}
+              isCamp={true}
+            />
+          </div>
+        )}
       </div>
       <div className="row">
         <div className="col">
