@@ -6,6 +6,7 @@ import { WithId } from "utils/id";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
 import "../EventDisplay/EventDisplay.scss";
+import { PLAYA_VENUE_NAME } from "settings";
 
 interface PropsType {
   eventsNow: firebase.firestore.DocumentData[];
@@ -86,7 +87,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               (window.location.href = venuePlayaPreviewUrl(venue.id))
             }
           >
-            {eventsNow.length ? "Join now" : "View on Playa"}
+            {eventsNow.length ? "Join now" : `View on ${PLAYA_VENUE_NAME}`}
           </button>
         </div>
       )}

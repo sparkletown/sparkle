@@ -60,13 +60,15 @@ const ArtPiece = () => {
               defaultMute={true}
             />
           </div>
+          <div className="chat-pop-up" style={{ zIndex: 100 }}>
+            <ChatDrawer
+              title={"Art Piece Chat"}
+              roomName={venue.name}
+              chatInputPlaceholder="Chat"
+              defaultShow={true}
+            />
+          </div>
         </div>
-        <ChatDrawer
-          title={"Art Piece Chat"}
-          roomName={venue.name}
-          chatInputPlaceholder="Chat"
-          defaultShow={true}
-        />
       </div>
       {IS_BURN && (
         <div className="sparkle-fairies">

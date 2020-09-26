@@ -179,7 +179,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         }
                         className="playa-link"
                       >
-                        Back to the Paddock
+                        Back to the {PLAYA_VENUE_NAME}
                       </span>
                     )}
                   </div>

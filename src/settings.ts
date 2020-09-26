@@ -16,7 +16,7 @@ export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
-export const VENUE_CHAT_AGE_DAYS = 14;
+export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Paddock";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
@@ -35,6 +35,10 @@ export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const TICKET_URL = "https://qkt.io/seed2020";
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+
+export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
+export const DUST_STORM_TEXT_2 =
+  "Your only option is to seek shelter in a nearby venue!";
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
