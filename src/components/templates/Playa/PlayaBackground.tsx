@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "./PlayaBackground.scss";
-import { PLAYA_BG_DAYPART_MS, PLAYA_IMAGE } from "settings";
+import { PLAYA_BG_DAYPART_MS, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -37,7 +37,7 @@ export const PlayaBackground: React.FC = () => {
     <img
       className={`playa-background ${daypartClassName}`}
       src={PLAYA_IMAGE}
-      alt="Paddock Background Map"
+      alt={`${PLAYA_VENUE_NAME} Background Map`}
     />
   );
 };

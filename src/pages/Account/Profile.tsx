@@ -10,7 +10,7 @@ import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import { venueInsideUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
 
 export interface ProfileFormData {
   partyName: string;
@@ -59,7 +59,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <p>
           {IS_BURN ? (
             <>
-              This will give you access to the Paddock and all the fun venues!
+              This will give you access to the {PLAYA_VENUE_NAME} and all the
+              fun venues!
             </>
           ) : (
             <>This will be your public profile in the party</>

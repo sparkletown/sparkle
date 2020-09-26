@@ -1,7 +1,7 @@
 import React from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import Profile from "./Profile";
 
 export interface ProfileFormData {
@@ -15,7 +15,7 @@ const Step2 = () => {
       <img
         className="playa-img"
         src={PLAYA_IMAGE}
-        alt="Paddock Background Map"
+        alt={`${PLAYA_VENUE_NAME} Background Map`}
       />
       <Profile />
     </div>

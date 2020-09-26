@@ -1,4 +1,4 @@
-import { PLAYA_AVATAR_SIZE } from "settings";
+import { PLAYA_AVATAR_SIZE, PLAYA_VENUE_NAME } from "settings";
 
 type AddressEvaluatorFunc = (x: number, y: number, point: Point) => string;
 
@@ -36,7 +36,9 @@ const clockEvaluator = (x: number, y: number, point: Point) => {
     return point.name;
   } else {
     const clock = clockTime(point.x, point.y, x, y);
-    return `${clock}, ${distanceFromCenter} playa-pixels from ${point.name}`;
+    return `${clock}, ${distanceFromCenter} ${PLAYA_VENUE_NAME.toLowerCase()}-pixels from ${
+      point.name
+    }`;
   }
 };
 
@@ -53,7 +55,7 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
     distanceFromTheMan < ESPLANADE_DISTANCE ||
     distanceFromTheMan >= ESPLANADE_DISTANCE + STREET_WIDTH * 7
   ) {
-    return `Open Playa, ${distanceFromTheMan} playa-pixels from The Man @ ${clockFromTheMan}`;
+    return `Open ${PLAYA_VENUE_NAME}, ${distanceFromTheMan} ${PLAYA_VENUE_NAME.toLowerCase()}-pixels from The Man @ ${clockFromTheMan}`;
   }
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH) {
     return `${clockFromTheMan} & Esplanade`;
@@ -76,7 +78,7 @@ const cityEvaluator = (x: number, y: number, man: Point) => {
   if (distanceFromTheMan < ESPLANADE_DISTANCE + STREET_WIDTH * 7) {
     return `${clockFromTheMan} & F`;
   }
-  return `Open Playa @ ${clockFromTheMan}, ${distanceFromTheMan} playa-pixels from The Man`;
+  return `Open ${PLAYA_VENUE_NAME}, ${distanceFromTheMan} ${PLAYA_VENUE_NAME.toLowerCase()}-pixels from The Man`;
 };
 
 const MAN: Point = {
@@ -107,8 +109,8 @@ const SOUTHEAST_SATELLITE: Point = {
 const DEEP_PLAYA: Point = {
   x: 2254,
   y: 1261,
-  name: "Deep Playa",
-  evaluator: () => "Deep Playa",
+  name: `Deep ${PLAYA_VENUE_NAME}`,
+  evaluator: () => `Deep ${PLAYA_VENUE_NAME}`,
 };
 
 const POINTS: Point[] = [
