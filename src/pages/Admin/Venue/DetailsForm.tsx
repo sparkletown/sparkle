@@ -34,6 +34,7 @@ import {
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -195,7 +196,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your venue on the paddock
+            Position your venue on the {PLAYA_VENUE_NAME}
           </h4>
           {isAdminPlaced ? (
             <p className="warning">
@@ -210,9 +211,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           ) : (
             <p>
               First upload or select the icon you would like to appear on the
-              Playa, then drag it around to position it. The placement team from
-              SparkleVerse will place your camp later, after which you will need
-              to reach out if you want it moved.
+              {PLAYA_VENUE_NAME}, then drag it around to position it. The
+              placement team from SparkleVerse will place your camp later, after
+              which you will need to reach out if you want it moved.
             </p>
           )}
           <div

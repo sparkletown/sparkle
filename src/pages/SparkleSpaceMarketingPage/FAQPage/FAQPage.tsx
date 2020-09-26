@@ -1,4 +1,5 @@
 import React from "react";
+import { PLAYA_VENUE_NAME } from "settings";
 import "./FAQPage.scss";
 
 const FAQPage: React.FunctionComponent = () => {
@@ -112,8 +113,8 @@ const FAQPage: React.FunctionComponent = () => {
           To get the most out of this, your commitment is highly recommended.
           <br />
           You’ll go through different stages to experience this - preparation -
-          arriving - and then setting up camp in the digital playa. From here,
-          your magic begins.
+          arriving - and then setting up camp in the digital {PLAYA_VENUE_NAME}.
+          From here, your magic begins.
         </p>
         <p>
           <strong>

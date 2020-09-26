@@ -1,7 +1,7 @@
 import React from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { DEFAULT_VENUE, PLAYA_IMAGE } from "settings";
+import { DEFAULT_VENUE, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import { useHistory } from "react-router-dom";
 import { venueInsideUrl } from "utils/url";
 
@@ -12,13 +12,15 @@ const Step6 = () => {
       <img
         className="playa-img"
         src={PLAYA_IMAGE}
-        alt="Paddock Background Map"
+        alt={`${PLAYA_VENUE_NAME} Background Map`}
       />
       <div className="step-container step6b-container">
         <div className="navigation-guide">
           <div className="row heading">
             <div className="col-md-8">
-              <span className="navigating-header">Navigating the paddock.</span>
+              <span className="navigating-header">
+                Navigating the {PLAYA_VENUE_NAME}.
+              </span>
             </div>
             <div className="col-md-4 logo-container">
               <img
@@ -48,7 +50,7 @@ const Step6 = () => {
                 <div className="col-xl-8 col-lg-12">
                   <span className="action-details">
                     Use your mouse cursor to click and drag your view around the
-                    playa.
+                    {PLAYA_VENUE_NAME}.
                   </span>
                 </div>
               </div>
@@ -70,7 +72,8 @@ const Step6 = () => {
                 </div>
                 <div className="col-xl-8 col-lg-12">
                   <span className="action-details">
-                    Use the arrow keys to move your avatar around the paddock.
+                    Use the arrow keys to move your avatar around the{" "}
+                    {PLAYA_VENUE_NAME}.
                   </span>
                 </div>
               </div>
@@ -104,8 +107,8 @@ const Step6 = () => {
               <div className="col-md-12">
                 <div className="step6b-welcome-message">
                   Welcome to the Burn. Use the arrows on your keyboard or the
-                  webpage to navigate the paddock, or use the search bar above,
-                  or just click directly on venues to explore.
+                  webpage to navigate the {PLAYA_VENUE_NAME}, or use the search
+                  bar above, or just click directly on venues to explore.
                 </div>
                 <button
                   className={`btn btn-primary btn-block btn-centered`}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import { useHistory } from "react-router-dom";
 import VideoModal from "components/organisms/VideoModal";
 
@@ -169,7 +169,7 @@ const Step5 = () => {
       <img
         className="playa-img"
         src={PLAYA_IMAGE}
-        alt="Paddock Background Map"
+        alt={`${PLAYA_VENUE_NAME} Background Map`}
       />
       <div className="step-container ten-principles-burning">
         {videoDef && (

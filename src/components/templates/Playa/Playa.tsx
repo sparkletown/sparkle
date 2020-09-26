@@ -970,7 +970,7 @@ const Playa = () => {
               <input
                 type="text"
                 className="playa-controls-shout-text"
-                placeholder="Shout across the paddock..."
+                placeholder={`Shout across the ${PLAYA_VENUE_NAME}...`}
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
               />
@@ -979,7 +979,7 @@ const Playa = () => {
           <div className="chat-pop-up">
             <ChatDrawer
               roomName={"PLAYA"}
-              title={"Paddock Chat"}
+              title={`${PLAYA_VENUE_NAME} Chat`}
               chatInputPlaceholder="Chat"
             />
           </div>

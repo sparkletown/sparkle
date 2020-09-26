@@ -227,7 +227,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
     .get()
     .then(async (doc) => {
       if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue playa not found`);
+        throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
       }
       const updated = doc.data();
       updated.dustStorm = !updated.dustStorm;
