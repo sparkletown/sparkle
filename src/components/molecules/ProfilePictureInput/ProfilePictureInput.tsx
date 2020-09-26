@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import { GIF_RESIZER_URL, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
@@ -23,6 +24,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   register,
 }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
+  const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +38,12 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
+    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      setError(
+        `File size limit is 600kB. You can shrink images at ${GIF_RESIZER_URL}`
+      );
+      return;
+    }
     const storageRef = firebase.storage().ref();
     // TODO: add rule to forbid other users to edit a user's image
     const profilePictureRef = storageRef.child(
@@ -45,6 +53,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
     const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
     setValue("pictureUrl", pictureUrlRef, true);
   };
+
   return (
     <div className="profile-picture-upload-form">
       <div
@@ -72,6 +81,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
+      {error && <small>Error uploading: {error}</small>}
       <small>This will be your public avatar that others will see</small>
       <input
         type="hidden"
