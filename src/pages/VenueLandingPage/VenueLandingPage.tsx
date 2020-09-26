@@ -54,8 +54,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     collection: "venues",
     doc: venueId,
     subcollections: [{ collection: "events" }],
-    storeAs: "venueEvents",
     orderBy: ["start_utc_seconds", "asc"],
+    storeAs: "venueEvents",
   });
 
   dayjs.extend(advancedFormat);
@@ -76,7 +76,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) =>
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-        Date.now() / 1000 && event.price > 0
+        new Date().getTime() / 1000 && event.price > 0
   );
 
   venue && updateTheme(venue);

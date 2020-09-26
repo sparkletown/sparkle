@@ -65,7 +65,6 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       collection: "venues",
       doc: venue.id,
       subcollections: [{ collection: "events" }],
-      where: [["start_utc_seconds", ">=", nowSeconds]],
       orderBy: ["start_utc_seconds", "asc"],
       storeAs: "venueEvents",
     },
