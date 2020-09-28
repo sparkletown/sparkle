@@ -1,3 +1,5 @@
+$green: #1ba52e;
+
 .avatar-grid-container {
   display: flex;
   flex: 1;
@@ -26,13 +28,19 @@
     position: absolute;
     border-width: 2;
     border-radius: 14px;
-    border-color: green;
+    border: solid $green 2px;
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
     background-color: rgba(0, 255, 0, 0.2);
     background-repeat: no-repeat;
     background-size: cover;
     margin-top: 38%;
     margin-left: 30vh;
     margin-right: 30vh;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 3px $green, 0 0 20px $green;
+    }
   }
 
   .room-area {

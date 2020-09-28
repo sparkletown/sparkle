@@ -11,7 +11,6 @@ import { AvatarGridRoom } from "types/AvatarGrid";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import PARTY_BACKGROUND from "./party-bg.jpg";
-import { enterRoom } from "utils/useLocationUpdateEffect";
 
 type Props = {
   venueName: string;
@@ -246,7 +245,7 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
-                  zIndex: 3,
+                  zIndex: room?.image_url ? 3 : -1,
                   left: 2 + room.column * 4 + "vh",
                   top: 3.5 + room.row * 4 + "vh",
                   width: room.width * 4.7 + "vh",
