@@ -130,8 +130,8 @@ const AvatarGrid = ({ venueName }: Props) => {
             c >= room.column &&
             c <= room.column + room.width - 1
           ) {
-            user && enterRoom(user, room.name);
-            takeSeat(null, null);
+            setSelectedRoom(room);
+            setIsRoomModalOpen(true);
             isHitting = true;
           }
         });
