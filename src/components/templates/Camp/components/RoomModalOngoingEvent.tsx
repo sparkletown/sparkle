@@ -25,6 +25,14 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
     (currentEvent ? currentEvent : roomEvents[0]);
   const whatsOnText = currentEvent ? "What's on now" : "What's on next";
 
+  const getRoomUrl = (roomUrl: string) => {
+    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
+
+  const isExternalLink = (url: string) =>
+    url.includes("http") &&
+    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
+
   return (
     <div className="room-modal-ongoing-event-container">
       {eventToDisplay && (
@@ -58,16 +66,27 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           </div>
         </>
       )}
-      <a
-        className="btn btn-primary room-entry-button"
-        onClick={() => enterRoom()}
-        id={`enter-room-in-ongoing-event-card-${room.title}`}
-        href={room.url}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {joinButtonText ?? "Join the room"}
-      </a>
+      {isExternalLink(room.url) ? (
+        <a
+          className="btn btn-primary room-entry-button"
+          onClick={() => enterRoom()}
+          id={`enter-room-in-ongoing-event-card-${room.title}`}
+          href={room.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {joinButtonText ?? "Join the room"}
+        </a>
+      ) : (
+        <a
+          className="btn btn-primary room-entry-button"
+          onClick={() => enterRoom()}
+          id={`enter-room-in-ongoing-event-card-${room.title}`}
+          href={room.url}
+        >
+          {joinButtonText ?? "Join the room"}
+        </a>
+      )}
     </div>
   );
 };
