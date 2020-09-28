@@ -105,6 +105,7 @@ const Camp: React.FC = () => {
               imageSize={50}
               disableSeeAll={false}
               isCamp={true}
+              activity={venue.activity ?? "partying"}
             />
           </div>
         )}
@@ -123,14 +124,17 @@ const Camp: React.FC = () => {
         show={isRoomModalOpen}
         room={selectedRoom}
         onHide={modalHidden}
+        joinButtonText={venue.joinButtonText}
       />
-      <div className="chat-pop-up" style={{ zIndex: 100 }}>
-        <ChatDrawer
-          roomName={venue.name}
-          title={`${venue.name} Chat`}
-          chatInputPlaceholder="Chat"
-        />
-      </div>
+      {(IS_BURN || venue.showChat) && (
+        <div className="chat-pop-up" style={{ zIndex: 100 }}>
+          <ChatDrawer
+            roomName={venue.name}
+            title={`${venue.name} Chat`}
+            chatInputPlaceholder="Chat"
+          />
+        </div>
+      )}
       {IS_BURN && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
