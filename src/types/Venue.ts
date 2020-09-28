@@ -56,6 +56,7 @@ export interface Venue {
   adultContent: boolean;
   showAddress?: boolean;
   showGiftATicket?: boolean;
+  showChat?: boolean;
 }
 
 export interface VenuePlacement {

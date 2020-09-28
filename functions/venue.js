@@ -55,6 +55,7 @@ const createVenueData = (data, context) => {
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
+    showChat: true,
   };
 
   switch (data.template) {

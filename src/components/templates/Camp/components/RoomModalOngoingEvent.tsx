@@ -9,12 +9,14 @@ interface PropsType {
   room: CampRoomData;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
+  joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
   room,
   roomEvents,
   enterRoom,
+  joinButtonText,
 }) => {
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
@@ -64,7 +66,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
         target="_blank"
         rel="noopener noreferrer"
       >
-        Join the room
+        {joinButtonText ?? "Join the room"}
       </a>
     </div>
   );

@@ -16,9 +16,15 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   room: CampRoomData | undefined;
+  joinButtonText?: string;
 }
 
-export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
+export const RoomModal: React.FC<PropsType> = ({
+  show,
+  onHide,
+  room,
+  joinButtonText,
+}) => {
   const { user } = useUser();
   const { users, venueEvents } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
@@ -79,6 +85,7 @@ export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
                   room={room}
                   roomEvents={roomEvents}
                   enterRoom={enter}
+                  joinButtonText={joinButtonText}
                 />
               </div>
             </div>

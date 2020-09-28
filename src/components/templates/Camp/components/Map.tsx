@@ -41,6 +41,10 @@ export const Map: React.FC<PropsType> = ({
     return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
   };
 
+  const isExternalLink = (url: string) =>
+    url.includes("http") &&
+    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
+
   const roomEnter = (room: CampRoomData) => {
     room && user && enterRoom(user, room.title);
   };
@@ -108,15 +112,25 @@ export const Map: React.FC<PropsType> = ({
                       <p>{room.about}</p>
                     </div>
                     <div className="playa-venue-actions">
-                      <a
-                        className="btn btn-block btn-small btn-primary"
-                        onClick={() => roomEnter(room)}
-                        href={getRoomUrl(room.url)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Join the room
-                      </a>
+                      {isExternalLink(room.url) ? (
+                        <a
+                          className="btn btn-block btn-small btn-primary"
+                          onClick={() => roomEnter(room)}
+                          href={getRoomUrl(room.url)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {venue.joinButtonText ?? "Join the room"}
+                        </a>
+                      ) : (
+                        <a
+                          className="btn btn-block btn-small btn-primary"
+                          onClick={() => roomEnter(room)}
+                          href={getRoomUrl(room.url)}
+                        >
+                          {venue.joinButtonText ?? "Join the room"}
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
