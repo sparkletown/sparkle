@@ -2,6 +2,7 @@ import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { EntranceStepConfig } from "./EntranceStep";
 
 interface Question {
   name: string;
@@ -13,6 +14,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
+  entrance?: EntranceStepConfig[];
   config?: {
     theme: {
       primaryColor: string;
