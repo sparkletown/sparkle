@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import "./AvatarGrid.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { AvatarGridRoom } from "types/AvatarGrid";
+import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import PARTY_BACKGROUND from "./party-bg.jpg";
@@ -290,6 +291,10 @@ const AvatarGrid = ({ venueName }: Props) => {
           setSelectedRoom(undefined);
           setIsRoomModalOpen(false);
         }}
+      />
+      <Announcement
+        message={venue.bannerMessage}
+        className="announcement-container"
       />
     </>
   );

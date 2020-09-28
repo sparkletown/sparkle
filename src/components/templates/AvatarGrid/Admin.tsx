@@ -27,7 +27,7 @@ const AvatarAdmin: React.FC = () => {
   };
 
   const setBanner = () => updateBanner(bannerMessage);
-  const removeBanner = () => updateBanner(null);
+  const removeBanner = () => updateBanner("");
 
   return (
     <>
