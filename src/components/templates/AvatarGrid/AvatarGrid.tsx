@@ -5,7 +5,6 @@ import { useUser } from "hooks/useUser";
 import React, { useCallback, useEffect, useState } from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { useParams } from "react-router-dom";
 import "./AvatarGrid.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -13,6 +12,7 @@ import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import PARTY_BACKGROUND from "./party-bg.jpg";
+import { enterRoom } from "utils/useLocationUpdateEffect";
 
 type Props = {
   venueName: string;
@@ -29,7 +29,7 @@ const AvatarGrid = ({ venueName }: Props) => {
     WithId<User>
   >();
 
-  const { venueId } = useParams();
+  const venueId = venueName;
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
@@ -58,7 +58,7 @@ const AvatarGrid = ({ venueName }: Props) => {
   });
 
   const takeSeat = useCallback(
-    (row: number | undefined, column: number | undefined) => {
+    (row: number | null, column: number | null) => {
       if (!user || !profile) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
@@ -125,12 +125,14 @@ const AvatarGrid = ({ venueName }: Props) => {
       const hitRoom = (r: number, c: number) => {
         let isHitting = false;
         venue?.spaces?.forEach((room) => {
-          console.log(room.row, r, room.row + room.height);
-          const isInRow =
-            room.row <= r &&
-            !(room.column + room.width - 1 < c) &&
-            !(room.column > c);
-          if (isInRow) {
+          if (
+            r >= room.row &&
+            r <= room.row + room.height - 1 &&
+            c >= room.column &&
+            c <= room.column + room.width - 1
+          ) {
+            setSelectedRoom(room);
+            setIsRoomModalOpen(true);
             isHitting = true;
           }
         });
@@ -138,38 +140,59 @@ const AvatarGrid = ({ venueName }: Props) => {
       };
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (downPress) {
-        if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
+        if (
+          row + 1 > DEFAULT_ROWS ||
+          seatTaken(row + 1, column) ||
+          hitRoom(row + 1, column)
+        ) {
           return;
         }
         takeSeat(row + 1, column);
       }
       if (upPress) {
-        if (row - 1 < 1 || seatTaken(row - 1, column)) {
+        if (
+          row - 1 < 1 ||
+          seatTaken(row - 1, column) ||
+          hitRoom(row - 1, column)
+        ) {
           return;
         }
         takeSeat(row - 1, column);
+        return;
       }
       if (leftPress) {
-        if (column - 1 < 1 || seatTaken(row, column - 1)) {
+        if (
+          column - 1 < 1 ||
+          seatTaken(row, column - 1) ||
+          hitRoom(row, column - 1)
+        ) {
           return;
         }
         takeSeat(row, column - 1);
+        return;
       }
       if (rightPress) {
-        if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
+        if (
+          column + 1 > DEFAULT_COLUMNS ||
+          seatTaken(row, column + 1) ||
+          hitRoom(row, column + 1)
+        ) {
           return;
         }
         takeSeat(row, column + 1);
+        return;
       }
     }
   }, [
     downPress,
     leftPress,
     partygoersBySeat,
+    profile,
     profile?.data?.memrisechats,
     rightPress,
     takeSeat,
     upPress,
+    user,
     venue?.spaces,
   ]);
 
@@ -196,9 +219,9 @@ const AvatarGrid = ({ venueName }: Props) => {
               <div
                 className="room-title"
                 style={{
-                  left: 17.5 + room.column * 4 + "vh",
+                  left: 2 + room.column * 4 + "vh",
                   top: room.row * 3.9 + "vh",
-                  width: room.width * 4.5 + "vh",
+                  width: room.width * 4.7 + "vh",
                   height: "3.5vh",
                 }}
               >
@@ -211,23 +234,23 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
-                  left: 17.5 + room.column * 4 + "vh",
+                  left: 2 + room.column * 4 + "vh",
                   top: 3.5 + room.row * 4 + "vh",
-                  width: room.width * 4.5 + "vh",
+                  width: room.width * 4.7 + "vh",
                   height: room.height * 3.8 + "vh",
                 }}
               ></div>
               <div
-                className="room-border"
+                className="room-area"
                 onClick={() => {
                   setSelectedRoom(room);
                   setIsRoomModalOpen(true);
                 }}
                 style={{
                   zIndex: 3,
-                  left: 17.5 + room.column * 4 + "vh",
+                  left: 2 + room.column * 4 + "vh",
                   top: 3.5 + room.row * 4 + "vh",
-                  width: room.width * 4.5 + "vh",
+                  width: room.width * 4.7 + "vh",
                   height: (room.height - 1) * 3.8 + "vh",
                   backgroundImage: `url(${room?.image_url})`,
                 }}

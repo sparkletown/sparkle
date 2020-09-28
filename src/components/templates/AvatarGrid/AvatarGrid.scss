@@ -35,6 +35,17 @@
     margin-right: 30vh;
   }
 
+  .room-area {
+    position: absolute;
+    border-width: 2;
+    border-radius: 14px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 38%;
+    margin-left: 30vh;
+    margin-right: 30vh;
+  }
+
   .seat-row {
     display: flex;
     flex-direction: column;
