@@ -11,8 +11,6 @@ import { AvatarGridRoom } from "types/AvatarGrid";
 import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
-import PARTY_BACKGROUND from "./party-bg.jpg";
-import { enterRoom } from "utils/useLocationUpdateEffect";
 
 type Props = {
   venueName: string;
@@ -216,8 +214,9 @@ const AvatarGrid = ({ venueName }: Props) => {
                 className="room-title"
                 style={{
                   zIndex: 2,
-                  left: room.column * 4.5 + "vh",
-                  top: room.row * 4 + "vh",
+                  left: 15,
+                  marginLeft: (room.column - 1) * 4 + "vh",
+                  marginTop: (room.row - 2) * 4 + "vh",
                   width: room.width * 4.8 + "vh",
                   height: "3.5vh",
                 }}
@@ -231,8 +230,9 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
-                  left: room.column * 4.5 + "vh",
-                  top: room.row * 4 + "vh",
+                  left: 15,
+                  marginLeft: (room.column - 1) * 4 + "vh",
+                  marginTop: (room.row - 1) * 4 + "vh",
                   width: room.width * 4.8 + "vh",
                   height: room.height * 3.8 + "vh",
                 }}
@@ -244,9 +244,10 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
+                  left: 15,
                   zIndex: room?.image_url ? 1 : -1,
-                  left: room.column * 4.5 + "vh",
-                  top: room.row * 4 + "vh",
+                  marginLeft: (room.column - 1) * 4 + "vh",
+                  marginTop: (room.row - 1) * 4 + "vh",
                   width: room.width * 4.8 + "vh",
                   height: (room.height - 1) * 3.8 + "vh",
                   backgroundImage: `url(${room?.image_url})`,
