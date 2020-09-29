@@ -21,9 +21,6 @@ type Props = {
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-const WIDTH = 2451;
-const HEIGHT = 1668;
-
 const AvatarGrid = ({ venueName }: Props) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -208,9 +205,8 @@ const AvatarGrid = ({ venueName }: Props) => {
       <div
         className="avatar-grid-container"
         style={{
-          backgroundImage: `url(${PARTY_BACKGROUND})`,
-          height: HEIGHT,
-          width: WIDTH,
+          backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
+          backgroundSize: "cover",
         }}
       >
         {venue.spaces?.map((room, index) => {
@@ -219,9 +215,10 @@ const AvatarGrid = ({ venueName }: Props) => {
               <div
                 className="room-title"
                 style={{
-                  left: 2 + room.column * 4 + "vh",
-                  top: room.row * 3.9 + "vh",
-                  width: room.width * 4.7 + "vh",
+                  zIndex: 2,
+                  left: room.column * 4.5 + "vh",
+                  top: room.row * 4 + "vh",
+                  width: room.width * 4.8 + "vh",
                   height: "3.5vh",
                 }}
               >
@@ -234,9 +231,9 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
-                  left: 2 + room.column * 4 + "vh",
-                  top: 3.5 + room.row * 4 + "vh",
-                  width: room.width * 4.7 + "vh",
+                  left: room.column * 4.5 + "vh",
+                  top: room.row * 4 + "vh",
+                  width: room.width * 4.8 + "vh",
                   height: room.height * 3.8 + "vh",
                 }}
               ></div>
@@ -247,10 +244,10 @@ const AvatarGrid = ({ venueName }: Props) => {
                   setIsRoomModalOpen(true);
                 }}
                 style={{
-                  zIndex: 3,
-                  left: 2 + room.column * 4 + "vh",
-                  top: 3.5 + room.row * 4 + "vh",
-                  width: room.width * 4.7 + "vh",
+                  zIndex: room?.image_url ? 1 : -1,
+                  left: room.column * 4.5 + "vh",
+                  top: room.row * 4 + "vh",
+                  width: room.width * 4.8 + "vh",
                   height: (room.height - 1) * 3.8 + "vh",
                   backgroundImage: `url(${room?.image_url})`,
                 }}

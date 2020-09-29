@@ -50,6 +50,7 @@ export interface Venue {
   radioStations?: string[];
   radioTitle?: string;
   dustStorm?: boolean;
+  activity?: any;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
