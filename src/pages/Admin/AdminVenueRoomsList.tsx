@@ -24,7 +24,12 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
       )}
       {rooms &&
         rooms.map((room: CampRoomData, idx: number) => (
-          <AdminVenueRoomDetails key={idx} room={room} />
+          <AdminVenueRoomDetails
+            key={idx}
+            index={idx}
+            venue={venue}
+            room={room}
+          />
         ))}
     </div>
   );

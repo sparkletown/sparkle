@@ -7,7 +7,6 @@ import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_STYLES } from "settings";
-import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 interface AdminVenuePreview {
