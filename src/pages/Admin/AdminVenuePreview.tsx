@@ -2,8 +2,7 @@ import React, { CSSProperties, useMemo } from "react";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
-import { useQuery } from "hooks/useQuery";
-import { isCampVenue, CampVenue } from "types/CampVenue";
+import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_STYLES } from "settings";
@@ -18,17 +17,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
   venue,
   containerStyle,
 }) => {
-  const queryParams = useQuery();
-  const queryRoomIndexString = queryParams.get("roomIndex");
-  const queryRoomIndex = queryRoomIndexString
-    ? parseInt(queryRoomIndexString)
-    : undefined;
-
-  const rooms = isCampVenue(venue) ? venue.rooms : [];
-  const room =
-    isCampVenue(venue) && typeof queryRoomIndex !== "undefined"
-      ? venue.rooms[queryRoomIndex]
-      : undefined;
   const templateSpecificListItems = useMemo(() => {
     switch (venue.template) {
       case VenueTemplate.artpiece:
