@@ -7,6 +7,8 @@ import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_STYLES } from "settings";
+import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
+import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -23,11 +25,11 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
     ? parseInt(queryRoomIndexString)
     : undefined;
 
+  const rooms = isCampVenue(venue) ? venue.rooms : [];
   const room =
     isCampVenue(venue) && typeof queryRoomIndex !== "undefined"
       ? venue.rooms[queryRoomIndex]
       : undefined;
-
   const templateSpecificListItems = useMemo(() => {
     switch (venue.template) {
       case VenueTemplate.artpiece:
@@ -166,66 +168,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         </div>
         {templateSpecificListItems}
       </div>
-      {room && (
-        <div className="venue-preview">
-          <div>
-            <h4
-              className="italic"
-              style={{ textAlign: "center", fontSize: "30px" }}
-            >
-              Room Info: {room.title}
-            </h4>
-            <small>
-              You can select other rooms in {venue.name} from the menu on the
-              left.
-            </small>
-            <div className="heading-group">
-              <div style={{ padding: "5px" }}>
-                <span className="title" style={{ fontSize: "18px" }}>
-                  title:
-                </span>
-                <span className="content">{room.title}</span>
-              </div>
-              <div style={{ padding: "5px" }}>
-                <span className="title" style={{ fontSize: "18px" }}>
-                  subtitle:
-                </span>
-                <span className="content">{room.subtitle}</span>
-              </div>
-              <div style={{ padding: "5px" }}>
-                <span className="title" style={{ fontSize: "18px" }}>
-                  About:
-                </span>
-                <span className="content">{room.about}</span>
-              </div>
-              <div style={{ padding: "5px" }}>
-                <span className="title" style={{ fontSize: "18px" }}>
-                  URL:
-                </span>
-                <span className="content">
-                  <a href={room.url}>{room.url}</a>
-                </span>
-              </div>
-            </div>
-            <div className="content-group">
-              <div style={{ width: "250px" }}>
-                <div
-                  className="title"
-                  style={{ fontSize: "20px", width: "250px" }}
-                >
-                  How your room will appear on the camp map
-                </div>
-                <img
-                  className="banner"
-                  src={room.image_url}
-                  alt="room icon"
-                  style={{ height: "300px", width: "300px" }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <AdminVenueRoomsList venue={venue} />
     </div>
   );
 };
