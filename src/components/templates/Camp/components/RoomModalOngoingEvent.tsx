@@ -9,18 +9,30 @@ interface PropsType {
   room: CampRoomData;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
+  joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
   room,
   roomEvents,
   enterRoom,
+  joinButtonText,
 }) => {
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
+  const whatsOnText = currentEvent ? "What's on now" : "What's on next";
+
+  const getRoomUrl = (roomUrl: string) => {
+    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
+
+  const isExternalLink = (url: string) =>
+    url.includes("http") &&
+    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
+
   return (
     <div className="room-modal-ongoing-event-container">
       {eventToDisplay && (
@@ -31,7 +43,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            What's on now
+            {whatsOnText}
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>
@@ -40,17 +52,40 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
           <div className="event-description">{eventToDisplay.description}</div>
-          <a
-            className="btn btn-primary room-entry-button"
-            onClick={() => enterRoom()}
-            id={`enter-room-in-ongoing-event-card-${room.title}`}
-            href={room.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Join the room
-          </a>
         </>
+      )}
+      {!eventToDisplay && (
+        <>
+          <div className="event-description">
+            <img
+              src="/sparkle-icon.png"
+              className="sparkle-icon"
+              alt="sparkle-icon"
+            />
+            No events scheduled
+          </div>
+        </>
+      )}
+      {isExternalLink(room.url) ? (
+        <a
+          className="btn btn-primary room-entry-button"
+          onClick={() => enterRoom()}
+          id={`enter-room-in-ongoing-event-card-${room.title}`}
+          href={room.url}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {joinButtonText ?? "Join the room"}
+        </a>
+      ) : (
+        <a
+          className="btn btn-primary room-entry-button"
+          onClick={() => enterRoom()}
+          id={`enter-room-in-ongoing-event-card-${room.title}`}
+          href={room.url}
+        >
+          {joinButtonText ?? "Join the room"}
+        </a>
       )}
     </div>
   );

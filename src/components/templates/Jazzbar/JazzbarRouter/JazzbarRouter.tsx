@@ -6,6 +6,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
+import VideoAdmin from "pages/VideoAdmin";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
@@ -19,6 +20,7 @@ const JazzbarRouter: React.FunctionComponent = () => {
     <ExperienceContextWrapper venueName={venue.name}>
       <Switch>
         <Route path={`${match.url}/band`} component={ReactionPage} />
+        <Route path={`${match.url}/admin`} component={VideoAdmin} />
         <Route path={`${match.url}/`} component={JazzBar} />
       </Switch>
     </ExperienceContextWrapper>

@@ -6,6 +6,7 @@ import { WithId } from "utils/id";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
 import "../EventDisplay/EventDisplay.scss";
+import { PLAYA_VENUE_NAME } from "settings";
 
 interface PropsType {
   eventsNow: firebase.firestore.DocumentData[];
@@ -31,7 +32,9 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               <img src="/sparkle-icon.png" alt="sparkle icon" />
               <span
                 style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
-              >{`What's next`}</span>
+              >
+                What's next
+              </span>
             </div>
             <div className="description-container">
               {eventsNow.length > 0 ? (
@@ -57,15 +60,15 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               <div className="whatson-container">
                 <div className="whatson-title-container">What's on now</div>
                 <div className="whatson-description-container">
-                  {eventsNow.map((event) => (
-                    <>
+                  {eventsNow.map((event, idx) => (
+                    <React.Fragment key={idx}>
                       <div className="whatson-description-container-title">
                         {event.name}
                       </div>
                       <div className="whatson-description-container-description">
                         {event.description}
                       </div>
-                    </>
+                    </React.Fragment>
                   ))}
                 </div>
               </div>
@@ -86,7 +89,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               (window.location.href = venuePlayaPreviewUrl(venue.id))
             }
           >
-            {eventsNow.length ? "Join now" : "View on Playa"}
+            {eventsNow.length ? "Join now" : `View on ${PLAYA_VENUE_NAME}`}
           </button>
         </div>
       )}

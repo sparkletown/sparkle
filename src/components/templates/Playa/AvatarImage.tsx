@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { USE_RANDOM_AVATAR, RANDOM_AVATARS } from "../../../settings";
+import {
+  USE_RANDOM_AVATAR,
+  RANDOM_AVATARS,
+  DEFAULT_PROFILE_IMAGE,
+  DEFAULT_PARTY_NAME,
+} from "../../../settings";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
 
@@ -10,7 +15,9 @@ interface PropsType {
 const AvatarImage: React.FC<PropsType> = ({ user }) => {
   const [pictureUrl, setPictureUrl] = useState("");
   useEffect(() => {
-    if (USE_RANDOM_AVATAR || !user.pictureUrl) {
+    if (user.anonMode) {
+      setPictureUrl(DEFAULT_PROFILE_IMAGE);
+    } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
       const randomUrl =
         "/avatars/" +
         RANDOM_AVATARS[
@@ -20,14 +27,14 @@ const AvatarImage: React.FC<PropsType> = ({ user }) => {
     } else {
       setPictureUrl(user.pictureUrl);
     }
-  }, [user.pictureUrl, user.id]);
+  }, [user.pictureUrl, user.id, user.anonMode]);
 
   return (
     <img
       className="profile-image"
       src={pictureUrl}
-      alt={user.partyName}
-      title={user.partyName}
+      alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+      title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
     />
   );
 };

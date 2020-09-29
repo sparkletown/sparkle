@@ -55,6 +55,7 @@ const createVenueData = (data, context) => {
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
+    showChat: true,
   };
 
   switch (data.template) {
@@ -128,6 +129,21 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
     .doc(venueId)
     .update({
       owners: admin.firestore.FieldValue.arrayUnion(newOwnerId),
+    });
+});
+
+exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const { venueId, ownerId } = data;
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({
+      owners: admin.firestore.FieldValue.arrayRemove(ownerId),
     });
 });
 
@@ -208,7 +224,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
     .get()
     .then(async (doc) => {
       if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue playa not found`);
+        throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
       }
       const updated = doc.data();
       updated.dustStorm = !updated.dustStorm;
@@ -413,6 +429,16 @@ exports.adminUpdateBannerMessage = functions.https.onCall(
       .update({ bannerMessage: data.bannerMessage || null });
   }
 );
+
+exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
+  const { venueId, iframeUrl } = data;
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ iframeUrl: iframeUrl || null });
+});
 
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||

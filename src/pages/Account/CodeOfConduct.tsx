@@ -23,6 +23,7 @@ export interface CodeOfConductFormData {
   commonDecency: string;
   tenPrinciples: string;
   termsAndConditions: string;
+  regionalBurn: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -58,7 +59,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     venue: state.firestore.data.currentVenue,
   }));
   const history = useHistory();
-  const { venueId } = getQueryParameters(location.search);
+  const { venueId, returnUrl } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData
   >({
@@ -66,7 +67,13 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   });
 
   const proceed = () => {
-    history.push(venueId ? venueInsideUrl(venueId.toString()) : "");
+    history.push(
+      returnUrl
+        ? returnUrl.toString()
+        : venueId
+        ? venueInsideUrl(venueId.toString())
+        : ""
+    );
   };
 
   const onSubmit = async (data: CodeOfConductFormData) => {

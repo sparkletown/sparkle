@@ -3,7 +3,6 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
 import { BURN_START_UTC_SECONDS } from "settings";
 import { IS_BURN } from "secrets";
-import { PartyTitle } from "../PartyMap/components";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
@@ -22,6 +21,7 @@ import { useUser } from "hooks/useUser";
 import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
 
 import "./Camp.scss";
+import { createUrlSafeName } from "api/admin";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -57,7 +57,9 @@ const Camp: React.FC = () => {
   const { roomTitle } = useParams();
   useEffect(() => {
     if (roomTitle) {
-      const campRoom = venue?.rooms.find((room) => room.title === roomTitle);
+      const campRoom = venue?.rooms.find(
+        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
+      );
       if (campRoom) {
         setSelectedRoom(campRoom);
         setIsRoomModalOpen(true);
@@ -66,40 +68,26 @@ const Camp: React.FC = () => {
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
-    <div
-      className="camp-container"
-      style={{ marginLeft: 100, marginRight: 100 }}
-    >
+    <div className="camp-container">
       <div className="small-right-margin">
-        <PartyTitle
-          startUtcSeconds={BURN_START_UTC_SECONDS}
-          withCountDown={false}
-        />
+        <h1 className="title">{venue.name}</h1>
       </div>
-      {usersInCamp && (
+      <div className="row">
         <div className="col">
-          <UserList
-            users={usersInCamp}
-            imageSize={50}
-            disableSeeAll={false}
-            isCamp={true}
-          />
+          <div className="starting-indication">
+            {venue.description?.text}{" "}
+            {venue.description?.program_url && (
+              <a
+                href={venue.description.program_url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Event Program here
+              </a>
+            )}
+          </div>
+          <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
         </div>
-      )}
-      <div className="col">
-        <div className="starting-indication">
-          {venue.description?.text}{" "}
-          {venue.description?.program_url && (
-            <a
-              href={venue.description.program_url}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Event Program here
-            </a>
-          )}
-        </div>
-        <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
       </div>
       <div className="row">
         <Map
@@ -108,6 +96,19 @@ const Camp: React.FC = () => {
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
+      </div>
+      <div className="row">
+        {usersInCamp && (
+          <div className="col">
+            <UserList
+              users={usersInCamp}
+              imageSize={50}
+              disableSeeAll={false}
+              isCamp={true}
+              activity={venue.activity ?? "partying"}
+            />
+          </div>
+        )}
       </div>
       <div className="row">
         <div className="col">
@@ -123,14 +124,17 @@ const Camp: React.FC = () => {
         show={isRoomModalOpen}
         room={selectedRoom}
         onHide={modalHidden}
+        joinButtonText={venue.joinButtonText}
       />
-      <div className="chat-pop-up" style={{ zIndex: 100 }}>
-        <ChatDrawer
-          roomName={venue.name}
-          title={`${venue.name} Chat`}
-          chatInputPlaceholder="Chat"
-        />
-      </div>
+      {(IS_BURN || venue.showChat) && (
+        <div className="chat-pop-up" style={{ zIndex: 100 }}>
+          <ChatDrawer
+            roomName={venue.name}
+            title={`${venue.name} Chat`}
+            chatInputPlaceholder="Chat"
+          />
+        </div>
+      )}
       {IS_BURN && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />

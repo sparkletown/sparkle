@@ -48,6 +48,7 @@ import {
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import Fuse from "fuse.js";
@@ -262,13 +263,13 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            {PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
+            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
               <>
                 <h4
                   className="italic"
                   style={{ fontSize: "30px", textAlign: "center" }}
                 >
-                  How your experience appears on the paddock
+                  How your experience appears on the {PLAYA_VENUE_NAME}
                 </h4>
                 <div className="container venue-entrance-experience-container">
                   <div
@@ -587,11 +588,11 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
-  const roles = useRoles();
+  const { roles } = useRoles();
   if (!roles) {
     return <>Loading...</>;
   }
-  if (!IS_BURN && !("admin" in roles)) {
+  if (!IS_BURN && !roles.includes("admin")) {
     return <>Forbidden</>;
   }
 

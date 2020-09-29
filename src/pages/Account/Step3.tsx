@@ -1,7 +1,7 @@
 import React from "react";
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import { useUser } from "hooks/useUser";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -90,7 +90,11 @@ const Step3 = () => {
 
   return (
     <div className="splash-page-container">
-      <img className="playa-img" src={PLAYA_IMAGE} alt="Playa Background Map" />
+      <img
+        className="playa-img"
+        src={PLAYA_IMAGE}
+        alt={`${PLAYA_VENUE_NAME} Background Map`}
+      />
       <div className="step-container ten-principles-burning">
         <div className="login-container">
           <h2>The 10 principles of Burning Man</h2>

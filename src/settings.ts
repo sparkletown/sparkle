@@ -17,11 +17,17 @@ export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
+export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Paddock";
-export const BURNING_MAN_DONATION_SITE = `https://donate.burningman.org/?utm_source=sparkleverse&utm_medium=donate&utm_campaign=multiverse`;
-export const PLAYA_INFO_URL = "https://playa.sparklever.se/in/playainfo";
-export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
+export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
+export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
+export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
+export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
+export const PLAYA_INFO_NAME = "Paddock Info Booth";
+export const REALITY_RANGERS_URL =
+  "https://redearthcity.zoom.us/j/5127329136?pwd=Zk9rVHhDNDJqLzJldlJ0M2VJdHBPdz09";
+export const REALITY_RANGERS_NAME = "Red Earth Ranger Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
@@ -29,6 +35,11 @@ export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const TICKET_URL = "https://qkt.io/seed2020";
+export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+
+export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
+export const DUST_STORM_TEXT_2 =
+  "Your only option is to seek shelter in a nearby venue!";
 
 // Hide inactive avatars on playa
 export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
@@ -38,10 +49,6 @@ export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
-export const LOGO_IMAGE_WIDTH_PX = 200;
-export const BANNER_IMAGE_WIDTH_PX = 600;
-export const MAP_ICON_WIDTH_PX = 100;
-export const MAP_BACKGROUND_IMAGE_WIDTH_PX = 600;
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 600;
 export const GIF_IMAGE_WIDTH_PX = 300;

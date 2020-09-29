@@ -18,6 +18,7 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { PLAYA_VENUE_NAME } from "settings";
 // import { playaAddress } from "utils/address";
 
 interface PotLuckButtonProps {
@@ -171,7 +172,8 @@ const OnlineStats: React.FC = () => {
             <div className="stats-outer-container">
               <div className="stats-modal-container">
                 <div className="open-venues">
-                  {venuesWithAttendance?.length || 0} venues on playa
+                  {venuesWithAttendance?.length || 0} venues on{" "}
+                  {PLAYA_VENUE_NAME}
                 </div>
                 <div className="search-container">
                   <input
@@ -286,22 +288,26 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="people">
-                  {filteredUsers.map((user, index) => (
-                    <div
-                      key={index}
-                      className="user-row"
-                      onClick={() => setSelectedUserProfile(user)}
-                    >
-                      <div>
-                        <img src={user.pictureUrl} alt="user profile pic" />
-                        <span>{user.partyName}</span>
-                      </div>
-                      <FontAwesomeIcon
-                        icon={faCommentDots}
-                        className="chat-icon"
-                      />
-                    </div>
-                  ))}
+                  {filteredUsers.map(
+                    (user, index) =>
+                      !user.anonMode && (
+                        <div
+                          key={index}
+                          className="user-row"
+                          onClick={() => setSelectedUserProfile(user)}
+                        >
+                          <div>
+                            <img src={user.pictureUrl} alt="user profile pic" />
+                            <span>{user.partyName}</span>
+                          </div>
+
+                          <FontAwesomeIcon
+                            icon={faCommentDots}
+                            className="chat-icon"
+                          />
+                        </div>
+                      )
+                  )}
                 </div>
               </div>
             </div>

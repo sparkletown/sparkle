@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -131,12 +132,12 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <video
           ref={videoRef}
           autoPlay={true}
-          className={user.mirrorVideo ? "mirrored" : ""}
+          className={user?.mirrorVideo ? "mirrored" : ""}
         />
         <audio ref={audioRef} autoPlay={true} />
       </>
     ),
-    [user.mirrorVideo]
+    [user]
   );
 
   const detail = local
@@ -149,7 +150,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     <div className="participant">
       {videos}
       <div className="name" onClick={() => setSelectedUserProfile(user)}>
-        {user.partyName} {detail}
+        {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
       </div>
       {children}
     </div>

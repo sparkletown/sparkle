@@ -19,6 +19,7 @@ export interface CampVenue extends Venue {
   map_url: string;
   owners: string[];
   rooms: CampRoomData[];
+  joinButtonText?: string;
 }
 
 export const isCampVenue = (val: AnyVenue): val is CampVenue =>

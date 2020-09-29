@@ -634,6 +634,7 @@ input.btn.btn-primary.btn-success {
 
 .popover-body {
   padding: 0;
+  overflow: hidden;
 }
 
 .popover {
@@ -645,7 +646,7 @@ input.btn.btn-primary.btn-success {
 
 .bs-popover-bottom-end {
   width: 300px;
-  max-width: 100%;
+  max-width: 99%;
   background: $black;
   border: 1px solid $light-grey;
   background-image: linear-gradient(
@@ -734,7 +735,8 @@ span.link {
         img {
           margin-right: 10px;
         }
-        .timestamp {
+        .timestamp,
+        .delete-button {
           margin-left: 10px;
         }
       }

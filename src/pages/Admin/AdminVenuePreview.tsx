@@ -6,7 +6,7 @@ import { useQuery } from "hooks/useQuery";
 import { isCampVenue, CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_STYLES } from "settings";
 
 interface AdminVenuePreview {
   venue: WithId<Venue>;
@@ -59,7 +59,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
       case VenueTemplate.zoomroom:
         return (
           <div>
-            <span className="title">Zoom URL</span>
+            <span className="title">URL</span>
             <span className="content">
               <a href={venue.zoomUrl} target="_blank" rel="noopener noreferrer">
                 {venue.zoomUrl}
@@ -149,7 +149,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
-              Playa icon
+              {PLAYA_VENUE_NAME} icon
             </div>
             <div className="content">
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />

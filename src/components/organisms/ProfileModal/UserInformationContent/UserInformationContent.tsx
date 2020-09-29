@@ -43,6 +43,13 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const toggleAnonMode = () => {
+    if (profile) {
+      profile.anonMode = !profile?.anonMode;
+      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+    }
+  };
+
   const toggleMirrorVideo = () => {
     if (profile) {
       profile.mirrorVideo = !profile?.mirrorVideo;
@@ -81,19 +88,36 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
-      <label
-        htmlFor="chk-kidsMode"
-        className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
-      >
-        Kids Mode
-      </label>
-      <input
-        type="checkbox"
-        name="kidsMode"
-        id="chk-kidsMode"
-        defaultChecked={profile?.kidsMode || false}
-        onClick={() => toggleKidsMode()}
-      />
+      {IS_BURN && (
+        <>
+          <label
+            htmlFor="chk-kidsMode"
+            className={`checkbox ${profile?.kidsMode && "checkbox-checked"}`}
+          >
+            Kids Mode
+          </label>
+          <input
+            type="checkbox"
+            name="kidsMode"
+            id="chk-kidsMode"
+            defaultChecked={profile?.kidsMode || false}
+            onClick={() => toggleKidsMode()}
+          />
+          <label
+            htmlFor={"chk-anonMode"}
+            className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
+          >
+            Anonymous Mode
+          </label>
+          <input
+            type="checkbox"
+            name={"anonMode"}
+            id={"chk-anonMode"}
+            defaultChecked={profile?.anonMode || false}
+            onClick={() => toggleAnonMode()}
+          />
+        </>
+      )}
       <label
         htmlFor="chk-mirrorVideo"
         className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
@@ -104,7 +128,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         type="checkbox"
         name="mirrorVideo"
         id="chk-mirrorVideo"
-        defaultChecked={profile?.kidsMode || false}
+        defaultChecked={profile?.mirrorVideo || false}
         onClick={() => toggleMirrorVideo()}
       />
       <input

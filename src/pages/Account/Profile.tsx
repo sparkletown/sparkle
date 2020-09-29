@@ -10,7 +10,7 @@ import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import { venueInsideUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
 
 export interface ProfileFormData {
   partyName: string;
@@ -27,6 +27,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const venueId =
     getQueryParameters(window.location.search)?.venueId?.toString() ??
     DEFAULT_VENUE;
+  const returnUrl = getQueryParameters(
+    window.location.search
+  )?.returnUrl?.toString();
 
   const {
     register,
@@ -42,7 +45,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(IS_BURN ? `/enter/step3` : venueInsideUrl(venueId));
+    history.push(
+      IS_BURN ? `/enter/step3` : returnUrl ? returnUrl : venueInsideUrl(venueId)
+    );
   };
 
   const pictureUrl = watch("pictureUrl");
@@ -54,7 +59,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <p>
           {IS_BURN ? (
             <>
-              This will give you access to the Paddock and all the fun venues!
+              This will give you access to the {PLAYA_VENUE_NAME} and all the
+              fun venues!
             </>
           ) : (
             <>This will be your public profile in the party</>

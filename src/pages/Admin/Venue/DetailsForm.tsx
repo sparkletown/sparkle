@@ -34,12 +34,14 @@ import {
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
+import { IS_BURN } from "secrets";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -188,54 +190,58 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           </div>
         </div>
       </div>
-      <div className="page-side preview" style={{ paddingBottom: "20px" }}>
-        <h4
-          className="italic"
-          style={{ textAlign: "center", fontSize: "22px" }}
-        >
-          Position your venue on the paddock
-        </h4>
-        {isAdminPlaced ? (
-          <p className="warning">
-            Your venue has been placed by our placement team and cannot be
-            moved.{" "}
-            {placementAddress && (
-              <>The placement team wrote your address as: {placementAddress}</>
-            )}
-          </p>
-        ) : (
-          <p>
-            First upload or select the icon you would like to appear on the
-            Playa, then drag it around to position it. The placement team from
-            SparkleVerse will place your camp later, after which you will need
-            to reach out if you want it moved.
-          </p>
-        )}
-        <div
-          className="playa"
-          ref={placementDivRef}
-          style={{ width: "100%", height: 1000, overflow: "scroll" }}
-        >
-          <PlayaContainer
-            rounded
-            interactive={!isAdminPlaced}
-            resizable={false}
-            coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
-            onChange={onBoxMove}
-            snapToGrid={false}
-            iconsMap={iconsMap ?? {}}
-            backgroundImage={PLAYA_IMAGE}
-            iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-            draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-            venueId={venueId}
-            otherIconsStyle={{ opacity: 0.4 }}
-            containerStyle={{
-              width: PLAYA_WIDTH_AND_HEIGHT,
-              height: PLAYA_WIDTH_AND_HEIGHT,
-            }}
-          />
+      {IS_BURN && (
+        <div className="page-side preview" style={{ paddingBottom: "20px" }}>
+          <h4
+            className="italic"
+            style={{ textAlign: "center", fontSize: "22px" }}
+          >
+            Position your venue on the {PLAYA_VENUE_NAME}
+          </h4>
+          {isAdminPlaced ? (
+            <p className="warning">
+              Your venue has been placed by our placement team and cannot be
+              moved.{" "}
+              {placementAddress && (
+                <>
+                  The placement team wrote your address as: {placementAddress}
+                </>
+              )}
+            </p>
+          ) : (
+            <p>
+              First upload or select the icon you would like to appear on the
+              {PLAYA_VENUE_NAME}, then drag it around to position it. The
+              placement team from SparkleVerse will place your camp later, after
+              which you will need to reach out if you want it moved.
+            </p>
+          )}
+          <div
+            className="playa"
+            ref={placementDivRef}
+            style={{ width: "100%", height: 1000, overflow: "scroll" }}
+          >
+            <PlayaContainer
+              rounded
+              interactive={!isAdminPlaced}
+              resizable={false}
+              coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+              onChange={onBoxMove}
+              snapToGrid={false}
+              iconsMap={iconsMap ?? {}}
+              backgroundImage={PLAYA_IMAGE}
+              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
+              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
+              venueId={venueId}
+              otherIconsStyle={{ opacity: 0.4 }}
+              containerStyle={{
+                width: PLAYA_WIDTH_AND_HEIGHT,
+                height: PLAYA_WIDTH_AND_HEIGHT,
+              }}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

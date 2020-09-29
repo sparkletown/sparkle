@@ -12,6 +12,7 @@ import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSe
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -107,7 +108,9 @@ const PrivateChatModal: React.FunctionComponent = () => {
                     />
                     <div className="sender-info-container">
                       <div className="sender-party-name">
-                        {sender.partyName}
+                        {sender.anonMode
+                          ? DEFAULT_PARTY_NAME
+                          : sender.partyName}
                       </div>
                       <div className="sender-last-message">
                         {lastMessageExchanged.text}
