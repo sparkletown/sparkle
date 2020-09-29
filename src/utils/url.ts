@@ -15,3 +15,7 @@ export const venuePlayaPreviewUrl = (venueId: string) => {
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
 };
+
+export const venueEntranceUrl = (venueId: string, step?: number) => {
+  return `/e/${step ?? 1}/${venueId}`;
+};

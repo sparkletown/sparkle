@@ -10,7 +10,7 @@ import { VenueEvent } from "types/VenueEvent";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { venueEntranceUrl } from "utils/url";
 
 interface PropsType {
   event: WithId<VenueEvent>;
@@ -48,7 +48,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
   return (
     <div className="event-payment-button-container">
       {hasUserAlreadyBoughtTicket || isUserVenueOwner ? (
-        <Link to={venueInsideUrl(venueId)}>
+        <Link to={venueEntranceUrl(venueId)}>
           <button
             role="link"
             className="btn btn-primary buy-tickets-button"
