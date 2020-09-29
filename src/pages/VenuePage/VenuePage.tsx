@@ -20,6 +20,7 @@ import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { CampRouter } from "components/templates/Camp/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -207,6 +208,9 @@ const VenuePage = () => {
     case VenueTemplate.audience:
       template = <AudienceRouter />;
       fullscreen = true;
+      break;
+    case VenueTemplate.avatargrid:
+      template = <AvatarRouter />;
       break;
   }
 
