@@ -209,11 +209,8 @@ const VenuePage = () => {
       template = <AudienceRouter />;
       fullscreen = true;
       break;
-    // case VenueTemplate.avatargrid:
-    //   template = <AvatarGrid venueName={venue.name} />;
-    //   break;
     case VenueTemplate.avatargrid:
-      template = <AvatarRouter venueName={venue.name} />;
+      template = <AvatarRouter />;
       break;
   }
 

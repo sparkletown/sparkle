@@ -11,20 +11,17 @@ import { AvatarGridRoom } from "types/AvatarGrid";
 import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
-
-type Props = {
-  venueName: string;
-};
+import { useVenueId } from "hooks/useVenueId";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-const AvatarGrid = ({ venueName }: Props) => {
+const AvatarGrid = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
 
-  const venueId = venueName;
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
@@ -38,6 +35,7 @@ const AvatarGrid = ({ venueName }: Props) => {
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers.forEach((partygoer) => {
     if (
+      !venueId ||
       !partygoer?.data ||
       partygoer.data[venueId] === undefined ||
       partygoer.data[venueId].row === undefined ||
@@ -54,7 +52,7 @@ const AvatarGrid = ({ venueName }: Props) => {
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      if (!user || !profile) return;
+      if (!user || !profile || !venueId) return;
       const doc = `users/${user.uid}`;
       const existingData = profile?.data;
       const update = {
@@ -111,7 +109,9 @@ const AvatarGrid = ({ venueName }: Props) => {
   const rightPress = useKeyPress("ArrowRight");
 
   useEffect(() => {
-    const currentPosition = profile?.data?.memrisechats;
+    if (!venueId) return;
+
+    const currentPosition = profile?.data?.[venueId];
     if (!currentPosition?.row && !currentPosition?.column) {
       return;
     }
@@ -183,12 +183,11 @@ const AvatarGrid = ({ venueName }: Props) => {
     leftPress,
     partygoersBySeat,
     profile,
-    profile?.data?.memrisechats,
+    venue,
     rightPress,
     takeSeat,
     upPress,
-    user,
-    venue?.spaces,
+    venueId,
   ]);
 
   if (!venue) {
