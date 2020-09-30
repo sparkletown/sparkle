@@ -45,7 +45,7 @@ const validationSchema = Yup.object().shape<EventInput>({
   room: Yup.string(),
 });
 
-const AdminEvent: React.FunctionComponent<PropsType> = ({
+const AdminEventModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   venueId,
@@ -210,4 +210,4 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default AdminEvent;
+export default AdminEventModal;

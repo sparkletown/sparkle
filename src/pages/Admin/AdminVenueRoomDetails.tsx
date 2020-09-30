@@ -22,7 +22,7 @@ export const AdminVenueRoomDetails: React.FC<Props> = ({
   const { user } = useUser();
   const history = useHistory();
 
-  const updateUser = async (newState: boolean) => {
+  const updateRoom = async (newState: boolean) => {
     if (!user) return;
     try {
       setRoomEnabled(newState);
@@ -68,11 +68,47 @@ export const AdminVenueRoomDetails: React.FC<Props> = ({
                     name={"toggle-" + index}
                     checked={roomEnabled}
                     onClick={() => {
-                      updateUser(!roomEnabled);
+                      updateRoom(!roomEnabled);
                     }}
                   />
                   <span className="slider round"></span>
                 </label>
+              </div>
+            </div>
+            <div style={{ padding: "5px" }}>
+              <span className="title" style={{ fontSize: "18px" }}>
+                subtitle:
+              </span>
+              <span className="content">{room.subtitle}</span>
+            </div>
+            <div style={{ padding: "5px" }}>
+              <span className="title" style={{ fontSize: "18px" }}>
+                About:
+              </span>
+              <span className="content">{room.about}</span>
+            </div>
+            <div style={{ padding: "5px" }}>
+              <span className="title" style={{ fontSize: "18px" }}>
+                URL:
+              </span>
+              <span className="content">
+                <a href={room.url}>{room.url}</a>
+              </span>
+            </div>
+            <div className="content-group">
+              <div style={{ width: "250px" }}>
+                <div
+                  className="title"
+                  style={{ fontSize: "20px", width: "250px" }}
+                >
+                  How your room will appear on the camp map
+                </div>
+                <img
+                  className="banner"
+                  src={room.image_url}
+                  alt="room icon"
+                  style={{ height: "300px", width: "300px" }}
+                />
               </div>
             </div>
             <div className="heading-group">
@@ -83,6 +119,9 @@ export const AdminVenueRoomDetails: React.FC<Props> = ({
               </div>
             </div>
             <div className="content-group"></div>
+          </div>
+          <div className="Events">
+            <h2>Events:</h2>
           </div>
         </div>
       )}

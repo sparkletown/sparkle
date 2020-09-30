@@ -33,7 +33,7 @@ import {
   canHavePlacement,
 } from "utils/venue";
 import "./Admin.scss";
-import AdminEvent from "./AdminEvent";
+import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import { venuePlayaPreviewUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
@@ -204,7 +204,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           />
         </Switch>
       </div>
-      <AdminEvent
+      <AdminEventModal
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
@@ -394,7 +394,7 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         onHide={onManageUsersModalHide}
         venue={venue}
       />
-      <AdminEvent
+      <AdminEventModal
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
@@ -492,6 +492,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
                 );
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
+                    BLQQLQLQLQ
                     <div className="date">
                       {`${dateEventTimeFormat(
                         startingDate
@@ -550,7 +551,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
           Create an Event
         </button>
       </div>
-      <AdminEvent
+      <AdminEventModal
         show={showCreateEventModal}
         onHide={() => {
           setShowCreateEventModal(false);
