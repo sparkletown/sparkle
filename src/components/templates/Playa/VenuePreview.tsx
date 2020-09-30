@@ -12,7 +12,6 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
-import img from "./img/pickspace-thumbnail_camp.png";
 // import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 
@@ -144,6 +143,17 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       });
   }, [venue]);
 
+  const pickspaceImgSrc =
+    venue.template === VenueTemplate.zoomroom
+      ? "/venues/pickspace-thumbnail_zoom.png"
+      : venue.template === VenueTemplate.themecamp
+      ? "/venues/pickspace-thumbnail_camp.png"
+      : venue.template === VenueTemplate.artpiece
+      ? "/venues/pickspace-thumbnail_art.png"
+      : venue.template === VenueTemplate.jazzbar
+      ? "/venues/pickspace-thumbnail_bar.png"
+      : "/venues/pickspace-thumbnail_auditorium.png";
+
   return (
     <>
       <div className="container playa-venue-preview-container">
@@ -162,13 +172,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           }}
         >
           <img
-            src={
-              venue.template === "zoomroom"
-                ? "/pickspace-thumbnail_zoom.png"
-                : venue.template === "themecamp"
-                ? "/pickspace-thumbnail_camp.png"
-                : "/pickspace-thumbnail_art.png"
-            }
+            src={pickspaceImgSrc}
             alt="pic of camp/artpiece/zoom"
             className="img-venue"
           />
