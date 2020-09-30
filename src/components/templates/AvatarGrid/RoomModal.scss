@@ -1,0 +1,49 @@
+$primary: #d0021b;
+$white: #ffffff;
+
+.room-container {
+  padding: 20px;
+  background-color: #19181a;
+}
+
+.room-name {
+  position: relative;
+  z-index: 2;
+  font-size: 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+.room-description {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.room-button {
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+a.btn,
+button.btn {
+  &.btn-block {
+    display: block;
+  }
+  &.btn-disabled {
+    background-color: black;
+    box-shadow: none;
+    color: rgba(white, 0.6);
+    pointer-events: none;
+  }
+
+  &.btn-active {
+    background-color: $primary;
+    color: $white;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      color: $white;
+      background-color: darken($primary, 5%);
+    }
+  }
+}

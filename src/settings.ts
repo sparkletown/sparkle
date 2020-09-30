@@ -15,6 +15,7 @@ export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
+export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
@@ -188,6 +189,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.avatargrid,
 ];
 
 export const FIREBASE_CONFIG = {
