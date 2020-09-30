@@ -13,11 +13,7 @@ interface Props {
   room: CampRoomData;
 }
 
-export const AdminVenueRoomDetails: React.FC<Props> = ({
-  index,
-  venue,
-  room,
-}) => {
+export const AdminVenueRoomDetails = ({ index, venue, room }: Props) => {
   const [roomEnabled, setRoomEnabled] = useState(room?.isEnabled);
   const { user } = useUser();
   const history = useHistory();

@@ -4,12 +4,10 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { VenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
-import { dateEventTimeFormat } from "utils/time";
 import Fuse from "fuse.js";
-import dayjs from "dayjs";
 import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import EventListComponent from "./EventListComponent";
+import VenueEventDetails from "./VenueEventDetails";
 
 const EventsComponent: React.FC<VenueDetailsPartProps> = ({
   venue,
@@ -87,7 +85,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
               {filteredEvents.map((venueEvent) => {
                 return (
                   <InformationCard title={venueEvent.name} key={venueEvent.id}>
-                    <EventListComponent
+                    <VenueEventDetails
                       venueEvent={venueEvent}
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}

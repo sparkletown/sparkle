@@ -11,12 +11,12 @@ interface Props {
   setShowDeleteEventModal: Function;
 }
 
-const EventListComponent: React.FC<Props> = ({
+const VenueEventDetails = ({
   venueEvent,
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-}) => {
+}: Props) => {
   const startingDate = new Date(venueEvent.start_utc_seconds * 1000);
   const endingDate = new Date(
     (venueEvent.start_utc_seconds + 60 * venueEvent.duration_minutes) * 1000
@@ -71,4 +71,4 @@ const EventListComponent: React.FC<Props> = ({
   );
 };
 
-export default EventListComponent;
+export default VenueEventDetails;
