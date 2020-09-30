@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { Link, useHistory } from "react-router-dom";
 import { Venue } from "types/Venue";
