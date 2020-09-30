@@ -15,6 +15,7 @@ export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
+export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
@@ -89,6 +90,7 @@ export const ZOOM_URL_TEMPLATES = [
 export const VIDEO_IFRAME_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.audience,
 ];
 
 export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
@@ -133,12 +135,25 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Add your camp to the Paddock in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
-
   {
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
       "Embed any 2-D or 3-D art experience on the Paddock with this special template, which allows viewers to chat to each other as they experience your art.",
+    ],
+  },
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Music Venue",
+    description: [
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    ],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description: [
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
   },
 ];
@@ -174,6 +189,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.avatargrid,
 ];
 
 export const FIREBASE_CONFIG = {

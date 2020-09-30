@@ -19,6 +19,8 @@ export interface CampVenue extends Venue {
   map_url: string;
   owners: string[];
   rooms: CampRoomData[];
+  activity?: any;
+  showChat?: any;
   joinButtonText?: string;
 }
 

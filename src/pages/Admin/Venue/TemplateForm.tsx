@@ -10,12 +10,13 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
   [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
   [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
-  [VenueTemplate.jazzbar]: undefined,
+  [VenueTemplate.jazzbar]: "/venues/venue-performance.jpg",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: undefined,
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
-  [VenueTemplate.audience]: undefined,
+  [VenueTemplate.audience]: "/venues/venue-performance.jpg",
+  [VenueTemplate.avatargrid]: undefined,
 };
 
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
@@ -25,12 +26,13 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
     "/venues/pickspace-thumbnail_performance.png",
   [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
   [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
-  [VenueTemplate.jazzbar]: undefined,
+  [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: undefined,
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
-  [VenueTemplate.audience]: undefined,
+  [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
+  [VenueTemplate.avatargrid]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {

@@ -19,6 +19,7 @@ import {
   PLAYA_VENUE_NAME,
   SPARKLE_LOGO_URL,
   DEFAULT_VENUE,
+  MEMRISE_LOGO_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -29,6 +30,7 @@ import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal
 import PlayaTime from "../PlayaTime";
 import PlayaAddress from "../PlayaAddress";
 import { venueInsideUrl } from "utils/url";
+import { VenueTemplate } from "types/VenueTemplate";
 import { useVenueId } from "hooks/useVenueId";
 
 interface PropsType {
@@ -141,6 +143,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
+  const getHeaderLogo = () => {
+    if (venue?.template === VenueTemplate.avatargrid) {
+      return MEMRISE_LOGO_URL;
+    }
+    return IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
+  };
+
   return (
     <>
       <header>
@@ -150,11 +159,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               <div className="navbar-logo">
                 <Link
                   to={
-                    redirectionUrl ?? (venueId ? venueInsideUrl(venueId) : "/")
+                    redirectionUrl ?? venueId
+                      ? venueInsideUrl(venueId ?? "")
+                      : "/"
                   }
                 >
                   <img
-                    src={IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL}
+                    src={getHeaderLogo()}
                     alt="Logo"
                     className={`logo-img ${
                       IS_BURN ? "sparkleverse" : "sparkle"
@@ -182,7 +193,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         }
                         className="playa-link"
                       >
-                        Back to the {PLAYA_VENUE_NAME}
+                        Back to the Paddock
                       </span>
                     )}
                   </div>
@@ -260,10 +271,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   >
                     <div className="navbar-link-profile">
                       <img
-                        src={
-                          (!profile?.anonMode && profile?.pictureUrl) ||
-                          DEFAULT_PROFILE_IMAGE
-                        }
+                        src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
                         className="profile-icon"
                         alt="avatar"
                         width="40"

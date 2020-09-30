@@ -109,15 +109,11 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
-const checkUserIsPlayaOwner = (uid) => {
-  return checkUserIsOwner(PLAYA_VENUE_ID, uid);
-};
-
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
-    return await checkUserIsPlayaOwner(uid);
+    return await checkUserIsOwner(venueId, uid);
   } catch (e) {
-    return checkUserIsOwner(venueId, uid);
+    return e.toString();
   }
 };
 
@@ -219,7 +215,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
 exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   checkAuth(context);
 
-  await checkUserIsPlayaOwner(context.auth.token.user_id);
+  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -368,7 +364,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);
-  await checkUserIsPlayaOwner(context.auth.token.user_id);
+  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -407,7 +403,7 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
 exports.adminHideVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);
-  await checkUserIsPlayaOwner(context.auth.token.user_id);
+  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -425,11 +421,11 @@ exports.adminHideVenue = functions.https.onCall(async (data, context) => {
 
 exports.adminUpdateBannerMessage = functions.https.onCall(
   async (data, context) => {
-    await checkUserIsPlayaOwner(context.auth.token.user_id);
+    await checkUserIsAdminOrOwner(data.venueId, context.auth.token.user_id);
     await admin
       .firestore()
       .collection("venues")
-      .doc(PLAYA_VENUE_ID)
+      .doc(data.venueId)
       .update({ bannerMessage: data.bannerMessage || null });
   }
 );
