@@ -17,10 +17,6 @@ const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
 const AvatarGrid = () => {
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
@@ -31,24 +27,28 @@ const AvatarGrid = () => {
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
     undefined
   );
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
 
   const partygoersBySeat: WithId<User>[][] = [];
-  partygoers.forEach((partygoer) => {
-    if (
-      !venueId ||
-      !partygoer?.data ||
-      partygoer.data[venueId] === undefined ||
-      partygoer.data[venueId].row === undefined ||
-      partygoer.data[venueId].column === undefined
-    )
-      return;
-    const row = partygoer.data[venueId].row || 0;
-    const column = partygoer.data[venueId].column || 0;
-    if (!(row in partygoersBySeat)) {
-      partygoersBySeat[row] = [];
-    }
-    partygoersBySeat[row][column] = partygoer;
-  });
+  partygoers &&
+    partygoers.forEach((partygoer) => {
+      if (
+        !venueId ||
+        !partygoer?.data ||
+        partygoer.data[venueId] === undefined ||
+        partygoer.data[venueId].row === undefined ||
+        partygoer.data[venueId].column === undefined
+      )
+        return;
+      const row = partygoer.data[venueId].row || 0;
+      const column = partygoer.data[venueId].column || 0;
+      if (!(row in partygoersBySeat)) {
+        partygoersBySeat[row] = [];
+      }
+      partygoersBySeat[row][column] = partygoer;
+    });
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -74,6 +74,28 @@ const AvatarGrid = () => {
     },
     [profile, user, venueId]
   );
+
+  const onSeatClick = (
+    row: number,
+    column: number,
+    seatedPartygoer: WithId<User> | null
+  ) => {
+    if (!seatedPartygoer) {
+      takeSeat(row, column);
+    }
+    venue?.spaces?.forEach((room) => {
+      if (
+        !seatedPartygoer &&
+        row >= room.row &&
+        row <= room.row + room.height - 1 &&
+        column >= room.column &&
+        column <= room.column + room.width - 1
+      ) {
+        setSelectedRoom(room);
+        setIsRoomModalOpen(true);
+      }
+    });
+  };
 
   const useKeyPress = function (targetKey: string) {
     const [keyPressed, setKeyPressed] = useState(false);
@@ -108,6 +130,69 @@ const AvatarGrid = () => {
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
 
+  const isRoomBorder = (row: number, column: number) => {
+    const borders = {
+      left: false,
+      right: false,
+      top: false,
+      bottom: false,
+    };
+
+    venue?.spaces?.forEach((room) => {
+      if (
+        room.column === column &&
+        row >= room.row &&
+        row < room.row + room.height
+      ) {
+        borders.left = true;
+      }
+      if (
+        room.row === row &&
+        column >= room.column &&
+        column < room.column + room.width
+      ) {
+        borders.top = true;
+      }
+      if (
+        room.column + room.width - 1 === column &&
+        row >= room.row &&
+        row < room.row + room.height
+      ) {
+        borders.right = true;
+      }
+      if (
+        room.row + room.height - 1 === row &&
+        column >= room.column &&
+        column < room.column + room.width
+      ) {
+        borders.bottom = true;
+      }
+    });
+    return borders;
+  };
+
+  const hitRoom = (r: number, c: number) => {
+    let isHitting = false;
+    venue?.spaces?.forEach((room) => {
+      if (
+        r >= room.row &&
+        r <= room.row + room.height - 1 &&
+        c >= room.column &&
+        c <= room.column + room.width - 1
+      ) {
+        setSelectedRoom(room);
+        setIsRoomModalOpen(true);
+        isHitting = true;
+      } else {
+        if (isRoomModalOpen) {
+          setSelectedRoom(undefined);
+          setIsRoomModalOpen(false);
+        }
+      }
+    });
+    return isHitting;
+  };
+
   useEffect(() => {
     if (!venueId) return;
 
@@ -117,22 +202,6 @@ const AvatarGrid = () => {
     }
     const { row, column } = currentPosition;
     if (row && column) {
-      const hitRoom = (r: number, c: number) => {
-        let isHitting = false;
-        venue?.spaces?.forEach((room) => {
-          if (
-            r >= room.row &&
-            r <= room.row + room.height - 1 &&
-            c >= room.column &&
-            c <= room.column + room.width - 1
-          ) {
-            setSelectedRoom(room);
-            setIsRoomModalOpen(true);
-            isHitting = true;
-          }
-        });
-        return isHitting;
-      };
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (downPress) {
         if (
@@ -178,17 +247,8 @@ const AvatarGrid = () => {
         return;
       }
     }
-  }, [
-    downPress,
-    leftPress,
-    partygoersBySeat,
-    profile,
-    venue,
-    rightPress,
-    takeSeat,
-    upPress,
-    venueId,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [downPress, leftPress, rightPress, upPress]);
 
   if (!venue) {
     return null;
@@ -206,55 +266,6 @@ const AvatarGrid = () => {
           backgroundSize: "cover",
         }}
       >
-        {venue.spaces?.map((room, index) => {
-          return (
-            <div key={`room${index}`}>
-              <div
-                className="room-title"
-                style={{
-                  zIndex: 2,
-                  left: 15,
-                  marginLeft: (room.column - 1) * 4 + "vh",
-                  marginTop: (room.row - 2) * 4 + "vh",
-                  width: room.width * 4.8 + "vh",
-                  height: "3.5vh",
-                }}
-              >
-                {room.name}
-              </div>
-              <div
-                className="room-border"
-                onClick={() => {
-                  setSelectedRoom(room);
-                  setIsRoomModalOpen(true);
-                }}
-                style={{
-                  left: 15,
-                  marginLeft: (room.column - 1) * 4 + "vh",
-                  marginTop: (room.row - 1) * 4 + "vh",
-                  width: room.width * 4.8 + "vh",
-                  height: room.height * 3.8 + "vh",
-                }}
-              ></div>
-              <div
-                className="room-area"
-                onClick={() => {
-                  setSelectedRoom(room);
-                  setIsRoomModalOpen(true);
-                }}
-                style={{
-                  left: 15,
-                  zIndex: room?.image_url ? 1 : -1,
-                  marginLeft: (room.column - 1) * 4 + "vh",
-                  marginTop: (room.row - 1) * 4 + "vh",
-                  width: room.width * 4.8 + "vh",
-                  height: (room.height - 1) * 3.8 + "vh",
-                  backgroundImage: `url(${room?.image_url})`,
-                }}
-              ></div>
-            </div>
-          );
-        })}
         {Array.from(Array(columns)).map((_, colIndex) => {
           return (
             <div className="seat-row" key={`col${colIndex}`}>
@@ -265,25 +276,44 @@ const AvatarGrid = () => {
                   ? partygoersBySeat[row][column]
                   : null;
                 const isMe = seatedPartygoer?.id === user?.uid;
+                const { top, left, right, bottom } = isRoomBorder(row, column);
                 return (
                   <div
-                    className={seatedPartygoer ? "seat" : "not-seat"}
-                    onClick={() =>
-                      !seatedPartygoer ? takeSeat(row, column) : null
-                    }
                     key={`row${rowIndex}`}
+                    style={{
+                      borderWidth: 1,
+                      borderTop: top ? "solid #1ba52e" : "solid transparent",
+                      borderLeft: left ? "solid #1ba52e" : "solid transparent",
+                      borderRight: right
+                        ? "solid #1ba52e"
+                        : "solid transparent",
+                      borderBottom: bottom
+                        ? "solid #1ba52e"
+                        : "solid transparent",
+                      borderTopLeftRadius: top && left ? "20%" : 0,
+                      borderBottomLeftRadius: bottom && left ? "20%" : 0,
+                      borderTopRightRadius: top && right ? "20%" : 0,
+                      borderBottomRightRadius: bottom && right ? "20%" : 0,
+                    }}
+                    onClick={() => hitRoom(row, column)}
                   >
-                    {seatedPartygoer && (
-                      <div className={isMe ? "user me" : "user"}>
-                        <UserProfilePicture
-                          user={seatedPartygoer}
-                          profileStyle={"profile-avatar"}
-                          setSelectedUserProfile={setSelectedUserProfile}
-                          miniAvatars={venue?.miniAvatars}
-                          imageSize={undefined}
-                        />
-                      </div>
-                    )}
+                    <div
+                      className={seatedPartygoer ? "seat" : "not-seat"}
+                      onClick={() => onSeatClick(row, column, seatedPartygoer)}
+                      key={`row${rowIndex}`}
+                    >
+                      {seatedPartygoer && (
+                        <div className={isMe ? "user me" : "user"}>
+                          <UserProfilePicture
+                            user={seatedPartygoer}
+                            profileStyle={"profile-avatar"}
+                            setSelectedUserProfile={setSelectedUserProfile}
+                            miniAvatars={venue?.miniAvatars}
+                            imageSize={undefined}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -291,11 +321,13 @@ const AvatarGrid = () => {
           );
         })}
       </div>
-      <UserProfileModal
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-        userProfile={selectedUserProfile}
-      />
+      {selectedUserProfile && (
+        <UserProfileModal
+          show={!!selectedUserProfile}
+          onHide={() => setSelectedUserProfile(undefined)}
+          userProfile={selectedUserProfile}
+        />
+      )}
       <div className="chat-container">
         <ChatDrawer
           title={`${venue.name ?? "Grid"} Chat`}
@@ -307,6 +339,7 @@ const AvatarGrid = () => {
       <RoomModal
         show={isRoomModalOpen}
         room={selectedRoom}
+        miniAvatars={venue.miniAvatars}
         onHide={() => {
           setSelectedRoom(undefined);
           setIsRoomModalOpen(false);
