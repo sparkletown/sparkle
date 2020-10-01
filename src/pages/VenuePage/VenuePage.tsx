@@ -11,7 +11,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import FriendShipPage from "pages/FriendShipPage";
 import React, { useState, useEffect } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -25,15 +25,15 @@ import { CampRouter } from "components/templates/Camp/Router";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
-import getQueryParameters from "utils/getQueryParameters";
 import AudienceRouter from "components/templates/Audience/AudienceRouter";
+import { useVenueId } from "hooks/useVenueId";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
 const VenuePage = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const firebase = useFirestore();
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
@@ -78,20 +78,20 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  useLocationUpdateEffect(user, venueName ?? "");
+  const locationRoom =
+    profile && profile.lastSeenIn ? profile.lastSeenIn : venueName ?? "";
+  useLocationUpdateEffect(user, locationRoom);
 
   useConnectPartyGoers();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
   useEffect(() => {
-    const venueIdFromParams = getQueryParameters(window.location.search)
-      ?.venueId;
     firebase.get({
       collection: "venues",
-      doc: venueId ? venueId : venueIdFromParams,
+      doc: venueId ? venueId : venueName,
       storeAs: "currentVenue",
     });
-  }, [firebase, venueId]);
+  }, [firebase, venueId, venueName]);
   useFirestoreConnect(
     user
       ? {

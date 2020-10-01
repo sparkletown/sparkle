@@ -21,10 +21,7 @@ import {
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
-import {
-  updateLocationData,
-  useLocationUpdateEffect,
-} from "utils/useLocationUpdateEffect";
+import { updateLocationData } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useParams } from "react-router-dom";
 import { throttle } from "lodash";
@@ -185,8 +182,6 @@ const Playa = () => {
       }
     };
   });
-
-  useLocationUpdateEffect(user, PLAYA_VENUE_NAME);
 
   useEffect(() => {
     const updateDimensions = () => {
