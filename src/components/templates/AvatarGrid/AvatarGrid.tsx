@@ -11,8 +11,6 @@ import { AvatarGridRoom } from "types/AvatarGrid";
 import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
-import PARTY_BACKGROUND from "./party-bg.jpg";
-import { enterRoom } from "utils/useLocationUpdateEffect";
 
 type Props = {
   venueName: string;
@@ -185,12 +183,11 @@ const AvatarGrid = ({ venueName }: Props) => {
     leftPress,
     partygoersBySeat,
     profile,
-    profile?.data?.memrisechats,
     rightPress,
     takeSeat,
     upPress,
     user,
-    venue?.spaces,
+    venue,
   ]);
 
   if (!venue) {

@@ -90,6 +90,7 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
+                      className=""
                     />
                   </InformationCard>
                 );

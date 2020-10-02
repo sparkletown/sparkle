@@ -9,6 +9,7 @@ interface Props {
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
+  className: string;
 }
 
 const VenueEventDetails = ({
@@ -16,14 +17,14 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
+  className,
 }: Props) => {
   const startingDate = new Date(venueEvent.start_utc_seconds * 1000);
   const endingDate = new Date(
     (venueEvent.start_utc_seconds + 60 * venueEvent.duration_minutes) * 1000
   );
-
   return (
-    <div>
+    <div className={className}>
       <div className="date">
         {`${dateEventTimeFormat(startingDate)}-${dateEventTimeFormat(
           endingDate
@@ -31,6 +32,9 @@ const VenueEventDetails = ({
       ${dayjs(startingDate).format("dddd MMMM Do")}`}
       </div>
       <div className="event-description">
+        <div style={!className ? { display: "none" } : {}}>
+          {venueEvent.name}
+        </div>
         {venueEvent.description}
         {venueEvent.descriptions?.map((description, index) => (
           <p key={index}>{description}</p>

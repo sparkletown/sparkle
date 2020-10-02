@@ -340,4 +340,65 @@ $page-max-width: 1240px;
       }
     }
   }
+  .rooms-list-container {
+    margin: 20px;
+    .room-stats {
+      display: flex;
+      justify-content: space-between;
+    }
+    .rooms-counter {
+      align-self: center;
+    }
+    .add-rooms-button {
+    }
+    .venue-room-details {
+      background: #1a1d24;
+      border-radius: 50px;
+      padding: 30px;
+      margin-bottom: 20px;
+
+      .venue-content {
+        display: flex;
+        justify-content: space-between;
+        .sub-content {
+        }
+
+        .banner {
+          .banner-image {
+            height: 300px;
+            width: 300px;
+          }
+        }
+      }
+
+      .heading-options {
+        display: flex;
+        justify-content: space-between;
+        h4 {
+          font-size: 30px;
+        }
+        .room-options {
+          display: flex;
+          justify-content: space-between;
+          .edit-room {
+          }
+          .toggle-room {
+            align-self: center;
+          }
+        }
+      }
+    }
+  }
+  .rooms-events-list {
+    margin-top: 25px;
+    .admin-room-list-events {
+      display: flex;
+      justify-content: space-between;
+    }
+    .event-description {
+      &:first-child {
+        display: block;
+      }
+    }
+  }
 }
