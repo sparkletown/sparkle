@@ -22,7 +22,7 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import { VenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import {
   canHaveSubvenues,
@@ -52,6 +52,7 @@ import { VenueOwnersModal } from "./VenueOwnersModal";
 import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
 import EventsComponent from "./EventsComponent";
+import AdminDeleteEvent from "./AdminDeleteEvent";
 
 dayjs.extend(advancedFormat);
 
@@ -126,6 +127,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 
   const venue = venues[venueId];
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   if (!venue) {
@@ -186,6 +188,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
                 roomIndex={roomIndex}
                 showCreateEventModal={showCreateEventModal}
                 setShowCreateEventModal={setShowCreateEventModal}
+                setShowDeleteEventModal={setShowDeleteEventModal}
               />
             )}
           />
@@ -200,16 +203,28 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         venueId={venue.id}
         event={editedEvent}
         template={venue.template}
+        setEditedEvent={setEditedEvent}
+        setShowDeleteEventModal={setShowDeleteEventModal}
+      />
+      <AdminDeleteEvent
+        show={showDeleteEventModal}
+        onHide={() => {
+          setShowDeleteEventModal(false);
+          setEditedEvent && setEditedEvent(undefined);
+        }}
+        venueId={venue.id}
+        event={editedEvent}
       />
     </>
   );
 };
 
-const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
+const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
   venue,
   roomIndex,
   showCreateEventModal,
   setShowCreateEventModal,
+  setShowDeleteEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -390,6 +405,8 @@ const VenueInfoComponent: React.FC<VenueDetailsPartProps> = ({
         venueId={venue.id}
         event={editedEvent}
         template={venue.template}
+        setEditedEvent={setEditedEvent}
+        setShowDeleteEventModal={setShowDeleteEventModal}
       />
     </>
   );

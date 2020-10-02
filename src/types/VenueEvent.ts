@@ -13,7 +13,17 @@ export interface VenueEvent {
   room?: string;
 }
 
-export type VenueDetailsPartProps = {
+export type AdminVenueDetailsPartProps = {
+  venue: WithId<Venue>;
+  roomIndex?: number;
+  showCreateEventModal: boolean;
+  setShowCreateEventModal: Function;
+  setShowDeleteEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
+};
+
+export type RoomVenueDetailsPartProps = {
   venue: WithId<Venue>;
   roomIndex?: number;
   showCreateEventModal: boolean;

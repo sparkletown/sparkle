@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { VenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { RoomVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
 import Fuse from "fuse.js";
@@ -9,7 +9,7 @@ import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import VenueEventDetails from "./VenueEventDetails";
 
-const EventsComponent: React.FC<VenueDetailsPartProps> = ({
+const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
   venue,
   showCreateEventModal,
   setShowCreateEventModal,
@@ -116,6 +116,8 @@ const EventsComponent: React.FC<VenueDetailsPartProps> = ({
         venueId={venue.id}
         event={editedEvent}
         template={venue.template}
+        setEditedEvent={setEditedEvent}
+        setShowDeleteEventModal={setShowDeleteEventModal}
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}

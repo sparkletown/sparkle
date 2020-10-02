@@ -15,6 +15,8 @@ interface PropsType {
   venueId: string;
   event?: WithId<VenueEvent>;
   template?: string;
+  setEditedEvent: Function | undefined;
+  setShowDeleteEventModal: Function;
 }
 
 const validationSchema = Yup.object().shape<EventInput>({
@@ -51,6 +53,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   venueId,
   event,
   template,
+  setEditedEvent,
+  setShowDeleteEventModal,
 }) => {
   const { register, handleSubmit, errors, formState, reset } = useForm<
     EventInput
@@ -199,25 +203,27 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
               )}
             </div>
           )}
-          <input
-            className="btn btn-primary btn-block btn-small"
-            type="submit"
-            value={event ? "Update" : "Create"}
-            disabled={formState.isSubmitting}
-          />
-          {template === "themecamp" && (
-            <button
-              role="link"
-              className="btn btn-primary btn-block btn-small"
-              onClick={() => {
-                // setEditedEvent && setEditedEvent(event);
-                // setShowDeleteEventModal(true);
-              }}
+          <div style={event ? { display: "flex" } : {}}>
+            <input
+              className="btn btn-primary btn-small"
+              type="submit"
+              value={event ? "Update" : "Create"}
               disabled={formState.isSubmitting}
-            >
-              Delete
-            </button>
-          )}
+            />
+            {template === "themecamp" && event && (
+              <input
+                className="btn btn-primary btn-danger btn-small"
+                type="submit"
+                value="Delete"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEditedEvent && setEditedEvent(event);
+                  setShowDeleteEventModal(true);
+                }}
+                disabled={formState.isSubmitting}
+              />
+            )}
+          </div>
         </form>
       </div>
     </Modal>

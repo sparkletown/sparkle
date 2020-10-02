@@ -57,12 +57,14 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         venueId={venue.id}
         event={editedEvent}
         template={venue.template}
+        setEditedEvent={setEditedEvent}
+        setShowDeleteEventModal={setShowDeleteEventModal}
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}
         onHide={() => {
           setShowDeleteEventModal(false);
-          setEditedEvent && setEditedEvent(undefined);
+          // setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
         event={editedEvent}
