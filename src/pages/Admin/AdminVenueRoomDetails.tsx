@@ -53,10 +53,6 @@ export const AdminVenueRoomDetails = ({
 
   const [roomEnabled, setRoomEnabled] = useState(room?.isEnabled);
 
-  // const filteredEvents = events && events.filter((e) => {
-  //   if (e.room === room.title) { return e; }
-  //   return null
-  // })
   const { user } = useUser();
   const history = useHistory();
 
@@ -163,12 +159,16 @@ export const AdminVenueRoomDetails = ({
             </>
           )}
           <div className="page-container-adminpanel-actions">
-            <button
-              className="btn btn-primary"
-              onClick={() => setShowCreateEventModal(true)}
+            <a
+              href="?"
+              className="btn btn-small"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowCreateEventModal(true, room.title);
+              }}
             >
-              Create an Event
-            </button>
+              Add an Event
+            </a>
           </div>
         </div>
       )}

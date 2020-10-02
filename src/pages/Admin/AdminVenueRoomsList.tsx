@@ -20,6 +20,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
+  const [roomName, setRoomName] = useState("");
 
   return (
     <div className="rooms-list-container">
@@ -44,7 +45,10 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
             venue={venue}
             room={room}
             setEditedEvent={setEditedEvent}
-            setShowCreateEventModal={setShowCreateEventModal}
+            setShowCreateEventModal={(param1: boolean, param2: string) => {
+              setShowCreateEventModal(param1);
+              setRoomName(param2);
+            }}
             setShowDeleteEventModal={setShowDeleteEventModal}
           />
         ))}
@@ -59,6 +63,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         template={venue.template}
         setEditedEvent={setEditedEvent}
         setShowDeleteEventModal={setShowDeleteEventModal}
+        roomName={roomName}
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}

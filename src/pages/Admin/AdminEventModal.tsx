@@ -17,6 +17,7 @@ interface PropsType {
   template?: string;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: Function;
+  roomName?: string;
 }
 
 const validationSchema = Yup.object().shape<EventInput>({
@@ -55,6 +56,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   template,
   setEditedEvent,
   setShowDeleteEventModal,
+  roomName,
 }) => {
   const { register, handleSubmit, errors, formState, reset } = useForm<
     EventInput
@@ -197,6 +199,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
                 className="input-block input-centered"
                 placeholder="Cuddle Puddle"
                 ref={register}
+                value={roomName && roomName}
               />
               {errors.host && (
                 <span className="input-error">{errors.host.message}</span>
@@ -228,6 +231,10 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       </div>
     </Modal>
   );
+};
+
+AdminEventModal.defaultProps = {
+  roomName: "",
 };
 
 export default AdminEventModal;
