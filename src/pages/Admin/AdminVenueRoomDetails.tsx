@@ -79,10 +79,29 @@ export const AdminVenueRoomDetails = ({
   return (
     <div>
       {room && (
-        <div className="venue-room-details">
+        <div
+          className={
+            roomEnabled
+              ? "venue-room-details"
+              : "venue-room-details room-disabled"
+          }
+        >
           <div>
             <div className="heading-options">
-              <h4>{room.title}</h4>
+              <div className="banner">
+                <img
+                  className="banner-image"
+                  src={room.image_url}
+                  alt="room icon"
+                />
+              </div>
+              <div>
+                <h4>{room.title}</h4>
+                <div>
+                  <span>subtitle:</span>
+                  <span>{room.subtitle}</span>
+                </div>
+              </div>
               <div className="room-options">
                 <div className="edit-room">
                   {
@@ -107,15 +126,12 @@ export const AdminVenueRoomDetails = ({
                     />
                     <span className="slider round"></span>
                   </label>
+                  <div>Turn room {roomEnabled ? "Off" : "On"}</div>
                 </div>
               </div>
             </div>
             <div className="venue-content">
               <div className="sub-content">
-                <div>
-                  <span>subtitle:</span>
-                  <span>{room.subtitle}</span>
-                </div>
                 <div>
                   <span>About:</span>
                   <span>{room.about}</span>
@@ -125,16 +141,6 @@ export const AdminVenueRoomDetails = ({
                   <span>
                     <a href={room.url}>{room.url}</a>
                   </span>
-                </div>
-              </div>
-              <div className="banner">
-                <div>
-                  <div>How your room will appear on the camp map</div>
-                  <img
-                    className="banner-image"
-                    src={room.image_url}
-                    alt="room icon"
-                  />
                 </div>
               </div>
             </div>
