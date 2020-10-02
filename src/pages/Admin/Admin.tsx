@@ -125,8 +125,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   );
 
   const venue = venues[venueId];
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
+  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   if (!venue) {
     return <>{`Oops, seems we can't find your venue!`}</>;

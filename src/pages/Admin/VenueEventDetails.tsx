@@ -33,7 +33,15 @@ const VenueEventDetails = ({
       </div>
       <div className="event-description">
         <div style={!className ? { display: "none" } : {}}>
-          {venueEvent.name}
+          <span
+            style={{ textDecoration: "underline", cursor: "pointer" }}
+            onClick={() => {
+              setEditedEvent && setEditedEvent(venueEvent);
+              setShowCreateEventModal(true);
+            }}
+          >
+            {venueEvent.name}
+          </span>
         </div>
         {venueEvent.description}
         {venueEvent.descriptions?.map((description, index) => (
@@ -46,30 +54,32 @@ const VenueEventDetails = ({
             <>Individual tickets £{venueEvent.price / 100}</>
           )}
         </div>
-        <div className="event-payment-button-container">
-          <div>
-            <button
-              role="link"
-              className="btn btn-primary buy-tickets-button"
-              onClick={() => {
-                setEditedEvent && setEditedEvent(venueEvent);
-                setShowCreateEventModal(true);
-              }}
-            >
-              Edit
-            </button>
-            <button
-              role="link"
-              className="btn btn-primary buy-tickets-button"
-              onClick={() => {
-                setEditedEvent && setEditedEvent(venueEvent);
-                setShowDeleteEventModal(true);
-              }}
-            >
-              Delete
-            </button>
+        {!className && (
+          <div className="event-payment-button-container">
+            <div>
+              <button
+                role="link"
+                className="btn btn-primary buy-tickets-button"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowCreateEventModal(true);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                role="link"
+                className="btn btn-primary buy-tickets-button"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowDeleteEventModal(true);
+                }}
+              >
+                Delete
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -70,6 +70,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
         start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
         duration_hours: event.duration_minutes / 60,
+        room: event.room,
       });
     }
   }, [event, reset]);
@@ -199,11 +200,24 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
             </div>
           )}
           <input
-            className="btn btn-primary btn-block btn-centered"
+            className="btn btn-primary btn-block btn-small"
             type="submit"
             value={event ? "Update" : "Create"}
             disabled={formState.isSubmitting}
           />
+          {template === "themecamp" && (
+            <button
+              role="link"
+              className="btn btn-primary btn-block btn-small"
+              onClick={() => {
+                // setEditedEvent && setEditedEvent(event);
+                // setShowDeleteEventModal(true);
+              }}
+              disabled={formState.isSubmitting}
+            >
+              Delete
+            </button>
+          )}
         </form>
       </div>
     </Modal>
