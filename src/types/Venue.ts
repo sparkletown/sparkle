@@ -63,6 +63,7 @@ export interface Venue {
   columns?: number;
   rows?: number;
   spaces?: AvatarGridRoom[];
+  hasPaidEvents?: boolean;
 }
 
 export interface VenuePlacement {

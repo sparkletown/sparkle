@@ -141,3 +141,17 @@ export const dateEventTimeFormat = (date) => {
   const mm = String(date.getMinutes()).padStart(2, "0");
   return hh + ":" + mm;
 };
+
+export const getCurrentTimeInUTCSeconds = () => {
+  const date = new Date();
+  return (
+    Date.UTC(
+      date.getUTCFullYear(),
+      date.getUTCMonth(),
+      date.getUTCDate(),
+      date.getUTCHours(),
+      date.getUTCMinutes(),
+      date.getUTCSeconds()
+    ) / 1000
+  );
+};
