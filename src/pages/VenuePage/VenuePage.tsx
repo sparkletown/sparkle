@@ -11,7 +11,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import FriendShipPage from "pages/FriendShipPage";
 import React, { useState, useEffect } from "react";
-import { Redirect, useHistory, useParams } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -116,12 +116,12 @@ const VenuePage = () => {
     );
   }
 
-  if (profile && !profile.enteredVenueIds?.includes(venueId)) {
-    return <Redirect to={venueEntranceUrl(venueId)} />;
+  if (!venue || !venueId) {
+    return <LoadingPage />;
   }
 
-  if (!venue) {
-    return <LoadingPage />;
+  if (profile && !profile.enteredVenueIds?.includes(venueId)) {
+    return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
   if (venueRequestStatus && !venue) {

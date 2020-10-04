@@ -17,15 +17,12 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { useUser } from "hooks/useUser";
+import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
-import { createUrlSafeName } from "api/admin";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
-  const { profile } = useUser();
-
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
