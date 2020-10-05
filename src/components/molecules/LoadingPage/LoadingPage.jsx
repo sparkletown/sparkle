@@ -18,6 +18,7 @@ const quotes = [
   "Throwing shrimp on the barbie...",
   "Watering the speakers...",
   "Massaging minds...",
+  "Laying out the croissants...",
   "Adjusting microphone volumes...",
 ];
 
