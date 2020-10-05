@@ -175,27 +175,30 @@ const AvatarGrid = () => {
     return borders;
   };
 
-  const hitRoom = (r: number, c: number) => {
-    let isHitting = false;
-    venue?.spaces?.forEach((room) => {
-      if (
-        r >= room.row &&
-        r <= room.row + room.height - 1 &&
-        c >= room.column &&
-        c <= room.column + room.width - 1
-      ) {
-        setSelectedRoom(room);
-        setIsRoomModalOpen(true);
-        isHitting = true;
-      } else {
-        if (isRoomModalOpen) {
-          setSelectedRoom(undefined);
-          setIsRoomModalOpen(false);
+  const hitRoom = useCallback(
+    (r: number, c: number) => {
+      let isHitting = false;
+      venue?.spaces?.forEach((room) => {
+        if (
+          r >= room.row &&
+          r <= room.row + room.height - 1 &&
+          c >= room.column &&
+          c <= room.column + room.width - 1
+        ) {
+          setSelectedRoom(room);
+          setIsRoomModalOpen(true);
+          isHitting = true;
+        } else {
+          if (isRoomModalOpen) {
+            setSelectedRoom(undefined);
+            setIsRoomModalOpen(false);
+          }
         }
-      }
-    });
-    return isHitting;
-  };
+      });
+      return isHitting;
+    },
+    [isRoomModalOpen, venue]
+  );
 
   useEffect(() => {
     if (!venueId) return;
@@ -261,6 +264,8 @@ const AvatarGrid = () => {
     upPress,
     user,
     venue,
+    hitRoom,
+    venueId,
   ]);
 
   if (!venue) {
