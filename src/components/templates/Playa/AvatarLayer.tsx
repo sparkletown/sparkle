@@ -95,7 +95,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  // When joining the venue from /v/ to /in/ this is undefined and the prototypes throw an exception.
+  // Setting empty array as default value fixes the issue.
+  const partygoers =
+    useSelector((state) => state.firestore.ordered.partygoers) ?? [];
 
   const dispatch = useDispatch();
   const sendUpdatedState = useMemo(
