@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { Link, useHistory } from "react-router-dom";
 import { Venue } from "types/Venue";
@@ -39,19 +39,14 @@ export const AdminVenueRoomDetails = ({
 
   const events = useSelector((state) => state.firestore.ordered.events);
 
-  const filteredEvents = useMemo(
-    () =>
-      events &&
-      events.filter((e) => {
-        if (e.room === room.title) {
-          return e;
-        }
-        return null;
-      }),
-    [events, room]
-  );
-
-  const [roomEnabled, setRoomEnabled] = useState(room?.isEnabled);
+  const filteredEvents =
+    events &&
+    events.filter((e) => {
+      if (e.room === room.title) {
+        return e;
+      }
+      return null;
+    });
 
   const { user } = useUser();
   const history = useHistory();
@@ -59,7 +54,6 @@ export const AdminVenueRoomDetails = ({
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
     try {
-      setRoomEnabled(newState);
       await upsertRoom(
         { ...(room as RoomInput), isEnabled: newState },
         venue.id,
@@ -77,7 +71,7 @@ export const AdminVenueRoomDetails = ({
       {room && (
         <div
           className={
-            roomEnabled
+            room.isEnabled
               ? "venue-room-details"
               : "venue-room-details room-disabled"
           }
@@ -115,14 +109,14 @@ export const AdminVenueRoomDetails = ({
                       type="checkbox"
                       id={"toggle-" + index}
                       name={"toggle-" + index}
-                      checked={roomEnabled}
+                      checked={room.isEnabled}
                       onClick={() => {
-                        updateRoom(!roomEnabled);
+                        updateRoom(!room.isEnabled);
                       }}
                     />
                     <span className="slider round"></span>
                   </label>
-                  <div>Turn room {roomEnabled ? "Off" : "On"}</div>
+                  <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
                 </div>
               </div>
             </div>
