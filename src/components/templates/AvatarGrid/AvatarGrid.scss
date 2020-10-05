@@ -3,8 +3,8 @@ $green: #1ba52e;
 .avatar-grid-container {
   display: flex;
   flex: 1;
-  justify-content: space-between;
   flex-direction: row;
+  justify-content: center;
 
   .room-title {
     border: 1px white solid;
@@ -48,10 +48,9 @@ $green: #1ba52e;
   }
 
   .seat {
-    margin: 0.5vh;
+    margin: 0.1vh;
     width: 3vh;
     height: 3vh;
-    background-color: white;
     border-radius: 100%;
 
     &:hover {
@@ -77,7 +76,7 @@ $green: #1ba52e;
   }
 
   .not-seat {
-    margin: 0.5vh;
+    margin: 0.1vh;
     width: 3vh;
     height: 3vh;
     background-color: white;

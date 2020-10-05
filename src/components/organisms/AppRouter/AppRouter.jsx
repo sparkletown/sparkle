@@ -22,7 +22,7 @@ import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
-
+import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { leaveRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
@@ -86,6 +86,7 @@ const AppRouter = ({ defaultRedirect }) => {
         <Route path="/admin/venue/:venueId" component={Admin} />
         <Route path="/admin" component={Admin} />
         <Route path="/v/:venueId" component={VenueLandingPage} />
+        <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/playa/schedule" component={SchedulePage} />
         <Route

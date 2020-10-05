@@ -1,4 +1,5 @@
 import { VenueEvent } from "types/VenueEvent";
+import { getCurrentTimeInUTCSeconds } from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   const currentTimeInSeconds = new Date().getTime() / 1000;
@@ -6,6 +7,16 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
     (event) =>
       event.start_utc_seconds < currentTimeInSeconds &&
       event.start_utc_seconds + event.duration_minutes > currentTimeInSeconds
+  );
+};
+
+export const isEventLive = (event: VenueEvent) => {
+  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+
+  return (
+    event.start_utc_seconds < currentTimeInUTCSeconds &&
+    event.start_utc_seconds + event.duration_minutes * 60 >
+      currentTimeInUTCSeconds
   );
 };
 

@@ -17,21 +17,16 @@ import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { useUser } from "hooks/useUser";
-import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
+import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
-import { createUrlSafeName } from "api/admin";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
-  const { user } = useUser();
-  const { venueId } = useParams();
-  useLocationUpdateEffect(user, venueId);
-
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
+  const [attendances, setAttendances] = useState({});
 
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
@@ -43,12 +38,21 @@ const Camp: React.FC = () => {
     [partygoers, venue]
   );
 
-  const attendances = usersInCamp
-    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
-        return acc;
-      }, {})
-    : {};
+  useEffect(() => {
+    const attendance: { [key: string]: number } = {};
+    if (partygoers && venue) {
+      venue.rooms.forEach((room) => {
+        partygoers.forEach((p) => {
+          if (p.lastSeenIn === room.title) {
+            attendance[room.title] = attendance[room.title]
+              ? attendance[room.title] + 1
+              : 1;
+          }
+        });
+      });
+    }
+    setAttendances(attendance);
+  }, [partygoers, venue, venue.rooms]);
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
