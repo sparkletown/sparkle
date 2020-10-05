@@ -37,6 +37,7 @@ import { UPDATE_LOCATION } from "store/actions/Location";
 // import { playaAddress } from "utils/address";
 
 interface PropsType {
+  useProfilePicture: boolean;
   bikeMode: boolean | undefined;
   setBikeMode: (bikeMode: boolean | undefined) => void;
   videoState: string | undefined;
@@ -61,6 +62,7 @@ interface PropsType {
 }
 
 const AvatarLayer: React.FunctionComponent<PropsType> = ({
+  useProfilePicture,
   bikeMode,
   setBikeMode,
   videoState,
@@ -267,6 +269,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     () =>
       selfUserProfile ? (
         <MyAvatar
+          useProfilePicture={useProfilePicture}
           serverSentState={myServerSentState}
           bike={bikeMode}
           videoState={videoState}
@@ -300,6 +303,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         />
       ) : undefined,
     [
+      selfUserProfile,
+      useProfilePicture,
       myServerSentState,
       bikeMode,
       videoState,
@@ -307,23 +312,22 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       heartbeat,
       shouts,
       sendUpdatedState,
+      movingUp,
+      movingDown,
+      movingLeft,
+      movingRight,
       setMyLocation,
       setBikeMode,
       setVideoState,
       setAway,
       setHeartbeat,
-      movingUp,
-      movingDown,
-      movingLeft,
-      movingRight,
-      selfUserProfile,
-      setHoveredUser,
-      setShowUserTooltip,
-      userRef,
+      setMenu,
       menu,
       menuRef,
-      setMenu,
       setShowMenu,
+      setHoveredUser,
+      userRef,
+      setShowUserTooltip,
     ]
   );
 
@@ -760,6 +764,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
         return (
           <Avatar
+            useProfilePicture={useProfilePicture}
             user={avatarUser}
             x={userStateMap[uid].x}
             y={userStateMap[uid].y}
@@ -781,20 +786,21 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           />
         );
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    partygoers,
     user,
-    profile,
+    shouts,
     userStateMap,
+    firebase,
+    partygoers,
+    useProfilePicture,
     setSelectedUserProfile,
-    setShowUserTooltip,
-    setHoveredUser,
-    userRef,
+    setMenu,
     menuRef,
     setShowMenu,
-    setMenu,
-    shouts,
-    firebase,
+    setHoveredUser,
+    userRef,
+    setShowUserTooltip,
   ]);
 
   return useMemo(
@@ -806,6 +812,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ),
     [myAvatar, avatars]
   );
+};
+
+AvatarLayer.defaultProps = {
+  useProfilePicture: false,
 };
 
 export default AvatarLayer;

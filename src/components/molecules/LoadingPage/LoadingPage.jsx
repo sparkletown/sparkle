@@ -16,6 +16,9 @@ const quotes = [
   "Learning the local lingo...",
   "Becoming good friends with the NEEEEEIGHBOURS...",
   "Throwing shrimp on the barbie...",
+  "Watering the speakers...",
+  "Massaging minds...",
+  "Adjusting microphone volumes...",
 ];
 
 export const LoadingPage = () => {

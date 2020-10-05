@@ -65,6 +65,7 @@ export interface Venue {
   nightCycle?: boolean;
   spaces?: AvatarGridRoom[];
   hasPaidEvents?: boolean;
+  profileAvatars?: boolean;
 }
 
 export interface VenuePlacement {

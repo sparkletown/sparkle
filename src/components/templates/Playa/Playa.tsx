@@ -138,7 +138,7 @@ const Playa = () => {
     true
   );
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
+  const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
   const [away, setAway] = useState(false);
   const [heartbeat, setHeartbeat] = useState<number>();
@@ -744,6 +744,7 @@ const Playa = () => {
   const avatarLayer = useMemo(
     () => (
       <AvatarLayer
+        useProfilePicture={venue?.profileAvatars ?? false}
         bikeMode={bikeMode}
         setBikeMode={setBikeMode}
         videoState={videoState}
@@ -767,6 +768,7 @@ const Playa = () => {
         menuRef={menuRef}
       />
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       bikeMode,
       videoState,

@@ -8,8 +8,13 @@ import AvatarImage from "./AvatarImage";
 interface PropsType {
   user: WithId<User>;
   state: UserState;
+  useProfilePicture: boolean;
 }
-const AvatarPartygoers: React.FC<PropsType> = ({ user, state }) => {
+const AvatarPartygoers: React.FC<PropsType> = ({
+  user,
+  state,
+  useProfilePicture,
+}) => {
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
   const roomParticipants = user.video?.inRoomOwnedBy
     ? partygoers.filter(
@@ -58,7 +63,10 @@ const AvatarPartygoers: React.FC<PropsType> = ({ user, state }) => {
           className="avatar-small"
           style={avatarPositions[index]}
         >
-          <AvatarImage user={participant} />
+          <AvatarImage
+            user={participant}
+            useProfilePicture={useProfilePicture}
+          />
         </div>
       ))}
     </>

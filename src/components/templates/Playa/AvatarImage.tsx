@@ -10,11 +10,15 @@ import { User } from "../../../types/User";
 
 interface PropsType {
   user: WithId<User>;
+  useProfilePicture?: boolean;
 }
 
-const AvatarImage: React.FC<PropsType> = ({ user }) => {
-  const [pictureUrl, setPictureUrl] = useState("");
+const AvatarImage: React.FC<PropsType> = ({ user, useProfilePicture }) => {
+  const [pictureUrl, setPictureUrl] = useState(user.pictureUrl);
   useEffect(() => {
+    if (useProfilePicture) {
+      return;
+    }
     if (user.anonMode) {
       setPictureUrl(DEFAULT_PROFILE_IMAGE);
     } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
@@ -27,7 +31,7 @@ const AvatarImage: React.FC<PropsType> = ({ user }) => {
     } else {
       setPictureUrl(user.pictureUrl);
     }
-  }, [user.pictureUrl, user.id, user.anonMode]);
+  }, [user.pictureUrl, user.id, user.anonMode, useProfilePicture]);
 
   return (
     <img
@@ -38,4 +42,9 @@ const AvatarImage: React.FC<PropsType> = ({ user }) => {
     />
   );
 };
+
+AvatarImage.defaultProps = {
+  useProfilePicture: false,
+};
+
 export default AvatarImage;
