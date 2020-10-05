@@ -49,5 +49,6 @@ export const validationSchema = Yup.object()
       .max(100),
     image_url: urlIfNoFileValidation("image_file"),
     image_file: createFileSchema("image_file", false),
+    isEnabled: Yup.boolean().required("Required"),
   })
   .required();

@@ -281,4 +281,131 @@ $page-max-width: 1240px;
   .information-card-container {
     margin-bottom: 20px;
   }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+
+    input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+
+      &:checked + .slider {
+        background-color: #2196f3;
+      }
+
+      &:focus + .slider {
+        box-shadow: 0 0 1px #2196f3;
+      }
+
+      &:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+      }
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: 0.4s;
+      transition: 0.4s;
+
+      &:before {
+        position: absolute;
+        content: "";
+        height: 26px;
+        width: 26px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: 0.4s;
+        transition: 0.4s;
+      }
+
+      /* Rounded sliders */
+      &.round {
+        border-radius: 34px;
+      }
+      &.round:before {
+        border-radius: 50%;
+      }
+    }
+  }
+  .rooms-list-container {
+    margin: 20px;
+    .room-stats {
+      display: flex;
+      justify-content: space-between;
+    }
+    .rooms-counter {
+      align-self: center;
+    }
+    .add-rooms-button {
+    }
+    .venue-room-details {
+      background: #1a1d24;
+      border-radius: 50px;
+      padding: 30px;
+      margin-bottom: 20px;
+
+      .venue-content {
+        display: flex;
+        justify-content: space-between;
+        .sub-content {
+        }
+      }
+
+      .heading-options {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        h4 {
+          font-size: 30px;
+        }
+        .room-options {
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
+          .edit-room {
+          }
+          .toggle-room {
+            align-self: center;
+          }
+        }
+      }
+    }
+  }
+  .banner {
+    border-radius: 25px;
+    overflow: hidden;
+    height: 100%;
+    .banner-image {
+      height: 70px;
+      width: 70px;
+    }
+  }
+  .rooms-events-list {
+    margin-top: 25px;
+    .admin-room-list-events {
+      display: flex;
+      justify-content: space-between;
+    }
+    .event-description {
+      &:first-child {
+        display: block;
+      }
+    }
+  }
+  .room-disabled {
+    color: #8a8b8e;
+  }
 }
