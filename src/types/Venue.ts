@@ -62,6 +62,7 @@ export interface Venue {
   showGiftATicket?: boolean;
   columns?: number;
   rows?: number;
+  nightCycle?: boolean;
   spaces?: AvatarGridRoom[];
   hasPaidEvents?: boolean;
 }
