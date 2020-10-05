@@ -3,7 +3,7 @@ export interface AvatarGridRoom {
   column: number;
   width: number;
   height: number;
-  name: string;
+  title: string;
   description: string;
   url: string;
   image_url?: string;

@@ -30,4 +30,5 @@ export interface User {
   mirrorVideo: boolean;
   kidsMode: boolean;
   anonMode: boolean;
+  enteredVenueIds?: string[];
 }

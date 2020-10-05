@@ -24,7 +24,7 @@ import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
-import { venueInsideUrl } from "utils/url";
+import { venueEntranceUrl } from "utils/url";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -149,7 +149,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             futureOrOngoingVenueEvents.length === 0) && (
             <button
               className="btn btn-primary btn-block btn-centered"
-              onClick={() => (window.location.href = venueInsideUrl(venueId))}
+              onClick={() => (window.location.href = venueEntranceUrl(venueId))}
             >
               Join the event
             </button>

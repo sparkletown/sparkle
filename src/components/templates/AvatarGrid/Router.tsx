@@ -4,21 +4,14 @@ import AvatarGrid from ".";
 import AvatarAdmin from "./Admin";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-interface Props {
-  venueName: string;
-}
-
-export const AvatarRouter: FC<Props> = ({ venueName }) => {
+export const AvatarRouter: FC = () => {
   const match = useRouteMatch();
   useConnectCurrentVenue();
 
   return (
     <Switch>
       <Route exact path={`${match.url}/admin`} component={AvatarAdmin} />
-      <Route
-        path={`${match.url}/`}
-        render={() => <AvatarGrid venueName={venueName} />}
-      />
+      <Route path={`${match.url}/`} component={AvatarGrid} />
     </Switch>
   );
 };
