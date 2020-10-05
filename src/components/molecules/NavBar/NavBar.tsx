@@ -193,7 +193,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         }
                         className="playa-link"
                       >
-                        Back to the Paddock
+                        Back to the Jam
                       </span>
                     )}
                   </div>

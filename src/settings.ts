@@ -19,12 +19,12 @@ export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
-export const PLAYA_VENUE_NAME = "Paddock";
+export const PLAYA_VENUE_NAME = "Jam";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
 export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
-export const PLAYA_INFO_NAME = "Paddock Info Booth";
+export const PLAYA_INFO_NAME = "Jam Info Booth";
 export const REALITY_RANGERS_URL =
   "https://redearthcity.zoom.us/j/5127329136?pwd=Zk9rVHhDNDJqLzJldlJ0M2VJdHBPdz09";
 export const REALITY_RANGERS_NAME = "Red Earth Ranger Chat";
@@ -125,21 +125,21 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Paddock",
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
     ],
   },
   {
     template: VenueTemplate.themecamp,
     name: "Theme Camp",
     description: [
-      "Add your camp to the Paddock in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
   {
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
-      "Embed any 2-D or 3-D art experience on the Paddock with this special template, which allows viewers to chat to each other as they experience your art.",
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
   {
@@ -169,7 +169,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.artcar,
     name: "Art Car",
-    description: ["Create a space on the Paddock that moves around."],
+    description: ["Create a space on the Jam that moves around."],
   },
   {
     template: VenueTemplate.performancevenue,
@@ -200,7 +200,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = IS_BURN ? "paddock" : "hirespace";
+export const DEFAULT_VENUE = IS_BURN ? "jam" : "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);
