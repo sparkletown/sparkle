@@ -120,7 +120,7 @@ const VenuePage = () => {
     return <LoadingPage />;
   }
 
-  if (profile && !profile.enteredVenueIds?.includes(venueId)) {
+  if (profile?.enteredVenueIds && !profile.enteredVenueIds?.includes(venueId)) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
