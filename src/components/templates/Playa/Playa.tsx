@@ -580,8 +580,6 @@ const Playa = () => {
 
   const inVideoChat = profile && profile.video?.inRoomOwnedBy !== undefined;
   const dustStorm = venue?.dustStorm;
-  const mapBackgroundImage = venue?.mapBackgroundImageUrl;
-  const nightCycle = venue?.nightCycle;
 
   const changeDustStorm = useCallback(async () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
@@ -596,8 +594,8 @@ const Playa = () => {
     return (
       <>
         <PlayaBackground
-          nightCycle={nightCycle}
-          backgroundImage={mapBackgroundImage}
+          nightCycle={venue?.nightCycle}
+          backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
