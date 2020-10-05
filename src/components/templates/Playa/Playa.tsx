@@ -985,19 +985,19 @@ const Playa = () => {
             />
           </div>
           {IS_BURN && (
-            <div className="donate-pop-up">
-              <DonatePopUp />
-            </div>
-          )}
-          <div className="create-edit-pop-up">
-            <CreateEditPopUp />
-          </div>
-          {IS_BURN && (
-            <div className="sparkle-fairies">
-              <SparkleFairiesPopUp
-                setShowEventSchedule={setShowEventSchedule}
-              />
-            </div>
+            <>
+              <div className="donate-pop-up">
+                <DonatePopUp />
+              </div>
+              <div className="create-edit-pop-up">
+                <CreateEditPopUp />
+              </div>
+              <div className="sparkle-fairies">
+                <SparkleFairiesPopUp
+                  setShowEventSchedule={setShowEventSchedule}
+                />
+              </div>
+            </>
           )}
         </div>
         <div
