@@ -1,3 +1,6 @@
+import { WithId } from "utils/id";
+import { Venue } from "./Venue";
+
 export interface VenueEvent {
   name: string;
   start_utc_seconds: number;
@@ -9,3 +12,22 @@ export interface VenueEvent {
   host: string;
   room?: string;
 }
+
+export type AdminVenueDetailsPartProps = {
+  venue: WithId<Venue>;
+  roomIndex?: number;
+  showCreateEventModal: boolean;
+  setShowCreateEventModal: Function;
+  setShowDeleteEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
+};
+
+export type RoomVenueDetailsPartProps = {
+  venue: WithId<Venue>;
+  roomIndex?: number;
+  showCreateEventModal: boolean;
+  setShowCreateEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
+};

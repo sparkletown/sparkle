@@ -3,7 +3,7 @@ const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
-const PLAYA_VENUE_ID = "paddock";
+const PLAYA_VENUE_ID = "jam";
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [

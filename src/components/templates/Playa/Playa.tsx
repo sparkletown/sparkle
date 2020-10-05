@@ -47,6 +47,7 @@ import ifvisible from "ifvisible.js";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
+import { IS_BURN } from "secrets";
 
 export type MenuConfig = {
   prompt?: string;
@@ -137,7 +138,7 @@ const Playa = () => {
     true
   );
   const sliderRef = useRef<HTMLDivElement>(null);
-  const [bikeMode, setBikeMode] = useState<boolean | undefined>(false);
+  const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
   const [away, setAway] = useState(false);
   const [heartbeat, setHeartbeat] = useState<number>();
@@ -593,7 +594,10 @@ const Playa = () => {
     const peopleByLastSeen = peopleByLastSeenIn(partygoers);
     return (
       <>
-        <PlayaBackground />
+        <PlayaBackground
+          nightCycle={venue?.nightCycle}
+          backgroundImage={venue?.mapBackgroundImageUrl}
+        />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
             className={`venue ${
@@ -740,6 +744,7 @@ const Playa = () => {
   const avatarLayer = useMemo(
     () => (
       <AvatarLayer
+        useProfilePicture={venue?.profileAvatars ?? false}
         bikeMode={bikeMode}
         setBikeMode={setBikeMode}
         videoState={videoState}
@@ -763,6 +768,7 @@ const Playa = () => {
         menuRef={menuRef}
       />
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       bikeMode,
       videoState,
@@ -840,7 +846,7 @@ const Playa = () => {
           </div>
         )}
 
-        {dustStorm && <DustStorm />}
+        {IS_BURN && dustStorm && <DustStorm />}
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
           {meIsLocated && (
@@ -908,7 +914,7 @@ const Playa = () => {
             </div>
           )}
           <div className="playa-controls">
-            {isUserVenueOwner && (
+            {IS_BURN && isUserVenueOwner && (
               <div
                 className={`playa-controls-recenter show`}
                 onClick={changeDustStorm}
@@ -965,7 +971,7 @@ const Playa = () => {
               <input
                 type="text"
                 className="playa-controls-shout-text"
-                placeholder={`Shout across the ${PLAYA_VENUE_NAME}...`}
+                placeholder={`Shout across ${PLAYA_VENUE_NAME}...`}
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
               />
@@ -978,15 +984,21 @@ const Playa = () => {
               chatInputPlaceholder="Chat"
             />
           </div>
-          <div className="donate-pop-up">
-            <DonatePopUp />
-          </div>
+          {IS_BURN && (
+            <div className="donate-pop-up">
+              <DonatePopUp />
+            </div>
+          )}
           <div className="create-edit-pop-up">
             <CreateEditPopUp />
           </div>
-          <div className="sparkle-fairies">
-            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
-          </div>
+          {IS_BURN && (
+            <div className="sparkle-fairies">
+              <SparkleFairiesPopUp
+                setShowEventSchedule={setShowEventSchedule}
+              />
+            </div>
+          )}
         </div>
         <div
           className={`playa-slider ${inVideoChat ? "show" : ""}`}

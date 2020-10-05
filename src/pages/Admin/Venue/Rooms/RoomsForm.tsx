@@ -288,6 +288,19 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                       <span className="input-error">{errors.url.message}</span>
                     )}
                   </div>
+                  <div className="toggle-room">
+                    <div className="input-title">Enabled ?</div>
+                    <label className="switch">
+                      <input
+                        disabled={disable}
+                        type="checkbox"
+                        id="isEnabled"
+                        name={"isEnabled"}
+                        ref={register}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
                 </div>
                 <div className="page-container-left-bottombar">
                   <div />

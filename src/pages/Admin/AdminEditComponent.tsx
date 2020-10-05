@@ -9,9 +9,9 @@ import firebase, { UserInfo } from "firebase/app";
 import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
-  PLAYA_IMAGE,
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
+  JAM_IMAGE,
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
@@ -456,7 +456,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               onChange={onBoxMove}
               snapToGrid={false}
               iconsMap={iconsMap ?? {}}
-              backgroundImage={PLAYA_IMAGE}
+              backgroundImage={JAM_IMAGE}
               iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
               draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venueId={venueId}
