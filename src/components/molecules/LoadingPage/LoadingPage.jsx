@@ -10,12 +10,16 @@ const quotes = [
   // "Biking out to deep playa...",
   // "Fixing tyre punctures...",
   // "Reimagining the real...",
-  "Dodging cow pats in the paddock...",
+  "Dodging cow pats in the Jam...",
   "Fighting dropbears...",
   "Herding koalas...",
   "Learning the local lingo...",
   "Becoming good friends with the NEEEEEIGHBOURS...",
   "Throwing shrimp on the barbie...",
+  "Watering the speakers...",
+  "Massaging minds...",
+  "Laying out the croissants...",
+  "Adjusting microphone volumes...",
 ];
 
 export const LoadingPage = () => {

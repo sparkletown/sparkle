@@ -17,7 +17,7 @@ export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
   proceed,
 }) => {
   const hasProceedButton =
-    !config.buttons || config.buttons.find((button) => button.isProceed);
+    config.buttons && config.buttons.find((button) => button.isProceed);
 
   const defaultWelcomeText = `Welcome to ${venueName}! Please watch this video to get started.`;
 

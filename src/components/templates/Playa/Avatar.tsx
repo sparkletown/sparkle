@@ -9,6 +9,7 @@ import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
 
 interface PropsType {
+  useProfilePicture: boolean;
   user: WithId<User> | undefined;
   x: number;
   y: number;
@@ -21,6 +22,7 @@ interface PropsType {
 }
 
 export const Avatar: React.FunctionComponent<PropsType> = ({
+  useProfilePicture,
   user,
   x,
   y,
@@ -43,7 +45,11 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
       onMouseLeave={onMouseLeave}
     >
       {isVideoRoomOwnedByMe && (
-        <AvatarPartygoers state={{ x, y }} user={user} />
+        <AvatarPartygoers
+          useProfilePicture={useProfilePicture}
+          state={{ x, y }}
+          user={user}
+        />
       )}
       <div
         className="avatar they"
@@ -59,7 +65,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />
-          <AvatarImage user={user} />
+          <AvatarImage user={user} useProfilePicture={useProfilePicture} />
         </div>
       </div>
       {(videoState || isVideoRoomOwnedByMe) && (

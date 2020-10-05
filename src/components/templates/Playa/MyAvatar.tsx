@@ -18,6 +18,7 @@ import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
 
 interface PropsType {
+  useProfilePicture: boolean;
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
@@ -46,6 +47,7 @@ const ARROW_INTERACTION_THROTTLE_MS = 16;
 
 const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
   {
+    useProfilePicture,
     serverSentState,
     bike,
     videoState,
@@ -258,7 +260,11 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       onClick={onClick}
     >
       {isVideoRoomOwnedByMe && (
-        <AvatarPartygoers state={state} user={{ id: user.uid, ...profile }} />
+        <AvatarPartygoers
+          useProfilePicture={useProfilePicture}
+          state={state}
+          user={{ id: user.uid, ...profile }}
+        />
       )}
       <div
         className="avatar me"
@@ -275,7 +281,10 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         )}
         <div className="border-helper">
           <span className="img-vcenter-helper" />
-          <AvatarImage user={{ ...profile, id: user.uid }} />
+          <AvatarImage
+            user={{ ...profile, id: user.uid }}
+            useProfilePicture={useProfilePicture}
+          />
         </div>
       </div>
       <div

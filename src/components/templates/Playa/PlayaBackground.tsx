@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -7,7 +7,12 @@ import { PLAYA_BG_DAYPART_MS, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-export const PlayaBackground: React.FC = () => {
+interface Props {
+  backgroundImage: string | undefined;
+  nightCycle?: boolean;
+}
+
+export const PlayaBackground: FC<Props> = ({ backgroundImage, nightCycle }) => {
   const [daypartClassName, setDaypartClassName] = useState("");
 
   useEffect(() => {
@@ -35,9 +40,15 @@ export const PlayaBackground: React.FC = () => {
 
   return (
     <img
-      className={`playa-background ${daypartClassName}`}
-      src={PLAYA_IMAGE}
+      className={`playa-background ${
+        nightCycle ? daypartClassName : "daypart-day"
+      }`}
+      src={backgroundImage ?? PLAYA_IMAGE}
       alt={`${PLAYA_VENUE_NAME} Background Map`}
     />
   );
+};
+
+PlayaBackground.defaultProps = {
+  nightCycle: true,
 };
