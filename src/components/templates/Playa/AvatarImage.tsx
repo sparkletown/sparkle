@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  USE_RANDOM_AVATAR,
   RANDOM_AVATARS,
   DEFAULT_PROFILE_IMAGE,
   DEFAULT_PARTY_NAME,
@@ -14,14 +13,11 @@ interface PropsType {
 }
 
 const AvatarImage: React.FC<PropsType> = ({ user, useProfilePicture }) => {
-  const [pictureUrl, setPictureUrl] = useState(user.pictureUrl);
+  const [pictureUrl, setPictureUrl] = useState("");
   useEffect(() => {
-    if (useProfilePicture) {
-      return;
-    }
     if (user.anonMode) {
       setPictureUrl(DEFAULT_PROFILE_IMAGE);
-    } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
+    } else if (!useProfilePicture || !user.pictureUrl) {
       const randomUrl =
         "/avatars/" +
         RANDOM_AVATARS[
