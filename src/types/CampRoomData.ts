@@ -8,4 +8,5 @@ export interface CampRoomData {
   about: string;
   image_url: string;
   url: string;
+  isEnabled: boolean;
 }

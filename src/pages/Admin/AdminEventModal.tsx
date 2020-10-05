@@ -15,6 +15,9 @@ interface PropsType {
   venueId: string;
   event?: WithId<VenueEvent>;
   template?: string;
+  setEditedEvent: Function | undefined;
+  setShowDeleteEventModal: Function;
+  roomName?: string;
 }
 
 const validationSchema = Yup.object().shape<EventInput>({
@@ -45,12 +48,15 @@ const validationSchema = Yup.object().shape<EventInput>({
   room: Yup.string(),
 });
 
-const AdminEvent: React.FunctionComponent<PropsType> = ({
+const AdminEventModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   venueId,
   event,
   template,
+  setEditedEvent,
+  setShowDeleteEventModal,
+  roomName,
 }) => {
   const { register, handleSubmit, errors, formState, reset } = useForm<
     EventInput
@@ -70,6 +76,7 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
         start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
         start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
         duration_hours: event.duration_minutes / 60,
+        room: event.room,
       });
     }
   }, [event, reset]);
@@ -192,22 +199,42 @@ const AdminEvent: React.FunctionComponent<PropsType> = ({
                 className="input-block input-centered"
                 placeholder="Cuddle Puddle"
                 ref={register}
+                value={roomName && roomName}
               />
               {errors.host && (
                 <span className="input-error">{errors.host.message}</span>
               )}
             </div>
           )}
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value={event ? "Update" : "Create"}
-            disabled={formState.isSubmitting}
-          />
+          <div style={event ? { display: "flex" } : {}}>
+            <input
+              className="btn btn-primary btn-small"
+              type="submit"
+              value={event ? "Update" : "Create"}
+              disabled={formState.isSubmitting}
+            />
+            {template === "themecamp" && event && (
+              <input
+                className="btn btn-primary btn-danger btn-small"
+                type="submit"
+                value="Delete"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setEditedEvent && setEditedEvent(event);
+                  setShowDeleteEventModal(true);
+                }}
+                disabled={formState.isSubmitting}
+              />
+            )}
+          </div>
         </form>
       </div>
     </Modal>
   );
 };
 
-export default AdminEvent;
+AdminEventModal.defaultProps = {
+  roomName: "",
+};
+
+export default AdminEventModal;
