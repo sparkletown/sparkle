@@ -16,7 +16,7 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
-  PLAYA_VENUE_NAME,
+  PLAYA_VENUE_ID,
   SPARKLE_LOGO_URL,
   DEFAULT_VENUE,
   MEMRISE_LOGO_URL,
@@ -48,8 +48,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const {
     location: { pathname },
   } = useHistory();
-  const isOnPlaya =
-    pathname.toLowerCase() === `/in/${PLAYA_VENUE_NAME}`.toLowerCase();
+  const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =

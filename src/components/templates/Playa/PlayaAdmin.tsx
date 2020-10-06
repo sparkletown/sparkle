@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
-import { PLAYA_VENUE_NAME } from "settings";
+import { PLAYA_VENUE_ID } from "settings";
 
 const PlayaAdmin: React.FC = () => {
   const [bannerMessage, setBannerMessage] = useState("");
@@ -15,7 +15,7 @@ const PlayaAdmin: React.FC = () => {
 
   const updateBanner = (message: string | null) => {
     const params = {
-      venueId: PLAYA_VENUE_NAME,
+      venueId: PLAYA_VENUE_ID,
       bannerMessage: message ? message : "",
     };
     firebase

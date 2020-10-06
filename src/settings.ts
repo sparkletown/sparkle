@@ -20,6 +20,7 @@ export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy
 export const VENUE_CHAT_AGE_DAYS = 10;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
+export const PLAYA_VENUE_ID = "jamonline";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -202,7 +203,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = IS_BURN ? "jam" : "hirespace";
+export const DEFAULT_VENUE = IS_BURN ? "jamonline" : "hirespace";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);
