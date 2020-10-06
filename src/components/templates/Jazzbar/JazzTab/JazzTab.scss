@@ -77,6 +77,8 @@
     grid-template-columns: repeat(4, 1fr);
     align-self: center;
     margin-left: 0px;
+    overflow-y: hidden;
+    overflow-x: hidden;
     .participant {
       width: 100%;
 
@@ -275,4 +277,24 @@
   display: flex;
   flex-wrap: wrap;
   height: calc(100vh - 118px);
+}
+
+.seated-area {
+  border: 0px solid white;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  flex: 0 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.chat-drawer {
+  position: "absolute";
+  right: 0;
+  top: auto;
+  bottom: auto;
 }

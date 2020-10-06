@@ -44,6 +44,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
+  const venueUsers = users
+    ? users.filter((user) => user.lastSeenIn === venueToUse?.name)
+    : [];
+
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -112,6 +116,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
           flexDirection: "column",
           flexGrow: 3,
           flexBasis: 0,
+          overflow: "hidden",
         }}
         className={`scrollable-area ${seatedAtTable && "at-table"}`}
       >
@@ -129,60 +134,62 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 seatedAtTable ? "participants-container" : "jazz-video"
               }`}
             >
-              <div
-                className={`${
-                  seatedAtTable
-                    ? `participant-container-${capacity} video-participant`
-                    : "full-height-video"
-                }`}
-              >
+              {!venueToUse.hideVideo && (
                 <div
-                  className="iframe-container"
-                  style={{
-                    height: seatedAtTable ? "calc(100% - 55px)" : "500px",
-                  }}
+                  className={`${
+                    seatedAtTable
+                      ? `participant-container-${capacity} video-participant`
+                      : "full-height-video"
+                  }`}
                 >
-                  {venueToUse.iframeUrl && (
-                    <iframe
-                      key="main-event"
-                      title="main event"
-                      className="youtube-video"
-                      src={`${venueToUse.iframeUrl}?autoplay=1`}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
-                    />
-                  )}
-                  {!venueToUse.iframeUrl && (
-                    <div className="youtube-video">
-                      Embedded Video URL not yet set up
-                    </div>
-                  )}
-                </div>
-                <div className="call-out-band-container">
-                  <div className="emoji-container">
-                    {Reactions.map((reaction) => (
-                      <button
-                        key={reaction.name}
-                        className="reaction"
-                        onClick={() =>
-                          user && reactionClicked(user, reaction.type)
-                        }
-                        id={`send-reaction-${reaction.type}`}
-                      >
-                        <span role="img" aria-label={reaction.ariaLabel}>
-                          {reaction.text}
-                        </span>
-                      </button>
-                    ))}
+                  <div
+                    className="iframe-container"
+                    style={{
+                      height: seatedAtTable ? "calc(100% - 55px)" : "500px",
+                    }}
+                  >
+                    {venueToUse.iframeUrl && (
+                      <iframe
+                        key="main-event"
+                        title="main event"
+                        className="youtube-video"
+                        src={`${venueToUse.iframeUrl}?autoplay=1`}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                      />
+                    )}
+                    {!venueToUse.iframeUrl && (
+                      <div className="youtube-video">
+                        Embedded Video URL not yet set up
+                      </div>
+                    )}
                   </div>
-                  <CallOutMessageForm
-                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                    ref={registerBandMessage({ required: true })}
-                    isMessageToTheBandSent={isMessageToTheBandSent}
-                    placeholder="Shout out to the band"
-                  />
+                  <div className="call-out-band-container">
+                    <div className="emoji-container">
+                      {Reactions.map((reaction) => (
+                        <button
+                          key={reaction.name}
+                          className="reaction"
+                          onClick={() =>
+                            user && reactionClicked(user, reaction.type)
+                          }
+                          id={`send-reaction-${reaction.type}`}
+                        >
+                          <span role="img" aria-label={reaction.ariaLabel}>
+                            {reaction.text}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                    <CallOutMessageForm
+                      onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                      ref={registerBandMessage({ required: true })}
+                      isMessageToTheBandSent={isMessageToTheBandSent}
+                      placeholder="Shout out to the band"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
               {seatedAtTable && (
                 <Room
                   roomName={seatedAtTable}
@@ -194,35 +201,28 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
           </div>
         </div>
         <UserList
-          users={users}
+          users={venueUsers}
           activity={venue?.activity ?? "here"}
           disableSeeAll={false}
         />
-        <div
-          style={{
-            border: "0px solid white",
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "space-around",
-            flex: "0 0 auto",
-          }}
-          className="seated-area"
-        >
+        <div className="seated-area">
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
             venueName={venueToUse.name}
             TableComponent={TableComponent}
-            joinMessage={true}
+            joinMessage={!venueToUse?.hideVideo ?? true}
             customTables={JAZZBAR_TABLES}
           />
         </div>
       </div>
-      <ChatDrawer
-        title={"Jazz Bar Chat"}
-        roomName={venueToUse.name}
-        chatInputPlaceholder="Chat to the bar"
-      />
+      <div className="chat-drawer">
+        <ChatDrawer
+          title={"Jazz Bar Chat"}
+          roomName={venueToUse.name}
+          chatInputPlaceholder="Chat to the bar"
+        />
+      </div>
     </>
   );
 };
