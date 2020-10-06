@@ -26,7 +26,6 @@ const Camp: React.FC = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-  const [attendances, setAttendances] = useState({});
 
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
@@ -38,27 +37,19 @@ const Camp: React.FC = () => {
     [partygoers, venue]
   );
 
-  useEffect(() => {
-    const attendance: { [key: string]: number } = {};
-    if (partygoers && venue) {
-      venue.rooms.forEach((room) => {
-        partygoers.forEach((p) => {
-          if (p.lastSeenIn === room.title) {
-            attendance[room.title] = attendance[room.title]
-              ? attendance[room.title] + 1
-              : 1;
-          }
-        });
-      });
-    }
-    setAttendances(attendance);
-  }, [partygoers, venue, venue.rooms]);
+  const attendances = usersInCamp
+    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
+        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        return acc;
+      }, {})
+    : {};
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
   }, []);
 
   const { roomTitle } = useParams();
+
   useEffect(() => {
     if (roomTitle) {
       const campRoom = venue?.rooms.find(
