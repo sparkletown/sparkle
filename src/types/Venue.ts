@@ -66,6 +66,7 @@ export interface Venue {
   spaces?: AvatarGridRoom[];
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
+  hideVideo?: boolean;
 }
 
 export interface VenuePlacement {

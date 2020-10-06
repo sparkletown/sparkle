@@ -1,4 +1,4 @@
-import { PLAYA_VENUE_NAME } from "settings";
+import { PLAYA_VENUE_ID } from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -9,7 +9,7 @@ export const venueInsideUrl = (venueId: string) => {
 };
 
 export const venuePlayaPreviewUrl = (venueId: string) => {
-  return `${venueInsideUrl(PLAYA_VENUE_NAME.toLowerCase())}/${venueId}`;
+  return `${venueInsideUrl(PLAYA_VENUE_ID)}/${venueId}`;
 };
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
