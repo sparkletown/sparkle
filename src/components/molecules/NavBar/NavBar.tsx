@@ -198,7 +198,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   </div>
                 )}
                 <div className="navbar-links">
-                  {IS_BURN && (
+                  {venue?.showLiveSchedule && (
                     <div className="profile-icon button-container navbar-link-schedule">
                       <div onClick={() => setShowEventSchedule(true)}>
                         Live Schedule

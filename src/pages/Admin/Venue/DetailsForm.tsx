@@ -547,6 +547,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </span>
           )}
         </div>
+        {templateID === VenueTemplate.playa && (
+          <div className="toggle-room">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Show live schedule
+            </h4>
+            <label id={"showLiveSchedule"} className="switch">
+              <input
+                type="checkbox"
+                id={"showLiveSchedule"}
+                name={"showLiveSchedule"}
+                ref={register}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (

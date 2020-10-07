@@ -67,6 +67,7 @@ export interface Venue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
+  showLiveSchedule?: boolean;
 }
 
 export interface VenuePlacement {
