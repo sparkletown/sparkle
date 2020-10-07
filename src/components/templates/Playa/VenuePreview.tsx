@@ -14,6 +14,7 @@ import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 // import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
+import { isCampVenue } from "types/CampVenue";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -50,7 +51,14 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const partygoers = useSelector((state) =>
+    state.firestore.ordered.partygoers.filter((partygoer) =>
+      [
+        venue.name,
+        ...(isCampVenue(venue) ? venue?.rooms.map((room) => room.title) : []),
+      ].includes(partygoer.lastSeenIn)
+    )
+  );
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
@@ -221,7 +229,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           <UserList
             users={users}
             isAudioEffectDisabled
-            activity={`in this ${templateName ?? "experience"}`}
+            activity="in this location"
           />
         </div>
         <div className="description">

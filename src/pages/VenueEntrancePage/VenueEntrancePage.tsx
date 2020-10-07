@@ -1,4 +1,6 @@
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -16,7 +18,20 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { step, venueId } = useParams();
   useConnectCurrentVenue();
   const venue = useSelector((state) => state.firestore.data.currentVenue);
-  if (!venue || !user || !profile) {
+
+  if (!user || !profile) {
+    return (
+      <WithNavigationBar>
+        <AuthenticationModal
+          show={true}
+          onHide={() => {}}
+          showAuth="register"
+        />
+      </WithNavigationBar>
+    );
+  }
+
+  if (!venue || !venueId) {
     return <LoadingPage />;
   }
 
