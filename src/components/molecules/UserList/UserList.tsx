@@ -16,6 +16,7 @@ interface PropsType {
   disableSeeAll?: boolean;
   isAudioEffectDisabled?: boolean;
   isCamp?: boolean;
+  attendanceBoost?: number;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -26,6 +27,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   disableSeeAll = true,
   isAudioEffectDisabled,
   isCamp,
+  attendanceBoost,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
@@ -33,6 +35,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   >();
   users = users?.filter((user) => !user.anonMode && user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
+  const attendance = users.length + (attendanceBoost ?? 0);
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
@@ -43,8 +46,8 @@ const UserList: React.FunctionComponent<PropsType> = ({
       <div className="userlist-container">
         <div className="row header no-margin">
           <p>
-            <span className="bold">{users.length}</span>{" "}
-            {users.length === 1 ? "person" : "people"}{" "}
+            <span className="bold">{attendance}</span>{" "}
+            {attendance === 1 ? "person" : "people"}{" "}
             {isCamp && IS_BURN ? "in the camp" : activity}
           </p>
           {!disableSeeAll && users.length > limit && (
