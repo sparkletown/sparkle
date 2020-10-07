@@ -19,6 +19,8 @@ import { useForm } from "react-hook-form";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 import { JAZZBAR_TABLES } from "./constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import "./JazzTab.scss";
 import "./TableHeader.scss";
 
@@ -52,6 +54,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [participantCount, setParticipantCount] = useState(0);
+  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   function createReaction(reaction: ReactionType, user: UserInfo) {
     return {
@@ -167,7 +170,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                   <div className="call-out-band-container">
                     <div className="emoji-container">
                       {Reactions.map((reaction) => (
-                        <button
+                        <div
                           key={reaction.name}
                           className="reaction"
                           onClick={() =>
@@ -178,8 +181,21 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                           <span role="img" aria-label={reaction.ariaLabel}>
                             {reaction.text}
                           </span>
-                        </button>
+                        </div>
                       ))}
+                      <div
+                        className="mute-button"
+                        onClick={() =>
+                          setIsAudioEffectDisabled((state) => !state)
+                        }
+                      >
+                        <FontAwesomeIcon
+                          className="reaction"
+                          icon={
+                            isAudioEffectDisabled ? faVolumeMute : faVolumeUp
+                          }
+                        />
+                      </div>
                     </div>
                     <CallOutMessageForm
                       onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
@@ -201,6 +217,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
           </div>
         </div>
         <UserList
+          isAudioEffectDisabled={isAudioEffectDisabled}
           users={venueUsers}
           activity={venue?.activity ?? "here"}
           disableSeeAll={false}

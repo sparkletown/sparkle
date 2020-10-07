@@ -112,10 +112,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
               <>
                 {" "}
                 <span style={{ fontSize: "12px" }}>
-                  (
                   {usersAtCurrentTable &&
-                    `${tableOfUser.capacity - usersAtCurrentTable.length}`}{" "}
-                  seats left )
+                    `${
+                      tableOfUser.capacity - usersAtCurrentTable.length >= 1
+                        ? tableOfUser.capacity - usersAtCurrentTable.length
+                        : 0
+                    } seats left`}
                 </span>
               </>
             )}
