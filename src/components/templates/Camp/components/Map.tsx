@@ -56,7 +56,7 @@ export const Map: React.FC<PropsType> = ({
   return (
     <>
       <div id="map" className="col map-container">
-        {rooms.map((room, idx) => {
+        {rooms.map((room) => {
           const left = room.x_percent;
           const top = room.y_percent;
           const width = room.width_percent;
@@ -100,9 +100,12 @@ export const Map: React.FC<PropsType> = ({
                 <div className={`playa-venue-text`}>
                   <div className="playa-venue-maininfo">
                     <div className="playa-venue-title">{room.title}</div>
-                    {attendances[room.title] > 0 && (
+                    {(attendances[room.title] ?? 0) +
+                      (room.attendanceBoost ?? 0) >
+                      0 && (
                       <div className="playa-venue-people">
-                        {attendances[room.title] ?? 0}
+                        {(attendances[room.title] ?? 0) +
+                          (room.attendanceBoost ?? 0)}
                       </div>
                     )}
                   </div>

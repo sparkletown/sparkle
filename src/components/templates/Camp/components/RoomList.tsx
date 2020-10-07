@@ -30,7 +30,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
           <RoomCard
             key={room.title}
             room={room}
-            attendance={attendances[room.title]}
+            attendance={attendances[room.title] + (room.attendanceBoost ?? 0)}
             onClick={() => openModal(room)}
           />
         ))}
