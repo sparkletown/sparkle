@@ -2,7 +2,11 @@ import React, { useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import { GIF_RESIZER_URL, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+import {
+  GIF_RESIZER_URL,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  MAX_IMAGE_FILE_SIZE_TEXT,
+} from "settings";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
@@ -40,7 +44,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
     const file = e.target.files[0];
     if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
       setError(
-        `File size limit is 600kB. You can shrink images at ${GIF_RESIZER_URL}`
+        `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`
       );
       return;
     }
