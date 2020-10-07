@@ -91,7 +91,12 @@ export const RoomModal: React.FC<PropsType> = ({
             </div>
           </div>
         </div>
-        <UserList users={usersToDisplay} limit={11} activity="in this room" />
+        <UserList
+          users={usersToDisplay}
+          limit={11}
+          activity="in this room"
+          attendanceBoost={room.attendanceBoost}
+        />
         {room.about && <div className="about-this-room">{room.about}</div>}
         <div className="row">
           {roomEvents && roomEvents.length > 0 && (
