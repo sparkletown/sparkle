@@ -63,22 +63,20 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className="profile-picture-container">
-      <div className="user">
-        <img
-          onClick={() => setSelectedUserProfile(user)}
-          key={user.id}
-          className={profileStyle}
-          src={
-            miniAvatars
-              ? pictureUrl
-              : (!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE
-          }
-          alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-          title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-          width={imageSize}
-          height={imageSize}
-        />
-      </div>
+      <img
+        onClick={() => setSelectedUserProfile(user)}
+        key={user.id}
+        className={profileStyle}
+        src={
+          miniAvatars
+            ? pictureUrl
+            : (!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE
+        }
+        alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+        title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+        width={imageSize}
+        height={imageSize}
+      />
       {Reactions.map(
         (reaction, index) =>
           experienceContext &&
