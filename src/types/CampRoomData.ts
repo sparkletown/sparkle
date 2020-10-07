@@ -9,4 +9,5 @@ export interface CampRoomData {
   image_url: string;
   url: string;
   isEnabled: boolean;
+  attendanceBoost?: number;
 }
