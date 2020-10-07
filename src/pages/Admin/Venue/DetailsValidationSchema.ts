@@ -11,7 +11,6 @@ import {
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
-  MAX_IMAGE_FILE_SIZE_TEXT,
   GIF_RESIZER_URL,
 } from "settings";
 
@@ -31,7 +30,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];

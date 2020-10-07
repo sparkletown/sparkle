@@ -28,6 +28,7 @@ import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 import AudienceRouter from "components/templates/Audience/AudienceRouter";
 import { useVenueId } from "hooks/useVenueId";
 import { venueEntranceUrl } from "utils/url";
+import getQueryParameters from "utils/getQueryParameters";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -79,9 +80,17 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  const locationRoom =
-    profile && profile.lastSeenIn ? profile.lastSeenIn : venueName ?? "";
-  useLocationUpdateEffect(user, locationRoom);
+  useLocationUpdateEffect(
+    user,
+    venueName
+      ? venueName
+      : profile && profile.lastSeenIn
+      ? profile.lastSeenIn
+      : ""
+  );
+
+  const venueIdFromParams = getQueryParameters(window.location.search)
+    ?.venueId as string;
 
   useConnectPartyGoers();
   useConnectCurrentEvent();
@@ -89,10 +98,10 @@ const VenuePage = () => {
   useEffect(() => {
     firebase.get({
       collection: "venues",
-      doc: venueId ? venueId : venueName,
+      doc: venueId ? venueId : venueIdFromParams,
       storeAs: "currentVenue",
     });
-  }, [firebase, venueId, venueName]);
+  }, [firebase, venueId, venueIdFromParams]);
   useFirestoreConnect(
     user
       ? {

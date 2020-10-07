@@ -5,6 +5,21 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
 const PLAYA_VENUE_ID = "jamonline";
 
+const VenueTemplate = {
+  jazzbar: "jazzbar",
+  friendship: "friendship",
+  partymap: "partymap",
+  zoomroom: "zoomroom",
+  themecamp: "themecamp",
+  artpiece: "artpiece",
+  artcar: "artcar",
+  performancevenue: "performancevenue",
+  preplaya: "preplaya",
+  playa: "playa",
+  audience: "audience",
+  avatargrid: "avatargrid",
+};
+
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [
   "jazzbar",
@@ -55,6 +70,7 @@ const createVenueData = (data, context) => {
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
+    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
   };
 
@@ -329,21 +345,25 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       }
 
       switch (updated.template) {
-        case "jazzbar":
-        case "performancevenue":
+        case VenueTemplate.jazzbar:
+        case VenueTemplate.performancevenue:
           if (data.videoIframeUrl) {
             updated.iframeUrl = data.videoIframeUrl;
           }
           break;
-        case "zoomroom":
-        case "artcar":
+        case VenueTemplate.zoomroom:
+        case VenueTemplate.artcar:
           if (data.zoomUrl) {
             updated.zoomUrl = data.zoomUrl;
           }
           break;
-        case "artpiece":
+        case VenueTemplate.artpiece:
           if (data.embedIframeUrl) {
             updated.embedIframeUrl = data.embedIframeUrl;
+          }
+        case VenueTemplate.playa:
+          if (data.showLiveSchedule) {
+            updated.showLiveSchedule = data.showLiveSchedule;
           }
           break;
       }
