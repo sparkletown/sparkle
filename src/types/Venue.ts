@@ -68,6 +68,7 @@ export interface Venue {
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
+  rooms?: any[];
 }
 
 export interface VenuePlacement {

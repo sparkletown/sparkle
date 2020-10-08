@@ -16,7 +16,10 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import { useLocationUpdateEffect } from "utils/useLocationUpdateEffect";
+import {
+  updateLocationData,
+  useLocationUpdateEffect,
+} from "utils/useLocationUpdateEffect";
 import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import { PlayaRouter } from "components/templates/Playa/Router";
@@ -80,14 +83,21 @@ const VenuePage = () => {
   const venueName = venue && venue.name;
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  useLocationUpdateEffect(
-    user,
-    venueName
-      ? venueName
-      : profile && profile.lastSeenIn
-      ? profile.lastSeenIn
-      : ""
-  );
+  const isVenueRoom = !!venue?.rooms?.filter(
+    (room) => room.title === profile?.room
+  ).length;
+  const profileRoom = profile?.room;
+  const location =
+    venueName === profileRoom
+      ? venueName ?? ""
+      : isVenueRoom
+      ? profileRoom ?? ""
+      : venueName ?? "";
+  useLocationUpdateEffect(user, location);
+
+  if (!profileRoom && user) {
+    updateLocationData(user, location);
+  }
 
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
