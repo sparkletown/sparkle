@@ -33,6 +33,8 @@ import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 
+const STORAGE_TABS_KEY = "TABS_OPEN";
+
 const AppRouter = ({ defaultRedirect }) => {
   const firebase = useFirebase();
   const analytics = firebase.analytics();
@@ -48,8 +50,19 @@ const AppRouter = ({ defaultRedirect }) => {
         });
     };
 
+    let tabCount = localStorage.getItem(STORAGE_TABS_KEY)
+      ? parseInt(localStorage.getItem(STORAGE_TABS_KEY))
+      : 0;
+
+    localStorage.setItem(STORAGE_TABS_KEY, tabCount + 1);
+
     const leaveRoomBeforeUnload = () => {
-      if (user) {
+      tabCount = parseInt(localStorage.getItem(STORAGE_TABS_KEY));
+      localStorage.setItem(STORAGE_TABS_KEY, tabCount > 0 ? tabCount - 1 : 0);
+
+      tabCount = parseInt(localStorage.getItem(STORAGE_TABS_KEY));
+
+      if (user && !tabCount) {
         leaveRoom(user);
       }
     };
