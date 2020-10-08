@@ -833,7 +833,10 @@ const Playa = () => {
         {venue?.bannerMessage && (
           <div className="playa-banner split-words">
             <>
-              <strong>SparkleVerse Announcement:</strong>{" "}
+              <strong>
+                {venue.name.charAt(0).toUpperCase() + venue.name.slice(1)}{" "}
+                Announcement:
+              </strong>{" "}
               {getLinkFromText(venue.bannerMessage)}
             </>
           </div>
