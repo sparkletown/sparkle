@@ -76,6 +76,8 @@ const createFirestorePlacementInput = async (
   const firestorePayload = {
     placement: placementPayload,
     mapIconImageUrl: input.mapIconImageUrl,
+    width: input.width,
+    height: input.height,
   };
 
   const fileArr = input[fileKey];
@@ -160,6 +162,8 @@ const AdminEditComponent: React.FC = () => {
   //register the icon position data
   useEffect(() => {
     register("placement");
+    register("width");
+    register("height");
   }, [register]);
 
   const onSubmit = useCallback(
@@ -187,8 +191,8 @@ const AdminEditComponent: React.FC = () => {
       mapIconUrl
         ? {
             [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
+              width: defaultValues?.width ?? PLAYA_VENUE_SIZE,
+              height: defaultValues?.height ?? PLAYA_VENUE_SIZE,
               top: defaultValues?.placement?.y ?? 0,
               left: defaultValues?.placement?.x ?? 0,
               url: mapIconUrl,
@@ -378,6 +382,8 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
         x: iconPos.left,
         y: iconPos.top,
       });
+      setValue("width", iconPos.width);
+      setValue("height", iconPos.height);
     },
     [setValue]
   );
@@ -451,7 +457,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           >
             <PlayaContainer
               interactive
-              resizable={false}
+              resizable={true}
               coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
               onChange={onBoxMove}
               snapToGrid={false}
