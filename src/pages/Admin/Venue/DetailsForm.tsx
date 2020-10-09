@@ -563,6 +563,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
+        {(templateID === VenueTemplate.themecamp ||
+          templateID === VenueTemplate.playa) && (
+          <>
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Choose how you'd like your rooms to appear on the map
+            </h4>
+            <div className="input-container">
+              <select name="roomVisibility" ref={register}>
+                <option value="hover">Hover</option>
+                <option value="count">Count</option>
+                <option value="count/names">Count and names</option>
+              </select>
+            </div>
+          </>
+        )}
       </div>
       <div className="page-container-left-bottombar">
         {previous ? (

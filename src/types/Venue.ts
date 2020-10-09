@@ -11,6 +11,12 @@ interface Question {
   link?: string;
 }
 
+export enum RoomVisibility {
+  hover = "hover",
+  count = "count",
+  nameCount = "count/name",
+}
+
 export interface Venue {
   parentId?: string;
   template: VenueTemplate;
@@ -68,6 +74,7 @@ export interface Venue {
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
+  roomVisibility?: RoomVisibility;
   rooms?: any[];
 }
 
