@@ -127,3 +127,29 @@ $green: #1ba52e;
     }
   }
 }
+.announcement-header {
+  box-shadow: 0px -50px 150px -80px inset;
+  z-index: 1;
+  overflow: hidden;
+  img {
+    z-index: -1;
+    position: relative;
+    width: 100%;
+  }
+}
+.announcement-heading-group {
+  margin: 0 15px 25px;
+  h1 {
+    font-style: italic;
+  }
+}
+.admin-camp-venue-crumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  padding: 13px;
+  background: #424240;
+  border-radius: 0 0 20px;
+  opacity: 0.6;
+}

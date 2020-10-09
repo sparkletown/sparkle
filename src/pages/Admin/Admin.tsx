@@ -261,10 +261,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
         {/* after delete venue becomes {id: string} */}
         {venue.name && (
           <>
-            <AdminVenuePreview
-              venue={venue}
-              containerStyle={{ marginTop: 20 }}
-            />
+            <AdminVenuePreview venue={venue} containerStyle={{}} />
             {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
               <>
                 <h4

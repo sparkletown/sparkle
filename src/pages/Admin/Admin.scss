@@ -205,8 +205,9 @@ $page-max-width: 1240px;
             margin: 15px;
             border: 4px solid rgba($white, 0.2);
             background-color: rgba($white, 0.1);
-            padding: 20px;
-            border-radius: 10px;
+            padding: 0;
+            border-radius: 35px;
+            overflow: hidden;
 
             .iframe-preview-container {
               position: relative;
