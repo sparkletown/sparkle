@@ -402,6 +402,9 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
         state: PlacementState.AdminPlaced,
       };
 
+      updated.width = data.width;
+      updated.height = data.height;
+
       const addressText = dataOrUpdateKey(
         data.placement,
         updated.placement,

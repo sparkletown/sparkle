@@ -618,6 +618,8 @@ const Playa = () => {
             style={{
               top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
               left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+              width: venue.width ?? 40,
+              height: venue.height ?? 40,
               position: "absolute",
             }}
             onClick={() => showVenue(venue)}
