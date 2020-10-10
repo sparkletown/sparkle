@@ -835,7 +835,9 @@ const Playa = () => {
         {venue?.bannerMessage && (
           <div className="playa-banner split-words">
             <>
-              <strong>SparkleVerse Announcement:</strong>{" "}
+              <strong>
+                {IS_BURN ? "SparkleVerse" : venue.name} Announcement:
+              </strong>{" "}
               {getLinkFromText(venue.bannerMessage)}
             </>
           </div>
