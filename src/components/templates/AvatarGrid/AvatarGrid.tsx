@@ -346,7 +346,7 @@ const AvatarGrid = () => {
           userProfile={selectedUserProfile}
         />
       )}
-      <div className="chat-container">
+      <div className="avatargrid-chat-drawer-container">
         <ChatDrawer
           title={`${venue.name ?? "Grid"} Chat`}
           roomName={venue.name}
