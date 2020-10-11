@@ -576,7 +576,7 @@ const Playa = () => {
         />
         {venues?.filter(isPlaced).map((venue, idx) => (
           <div
-            className={`venue ${
+            className={`venue ${venue.width || venue.height ? "sized" : ""} ${
               (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
               !!openVenues?.find(
                 (ov) =>
