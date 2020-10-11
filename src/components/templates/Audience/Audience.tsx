@@ -263,10 +263,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
 
-    const iframeUrl = ConvertToEmbeddableUrl(
-      venue.iframeUrl ?? venue.embedIframeUrl,
-      true
-    );
+    const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl, true);
 
     return (
       <>

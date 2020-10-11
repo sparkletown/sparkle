@@ -34,8 +34,7 @@ export interface Venue {
       presentation: string[];
       bannerImageUrl?: string;
       checkList: string[];
-      videoIframeUrl?: string;
-      embedIframeUrl?: string;
+      iframeUrl?: string;
       joinButtonText?: string;
       quotations?: Quotation[];
     };
@@ -52,7 +51,6 @@ export interface Venue {
   mapIconImageUrl?: string;
   placement?: VenuePlacement;
   zoomUrl?: string;
-  embedIframeUrl?: string;
   mapBackgroundImageUrl?: string;
   placementRequests?: string;
   radioStations?: string[];

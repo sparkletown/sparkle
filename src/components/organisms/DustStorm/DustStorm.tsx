@@ -8,7 +8,7 @@ import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
 import { getRandomInt } from "../../../utils/getRandomInt";
 import {
   ZOOM_URL_TEMPLATES,
-  EMBED_IFRAME_TEMPLATES,
+  IFRAME_TEMPLATES,
   DUST_STORM_TEXT_1,
   DUST_STORM_TEXT_2,
 } from "settings";
@@ -23,7 +23,7 @@ const PotLuck: React.FC<PotLuckProps> = ({ openVenues, afterSelect }) => {
   const goToRandomVenue = useCallback(() => {
     const ExperiencesOrArtpieces = openVenues?.filter(
       (venue) =>
-        EMBED_IFRAME_TEMPLATES.includes(venue.template) ||
+        IFRAME_TEMPLATES.includes(venue.template) ||
         ZOOM_URL_TEMPLATES.includes(venue.template)
     );
 
@@ -33,7 +33,7 @@ const PotLuck: React.FC<PotLuckProps> = ({ openVenues, afterSelect }) => {
       ExperiencesOrArtpieces[getRandomInt(ExperiencesOrArtpieces?.length - 1)];
     afterSelect();
 
-    if (EMBED_IFRAME_TEMPLATES.includes(randomVenue?.template))
+    if (IFRAME_TEMPLATES.includes(randomVenue?.template))
       history.push(`/in/${randomVenue.id}`);
     if (ZOOM_URL_TEMPLATES.includes(randomVenue?.template))
       window.open(`${randomVenue.zoomUrl}`);
