@@ -20,6 +20,7 @@ import {
   SPARKLE_LOGO_URL,
   DEFAULT_VENUE,
   MEMRISE_LOGO_URL,
+  PLAYA_VENUE_NAME,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -32,6 +33,7 @@ import PlayaAddress from "../PlayaAddress";
 import { venueInsideUrl } from "utils/url";
 import { VenueTemplate } from "types/VenueTemplate";
 import { useVenueId } from "hooks/useVenueId";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -40,11 +42,23 @@ interface PropsType {
 const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
-  const { venue, privateChats, radioStations } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    privateChats: state.firestore.ordered.privatechats,
-    radioStations: state.firestore.data.venues?.playa?.radioStations,
-  }));
+  const { venue, privateChats, radioStations, parentVenue } = useSelector(
+    (state) => ({
+      venue: state.firestore.data.currentVenue,
+      privateChats: state.firestore.ordered.privatechats,
+      radioStations: state.firestore.data.venues?.playa?.radioStations,
+      parentVenue: state.firestore.data.parentVenue,
+    })
+  );
+
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      doc: venue?.parentId,
+      storeAs: "parentVenue",
+    },
+  ]);
+
   const {
     location: { pathname },
   } = useHistory();
@@ -192,10 +206,22 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         }
                         className="playa-link"
                       >
-                        Back to Jam
+                        Back to {PLAYA_VENUE_NAME}
                       </span>
                     )}
                   </div>
+                )}
+                {!IS_BURN && venue?.parentId && (
+                  <span
+                    onClick={() =>
+                      (window.location.href = venueInsideUrl(
+                        venue.parentId ?? ""
+                      ))
+                    }
+                    className="playa-link"
+                  >
+                    Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+                  </span>
                 )}
                 <div className="navbar-links">
                   {venue?.showLiveSchedule && (
