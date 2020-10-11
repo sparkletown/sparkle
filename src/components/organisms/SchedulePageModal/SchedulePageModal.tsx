@@ -8,6 +8,7 @@ import { formatDate } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { REFETCH_SCHEDULE_MS } from "settings";
 import { useUser } from "hooks/useUser";
+import { IS_BURN } from "secrets";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -107,7 +108,11 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       <div className="/modal-content /modal-content-events">
         <div style={{ display: "flex" }}>
           <div>
-            <h3 className="italic">SparkleVerse Schedule of One-time Events</h3>
+            <h3 className="italic">
+              {IS_BURN
+                ? "SparkleVerse Schedule of One-time Events"
+                : "Schedule"}
+            </h3>
           </div>
           {typeof openVenues !== "object" && <div className="spinner-border" />}
         </div>

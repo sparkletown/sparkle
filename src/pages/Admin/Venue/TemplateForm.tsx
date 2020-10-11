@@ -17,6 +17,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.conversationspace]: undefined,
 };
 
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
@@ -33,6 +34,7 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.conversationspace]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {

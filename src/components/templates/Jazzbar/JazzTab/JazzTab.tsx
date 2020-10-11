@@ -22,7 +22,6 @@ import { JAZZBAR_TABLES } from "./constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import "./JazzTab.scss";
-import "./TableHeader.scss";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -242,7 +241,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
       </div>
       <div className="chat-drawer">
         <ChatDrawer
-          title={"Jazz Bar Chat"}
+          title={`${venueToUse.name} Chat`}
           roomName={venueToUse.name}
           chatInputPlaceholder="Chat to the bar"
         />

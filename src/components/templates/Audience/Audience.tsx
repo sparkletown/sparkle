@@ -23,6 +23,7 @@ import {
 } from "components/context/ExperienceContext";
 import { useForm } from "react-hook-form";
 import { useVenueId } from "hooks/useVenueId";
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 
 type PropsType = {};
 
@@ -262,6 +263,11 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
 
+    const iframeUrl = ConvertToEmbeddableUrl(
+      venue.iframeUrl ?? venue.embedIframeUrl,
+      true
+    );
+
     return (
       <>
         <div
@@ -272,7 +278,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
             <div className="video">
               <iframe
                 className="frame"
-                src={venue.iframeUrl}
+                src={iframeUrl}
                 title="Video"
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
