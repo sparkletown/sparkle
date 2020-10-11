@@ -2,7 +2,7 @@ import React, { useMemo, useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
 import "./VenuePreview.scss";
-import { BURN_VENUE_TEMPLATES } from "settings";
+import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
 import UserList from "components/molecules/UserList";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
@@ -12,7 +12,7 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
-// import { playaAddress } from "utils/address";
+import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { isCampVenue } from "types/CampVenue";
 
@@ -235,12 +235,12 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         <div className="description">
           {venue.config?.landingPageConfig?.description}
         </div>
-        {/* {venue.placement?.x && venue.placement?.y && (
+        {ENABLE_PLAYA_ADDRESS && venue.placement?.x && venue.placement?.y && (
           <div className="address">
             <strong>Address on playa:</strong>{" "}
             {playaAddress(venue.placement.x, venue.placement.y)}
           </div>
-        )} */}
+        )}
         <VenueInfoEvents
           eventsNow={eventsNow}
           venue={venue}

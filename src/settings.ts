@@ -86,6 +86,9 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
+export const ENABLE_SUSPECTED_LOCATION = false;
+export const ENABLE_PLAYA_ADDRESS = false;
+
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
   VenueTemplate.artcar,

@@ -14,6 +14,7 @@ import {
 } from "types/RelayMessage";
 import {
   DEFAULT_WS_RELAY_URL,
+  ENABLE_PLAYA_ADDRESS,
   MAX_IDLE_TIME_MS,
   PLAYA_VENUE_NAME,
 } from "settings";
@@ -34,7 +35,7 @@ import {
 } from "types/ChatRequest";
 import { useDispatch } from "react-redux";
 import { UPDATE_LOCATION } from "store/actions/Location";
-// import { playaAddress } from "utils/address";
+import { playaAddress } from "utils/address";
 
 interface PropsType {
   useProfilePicture: boolean;
@@ -667,44 +668,40 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           userStateMap[avatarUser.id]?.state?.[UserStateKey.Video] ===
           UserVideoState.Locked;
 
-        // const address = playaAddress(userStateMap[uid].x, userStateMap[uid].y);
+        const address = playaAddress(userStateMap[uid].x, userStateMap[uid].y);
 
         const generateMenu: () => MenuConfig = () => {
           if (theirChatIsLocked) {
             return {
-              // prompt: `${avatarUser.partyName}\n${address}\nNot allowing video chat`,
-              prompt: `${avatarUser.partyName}\nNot allowing video chat`,
+              prompt: `${avatarUser.partyName}${
+                ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+              }\nNot allowing video chat`,
               choices: [viewProfileChoice],
             };
           }
           if (meIsInAChat && theyAreInAChat && theyAreInAChatWithMe) {
             return {
-              // prompt: `${avatarUser.partyName}\n${address}\nCurrently chatting with this person`,
-              prompt: `${avatarUser.partyName}\nCurrently chatting with this person`,
+              prompt: `${avatarUser.partyName}${
+                ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+              }\nCurrently chatting with this person`,
               choices: [viewProfileChoice],
             };
           }
           if (theyAreInAChat && meIsInAChat) {
             if (theirHostsChatIsLocked) {
               return {
-                // prompt: `${
-                //   avatarUser.partyName
-                // }\n${address}\nIn a locked chat hosted by ${
-                //   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                // }`,
-                prompt: `${avatarUser.partyName}\nIn a locked chat hosted by ${
+                prompt: `${avatarUser.partyName}${
+                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+                }\nIn a locked chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [viewProfileChoice],
               };
             } else {
               return {
-                // prompt: `${
-                //   avatarUser.partyName
-                // }\n${address}\nIn an open chat hosted by ${
-                //   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                // }`,
-                prompt: `${avatarUser.partyName}\nIn an open chat hosted by ${
+                prompt: `${avatarUser.partyName}${
+                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+                }\nIn an open chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [
@@ -719,24 +716,18 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           if (theyAreInAChat) {
             if (theirHostsChatIsLocked) {
               return {
-                // prompt: `${
-                //   avatarUser.partyName
-                // }\n${address}\nIn a locked chat hosted by ${
-                //   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                // }`,
-                prompt: `${avatarUser.partyName}\nIn a locked chat hosted by ${
+                prompt: `${avatarUser.partyName}${
+                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+                }\nIn a locked chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [viewProfileChoice],
               };
             } else {
               return {
-                // prompt: `${
-                //   avatarUser.partyName
-                // }\n${address}\nIn an open chat hosted by ${
-                //   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                // }`,
-                prompt: `${avatarUser.partyName}\nIn an open chat hosted by ${
+                prompt: `${avatarUser.partyName}${
+                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+                }\nIn an open chat hosted by ${
                   theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
                 }`,
                 choices: [viewProfileChoice, askToJoinThemChoice],
@@ -744,8 +735,9 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
             }
           }
           return {
-            // prompt: `${avatarUser.partyName}\n${address}\nOpen to chat`,
-            prompt: `${avatarUser.partyName}\nOpen to chat`,
+            prompt: `${avatarUser.partyName}${
+              ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+            }\nOpen to chat`,
             choices: [viewProfileChoice, inviteThemToJoinYourChatChoice],
           };
         };

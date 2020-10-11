@@ -14,7 +14,7 @@ import {
 } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
-import { PLAYA_VENUE_NAME } from "settings";
+import { ENABLE_SUSPECTED_LOCATION, PLAYA_VENUE_NAME } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
@@ -94,12 +94,14 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 </React.Fragment>
               ))}
             </div>
-            <div className="profile-location">
-              <p className="question">Suspected Location:</p>
-              <h6 className="location">
-                <SuspectedLocation user={fullUserProfile} />
-              </h6>
-            </div>
+            {ENABLE_SUSPECTED_LOCATION && (
+              <div className="profile-location">
+                <p className="question">Suspected Location:</p>
+                <h6 className="location">
+                  <SuspectedLocation user={fullUserProfile} />
+                </h6>
+              </div>
+            )}
           </div>
           {IS_BURN && <Badges user={fullUserProfile} />}
           {fullUserProfile.id !== user.uid && (
