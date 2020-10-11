@@ -2,7 +2,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 
 export interface Table {
-  title?: string;
+  title: string;
   subtitle?: string;
   capacity?: number;
   columns?: number;

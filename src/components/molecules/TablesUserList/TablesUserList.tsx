@@ -25,6 +25,7 @@ const TABLES = 4;
 
 const createTable = (i: number): Table => {
   return {
+    title: `Table ${i + 1}`,
     reference: `Table ${i + 1}`,
     capacity: 8,
     rows: 2,
