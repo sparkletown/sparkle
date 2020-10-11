@@ -163,6 +163,11 @@ $light: #ffffff;
         background-color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
       }
+
+      .user .profile-picture-container {
+        width: 4vh;
+        height: 4vh;
+      }
     }
 
     .not-seat {
