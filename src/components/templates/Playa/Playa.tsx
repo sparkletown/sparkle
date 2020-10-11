@@ -43,7 +43,6 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { getLinkFromText } from "utils/getLinkFromText";
-import ifvisible from "ifvisible.js";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
@@ -140,7 +139,6 @@ const Playa = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
-  const [away, setAway] = useState(false);
   const [heartbeat, setHeartbeat] = useState<number>();
 
   const toggleBikeMode = useCallback(() => {
@@ -161,28 +159,6 @@ const Playa = () => {
   const myYRef = useSynchronizedRef(myY);
 
   const { user, profile } = useUser();
-
-  useEffect(() => {
-    const idle = () => {
-      setAway(true);
-    };
-    const heartbeat = () => {
-      setAway(false);
-      setHeartbeat(new Date().getTime());
-    };
-    ifvisible.on("idle", idle);
-    ifvisible.on("focus", heartbeat);
-    ifvisible.on("wakeup", heartbeat);
-    const loop = ifvisible.onEvery(2, heartbeat);
-    return () => {
-      ifvisible.off("idle", idle);
-      ifvisible.off("focus", heartbeat);
-      ifvisible.off("wakeup", heartbeat);
-      if (loop && loop.stop) {
-        loop.stop();
-      }
-    };
-  });
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -752,8 +728,6 @@ const Playa = () => {
         videoState={videoState}
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
-        away={away}
-        setAway={setAway}
         heartbeat={heartbeat}
         setHeartbeat={setHeartbeat}
         movingUp={movingUp}
@@ -774,7 +748,6 @@ const Playa = () => {
     [
       bikeMode,
       videoState,
-      away,
       heartbeat,
       movingUp,
       movingDown,
