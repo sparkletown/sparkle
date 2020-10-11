@@ -428,6 +428,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     partygoersBySeat,
     handleSubmit,
     isShoutSent,
+    isAudioEffectDisabled,
     experienceContext,
     register,
     reset,
