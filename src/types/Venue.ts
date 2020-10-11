@@ -78,6 +78,9 @@ export interface Venue {
   rooms?: any[];
   width: number;
   height: number;
+  description?: {
+    text: string;
+  };
 }
 
 export interface VenuePlacement {

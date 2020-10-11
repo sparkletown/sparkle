@@ -123,6 +123,13 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
         }}
         className={`scrollable-area ${seatedAtTable && "at-table"}`}
       >
+        {venueToUse.description?.text && (
+          <div className="row">
+            <div className="col">
+              <div className="description">{venueToUse.description?.text}</div>
+            </div>
+          </div>
+        )}
         <div className="container-in-row">
           <div className="video-wrapper">
             {seatedAtTable && (

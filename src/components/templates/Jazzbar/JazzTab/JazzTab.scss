@@ -72,6 +72,12 @@
 }
 
 .scrollable-area {
+  .description {
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+  }
+
   .jazz-wrapper {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
