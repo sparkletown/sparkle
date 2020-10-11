@@ -47,11 +47,11 @@ import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
-import { getLinkFromText } from "utils/getLinkFromText";
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
 import { IS_BURN } from "secrets";
+import BannerMessage from "components/molecules/BannerMessage";
 
 export type MenuConfig = {
   prompt?: string;
@@ -839,16 +839,7 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
-        {venue?.bannerMessage && (
-          <div className="playa-banner split-words">
-            <>
-              <strong>
-                {IS_BURN ? "SparkleVerse" : venue.name} Announcement:
-              </strong>{" "}
-              {getLinkFromText(venue.bannerMessage)}
-            </>
-          </div>
-        )}
+        <BannerMessage venue={venue} />
         {atEdge && (
           <div className="playa-banner">
             <>

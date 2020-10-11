@@ -20,6 +20,7 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
+import BannerMessage from "components/molecules/BannerMessage";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -63,91 +64,94 @@ const Camp: React.FC = () => {
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
   return (
-    <div className="camp-container">
-      <div className="small-right-margin">
-        <h1 className="title">{venue.name}</h1>
-      </div>
-      <div className="row">
-        <div className="col">
-          <div className="starting-indication">
-            {venue.description?.text}{" "}
-            {venue.description?.program_url && (
-              <a
-                href={venue.description.program_url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Event Program here
-              </a>
-            )}
-          </div>
-          <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
+    <>
+      <BannerMessage venue={venue} />
+      <div className="camp-container">
+        <div className="small-right-margin">
+          <h1 className="title">{venue.name}</h1>
         </div>
-      </div>
-      <div className="row">
-        <Map
-          venue={venue}
-          attendances={attendances}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
-        />
-      </div>
-      <div className="row">
-        {usersInCamp && (
+        <div className="row">
           <div className="col">
-            <UserList
-              users={usersInCamp}
-              imageSize={50}
-              disableSeeAll={false}
-              isCamp={true}
-              activity={venue.activity ?? "partying"}
-            />
+            <div className="starting-indication">
+              {venue.description?.text}{" "}
+              {venue.description?.program_url && (
+                <a
+                  href={venue.description.program_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Event Program here
+                </a>
+              )}
+            </div>
+            <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
           </div>
-        )}
-      </div>
-      <div className="row">
-        <div className="col">
-          <RoomList
-            rooms={venue.rooms}
+        </div>
+        <div className="row">
+          <Map
+            venue={venue}
             attendances={attendances}
             setSelectedRoom={setSelectedRoom}
             setIsRoomModalOpen={setIsRoomModalOpen}
           />
         </div>
-      </div>
-      <RoomModal
-        show={isRoomModalOpen}
-        room={selectedRoom}
-        onHide={modalHidden}
-        joinButtonText={venue.joinButtonText}
-      />
-      {(IS_BURN || venue.showChat) && (
-        <div className="chat-pop-up" style={{ zIndex: 100 }}>
-          <ChatDrawer
-            roomName={venue.name}
-            title={`${venue.name} Chat`}
-            chatInputPlaceholder="Chat"
-          />
+        <div className="row">
+          {usersInCamp && (
+            <div className="col">
+              <UserList
+                users={usersInCamp}
+                imageSize={50}
+                disableSeeAll={false}
+                isCamp={true}
+                activity={venue.activity ?? "partying"}
+              />
+            </div>
+          )}
         </div>
-      )}
-      {IS_BURN && (
-        <div className="sparkle-fairies">
-          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+        <div className="row">
+          <div className="col">
+            <RoomList
+              rooms={venue.rooms}
+              attendances={attendances}
+              setSelectedRoom={setSelectedRoom}
+              setIsRoomModalOpen={setIsRoomModalOpen}
+            />
+          </div>
         </div>
-      )}
-      <div className="info-drawer-camp">
-        <InfoDrawer venue={venue} />
+        <RoomModal
+          show={isRoomModalOpen}
+          room={selectedRoom}
+          onHide={modalHidden}
+          joinButtonText={venue.joinButtonText}
+        />
+        {(IS_BURN || venue.showChat) && (
+          <div className="chat-pop-up" style={{ zIndex: 100 }}>
+            <ChatDrawer
+              roomName={venue.name}
+              title={`${venue.name} Chat`}
+              chatInputPlaceholder="Chat"
+            />
+          </div>
+        )}
+        {IS_BURN && (
+          <div className="sparkle-fairies">
+            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          </div>
+        )}
+        <div className="info-drawer-camp">
+          <InfoDrawer venue={venue} />
+        </div>
+        <Modal
+          show={showEventSchedule}
+          onHide={() => setShowEventSchedule(false)}
+          dialogClassName="custom-dialog"
+        >
+          <Modal.Body>
+            <SchedulePageModal />
+          </Modal.Body>
+        </Modal>
       </div>
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
-    </div>
+    </>
   );
 };
 

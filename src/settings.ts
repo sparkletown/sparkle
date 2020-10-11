@@ -187,6 +187,19 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.themecamp,
+  VenueTemplate.playa,
+];
+
+export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.playa,
+  VenueTemplate.preplaya,
+  VenueTemplate.avatargrid,
+  VenueTemplate.themecamp,
+  VenueTemplate.artpiece,
+];
+
 export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,

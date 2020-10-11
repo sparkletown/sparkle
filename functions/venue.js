@@ -347,6 +347,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       } else if (data.placementRequests) {
         updated.placementRequests = data.placementRequests;
       }
+      if (data.bannerMessage) {
+        updated.bannerMessage = data.bannerMessage;
+      }
 
       switch (updated.template) {
         case VenueTemplate.jazzbar:

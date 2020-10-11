@@ -35,6 +35,8 @@ import {
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
+  HAS_ROOMS_TEMPLATES,
+  BANNER_MESSAGE_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -453,6 +455,26 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </>
           )}
         </div>
+        {templateID && BANNER_MESSAGE_TEMPLATES.includes(templateID) && (
+          <>
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Show an announcement in the venue (or leave blank for none)
+            </h4>
+            <input
+              type="text"
+              disabled={disable}
+              name="bannerMessage"
+              ref={register}
+              className="wide-input-block input-centered align-left"
+              placeholder="Enter your announcement"
+            />
+            {errors.bannerMessage && (
+              <span className="input-error">
+                {errors.bannerMessage.message}
+              </span>
+            )}
+          </>
+        )}
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
@@ -563,8 +585,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
-        {(templateID === VenueTemplate.themecamp ||
-          templateID === VenueTemplate.playa) && (
+        {templateID && HAS_ROOMS_TEMPLATES.includes(templateID) && (
           <>
             <h4 className="italic" style={{ fontSize: "20px" }}>
               Choose how you'd like your rooms to appear on the map
