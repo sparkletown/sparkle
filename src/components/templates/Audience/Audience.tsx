@@ -24,6 +24,8 @@ import {
 import { useForm } from "react-hook-form";
 import { useVenueId } from "hooks/useVenueId";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
 type PropsType = {};
 
@@ -128,6 +130,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const experienceContext = useContext(ExperienceContext);
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
@@ -300,6 +303,17 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                         </span>
                       </button>
                     ))}
+                    <div
+                      className="mute-button"
+                      onClick={() =>
+                        setIsAudioEffectDisabled((state) => !state)
+                      }
+                    >
+                      <FontAwesomeIcon
+                        className="reaction"
+                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
+                      />
+                    </div>
                     <button className="leave-seat-button" onClick={leaveSeat}>
                       Leave Seat
                     </button>
@@ -370,6 +384,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                                     setSelectedUserProfile
                                   }
                                   miniAvatars={venue.miniAvatars}
+                                  isAudioEffectDisabled={isAudioEffectDisabled}
                                   imageSize={undefined}
                                 />
                               </div>
