@@ -25,18 +25,6 @@ export const useLocationUpdateEffect = (
   roomName: string
 ) => {
   useEffect(() => {
-    if (!user || !roomName) return;
-
-    updateLocationData(user, roomName);
-    const intervalId = setInterval(
-      () => updateLocationData(user, roomName),
-      5 * 60 * 1000
-    );
-
-    return () => clearInterval(intervalId);
-  }, [user, roomName]);
-
-  useEffect(() => {
     // Time spent is currently counted multiple time if multiple tabs are open
     if (!user || !roomName) return;
 

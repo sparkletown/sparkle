@@ -140,6 +140,12 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
+    width: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+    height: Yup.number()
+      .required("Required")
+      .min(0)
+      .max(PLAYA_WIDTH_AND_HEIGHT),
+
     placement: Yup.object()
       .shape({
         x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
@@ -196,6 +202,8 @@ export const editPlacementSchema = Yup.object().shape<PlacementInput>({
   mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
   addressText: Yup.string(),
   notes: Yup.string(),
+  width: Yup.number().required("Required"),
+  height: Yup.number().required("Required"),
   placement: Yup.object()
     .shape({
       x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),

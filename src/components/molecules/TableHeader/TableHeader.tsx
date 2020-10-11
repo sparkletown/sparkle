@@ -98,7 +98,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           <button
             type="button"
             title={"Leave " + seatedAtTable}
-            className="btn back-button"
+            className="btn btn-primary back-button"
             id="leave-seat"
             onClick={leaveSeat}
           >

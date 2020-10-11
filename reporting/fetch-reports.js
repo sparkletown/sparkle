@@ -15,13 +15,18 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "08/07/2020";
-const to = "08/09/2020";
+const from = "10/05/2020";
+const to = "10/08/2020";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = false;
+const newLogin = true;
+
+// The correct URL for accessing the reports is different for admin users who can
+// access reports for all accounts under the zoom account. If you are trying to get
+// reports from a standalone, non-admin user, set this to false.
+const isAdmin = true;
 
 // If the process crashes halfway through, set this to the page it was on to skip
 // some pages - and hopefully avoid another crash.
@@ -47,7 +52,11 @@ const password = "";
     await page.setCookie(...cookies);
   }
 
-  await page.goto(`https://zoom.us/account/report/user?from=${from}&to=${to}`);
+  const reportPageUrl = isAdmin
+    ? `https://zoom.us/account/report/user?from=${from}&to=${to}`
+    : `https://zoom.us/account/my/report?from=${from}&to=${to}`;
+
+  await page.goto(reportPageUrl);
 
   await navigationPromise;
 

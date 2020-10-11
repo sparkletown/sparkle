@@ -43,5 +43,7 @@ export const createJazzbar = (values: FormValues): Venue => {
     profile_questions: values.profileQuestions ?? [],
     code_of_conduct_questions: [],
     adultContent: values.adultContent || false,
+    width: values.width ?? 40,
+    height: values.height ?? 40,
   };
 };

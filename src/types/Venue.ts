@@ -11,6 +11,12 @@ interface Question {
   link?: string;
 }
 
+export enum RoomVisibility {
+  hover = "hover",
+  count = "count",
+  nameCount = "count/name",
+}
+
 export interface Venue {
   parentId?: string;
   template: VenueTemplate;
@@ -68,6 +74,13 @@ export interface Venue {
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
+  roomVisibility?: RoomVisibility;
+  rooms?: any[];
+  width: number;
+  height: number;
+  description?: {
+    text: string;
+  };
 }
 
 export interface VenuePlacement {
@@ -135,5 +148,7 @@ export const createJazzbar = (values: FormValues): Venue => {
     profile_questions: values.profileQuestions ?? [],
     code_of_conduct_questions: [],
     adultContent: values.adultContent || false,
+    width: values.width ?? 40,
+    height: values.width ?? 40,
   };
 };
