@@ -63,6 +63,8 @@ export type VenueInput = AdvancedVenueInput &
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
     adultContent: boolean;
+    width: number;
+    height: number;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -76,6 +78,8 @@ export type PlacementInput = {
   addressText?: string;
   notes?: string;
   placement?: Omit<VenuePlacement, "state">;
+  width: number;
+  height: number;
 };
 
 export const createUrlSafeName = (name: string) =>

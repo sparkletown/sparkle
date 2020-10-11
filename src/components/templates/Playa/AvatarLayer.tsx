@@ -43,8 +43,6 @@ interface PropsType {
   videoState: string | undefined;
   setVideoState: (state: string | undefined) => void;
   toggleVideoState: () => void;
-  away: boolean | undefined;
-  setAway: (visibility: boolean) => void;
   heartbeat: number | undefined;
   setHeartbeat: (heartbeat: number | undefined) => void;
   movingUp: boolean;
@@ -68,8 +66,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   videoState,
   setVideoState,
   toggleVideoState,
-  away,
-  setAway,
   setHeartbeat,
   heartbeat,
   movingUp,
@@ -193,7 +189,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
     newWebSocket();
     wsInitedRef.current = true;
-  }, [user, setBikeMode, setVideoState, setAway, sendUpdatedState]);
+  }, [user, setBikeMode, setVideoState, sendUpdatedState]);
 
   const selfUserProfile = user?.uid
     ? partygoers.find((pg) => pg.id === user.uid)
@@ -273,7 +269,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           serverSentState={myServerSentState}
           bike={bikeMode}
           videoState={videoState}
-          away={away}
           heartbeat={heartbeat}
           shouts={shouts.filter(
             (shout) => shout.created_by === selfUserProfile.id
@@ -286,7 +281,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setMyLocation={setMyLocation}
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
-          setAway={setAway}
           setHeartbeat={setHeartbeat}
           onClick={(event: React.MouseEvent) => {
             setMenu(menu);
@@ -308,7 +302,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       myServerSentState,
       bikeMode,
       videoState,
-      away,
       heartbeat,
       shouts,
       sendUpdatedState,
@@ -319,7 +312,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       setMyLocation,
       setBikeMode,
       setVideoState,
-      setAway,
       setHeartbeat,
       setMenu,
       menu,
@@ -613,10 +605,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       .map((uid) => {
         const avatarUser = partygoers.find((partygoer) => partygoer.id === uid);
         if (!avatarUser) return <React.Fragment key={uid} />;
-
-        const away =
-          stateBoolean(userStateMap[uid], UserStateKey.Away) === true;
-        if (away) return <React.Fragment key={uid} />;
 
         const heartbeat = parseInt(
           userStateMap[uid]?.state?.[UserStateKey.Heartbeat] || ""
