@@ -126,6 +126,7 @@ const ChatDrawer: React.FC<PropsType> = ({
       ) : (
         <div className="band-reaction-container">
           <h3>{title}</h3>
+          <h4>Chat with everybody</h4>
           <div className="call-out-band-container-at-table">
             <CallOutMessageForm
               onSubmit={handleSubmit(onBarMessageSubmit)}

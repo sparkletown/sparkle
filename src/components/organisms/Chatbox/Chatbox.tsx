@@ -222,7 +222,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     <FormControl
                       autoFocus
                       className="mx-3 my-2 w-auto"
-                      placeholder="Search for partygoer..."
+                      placeholder="Search for attendee..."
                       onChange={(e) => {
                         debouncedSearch(e.target.value);
                       }}
