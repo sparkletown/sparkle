@@ -3,24 +3,26 @@ import { IS_BURN } from "secrets";
 
 import "./loading.scss";
 
-const quotes = [
-  // "Navigating dust storms...",
-  // "Roadtripping across Nevada...",
-  // "In a traffic jam in Gerlach...",
-  // "Biking out to deep playa...",
-  // "Fixing tyre punctures...",
-  // "Reimagining the real...",
-  "Dodging cow pats in the Jam...",
-  "Fighting dropbears...",
-  "Herding koalas...",
-  "Learning the local lingo...",
-  "Becoming good friends with the NEEEEEIGHBOURS...",
-  "Throwing shrimp on the barbie...",
-  "Watering the speakers...",
-  "Massaging minds...",
-  "Laying out the croissants...",
-  "Adjusting microphone volumes...",
-];
+const quotes = IS_BURN
+  ? [
+      "Navigating dust storms...",
+      "Roadtripping across Nevada...",
+      "In a traffic jam in Gerlach...",
+      "Biking out to deep playa...",
+      "Fixing tyre punctures...",
+      "Reimagining the real...",
+      "Dodging cow pats in the paddock...",
+      "Fighting dropbears...",
+      "Herding koalas...",
+      "Learning the local lingo...",
+      "Becoming good friends with the NEEEEEIGHBOURS...",
+      "Throwing shrimp on the barbie...",
+      "Watering the speakers...",
+      "Massaging minds...",
+      "Laying out the croissants...",
+      "Adjusting microphone volumes...",
+    ]
+  : ["Loading..."];
 
 export const LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
