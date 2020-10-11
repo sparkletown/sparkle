@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
 import AvatarGrid from ".";
-import AvatarAdmin from "./Admin";
+import AvatarAdmin from "./AvatarAdmin";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 export const AvatarRouter: FC = () => {

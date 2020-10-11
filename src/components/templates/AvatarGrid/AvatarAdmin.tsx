@@ -32,7 +32,7 @@ const AvatarAdmin: React.FC = () => {
   return (
     <>
       <div className="row">
-        <h4>Memrise Admin</h4>
+        <h4>Banner Admin</h4>
       </div>
       <div className="edit-banner">
         <label htmlFor="bannerMessage">Banner Message:</label>

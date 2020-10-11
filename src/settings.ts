@@ -86,6 +86,9 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
+export const ENABLE_SUSPECTED_LOCATION = false;
+export const ENABLE_PLAYA_ADDRESS = false;
+
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
   VenueTemplate.artcar,
@@ -182,6 +185,19 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
       "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
     ],
   },
+];
+
+export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.themecamp,
+  VenueTemplate.playa,
+];
+
+export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.playa,
+  VenueTemplate.preplaya,
+  VenueTemplate.avatargrid,
+  VenueTemplate.themecamp,
+  VenueTemplate.artpiece,
 ];
 
 export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [

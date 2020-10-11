@@ -5,13 +5,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, {
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
@@ -67,10 +61,7 @@ const VenueList: React.FC<VenueListProps> = ({
 }) => {
   const venues = useSelector((state) => state.firestore.ordered.venues);
 
-  const topLevelVenues = useMemo(
-    () => venues?.filter((v) => v.parentId === undefined) ?? [],
-    [venues]
-  );
+  if (!venues) return <>Loading...</>;
 
   return (
     <>
@@ -81,7 +72,7 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {topLevelVenues.map((venue, index) => (
+        {venues.map((venue, index) => (
           <li
             key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
