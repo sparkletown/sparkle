@@ -180,13 +180,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   )}
               </div>
             </div>
-            {venue.config?.landingPageConfig.videoIframeUrl && (
+            {venue.config?.landingPageConfig.iframeUrl && (
               <iframe
                 title="entrance video"
                 width="100%"
                 height="300"
                 className="youtube-video"
-                src={venue.config?.landingPageConfig.videoIframeUrl}
+                src={venue.config?.landingPageConfig.iframeUrl}
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
               />

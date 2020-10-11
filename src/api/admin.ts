@@ -56,15 +56,14 @@ export type VenueInput = AdvancedVenueInput &
     subtitle: string;
     description: string;
     zoomUrl?: string;
-    videoIframeUrl?: string;
-    embedIframeUrl?: string;
+    iframeUrl?: string;
     template: any;
     rooms?: Array<any>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
     adultContent: boolean;
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     bannerMessage?: string;
   };
 

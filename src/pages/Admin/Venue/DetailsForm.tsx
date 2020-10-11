@@ -14,7 +14,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { FieldErrors, useForm } from "react-hook-form";
+import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar, VenuePlacementState } from "types/Venue";
 import * as Yup from "yup";
@@ -27,8 +27,7 @@ import { WizardPage } from "./VenueWizard";
 import { venueLandingUrl } from "utils/url";
 import {
   ZOOM_URL_TEMPLATES,
-  VIDEO_IFRAME_TEMPLATES,
-  EMBED_IFRAME_TEMPLATES,
+  IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_IMAGE,
@@ -499,10 +498,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 )}
               </div>
             )}
-            {VIDEO_IFRAME_TEMPLATES.includes(templateID) && (
+            {IFRAME_TEMPLATES.includes(templateID) && (
               <div className="input-container">
                 <div className="input-title">
-                  Livestream URL, for people to view in your venue
+                  Livestream URL, or embed URL, for people to view in your venue
                 </div>
                 <div className="input-title">
                   (Enter an embeddable URL link. You can edit this later so you
@@ -510,37 +509,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 </div>
                 <textarea
                   disabled={disable}
-                  name={"videoIframeUrl"}
+                  name={"iframeUrl"}
                   ref={register}
                   className="wide-input-block input-centered align-left"
                   placeholder="https://youtu.be/embed/abcDEF987w"
                 />
-                {errors.videoIframeUrl && (
+                {errors.iframeUrl && (
                   <span className="input-error">
-                    {errors.videoIframeUrl.message}
-                  </span>
-                )}
-              </div>
-            )}
-            {EMBED_IFRAME_TEMPLATES.includes(templateID) && (
-              <div className="input-container">
-                <div className="input-title">
-                  URL to your artwork, to embed in the experience as an iframe
-                </div>
-                <div className="input-title">
-                  (Enter an embeddable URL link. You can edit this later so you
-                  can leave a placeholder for now)
-                </div>
-                <textarea
-                  disabled={disable}
-                  name={"embedIframeUrl"}
-                  ref={register}
-                  className="wide-input-block input-centered align-left"
-                  placeholder="https://3dwarehouse.sketchup.com/embed.html?mid=..."
-                />
-                {errors.embedIframeUrl && (
-                  <span className="input-error">
-                    {errors.embedIframeUrl.message}
+                    {errors.iframeUrl.message}
                   </span>
                 )}
               </div>
@@ -609,6 +585,17 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
+          {Object.keys(errors).map((fieldName) => (
+            <div>
+              <span>Error in {fieldName}:</span>
+              <ErrorMessage
+                errors={errors}
+                name={fieldName as any}
+                as="span"
+                key={fieldName}
+              />
+            </div>
+          ))}
           <SubmitButton
             editing={editing}
             isSubmitting={isSubmitting}

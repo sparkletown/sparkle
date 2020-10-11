@@ -77,7 +77,9 @@ const createVenueData = (data, context) => {
   switch (data.template) {
     case "jazzbar":
     case "performancevenue":
-      venueData.iframeUrl = data.videoIframeUrl;
+    case "audience":
+    case "artpiece":
+      venueData.iframeUrl = data.iframeUrl;
       break;
     case "partymap":
     case "themecamp":
@@ -88,9 +90,6 @@ const createVenueData = (data, context) => {
     case "zoomroom":
     case "artcar":
       venueData.zoomUrl = data.zoomUrl;
-      break;
-    case "artpiece":
-      venueData.embedIframeUrl = data.embedIframeUrl;
       break;
     case VenueTemplate.playa:
       venueData.roomVisibility = data.roomVisibility;
@@ -350,30 +349,26 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.bannerMessage) {
         updated.bannerMessage = data.bannerMessage;
       }
+      if (data.showLiveSchedule) {
+        updated.showLiveSchedule = data.showLiveSchedule;
+      }
+      if (data.roomVisibility) {
+        updated.roomVisibility = data.roomVisibility;
+      }
 
       switch (updated.template) {
         case VenueTemplate.jazzbar:
         case VenueTemplate.performancevenue:
-          if (data.videoIframeUrl) {
-            updated.iframeUrl = data.videoIframeUrl;
+        case VenueTemplate.artpiece:
+        case VenueTemplate.audience:
+          if (data.iframeUrl) {
+            updated.iframeUrl = data.iframeUrl;
           }
           break;
         case VenueTemplate.zoomroom:
         case VenueTemplate.artcar:
           if (data.zoomUrl) {
             updated.zoomUrl = data.zoomUrl;
-          }
-          break;
-        case VenueTemplate.artpiece:
-          if (data.embedIframeUrl) {
-            updated.embedIframeUrl = data.embedIframeUrl;
-          }
-        case VenueTemplate.playa:
-          if (data.showLiveSchedule) {
-            updated.showLiveSchedule = data.showLiveSchedule;
-          }
-          if (data.roomVisibility) {
-            updated.roomVisibility = data.roomVisibility;
           }
           break;
       }

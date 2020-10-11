@@ -5,8 +5,7 @@ import * as Yup from "yup";
 import { VenueTemplate } from "types/VenueTemplate";
 import {
   ZOOM_URL_TEMPLATES,
-  VIDEO_IFRAME_TEMPLATES,
-  EMBED_IFRAME_TEMPLATES,
+  IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
@@ -113,38 +112,22 @@ export const validationSchema = Yup.object()
               .test("zoomUrl", "URL required", (val: string) => val.length > 0)
           : schema.notRequired()
     ),
-    videoIframeUrl: Yup.string().when(
+    iframeUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        VIDEO_IFRAME_TEMPLATES.includes(template)
+        IFRAME_TEMPLATES.includes(template)
           ? schema
               .required("Required")
               .test(
-                "videoIframeUrl",
+                "iframeUrl",
                 "Video URL required",
                 (val: string) => val.length > 0
               )
           : schema.notRequired()
     ),
-    embedIframeUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        EMBED_IFRAME_TEMPLATES.includes(template)
-          ? schema
-              .required("Required")
-              .test(
-                "embedIframeUrl",
-                "Embedded object URL required",
-                (val: string) => val.length > 0
-              )
-          : schema.notRequired()
-    ),
 
-    width: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
-    height: Yup.number()
-      .required("Required")
-      .min(0)
-      .max(PLAYA_WIDTH_AND_HEIGHT),
+    width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+    height: Yup.number().notRequired().min(0).max(PLAYA_WIDTH_AND_HEIGHT),
 
     placement: Yup.object()
       .shape({

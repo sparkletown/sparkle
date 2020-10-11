@@ -94,13 +94,12 @@ export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.artcar,
 ];
 
-export const VIDEO_IFRAME_TEMPLATES = [
+export const IFRAME_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
   VenueTemplate.audience,
+  VenueTemplate.artpiece,
 ];
-
-export const EMBED_IFRAME_TEMPLATES = [VenueTemplate.artpiece];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
 

@@ -23,9 +23,9 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         return (
           <>
             <div>
-              <span className="title">iFrame URL: </span>
+              <span className="title">iframe URL: </span>
               <span className="content">
-                <a href={venue.embedIframeUrl}>{venue.embedIframeUrl}</a>
+                <a href={venue.iframeUrl}>{venue.iframeUrl}</a>
               </span>
             </div>
             <div className="title" style={{ marginTop: 10 }}>
@@ -37,7 +37,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               <iframe
                 className="iframe-preview"
                 title="art-piece-video"
-                src={ConvertToEmbeddableUrl(venue.embedIframeUrl)}
+                src={ConvertToEmbeddableUrl(venue.iframeUrl)}
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

@@ -23,9 +23,7 @@ const ArtPiece = () => {
 
   if (!venue) return <>Loading...</>;
 
-  const iFrameUrl = ConvertToEmbeddableUrl(
-    venue.iframeUrl ?? venue.embedIframeUrl
-  );
+  const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
   return (
     <WithNavigationBar>
       <BannerMessage venue={venue} />
@@ -49,7 +47,7 @@ const ArtPiece = () => {
           <iframe
             className="youtube-video"
             title="art-piece-video"
-            src={iFrameUrl}
+            src={iframeUrl}
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
