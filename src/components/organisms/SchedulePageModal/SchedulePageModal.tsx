@@ -109,7 +109,9 @@ export const SchedulePageModal: React.FunctionComponent = () => {
         <div style={{ display: "flex" }}>
           <div>
             <h3 className="italic">
-              {IS_BURN ? "SparkleVerse " : ""}Schedule of One-time Events
+              {IS_BURN
+                ? "SparkleVerse Schedule of One-time Events"
+                : "Schedule"}
             </h3>
           </div>
           {typeof openVenues !== "object" && <div className="spinner-border" />}
