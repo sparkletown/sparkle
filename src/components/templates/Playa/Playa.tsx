@@ -765,7 +765,7 @@ const Playa = () => {
     hoveredUser,
     hoveredVenue,
     menu,
-    numberOfUsers, // Removed for now as it is inaccurate
+    numberOfUsers,
     selectedVenueId,
     showMenu,
     showUserTooltip,
