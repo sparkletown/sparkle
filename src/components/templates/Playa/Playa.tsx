@@ -8,7 +8,12 @@ import React, {
 } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
-import { Venue, VenuePlacement, VenuePlacementState } from "types/Venue";
+import {
+  RoomVisibility,
+  Venue,
+  VenuePlacement,
+  VenuePlacementState,
+} from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
@@ -435,10 +440,12 @@ const Playa = () => {
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
   // Removed for now as attendance counting is inaccurate and is confusing people
-  // const users = useMemo(
-  //   () => hoveredVenue && peopleAttending(partygoers, hoveredVenue),
-  //   [partygoers, hoveredVenue]
-  // );
+  const users = useMemo(
+    () =>
+      hoveredVenue &&
+      peopleAttending(peopleByLastSeenIn(partygoers), hoveredVenue),
+    [partygoers, hoveredVenue]
+  );
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -562,7 +569,7 @@ const Playa = () => {
     return await firebase.functions().httpsCallable("venue-toggleDustStorm")();
   }, []);
 
-  // const numberOfUsers = users?.length ?? 0;
+  const numberOfUsers = users?.length ?? 0;
   const selectedVenueId = selectedVenue?.id;
 
   const playaContent = useMemo(() => {
@@ -575,46 +582,68 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((venue, idx) => (
-          <div
-            className={`venue ${venue.width || venue.height ? "sized" : ""} ${
-              (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
-              !!openVenues?.find(
-                (ov) =>
-                  ov.venue.id === venue.id &&
-                  !!ov.currentEvents.find(
-                    (ve) =>
-                      now / 1000 >= ve.start_utc_seconds &&
-                      now / 1000 <
-                        60 * ve.duration_minutes + ve.start_utc_seconds
-                  )
-              )
-                ? "live"
-                : ""
-            }`}
-            style={{
-              top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
-              left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
-              width: venue.width ?? 40,
-              height: venue.height ?? 40,
-              position: "absolute",
-            }}
-            onClick={() => showVenue(venue)}
-            key={idx}
-            onMouseOver={(event: React.MouseEvent) => {
-              setHoveredVenue(venue);
-              venueRef.current = event.target as HTMLDivElement;
-              setShowVenueTooltip(true);
-            }}
-            onMouseLeave={() => setShowVenueTooltip(false)}
-          >
-            <span className="img-vcenter-helper" />
-            <img
-              className="venue-icon"
-              src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-              alt={`${venue.name} Icon`}
-            />
-            {selectedVenueId === venue.id && <div className="selected" />}
-          </div>
+          <>
+            <div
+              className={`venue ${venue.width || venue.height ? "sized" : ""} ${
+                (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
+                !!openVenues?.find(
+                  (ov) =>
+                    ov.venue.id === venue.id &&
+                    !!ov.currentEvents.find(
+                      (ve) =>
+                        now / 1000 >= ve.start_utc_seconds &&
+                        now / 1000 <
+                          60 * ve.duration_minutes + ve.start_utc_seconds
+                    )
+                )
+                  ? "live"
+                  : ""
+              }`}
+              style={{
+                top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
+                left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+                position: "absolute",
+              }}
+              onClick={() => showVenue(venue)}
+              key={idx}
+              onMouseOver={(event: React.MouseEvent) => {
+                setHoveredVenue(venue);
+                venueRef.current = event.target as HTMLDivElement;
+                setShowVenueTooltip(true);
+              }}
+              onMouseLeave={() => setShowVenueTooltip(false)}
+            >
+              <span className="img-vcenter-helper" />
+              <img
+                className="venue-icon"
+                src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                alt={`${venue.name} Icon`}
+              />
+
+              {selectedVenueId === venue.id && <div className="selected" />}
+            </div>
+            {(venue.roomVisibility === RoomVisibility.count ||
+              venue.roomVisibility === RoomVisibility.nameCount) && (
+              <div
+                style={{
+                  top: venue.placement?.y
+                    ? venue.placement?.y - 50
+                    : 0 - PLAYA_VENUE_SIZE / 2,
+                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+                  position: "absolute",
+                }}
+              >
+                <div className="playa-venue-text">
+                  <div className="playa-venue-maininfo">
+                    {venue.roomVisibility === RoomVisibility.nameCount && (
+                      <div className="playa-venue-title">{venue?.name}</div>
+                    )}
+                    <div className="playa-venue-people">{numberOfUsers}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         ))}
         <PlayaIconComponent
           playaIcon={venue?.playaIcon}
@@ -626,28 +655,33 @@ const Playa = () => {
           venues={venues}
           showVenue={showVenue}
         />
-        <Overlay
-          target={venueRef.current}
-          show={showVenueTooltip && !showUserTooltip && !showMenu}
-        >
-          {({ placement, arrowProps, show: _show, popper, ...props }) => (
-            // @ts-expect-error
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                padding: "10px",
-              }}
-            >
-              <div className="playa-venue-text">
-                <div className="playa-venue-maininfo">
-                  <div className="playa-venue-title">{hoveredVenue?.name}</div>
-                  {/* <div className="playa-venue-people">{numberOfUsers}</div> */}
+        {(!venue?.roomVisibility ||
+          venue?.roomVisibility === RoomVisibility.hover) && (
+          <Overlay
+            target={venueRef.current}
+            show={showVenueTooltip && !showUserTooltip && !showMenu}
+          >
+            {({ placement, arrowProps, show: _show, popper, ...props }) => (
+              // @ts-expect-error
+              <div
+                {...props}
+                style={{
+                  ...props.style,
+                  padding: "10px",
+                }}
+              >
+                <div className="playa-venue-text">
+                  <div className="playa-venue-maininfo">
+                    <div className="playa-venue-title">
+                      {hoveredVenue?.name}
+                    </div>
+                    {/* <div className="playa-venue-people">{numberOfUsers}</div> */}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </Overlay>
+            )}
+          </Overlay>
+        )}
         <Overlay
           target={userRef.current}
           show={!showVenueTooltip && showUserTooltip && !showMenu}
@@ -707,7 +741,7 @@ const Playa = () => {
     hoveredUser,
     hoveredVenue,
     menu,
-    // numberOfUsers, // Removed for now as it is inaccurate
+    numberOfUsers,
     selectedVenueId,
     showMenu,
     showUserTooltip,

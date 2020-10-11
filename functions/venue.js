@@ -83,6 +83,7 @@ const createVenueData = (data, context) => {
     case "themecamp":
       venueData.rooms = data.rooms;
       venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+      venueData.roomVisibility = data.roomVisibility;
       break;
     case "zoomroom":
     case "artcar":
@@ -90,6 +91,9 @@ const createVenueData = (data, context) => {
       break;
     case "artpiece":
       venueData.embedIframeUrl = data.embedIframeUrl;
+      break;
+    case VenueTemplate.playa:
+      venueData.roomVisibility = data.roomVisibility;
       break;
   }
   return venueData;
@@ -364,6 +368,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
         case VenueTemplate.playa:
           if (data.showLiveSchedule) {
             updated.showLiveSchedule = data.showLiveSchedule;
+          }
+          if (data.roomVisibility) {
+            updated.roomVisibility = data.roomVisibility;
           }
           break;
       }

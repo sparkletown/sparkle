@@ -5,6 +5,7 @@ import "./Map.scss";
 import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
 import { useUser } from "../../../../hooks/useUser";
 import { IS_BURN } from "secrets";
+import { RoomVisibility } from "types/Venue";
 
 interface PropsType {
   venue: CampVenue;
@@ -21,7 +22,9 @@ export const Map: React.FC<PropsType> = ({
 }) => {
   const { user } = useUser();
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
-  const [roomHovered, setRoomHovered] = useState<string | undefined>(undefined);
+  const [roomHovered, setRoomHovered] = useState<CampRoomData | undefined>(
+    undefined
+  );
 
   if (!venue) {
     return <>Loading map...</>;
@@ -30,7 +33,7 @@ export const Map: React.FC<PropsType> = ({
   const rooms = [...venue.rooms];
 
   if (roomHovered) {
-    const idx = rooms.findIndex((room) => room.title === roomHovered);
+    const idx = rooms.findIndex((room) => room.title === roomHovered.title);
     if (idx !== -1) {
       const chosenRoom = rooms.splice(idx, 1);
       rooms.push(chosenRoom[0]);
@@ -81,7 +84,10 @@ export const Map: React.FC<PropsType> = ({
                 }
               }}
               onMouseEnter={() => {
-                IS_BURN && setRoomHovered(room.title);
+                setRoomHovered(room);
+              }}
+              onMouseLeave={() => {
+                setRoomHovered(undefined);
               }}
             >
               <div
@@ -96,19 +102,45 @@ export const Map: React.FC<PropsType> = ({
                     alt={room.title}
                   />
                 </div>
+                {venue.roomVisibility === RoomVisibility.nameCount &&
+                  roomHovered &&
+                  roomHovered.title === room.title && (
+                    <div className={`playa-venue-text`}>
+                      <div className="playa-venue-maininfo">
+                        <div className="playa-venue-title">{room.title}</div>
+
+                        {(attendances[room.title] ?? 0) +
+                          (room.attendanceBoost ?? 0) >
+                          0 && (
+                          <div className="playa-venue-people">
+                            {(attendances[room.title] ?? 0) +
+                              (room.attendanceBoost ?? 0)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                 <div className={`playa-venue-text`}>
-                  <div className="playa-venue-maininfo">
-                    <div className="playa-venue-title">{room.title}</div>
-                    {(attendances[room.title] ?? 0) +
-                      (room.attendanceBoost ?? 0) >
-                      0 && (
-                      <div className="playa-venue-people">
-                        {(attendances[room.title] ?? 0) +
-                          (room.attendanceBoost ?? 0)}
-                      </div>
-                    )}
-                  </div>
+                  {(!venue.roomVisibility ||
+                    venue.roomVisibility === RoomVisibility.nameCount ||
+                    venue.roomVisibility === RoomVisibility.count) && (
+                    <div className="playa-venue-maininfo">
+                      {(!venue.roomVisibility ||
+                        venue.roomVisibility === RoomVisibility.nameCount) && (
+                        <div className="playa-venue-title">{room.title}</div>
+                      )}
+
+                      {(attendances[room.title] ?? 0) +
+                        (room.attendanceBoost ?? 0) >
+                        0 && (
+                        <div className="playa-venue-people">
+                          {(attendances[room.title] ?? 0) +
+                            (room.attendanceBoost ?? 0)}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="playa-venue-secondinfo">
                     <div className="playa-venue-desc">
                       <p>{room.subtitle}</p>
