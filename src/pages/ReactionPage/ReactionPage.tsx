@@ -12,12 +12,17 @@ import { WithId } from "utils/id";
 const ReactionPage = () => {
   useConnectPartyGoers();
 
-  const { reactions, usersById, partyGoers, venue } = useSelector((state) => ({
-    reactions: state.firestore.ordered.reactions,
-    usersById: state.firestore.data.users,
-    partyGoers: state.firestore.ordered.partygoers,
-    venue: state.firestore.data.currentVenue,
-  }));
+  const { reactions, usersById, partyGoers, venue, chats } = useSelector(
+    (state) => ({
+      reactions: state.firestore.ordered.reactions,
+      usersById: state.firestore.data.partygoers,
+      partyGoers: state.firestore.ordered.partygoers,
+      venue: state.firestore.data.currentVenue,
+      chats: state.firestore.ordered.venueChats?.filter(
+        (chat) => chat.deleted !== true
+      ),
+    })
+  );
 
   useFirestoreConnect([
     venue
@@ -35,14 +40,16 @@ const ReactionPage = () => {
     (reaction) => reaction.reaction === "messageToTheBand"
   ) as Array<WithId<MessageToTheBandReaction>>;
 
+  console.log("usersById", usersById);
+
   return (
     <WithNavigationBar>
       <div className="full-page-container reaction-page-container">
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
-            {usersById && messagesToTheBand && (
-              <ReactionList reactions={messagesToTheBand} />
+            {usersById && (
+              <ReactionList reactions={messagesToTheBand} chats={chats} />
             )}
           </div>
           {partyGoers && (

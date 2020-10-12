@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  MessageToTheBandReaction,
   Reaction,
   ReactionsTextMap,
 } from "components/context/ExperienceContext";
@@ -9,28 +10,45 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import { ChatMessage } from "components/context/ChatContext";
 
 interface ReactionListProps {
   reactions: Reaction[];
+  chats: ChatMessage[];
   small?: boolean;
 }
 
 const ReactionList: React.FC<ReactionListProps> = ({
   reactions,
+  chats,
   small = false,
 }) => {
   const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.users,
+    usersById: state.firestore.data.partygoers,
   }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
 
+  const allReactions = [
+    ...(reactions ?? []),
+    ...(chats ?? []).map(
+      (chat) =>
+        ({
+          created_at: chat.ts_utc.toMillis() / 1000,
+          created_by: chat.from,
+          text: chat.text,
+        } as MessageToTheBandReaction)
+    ),
+  ].sort((a, b) => b.created_at - a.created_at);
+
+  console.log("allReactions", allReactions);
+
   const profileImageSize = small ? 40 : 50;
   return (
     <>
       <div className={`reaction-list ${small && "small"}`}>
-        {reactions.map((message) => (
+        {allReactions.map((message) => (
           <div
             className="message"
             key={`${message.created_by}-${message.created_at}`}
@@ -73,7 +91,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
                 message.reaction === "messageToTheBand" ? "" : "emoji"
               }`}
             >
-              {message.reaction === "messageToTheBand"
+              {!message.reaction || message.reaction === "messageToTheBand"
                 ? message.text
                 : ReactionsTextMap[message.reaction]}
             </div>
