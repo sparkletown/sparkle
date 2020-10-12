@@ -7,9 +7,10 @@ import {
 } from "types/RelayMessage";
 import { throttle } from "lodash";
 import {
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_AVATAR_SIZE,
   DEFAULT_PARTY_NAME,
+  PLAYA_HEIGHT,
+  PLAYA_WIDTH,
 } from "settings";
 import { useUser } from "hooks/useUser";
 import { Shout } from "./Playa";
@@ -91,7 +92,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       }
       if (movingRight && !movingLeft) {
         stateRef.current.x = Math.min(
-          PLAYA_WIDTH_AND_HEIGHT - 1,
+          PLAYA_WIDTH - 1,
           stateRef.current.x + moveIncrement
         );
         needsUpdate = true;
@@ -102,7 +103,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       }
       if (movingDown && !movingUp) {
         stateRef.current.y = Math.min(
-          PLAYA_WIDTH_AND_HEIGHT - 1,
+          PLAYA_HEIGHT - 1,
           stateRef.current.y + moveIncrement
         );
         needsUpdate = true;
@@ -147,7 +148,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }
         if (pressedKeys["ArrowRight"]) {
           stateRef.current.x = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
+            PLAYA_WIDTH - 1,
             stateRef.current.x + moveIncrement
           );
           needsUpdate = true;
@@ -158,7 +159,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         }
         if (pressedKeys["ArrowDown"]) {
           stateRef.current.y = Math.min(
-            PLAYA_WIDTH_AND_HEIGHT - 1,
+            PLAYA_HEIGHT - 1,
             stateRef.current.y + moveIncrement
           );
           needsUpdate = true;

@@ -34,12 +34,13 @@ import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import {
-  PLAYA_WIDTH_AND_HEIGHT,
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
+  PLAYA_WIDTH,
+  PLAYA_HEIGHT,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import { VenueOwnersModal } from "./VenueOwnersModal";
@@ -287,15 +288,18 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                             }
                           : {}
                       }
-                      coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+                      coordinatesBoundary={{
+                        width: PLAYA_WIDTH,
+                        height: PLAYA_HEIGHT,
+                      }}
                       backgroundImage={PLAYA_IMAGE}
                       iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
                       draggableIconImageStyle={
                         PLAYA_VENUE_STYLES.draggableIconImage
                       }
                       containerStyle={{
-                        width: PLAYA_WIDTH_AND_HEIGHT,
-                        height: PLAYA_WIDTH_AND_HEIGHT,
+                        width: PLAYA_WIDTH,
+                        height: PLAYA_HEIGHT,
                       }}
                       venueId={venue.id}
                       otherIconsStyle={{ opacity: 0.4 }}

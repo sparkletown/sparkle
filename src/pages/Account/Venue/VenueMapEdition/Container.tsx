@@ -30,6 +30,11 @@ export interface SubVenueIconMap {
   };
 }
 
+interface CoordinatesBoundary {
+  width: number;
+  height: number;
+}
+
 interface PropsType {
   snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
@@ -39,7 +44,7 @@ interface PropsType {
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   onOtherIconClick?: (key: string) => void;
-  coordinatesBoundary: number;
+  coordinatesBoundary: CoordinatesBoundary;
   interactive: boolean;
   resizable: boolean;
   onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
@@ -75,8 +80,9 @@ export const Container: React.FC<PropsType> = (props) => {
 
     const convertDisplayedCoordToIntrinsic = (
       val: number,
-      dimension: keyof typeof imageDims
-    ) => (coordinatesBoundary * val) / imageDims[dimension];
+      dimension: keyof typeof imageDims,
+      coordinateBoundary: number
+    ) => (coordinateBoundary * val) / imageDims[dimension];
 
     //need to return the unscaled values
     const unscaledBoxes = Object.keys(boxes).reduce(
@@ -86,19 +92,35 @@ export const Container: React.FC<PropsType> = (props) => {
           ...boxes[val],
           // resizable expects a percentage (for rooms), whereas non-resizable expects pixels
           width: resizable
-            ? (coordinatesBoundary * boxes[val].width) / imageDims.width
+            ? (coordinatesBoundary.width * boxes[val].width) / imageDims.width
             : boxes[val].width,
           height: resizable
-            ? (coordinatesBoundary * boxes[val].height) / imageDims.height
+            ? (coordinatesBoundary.height * boxes[val].height) /
+              imageDims.height
             : boxes[val].height,
-          top: convertDisplayedCoordToIntrinsic(boxes[val].top, "height"),
-          left: convertDisplayedCoordToIntrinsic(boxes[val].left, "width"),
+          top: convertDisplayedCoordToIntrinsic(
+            boxes[val].top,
+            "height",
+            coordinatesBoundary.height
+          ),
+          left: convertDisplayedCoordToIntrinsic(
+            boxes[val].left,
+            "width",
+            coordinatesBoundary.width
+          ),
         },
       }),
       {}
     );
     onChange && onChange(unscaledBoxes);
-  }, [boxes, onChange, imageDims, coordinatesBoundary, resizable]);
+  }, [
+    boxes,
+    onChange,
+    imageDims,
+    resizable,
+    coordinatesBoundary.width,
+    coordinatesBoundary.height,
+  ]);
 
   useMemo(() => {
     if (!imageDims) return;
@@ -108,20 +130,30 @@ export const Container: React.FC<PropsType> = (props) => {
         [val]: {
           ...iconsMap[val],
           width: resizable
-            ? (imageDims.width * iconsMap[val].width) / coordinatesBoundary
+            ? (imageDims.width * iconsMap[val].width) /
+              coordinatesBoundary.width
             : iconsMap[val].width,
           height: resizable
-            ? (imageDims.height * iconsMap[val].height) / coordinatesBoundary
+            ? (imageDims.height * iconsMap[val].height) /
+              coordinatesBoundary.height
             : iconsMap[val].height,
-          top: (imageDims.height * iconsMap[val].top) / coordinatesBoundary,
-          left: (imageDims.width * iconsMap[val].left) / coordinatesBoundary,
+          top:
+            (imageDims.height * iconsMap[val].top) / coordinatesBoundary.height,
+          left:
+            (imageDims.width * iconsMap[val].left) / coordinatesBoundary.width,
         },
       }),
       {}
     );
 
     setBoxes(copy);
-  }, [iconsMap, imageDims, coordinatesBoundary, resizable]);
+  }, [
+    coordinatesBoundary.height,
+    coordinatesBoundary.width,
+    iconsMap,
+    imageDims,
+    resizable,
+  ]);
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
@@ -196,10 +228,10 @@ export const Container: React.FC<PropsType> = (props) => {
                   style={{
                     position: "absolute",
                     top: `${
-                      (100 * otherIcons[key].top) / coordinatesBoundary
+                      (100 * otherIcons[key].top) / coordinatesBoundary.height
                     }%`,
                     left: `${
-                      (100 * otherIcons[key].left) / coordinatesBoundary
+                      (100 * otherIcons[key].left) / coordinatesBoundary.width
                     }%`,
                     width: resizable
                       ? `${otherIcons[key].width}%`
@@ -216,11 +248,12 @@ export const Container: React.FC<PropsType> = (props) => {
               )),
             [
               otherIcons,
-              coordinatesBoundary,
-              otherIconsStyle,
+              coordinatesBoundary.height,
+              coordinatesBoundary.width,
               resizable,
-              onOtherIconClick,
               rounded,
+              otherIconsStyle,
+              onOtherIconClick,
             ]
           )}
         </div>

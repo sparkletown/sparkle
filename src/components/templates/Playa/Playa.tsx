@@ -18,11 +18,12 @@ import { useSelector } from "hooks/useSelector";
 import {
   DEFAULT_MAP_ICON_URL,
   PLAYA_TEMPLATES,
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
   REFETCH_SCHEDULE_MS,
   DEFAULT_PARTY_NAME,
+  PLAYA_WIDTH,
+  PLAYA_HEIGHT,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -52,6 +53,7 @@ import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
 import { IS_BURN } from "secrets";
 import BannerMessage from "components/molecules/BannerMessage";
+import UserList from "components/molecules/UserList";
 
 export type MenuConfig = {
   prompt?: string;
@@ -109,8 +111,7 @@ const isPlaced = (venue: Venue) => {
   );
 };
 
-const minZoom = () =>
-  (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH_AND_HEIGHT;
+const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
   useFirestoreConnect("venues");
@@ -244,16 +245,10 @@ const Playa = () => {
       }
 
       setCenterX((tx) =>
-        Math.max(
-          0,
-          Math.min(PLAYA_WIDTH_AND_HEIGHT, tx - (diffX - movedSoFarX))
-        )
+        Math.max(0, Math.min(PLAYA_WIDTH, tx - (diffX - movedSoFarX)))
       );
       setCenterY((ty) =>
-        Math.max(
-          0,
-          Math.min(PLAYA_WIDTH_AND_HEIGHT, ty - (diffY - movedSoFarY))
-        )
+        Math.max(0, Math.min(PLAYA_HEIGHT, ty - (diffY - movedSoFarY)))
       );
 
       movedSoFarX = diffX;
@@ -446,6 +441,10 @@ const Playa = () => {
     [partygoers, hoveredVenue]
   );
 
+  const usersInVenue = partygoers.filter(
+    (partygoer) => partygoer.lastSeenIn === venue?.name
+  );
+
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
     setAtEdge((atEdge) => {
@@ -453,9 +452,9 @@ const Playa = () => {
         myX !== undefined &&
         myY !== undefined &&
         (myX <= 0 ||
-          myX >= PLAYA_WIDTH_AND_HEIGHT - 1 ||
+          myX >= PLAYA_HEIGHT - 1 ||
           myY <= 0 ||
-          myY >= PLAYA_WIDTH_AND_HEIGHT - 1);
+          myY >= PLAYA_WIDTH - 1);
       if (!atEdge && newAtEdge) {
         setAtEdgeMessage(
           EDGE_MESSAGES[Math.floor(Math.random() * EDGE_MESSAGES.length)]
@@ -803,9 +802,7 @@ const Playa = () => {
       -1 *
         Math.min(
           (centerX * zoom - dimensions.width / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT -
-            dimensions.width / zoom +
-            PLAYA_MARGIN_X / zoom
+          PLAYA_WIDTH - dimensions.width / zoom + PLAYA_MARGIN_X / zoom
         )
     );
     const translateY = Math.min(
@@ -813,9 +810,7 @@ const Playa = () => {
       -1 *
         Math.min(
           (centerY * zoom - dimensions.height / 2) / zoom,
-          PLAYA_WIDTH_AND_HEIGHT -
-            dimensions.height / zoom +
-            PLAYA_MARGIN_BOTTOM / zoom
+          PLAYA_HEIGHT - dimensions.height / zoom + PLAYA_MARGIN_BOTTOM / zoom
         )
     );
 
@@ -854,6 +849,17 @@ const Playa = () => {
         )}
 
         {IS_BURN && dustStorm && <DustStorm />}
+
+        {usersInVenue && (
+          <UserList
+            users={usersInVenue}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+            activity={venue?.activity ?? "partying"}
+          />
+        )}
+
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
           {meIsLocated && (
@@ -1066,6 +1072,7 @@ const Playa = () => {
     videoChatHeight,
     mapContainer,
     venue,
+    usersInVenue,
   ]);
 };
 

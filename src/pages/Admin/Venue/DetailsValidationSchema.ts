@@ -7,15 +7,16 @@ import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
+  PLAYA_WIDTH,
+  PLAYA_HEIGHT,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
-  x: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_VENUE_SIZE) / 2,
-  y: (PLAYA_WIDTH_AND_HEIGHT - PLAYA_VENUE_SIZE) / 2,
+  x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
+  y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
 type Question = VenueInput["profileQuestions"][number];
@@ -126,13 +127,13 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH_AND_HEIGHT),
-    height: Yup.number().notRequired().min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+    width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
+    height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
 
     placement: Yup.object()
       .shape({
-        x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
-        y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+        x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH),
+        y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
       })
       .default(initialMapIconPlacement),
 
@@ -190,8 +191,8 @@ export const editPlacementSchema = Yup.object().shape<PlacementInput>({
   height: Yup.number().required("Required"),
   placement: Yup.object()
     .shape({
-      x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
-      y: Yup.number().required("Required").min(0).max(PLAYA_WIDTH_AND_HEIGHT),
+      x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH),
+      y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
     })
     .default(initialMapIconPlacement),
 });

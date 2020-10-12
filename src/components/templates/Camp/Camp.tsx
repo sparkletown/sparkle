@@ -71,6 +71,19 @@ const Camp: React.FC = () => {
           <h1 className="title">{venue.name}</h1>
         </div>
         <div className="row">
+          {usersInCamp && (
+            <div className="col">
+              <UserList
+                users={usersInCamp}
+                imageSize={50}
+                disableSeeAll={false}
+                isCamp={true}
+                activity={venue.activity ?? "partying"}
+              />
+            </div>
+          )}
+        </div>
+        <div className="row">
           <div className="col">
             <div className="starting-indication">
               {venue.description?.text}{" "}
@@ -94,19 +107,6 @@ const Camp: React.FC = () => {
             setSelectedRoom={setSelectedRoom}
             setIsRoomModalOpen={setIsRoomModalOpen}
           />
-        </div>
-        <div className="row">
-          {usersInCamp && (
-            <div className="col">
-              <UserList
-                users={usersInCamp}
-                imageSize={50}
-                disableSeeAll={false}
-                isCamp={true}
-                activity={venue.activity ?? "partying"}
-              />
-            </div>
-          )}
         </div>
         <div className="row">
           <div className="col">
