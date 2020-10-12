@@ -144,7 +144,6 @@ const Playa = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
-  const [heartbeat, setHeartbeat] = useState<number>();
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -584,18 +583,21 @@ const Playa = () => {
         {venues?.filter(isPlaced).map((venue, idx) => (
           <>
             <div
-              className={`venue ${venue.width || venue.height ? "sized" : ""} ${
-                (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
-                !!openVenues?.find(
-                  (ov) =>
-                    ov.venue.id === venue.id &&
-                    !!ov.currentEvents.find(
-                      (ve) =>
-                        now / 1000 >= ve.start_utc_seconds &&
-                        now / 1000 <
-                          60 * ve.duration_minutes + ve.start_utc_seconds
+              className={`venue ${
+                venue.width || venue.height
+                  ? "sized"
+                  : (peopleAttending(peopleByLastSeen, venue)?.length || 0) >
+                      0 ||
+                    !!openVenues?.find(
+                      (ov) =>
+                        ov.venue.id === venue.id &&
+                        !!ov.currentEvents.find(
+                          (ve) =>
+                            now / 1000 >= ve.start_utc_seconds &&
+                            now / 1000 <
+                              60 * ve.duration_minutes + ve.start_utc_seconds
+                        )
                     )
-                )
                   ? "live"
                   : ""
               }`}
@@ -764,8 +766,6 @@ const Playa = () => {
         videoState={videoState}
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
-        heartbeat={heartbeat}
-        setHeartbeat={setHeartbeat}
         movingUp={movingUp}
         movingDown={movingDown}
         movingLeft={movingLeft}
@@ -784,7 +784,6 @@ const Playa = () => {
     [
       bikeMode,
       videoState,
-      heartbeat,
       movingUp,
       movingDown,
       movingLeft,
