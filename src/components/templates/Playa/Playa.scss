@@ -1,9 +1,9 @@
 @import "scss/constants.scss";
 
 $sand: #937c63;
-$playa-mode-badge-size: 12px;
-$playa-mode-badge-icon-size: 6px;
-$playa-profile-name-size: 30px;
+$playa-mode-badge-size: 24px;
+$playa-mode-badge-icon-size: 12px;
+$playa-profile-name-size: 60px;
 
 .playa-container {
   width: 100%;
@@ -193,7 +193,7 @@ $playa-profile-name-size: 30px;
       transform: translate(-50%, 0);
       display: flex;
       border-radius: 10px;
-      font-size: 4px;
+      font-size: 8px;
       justify-content: center;
       align-items: center;
       height: $playa-mode-badge-size / 2;
@@ -207,6 +207,9 @@ $playa-profile-name-size: 30px;
 
     .mode-badge {
       position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       border-radius: 50%;
       width: $playa-mode-badge-size;
       height: $playa-mode-badge-size;
