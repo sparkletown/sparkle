@@ -7,11 +7,12 @@ import React, {
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
 import {
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
   JAM_IMAGE,
+  PLAYA_WIDTH,
+  PLAYA_HEIGHT,
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
@@ -458,7 +459,10 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
             <PlayaContainer
               interactive
               resizable={true}
-              coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+              coordinatesBoundary={{
+                width: PLAYA_WIDTH,
+                height: PLAYA_HEIGHT,
+              }}
               onChange={onBoxMove}
               snapToGrid={false}
               iconsMap={iconsMap ?? {}}
@@ -468,8 +472,8 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               venueId={venueId}
               otherIconsStyle={{ opacity: 0.4 }}
               containerStyle={{
-                width: PLAYA_WIDTH_AND_HEIGHT,
-                height: PLAYA_WIDTH_AND_HEIGHT,
+                width: PLAYA_WIDTH,
+                height: PLAYA_HEIGHT,
               }}
             />
           </div>
