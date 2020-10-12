@@ -42,8 +42,6 @@ export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VEN
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
-// Hide inactive avatars on playa
-export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 

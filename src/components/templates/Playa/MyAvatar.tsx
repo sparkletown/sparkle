@@ -22,7 +22,6 @@ interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
-  heartbeat: number | undefined;
   shouts: Shout[];
   movingUp: boolean;
   movingDown: boolean;
@@ -35,7 +34,6 @@ interface PropsType {
   setMyLocation: (x: number, y: number) => void;
   setBikeMode: (bikeMode: boolean | undefined) => void;
   setVideoState: (state: string | undefined) => void;
-  setHeartbeat: (heartbeat: number | undefined) => void;
 }
 
 const ARROW_MOVE_INCREMENT_PX_WALK = 2;
@@ -49,7 +47,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     serverSentState,
     bike,
     videoState,
-    heartbeat,
     shouts,
     movingUp,
     movingDown,
@@ -62,7 +59,6 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setMyLocation,
     setBikeMode,
     setVideoState,
-    setHeartbeat,
   },
   ref
 ) => {
@@ -77,20 +73,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     setMyLocation(serverSentState.x, serverSentState.y);
     setBikeMode(stateBoolean(serverSentState, UserStateKey.Bike));
     setVideoState(serverSentState?.state?.[UserStateKey.Video]);
-    const heartbeat = parseInt(
-      serverSentState?.state?.[UserStateKey.Heartbeat] || ""
-    );
-    if (heartbeat > 0) {
-      setHeartbeat(heartbeat);
-    }
     stateInitialized.current = true;
-  }, [
-    serverSentState,
-    setMyLocation,
-    setBikeMode,
-    setVideoState,
-    setHeartbeat,
-  ]);
+  }, [serverSentState, setMyLocation, setBikeMode, setVideoState]);
 
   const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -219,11 +203,8 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       const relayStateBike =
         state?.state?.[UserStateKey.Bike] === true.toString();
       const relayStateVideo = state?.state?.[UserStateKey.Video];
-      const relayStateHeartbeat = state?.state?.[UserStateKey.Heartbeat];
       const needsUpdate =
-        bike !== relayStateBike ||
-        videoState !== relayStateVideo ||
-        heartbeat !== relayStateHeartbeat;
+        bike !== relayStateBike || videoState !== relayStateVideo;
       if (!needsUpdate) return state;
 
       if (!state.state) {
@@ -232,12 +213,10 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
       if (bike !== undefined) state.state[UserStateKey.Bike] = bike.toString();
       if (videoState !== undefined)
         state.state[UserStateKey.Video] = videoState;
-      if (heartbeat !== undefined)
-        state.state[UserStateKey.Heartbeat] = heartbeat.toString();
       sendUpdatedState(state);
       return { ...state };
     });
-  }, [bike, videoState, heartbeat, sendUpdatedState]);
+  }, [bike, videoState, sendUpdatedState]);
 
   if (!profile || !state || !user) return <></>;
 

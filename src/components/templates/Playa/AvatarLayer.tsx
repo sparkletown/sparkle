@@ -15,7 +15,6 @@ import {
 import {
   DEFAULT_WS_RELAY_URL,
   ENABLE_PLAYA_ADDRESS,
-  MAX_IDLE_TIME_MS,
   PLAYA_VENUE_NAME,
 } from "settings";
 import { Avatar } from "./Avatar";
@@ -44,8 +43,6 @@ interface PropsType {
   videoState: string | undefined;
   setVideoState: (state: string | undefined) => void;
   toggleVideoState: () => void;
-  heartbeat: number | undefined;
-  setHeartbeat: (heartbeat: number | undefined) => void;
   movingUp: boolean;
   movingDown: boolean;
   movingLeft: boolean;
@@ -67,8 +64,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   videoState,
   setVideoState,
   toggleVideoState,
-  setHeartbeat,
-  heartbeat,
   movingUp,
   movingDown,
   movingLeft,
@@ -270,7 +265,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           serverSentState={myServerSentState}
           bike={bikeMode}
           videoState={videoState}
-          heartbeat={heartbeat}
           shouts={shouts.filter(
             (shout) => shout.created_by === selfUserProfile.id
           )}
@@ -282,7 +276,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           setMyLocation={setMyLocation}
           setBikeMode={setBikeMode}
           setVideoState={setVideoState}
-          setHeartbeat={setHeartbeat}
           onClick={(event: React.MouseEvent) => {
             setMenu(menu);
             menuRef.current = event.target as HTMLDivElement;
@@ -303,7 +296,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       myServerSentState,
       bikeMode,
       videoState,
-      heartbeat,
       shouts,
       sendUpdatedState,
       movingUp,
@@ -313,7 +305,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       setMyLocation,
       setBikeMode,
       setVideoState,
-      setHeartbeat,
       setMenu,
       menu,
       menuRef,
@@ -593,9 +584,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       {}
     );
 
-    const now = new Date().getTime();
-    const earliestHeartbeat = now - MAX_IDLE_TIME_MS;
-
     return Object.keys(userStateMap)
       .sort()
       .filter(
@@ -606,13 +594,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       .map((uid) => {
         const avatarUser = partygoers.find((partygoer) => partygoer.id === uid);
         if (!avatarUser) return <React.Fragment key={uid} />;
-
-        const heartbeat = parseInt(
-          userStateMap[uid]?.state?.[UserStateKey.Heartbeat] || ""
-        );
-        const hasHeartbeat = heartbeat > 0;
-        if (hasHeartbeat && heartbeat < earliestHeartbeat)
-          return <React.Fragment key={uid} />;
 
         const videoState = userStateMap[uid].state?.[UserStateKey.Video];
 

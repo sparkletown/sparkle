@@ -144,7 +144,6 @@ const Playa = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
-  const [heartbeat, setHeartbeat] = useState<number>();
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -764,8 +763,6 @@ const Playa = () => {
         videoState={videoState}
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
-        heartbeat={heartbeat}
-        setHeartbeat={setHeartbeat}
         movingUp={movingUp}
         movingDown={movingDown}
         movingLeft={movingLeft}
@@ -784,7 +781,6 @@ const Playa = () => {
     [
       bikeMode,
       videoState,
-      heartbeat,
       movingUp,
       movingDown,
       movingLeft,
