@@ -29,13 +29,14 @@ import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  PLAYA_WIDTH_AND_HEIGHT,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
   HAS_ROOMS_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
+  PLAYA_WIDTH,
+  PLAYA_HEIGHT,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -226,7 +227,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               rounded
               interactive={!isAdminPlaced}
               resizable={false}
-              coordinatesBoundary={PLAYA_WIDTH_AND_HEIGHT}
+              coordinatesBoundary={{
+                width: PLAYA_WIDTH,
+                height: PLAYA_HEIGHT,
+              }}
               onChange={onBoxMove}
               snapToGrid={false}
               iconsMap={iconsMap ?? {}}
@@ -236,8 +240,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               venueId={venueId}
               otherIconsStyle={{ opacity: 0.4 }}
               containerStyle={{
-                width: PLAYA_WIDTH_AND_HEIGHT,
-                height: PLAYA_WIDTH_AND_HEIGHT,
+                width: PLAYA_WIDTH,
+                height: PLAYA_HEIGHT,
               }}
             />
           </div>

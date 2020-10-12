@@ -345,7 +345,10 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
               <CampContainer
                 interactive
                 resizable
-                coordinatesBoundary={100}
+                coordinatesBoundary={{
+                  width: 100,
+                  height: 100,
+                }}
                 onChange={onBoxChange}
                 snapToGrid={false}
                 iconsMap={currentRoomIcon}

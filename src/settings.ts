@@ -54,7 +54,8 @@ export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
-export const PLAYA_WIDTH_AND_HEIGHT = 2000;
+export const PLAYA_HEIGHT = 2000;
+export const PLAYA_WIDTH = 3000;
 export const PLAYA_AVATAR_SIZE = 48;
 export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
@@ -217,7 +218,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = IS_BURN ? "jamonline" : "hirespace";
+export const DEFAULT_VENUE = "jamonline";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);

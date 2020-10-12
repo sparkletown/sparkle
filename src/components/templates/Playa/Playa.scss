@@ -343,7 +343,8 @@ $playa-profile-name-size: 60px;
   }
 
   .playa-background {
-    width: 100%;
+    display: flex;
+    flex: 1;
   }
 
   .venue {
