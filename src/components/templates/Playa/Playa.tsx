@@ -52,6 +52,7 @@ import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
 import { IS_BURN } from "secrets";
 import BannerMessage from "components/molecules/BannerMessage";
+import UserList from "components/molecules/UserList";
 
 export type MenuConfig = {
   prompt?: string;
@@ -444,6 +445,10 @@ const Playa = () => {
       hoveredVenue &&
       peopleAttending(peopleByLastSeenIn(partygoers), hoveredVenue),
     [partygoers, hoveredVenue]
+  );
+
+  const usersInVenue = partygoers.filter(
+    (partygoer) => partygoer.lastSeenIn === venue?.name
   );
 
   useEffect(() => {
@@ -854,6 +859,17 @@ const Playa = () => {
         )}
 
         {IS_BURN && dustStorm && <DustStorm />}
+
+        {usersInVenue && (
+          <UserList
+            users={usersInVenue}
+            imageSize={50}
+            disableSeeAll={false}
+            isCamp={true}
+            activity={venue?.activity ?? "partying"}
+          />
+        )}
+
         <div className="playa-container" ref={playaRef}>
           {mapContainer}
           {meIsLocated && (
@@ -1066,6 +1082,7 @@ const Playa = () => {
     videoChatHeight,
     mapContainer,
     venue,
+    usersInVenue,
   ]);
 };
 
