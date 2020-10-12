@@ -583,18 +583,21 @@ const Playa = () => {
         {venues?.filter(isPlaced).map((venue, idx) => (
           <>
             <div
-              className={`venue ${venue.width || venue.height ? "sized" : ""} ${
-                (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
-                !!openVenues?.find(
-                  (ov) =>
-                    ov.venue.id === venue.id &&
-                    !!ov.currentEvents.find(
-                      (ve) =>
-                        now / 1000 >= ve.start_utc_seconds &&
-                        now / 1000 <
-                          60 * ve.duration_minutes + ve.start_utc_seconds
+              className={`venue ${
+                venue.width || venue.height
+                  ? "sized"
+                  : (peopleAttending(peopleByLastSeen, venue)?.length || 0) >
+                      0 ||
+                    !!openVenues?.find(
+                      (ov) =>
+                        ov.venue.id === venue.id &&
+                        !!ov.currentEvents.find(
+                          (ve) =>
+                            now / 1000 >= ve.start_utc_seconds &&
+                            now / 1000 <
+                              60 * ve.duration_minutes + ve.start_utc_seconds
+                        )
                     )
-                )
                   ? "live"
                   : ""
               }`}
