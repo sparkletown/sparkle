@@ -217,7 +217,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = IS_BURN ? "jamonline" : "hirespace";
+export const DEFAULT_VENUE = "jamonline";
 export const DEFAULT_REDIRECT_URL = IS_BURN
   ? "/enter"
   : venueLandingUrl(DEFAULT_VENUE);
