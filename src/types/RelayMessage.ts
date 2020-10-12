@@ -8,7 +8,6 @@ export type UserState = {
 export enum UserStateKey {
   Bike = "Bike", // boolean
   Video = "Video", // enum UserVideoState
-  Heartbeat = "Heartbeat", // utc millis
 }
 
 export const stateBoolean: (

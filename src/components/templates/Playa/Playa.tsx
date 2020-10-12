@@ -144,7 +144,6 @@ const Playa = () => {
   const sliderRef = useRef<HTMLDivElement>(null);
   const [bikeMode, setBikeMode] = useState<boolean | undefined>(true);
   const [videoState, setVideoState] = useState<string>();
-  const [heartbeat, setHeartbeat] = useState<number>();
 
   const toggleBikeMode = useCallback(() => {
     setBikeMode(!bikeMode);
@@ -581,72 +580,79 @@ const Playa = () => {
           nightCycle={venue?.nightCycle}
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
-        {venues?.filter(isPlaced).map((venue, idx) => (
-          <>
-            <div
-              className={`venue ${venue.width || venue.height ? "sized" : ""} ${
-                (peopleAttending(peopleByLastSeen, venue)?.length || 0) > 0 ||
-                !!openVenues?.find(
-                  (ov) =>
-                    ov.venue.id === venue.id &&
-                    !!ov.currentEvents.find(
-                      (ve) =>
-                        now / 1000 >= ve.start_utc_seconds &&
-                        now / 1000 <
-                          60 * ve.duration_minutes + ve.start_utc_seconds
-                    )
-                )
-                  ? "live"
-                  : ""
-              }`}
-              style={{
-                top: venue.placement?.y || 0 - PLAYA_VENUE_SIZE / 2,
-                left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
-                width: venue.width ?? PLAYA_VENUE_SIZE,
-                height: venue.height ?? PLAYA_VENUE_SIZE,
-                position: "absolute",
-              }}
-              onClick={() => showVenue(venue)}
-              key={idx}
-              onMouseOver={(event: React.MouseEvent) => {
-                setHoveredVenue(venue);
-                venueRef.current = event.target as HTMLDivElement;
-                setShowVenueTooltip(true);
-              }}
-              onMouseLeave={() => setShowVenueTooltip(false)}
-            >
-              <span className="img-vcenter-helper" />
-              <img
-                className="venue-icon"
-                src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
-                alt={`${venue.name} Icon`}
-              />
-
-              {selectedVenueId === venue.id && <div className="selected" />}
-            </div>
-            {(venue.roomVisibility === RoomVisibility.count ||
-              venue.roomVisibility === RoomVisibility.nameCount) && (
+        {venues?.filter(isPlaced).map((v, idx) => {
+          const usersInVenue = partygoers.filter(
+            (partygoer) => partygoer.lastSeenIn === v.name
+          ).length;
+          return (
+            <>
               <div
+                className={`venue ${
+                  v.width || v.height
+                    ? "sized"
+                    : (peopleAttending(peopleByLastSeen, v)?.length || 0) > 0 ||
+                      !!openVenues?.find(
+                        (ov) =>
+                          ov.venue.id === v.id &&
+                          !!ov.currentEvents.find(
+                            (ve) =>
+                              now / 1000 >= ve.start_utc_seconds &&
+                              now / 1000 <
+                                60 * ve.duration_minutes + ve.start_utc_seconds
+                          )
+                      )
+                    ? "live"
+                    : ""
+                }`}
                 style={{
-                  top: venue.placement?.y
-                    ? venue.placement?.y - 50
-                    : 0 - PLAYA_VENUE_SIZE / 2,
-                  left: venue.placement?.x || 0 - PLAYA_VENUE_SIZE / 2,
+                  top: v.placement?.y || PLAYA_VENUE_SIZE / 2,
+                  left: v.placement?.x || PLAYA_VENUE_SIZE / 2,
+                  width: v.width ?? PLAYA_VENUE_SIZE,
+                  height: v.height ?? PLAYA_VENUE_SIZE,
                   position: "absolute",
                 }}
+                onClick={() => showVenue(v)}
+                key={idx}
+                onMouseOver={(event: React.MouseEvent) => {
+                  setHoveredVenue(venue);
+                  venueRef.current = event.target as HTMLDivElement;
+                  setShowVenueTooltip(true);
+                }}
+                onMouseLeave={() => setShowVenueTooltip(false)}
               >
-                <div className="playa-venue-text">
-                  <div className="playa-venue-maininfo">
-                    {venue.roomVisibility === RoomVisibility.nameCount && (
-                      <div className="playa-venue-title">{venue?.name}</div>
-                    )}
-                    <div className="playa-venue-people">{numberOfUsers}</div>
+                <span className="img-vcenter-helper" />
+                <img
+                  className="venue-icon"
+                  src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
+                  alt={`${v.name} Icon`}
+                />
+
+                {selectedVenueId === v.id && <div className="selected" />}
+              </div>
+              {(venue?.roomVisibility === RoomVisibility.count ||
+                venue?.roomVisibility === RoomVisibility.nameCount) && (
+                <div
+                  style={{
+                    top: v.placement?.y
+                      ? v.placement?.y - PLAYA_VENUE_SIZE
+                      : PLAYA_VENUE_SIZE / 2,
+                    left: v.placement?.x ? v.placement?.x : v.width / 2,
+                    position: "absolute",
+                  }}
+                >
+                  <div className="playa-venue-text">
+                    <div className="playa-venue-maininfo">
+                      {venue?.roomVisibility === RoomVisibility.nameCount && (
+                        <div className="playa-venue-title">{v?.name}</div>
+                      )}
+                      <div className="playa-venue-people">{usersInVenue}</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </>
-        ))}
+              )}
+            </>
+          );
+        })}
         <PlayaIconComponent
           playaIcon={venue?.playaIcon}
           venues={venues}
@@ -677,7 +683,7 @@ const Playa = () => {
                     <div className="playa-venue-title">
                       {hoveredVenue?.name}
                     </div>
-                    {/* <div className="playa-venue-people">{numberOfUsers}</div> */}
+                    <div className="playa-venue-people">{numberOfUsers}</div>
                   </div>
                 </div>
               </div>
@@ -758,14 +764,12 @@ const Playa = () => {
   const avatarLayer = useMemo(
     () => (
       <AvatarLayer
-        useProfilePicture={venue?.profileAvatars ?? false}
+        useProfilePicture={venue?.profileAvatars ?? true}
         bikeMode={bikeMode}
         setBikeMode={setBikeMode}
         videoState={videoState}
         setVideoState={setVideoState}
         toggleVideoState={toggleVideoState}
-        heartbeat={heartbeat}
-        setHeartbeat={setHeartbeat}
         movingUp={movingUp}
         movingDown={movingDown}
         movingLeft={movingLeft}
@@ -784,7 +788,6 @@ const Playa = () => {
     [
       bikeMode,
       videoState,
-      heartbeat,
       movingUp,
       movingDown,
       movingLeft,

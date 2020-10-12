@@ -7,6 +7,8 @@
 }
 
 .profile-modal-container {
+  position: relative;
+  overflow: auto;
   padding: 30px;
   background: $black;
   background-image: linear-gradient(

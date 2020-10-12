@@ -42,8 +42,6 @@ export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VEN
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
-// Hide inactive avatars on playa
-export const MAX_IDLE_TIME_MS = 10 * 60 * 1000;
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
@@ -57,7 +55,7 @@ export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_WIDTH_AND_HEIGHT = 2000;
-export const PLAYA_AVATAR_SIZE = 24;
+export const PLAYA_AVATAR_SIZE = 48;
 export const PLAYA_VENUE_SIZE = 40;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
