@@ -66,7 +66,10 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             <CampContainer
               interactive={false}
               resizable
-              coordinatesBoundary={100}
+              coordinatesBoundary={{
+                width: 100,
+                height: 100,
+              }}
               iconsMap={{}}
               backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
