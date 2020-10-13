@@ -45,8 +45,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
+  const venueName = venueToUse?.name ?? "";
   const venueUsers = users
-    ? users.filter((user) => user.lastSeenIn === venueToUse?.name)
+    ? users.filter((user) => user.lastSeenIn.includes(venueName))
     : [];
 
   const experienceContext = useContext(ExperienceContext);

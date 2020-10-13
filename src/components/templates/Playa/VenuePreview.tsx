@@ -56,7 +56,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       [
         venue.name,
         ...(isCampVenue(venue) ? venue?.rooms.map((room) => room.title) : []),
-      ].includes(partygoer.lastSeenIn)
+      ].includes(partygoer.room)
     )
   );
 

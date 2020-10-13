@@ -23,8 +23,8 @@ export const canHavePlacement = (venue: Venue): boolean =>
 export const peopleByLastSeenIn = (users: Array<WithId<User>> | undefined) => {
   const result: { [lastSeenIn: string]: WithId<User>[] } = {};
   for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-    if (!(user.lastSeenIn in result)) result[user.lastSeenIn] = [];
-    result[user.lastSeenIn].push(user);
+    if (!(user.room in result)) result[user.room] = [];
+    result[user.room].push(user);
   }
   return result;
 };

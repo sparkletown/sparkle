@@ -441,8 +441,9 @@ const Playa = () => {
     [partygoers, hoveredVenue]
   );
 
+  const venueName = venue?.name ?? "";
   const usersInVenue = partygoers
-    ? partygoers.filter((partygoer) => partygoer.lastSeenIn === venue?.name)
+    ? partygoers.filter((partygoer) => partygoer.lastSeenIn.includes(venueName))
     : [];
 
   useEffect(() => {
@@ -580,8 +581,8 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers.filter(
-            (partygoer) => partygoer.lastSeenIn === v.name
+          const usersInVenue = partygoers.filter((partygoer) =>
+            partygoer.lastSeenIn.includes(v.name)
           ).length;
           return (
             <>

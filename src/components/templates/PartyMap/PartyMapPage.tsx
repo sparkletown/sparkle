@@ -35,7 +35,7 @@ const PartyMap = () => {
 
   const attendances = partygoers
     ? partygoers.reduce((acc: { [key: string]: number }, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        acc[value.room] = (acc[value.room] || 0) + 1;
         return acc;
       }, {})
     : {};

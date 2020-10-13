@@ -250,7 +250,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const suspectedLocation = useMemo(
     () => ({
       venue: venues?.find(
-        (v) => v.id === user.lastSeenIn || v.name === user.room
+        (v) => v.id === user.lastSeenIn.length || v.name === user.room
       ),
       camp: venues?.find(
         (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)

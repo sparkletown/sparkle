@@ -95,7 +95,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtTables[table.reference] = [];
   }
   const unseatedUsers = [];
-  for (const u of users.filter((u: User) => u.lastSeenIn === venueName)) {
+  for (const u of users.filter((u: User) => u.lastSeenIn.includes(venueName))) {
     if (
       u.data &&
       u.data[venueName] &&
