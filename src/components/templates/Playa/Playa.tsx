@@ -441,9 +441,9 @@ const Playa = () => {
     [partygoers, hoveredVenue]
   );
 
-  const usersInVenue = partygoers.filter(
-    (partygoer) => partygoer.lastSeenIn === venue?.name
-  );
+  const usersInVenue = partygoers
+    ? partygoers.filter((partygoer) => partygoer.lastSeenIn === venue?.name)
+    : [];
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -613,7 +613,7 @@ const Playa = () => {
                 onClick={() => showVenue(v)}
                 key={idx}
                 onMouseOver={(event: React.MouseEvent) => {
-                  setHoveredVenue(venue);
+                  setHoveredVenue(v);
                   venueRef.current = event.target as HTMLDivElement;
                   setShowVenueTooltip(true);
                 }}
