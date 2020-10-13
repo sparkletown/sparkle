@@ -61,7 +61,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             <span
               key={i}
               onClick={() =>
-                onJoinClicked(table.title, locked, nameOfVideoRoom)
+                onJoinClicked(table.reference, locked, nameOfVideoRoom)
               }
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
