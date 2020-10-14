@@ -61,6 +61,7 @@ const FriendShipPage: React.FunctionComponent = () => {
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
+                  tables={FRIENDSHIP_CUSTOM_TABLES}
                 />
                 <Room roomName={seatedAtTable} setUserList={() => null} />
               </div>
