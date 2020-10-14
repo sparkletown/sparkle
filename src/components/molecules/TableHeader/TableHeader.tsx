@@ -1,20 +1,22 @@
 import React, { useCallback, useEffect } from "react";
-import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzTab/constants";
 import firebase from "firebase/app";
 import { User } from "types/User";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { Table } from "types/Table";
 
 interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
   venueName: string;
+  tables: Table[];
 }
 
 const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
   venueName,
+  tables,
 }) => {
   const { user, profile } = useUser();
   const { experience, users } = useSelector((state) => ({
@@ -25,7 +27,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }));
 
   const tableOfUser = seatedAtTable
-    ? JAZZBAR_TABLES.find((table) => table.reference === seatedAtTable)
+    ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
 
   const usersAtCurrentTable =
@@ -107,7 +109,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </div>
         <div className="table-title-container">
           <div className="private-table-title" style={{ fontSize: "20px" }}>
-            {tableOfUser?.title || seatedAtTable}
+            {tableOfUser?.title ?? "abc" /*seatedAtTable*/}
             {tableOfUser && tableOfUser.capacity && (
               <>
                 {" "}
