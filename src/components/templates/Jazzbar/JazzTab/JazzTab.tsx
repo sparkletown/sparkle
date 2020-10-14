@@ -137,6 +137,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
                 venueName={venueToUse.name}
+                tables={JAZZBAR_TABLES}
               />
             )}
             <div
