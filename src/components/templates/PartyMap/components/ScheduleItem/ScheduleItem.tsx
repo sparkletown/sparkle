@@ -1,4 +1,6 @@
+import { useDispatch } from "hooks/useDispatch";
 import React from "react";
+import { remainAttendance } from "store/actions/Attendance";
 import { RoomEventData } from "types/RoomEventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
@@ -17,47 +19,52 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
   isCurrentEvent,
   enterRoom,
   roomUrl,
-}) => (
-  <div className="shedule-item-container">
-    <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-      <div>
-        <b>{formatMinute(event.start_minute, startUtcSeconds)}</b>
+}) => {
+  const dispatch = useDispatch();
+  return (
+    <div className="shedule-item-container">
+      <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
+        <div>
+          <b>{formatMinute(event.start_minute, startUtcSeconds)}</b>
+        </div>
+        <div>
+          {formatMinute(
+            event.start_minute + event.duration_minutes,
+            startUtcSeconds
+          )}
+        </div>
       </div>
-      <div>
-        {formatMinute(
-          event.start_minute + event.duration_minutes,
-          startUtcSeconds
+      <div className="event-section">
+        <div>
+          <div className={`${isCurrentEvent ? "primary" : ""}`}>
+            <div>
+              <b>{event.name}</b>
+            </div>
+            <div>
+              by <b>{event.host}</b>
+            </div>
+          </div>
+          <div className="event-description">{event.text}</div>
+        </div>
+        {isCurrentEvent && (
+          <div className="entry-room-button">
+            <a
+              onMouseOver={() => dispatch(remainAttendance(true))}
+              onMouseOut={() => dispatch(remainAttendance(false))}
+              className="btn room-entry-button"
+              onClick={() => enterRoom()}
+              id={`enter-room-from-schedule-event-${event}`}
+              href={roomUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              On Now
+            </a>
+          </div>
         )}
       </div>
     </div>
-    <div className="event-section">
-      <div>
-        <div className={`${isCurrentEvent ? "primary" : ""}`}>
-          <div>
-            <b>{event.name}</b>
-          </div>
-          <div>
-            by <b>{event.host}</b>
-          </div>
-        </div>
-        <div className="event-description">{event.text}</div>
-      </div>
-      {isCurrentEvent && (
-        <div className="entry-room-button">
-          <a
-            className="btn room-entry-button"
-            onClick={() => enterRoom()}
-            id={`enter-room-from-schedule-event-${event}`}
-            href={roomUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            On Now
-          </a>
-        </div>
-      )}
-    </div>
-  </div>
-);
+  );
+};
 
 export default ScheduleItem;

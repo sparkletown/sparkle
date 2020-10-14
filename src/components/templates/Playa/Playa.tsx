@@ -345,8 +345,13 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user && updateLocationData(user, PLAYA_VENUE_NAME);
-  }, [setShowModal, user]);
+    user &&
+      updateLocationData(
+        user,
+        { [PLAYA_VENUE_NAME]: new Date().getTime() },
+        profile?.lastSeenIn
+      );
+  }, [setShowModal, user, profile]);
 
   const distanceToVenue = (
     x: number,
@@ -432,17 +437,20 @@ const Playa = () => {
     setRerender((c) => c + 1);
   }, [hoveredVenue]);
 
+  const venueName = venue?.name ?? "";
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(partygoers), hoveredVenue),
-    [partygoers, hoveredVenue]
+      peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
+    [partygoers, hoveredVenue, venueName]
   );
 
   const usersInVenue = partygoers
-    ? partygoers.filter((partygoer) => partygoer.lastSeenIn === venue?.name)
+    ? partygoers.filter((partygoer) =>
+        partygoer.lastSeenIn ? partygoer.lastSeenIn[venueName] : ""
+      )
     : [];
 
   useEffect(() => {
@@ -572,7 +580,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers);
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName);
     return (
       <>
         <PlayaBackground
@@ -581,7 +589,7 @@ const Playa = () => {
         />
         {venues?.filter(isPlaced).map((v, idx) => {
           const usersInVenue = partygoers.filter(
-            (partygoer) => partygoer.lastSeenIn === v.name
+            (partygoer) => partygoer.lastSeenIn ?? partygoer.lastSeenIn[v.name]
           ).length;
           return (
             <>

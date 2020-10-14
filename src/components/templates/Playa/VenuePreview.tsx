@@ -15,6 +15,8 @@ import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { isCampVenue } from "types/CampVenue";
+import { useDispatch } from "hooks/useDispatch";
+import { remainAttendance } from "store/actions/Attendance";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -56,14 +58,18 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       [
         venue.name,
         ...(isCampVenue(venue) ? venue?.rooms.map((room) => room.title) : []),
-      ].includes(partygoer.lastSeenIn)
+      ].includes(partygoer.lastSeenIn ?? partygoer.lastSeenIn[venue.name])
     )
   );
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
   const users: typeof partygoers = useMemo(
-    () => peopleAttending(peopleByLastSeenIn(partygoers), venue) ?? [],
+    () =>
+      peopleAttending(
+        peopleByLastSeenIn(partygoers, venue?.name ?? ""),
+        venue
+      ) ?? [],
     [partygoers, venue]
   );
 
@@ -111,6 +117,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   }
 
   const venueHiddenText = "Returned to dust! Thanks for your creativity!";
+
+  const dispatch = useDispatch();
 
   const { urlLink, targetLink } = getLink(venue);
 
@@ -207,6 +215,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
               )}
               <p className="template-name">{templateName}</p>
               <a
+                onMouseOver={() => dispatch(remainAttendance(true))}
+                onMouseOut={() => dispatch(remainAttendance(false))}
                 className="btn btn-primary join-button"
                 href={urlLink}
                 target={targetLink}

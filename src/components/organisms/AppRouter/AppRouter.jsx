@@ -34,33 +34,6 @@ import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 
 const AppRouter = ({ defaultRedirect }) => {
-  const firebase = useFirebase();
-  const analytics = firebase.analytics();
-  const { user } = useUser();
-
-  useEffect(() => {
-    const onClickWindow = (event) => {
-      event.target.id &&
-        user &&
-        analytics.logEvent("clickonbutton", {
-          buttonId: event.target.id,
-          userId: user.uid,
-        });
-    };
-
-    const leaveRoomBeforeUnload = () => {
-      if (user) {
-        leaveRoom(user);
-      }
-    };
-    window.addEventListener("click", onClickWindow, false);
-    window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    return () => {
-      window.removeEventListener("click", onClickWindow, false);
-      window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    };
-  }, [user, analytics]);
-
   return (
     <Router basename="/">
       <Switch>

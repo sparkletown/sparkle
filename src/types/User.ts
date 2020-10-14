@@ -21,7 +21,7 @@ export interface User {
   partyName?: string;
   pictureUrl?: string;
   data?: UserExperienceData;
-  lastSeenIn: string;
+  lastSeenIn: { [key: string]: string };
   room?: string;
   // @debt typing - user also has a dynamic set of attributes for the question answers
   // currently not possible to type them properly

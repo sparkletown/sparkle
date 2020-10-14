@@ -18,7 +18,7 @@ interface PropsType {
 }
 
 const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const { users, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
     users: state.firestore.ordered.partygoers,
@@ -32,7 +32,7 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
     users?.filter((user) => user.room === room?.title) ?? [];
 
   function enter() {
-    room && user && enterRoom(user, room.title);
+    room && user && enterRoom(user, room.title, profile?.lastSeenIn);
   }
 
   if (!room) return <></>;

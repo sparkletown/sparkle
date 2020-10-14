@@ -34,13 +34,16 @@ const Camp: React.FC = () => {
   }));
 
   const usersInCamp = useMemo(
-    () => venue && peopleAttending(peopleByLastSeenIn(partygoers), venue),
+    () =>
+      venue &&
+      peopleAttending(peopleByLastSeenIn(partygoers, venue?.name ?? ""), venue),
     [partygoers, venue]
   );
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        acc[value.lastSeenIn[venue.name]] =
+          (acc[value.lastSeenIn[venue.name]] || 0) + 1;
         return acc;
       }, {})
     : {};

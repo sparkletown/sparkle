@@ -25,7 +25,7 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   joinButtonText,
 }) => {
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const { users, venueEvents } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
     venueEvents: state.firestore.ordered.venueEvents,
@@ -39,7 +39,7 @@ export const RoomModal: React.FC<PropsType> = ({
     users?.filter((user) => user.room === room?.title) ?? [];
 
   function enter() {
-    room && user && enterRoom(user, room.title);
+    room && user && enterRoom(user, room.title, profile?.lastSeenIn);
   }
 
   const roomEvents =

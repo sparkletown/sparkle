@@ -23,7 +23,7 @@ const ConversationSpace: React.FunctionComponent = () => {
   if (!venue) return <>Loading...</>;
 
   const venueUsers = users
-    ? users.filter((user) => user.lastSeenIn === venue.name)
+    ? users.filter((user) => user.lastSeenIn ?? user.lastSeenIn[venue.name])
     : [];
 
   return (

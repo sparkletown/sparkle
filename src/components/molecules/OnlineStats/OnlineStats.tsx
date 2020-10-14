@@ -70,7 +70,10 @@ const OnlineStats: React.FC = () => {
     WithId<User>
   >();
 
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const { partygoers, venue } = useSelector((state) => ({
+    partygoers: state.firestore.ordered.partygoers,
+    venue: state.firestore.data.currentVenue,
+  }));
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -96,7 +99,7 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers);
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
@@ -113,7 +116,7 @@ const OnlineStats: React.FC = () => {
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, partygoers]);
+  }, [openVenues, partygoers, venue]);
 
   const fuseVenues = useMemo(
     () =>
@@ -162,7 +165,7 @@ const OnlineStats: React.FC = () => {
   const allVenues = filteredVenues.filter(
     (venue) => !venue.currentEvents.length
   );
-  const peopleByLastSeen = peopleByLastSeenIn(partygoers);
+  const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
 
   const popover = useMemo(
     () =>

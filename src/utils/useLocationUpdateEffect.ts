@@ -5,19 +5,38 @@ import { updateUserProfile } from "pages/Account/helpers";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 
-export const updateLocationData = (user: UserInfo, roomName: string | null) => {
+export const updateLocationData = (
+  user: UserInfo,
+  roomName: any,
+  lastSeenIn: { [key: string]: string } | undefined
+) => {
+  const room = roomName ?? {};
   updateUserProfile(user.uid, {
     lastSeenAt: new Date().getTime() / 1000,
-    lastSeenIn: roomName,
-    room: roomName,
+    lastSeenIn:
+      !roomName && !lastSeenIn
+        ? null
+        : lastSeenIn
+        ? { ...lastSeenIn, ...room }
+        : room,
+    room: !roomName && !lastSeenIn ? null : roomName,
   });
 };
 
-export const enterRoom = (user: UserInfo, roomName: string) => {
-  updateLocationData(user, roomName);
+// get Profile from the firebase
+export const enterRoom = (
+  user: UserInfo,
+  roomName: string,
+  lastSeenIn: { [key: string]: string } | undefined
+) => {
+  updateLocationData(user, roomName, lastSeenIn);
 };
 export const leaveRoom = (user: UserInfo) => {
-  updateLocationData(user, null);
+  updateUserProfile(user.uid, {
+    lastSeenAt: 0,
+    lastSeenIn: null,
+    room: null,
+  });
 };
 
 export const useLocationUpdateEffect = (
