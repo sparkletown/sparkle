@@ -68,6 +68,7 @@ const ConversationSpace: React.FunctionComponent = () => {
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
+                  tables={TABLES}
                 />
               )}
               {seatedAtTable && (
