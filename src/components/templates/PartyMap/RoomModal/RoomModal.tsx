@@ -1,5 +1,5 @@
 import React from "react";
-import { getCurrentEvent } from "utils/time";
+import { currentTimeInUnixEpoch, getCurrentEvent } from "utils/time";
 import RoomModalOngoingEvent from "components/templates/PartyMap/components/RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
 import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
@@ -32,7 +32,13 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
     users?.filter((user) => user.room === room?.title) ?? [];
 
   function enter() {
-    room && user && enterRoom(user, room.title, profile?.lastSeenIn);
+    room &&
+      user &&
+      enterRoom(
+        user,
+        { [room.title]: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
   }
 
   if (!room) return <></>;

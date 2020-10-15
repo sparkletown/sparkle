@@ -17,6 +17,7 @@ import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
 import { venueLandingUrl } from "utils/url";
 import { Map } from "./components/Map/Map";
+import { currentTimeInUnixEpoch } from "utils/time";
 
 const PartyMap = () => {
   useConnectPartyGoers();
@@ -46,7 +47,7 @@ const PartyMap = () => {
     if (user) {
       updateLocationData(
         user,
-        { Map: new Date().getTime() },
+        { Map: currentTimeInUnixEpoch },
         profile?.lastSeenIn
       );
     }

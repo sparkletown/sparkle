@@ -73,7 +73,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           onMouseOver={() => dispatch(retainAttendance(true))}
           onMouseOut={() => dispatch(retainAttendance(false))}
           className="btn btn-primary room-entry-button"
-          onClick={() => enterRoom()}
+          onClick={enterRoom}
           id={`enter-room-in-ongoing-event-card-${room.title}`}
           href={room.url}
           target="_blank"
@@ -86,7 +86,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           onMouseOver={() => dispatch(retainAttendance(true))}
           onMouseOut={() => dispatch(retainAttendance(false))}
           className="btn btn-primary room-entry-button"
-          onClick={() => enterRoom()}
+          onClick={enterRoom}
           id={`enter-room-in-ongoing-event-card-${room.title}`}
           href={room.url}
         >

@@ -15,8 +15,13 @@ import { Redirect, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
+  canUserJoinTheEvent,
+  currentTimeInUnixEpoch,
+  ONE_MINUTE_IN_SECONDS,
+} from "utils/time";
+import {
+  leaveRoom,
   updateLocationData,
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
@@ -34,12 +39,11 @@ import { venueEntranceUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
 import ConversationSpace from "components/templates/ConversationSpace";
 import { updateUserProfile } from "pages/Account/helpers";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
-
-const LOC_UPDATE_FREQ_MS = 50000;
 
 const VenuePage = () => {
   const venueId = useVenueId();
@@ -83,9 +87,9 @@ const VenuePage = () => {
     };
 
     const leaveRoomBeforeUnload = () => {
-      // if (user && !retainAttendance) {
-      //   leaveRoom(user);
-      // }
+      if (user && !retainAttendance) {
+        leaveRoom(user);
+      }
     };
     window.addEventListener("click", onClickWindow, false);
     window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
@@ -96,18 +100,15 @@ const VenuePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log(retainAttendance);
-
   useEffect(() => {
     const venueName = venue?.name ?? "";
     const prevLocations = profile?.lastSeenIn ?? {};
     const interval = setInterval(() => {
-      console.log("interval is being called");
       if (!user || !venueName || (venueName && prevLocations[venueName]))
         return;
       const updatedLastSeenIn = {
         ...prevLocations,
-        [venueName]: new Date().getTime() / 1000,
+        [venueName]: currentTimeInUnixEpoch,
       };
       updateUserProfile(user.uid, {
         lastSeenIn: updatedLastSeenIn,

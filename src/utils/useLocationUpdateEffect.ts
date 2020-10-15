@@ -2,35 +2,38 @@ import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
+import { currentTimeInUnixEpoch } from "./time";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 
 export const updateLocationData = (
   user: UserInfo,
-  roomName: any,
-  lastSeenIn: { [key: string]: string } | undefined
+  roomName: { [key: string]: number },
+  lastSeenIn: { [key: string]: number } | undefined
 ) => {
   const room = roomName ?? {};
+  const roomVenue = roomName ? Object.keys(roomName)[0] : null;
   updateUserProfile(user.uid, {
-    lastSeenAt: new Date().getTime() / 1000,
+    lastSeenAt: currentTimeInUnixEpoch,
     lastSeenIn:
       !roomName && !lastSeenIn
         ? null
         : lastSeenIn
         ? { ...lastSeenIn, ...room }
         : room,
-    room: !roomName && !lastSeenIn ? null : roomName,
+    room: !roomName && !lastSeenIn ? null : roomVenue,
   });
 };
 
 // get Profile from the firebase
 export const enterRoom = (
   user: UserInfo,
-  roomName: string,
-  lastSeenIn: { [key: string]: string } | undefined
+  roomName: { [key: string]: number },
+  lastSeenIn: { [key: string]: number } | undefined
 ) => {
   updateLocationData(user, roomName, lastSeenIn);
 };
+
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
     lastSeenAt: 0,

@@ -7,7 +7,7 @@ import { RegisterData } from "components/organisms/AuthenticationModal/RegisterF
 
 type LocationUpdateData = {
   lastSeenAt: number;
-  lastSeenIn: string | null | object;
+  lastSeenIn: { [key: string]: number } | null;
   room: string | null; // legacy
 };
 

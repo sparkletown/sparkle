@@ -8,6 +8,7 @@ import "./AvatarGrid.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import {
+  currentTimeInUnixEpoch,
   formatUtcSeconds,
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
@@ -44,7 +45,13 @@ export const RoomModal: React.FC<PropsType> = ({
   }
 
   const enter = () => {
-    room && user && enterRoom(user, room.title, profile?.lastSeenIn);
+    room &&
+      user &&
+      enterRoom(
+        user,
+        { [room.title]: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
   };
 
   const roomEvents =
