@@ -17,7 +17,6 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
-  leaveRoom,
   updateLocationData,
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
@@ -84,9 +83,9 @@ const VenuePage = () => {
     };
 
     const leaveRoomBeforeUnload = () => {
-      if (user && !retainAttendance) {
-        leaveRoom(user);
-      }
+      // if (user && !retainAttendance) {
+      //   leaveRoom(user);
+      // }
     };
     window.addEventListener("click", onClickWindow, false);
     window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
@@ -97,11 +96,15 @@ const VenuePage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(retainAttendance);
+
   useEffect(() => {
     const venueName = venue?.name ?? "";
     const prevLocations = profile?.lastSeenIn ?? {};
     const interval = setInterval(() => {
-      if (!user) return;
+      console.log("interval is being called");
+      if (!user || !venueName || (venueName && prevLocations[venueName]))
+        return;
       const updatedLastSeenIn = {
         ...prevLocations,
         [venueName]: new Date().getTime() / 1000,
@@ -122,7 +125,8 @@ const VenuePage = () => {
         });
       }
     };
-  }, [profile, retainAttendance, user, venue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const event = currentEvent?.[0];
 
@@ -148,7 +152,11 @@ const VenuePage = () => {
   useEffect(() => {
     const prevLocations = profile?.lastSeenIn ?? {};
 
-    if (prevLocations !== profile?.lastSeenIn && user && location) {
+    if (
+      user &&
+      location &&
+      (!profile?.lastSeenIn || !profile?.lastSeenIn[location])
+    ) {
       const newLocations = {
         ...prevLocations,
         [location]: new Date().getTime(),
@@ -159,7 +167,7 @@ const VenuePage = () => {
         profile?.lastSeenIn
       );
     }
-  }, [location, user, profile]);
+  }, [location, profile, user]);
 
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
