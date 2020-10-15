@@ -185,6 +185,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     }`}
                   />
                 </Link>
+                <div className="button-container about-button-container">
+                  <a href="https://sparklespaces.com/" className="about-button">
+                    Learn More
+                  </a>
+                </div>
               </div>
               {IS_BURN && (
                 <div className="navbar-info">
