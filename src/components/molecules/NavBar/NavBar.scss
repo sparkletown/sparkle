@@ -48,9 +48,11 @@
   }
 
   .button-container {
-    .create-button {
+    .about-button {
       border: 2px solid #ebebeb;
       border-radius: 2em;
+      margin-left: 1em;
+      margin-right: -1em;
       padding: 0.2em 1em;
       text-transform: uppercase;
       text-decoration: none;
