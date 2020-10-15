@@ -7,7 +7,7 @@ import { useUser } from "../../../../hooks/useUser";
 import { IS_BURN } from "secrets";
 import { RoomVisibility } from "types/Venue";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   venue: CampVenue;
@@ -87,11 +87,11 @@ export const Map: React.FC<PropsType> = ({
                 }
               }}
               onMouseEnter={() => {
-                dispatch(remainAttendance(true));
+                dispatch(retainAttendance(true));
                 setRoomHovered(room);
               }}
               onMouseLeave={() => {
-                dispatch(remainAttendance(false));
+                dispatch(retainAttendance(false));
                 setRoomHovered(undefined);
               }}
             >

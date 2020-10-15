@@ -766,6 +766,7 @@ const Playa = () => {
     openVenues,
     showVenue,
     partygoers,
+    venueName,
   ]);
 
   const avatarLayer = useMemo(

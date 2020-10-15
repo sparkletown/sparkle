@@ -16,7 +16,7 @@ import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { isCampVenue } from "types/CampVenue";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -215,8 +215,8 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
               )}
               <p className="template-name">{templateName}</p>
               <a
-                onMouseOver={() => dispatch(remainAttendance(true))}
-                onMouseOut={() => dispatch(remainAttendance(false))}
+                onMouseOver={() => dispatch(retainAttendance(true))}
+                onMouseOut={() => dispatch(retainAttendance(false))}
                 className="btn btn-primary join-button"
                 href={urlLink}
                 target={targetLink}

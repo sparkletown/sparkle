@@ -14,7 +14,7 @@ import {
 } from "utils/time";
 import { isEventLive } from "utils/event";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   show: boolean;
@@ -150,8 +150,8 @@ export const RoomModal: React.FC<PropsType> = ({
             </button>
           ) : (
             <a
-              onMouseOver={() => dispatch(remainAttendance(true))}
-              onMouseOut={() => dispatch(remainAttendance(false))}
+              onMouseOver={() => dispatch(retainAttendance(true))}
+              onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn btn-active btn-block"
               href={room.url}
               rel={"noopener noreferrer"}

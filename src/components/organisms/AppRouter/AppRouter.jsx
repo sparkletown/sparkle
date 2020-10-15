@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useFirebase } from "react-redux-firebase";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,8 +22,6 @@ import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import { leaveRoom } from "utils/useLocationUpdateEffect";
-import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 

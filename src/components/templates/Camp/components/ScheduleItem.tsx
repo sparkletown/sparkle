@@ -4,7 +4,7 @@ import { VenueEvent } from "types/VenueEvent";
 
 import "../../../templates/PartyMap/components/ScheduleItem/ScheduleItem.scss";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   event: VenueEvent;
@@ -47,8 +47,8 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
         {isCurrentEvent && (
           <div className="entry-room-button">
             <a
-              onMouseOver={() => dispatch(remainAttendance(true))}
-              onMouseOut={() => dispatch(remainAttendance(false))}
+              onMouseOver={() => dispatch(retainAttendance(true))}
+              onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn room-entry-button"
               onClick={() => enterRoom()}
               id={`enter-room-from-schedule-event-${event}`}

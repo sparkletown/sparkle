@@ -1,6 +1,6 @@
 import { useDispatch } from "hooks/useDispatch";
 import React from "react";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 import { RoomEventData } from "types/RoomEventData";
 import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
@@ -49,8 +49,8 @@ const ScheduleItem: React.FunctionComponent<PropsType> = ({
         {isCurrentEvent && (
           <div className="entry-room-button">
             <a
-              onMouseOver={() => dispatch(remainAttendance(true))}
-              onMouseOut={() => dispatch(remainAttendance(false))}
+              onMouseOver={() => dispatch(retainAttendance(true))}
+              onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn room-entry-button"
               onClick={() => enterRoom()}
               id={`enter-room-from-schedule-event-${event}`}

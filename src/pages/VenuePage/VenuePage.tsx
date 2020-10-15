@@ -58,7 +58,7 @@ const VenuePage = () => {
     currentEvent,
     eventRequestStatus,
     venueRequestStatus,
-    remainAttendance,
+    retainAttendance,
   } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
@@ -70,7 +70,7 @@ const VenuePage = () => {
     userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
     userPurchaseHistoryRequestStatus:
       state.firestore.status.requested.userPurchaseHistory,
-    remainAttendance: state.attendance.remainAttendance,
+    retainAttendance: state.attendance.retainAttendance,
   }));
 
   useEffect(() => {
@@ -84,7 +84,7 @@ const VenuePage = () => {
     };
 
     const leaveRoomBeforeUnload = () => {
-      if (user && !remainAttendance) {
+      if (user && !retainAttendance) {
         leaveRoom(user);
       }
     };
@@ -114,7 +114,7 @@ const VenuePage = () => {
     }, LOC_UPDATE_FREQ_MS);
     return () => {
       clearInterval(interval);
-      if (remainAttendance && user && profile) {
+      if (retainAttendance && user && profile) {
         updateUserProfile(user.uid, {
           lastSeenIn: { ...prevLocations, [venueName]: 0 },
           lastSeenAt: new Date().getTime(),
@@ -122,7 +122,7 @@ const VenuePage = () => {
         });
       }
     };
-  }, [profile, remainAttendance, user, venue?.name]);
+  }, [profile, retainAttendance, user, venue]);
 
   const event = currentEvent?.[0];
 
@@ -161,7 +161,7 @@ const VenuePage = () => {
         profile?.lastSeenIn
       );
     }
-  }, [location, profile?.lastSeenIn, user, profile]);
+  }, [location, user, profile]);
 
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;

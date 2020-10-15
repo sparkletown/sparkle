@@ -5,7 +5,7 @@ import { VenueEvent } from "types/VenueEvent";
 
 import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   room: CampRoomData;
@@ -70,8 +70,8 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
       )}
       {isExternalLink(room.url) ? (
         <a
-          onMouseOver={() => dispatch(remainAttendance(true))}
-          onMouseOut={() => dispatch(remainAttendance(false))}
+          onMouseOver={() => dispatch(retainAttendance(true))}
+          onMouseOut={() => dispatch(retainAttendance(false))}
           className="btn btn-primary room-entry-button"
           onClick={() => enterRoom()}
           id={`enter-room-in-ongoing-event-card-${room.title}`}
@@ -83,8 +83,8 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
         </a>
       ) : (
         <a
-          onMouseOver={() => dispatch(remainAttendance(true))}
-          onMouseOut={() => dispatch(remainAttendance(false))}
+          onMouseOver={() => dispatch(retainAttendance(true))}
+          onMouseOut={() => dispatch(retainAttendance(false))}
           className="btn btn-primary room-entry-button"
           onClick={() => enterRoom()}
           id={`enter-room-in-ongoing-event-card-${room.title}`}

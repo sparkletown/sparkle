@@ -3,7 +3,7 @@ import "./RoomModalOngoingEvent.scss";
 import { RoomData } from "types/RoomData";
 import { getCurrentEvent } from "utils/time";
 import { useDispatch } from "hooks/useDispatch";
-import { remainAttendance } from "store/actions/Attendance";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   room: RoomData;
@@ -42,8 +42,8 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           </div>
           <div className="event-description">{eventToDisplay.text}</div>
           <a
-            onMouseOver={() => dispatch(remainAttendance(true))}
-            onMouseOut={() => dispatch(remainAttendance(false))}
+            onMouseOver={() => dispatch(retainAttendance(true))}
+            onMouseOut={() => dispatch(retainAttendance(false))}
             className="btn btn-primary room-entry-button"
             onClick={() => enterRoom()}
             id={`enter-room-in-ongoing-event-card-${room.title}`}

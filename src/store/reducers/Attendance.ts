@@ -1,11 +1,11 @@
-import { AttendanceActions, REMAIN_ATTENDANCE } from "../actions/Attendance";
+import { AttendanceActions, RETAIN_ATTENDANCE } from "../actions/Attendance";
 
 interface AttendanceState {
-  remainAttendance: boolean;
+  retainAttendance: boolean;
 }
 
 const initialAttendanceState: AttendanceState = {
-  remainAttendance: false,
+  retainAttendance: false,
 };
 
 export const attendanceReducer = (
@@ -13,8 +13,8 @@ export const attendanceReducer = (
   action: AttendanceActions
 ): AttendanceState => {
   switch (action.type) {
-    case REMAIN_ATTENDANCE:
-      return { ...state, remainAttendance: action.payload };
+    case RETAIN_ATTENDANCE:
+      return { ...state, retainAttendance: action.payload };
     default:
       return state;
   }
