@@ -76,7 +76,7 @@ export const validationSchema = Yup.object()
                         .get()
                     ).exists
                 )
-            : schema //will be set from the data from the api. Does not need to be unique
+            : schema // will be set from the data from the api. Does not need to be unique
       ),
     bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),

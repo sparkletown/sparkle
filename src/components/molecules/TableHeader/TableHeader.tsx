@@ -99,7 +99,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="action">
           <button
             type="button"
-            title={"Leave " + seatedAtTable}
+            title={`Leave ${seatedAtTable}`}
             className="btn btn-primary back-button"
             id="leave-seat"
             onClick={leaveSeat}
@@ -109,7 +109,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </div>
         <div className="table-title-container">
           <div className="private-table-title" style={{ fontSize: "20px" }}>
-            {tableOfUser?.title ?? "abc" /*seatedAtTable*/}
+            {tableOfUser?.title ?? seatedAtTable}
             {tableOfUser && tableOfUser.capacity && (
               <>
                 {" "}

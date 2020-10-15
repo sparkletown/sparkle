@@ -14,7 +14,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
-import { validationSchema } from "./RoomsValidationSchema";
 import { useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
@@ -23,6 +22,7 @@ import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+import { validationSchema } from "./RoomsValidationSchema";
 import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
@@ -45,7 +45,7 @@ export const RoomsForm: React.FC = () => {
         .get();
       if (!venueSnapshot.exists) return history.replace("/admin");
       const data = venueSnapshot.data() as Venue;
-      //find the template
+      // find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
@@ -71,7 +71,7 @@ export const RoomsForm: React.FC = () => {
   if (!user) {
     return (
       <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal show onHide={() => {}} showAuth="login" />
       </WithNavigationBar>
     );
   }
@@ -114,7 +114,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: validationSchema,
+    validationSchema,
     validationContext: { editing: !!editingRoom },
     defaultValues,
   });
@@ -220,7 +220,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                       name="title"
                       ref={register}
                       className="align-left"
-                      placeholder={`My room title`}
+                      placeholder="My room title"
                     />
                     {errors.title && (
                       <span className="input-error">
@@ -236,9 +236,9 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     </div>
                     <ImageInput
                       disabled={disable}
-                      name={"image_file"}
+                      name="image_file"
                       image={values.image_file}
-                      remoteUrlInputName={"image_url"}
+                      remoteUrlInputName="image_url"
                       remoteImageUrl={values.image_url}
                       containerClassName="input-square-container"
                       ref={register}
@@ -252,7 +252,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                       disabled={disable}
                       ref={register}
                       className="align-left"
-                      placeholder={`My room subtitle`}
+                      placeholder="My room subtitle"
                     />
                     {errors.subtitle && (
                       <span className="input-error">
@@ -264,10 +264,10 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     <div className="input-title">About your room</div>
                     <textarea
                       disabled={disable}
-                      name={"about"}
+                      name="about"
                       ref={register}
                       className="wide-input-block input-centered align-left"
-                      placeholder={"Describe your room in detail"}
+                      placeholder="Describe your room in detail"
                     />
                     {errors.about && (
                       <span className="input-error">
@@ -279,10 +279,10 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     <div className="input-title">The room url</div>
                     <input
                       disabled={disable}
-                      name={"url"}
+                      name="url"
                       ref={register}
                       className="wide-input-block align-left"
-                      placeholder={"The url this room will redirect to"}
+                      placeholder="The url this room will redirect to"
                     />
                     {errors.url && (
                       <span className="input-error">{errors.url.message}</span>
@@ -295,10 +295,10 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                         disabled={disable}
                         type="checkbox"
                         id="isEnabled"
-                        name={"isEnabled"}
+                        name="isEnabled"
                         ref={register}
                       />
-                      <span className="slider round"></span>
+                      <span className="slider round" />
                     </label>
                   </div>
                 </div>
@@ -311,7 +311,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     />
                     {editingRoom && !isSubmitting && (
                       <button
-                        type={"button"}
+                        type="button"
                         className="btn btn-danger"
                         onClick={() => setShowDeleteModal(true)}
                       >
@@ -321,7 +321,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   </div>
                   {formError && (
                     <div className="input-error">
-                      {"An error occured when saving your form"}
+                      An error occured when saving your form
                     </div>
                   )}
                 </div>

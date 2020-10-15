@@ -16,9 +16,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
 }) => {
   const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
   const eventToDisplay =
-    room.events &&
-    room.events.length > 0 &&
-    (currentEvent ? currentEvent : room.events[0]);
+    room.events && room.events.length > 0 && (currentEvent || room.events[0]);
   return (
     <div className="room-modal-ongoing-event-container">
       {eventToDisplay && (
@@ -29,7 +27,7 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            {`What's on now`}
+            What's on now
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>

@@ -1,7 +1,7 @@
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
 import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
 
@@ -47,7 +47,7 @@ export interface Venue {
   code_of_conduct_questions: Question[];
   owners?: string[];
   iframeUrl?: string;
-  events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
+  events?: Array<UpcomingEvent>; // @debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
   placement?: VenuePlacement;
   zoomUrl?: string;

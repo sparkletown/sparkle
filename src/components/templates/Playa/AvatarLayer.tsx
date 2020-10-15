@@ -17,12 +17,10 @@ import {
   ENABLE_PLAYA_ADDRESS,
   PLAYA_VENUE_NAME,
 } from "settings";
-import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import MyAvatar from "./MyAvatar";
 import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
 import { MenuConfig, Shout } from "./Playa";
 import Switch from "react-switch";
@@ -35,6 +33,8 @@ import {
 import { useDispatch } from "react-redux";
 import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
+import MyAvatar from "./MyAvatar";
+import { Avatar } from "./Avatar";
 
 interface PropsType {
   useProfilePicture: boolean;
@@ -139,7 +139,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     if (!user || wsInitedRef.current) return;
 
-    let unmounting = false;
+    const unmounting = false;
     const newWebSocket = () => {
       const newWs = new WebSocket(WS_RELAY_URL || DEFAULT_WS_RELAY_URL);
 
@@ -376,15 +376,16 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
 
     const cancelPendingChatRequestsExcept = (id: string) => {
-      chatRequests
-        ?.filter(
-          (r) =>
-            r.id !== id &&
-            (r.state === ChatRequestState.Asked ||
-              r.state === ChatRequestState.Accepted) &&
-            (r.fromUid === user.uid || r.toUid === user.uid)
-        )
-        .map((r) => setChatRequestState(r.id, ChatRequestState.Canceled));
+      chatRequests &&
+        chatRequests
+          .filter(
+            (r) =>
+              r.id !== id &&
+              (r.state === ChatRequestState.Asked ||
+                r.state === ChatRequestState.Accepted) &&
+              (r.fromUid === user.uid || r.toUid === user.uid)
+          )
+          .map((r) => setChatRequestState(r.id, ChatRequestState.Canceled));
     };
 
     // Inform if you were removed
@@ -678,21 +679,20 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 }`,
                 choices: [viewProfileChoice],
               };
-            } else {
-              return {
-                prompt: `${avatarUser.partyName}${
-                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
-                }\nIn an open chat hosted by ${
-                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                }`,
-                choices: [
-                  askToJoinThemChoice,
-                  inviteThemToJoinYourChatChoice,
-                  viewProfileChoice,
-                ],
-                cancelable: true,
-              };
             }
+            return {
+              prompt: `${avatarUser.partyName}${
+                ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+              }\nIn an open chat hosted by ${
+                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+              }`,
+              choices: [
+                askToJoinThemChoice,
+                inviteThemToJoinYourChatChoice,
+                viewProfileChoice,
+              ],
+              cancelable: true,
+            };
           }
           if (theyAreInAChat) {
             if (theirHostsChatIsLocked) {
@@ -704,16 +704,15 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
                 }`,
                 choices: [viewProfileChoice],
               };
-            } else {
-              return {
-                prompt: `${avatarUser.partyName}${
-                  ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
-                }\nIn an open chat hosted by ${
-                  theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
-                }`,
-                choices: [viewProfileChoice, askToJoinThemChoice],
-              };
             }
+            return {
+              prompt: `${avatarUser.partyName}${
+                ENABLE_PLAYA_ADDRESS ? `\n${address}` : ""
+              }\nIn an open chat hosted by ${
+                theyAreHostOfTheirChat ? "them" : theirChatHostUser?.partyName
+              }`,
+              choices: [viewProfileChoice, askToJoinThemChoice],
+            };
           }
           return {
             prompt: `${avatarUser.partyName}${

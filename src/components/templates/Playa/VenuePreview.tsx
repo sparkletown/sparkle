@@ -11,10 +11,10 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
-import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { isCampVenue } from "types/CampVenue";
+import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -26,7 +26,7 @@ const nowSeconds = new Date().getTime() / 1000;
 
 const getLink = (venue: WithId<Venue>) => {
   let urlLink: string | undefined;
-  let targetLink: string = "";
+  let targetLink = "";
   switch (venue.template) {
     case VenueTemplate.themecamp:
       urlLink = venueInsideUrl(venue.id);
@@ -37,7 +37,7 @@ const getLink = (venue: WithId<Venue>) => {
     case VenueTemplate.zoomroom:
       urlLink = venue.zoomUrl?.includes("http")
         ? venue.zoomUrl
-        : "//" + venue.zoomUrl;
+        : `//${venue.zoomUrl}`;
       targetLink = "_blank";
       break;
     default:
@@ -252,7 +252,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           eventsNow={eventsFuture}
           venue={venue}
           showButton={false}
-          futureEvents={true}
+          futureEvents
           joinNowButton
         />
       </div>

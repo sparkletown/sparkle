@@ -1,8 +1,6 @@
 import React, { useMemo, useCallback, useReducer, useEffect } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import "./Venue.scss";
-import { TemplateForm } from "./TemplateForm";
-import { DetailsForm } from "./DetailsForm";
 import { useHistory, useParams } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES } from "settings";
@@ -10,6 +8,8 @@ import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
+import { DetailsForm } from "./DetailsForm";
+import { TemplateForm } from "./TemplateForm";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -78,7 +78,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
         .get();
       if (!venueSnapshot.exists) return;
       const data = venueSnapshot.data() as Venue;
-      //find the template
+      // find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
@@ -130,7 +130,7 @@ const VenueWizardCreate: React.FC = () => {
   if (!user) {
     return (
       <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal show onHide={() => {}} showAuth="login" />
       </WithNavigationBar>
     );
   }

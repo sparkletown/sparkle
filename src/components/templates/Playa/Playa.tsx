@@ -25,7 +25,6 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
 import { updateLocationData } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
@@ -42,18 +41,19 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import firebase from "firebase/app";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import VideoChatLayer from "./VideoChatLayer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { UserVideoState } from "types/RelayMessage";
 import { unstable_batchedUpdates } from "react-dom";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import { PlayaBackground } from "./PlayaBackground";
-import { PlayaIconComponent } from "./PlayaIcon";
 import { IS_BURN } from "secrets";
 import BannerMessage from "components/molecules/BannerMessage";
 import UserList from "components/molecules/UserList";
+import { PlayaIconComponent } from "./PlayaIcon";
+import { PlayaBackground } from "./PlayaBackground";
+import VideoChatLayer from "./VideoChatLayer";
+import VenuePreview from "./VenuePreview";
 
 export type MenuConfig = {
   prompt?: string;
@@ -390,7 +390,6 @@ const Playa = () => {
               ? openVenues.filter((v) => !v.venue.adultContent)
               : openVenues
           );
-          //setOpenVenues(openVenues);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
     };
@@ -669,7 +668,6 @@ const Playa = () => {
             show={showVenueTooltip && !showUserTooltip && !showMenu}
           >
             {({ placement, arrowProps, show: _show, popper, ...props }) => (
-              // @ts-expect-error
               <div
                 {...props}
                 style={{
@@ -694,7 +692,6 @@ const Playa = () => {
           show={!showVenueTooltip && showUserTooltip && !showMenu}
         >
           {({ placement, arrowProps, show: _show, popper, ...props }) => (
-            // @ts-expect-error
             <div {...props} style={{ ...props.style, padding: "10px" }}>
               <div className="playa-venue-text">
                 <div className="playa-venue-maininfo">
@@ -720,7 +717,6 @@ const Playa = () => {
           }}
         >
           {({ placement, arrowProps, show: _show, popper, ...props }) => (
-            // @ts-expect-error
             <div {...props} style={{ ...props.style, padding: "10px" }}>
               <div className="playa-menu">
                 <div className="prompt">{menu?.prompt}</div>
@@ -855,7 +851,7 @@ const Playa = () => {
             users={usersInVenue}
             imageSize={50}
             disableSeeAll={false}
-            isCamp={true}
+            isCamp
             activity={venue?.activity ?? "partying"}
           />
         )}
@@ -929,7 +925,7 @@ const Playa = () => {
           <div className="playa-controls">
             {IS_BURN && isUserVenueOwner && (
               <div
-                className={`playa-controls-recenter show`}
+                className="playa-controls-recenter show"
                 onClick={changeDustStorm}
               >
                 <div
@@ -947,7 +943,7 @@ const Playa = () => {
             >
               <div className="playa-controls-recenter-btn" />
             </div>
-            <div className={"playa-controls-bikemode"} onClick={toggleBikeMode}>
+            <div className="playa-controls-bikemode" onClick={toggleBikeMode}>
               <div
                 className={`playa-controls-bikemode-btn ${
                   bikeMode ? "bike" : ""
@@ -962,7 +958,7 @@ const Playa = () => {
                 onClick={() =>
                   setZoom((zoom) => Math.min(zoom * ZOOM_INCREMENT, ZOOM_MAX))
                 }
-              ></div>
+              />
               <div
                 className={`playa-controls-zoom-out ${
                   zoom <= minZoom() ? "disabled" : ""
@@ -970,10 +966,10 @@ const Playa = () => {
                 onClick={() =>
                   setZoom((zoom) => Math.max(zoom / ZOOM_INCREMENT, minZoom()))
                 }
-              ></div>
+              />
             </div>
             <div className="playa-controls-shout" onClick={() => shout()}>
-              <div className="playa-controls-shout-btn"></div>
+              <div className="playa-controls-shout-btn" />
             </div>
             <form
               onSubmit={(event) => {
@@ -992,7 +988,7 @@ const Playa = () => {
           </div>
           <div className="chat-pop-up">
             <ChatDrawer
-              roomName={"PLAYA"}
+              roomName="PLAYA"
               title={`${PLAYA_VENUE_NAME} Chat`}
               chatInputPlaceholder="Chat"
             />

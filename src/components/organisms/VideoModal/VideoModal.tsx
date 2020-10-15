@@ -26,8 +26,8 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
     <Modal
       show={show}
       onHide={closeVideoModal}
-      centered={true}
-      size={"xl"}
+      centered
+      size="xl"
       backdrop="static"
     >
       <Modal.Header closeButton>
@@ -42,7 +42,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          ></iframe>
+          />
         </div>
       </div>
     </Modal>

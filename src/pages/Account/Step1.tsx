@@ -17,7 +17,7 @@ const Step1 = () => {
         src={PLAYA_IMAGE}
         alt={`${PLAYA_VENUE_NAME} Background Map`}
       />
-      <AuthenticationModal show={true} onHide={() => {}} showAuth="register" />
+      <AuthenticationModal show onHide={() => {}} showAuth="register" />
     </div>
   );
 };

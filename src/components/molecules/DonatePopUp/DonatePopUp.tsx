@@ -6,14 +6,14 @@ import {
   BURNING_MAN_DONATION_SITE,
   BURNING_MAN_DONATION_TEXT,
   BURNING_MAN_DONATION_TITLE,
-} from "../../../../src/settings";
+} from "../../../settings";
 
 export const DonatePopUp = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
     <InformationLeftColumn
-      venueLogoPath={"heart"}
+      venueLogoPath="heart"
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >

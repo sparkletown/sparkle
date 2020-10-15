@@ -22,8 +22,9 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
   const pluralTitle = `${attendance} people in ${room.title}`;
   const title = attendance === 1 ? singularTitle : pluralTitle;
 
-  const className =
-    "d-flex room-attendance my-2" + (positioned ? " positioned" : "");
+  const className = `d-flex room-attendance my-2${
+    positioned ? " positioned" : ""
+  }`;
   const style = positioned
     ? { left: room.attendance_x, top: room.attendance_y }
     : undefined;

@@ -67,10 +67,10 @@ export const RoomModal: React.FC<PropsType> = ({
           {usersInRoom.map((user, index) => {
             return (
               index + 1 <= MAX_SHOWN_AVATARS && (
-                <div key={index} className={"user"}>
+                <div key={index} className="user">
                   <UserProfilePicture
                     user={user}
-                    profileStyle={"profile-avatar"}
+                    profileStyle="profile-avatar"
                     setSelectedUserProfile={() => {}}
                     miniAvatars={miniAvatars}
                     imageSize={undefined}
@@ -148,8 +148,8 @@ export const RoomModal: React.FC<PropsType> = ({
             <a
               className="btn btn-active btn-block"
               href={room.url}
-              rel={"noopener noreferrer"}
-              target={"_blank"}
+              rel="noopener noreferrer"
+              target="_blank"
               onClick={enter}
             >
               Join the room

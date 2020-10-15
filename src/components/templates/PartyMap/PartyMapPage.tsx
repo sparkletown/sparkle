@@ -2,20 +2,20 @@ import React, { useState } from "react";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
-import RoomList from "./components/RoomList";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { updateLocationData } from "utils/useLocationUpdateEffect";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { PartyTitle } from "./components";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
-import RoomModal from "./RoomModal";
 import { venueLandingUrl } from "utils/url";
+import RoomModal from "./RoomModal";
+import { PartyTitle } from "./components";
+import RoomList from "./components/RoomList";
 import { Map } from "./components/Map/Map";
 
 const PartyMap = () => {

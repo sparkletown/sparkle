@@ -2,7 +2,7 @@ import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
 
-import "../../../templates/PartyMap/components/ScheduleItem/ScheduleItem.scss";
+import "../../PartyMap/components/ScheduleItem/ScheduleItem.scss";
 
 interface PropsType {
   event: VenueEvent;

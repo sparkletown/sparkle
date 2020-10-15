@@ -1,9 +1,9 @@
 import firebase from "firebase/app";
 
+import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 import { QuestionsFormData } from "./Questions";
-import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 type LocationUpdateData = {
   lastSeenAt: number;

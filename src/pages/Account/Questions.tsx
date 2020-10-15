@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
@@ -10,6 +9,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { updateUserProfile } from "./helpers";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -56,7 +56,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="page-container">
-      <div className="hero-logo sparkle"></div>
+      <div className="hero-logo sparkle" />
       <div className="login-container">
         <h2>Now complete your profile by answering some short questions</h2>
         <p>This will help your fellow partygoers break the ice</p>

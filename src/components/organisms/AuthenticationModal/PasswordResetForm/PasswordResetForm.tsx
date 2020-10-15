@@ -46,7 +46,7 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
     <div className="form-container">
       <h2>Reset Password</h2>
       <div className="secondary-action">
-        {`Finished resetting your password?`}
+        Finished resetting your password?
         <br />
         <span className="link" onClick={displayLoginForm}>
           Log in!

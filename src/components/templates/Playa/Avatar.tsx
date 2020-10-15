@@ -3,8 +3,8 @@ import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, PLAYA_AVATAR_SIZE } from "settings";
-import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
+import { Shout } from "./Playa";
 import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
 
@@ -59,7 +59,7 @@ export const Avatar: React.FunctionComponent<PropsType> = ({
         }}
       >
         {!isVideoRoomOwnedByMe && (
-          <div className={`avatar-name-container`}>
+          <div className="avatar-name-container">
             {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
           </div>
         )}

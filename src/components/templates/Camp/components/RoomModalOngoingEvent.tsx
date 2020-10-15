@@ -3,7 +3,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { getCurrentEvent } from "utils/event";
 import { VenueEvent } from "types/VenueEvent";
 
-import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
+import "../../PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
 
 interface PropsType {
   room: CampRoomData;
@@ -20,13 +20,11 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
 }) => {
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
-    roomEvents &&
-    roomEvents.length > 0 &&
-    (currentEvent ? currentEvent : roomEvents[0]);
+    roomEvents && roomEvents.length > 0 && (currentEvent || roomEvents[0]);
   const whatsOnText = currentEvent ? "What's on now" : "What's on next";
 
   const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+    return roomUrl.includes("http") ? roomUrl : `//${roomUrl}`;
   };
 
   const isExternalLink = (url: string) =>

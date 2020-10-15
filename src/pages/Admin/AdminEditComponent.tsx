@@ -17,10 +17,6 @@ import {
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import {
-  editPlacementCastSchema,
-  editPlacementSchema,
-} from "./Venue/DetailsValidationSchema";
 import * as Yup from "yup";
 import { useForm, FieldErrors } from "react-hook-form";
 import { useUser } from "hooks/useUser";
@@ -28,11 +24,15 @@ import { PlacementInput } from "api/admin";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { VenuePlacementState, Venue } from "types/Venue";
 import { ExtractProps } from "types/utility";
-import { SubmitButton } from "./Venue/DetailsForm";
 import { AnyVenue } from "types/Firestore";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import { Link } from "react-router-dom";
 import { isCampVenue } from "types/CampVenue";
+import { SubmitButton } from "./Venue/DetailsForm";
+import {
+  editPlacementCastSchema,
+  editPlacementSchema,
+} from "./Venue/DetailsValidationSchema";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 type FormErrors = FieldErrors<Required<FormValues>>;
@@ -160,7 +160,7 @@ const AdminEditComponent: React.FC = () => {
 
   const [formError, setFormError] = useState(false);
 
-  //register the icon position data
+  // register the icon position data
   useEffect(() => {
     register("placement");
     register("width");
@@ -408,10 +408,11 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
 
-    placementDivRef.current?.scrollTo(
-      (venue.placement?.x ?? 0) - clientWidth / 2,
-      (venue.placement?.y ?? 0) - clientHeight / 2
-    );
+    placementDivRef.current &&
+      placementDivRef.current.scrollTo(
+        (venue.placement?.x ?? 0) - clientWidth / 2,
+        (venue.placement?.y ?? 0) - clientHeight / 2
+      );
   }, [venue]);
 
   return (
@@ -424,7 +425,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           </div>
           {venue?.placementRequests && (
             <div className="banner">
-              <h4 className="italic">{`Camp owner's placement requests:`}</h4>
+              <h4 className="italic">Camp owner's placement requests:</h4>
               {venue?.placementRequests}
             </div>
           )}
@@ -434,9 +435,9 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
             Venue icon which will appear on the map
           </h4>
           <ImageCollectionInput
-            collectionPath={"assets/mapIcons2"}
+            collectionPath="assets/mapIcons2"
             disabled={false}
-            fieldName={"mapIconImage"}
+            fieldName="mapIconImage"
             register={register}
             imageUrl={values.mapIconImageUrl}
             containerClassName="input-square-container"
@@ -458,7 +459,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           >
             <PlayaContainer
               interactive
-              resizable={true}
+              resizable
               coordinatesBoundary={{
                 width: PLAYA_WIDTH,
                 height: PLAYA_HEIGHT,
@@ -488,7 +489,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               name="addressText"
               ref={register}
               className="align-left"
-              placeholder={`Example: 8:00 & B`}
+              placeholder="Example: 8:00 & B"
             />
             {errors.addressText && (
               <span className="input-error">{errors.addressText.message}</span>
@@ -503,7 +504,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
               name="notes"
               ref={register}
               className="align-left"
-              placeholder={`Example: requested a quiet area`}
+              placeholder="Example: requested a quiet area"
             />
             {errors.notes && (
               <span className="input-error">{errors.notes.message}</span>
@@ -514,7 +515,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
           <div>
             {formError && (
               <span className="input-error">
-                {"An error occured when saving the form"}
+                An error occured when saving the form
               </span>
             )}
             <SubmitButton

@@ -5,7 +5,6 @@ import { debounce } from "lodash";
 
 import { isChatValid } from "validation";
 
-import ChatForm from "./ChatForm";
 import "./Chatbox.scss";
 import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
@@ -14,6 +13,7 @@ import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import ChatForm from "./ChatForm";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -74,8 +74,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         .filter(isChatValid)
         .filter((chat) =>
           room
-            ? //@ts-ignore
-              chat.type === "global" || //@debt can privateChats or venueChats ever be global?
+            ? // @ts-ignore
+              chat.type === "global" || // @debt can privateChats or venueChats ever be global?
               (chat.type === "room" && chat.to === room)
             : true
         )

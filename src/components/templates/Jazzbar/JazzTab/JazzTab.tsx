@@ -18,9 +18,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
-import { JAZZBAR_TABLES } from "./constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { JAZZBAR_TABLES } from "./constants";
 import "./JazzTab.scss";
 
 interface PropsType {
@@ -43,7 +43,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
     users: state.firestore.ordered.partygoers,
   }));
 
-  const venueToUse = venue ? venue : firestoreVenue;
+  const venueToUse = venue || firestoreVenue;
 
   const venueUsers = users
     ? users.filter((user) => user.lastSeenIn === venueToUse?.name)

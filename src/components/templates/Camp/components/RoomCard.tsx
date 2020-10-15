@@ -1,10 +1,10 @@
 import React from "react";
-import { RoomAttendance } from "./RoomAttendance";
 import { formatUtcSeconds } from "utils/time";
 import { CampRoomData } from "types/CampRoomData";
 import { useSelector } from "hooks/useSelector";
 import { getCurrentEvent } from "utils/event";
-import "../../../templates/PartyMap/components/RoomCard/RoomCard.scss";
+import { RoomAttendance } from "./RoomAttendance";
+import "../../PartyMap/components/RoomCard/RoomCard.scss";
 
 interface PropsType {
   room: CampRoomData;
@@ -27,9 +27,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   const eventToDisplay =
-    roomEvents &&
-    roomEvents.length > 0 &&
-    (currentEvent ? currentEvent : roomEvents[0]);
+    roomEvents && roomEvents.length > 0 && (currentEvent || roomEvents[0]);
 
   return (
     <div
@@ -38,9 +36,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       id={`room-card-${room.title}`}
     >
       <div>
-        <span className="icon-1"></span>
-        <span className="icon-2"></span>
-        <span className="icon-3"></span>
+        <span className="icon-1" />
+        <span className="icon-2" />
+        <span className="icon-3" />
       </div>
       {room.image_url && (
         <img src={room.image_url} className="card_room-pic" alt={room.title} />

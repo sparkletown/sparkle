@@ -20,11 +20,7 @@ export const RadioModal: React.FunctionComponent<PropsType> = ({
         We recommend turning on the global burner radio station as you rove
         round the {PLAYA_VENUE_NAME}!
       </div>
-      <img
-        className="img-radio"
-        src={"/radio-icon-color.png"}
-        alt="radio-icon"
-      />
+      <img className="img-radio" src="/radio-icon-color.png" alt="radio-icon" />
       <input
         type="range"
         id="vol"

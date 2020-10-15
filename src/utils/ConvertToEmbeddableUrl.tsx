@@ -1,6 +1,6 @@
 export const ConvertToEmbeddableUrl = (
   url: string | undefined,
-  autoplay: boolean = true
+  autoplay = true
 ) => {
   if (url?.includes("youtube")) {
     url = url?.replace("watch?v=", "embed/");
@@ -13,7 +13,7 @@ export const ConvertToEmbeddableUrl = (
     url += url.includes("?") ? "&" : "?";
     url += "mute=0";
   } else {
-    url = url?.includes("http") ? url : "//" + url;
+    url = url?.includes("http") ? url : `//${url}`;
   }
   if (autoplay) {
     url += url.includes("?") ? "&" : "?";

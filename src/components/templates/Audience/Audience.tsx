@@ -379,7 +379,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                               <div className="user">
                                 <UserProfilePicture
                                   user={seatedPartygoer}
-                                  profileStyle={"profile-avatar"}
+                                  profileStyle="profile-avatar"
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }
@@ -406,7 +406,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
               title={`${venue.name ?? "Audience"} Chat`}
               roomName={venue.name}
               chatInputPlaceholder="Chat"
-              defaultShow={true}
+              defaultShow
             />
           </div>
           <UserProfileModal

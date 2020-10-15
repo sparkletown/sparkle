@@ -13,6 +13,7 @@ jobs:
             - run: npm run init
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
+            - run: npm run test
   smoke-test:
     executor:
       name: node/default

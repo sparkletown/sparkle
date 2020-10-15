@@ -29,7 +29,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     setMessage("Checking password...");
 
     const checkPassword = firebase.functions().httpsCallable("checkPassword");
-    checkPassword({ venue: venueId, password: password })
+    checkPassword({ venue: venueId, password })
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");
@@ -48,9 +48,9 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           Got an invite? Join in with the secret password
         </p>
         <input
-          className={
-            "secret-password-input " + (invalidPassword ? " is-invalid" : "")
-          }
+          className={`secret-password-input ${
+            invalidPassword ? " is-invalid" : ""
+          }`}
           required
           placeholder="password"
           autoFocus

@@ -6,8 +6,8 @@ import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
-import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
+import { DEFAULT_PROFILE_VALUES } from "../constants";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -104,15 +104,15 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             onClick={() => toggleKidsMode()}
           />
           <label
-            htmlFor={"chk-anonMode"}
+            htmlFor="chk-anonMode"
             className={`checkbox ${profile?.anonMode && "checkbox-checked"}`}
           >
             Anonymous Mode
           </label>
           <input
             type="checkbox"
-            name={"anonMode"}
-            id={"chk-anonMode"}
+            name="anonMode"
+            id="chk-anonMode"
             defaultChecked={profile?.anonMode || false}
             onClick={() => toggleAnonMode()}
           />

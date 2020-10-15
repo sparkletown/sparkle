@@ -5,6 +5,7 @@ import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
 import AvatarImage from "./AvatarImage";
+
 interface PropsType {
   user: WithId<User>;
   state: UserState;

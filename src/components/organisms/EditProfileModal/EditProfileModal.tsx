@@ -36,7 +36,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
     profileQuestions.map(
       (question: QuestionType) =>
         (defaultValues[question.name] = profile
-          ? //@ts-ignore
+          ? // @ts-ignore
             profile[question.name]
           : undefined) // no idea what's going on here. Typescript will clarify.
     );

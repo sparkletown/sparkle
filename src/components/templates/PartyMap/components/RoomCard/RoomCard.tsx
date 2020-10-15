@@ -1,9 +1,9 @@
 import React from "react";
 import "./RoomCard.scss";
-import RoomAttendance from "../RoomAttendance";
-import { formatMinute } from "utils/time";
+import { formatMinute, getCurrentEvent } from "utils/time";
 import { RoomData } from "types/RoomData";
-import { getCurrentEvent } from "utils/time";
+
+import RoomAttendance from "../RoomAttendance";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -20,9 +20,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
 }) => {
   const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
   const eventToDisplay =
-    room.events &&
-    room.events.length > 0 &&
-    (currentEvent ? currentEvent : room.events[0]);
+    room.events && room.events.length > 0 && (currentEvent || room.events[0]);
 
   return (
     <div
@@ -31,9 +29,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
       id={`room-card-${room.title}`}
     >
       <div className="card-animation card-animation_music">
-        <span className="icon-1"></span>
-        <span className="icon-2"></span>
-        <span className="icon-3"></span>
+        <span className="icon-1" />
+        <span className="icon-2" />
+        <span className="icon-3" />
       </div>
       {room.image && (
         <img

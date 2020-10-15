@@ -151,7 +151,7 @@ const createFirestoreRoomInput = async (
   const storageRef = firebase.storage().ref();
 
   const urlRoomName = createUrlSafeName(
-    input.title + Math.random().toString() //room titles are not necessarily unique
+    input.title + Math.random().toString() // room titles are not necessarily unique
   );
   type ImageNaming = {
     fileKey: RoomImageFileKeys;

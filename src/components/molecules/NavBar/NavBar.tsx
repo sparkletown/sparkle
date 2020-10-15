@@ -9,7 +9,6 @@ import { isChatValid } from "validation";
 import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
 import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import { RadioModal } from "../../organisms/RadioModal/RadioModal";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { useUser } from "hooks/useUser";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
@@ -24,16 +23,17 @@ import {
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
-import OnlineStats from "../OnlineStats";
-import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
 import { useRadio } from "hooks/useRadio";
-import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
-import PlayaTime from "../PlayaTime";
-import PlayaAddress from "../PlayaAddress";
 import { venueInsideUrl } from "utils/url";
 import { VenueTemplate } from "types/VenueTemplate";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "react-redux-firebase";
+import OnlineStats from "../OnlineStats";
+import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
+import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
+import PlayaTime from "../PlayaTime";
+import PlayaAddress from "../PlayaAddress";
+import { RadioModal } from "../../organisms/RadioModal/RadioModal";
 
 interface PropsType {
   redirectionUrl?: string;
@@ -66,7 +66,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
-    venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; //@debt typing does this exist?
+    venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; // @debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
@@ -246,7 +246,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       trigger="click"
                       placement="bottom-end"
                       overlay={ticketsPopover}
-                      rootClose={true}
+                      rootClose
                     >
                       <span className="tickets-icon">
                         <FontAwesomeIcon icon={faTicketAlt} />
@@ -258,10 +258,10 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       trigger="click"
                       placement="bottom-end"
                       overlay={giftPopover}
-                      rootClose={true}
+                      rootClose
                     >
                       <span className="private-chat-icon">
-                        <div className="navbar-link-gift"></div>
+                        <div className="navbar-link-gift" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -270,7 +270,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       trigger="click"
                       placement="bottom-end"
                       overlay={chatPopover}
-                      rootClose={true}
+                      rootClose
                     >
                       <span className="private-chat-icon">
                         {!!numberOfUnreadMessages &&
@@ -279,7 +279,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                               {numberOfUnreadMessages}
                             </div>
                           )}
-                        <div className="navbar-link-message"></div>
+                        <div className="navbar-link-message" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -288,21 +288,21 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                       trigger="click"
                       placement="bottom-end"
                       overlay={radioPopover}
-                      rootClose={true}
+                      rootClose
                       defaultShow={showRadioOverlay}
                     >
                       <div
                         className={`profile-icon navbar-link-radio ${
                           volume === 0 && "off"
                         }`}
-                      ></div>
+                      />
                     </OverlayTrigger>
                   )}
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={profilePopover}
-                    rootClose={true}
+                    rootClose
                   >
                     <div className="navbar-link-profile">
                       <img

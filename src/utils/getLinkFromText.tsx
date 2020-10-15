@@ -19,6 +19,6 @@ export const getLinkFromText = (text: string) => {
           {word}{" "}
         </a>
       );
-    else return <span key={index}>{word} </span>;
+    return <span key={index}>{word} </span>;
   });
 };

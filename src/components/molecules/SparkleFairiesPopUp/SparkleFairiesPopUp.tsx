@@ -7,7 +7,7 @@ import {
   PLAYA_INFO_URL,
   REALITY_RANGERS_NAME,
   REALITY_RANGERS_URL,
-} from "../../../../src/settings";
+} from "../../../settings";
 
 interface PropsType {
   setShowEventSchedule: Function;
@@ -20,13 +20,15 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
 
   return (
     <InformationLeftColumn
-      venueLogoPath={"ambulance"}
+      venueLogoPath="ambulance"
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >
       <InformationCard title="Information">
         <div style={{ textAlign: "center" }}>
-          <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>
+          <p className="title-sidebar">
+            If you're looking for information, please check out these resources:
+          </p>
           <a
             href={PLAYA_INFO_URL}
             className="btn btn-primary join-button"

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
-import LocalParticipant from "./LocalParticipant";
-import RemoteParticipant from "./RemoteParticipant";
 import { useUser } from "hooks/useUser";
 import { useKeyedSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { User } from "types/User";
+import RemoteParticipant from "./RemoteParticipant";
+import LocalParticipant from "./LocalParticipant";
 
 interface RoomProps {
   roomName: string;
@@ -89,8 +89,8 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          // @ts-ignored
+          trackPublication.track.stop(); // @debt typing does this work?
         });
         localRoom.disconnect();
       }

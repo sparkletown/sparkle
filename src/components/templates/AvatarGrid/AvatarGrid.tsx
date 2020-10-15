@@ -8,10 +8,10 @@ import { User } from "types/User";
 import "./AvatarGrid.scss";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { AvatarGridRoom } from "types/AvatarGrid";
-import Announcement from "./Announcement";
-import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { useVenueId } from "hooks/useVenueId";
+import Announcement from "./Announcement";
+import { RoomModal } from "./RoomModal";
 
 type Props = {
   venueName: string;
@@ -87,18 +87,19 @@ const AvatarGrid = () => {
     if (!seatedPartygoer) {
       takeSeat(row, column);
     }
-    venue?.spaces?.forEach((room) => {
-      if (
-        !seatedPartygoer &&
-        row >= room.row &&
-        row <= room.row + room.height - 1 &&
-        column >= room.column &&
-        column <= room.column + room.width - 1
-      ) {
-        setSelectedRoom(room);
-        setIsRoomModalOpen(true);
-      }
-    });
+    venue?.spaces &&
+      venue.spaces.forEach((room) => {
+        if (
+          !seatedPartygoer &&
+          row >= room.row &&
+          row <= room.row + room.height - 1 &&
+          column >= room.column &&
+          column <= room.column + room.width - 1
+        ) {
+          setSelectedRoom(room);
+          setIsRoomModalOpen(true);
+        }
+      });
   };
 
   const useKeyPress = function (targetKey: string) {
@@ -142,59 +143,59 @@ const AvatarGrid = () => {
       bottom: false,
     };
 
-    venue?.spaces?.forEach((room) => {
-      if (
-        room.column === column &&
-        row >= room.row &&
-        row < room.row + room.height
-      ) {
-        borders.left = true;
-      }
-      if (
-        room.row === row &&
-        column >= room.column &&
-        column < room.column + room.width
-      ) {
-        borders.top = true;
-      }
-      if (
-        room.column + room.width - 1 === column &&
-        row >= room.row &&
-        row < room.row + room.height
-      ) {
-        borders.right = true;
-      }
-      if (
-        room.row + room.height - 1 === row &&
-        column >= room.column &&
-        column < room.column + room.width
-      ) {
-        borders.bottom = true;
-      }
-    });
+    venue?.spaces &&
+      venue.spaces.forEach((room) => {
+        if (
+          room.column === column &&
+          row >= room.row &&
+          row < room.row + room.height
+        ) {
+          borders.left = true;
+        }
+        if (
+          room.row === row &&
+          column >= room.column &&
+          column < room.column + room.width
+        ) {
+          borders.top = true;
+        }
+        if (
+          room.column + room.width - 1 === column &&
+          row >= room.row &&
+          row < room.row + room.height
+        ) {
+          borders.right = true;
+        }
+        if (
+          room.row + room.height - 1 === row &&
+          column >= room.column &&
+          column < room.column + room.width
+        ) {
+          borders.bottom = true;
+        }
+      });
     return borders;
   };
 
   const hitRoom = useCallback(
     (r: number, c: number) => {
       let isHitting = false;
-      venue?.spaces?.forEach((room) => {
-        if (
-          r >= room.row &&
-          r <= room.row + room.height - 1 &&
-          c >= room.column &&
-          c <= room.column + room.width - 1
-        ) {
-          setSelectedRoom(room);
-          setIsRoomModalOpen(true);
-          isHitting = true;
-        } else {
-          if (isRoomModalOpen) {
+      venue?.spaces &&
+        venue.spaces.forEach((room) => {
+          if (
+            r >= room.row &&
+            r <= room.row + room.height - 1 &&
+            c >= room.column &&
+            c <= room.column + room.width - 1
+          ) {
+            setSelectedRoom(room);
+            setIsRoomModalOpen(true);
+            isHitting = true;
+          } else if (isRoomModalOpen) {
             setSelectedRoom(undefined);
             setIsRoomModalOpen(false);
           }
-        }
-      });
+        });
       return isHitting;
     },
     [isRoomModalOpen, venue]
@@ -251,7 +252,6 @@ const AvatarGrid = () => {
           return;
         }
         takeSeat(row, column + 1);
-        return;
       }
     }
   }, [
@@ -324,7 +324,7 @@ const AvatarGrid = () => {
                         <div className={isMe ? "user me" : "user"}>
                           <UserProfilePicture
                             user={seatedPartygoer}
-                            profileStyle={"profile-avatar"}
+                            profileStyle="profile-avatar"
                             setSelectedUserProfile={setSelectedUserProfile}
                             miniAvatars={venue?.miniAvatars}
                             imageSize={undefined}

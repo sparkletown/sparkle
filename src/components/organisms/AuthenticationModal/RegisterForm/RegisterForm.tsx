@@ -3,10 +3,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory, useParams } from "react-router-dom";
-import { CODE_CHECK_URL } from "secrets";
+import { CODE_CHECK_URL, IS_BURN } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
-import { IS_BURN } from "secrets";
+
 import { TICKET_URL } from "settings";
 
 interface PropsType {
@@ -195,7 +195,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         />
       </form>
       <div className="secondary-action">
-        {`Forgot your password?`}
+        Forgot your password?
         <br />
         <span className="link" onClick={displayPasswordResetForm}>
           Reset your password

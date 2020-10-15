@@ -62,7 +62,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
       case "table":
         return table && sendTableChat(currentUserUID, table, text);
       default:
-        return;
     }
   };
 

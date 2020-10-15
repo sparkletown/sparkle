@@ -6,12 +6,12 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { Purchase } from "types/Purchase";
 import "./PaymentModal.scss";
-import PaymentForm from "./PaymentForm";
-import PaymentConfirmation from "./PaymentConfirmation";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import PaymentConfirmation from "./PaymentConfirmation";
+import PaymentForm from "./PaymentForm";
 
 interface PropsType {
   show: boolean;

@@ -1,9 +1,9 @@
 import React, { CSSProperties } from "react";
 import { XYCoord, useDragLayer } from "react-dnd";
+import { Dimensions } from "types/utility";
 import { ItemTypes } from "./ItemTypes";
 import { SubvenueDragPreview } from "./SubvenueDragPreview";
 import { snapToGrid } from "./snapToGrid";
-import { Dimensions } from "types/utility";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",

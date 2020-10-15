@@ -6,15 +6,15 @@ import React, {
   useEffect,
 } from "react";
 import { useDrop } from "react-dnd";
+import update from "immutability-helper";
+import { DEFAULT_MAP_ICON_URL } from "settings";
+import ReactResizeDetector from "react-resize-detector";
+import { Dimensions } from "types/utility";
 import { ItemTypes } from "./ItemTypes";
 import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
-import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL } from "settings";
 import { CustomDragLayer } from "./CustomDragLayer";
-import ReactResizeDetector from "react-resize-detector";
-import { Dimensions } from "types/utility";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -84,7 +84,7 @@ export const Container: React.FC<PropsType> = (props) => {
       coordinateBoundary: number
     ) => (coordinateBoundary * val) / imageDims[dimension];
 
-    //need to return the unscaled values
+    // need to return the unscaled values
     const unscaledBoxes = Object.keys(boxes).reduce(
       (acc, val) => ({
         ...acc,
@@ -235,7 +235,7 @@ export const Container: React.FC<PropsType> = (props) => {
                     }%`,
                     width: resizable
                       ? `${otherIcons[key].width}%`
-                      : otherIcons[key].width, //resizable dimensions are in percentages
+                      : otherIcons[key].width, // resizable dimensions are in percentages
                     height: resizable
                       ? `${otherIcons[key].height}%`
                       : otherIcons[key].width,

@@ -1,8 +1,8 @@
 import React from "react";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
-import Camp from "./Camp";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
+import Camp from "./Camp";
 import CampAdmin from "./CampAdmin";
 
 export const CampRouter: React.FunctionComponent = () => {

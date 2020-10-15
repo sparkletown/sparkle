@@ -32,7 +32,7 @@ export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-        ></iframe>
+        />
         {config.buttons &&
           config.buttons.map((button) => (
             <button

@@ -117,7 +117,7 @@ export const formatHourAndMinute = (utcSeconds) => {
   const date = new Date(utcSeconds * 1000);
   const hh = String(date.getHours()).padStart(2, "0");
   const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
+  return `${hh}:${mm}`;
 };
 
 export const daysFromEndOfEvent = (utcSeconds, durationMinutes) => {
@@ -139,7 +139,7 @@ export const daysFromStartOfEvent = (utcSeconds) => {
 export const dateEventTimeFormat = (date) => {
   const hh = String(date.getHours()).padStart(2, "0");
   const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
+  return `${hh}:${mm}`;
 };
 
 export const getCurrentTimeInUTCSeconds = () => {

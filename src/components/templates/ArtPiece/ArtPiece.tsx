@@ -51,21 +51,21 @@ const ArtPiece = () => {
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          ></iframe>
+          />
           <div className="video-chat-wrapper">
             <Room
               roomName={venue.name}
               setUserList={() => null}
               hasChairs={false}
-              defaultMute={true}
+              defaultMute
             />
           </div>
           <div className="chat-pop-up" style={{ zIndex: 100 }}>
             <ChatDrawer
-              title={"Art Piece Chat"}
+              title="Art Piece Chat"
               roomName={venue.name}
               chatInputPlaceholder="Chat"
-              defaultShow={true}
+              defaultShow
             />
           </div>
         </div>

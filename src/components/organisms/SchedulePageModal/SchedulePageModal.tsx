@@ -4,11 +4,11 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import firebase from "firebase/app";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
-import { formatDate } from "../../../utils/time";
-import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { REFETCH_SCHEDULE_MS } from "settings";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
+import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
+import { formatDate } from "../../../utils/time";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -89,7 +89,8 @@ export const SchedulePageModal: React.FunctionComponent = () => {
                     )
                   ),
                 });
-              } else return undefined;
+              }
+              return undefined;
             }
           )
           .sort(
@@ -141,6 +142,5 @@ export const SchedulePageModal: React.FunctionComponent = () => {
         </div>
       </div>
     </div>
-    //</Modal>
   );
 };

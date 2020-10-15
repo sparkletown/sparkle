@@ -53,9 +53,9 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="page-container">
-      <div className="hero-logo sparkle"></div>
+      <div className="hero-logo sparkle" />
       <div className="secondary-action">
-        {`Don't have an account yet?`}
+        Don't have an account yet?
         <br />
         <Link to={`/account/register${location.search}`}>
           Register instead!

@@ -154,7 +154,7 @@ const WelcomePage: React.FunctionComponent = () => {
             frameBorder="0"
             allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          ></iframe>
+          />
         </div>
         <button
           className="btn btn-primary btn-block btn-centered help-build-button"

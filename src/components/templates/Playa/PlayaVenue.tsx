@@ -44,9 +44,8 @@ const PlayaVenue = ({
         />
         {selectedVenueId === venue.id && <div className="selected" />}
       </div>
-      <Overlay target={venueRef.current} show={true}>
+      <Overlay target={venueRef.current} show>
         {({ placement, arrowProps, show: _show, popper, ...props }) => (
-          // @ts-expect-error
           <div
             {...props}
             style={{

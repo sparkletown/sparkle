@@ -1,6 +1,5 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import getQueryParameters from "utils/getQueryParameters";
 import { RouterLocation } from "types/RouterLocation";
@@ -11,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
 import { IS_BURN } from "secrets";
+import { updateUserProfile } from "./helpers";
 
 interface PropsType {
   location: RouterLocation;
@@ -101,7 +101,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="page-container code-of-conduct-container">
-      <div className="kansas-smittys-logo"></div>
+      <div className="kansas-smittys-logo" />
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">

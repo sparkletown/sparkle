@@ -22,12 +22,14 @@ export const useRadio = (audio?: HTMLAudioElement) => {
   useEffect(() => {
     if (audio) {
       audio.volume = volume / 100;
-      audio?.play();
+      audio.play();
     }
   }, [volume, audio]);
 
   useEffect(() => {
-    audio?.play();
+    if (audio) {
+      audio.play();
+    }
   }, [audio]);
 
   return { volume, setVolume };

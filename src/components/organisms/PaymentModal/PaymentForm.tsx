@@ -6,10 +6,10 @@ import "firebase/functions";
 import { useParams } from "react-router-dom";
 import { VenueEvent } from "types/VenueEvent";
 import TabNavigation from "components/molecules/TabNavigation";
-import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";
 import { Stripe, StripeElements } from "@stripe/stripe-js";
 import { WithId } from "utils/id";
+import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 
 interface PropsType {
   setIsPaymentSuccess: (value: boolean) => void;
@@ -54,7 +54,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
       } = (
         await firebase.functions().httpsCallable("payment-createPaymentIntent")(
           {
-            venueId: venueId,
+            venueId,
             eventId: event.id,
           }
         )

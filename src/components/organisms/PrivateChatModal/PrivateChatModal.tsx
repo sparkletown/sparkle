@@ -5,7 +5,6 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Chatbox from "components/organisms/Chatbox";
 import { formatUtcSeconds } from "utils/time";
 import { User } from "types/User";
-import { setPrivateChatMessageIsRead } from "./helpers";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
@@ -13,6 +12,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME } from "settings";
+import { setPrivateChatMessageIsRead } from "./helpers";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;

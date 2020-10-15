@@ -4,14 +4,14 @@ import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
-import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
-import { getRandomInt } from "../../../utils/getRandomInt";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   DUST_STORM_TEXT_1,
   DUST_STORM_TEXT_2,
 } from "settings";
+import { OnlineStatsData } from "../../../types/OnlineStatsData";
+import { getRandomInt } from "../../../utils/getRandomInt";
 
 interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;

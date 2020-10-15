@@ -36,7 +36,7 @@ const Step4 = () => {
             Test microphone
           </button>
           <button
-            className={`btn btn-primary btn-block btn-centered`}
+            className="btn btn-primary btn-block btn-centered"
             onClick={() => history.push(`/enter/step5`)}
           >
             Continue

@@ -195,7 +195,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       >
         <Modal.Body>
           <div className="modal-container modal-container_message">
-            <p>{`Can't join this table because it's been locked.`}</p>
+            <p>Can't join this table because it's been locked.</p>
             <p>Perhaps ask in the chat?</p>
             <button
               type="button"

@@ -56,7 +56,7 @@ export const Map: React.FC<PropsType> = ({
             .map((room, idx) => (
               <RoomAttendance
                 room={room}
-                positioned={true}
+                positioned
                 attendance={attendances[room.title]}
                 key={idx}
                 onClick={() => openRoomModal(room)}

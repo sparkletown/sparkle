@@ -39,7 +39,6 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
       case "table":
         return chat.from;
       default:
-        return;
     }
   };
 

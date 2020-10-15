@@ -1,4 +1,6 @@
 import { VenueTemplate } from "types/VenueTemplate";
+import { venueLandingUrl } from "utils/url";
+import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
@@ -7,8 +9,6 @@ import {
   PROJECT_ID,
   IS_BURN,
 } from "./secrets";
-import { venueLandingUrl } from "utils/url";
-import { CSSProperties } from "react";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";

@@ -3,10 +3,10 @@ import React, { useMemo } from "react";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 
-import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
 import { VenuePlacementState } from "types/Venue";
 import { PLAYA_HEIGHT, PLAYA_WIDTH } from "settings";
+import { Container, SubVenueIconMap } from "./Container";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venueId?: string;

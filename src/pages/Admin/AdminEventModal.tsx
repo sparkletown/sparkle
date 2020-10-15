@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import { createEvent, EventInput, updateEvent } from "api/admin";
 import { WithId } from "utils/id";
+
 dayjs.extend(isSameOrAfter);
 
 interface PropsType {
@@ -31,7 +32,7 @@ const validationSchema = Yup.object().shape<EventInput>({
     )
     .test(
       "start_date_future",
-      "Start date must be in the futur",
+      "Start date must be in the future",
       (start_date) => {
         return dayjs(start_date).isSameOrAfter(dayjs(), "day");
       }
@@ -136,12 +137,13 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           </div>
           <div className="input-group">
             <label>Start Time</label>
-            <span
-              style={{ fontSize: 13 }}
-            >{`Please enter these in your local timezone.`}</span>{" "}
-            <span
-              style={{ fontSize: 13 }}
-            >{`Don't worry- your event times will be automatically shown in the local times of burners round the world.`}</span>
+            <span style={{ fontSize: 13 }}>
+              Please enter these in your local timezone.
+            </span>{" "}
+            <span style={{ fontSize: 13 }}>
+              Don't worry - your event times will be automatically shown in the
+              local times of burners round the world.
+            </span>
             <input
               type="date"
               min={dayjs().format("YYYY-MM-DD")}

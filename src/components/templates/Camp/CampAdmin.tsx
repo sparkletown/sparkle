@@ -18,8 +18,8 @@ const CampAdmin: React.FC = () => {
 
   const updateBanner = (message: string | null) => {
     const params = {
-      venueId: venueId,
-      bannerMessage: message ? message : "",
+      venueId,
+      bannerMessage: message || "",
     };
     firebase
       .functions()

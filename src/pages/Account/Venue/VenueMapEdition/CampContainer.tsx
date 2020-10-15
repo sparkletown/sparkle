@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 
-import { Container, SubVenueIconMap } from "./Container";
 import { CampVenue } from "types/CampVenue";
 import { ExtractProps } from "types/utility";
+import { Container, SubVenueIconMap } from "./Container";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venue: CampVenue;

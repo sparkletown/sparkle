@@ -41,7 +41,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                 frameBorder="0"
                 allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-              ></iframe>
+              />
             </div>
           </>
         );
@@ -79,7 +79,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
         );
       default:
-        return;
     }
   }, [venue]);
 

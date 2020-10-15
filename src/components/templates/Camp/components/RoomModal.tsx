@@ -1,16 +1,16 @@
 import React from "react";
 import { getCurrentEvent } from "utils/event";
-import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
 import UserList from "components/molecules/UserList";
-import { ScheduleItem } from "./ScheduleItem";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
 
-import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
+import "../../PartyMap/RoomModal/RoomModal.scss";
 import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { ScheduleItem } from "./ScheduleItem";
+import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
 
 interface PropsType {
   show: boolean;

@@ -2,17 +2,17 @@ import React from "react";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirebase } from "react-redux-firebase";
-import Room from "./Video/Room";
 import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 import { PROJECT_ID } from "secrets";
+import Room from "./Video/Room";
 import "./VideoChatLayer.scss";
 
 type PropsType = {
   setSelectedUserProfile: (user: WithId<User>) => void;
 };
 
-const ROOM_PREFIX = PROJECT_ID + "-";
+const ROOM_PREFIX = `${PROJECT_ID}-`;
 
 const VideoChatLayer: React.FunctionComponent<PropsType> = ({
   setSelectedUserProfile,

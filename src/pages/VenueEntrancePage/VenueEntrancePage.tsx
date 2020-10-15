@@ -22,11 +22,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   if (!user || !profile) {
     return (
       <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
+        <AuthenticationModal show onHide={() => {}} showAuth="register" />
       </WithNavigationBar>
     );
   }

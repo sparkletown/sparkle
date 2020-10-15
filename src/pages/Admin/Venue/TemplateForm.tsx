@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
 import { BURN_VENUE_TEMPLATES, Template } from "settings";
 import { VenueTemplate } from "types/VenueTemplate";
+import { WizardPage } from "./VenueWizard";
 
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",

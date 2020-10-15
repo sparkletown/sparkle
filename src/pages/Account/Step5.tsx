@@ -177,7 +177,7 @@ const Step5 = () => {
             show={videoDef !== undefined}
             url={videoDef?.video}
             caption={videoDef?.name}
-            autoplay={true}
+            autoplay
             onHide={() => {
               setVideoDef(undefined);
               switch (videoType) {
@@ -196,7 +196,7 @@ const Step5 = () => {
                   break;
               }
             }}
-          ></VideoModal>
+          />
         )}
         {videoType === VideoType.Principle && (
           <div className="principle-name">
@@ -224,13 +224,13 @@ const Step5 = () => {
                 <img
                   className="video-thumb"
                   src={q.thumb}
-                  alt={q.name + " video"}
-                ></img>
+                  alt={`${q.name} video`}
+                />
               )}
             </div>
           ))}
         <button
-          className={`btn btn-primary btn-block btn-centered`}
+          className="btn btn-primary btn-block btn-centered"
           onClick={() => {
             switch (videoType) {
               case VideoType.Greeter:

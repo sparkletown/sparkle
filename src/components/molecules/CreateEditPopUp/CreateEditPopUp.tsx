@@ -13,7 +13,7 @@ const CreateEditPopUp: React.FunctionComponent = () => {
 
   return (
     <InformationLeftColumn
-      venueLogoPath={"create"}
+      venueLogoPath="create"
       isLeftColumnExpanded={isLeftColumnExpanded}
       setIsLeftColumnExpanded={setIsLeftColumnExpanded}
     >

@@ -25,13 +25,10 @@ import {
   canHavePlacement,
 } from "utils/venue";
 import "./Admin.scss";
-import AdminEventModal from "./AdminEventModal";
 import { venuePlayaPreviewUrl } from "utils/url";
-import { AdminVenuePreview } from "./AdminVenuePreview";
 import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import {
   PLACEABLE_VENUE_TEMPLATES,
@@ -42,10 +39,13 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent";
-import { VenueOwnersModal } from "./VenueOwnersModal";
 import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
+import AdminEditComponent from "./AdminEditComponent";
+import { VenueOwnersModal } from "./VenueOwnersModal";
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
+import { AdminVenuePreview } from "./AdminVenuePreview";
+import AdminEventModal from "./AdminEventModal";
 import EventsComponent from "./EventsComponent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 
@@ -123,7 +123,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   if (!venue) {
-    return <>{`Oops, seems we can't find your venue!`}</>;
+    return <>Oops, seems we can't find your venue!</>;
   }
 
   const tabs = [{ url: `${match.url}`, label: "Venue Info" }];
@@ -232,10 +232,11 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
 
-    placementDivRef.current?.scrollTo(
-      (venue.placement?.x ?? 0) - clientWidth / 2,
-      (venue.placement?.y ?? 0) - clientHeight / 2
-    );
+    placementDivRef.current &&
+      placementDivRef.current.scrollTo(
+        (venue.placement?.x ?? 0) - clientWidth / 2,
+        (venue.placement?.y ?? 0) - clientHeight / 2
+      );
   }, [venue]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);

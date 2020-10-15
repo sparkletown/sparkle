@@ -1,9 +1,9 @@
 import React, { useEffect, CSSProperties } from "react";
 import { useDrag, DragSourceMonitor } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { Resizable } from "re-resizable";
 import { Dimensions } from "types/utility";
+import { ItemTypes } from "./ItemTypes";
 import { SubVenueIconMap } from "./Container";
 
 function getStyles(

@@ -3,7 +3,7 @@ import React from "react";
 import { CampRoomData } from "types/CampRoomData";
 import RoomCard from "./RoomCard";
 
-import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
+import "../../PartyMap/components/RoomList/RoomList.scss";
 
 interface PropsType {
   rooms: CampRoomData[];

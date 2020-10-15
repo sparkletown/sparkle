@@ -5,8 +5,8 @@ import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { DEFAULT_USER_LIST_LIMIT } from "../../../settings";
 import { IS_BURN } from "secrets";
+import { DEFAULT_USER_LIST_LIMIT } from "../../../settings";
 
 interface PropsType {
   users: Array<WithId<User>>;

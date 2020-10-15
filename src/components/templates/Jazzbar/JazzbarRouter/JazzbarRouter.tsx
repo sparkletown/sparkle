@@ -1,12 +1,12 @@
 import React from "react";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
-import JazzBar from "../Jazzbar";
 import ReactionPage from "pages/ReactionPage";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import VideoAdmin from "pages/VideoAdmin";
+import JazzBar from "../Jazzbar";
 
 const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();

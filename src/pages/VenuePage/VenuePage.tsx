@@ -109,7 +109,7 @@ const VenuePage = () => {
   useEffect(() => {
     firebase.get({
       collection: "venues",
-      doc: venueId ? venueId : venueIdFromParams,
+      doc: venueId || venueIdFromParams,
       storeAs: "currentVenue",
     });
   }, [firebase, venueId, venueIdFromParams]);
@@ -127,11 +127,7 @@ const VenuePage = () => {
   if (!user) {
     return (
       <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
+        <AuthenticationModal show onHide={() => {}} showAuth="register" />
       </WithNavigationBar>
     );
   }

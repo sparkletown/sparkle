@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useCallback } from "react";
-import { Modal } from "react-bootstrap";
+import { Modal, FormControl } from "react-bootstrap";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 import Fuse from "fuse.js";
 import { debounce } from "lodash";
-import { FormControl } from "react-bootstrap";
+
 import { User } from "types/User";
 import "./VenueOwnerModal.scss";
 import { AnyVenue } from "types/Firestore";

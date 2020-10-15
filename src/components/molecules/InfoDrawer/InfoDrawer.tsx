@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
 import { CampVenue } from "types/CampVenue";
+import InformationCard from "../InformationCard";
 
 interface PropsType {
   venue: CampVenue;

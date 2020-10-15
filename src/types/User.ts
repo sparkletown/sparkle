@@ -5,7 +5,7 @@ interface Experience {
   column?: number;
 }
 
-//@debt typing I think this is correct from Room.tsx, need to confirm
+// @debt typing I think this is correct from Room.tsx, need to confirm
 type UserExperienceData = Record<string, Experience>;
 
 // Store all things related to video chat where they can't be tampered with by other users

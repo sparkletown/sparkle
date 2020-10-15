@@ -18,7 +18,7 @@ const AvatarAdmin: React.FC = () => {
   const updateBanner = (message: string | null) => {
     const params = {
       venueId: FIREBASE_VENUE_ID,
-      bannerMessage: message ? message : "",
+      bannerMessage: message || "",
     };
     firebase
       .functions()

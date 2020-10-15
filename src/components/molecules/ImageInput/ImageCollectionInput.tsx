@@ -91,7 +91,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
   return (
     <>
       <div style={{ marginTop: 10, fontSize: "16px" }}>
-        {`Upload your own file`}
+        Upload your own file
       </div>
       <div
         style={{

@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
-import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
-import { useUser } from "../../../../hooks/useUser";
 import { IS_BURN } from "secrets";
 import { RoomVisibility } from "types/Venue";
+import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
+import { useUser } from "../../../../hooks/useUser";
 
 interface PropsType {
   venue: CampVenue;
@@ -41,7 +41,7 @@ export const Map: React.FC<PropsType> = ({
   }
 
   const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+    return roomUrl.includes("http") ? roomUrl : `//${roomUrl}`;
   };
 
   const isExternalLink = (url: string) =>
@@ -68,10 +68,10 @@ export const Map: React.FC<PropsType> = ({
             <div
               className="room position-absolute"
               style={{
-                left: left + "%",
-                top: top + "%",
-                width: width + "%",
-                height: height + "%",
+                left: `${left}%`,
+                top: `${top}%`,
+                width: `${width}%`,
+                height: `${height}%`,
               }}
               key={room.title}
               onClick={() => {
@@ -105,7 +105,7 @@ export const Map: React.FC<PropsType> = ({
                 {venue.roomVisibility === RoomVisibility.nameCount &&
                   roomHovered &&
                   roomHovered.title === room.title && (
-                    <div className={`playa-venue-text`}>
+                    <div className="playa-venue-text">
                       <div className="playa-venue-maininfo">
                         <div className="playa-venue-title">{room.title}</div>
 
@@ -121,7 +121,7 @@ export const Map: React.FC<PropsType> = ({
                     </div>
                   )}
 
-                <div className={`playa-venue-text`}>
+                <div className="playa-venue-text">
                   {(!venue.roomVisibility ||
                     venue.roomVisibility === RoomVisibility.nameCount ||
                     venue.roomVisibility === RoomVisibility.count) && (

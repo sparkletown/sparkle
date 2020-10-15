@@ -27,8 +27,6 @@ import "scss/global.scss";
 import AppRouter from "components/organisms/AppRouter";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-import trackingMiddleware from "./middleware/tracking";
-import * as serviceWorker from "./serviceWorker";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -38,8 +36,10 @@ import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG, DEFAULT_REDIRECT_URL } from "settings";
+import { LoadingPage } from "./components/molecules/LoadingPage/LoadingPage";
+import * as serviceWorker from "./serviceWorker";
+import trackingMiddleware from "./middleware/tracking";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 

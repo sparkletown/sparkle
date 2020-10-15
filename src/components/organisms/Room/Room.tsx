@@ -89,8 +89,8 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          // @ts-ignored
+          trackPublication.track.stop(); // @debt typing does this work?
         });
         localRoom.disconnect();
       }
@@ -145,7 +145,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? users[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 

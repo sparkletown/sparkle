@@ -2,9 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { CODE_CHECK_URL } from "secrets";
+import { CODE_CHECK_URL, IS_BURN } from "secrets";
 import axios from "axios";
-import { IS_BURN } from "secrets";
+
 import { DEFAULT_VENUE, TICKET_URL } from "settings";
 import { venueInsideUrl } from "utils/url";
 
@@ -84,7 +84,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     <div className="form-container">
       <h2>Log in</h2>
       <div className="secondary-action">
-        {`Don't have an account yet?`}
+        Don't have an account yet?
         <br />
         <span className="link" onClick={displayRegisterForm}>
           Register instead!
@@ -128,7 +128,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         />
       </form>
       <div className="secondary-action">
-        {`Forgot your password?`}
+        Forgot your password?
         <br />
         <span className="link" onClick={displayPasswordResetForm}>
           Reset your password

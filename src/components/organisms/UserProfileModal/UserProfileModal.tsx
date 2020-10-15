@@ -3,7 +3,6 @@ import { Modal } from "react-bootstrap";
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
-import Chatbox from "../Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
@@ -19,6 +18,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
 import { IS_BURN } from "secrets";
+import Chatbox from "../Chatbox";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -88,7 +88,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                     {/*
                     // @debt typing - need to support known User interface with unknown question keys
                     // @ts-ignore */}
-                    {fullUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {fullUserProfile[question.name] || // @debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </React.Fragment>
@@ -179,7 +179,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
           <span className="visit-item__value">{playaTime} hrs</span>
           <span className="visit-item__label">spent in SparkleVerse</span>
         </div>
-        <div className="separator"></div>
+        <div className="separator" />
         <div className="visit-item">
           <span className="visit-item__value">{venuesVisited}</span>
           <span className="visit-item__label">venues visited</span>

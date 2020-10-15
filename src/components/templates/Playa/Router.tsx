@@ -1,8 +1,8 @@
 import React from "react";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import Playa from ".";
 import PlayaAdmin from "./PlayaAdmin";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 export const PlayaRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();

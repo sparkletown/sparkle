@@ -18,12 +18,7 @@ import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { createJazzbar, VenuePlacementState } from "types/Venue";
 import * as Yup from "yup";
-import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
 import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
 import { venueLandingUrl } from "utils/url";
 import {
   ZOOM_URL_TEMPLATES,
@@ -38,12 +33,17 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import "./Venue.scss";
+
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
+import { WizardPage } from "./VenueWizard";
+import {
+  editVenueCastSchema,
+  validationSchema,
+} from "./DetailsValidationSchema";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -60,7 +60,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 }) => {
   const defaultValues = useMemo(
     () =>
-      !!venueId
+      venueId
         ? editVenueCastSchema.cast(state.detailsPage?.venue)
         : validationSchema.cast(),
     [state.detailsPage, venueId]
@@ -70,7 +70,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     {
       mode: "onSubmit",
       reValidateMode: "onChange",
-      validationSchema: validationSchema,
+      validationSchema,
       validationContext: {
         template: state.templatePage?.template,
         editing: !!venueId,
@@ -85,7 +85,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
   const [formError, setFormError] = useState(false);
 
-  //register the icon position data
+  // register the icon position data
   useEffect(() => {
     register("placement");
   }, [register]);
@@ -96,10 +96,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
 
-    placementDivRef.current?.scrollTo(
-      (state?.detailsPage?.venue.placement?.x ?? 0) - clientWidth / 2,
-      (state?.detailsPage?.venue.placement?.y ?? 0) - clientHeight / 2
-    );
+    placementDivRef.current &&
+      placementDivRef.current.scrollTo(
+        (state?.detailsPage?.venue.placement?.x ?? 0) - clientWidth / 2,
+        (state?.detailsPage?.venue.placement?.y ?? 0) - clientHeight / 2
+      );
   }, [state]);
 
   const onSubmit = useCallback(
@@ -107,7 +108,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue(vals as VenueInput, user);
+        if (venueId) await updateVenue(vals as VenueInput, user);
         else await createVenue(vals as VenueInput, user);
 
         vals.name
@@ -347,7 +348,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </h4>
           <input
             disabled={disable}
-            name={"subtitle"}
+            name="subtitle"
             ref={register}
             className="wide-input-block align-left"
             placeholder={defaultVenue.config?.landingPageConfig.subtitle}
@@ -362,7 +363,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </h4>
           <textarea
             disabled={disable}
-            name={"description"}
+            name="description"
             ref={register}
             className="wide-input-block input-centered align-left"
             placeholder={defaultVenue.config?.landingPageConfig.description}
@@ -373,7 +374,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </div>
         <div className="input-container">
           <label
-            htmlFor={"chkadultContent"}
+            htmlFor="chkadultContent"
             className={`checkbox ${
               watch("adultContent", false) && "checkbox-checked"
             }`}
@@ -382,8 +383,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </label>
           <input
             type="checkbox"
-            id={"chkadultContent"}
-            name={"adultContent"}
+            id="chkadultContent"
+            name="adultContent"
             defaultChecked={values.adultContent}
             ref={register}
           />
@@ -394,9 +395,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </h4>
           <ImageInput
             disabled={disable}
-            name={"bannerImageFile"}
+            name="bannerImageFile"
             image={values.bannerImageFile}
-            remoteUrlInputName={"bannerImageUrl"}
+            remoteUrlInputName="bannerImageUrl"
             remoteImageUrl={values.bannerImageUrl}
             ref={register}
             error={errors.bannerImageFile || errors.bannerImageUrl}
@@ -410,9 +411,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             disabled={disable}
             ref={register}
             image={values.logoImageFile}
-            remoteUrlInputName={"logoImageUrl"}
+            remoteUrlInputName="logoImageUrl"
             remoteImageUrl={values.logoImageUrl}
-            name={"logoImageFile"}
+            name="logoImageFile"
             containerClassName="input-square-container"
             imageClassName="input-square-image"
             error={errors.logoImageFile || errors.logoImageUrl}
@@ -420,12 +421,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </div>
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
-            {`Choose how you'd like your venue to appear on the map`}
+            Choose how you'd like your venue to appear on the map
           </h4>
           <ImageCollectionInput
-            collectionPath={"assets/mapIcons2"}
+            collectionPath="assets/mapIcons2"
             disabled={disable}
-            fieldName={"mapIconImage"}
+            fieldName="mapIconImage"
             register={register}
             imageUrl={values.mapIconImageUrl}
             containerClassName="input-square-container"
@@ -438,12 +439,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
             <>
               <h4 className="italic" style={{ fontSize: "20px" }}>
-                {`Choose the background for your Theme Camp`}
+                Choose the background for your Theme Camp
               </h4>
               <ImageCollectionInput
-                collectionPath={"assets/mapBackgrounds"}
+                collectionPath="assets/mapBackgrounds"
                 disabled={disable}
-                fieldName={"mapBackgroundImage"}
+                fieldName="mapBackgroundImage"
                 register={register}
                 imageUrl={values.mapBackgroundImageUrl}
                 containerClassName="input-square-container"
@@ -492,7 +493,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 </div>
                 <textarea
                   disabled={disable}
-                  name={"zoomUrl"}
+                  name="zoomUrl"
                   ref={register}
                   className="wide-input-block input-centered align-left"
                   placeholder="https://us02web.zoom.us/j/654123654123"
@@ -513,7 +514,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 </div>
                 <textarea
                   disabled={disable}
-                  name={"iframeUrl"}
+                  name="iframeUrl"
                   ref={register}
                   className="wide-input-block input-centered align-left"
                   placeholder="https://youtu.be/embed/abcDEF987w"
@@ -554,14 +555,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <h4 className="italic" style={{ fontSize: "20px" }}>
               Show live schedule
             </h4>
-            <label id={"showLiveSchedule"} className="switch">
+            <label id="showLiveSchedule" className="switch">
               <input
                 type="checkbox"
-                id={"showLiveSchedule"}
-                name={"showLiveSchedule"}
+                id="showLiveSchedule"
+                name="showLiveSchedule"
                 ref={register}
               />
-              <span className="slider round"></span>
+              <span className="slider round" />
             </label>
           </div>
         )}
@@ -609,12 +610,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          {`You'll be able to add rooms to your theme camp on the next page`}
+          You'll be able to add rooms to your theme camp on the next page
         </div>
       )}
       {formError && (
         <span className="input-error">
-          {"An error occured when saving the form"}
+          An error occured when saving the form
         </span>
       )}
     </form>

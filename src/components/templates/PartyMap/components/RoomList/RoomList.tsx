@@ -2,8 +2,8 @@ import React from "react";
 import "./RoomList.scss";
 
 import { RoomData } from "types/RoomData";
-import RoomCard from "../RoomCard";
 import { eventHappeningNow } from "utils/time";
+import RoomCard from "../RoomCard";
 
 interface PropsType {
   startUtcSeconds: number;

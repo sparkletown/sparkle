@@ -13,8 +13,8 @@ import {
   PLAYA_WIDTH,
 } from "settings";
 import { useUser } from "hooks/useUser";
-import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
+import { Shout } from "./Playa";
 import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
 
@@ -134,30 +134,30 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
           : ARROW_MOVE_INCREMENT_PX_WALK;
 
         // Work around possible bad state that can happen in the presence of scroll jank
-        if (pressedKeys["ArrowLeft"] && pressedKeys["ArrowRight"]) {
-          pressedKeys["ArrowLeft"] = false;
-          pressedKeys["ArrowRight"] = false;
+        if (pressedKeys.ArrowLeft && pressedKeys.ArrowRight) {
+          pressedKeys.ArrowLeft = false;
+          pressedKeys.ArrowRight = false;
         }
-        if (pressedKeys["ArrowUp"] && pressedKeys["ArrowDown"]) {
-          pressedKeys["ArrowUp"] = false;
-          pressedKeys["ArrowDown"] = false;
+        if (pressedKeys.ArrowUp && pressedKeys.ArrowDown) {
+          pressedKeys.ArrowUp = false;
+          pressedKeys.ArrowDown = false;
         }
-        if (pressedKeys["ArrowLeft"]) {
+        if (pressedKeys.ArrowLeft) {
           stateRef.current.x = Math.max(0, stateRef.current.x - moveIncrement);
           needsUpdate = true;
         }
-        if (pressedKeys["ArrowRight"]) {
+        if (pressedKeys.ArrowRight) {
           stateRef.current.x = Math.min(
             PLAYA_WIDTH - 1,
             stateRef.current.x + moveIncrement
           );
           needsUpdate = true;
         }
-        if (pressedKeys["ArrowUp"]) {
+        if (pressedKeys.ArrowUp) {
           stateRef.current.y = Math.max(0, stateRef.current.y - moveIncrement);
           needsUpdate = true;
         }
-        if (pressedKeys["ArrowDown"]) {
+        if (pressedKeys.ArrowDown) {
           stateRef.current.y = Math.min(
             PLAYA_HEIGHT - 1,
             stateRef.current.y + moveIncrement
@@ -246,7 +246,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
         ref={ref}
       >
         {!isVideoRoomOwnedByMe && (
-          <div className={`avatar-name-container`}>
+          <div className="avatar-name-container">
             {profile.anonMode ? DEFAULT_PARTY_NAME : profile.partyName}
           </div>
         )}

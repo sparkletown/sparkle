@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { updateUserProfile } from "./helpers";
 import "firebase/storage";
 import "./Account.scss";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
@@ -11,6 +10,7 @@ import { IS_BURN } from "secrets";
 import { venueInsideUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
 import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
+import { updateUserProfile } from "./helpers";
 
 export interface ProfileFormData {
   partyName: string;
@@ -46,7 +46,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
     history.push(
-      IS_BURN ? `/enter/step3` : returnUrl ? returnUrl : venueInsideUrl(venueId)
+      IS_BURN ? `/enter/step3` : returnUrl || venueInsideUrl(venueId)
     );
   };
 

@@ -12,14 +12,14 @@ import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
+import { getRandomInt } from "../../../utils/getRandomInt";
+import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -177,7 +177,7 @@ const OnlineStats: React.FC = () => {
                 </div>
                 <div className="search-container">
                   <input
-                    type={"text"}
+                    type="text"
                     className="search-bar"
                     placeholder="Search venues"
                     onChange={(e) => setFilterVenueText(e.target.value)}
@@ -233,7 +233,7 @@ const OnlineStats: React.FC = () => {
                               <VenueInfoEvents
                                 eventsNow={currentEvents}
                                 venue={venue}
-                                showButton={true}
+                                showButton
                                 futureEvents={false}
                                 joinNowButton={false}
                               />
@@ -264,7 +264,7 @@ const OnlineStats: React.FC = () => {
                           <VenueInfoEvents
                             eventsNow={[]}
                             venue={venue}
-                            showButton={true}
+                            showButton
                             futureEvents={false}
                             joinNowButton={false}
                           />
@@ -280,7 +280,7 @@ const OnlineStats: React.FC = () => {
                 </div>
                 <div className="search-container">
                   <input
-                    type={"text"}
+                    type="text"
                     className="search-bar"
                     placeholder="Search people"
                     onChange={(e) => setFilterUsersText(e.target.value)}
@@ -339,7 +339,7 @@ const OnlineStats: React.FC = () => {
           rootClose={!selectedUserProfile} // allows modal inside popover
         >
           <span>
-            <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
+            <FontAwesomeIcon className="search-icon" icon={faSearch} />
             {liveEvents.length} live events / {partygoers.length} burners online
           </span>
         </OverlayTrigger>

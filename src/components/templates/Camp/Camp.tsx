@@ -6,9 +6,6 @@ import { IS_BURN } from "secrets";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
 import CountDown from "components/molecules/CountDown";
-import { Map } from "./components/Map";
-import { RoomList } from "./components/RoomList";
-import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -21,6 +18,9 @@ import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
 import BannerMessage from "components/molecules/BannerMessage";
+import { RoomModal } from "./components/RoomModal";
+import { RoomList } from "./components/RoomList";
+import { Map } from "./components/Map";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -77,7 +77,7 @@ const Camp: React.FC = () => {
                 users={usersInCamp}
                 imageSize={50}
                 disableSeeAll={false}
-                isCamp={true}
+                isCamp
                 activity={venue.activity ?? "partying"}
               />
             </div>

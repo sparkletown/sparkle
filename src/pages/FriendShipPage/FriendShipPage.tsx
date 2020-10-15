@@ -4,11 +4,11 @@ import Chatbox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import TablesUserList from "components/molecules/TablesUserList";
 import "./FriendShipPage.scss";
-import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import TableComponent from "components/molecules/TableComponent";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import TableHeader from "components/molecules/TableHeader";
 import { useSelector } from "hooks/useSelector";
+import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 
 const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -53,7 +53,7 @@ const FriendShipPage: React.FunctionComponent = () => {
               TableComponent={TableComponent}
               customTables={FRIENDSHIP_CUSTOM_TABLES}
               leaveText="Return to Isle of Friends"
-              joinMessage={true}
+              joinMessage
             />
             {seatedAtTable && (
               <div className="col wrapper">

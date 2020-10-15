@@ -111,7 +111,7 @@ const Step6 = () => {
                   bar above, or just click directly on venues to explore.
                 </div>
                 <button
-                  className={`btn btn-primary btn-block btn-centered`}
+                  className="btn btn-primary btn-block btn-centered"
                   onClick={() => history.push(venueInsideUrl(DEFAULT_VENUE))}
                 >
                   Next

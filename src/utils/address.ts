@@ -34,12 +34,11 @@ const clockEvaluator = (x: number, y: number, point: Point) => {
   const distanceFromCenter = distance(point.x, point.y, x, y);
   if (distanceFromCenter < MINIMUM_DISTANCE) {
     return point.name;
-  } else {
-    const clock = clockTime(point.x, point.y, x, y);
-    return `${clock}, ${distanceFromCenter} ${PLAYA_VENUE_NAME.toLowerCase()}-pixels from ${
-      point.name
-    }`;
   }
+  const clock = clockTime(point.x, point.y, x, y);
+  return `${clock}, ${distanceFromCenter} ${PLAYA_VENUE_NAME.toLowerCase()}-pixels from ${
+    point.name
+  }`;
 };
 
 const ESPLANADE_DISTANCE = 300;

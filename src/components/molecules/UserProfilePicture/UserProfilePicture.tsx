@@ -44,11 +44,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     if (user.anonMode) {
       setPictureUrl(DEFAULT_PROFILE_IMAGE);
     } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
-      const randomUrl =
-        "/avatars/" +
+      const randomUrl = `/avatars/${
         RANDOM_AVATARS[
           Math.floor(user.id.charCodeAt(0) % RANDOM_AVATARS.length)
-        ];
+        ]
+      }`;
       setPictureUrl(randomUrl);
     } else {
       setPictureUrl(user.pictureUrl);

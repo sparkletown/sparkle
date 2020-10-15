@@ -7,8 +7,8 @@ import "./Admin.scss";
 import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import VenueEventDetails from "./VenueEventDetails";
 import { useFirestoreConnect } from "react-redux-firebase";
+import VenueEventDetails from "./VenueEventDetails";
 
 interface Props {
   index: number;
@@ -94,27 +94,25 @@ export const AdminVenueRoomDetails = ({
               </div>
               <div className="room-options">
                 <div className="edit-room">
-                  {
-                    <Link
-                      to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
-                      className="btn btn-block"
-                    >
-                      Edit Room
-                    </Link>
-                  }
+                  <Link
+                    to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
+                    className="btn btn-block"
+                  >
+                    Edit Room
+                  </Link>
                 </div>
                 <div className="toggle-room">
-                  <label id={"toggle-" + index} className="switch">
+                  <label id={`toggle-${index}`} className="switch">
                     <input
                       type="checkbox"
-                      id={"toggle-" + index}
-                      name={"toggle-" + index}
+                      id={`toggle-${index}`}
+                      name={`toggle-${index}`}
                       checked={room.isEnabled}
                       onClick={() => {
                         updateRoom(!room.isEnabled);
                       }}
                     />
-                    <span className="slider round"></span>
+                    <span className="slider round" />
                   </label>
                   <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
                 </div>
