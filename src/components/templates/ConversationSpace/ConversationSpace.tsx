@@ -72,9 +72,7 @@ const ConversationSpace: React.FunctionComponent = () => {
                 />
               )}
               {seatedAtTable && (
-                <div
-                  className={`${seatedAtTable ? "participants-container" : ""}`}
-                >
+                <div className="participants-container">
                   <Room roomName={seatedAtTable} setUserList={() => {}} />
                 </div>
               )}
