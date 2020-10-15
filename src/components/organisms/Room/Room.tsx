@@ -125,7 +125,7 @@ const Room: React.FC<RoomProps> = ({
 
   const meComponent = useMemo(() => {
     return room && profileData ? (
-      <div className={`participant-container`}>
+      <div className="participant-container">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -150,7 +150,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className={`participant-container`}>
+          <div key={participant.identity} className="participant-container">
             <Participant
               key={`${participant.sid}-${index}`}
               participant={participant}
@@ -170,7 +170,7 @@ const Room: React.FC<RoomProps> = ({
         ? Array(participants.length % 2).map((e, index) => (
             <div
               key={`empty-participant-${index}`}
-              className={`participant-container`}
+              className="participant-container"
             >
               <img
                 className="empty-chair-image"
