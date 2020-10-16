@@ -48,6 +48,8 @@
   text-align: left;
   background: $black;
   padding: 10px 15px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
 
   &:hover {
     box-shadow: none;
@@ -65,11 +67,15 @@
 
 .chat-submit-button {
   z-index: 1;
+  background-color: #000000;
   border: none;
+  padding: 10px 15px;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
 }
 
 .submit-icon {
-  margin-left: -30px;
+  color: white;
 }
 
 .avatar-picture {
