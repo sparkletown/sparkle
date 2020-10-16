@@ -104,6 +104,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
     },
     [event, onHide, venueId, template]
   );
+
   return (
     <Modal show={show} onHide={onHide}>
       <div className="form-container">
@@ -199,7 +200,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
                 className="input-block input-centered"
                 placeholder="Cuddle Puddle"
                 ref={register}
-                value={roomName && roomName}
+                value={roomName}
               />
               {errors.host && (
                 <span className="input-error">{errors.host.message}</span>
@@ -234,7 +235,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
 };
 
 AdminEventModal.defaultProps = {
-  roomName: "",
+  roomName: undefined,
 };
 
 export default AdminEventModal;
