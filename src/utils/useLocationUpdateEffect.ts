@@ -12,7 +12,9 @@ export const updateLocationData = (
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
   const room = roomName ?? {};
-  const roomVenue = roomName ? Object.keys(roomName)[0] : null;
+  const roomVenue =
+    roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
+  console.log(user, roomName, lastSeenIn);
   updateUserProfile(user.uid, {
     lastSeenAt: currentTimeInUnixEpoch,
     lastSeenIn:
@@ -37,7 +39,7 @@ export const enterRoom = (
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
     lastSeenAt: 0,
-    lastSeenIn: null,
+    lastSeenIn: {},
     room: null,
   });
 };

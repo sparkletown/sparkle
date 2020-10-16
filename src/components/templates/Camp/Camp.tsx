@@ -44,7 +44,7 @@ const Camp: React.FC = () => {
   const usersInCamp = partygoers
     ? partygoers.filter(
         (partygoer) =>
-          partygoer.lastSeenIn[venue!.name] >
+          partygoer.lastSeenIn[venue.name] >
           (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
