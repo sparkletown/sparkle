@@ -1,20 +1,22 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
 import "./VenuePreview.scss";
-import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
+import {
+  BURN_VENUE_TEMPLATES,
+  ENABLE_PLAYA_ADDRESS,
+  LOC_UPDATE_FREQ_MS,
+} from "settings";
 import UserList from "components/molecules/UserList";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import firebase from "firebase/app";
 import "../../molecules/OnlineStats/OnlineStats.scss";
 import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
-import { isCampVenue } from "types/CampVenue";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -53,26 +55,29 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const partygoers = useSelector((state) =>
-    state.firestore.ordered.partygoers.filter((partygoer) =>
-      [
-        venue.name,
-        ...(isCampVenue(venue) ? venue?.rooms.map((room) => room.title) : []),
-      ].includes(partygoer.lastSeenIn ?? partygoer.lastSeenIn[venue.name])
-    )
-  );
+  const [nowMs, setNowMs] = useState(new Date().getTime());
+
+  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
-  const users: typeof partygoers = useMemo(
-    () =>
-      peopleAttending(
-        peopleByLastSeenIn(partygoers, venue?.name ?? ""),
-        venue
-      ) ?? [],
-    [partygoers, venue]
-  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
 
+    return () => clearInterval(interval);
+  }, [setNowMs]);
+
+  const usersInVenue = partygoers
+    ? partygoers.filter(
+        (partygoer) =>
+          partygoer.lastSeenIn[venue.name] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+      )
+    : [];
+
+  console.log("venueasdasd", usersInVenue);
   useFirestoreConnect([
     {
       collection: "venues",
@@ -237,7 +242,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         </div>
         <div className="user-list-container">
           <UserList
-            users={users}
+            users={usersInVenue}
             isAudioEffectDisabled
             activity="in this location"
           />

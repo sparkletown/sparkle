@@ -880,13 +880,15 @@ const Playa = () => {
         {IS_BURN && dustStorm && <DustStorm />}
 
         {usersInCurrentVenue && (
-          <UserList
-            users={usersInCurrentVenue}
-            imageSize={50}
-            disableSeeAll={false}
-            isCamp={true}
-            activity={venue?.activity ?? "partying"}
-          />
+          <div className="playa-userlist">
+            <UserList
+              users={usersInCurrentVenue}
+              imageSize={50}
+              disableSeeAll={false}
+              isCamp={true}
+              activity={venue?.activity ?? "partying"}
+            />
+          </div>
         )}
 
         <div className="playa-container" ref={playaRef}>
