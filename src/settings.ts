@@ -45,6 +45,9 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// How often to update location for counting
+export const LOC_UPDATE_FREQ_MS = 5 * 60 * 1000;
+
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 

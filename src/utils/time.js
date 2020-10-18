@@ -109,6 +109,8 @@ export function getHoursAgoInSeconds(hours) {
   return new Date().getTime() / 1000 - hours * 60 * 60;
 }
 
+export const currentTimeInUnixEpoch = new Date().getTime() / 1000;
+
 export function getDaysAgoInSeconds(days) {
   return getHoursAgoInSeconds(days * 24);
 }

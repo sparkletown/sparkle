@@ -8,11 +8,14 @@ import "./AvatarGrid.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import {
+  currentTimeInUnixEpoch,
   formatUtcSeconds,
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import { isEventLive } from "utils/event";
+import { useDispatch } from "hooks/useDispatch";
+import { retainAttendance } from "store/actions/Attendance";
 
 interface PropsType {
   show: boolean;
@@ -29,18 +32,26 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   miniAvatars,
 }) => {
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const { partygoers, venueEvents } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
     venueEvents: state.firestore.ordered.venueEvents,
   }));
+
+  const dispatch = useDispatch();
 
   if (!room) {
     return <></>;
   }
 
   const enter = () => {
-    room && user && enterRoom(user, room.title);
+    room &&
+      user &&
+      enterRoom(
+        user,
+        { [room.title]: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
   };
 
   const roomEvents =
@@ -146,6 +157,8 @@ export const RoomModal: React.FC<PropsType> = ({
             </button>
           ) : (
             <a
+              onMouseOver={() => dispatch(retainAttendance(true))}
+              onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn btn-active btn-block"
               href={room.url}
               rel={"noopener noreferrer"}

@@ -17,6 +17,7 @@ import { RoomData } from "types/RoomData";
 import RoomModal from "./RoomModal";
 import { venueLandingUrl } from "utils/url";
 import { Map } from "./components/Map/Map";
+import { currentTimeInUnixEpoch } from "utils/time";
 
 const PartyMap = () => {
   useConnectPartyGoers();
@@ -25,7 +26,7 @@ const PartyMap = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<RoomData>();
 
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0],
     partygoers: state.firestore.ordered.partygoers,
@@ -35,7 +36,8 @@ const PartyMap = () => {
 
   const attendances = partygoers
     ? partygoers.reduce((acc: { [key: string]: number }, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        acc[value.lastSeenIn[venue.name]] =
+          (acc[value.lastSeenIn[venue.name]] || 0) + 1;
         return acc;
       }, {})
     : {};
@@ -43,7 +45,11 @@ const PartyMap = () => {
   const modalHidden = () => {
     setIsRoomModalOpen(false);
     if (user) {
-      updateLocationData(user, "Map");
+      updateLocationData(
+        user,
+        { Map: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
     }
   };
 

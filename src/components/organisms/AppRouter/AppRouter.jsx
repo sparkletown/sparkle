@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import { useFirebase } from "react-redux-firebase";
+import React from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -23,8 +22,6 @@ import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import { leaveRoom } from "utils/useLocationUpdateEffect";
-import { useUser } from "hooks/useUser";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { SPARKLEVERSE_MARKETING_URL } from "settings";
 
@@ -34,33 +31,6 @@ import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 
 const AppRouter = ({ defaultRedirect }) => {
-  const firebase = useFirebase();
-  const analytics = firebase.analytics();
-  const { user } = useUser();
-
-  useEffect(() => {
-    const onClickWindow = (event) => {
-      event.target.id &&
-        user &&
-        analytics.logEvent("clickonbutton", {
-          buttonId: event.target.id,
-          userId: user.uid,
-        });
-    };
-
-    const leaveRoomBeforeUnload = () => {
-      if (user) {
-        leaveRoom(user);
-      }
-    };
-    window.addEventListener("click", onClickWindow, false);
-    window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    return () => {
-      window.removeEventListener("click", onClickWindow, false);
-      window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    };
-  }, [user, analytics]);
-
   return (
     <Router basename="/">
       <Switch>

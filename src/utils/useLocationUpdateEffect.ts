@@ -2,22 +2,46 @@ import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
+import { currentTimeInUnixEpoch } from "./time";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 
-export const updateLocationData = (user: UserInfo, roomName: string | null) => {
+export const updateLocationData = (
+  user: UserInfo,
+  roomName: { [key: string]: number },
+  lastSeenIn: { [key: string]: number } | undefined
+) => {
+  const room = roomName ?? {};
+  const roomVenue =
+    roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
+  console.log(user, roomName, lastSeenIn);
   updateUserProfile(user.uid, {
-    lastSeenAt: new Date().getTime() / 1000,
-    lastSeenIn: roomName,
-    room: roomName,
+    lastSeenAt: currentTimeInUnixEpoch,
+    lastSeenIn:
+      !roomName && !lastSeenIn
+        ? null
+        : lastSeenIn
+        ? { ...lastSeenIn, ...room }
+        : room,
+    room: !roomName && !lastSeenIn ? null : roomVenue,
   });
 };
 
-export const enterRoom = (user: UserInfo, roomName: string) => {
-  updateLocationData(user, roomName);
+// get Profile from the firebase
+export const enterRoom = (
+  user: UserInfo,
+  roomName: { [key: string]: number },
+  lastSeenIn: { [key: string]: number } | undefined
+) => {
+  updateLocationData(user, roomName, lastSeenIn);
 };
+
 export const leaveRoom = (user: UserInfo) => {
-  updateLocationData(user, null);
+  updateUserProfile(user.uid, {
+    lastSeenAt: 0,
+    lastSeenIn: {},
+    room: null,
+  });
 };
 
 export const useLocationUpdateEffect = (
