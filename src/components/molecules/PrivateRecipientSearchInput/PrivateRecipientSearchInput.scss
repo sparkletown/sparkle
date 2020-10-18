@@ -5,7 +5,7 @@
     text-decoration: none;
 
     &:hover {
-      background: $primaryColor;
+      background: darken($dark, 10);
     }
   }
 
