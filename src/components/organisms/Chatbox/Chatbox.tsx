@@ -134,13 +134,13 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
               src={
                 discussionPartner.anonMode
                   ? DEFAULT_PROFILE_IMAGE
-                  : discussionPartner.pictureUrl
+                  : discussionPartner.pictureUrl ?? DEFAULT_PROFILE_IMAGE
               }
               alt="profile"
             />
             {discussionPartner.anonMode
               ? DEFAULT_PARTY_NAME
-              : discussionPartner.partyName}
+              : discussionPartner.partyName ?? DEFAULT_PARTY_NAME}
           </div>
         ) : (
           <div className="chatbox-title">
