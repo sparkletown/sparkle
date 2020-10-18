@@ -42,8 +42,6 @@ const ReactionList: React.FC<ReactionListProps> = ({
     ),
   ].sort((a, b) => b.created_at - a.created_at);
 
-  console.log("allReactions", allReactions);
-
   const profileImageSize = small ? 40 : 50;
   return (
     <>

@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
-import { BURN_START_UTC_SECONDS } from "settings";
+import { BURN_START_UTC_SECONDS, LOC_UPDATE_FREQ_MS } from "settings";
 import { IS_BURN } from "secrets";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
@@ -12,7 +12,6 @@ import { RoomModal } from "./components/RoomModal";
 import { CampVenue } from "types/CampVenue";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useParams } from "react-router-dom";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 import { Modal } from "react-bootstrap";
@@ -27,20 +26,34 @@ const Camp: React.FC = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
+  const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const { partygoers, venue } = useSelector((state) => ({
     venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
     partygoers: state.firestore.ordered.partygoers,
   }));
 
-  const usersInCamp = useMemo(
-    () => venue && peopleAttending(peopleByLastSeenIn(partygoers), venue),
-    [partygoers, venue]
-  );
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
+
+    return () => clearInterval(interval);
+  }, [setNowMs]);
+
+  const usersInCamp = partygoers
+    ? partygoers.filter(
+        (partygoer) =>
+          partygoer.lastSeenIn[venue.name] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+      )
+    : [];
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        acc[value.lastSeenIn] = (acc[value.lastSeenIn] || 0) + 1;
+        Object.keys(value.lastSeenIn).forEach((key) => {
+          acc[key] = (acc[key] || 0) + 1;
+        });
         return acc;
       }, {})
     : {};

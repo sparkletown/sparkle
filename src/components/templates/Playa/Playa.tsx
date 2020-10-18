@@ -24,6 +24,7 @@ import {
   DEFAULT_PARTY_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  LOC_UPDATE_FREQ_MS,
 } from "settings";
 import VenuePreview from "./VenuePreview";
 import { WithId } from "utils/id";
@@ -54,6 +55,7 @@ import { PlayaIconComponent } from "./PlayaIcon";
 import { IS_BURN } from "secrets";
 import BannerMessage from "components/molecules/BannerMessage";
 import UserList from "components/molecules/UserList";
+import { currentTimeInUnixEpoch } from "utils/time";
 
 export type MenuConfig = {
   prompt?: string;
@@ -345,8 +347,13 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user && updateLocationData(user, PLAYA_VENUE_NAME);
-  }, [setShowModal, user]);
+    user &&
+      updateLocationData(
+        user,
+        { [PLAYA_VENUE_NAME]: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
+  }, [setShowModal, user, profile]);
 
   const distanceToVenue = (
     x: number,
@@ -412,6 +419,7 @@ const Playa = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
   const [shoutText, setShoutText] = useState("");
+  const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const shout = useCallback(() => {
     if (!user || !shoutText || !shoutText.length) return;
@@ -432,17 +440,30 @@ const Playa = () => {
     setRerender((c) => c + 1);
   }, [hoveredVenue]);
 
+  const venueName = venue?.name ?? "";
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(partygoers), hoveredVenue),
-    [partygoers, hoveredVenue]
+      peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
+    [partygoers, hoveredVenue, venueName]
   );
 
-  const usersInVenue = partygoers
-    ? partygoers.filter((partygoer) => partygoer.lastSeenIn === venue?.name)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
+
+    return () => clearInterval(interval);
+  }, [setNowMs]);
+
+  const usersInCurrentVenue = partygoers
+    ? partygoers.filter(
+        (partygoer) =>
+          partygoer.lastSeenIn[venueName] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+      )
     : [];
 
   useEffect(() => {
@@ -572,7 +593,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers);
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName);
     return (
       <>
         <PlayaBackground
@@ -580,9 +601,13 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers.filter(
-            (partygoer) => partygoer.lastSeenIn === v.name
-          ).length;
+          const usersInVenue = partygoers
+            ? partygoers.filter(
+                (partygoer) =>
+                  partygoer.lastSeenIn[v.name] >
+                  (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+              )
+            : [];
           return (
             <>
               <div
@@ -644,7 +669,9 @@ const Playa = () => {
                       {venue?.roomVisibility === RoomVisibility.nameCount && (
                         <div className="playa-venue-title">{v?.name}</div>
                       )}
-                      <div className="playa-venue-people">{usersInVenue}</div>
+                      <div className="playa-venue-people">
+                        {usersInVenue.length}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -745,6 +772,7 @@ const Playa = () => {
       </>
     );
   }, [
+    nowMs,
     hoveredUser,
     hoveredVenue,
     menu,
@@ -758,6 +786,7 @@ const Playa = () => {
     openVenues,
     showVenue,
     partygoers,
+    venueName,
   ]);
 
   const avatarLayer = useMemo(
@@ -850,14 +879,16 @@ const Playa = () => {
 
         {IS_BURN && dustStorm && <DustStorm />}
 
-        {usersInVenue && (
-          <UserList
-            users={usersInVenue}
-            imageSize={50}
-            disableSeeAll={false}
-            isCamp={true}
-            activity={venue?.activity ?? "partying"}
-          />
+        {usersInCurrentVenue && (
+          <div className="playa-userlist">
+            <UserList
+              users={usersInCurrentVenue}
+              imageSize={50}
+              disableSeeAll={false}
+              isCamp={true}
+              activity={venue?.activity ?? "partying"}
+            />
+          </div>
         )}
 
         <div className="playa-container" ref={playaRef}>
@@ -1072,7 +1103,7 @@ const Playa = () => {
     videoChatHeight,
     mapContainer,
     venue,
-    usersInVenue,
+    usersInCurrentVenue,
   ]);
 };
 

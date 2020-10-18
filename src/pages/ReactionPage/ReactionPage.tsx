@@ -40,8 +40,6 @@ const ReactionPage = () => {
     (reaction) => reaction.reaction === "messageToTheBand"
   ) as Array<WithId<MessageToTheBandReaction>>;
 
-  console.log("usersById", usersById);
-
   return (
     <WithNavigationBar>
       <div className="full-page-container reaction-page-container">

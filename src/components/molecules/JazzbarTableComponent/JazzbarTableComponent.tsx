@@ -26,7 +26,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
           {people.map((user, idx) => (
             <img
               onClick={() => setSelectedUserProfile(user)}
-              key={`${user.lastSeenIn}-${idx}`}
+              key={`${user.room}-${idx}`}
               className="profile-icon"
               src={
                 user.anonMode || !user.pictureUrl

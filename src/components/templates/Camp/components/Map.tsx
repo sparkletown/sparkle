@@ -6,6 +6,9 @@ import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
 import { useUser } from "../../../../hooks/useUser";
 import { IS_BURN } from "secrets";
 import { RoomVisibility } from "types/Venue";
+import { useDispatch } from "hooks/useDispatch";
+import { retainAttendance } from "store/actions/Attendance";
+import { currentTimeInUnixEpoch } from "utils/time";
 
 interface PropsType {
   venue: CampVenue;
@@ -20,7 +23,8 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  const { user } = useUser();
+  const { user, profile } = useUser();
+  const dispatch = useDispatch();
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
   const [roomHovered, setRoomHovered] = useState<CampRoomData | undefined>(
     undefined
@@ -49,7 +53,13 @@ export const Map: React.FC<PropsType> = ({
     new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
 
   const roomEnter = (room: CampRoomData) => {
-    room && user && enterRoom(user, room.title);
+    room &&
+      user &&
+      enterRoom(
+        user,
+        { [room.title]: currentTimeInUnixEpoch },
+        profile?.lastSeenIn
+      );
   };
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
@@ -84,9 +94,11 @@ export const Map: React.FC<PropsType> = ({
                 }
               }}
               onMouseEnter={() => {
+                dispatch(retainAttendance(true));
                 setRoomHovered(room);
               }}
               onMouseLeave={() => {
+                dispatch(retainAttendance(false));
                 setRoomHovered(undefined);
               }}
             >

@@ -20,11 +20,18 @@ export const canBeDeleted = (venue: Venue): boolean =>
 export const canHavePlacement = (venue: Venue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
-export const peopleByLastSeenIn = (users: Array<WithId<User>> | undefined) => {
+export const peopleByLastSeenIn = (
+  users: Array<WithId<User>> | undefined,
+  venueName: string
+) => {
   const result: { [lastSeenIn: string]: WithId<User>[] } = {};
   for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-    if (!(user.lastSeenIn in result)) result[user.lastSeenIn] = [];
-    result[user.lastSeenIn].push(user);
+    if (user.lastSeenIn) {
+      if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
+      if (user.lastSeenIn && user.lastSeenIn[venueName]) {
+        result[venueName].push(user);
+      }
+    }
   }
   return result;
 };

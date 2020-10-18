@@ -10,12 +10,16 @@ import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import FriendShipPage from "pages/FriendShipPage";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import {
+  canUserJoinTheEvent,
+  currentTimeInUnixEpoch,
+  ONE_MINUTE_IN_SECONDS,
+} from "utils/time";
 import {
   updateLocationData,
   useLocationUpdateEffect,
@@ -33,6 +37,8 @@ import { useVenueId } from "hooks/useVenueId";
 import { venueEntranceUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
 import ConversationSpace from "components/templates/ConversationSpace";
+import { updateUserProfile } from "pages/Account/helpers";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -40,9 +46,11 @@ const hasPaidEvents = (template: VenueTemplate) => {
 
 const VenuePage = () => {
   const venueId = useVenueId();
-  const firebase = useFirestore();
+  const firestore = useFirestore();
+
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
+  const [unmounted, setUnmounted] = useState(false);
 
   const { user, profile } = useUser();
   const {
@@ -53,6 +61,7 @@ const VenuePage = () => {
     currentEvent,
     eventRequestStatus,
     venueRequestStatus,
+    retainAttendance,
   } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     venueRequestStatus: state.firestore.status.requested.currentVenue,
@@ -64,7 +73,33 @@ const VenuePage = () => {
     userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
     userPurchaseHistoryRequestStatus:
       state.firestore.status.requested.userPurchaseHistory,
+    retainAttendance: state.attendance.retainAttendance,
   }));
+
+  const venueName = venue?.name ?? "";
+  const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
+
+  const updateUserLocation = useCallback(() => {
+    if (!user || !venueName || (venueName && prevLocations[venueName])) return;
+    const updatedLastSeenIn = {
+      ...prevLocations,
+      [venueName]: currentTimeInUnixEpoch,
+    };
+    updateUserProfile(user.uid, {
+      lastSeenIn: updatedLastSeenIn,
+      lastSeenAt: new Date().getTime(),
+      room: venueName,
+    });
+  }, [prevLocations, user, venueName]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateUserLocation();
+    }, LOC_UPDATE_FREQ_MS);
+    return () => {
+      clearInterval(interval);
+    };
+  }, [updateUserLocation]);
 
   const event = currentEvent?.[0];
 
@@ -81,24 +116,58 @@ const VenuePage = () => {
   const isMember =
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
-  const venueName = venue && venue.name;
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
-  const isVenueRoom = !!venue?.rooms?.filter(
-    (room) => room.title === profile?.room
-  ).length;
-  const profileRoom = profile?.room;
-  const location =
-    venueName === profileRoom
-      ? venueName ?? ""
-      : isVenueRoom
-      ? profileRoom ?? ""
-      : venueName ?? "";
-  useLocationUpdateEffect(user, location);
+  const location = venueName;
+  useLocationUpdateEffect(user, venueName);
 
-  if (!profileRoom && user) {
-    updateLocationData(user, location);
-  }
+  const newLocation = { [location]: new Date().getTime() };
+  const isNewLocation = !profile?.lastSeenIn[location];
+
+  useEffect(() => {
+    if (
+      user &&
+      location &&
+      isNewLocation &&
+      ((!unmounted && !retainAttendance) || retainAttendance) &&
+      (!profile?.lastSeenIn || !profile?.lastSeenIn[location])
+    ) {
+      const newLocations = {
+        ...prevLocations,
+        ...newLocation,
+      };
+      updateLocationData(
+        user,
+        location ? newLocations : prevLocations,
+        profile?.lastSeenIn
+      );
+      setUnmounted(false);
+    }
+  }, [
+    isNewLocation,
+    location,
+    newLocation,
+    prevLocations,
+    profile,
+    retainAttendance,
+    unmounted,
+    user,
+  ]);
+
+  useEffect(() => {
+    const leaveRoomBeforeUnload = () => {
+      if (user) {
+        const locations = { ...prevLocations };
+        delete locations[venueName];
+        setUnmounted(true);
+        updateLocationData(user, locations, undefined);
+      }
+    };
+    window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
+    return () => {
+      window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
+    };
+  }, [prevLocations, user, venueName]);
 
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
@@ -107,12 +176,12 @@ const VenuePage = () => {
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
   useEffect(() => {
-    firebase.get({
+    firestore.get({
       collection: "venues",
       doc: venueId ? venueId : venueIdFromParams,
       storeAs: "currentVenue",
     });
-  }, [firebase, venueId, venueIdFromParams]);
+  }, [firestore, venueId, venueIdFromParams]);
   useFirestoreConnect(
     user
       ? {
