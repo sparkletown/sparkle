@@ -3,6 +3,8 @@ import React, { useContext, useState } from "react";
 import { User } from "types/User";
 import { ChatContext } from "components/context/ChatContext";
 import { WithId } from "utils/id";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
@@ -105,12 +107,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           id="chatbox-send-message"
           disabled={!allowSend()}
         >
-          <img
-            src="/sparkle-icon.png"
-            className="submit-icon"
-            alt="sparkle icon"
-            width="20"
-          />
+          <FontAwesomeIcon className="submit-icon" icon={faArrowRight} />
         </button>
       </div>
     </form>
