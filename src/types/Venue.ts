@@ -79,6 +79,7 @@ export interface Venue {
   description?: {
     text: string;
   };
+  showLearnMoreLink?: boolean;
 }
 
 export interface VenuePlacement {
