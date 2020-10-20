@@ -14,7 +14,6 @@ export const updateLocationData = (
   const room = roomName ?? {};
   const roomVenue =
     roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
-  console.log(user, roomName, lastSeenIn);
   updateUserProfile(user.uid, {
     lastSeenAt: currentTimeInUnixEpoch,
     lastSeenIn:
