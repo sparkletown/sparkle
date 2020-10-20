@@ -11,6 +11,7 @@ import { CampRoomData } from "types/CampRoomData";
 
 import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
 import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 interface PropsType {
   show: boolean;
@@ -25,10 +26,12 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   joinButtonText,
 }) => {
+  useFirestoreConnect("venues");
   const { user, profile } = useUser();
-  const { users, venueEvents } = useSelector((state) => ({
+  const { users, venueEvents, venues } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
     venueEvents: state.firestore.ordered.venueEvents,
+    venues: state.firestore.ordered.venues,
   }));
 
   if (!room) {
@@ -39,15 +42,19 @@ export const RoomModal: React.FC<PropsType> = ({
     ? users.filter((user) => user.lastSeenIn[room!.title])
     : [];
 
-  function enter() {
+  const roomVenues = venues?.filter((venue) => venue.name === room.url);
+  const venueRoom = roomVenues?.length
+    ? { [roomVenues[0].id]: currentTimeInUnixEpoch }
+    : {};
+  const enter = () => {
     room &&
       user &&
       enterRoom(
         user,
-        { [room.title]: currentTimeInUnixEpoch },
+        { [room.title]: currentTimeInUnixEpoch, ...venueRoom },
         profile?.lastSeenIn
       );
-  }
+  };
 
   const roomEvents =
     venueEvents &&

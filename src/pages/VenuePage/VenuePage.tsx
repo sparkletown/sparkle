@@ -122,7 +122,9 @@ const VenuePage = () => {
   useLocationUpdateEffect(user, venueName);
 
   const newLocation = { [location]: new Date().getTime() };
-  const isNewLocation = !profile?.lastSeenIn[location];
+  const isNewLocation = profile?.lastSeenIn
+    ? !profile?.lastSeenIn[location]
+    : false;
 
   useEffect(() => {
     if (
@@ -136,6 +138,7 @@ const VenuePage = () => {
         ...prevLocations,
         ...newLocation,
       };
+
       updateLocationData(
         user,
         location ? newLocations : prevLocations,
