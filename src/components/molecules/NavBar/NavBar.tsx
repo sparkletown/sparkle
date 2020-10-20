@@ -21,7 +21,7 @@ import {
   DEFAULT_VENUE,
   MEMRISE_LOGO_URL,
   PLAYA_VENUE_NAME,
-  LEARN_MORE_URL,
+  HOMEPAGE_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -189,7 +189,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 {venue?.showLearnMoreLink && (
                   <div className="button-container about-button-container">
                     <a
-                      href={LEARN_MORE_URL}
+                      href={HOMEPAGE_URL}
                       className="about-button"
                       target="_blank"
                       rel="noopener noreferrer"
