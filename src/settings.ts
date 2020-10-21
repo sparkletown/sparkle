@@ -7,7 +7,6 @@ import {
   PROJECT_ID,
   IS_BURN,
 } from "./secrets";
-import { venueLandingUrl } from "utils/url";
 import { CSSProperties } from "react";
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
@@ -37,6 +36,7 @@ export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const TICKET_URL = "https://qkt.io/seed2020";
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+export const HOMEPAGE_URL = "https://sparklespaces.com/";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -221,10 +221,8 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "jamonline";
-export const DEFAULT_REDIRECT_URL = IS_BURN
-  ? "/enter"
-  : venueLandingUrl(DEFAULT_VENUE);
+export const DEFAULT_VENUE = "zilloween";
+export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up

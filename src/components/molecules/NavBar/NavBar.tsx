@@ -21,6 +21,7 @@ import {
   DEFAULT_VENUE,
   MEMRISE_LOGO_URL,
   PLAYA_VENUE_NAME,
+  HOMEPAGE_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
 import { useSelector } from "hooks/useSelector";
@@ -185,16 +186,18 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     }`}
                   />
                 </Link>
-                <div className="button-container about-button-container">
-                  <a
-                    href="https://sparklespaces.com/"
-                    className="about-button"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Learn More
-                  </a>
-                </div>
+                {venue?.showLearnMoreLink && (
+                  <div className="button-container about-button-container">
+                    <a
+                      href={HOMEPAGE_URL}
+                      className="about-button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Learn More
+                    </a>
+                  </div>
+                )}
               </div>
               {IS_BURN && (
                 <div className="navbar-info">
