@@ -35,6 +35,7 @@ const AvatarGrid = () => {
     WithId<User>
   >();
   const [keyDown, setKeyDown] = useState(false);
+  const [isHittingRoom, setIsHittingRoom] = useState(false);
 
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
@@ -149,10 +150,12 @@ const AvatarGrid = () => {
           setSelectedRoom(room);
           setIsRoomModalOpen(true);
           isHitting = true;
+          setIsHittingRoom(true);
         } else {
           if (isRoomModalOpen) {
             setSelectedRoom(undefined);
             setIsRoomModalOpen(false);
+            setIsHittingRoom(false);
           }
         }
       });
@@ -233,6 +236,61 @@ const AvatarGrid = () => {
     keyDown,
   ]);
 
+  const checkAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 1]?.[column] &&
+      partygoersBySeat?.[row + 1]?.[column].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 1]?.[column] &&
+      partygoersBySeat?.[row - 1]?.[column].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column + 1] &&
+      partygoersBySeat?.[row]?.[column + 1].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column - 1] &&
+      partygoersBySeat?.[row]?.[column - 1].id === user?.uid;
+
+    return top || bottom || right || left;
+  };
+
+  const checkNearAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 2]?.[column] &&
+      partygoersBySeat?.[row + 2]?.[column].id === user?.uid;
+    const topLeft =
+      partygoersBySeat?.[row + 1]?.[column - 1] &&
+      partygoersBySeat?.[row + 1]?.[column - 1].id === user?.uid;
+    const topRight =
+      partygoersBySeat?.[row + 1]?.[column + 1] &&
+      partygoersBySeat?.[row + 1]?.[column + 1].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 2]?.[column] &&
+      partygoersBySeat?.[row - 2]?.[column].id === user?.uid;
+    const bottomLeft =
+      partygoersBySeat?.[row - 1]?.[column - 1] &&
+      partygoersBySeat?.[row - 1]?.[column - 1].id === user?.uid;
+    const bottomRight =
+      partygoersBySeat?.[row - 1]?.[column + 1] &&
+      partygoersBySeat?.[row - 1]?.[column + 1].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column + 2] &&
+      partygoersBySeat?.[row]?.[column + 2].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column - 2] &&
+      partygoersBySeat?.[row]?.[column - 2].id === user?.uid;
+
+    return (
+      top ||
+      topLeft ||
+      topRight ||
+      bottom ||
+      bottomLeft ||
+      bottomRight ||
+      right ||
+      left
+    );
+  };
+
   if (!venue) {
     return null;
   }
@@ -240,15 +298,17 @@ const AvatarGrid = () => {
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
 
+  console.log(isHittingRoom);
   return (
     <>
       <div
         className="avatar-grid-container"
         style={{
+          height: window.innerHeight,
           backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
           backgroundSize: "cover",
           display: "grid",
-          gridTemplateColumns: `repeat(${columns}, calc(100% / 40))`,
+          gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
           gridTemplateRows: `repeat(${rows}, 1fr)`,
         }}
       >
@@ -270,19 +330,29 @@ const AvatarGrid = () => {
                   left: `calc((100% / 40) * ${room.column - 1})`,
                   top: `calc((100% / 25) * ${room.row - 1})`,
                 }}
-                className={`grid-room grid-room_blue`}
+                className={`grid-room grid-room_blue ${
+                  isHittingRoom && room === selectedRoom && "hitting-room"
+                }`}
                 key={`${room.title}-${index}`}
               >
                 <div className="grid-room-title">{room.title}</div>
                 <div className="grid-room-infos">
-                  <div className="grid-room-btn">
+                  <div
+                    className={`grid-room-btn ${
+                      isHittingRoom && room === selectedRoom && "hitting-room"
+                    }`}
+                  >
                     <div className="btn btn-white btn-small btn-block">
                       Join now
                     </div>
                   </div>
 
                   {peopleInRoom.length ? (
-                    <div className="grid-room-people">
+                    <div
+                      className={`grid-room-people ${
+                        isHittingRoom && "hitting-room"
+                      }`}
+                    >
                       {peopleInRoom.map((roomPerson, index) => {
                         if (index + 1 < room.width) {
                           return (
@@ -323,26 +393,31 @@ const AvatarGrid = () => {
                   ? partygoersBySeat[row][column]
                   : null;
                 const isMe = seatedPartygoer?.id === user?.uid;
+                const isAdjacentSeat = checkAdjacentSeats(row, column);
+                const isNearAdjacentSeat = checkNearAdjacentSeats(row, column);
                 return (
-                  <div
-                    key={`row${rowIndex}`}
-                    className={`seat-container row-${row} column-${column}`}
-                  >
+                  <div key={`row${rowIndex}`} className={`seat-container`}>
                     <div
-                      className={seatedPartygoer ? "seat" : "not-seat"}
+                      className={
+                        seatedPartygoer
+                          ? "seat"
+                          : `not-seat ${isAdjacentSeat && "adjacent"} ${
+                              isNearAdjacentSeat && "near-adjacent"
+                            }`
+                      }
                       onClick={() => onSeatClick(row, column, seatedPartygoer)}
                       key={`row${rowIndex}`}
                     >
                       {seatedPartygoer && (
-                        <div className={isMe ? "user me" : "user"}>
-                          <UserProfilePicture
-                            user={seatedPartygoer}
-                            profileStyle={"profile-avatar"}
-                            setSelectedUserProfile={setSelectedUserProfile}
-                            miniAvatars={venue?.miniAvatars}
-                            imageSize={undefined}
-                          />
-                        </div>
+                        <div
+                          onClick={() =>
+                            setSelectedUserProfile(seatedPartygoer)
+                          }
+                          className={isMe ? "user me" : "user"}
+                          style={{
+                            backgroundImage: `url(${seatedPartygoer.pictureUrl})`,
+                          }}
+                        />
                       )}
                     </div>
                   </div>
