@@ -1,4 +1,3 @@
-import UserProfilePicture from "components/molecules/UserProfilePicture";
 import firebase from "firebase/app";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -12,10 +11,10 @@ import Announcement from "./Announcement";
 import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { useVenueId } from "hooks/useVenueId";
-
-type Props = {
-  venueName: string;
-};
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+import { currentTimeInUnixEpoch } from "utils/time";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -36,6 +35,20 @@ const AvatarGrid = () => {
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
+
+  const enterAvatarGridRoom = useCallback(
+    (room: AvatarGridRoom) => {
+      if (room && user) {
+        enterRoom(
+          user,
+          { [`${venue?.name}/${room.title}`]: currentTimeInUnixEpoch },
+          profile?.lastSeenIn
+        );
+        window.open(room.url);
+      }
+    },
+    [profile, user, venue]
+  );
 
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
@@ -99,6 +112,11 @@ const AvatarGrid = () => {
       ) {
         setSelectedRoom(room);
         setIsRoomModalOpen(true);
+      } else {
+        if (isHittingRoom && selectedRoom) {
+          setSelectedRoom(undefined);
+          setIsHittingRoom(false);
+        }
       }
     });
   };
@@ -136,6 +154,7 @@ const AvatarGrid = () => {
   const upPress = useKeyPress("ArrowUp");
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
+  const enterPress = useKeyPress("Enter");
 
   const hitRoom = useCallback(
     (r: number, c: number) => {
@@ -148,20 +167,18 @@ const AvatarGrid = () => {
           c <= room.column + room.width - 1
         ) {
           setSelectedRoom(room);
-          setIsRoomModalOpen(true);
-          isHitting = true;
           setIsHittingRoom(true);
+          isHitting = true;
         } else {
-          if (isRoomModalOpen) {
+          if (isHittingRoom && selectedRoom === room) {
             setSelectedRoom(undefined);
-            setIsRoomModalOpen(false);
             setIsHittingRoom(false);
           }
         }
       });
       return isHitting;
     },
-    [isRoomModalOpen, venue]
+    [isHittingRoom, selectedRoom, venue]
   );
 
   useEffect(() => {
@@ -177,46 +194,39 @@ const AvatarGrid = () => {
     const { row, column } = currentPosition;
     if (row && column) {
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
+      if (enterPress && selectedRoom) {
+        enterAvatarGridRoom(selectedRoom);
+      }
       if (downPress) {
-        if (
-          row + 1 > DEFAULT_ROWS ||
-          seatTaken(row + 1, column) ||
-          hitRoom(row + 1, column)
-        ) {
+        if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
+        hitRoom(row + 1, column);
         takeSeat(row + 1, column);
       }
       if (upPress) {
-        if (
-          row - 1 < 1 ||
-          seatTaken(row - 1, column) ||
-          hitRoom(row - 1, column)
-        ) {
+        if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
+        hitRoom(row - 1, column);
         takeSeat(row - 1, column);
         return;
       }
       if (leftPress) {
-        if (
-          column - 1 < 1 ||
-          seatTaken(row, column - 1) ||
-          hitRoom(row, column - 1)
-        ) {
+        if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
+        hitRoom(row, column - 1);
+
         takeSeat(row, column - 1);
         return;
       }
       if (rightPress) {
-        if (
-          column + 1 > DEFAULT_COLUMNS ||
-          seatTaken(row, column + 1) ||
-          hitRoom(row, column + 1)
-        ) {
+        if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
+        hitRoom(row, column + 1);
+
         takeSeat(row, column + 1);
         return;
       }
@@ -234,6 +244,9 @@ const AvatarGrid = () => {
     hitRoom,
     venueId,
     keyDown,
+    enterPress,
+    selectedRoom,
+    enterAvatarGridRoom,
   ]);
 
   const checkAdjacentSeats = (row: number, column: number): boolean => {
@@ -257,35 +270,83 @@ const AvatarGrid = () => {
     const top =
       partygoersBySeat?.[row + 2]?.[column] &&
       partygoersBySeat?.[row + 2]?.[column].id === user?.uid;
-    const topLeft =
+    const topRight =
       partygoersBySeat?.[row + 1]?.[column - 1] &&
       partygoersBySeat?.[row + 1]?.[column - 1].id === user?.uid;
-    const topRight =
+    const topRightLong =
+      partygoersBySeat?.[row + 2]?.[column - 2] &&
+      partygoersBySeat?.[row + 2]?.[column - 2].id === user?.uid;
+    const topRightHorizontal =
+      partygoersBySeat?.[row + 2]?.[column - 1] &&
+      partygoersBySeat?.[row + 2]?.[column - 1].id === user?.uid;
+    const topRightVertical =
+      partygoersBySeat?.[row + 1]?.[column - 2] &&
+      partygoersBySeat?.[row + 1]?.[column - 2].id === user?.uid;
+    const topLeft =
       partygoersBySeat?.[row + 1]?.[column + 1] &&
       partygoersBySeat?.[row + 1]?.[column + 1].id === user?.uid;
+    const topLeftLong =
+      partygoersBySeat?.[row + 2]?.[column + 2] &&
+      partygoersBySeat?.[row + 2]?.[column + 2].id === user?.uid;
+    const topLeftHorizontal =
+      partygoersBySeat?.[row + 2]?.[column + 1] &&
+      partygoersBySeat?.[row + 2]?.[column + 1].id === user?.uid;
+    const topLeftVertical =
+      partygoersBySeat?.[row + 1]?.[column + 2] &&
+      partygoersBySeat?.[row + 1]?.[column + 2].id === user?.uid;
     const bottom =
       partygoersBySeat?.[row - 2]?.[column] &&
       partygoersBySeat?.[row - 2]?.[column].id === user?.uid;
-    const bottomLeft =
+    const bottomRight =
       partygoersBySeat?.[row - 1]?.[column - 1] &&
       partygoersBySeat?.[row - 1]?.[column - 1].id === user?.uid;
-    const bottomRight =
+    const bottomRightLong =
+      partygoersBySeat?.[row - 2]?.[column - 2] &&
+      partygoersBySeat?.[row - 2]?.[column - 2].id === user?.uid;
+    const bottomRightHorizontal =
+      partygoersBySeat?.[row - 2]?.[column - 1] &&
+      partygoersBySeat?.[row - 2]?.[column - 1].id === user?.uid;
+    const bottomRightVertical =
+      partygoersBySeat?.[row - 1]?.[column - 2] &&
+      partygoersBySeat?.[row - 1]?.[column - 2].id === user?.uid;
+    const bottomLeft =
       partygoersBySeat?.[row - 1]?.[column + 1] &&
       partygoersBySeat?.[row - 1]?.[column + 1].id === user?.uid;
-    const right =
+    const bottomLeftLong =
+      partygoersBySeat?.[row - 2]?.[column + 2] &&
+      partygoersBySeat?.[row - 2]?.[column + 2].id === user?.uid;
+    const bottomLeftHorizontal =
+      partygoersBySeat?.[row - 2]?.[column + 1] &&
+      partygoersBySeat?.[row - 2]?.[column + 1].id === user?.uid;
+    const bottomLeftVertical =
+      partygoersBySeat?.[row - 1]?.[column + 2] &&
+      partygoersBySeat?.[row - 1]?.[column + 2].id === user?.uid;
+    const left =
       partygoersBySeat?.[row]?.[column + 2] &&
       partygoersBySeat?.[row]?.[column + 2].id === user?.uid;
-    const left =
+    const right =
       partygoersBySeat?.[row]?.[column - 2] &&
       partygoersBySeat?.[row]?.[column - 2].id === user?.uid;
 
     return (
       top ||
       topLeft ||
+      topLeftLong ||
+      topLeftHorizontal ||
+      topLeftVertical ||
       topRight ||
+      topRightLong ||
+      topRightHorizontal ||
+      topRightVertical ||
       bottom ||
       bottomLeft ||
+      bottomLeftLong ||
+      bottomLeftHorizontal ||
+      bottomLeftVertical ||
       bottomRight ||
+      bottomRightLong ||
+      bottomRightHorizontal ||
+      bottomRightVertical ||
       right ||
       left
     );
@@ -298,7 +359,6 @@ const AvatarGrid = () => {
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
 
-  console.log(isHittingRoom);
   return (
     <>
       <div
@@ -314,15 +374,14 @@ const AvatarGrid = () => {
       >
         <div className="grid-rooms-container">
           {venue.spaces?.map((room: AvatarGridRoom, index: number) => {
-            const peopleInRoom = partygoers.filter(
-              (partygoer) => partygoer.lastSeenIn[room.title]
-            );
+            const peopleInRoom = partygoers
+              ? partygoers.filter(
+                  (partygoer) =>
+                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+                )
+              : [];
             return (
               <div
-                onClick={() => {
-                  setSelectedRoom(room);
-                  setIsRoomModalOpen(true);
-                }}
                 style={{
                   backgroundImage: `url(${room.image_url})`,
                   width: `calc((100% / 40) * ${room.width})`,
@@ -330,11 +389,25 @@ const AvatarGrid = () => {
                   left: `calc((100% / 40) * ${room.column - 1})`,
                   top: `calc((100% / 25) * ${room.row - 1})`,
                 }}
-                className={`grid-room grid-room_blue ${
+                className={`grid-room grid-room-blue ${
                   isHittingRoom && room === selectedRoom && "hitting-room"
                 }`}
                 key={`${room.title}-${index}`}
               >
+                <div
+                  className={`grid-room-info-btn ${
+                    isHittingRoom && room === selectedRoom && "hitting-room"
+                  }`}
+                >
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      setSelectedRoom(room);
+                      setIsRoomModalOpen(true);
+                    }}
+                    className={"search-icon"}
+                    icon={faInfoCircle}
+                  />
+                </div>
                 <div className="grid-room-title">{room.title}</div>
                 <div className="grid-room-infos">
                   <div
@@ -342,7 +415,10 @@ const AvatarGrid = () => {
                       isHittingRoom && room === selectedRoom && "hitting-room"
                     }`}
                   >
-                    <div className="btn btn-white btn-small btn-block">
+                    <div
+                      onClick={() => enterAvatarGridRoom(room)}
+                      className="btn btn-white btn-small btn-block"
+                    >
                       Join now
                     </div>
                   </div>
@@ -350,7 +426,7 @@ const AvatarGrid = () => {
                   {peopleInRoom.length ? (
                     <div
                       className={`grid-room-people ${
-                        isHittingRoom && "hitting-room"
+                        isHittingRoom && room === selectedRoom && "hitting-room"
                       }`}
                     >
                       {peopleInRoom.map((roomPerson, index) => {
@@ -392,7 +468,6 @@ const AvatarGrid = () => {
                 const seatedPartygoer = partygoersBySeat?.[row]?.[column]
                   ? partygoersBySeat[row][column]
                   : null;
-                const isMe = seatedPartygoer?.id === user?.uid;
                 const isAdjacentSeat = checkAdjacentSeats(row, column);
                 const isNearAdjacentSeat = checkNearAdjacentSeats(row, column);
                 return (
@@ -401,8 +476,8 @@ const AvatarGrid = () => {
                       className={
                         seatedPartygoer
                           ? "seat"
-                          : `not-seat ${isAdjacentSeat && "adjacent"} ${
-                              isNearAdjacentSeat && "near-adjacent"
+                          : `not-seat ${isAdjacentSeat ? "adjacent" : ""} ${
+                              isNearAdjacentSeat ? "near-adjacent" : ""
                             }`
                       }
                       onClick={() => onSeatClick(row, column, seatedPartygoer)}
@@ -413,7 +488,7 @@ const AvatarGrid = () => {
                           onClick={() =>
                             setSelectedUserProfile(seatedPartygoer)
                           }
-                          className={isMe ? "user me" : "user"}
+                          className={"user"}
                           style={{
                             backgroundImage: `url(${seatedPartygoer.pictureUrl})`,
                           }}
