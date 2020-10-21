@@ -23,14 +23,14 @@ import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-import { SPARKLEVERSE_MARKETING_URL } from "settings";
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 
-const AppRouter = ({ defaultRedirect }) => {
+const AppRouter = () => {
   return (
     <Router basename="/">
       <Switch>
@@ -65,7 +65,13 @@ const AppRouter = ({ defaultRedirect }) => {
             <Redirect to={venueLandingUrl(props.match.params[0])} />
           )}
         />
-        <Route path="/" component={() => <Redirect to={defaultRedirect} />} />
+        <Route
+          path="/"
+          component={() => {
+            window.location.href = DEFAULT_REDIRECT_URL;
+            return null;
+          }}
+        />
       </Switch>
     </Router>
   );
