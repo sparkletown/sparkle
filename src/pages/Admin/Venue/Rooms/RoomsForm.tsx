@@ -15,7 +15,7 @@ import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";
-import { useForm } from "react-hook-form";
+import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
@@ -321,7 +321,17 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   </div>
                   {formError && (
                     <div className="input-error">
-                      {"An error occured when saving your form"}
+                      {Object.keys(errors).map((fieldName) => (
+                        <div>
+                          <span>Error in {fieldName}:</span>
+                          <ErrorMessage
+                            errors={errors}
+                            name={fieldName as any}
+                            as="span"
+                            key={fieldName}
+                          />
+                        </div>
+                      ))}
                     </div>
                   )}
                 </div>
