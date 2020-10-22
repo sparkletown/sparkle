@@ -12,6 +12,12 @@ export const updateLocationData = (
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
   const room = roomName ?? {};
+  const prevRoomName =
+    lastSeenIn &&
+    Object.keys(lastSeenIn).find((lastSeen) => lastSeen.includes("/"));
+  if (lastSeenIn && prevRoomName) {
+    delete lastSeenIn[prevRoomName];
+  }
   const roomVenue =
     roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
   updateUserProfile(user.uid, {

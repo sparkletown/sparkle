@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import CountDown from "components/molecules/CountDown";
 import UserList from "components/molecules/UserList";
@@ -18,6 +18,7 @@ import RoomModal from "./RoomModal";
 import { venueLandingUrl } from "utils/url";
 import { Map } from "./components/Map/Map";
 import { currentTimeInUnixEpoch } from "utils/time";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 
 const PartyMap = () => {
   useConnectPartyGoers();
@@ -25,6 +26,7 @@ const PartyMap = () => {
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<RoomData>();
+  const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const { user, profile } = useUser();
   const { partygoers, venue } = useSelector((state) => ({
@@ -34,10 +36,27 @@ const PartyMap = () => {
 
   venue && updateTheme(venue);
 
-  const attendances = partygoers
-    ? partygoers.reduce((acc: { [key: string]: number }, value) => {
-        acc[value.lastSeenIn[venue.name]] =
-          (acc[value.lastSeenIn[venue.name]] || 0) + 1;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
+
+    return () => clearInterval(interval);
+  }, [setNowMs]);
+
+  const usersInVenue = partygoers
+    ? partygoers.filter(
+        (partygoer) =>
+          partygoer.lastSeenIn[venue.name] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+      )
+    : [];
+
+  const attendances = usersInVenue
+    ? usersInVenue.reduce<Record<string, number>>((acc, value) => {
+        Object.keys(value.lastSeenIn).forEach((key) => {
+          acc[key] = (acc[key] || 0) + 1;
+        });
         return acc;
       }, {})
     : {};

@@ -22,6 +22,7 @@ import { JAZZBAR_TABLES } from "./constants";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import "./JazzTab.scss";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -37,6 +38,8 @@ type ReactionType =
   | { reaction: TextReactionType; text: string };
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
+  const [nowMs, setNowMs] = useState(new Date().getTime());
+
   const { user } = useUser();
   const { firestoreVenue, users } = useSelector((state) => ({
     firestoreVenue: state.firestore.data.currentVenue,
@@ -45,9 +48,20 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
+
+    return () => clearInterval(interval);
+  }, [setNowMs]);
+
   const venueUsers = users
     ? users.filter(
-        (user) => user.lastSeenIn ?? user.lastSeenIn[venueToUse?.name ?? ""]
+        (user) =>
+          user.lastSeenIn ??
+          user.lastSeenIn[venueToUse?.name ?? ""] >
+            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
 

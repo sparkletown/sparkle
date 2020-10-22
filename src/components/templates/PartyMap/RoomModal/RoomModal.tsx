@@ -29,14 +29,14 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   }
 
   const usersToDisplay =
-    users?.filter((user) => user.room === room?.title) ?? [];
+    users?.filter((user) => user.room === `${venue.name}/${room?.title}`) ?? [];
 
   function enter() {
     room &&
       user &&
       enterRoom(
         user,
-        { [room.title]: currentTimeInUnixEpoch },
+        { [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch },
         profile?.lastSeenIn
       );
   }
