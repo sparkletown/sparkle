@@ -200,8 +200,11 @@ $light: #ffffff;
   }
 
   .profile-avatar {
-    border-radius: 100%;
     width: 100%;
     height: 100%;
+
+    border-radius: 100%;
+    background-size: cover;
+    background-position: center;
   }
 }

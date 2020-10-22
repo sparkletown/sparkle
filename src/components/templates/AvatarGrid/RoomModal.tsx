@@ -1,21 +1,33 @@
 import React from "react";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-import { useUser } from "hooks/useUser";
+
+// Components
 import { Modal } from "react-bootstrap";
-import { AvatarGridRoom } from "types/AvatarGrid";
-import "./RoomModal.scss";
-import "./AvatarGrid.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
+import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+// Utils | Settings | Constants
+import { isEventLive } from "utils/event";
 import {
   currentTimeInUnixEpoch,
   formatUtcSeconds,
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
-import { isEventLive } from "utils/event";
-import { useDispatch } from "hooks/useDispatch";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+
+// Typings
+import { AvatarGridRoom } from "types/AvatarGrid";
+
+// Reducer | Actions
 import { retainAttendance } from "store/actions/Attendance";
+
+// Styles
+import "./RoomModal.scss";
+import "./AvatarGrid.scss";
 
 interface PropsType {
   show: boolean;
@@ -84,7 +96,6 @@ export const RoomModal: React.FC<PropsType> = ({
                     profileStyle={"profile-avatar"}
                     setSelectedUserProfile={() => {}}
                     miniAvatars={miniAvatars}
-                    imageSize={undefined}
                   />
                 </div>
               )

@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import UserProfileModal from "components/organisms/UserProfileModal";
+
+// Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
+
+// Typings
 import { User } from "types/User";
 
 export interface ParticipantProps {
+  bartender?: User;
+  defaultMute?: boolean;
   participant: Video.Participant;
   profileData: User;
   profileDataId: string;
-  bartender?: User;
-  defaultMute?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -129,7 +133,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <UserProfilePicture
           user={{ ...profileData, id: participant.identity }}
           setSelectedUserProfile={() => setShowProfile(true)}
-          imageSize={40}
         />
       </div>
       <UserProfileModal

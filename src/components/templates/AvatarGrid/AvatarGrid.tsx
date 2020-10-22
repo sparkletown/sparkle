@@ -1,21 +1,27 @@
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import React, { useCallback, useEffect, useState } from "react";
 import firebase from "firebase/app";
+
+// Components
+import { RoomModal } from "./RoomModal";
+import Announcement from "./Announcement";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useEffect, useState } from "react";
-import { WithId } from "utils/id";
-import { User } from "types/User";
-import "./AvatarGrid.scss";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { AvatarGridRoom } from "types/AvatarGrid";
-import Announcement from "./Announcement";
-import { RoomModal } from "./RoomModal";
-import ChatDrawer from "components/organisms/ChatDrawer";
 import { useVenueId } from "hooks/useVenueId";
 
-type Props = {
-  venueName: string;
-};
+// Utils | Settings | Constants
+import { WithId } from "utils/id";
+
+// Typings
+import { AvatarGridRoom } from "types/AvatarGrid";
+import { User } from "types/User";
+
+// Styles
+import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -327,7 +333,6 @@ const AvatarGrid = () => {
                             profileStyle={"profile-avatar"}
                             setSelectedUserProfile={setSelectedUserProfile}
                             miniAvatars={venue?.miniAvatars}
-                            imageSize={undefined}
                           />
                         </div>
                       )}

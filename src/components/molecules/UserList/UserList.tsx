@@ -1,12 +1,22 @@
 import React, { useState } from "react";
+
+// Components
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { User } from "types/User";
-import "./UserList.scss";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
 import { useSelector } from "hooks/useSelector";
+
+// Utils | Settings | Constants
 import { WithId } from "utils/id";
-import { DEFAULT_USER_LIST_LIMIT } from "../../../settings";
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
 import { IS_BURN } from "secrets";
+
+// Typings
+import { User } from "types/User";
+
+// Styles
+import "./UserList.scss";
 
 interface PropsType {
   users: Array<WithId<User>>;
@@ -67,7 +77,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
                 <UserProfilePicture
                   user={user}
                   setSelectedUserProfile={setSelectedUserProfile}
-                  imageSize={imageSize}
                   isAudioEffectDisabled={isAudioEffectDisabled}
                   key={`${user.id}-${activity}-${imageSize}`}
                 />

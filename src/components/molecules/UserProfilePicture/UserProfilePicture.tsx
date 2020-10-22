@@ -1,37 +1,49 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
+// Typings
 import { User } from "types/User";
 
+// Components
 import {
   ExperienceContext,
-  Reactions,
   MessageToTheBandReaction,
+  Reactions,
 } from "components/context/ExperienceContext";
-import "./UserProfilePicture.scss";
+
+// Hooks
+import { useSelector } from "hooks/useSelector";
+
+// Utils | Settings
+import { WithId } from "utils/id";
 import {
   DEFAULT_PROFILE_IMAGE,
-  USE_RANDOM_AVATAR,
   RANDOM_AVATARS,
-  DEFAULT_PARTY_NAME,
+  USE_RANDOM_AVATAR,
 } from "settings";
-import { useSelector } from "hooks/useSelector";
-import { WithId } from "utils/id";
+
+// Styles
+import "./UserProfilePicture.scss";
 
 type UserProfilePictureProp = {
-  user: WithId<User>;
-  setSelectedUserProfile: (user: WithId<User>) => void;
-  imageSize: number | undefined;
-  profileStyle?: string;
   isAudioEffectDisabled?: boolean;
   miniAvatars?: boolean;
+  profileStyle?: string;
+  setSelectedUserProfile: (user: WithId<User>) => void;
+  user: WithId<User>;
 };
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
-  user,
-  setSelectedUserProfile,
-  imageSize,
-  profileStyle,
   isAudioEffectDisabled,
   miniAvatars,
+  profileStyle,
+  setSelectedUserProfile,
+  user,
 }) => {
   const experienceContext = useContext(ExperienceContext);
   const { muteReactions } = useSelector((state) => ({
@@ -61,57 +73,71 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
   ) as MessageToTheBandReaction | undefined;
 
-  return (
-    <div className="profile-picture-container">
-      <img
-        onClick={() => setSelectedUserProfile(user)}
-        key={user.id}
-        className={profileStyle}
-        src={
-          miniAvatars
-            ? pictureUrl
-            : (!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE
-        }
-        alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-        title={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-        width={imageSize}
-        height={imageSize}
-      />
-      {Reactions.map(
-        (reaction, index) =>
-          experienceContext &&
-          experienceContext.reactions.find(
-            (r) => r.created_by === user.id && r.reaction === reaction.type
-          ) && (
-            <div key={index} className="reaction-container">
-              <span
-                className={`reaction ${reaction.name}`}
-                role="img"
-                aria-label={reaction.ariaLabel}
-              >
-                {reaction.text}
-              </span>
-              {!muteReactions && !isAudioEffectDisabled && (
-                <audio autoPlay loop>
-                  <source src={reaction.audioPath} />
-                </audio>
-              )}
+  // This can be removed as the pictureUrl is already being set in the useEffect
+  const avatarSrc = useCallback(() => {
+    if (miniAvatars) return pictureUrl;
+
+    if (!user.anonMode) return user.pictureUrl;
+
+    return DEFAULT_PROFILE_IMAGE;
+  }, [miniAvatars, pictureUrl, user.anonMode, user.pictureUrl]);
+
+  return useMemo(() => {
+    return (
+      <div className="profile-picture-container">
+        <div
+          onClick={() => setSelectedUserProfile(user)}
+          className={profileStyle}
+          style={{
+            backgroundImage: `url(${avatarSrc()})`, // this should be `pictureUrl`
+          }}
+        />
+
+        {Reactions.map(
+          (reaction, index) =>
+            experienceContext &&
+            experienceContext.reactions.find(
+              (r) => r.created_by === user.id && r.reaction === reaction.type
+            ) && (
+              <div key={index} className="reaction-container">
+                <span
+                  className={`reaction ${reaction.name}`}
+                  role="img"
+                  aria-label={reaction.ariaLabel}
+                >
+                  {reaction.text}
+                </span>
+                {!muteReactions && !isAudioEffectDisabled && (
+                  <audio autoPlay loop>
+                    <source src={reaction.audioPath} />
+                  </audio>
+                )}
+              </div>
+            )
+        )}
+        {messagesToBand && (
+          <div className="reaction-container">
+            <div
+              className="reaction messageToBand"
+              role="img"
+              aria-label="messageToTheBand"
+            >
+              {messagesToBand.text}
             </div>
-          )
-      )}
-      {messagesToBand && (
-        <div className="reaction-container">
-          <div
-            className="reaction messageToBand"
-            role="img"
-            aria-label="messageToTheBand"
-          >
-            {messagesToBand.text}
           </div>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  }, [
+    avatarSrc,
+    experienceContext,
+    isAudioEffectDisabled,
+    messagesToBand,
+    muteReactions,
+    profileStyle,
+    setSelectedUserProfile,
+    user,
+  ]);
 };
 
 UserProfilePicture.defaultProps = {

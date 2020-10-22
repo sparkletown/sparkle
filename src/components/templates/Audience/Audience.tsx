@@ -385,7 +385,6 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                                   }
                                   miniAvatars={venue.miniAvatars}
                                   isAudioEffectDisabled={isAudioEffectDisabled}
-                                  imageSize={undefined}
                                 />
                               </div>
                             )}
