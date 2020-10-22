@@ -39,7 +39,7 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
-import { FIREBASE_CONFIG, DEFAULT_REDIRECT_URL } from "settings";
+import { FIREBASE_CONFIG } from "settings";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -99,7 +99,7 @@ render(
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthIsLoaded>
-            <AppRouter defaultRedirect={DEFAULT_REDIRECT_URL} />
+            <AppRouter />
           </AuthIsLoaded>
         </ReactReduxFirebaseProvider>
       </Provider>
