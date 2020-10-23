@@ -78,7 +78,6 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       )
     : [];
 
-  console.log("venueasdasd", usersInVenue);
   useFirestoreConnect([
     {
       collection: "venues",

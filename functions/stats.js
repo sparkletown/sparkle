@@ -1,8 +1,6 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
-const ONE_MINUTE = 60 * 1000;
-const ONE_HOUR = 60 * ONE_MINUTE;
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6; // transient events are a maximum of 6 hours
 
 // Someone snuck by our client side validation! Naughty naughty!
@@ -25,11 +23,7 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
   const now = new Date().getTime();
 
   let openVenues = [];
-  const venues = await admin
-    .firestore()
-    .collection("venues")
-    .where("placement.state", "in", ["SELF_PLACED", "ADMIN_PLACED"])
-    .get();
+  const venues = await admin.firestore().collection("venues").get();
   await Promise.all(
     venues.docs.map(async (venue) => {
       const template = venue.data().template;
@@ -85,11 +79,7 @@ exports.getLiveAndFutureEvents = functions.https.onCall(
       const now = new Date().getTime();
 
       let openVenues = [];
-      const venues = await admin
-        .firestore()
-        .collection("venues")
-        .where("placement.state", "in", ["SELF_PLACED", "ADMIN_PLACED"])
-        .get();
+      const venues = await admin.firestore().collection("venues").get();
       await Promise.all(
         venues.docs.map(async (venue) => {
           const template = venue.data().template;
