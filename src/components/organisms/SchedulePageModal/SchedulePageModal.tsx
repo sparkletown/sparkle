@@ -9,6 +9,7 @@ import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { REFETCH_SCHEDULE_MS } from "settings";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
+import { useVenueId } from "hooks/useVenueId";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -29,6 +30,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
   const [, setLoaded] = useState(false);
   const { profile } = useUser();
+  const venueId = useVenueId();
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -40,8 +42,10 @@ export const SchedulePageModal: React.FunctionComponent = () => {
           const { openVenues } = result.data as OnlineStatsData;
           setOpenVenues(
             profile?.kidsMode
-              ? openVenues.filter((v) => !v.venue.adultContent)
-              : openVenues
+              ? openVenues.filter(
+                  (v) => !v.venue.adultContent && v.venue.id === venueId
+                )
+              : openVenues.filter((v) => v.venue.id === venueId)
           );
           setLoaded(true);
         })
@@ -52,7 +56,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, [profile]);
+  }, [profile, venueId]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
@@ -117,16 +121,18 @@ export const SchedulePageModal: React.FunctionComponent = () => {
           {typeof openVenues !== "object" && <div className="spinner-border" />}
         </div>
         <div className="modal-tabs">
-          {orderedEvents.map((day, idx) => (
-            <button
-              key={formatDate(day?.dateDay.getTime())}
-              className={`button ${idx === date ? "selected" : ""}`}
-              style={{ width: 100 }}
-              onClick={() => setDate(idx)}
-            >
-              {formatDate(day?.dateDay.getTime() / 1000)}
-            </button>
-          ))}
+          {orderedEvents
+            .filter((day) => day.events?.length)
+            .map((day, idx) => (
+              <button
+                key={formatDate(day?.dateDay.getTime())}
+                className={`button ${idx === date ? "selected" : ""}`}
+                style={{ width: 100 }}
+                onClick={() => setDate(idx)}
+              >
+                {formatDate(day?.dateDay.getTime() / 1000)}
+              </button>
+            ))}
         </div>
         <div className="events-list events-list_monday" style={{ height: 480 }}>
           {orderedEvents[date] &&
