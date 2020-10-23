@@ -126,6 +126,11 @@ const VenuePage = () => {
     ? !profile?.lastSeenIn[location]
     : false;
 
+  const newLocations = {
+    ...prevLocations,
+    ...newLocation,
+  };
+
   useEffect(() => {
     if (
       user &&
@@ -134,11 +139,6 @@ const VenuePage = () => {
       ((!unmounted && !retainAttendance) || retainAttendance) &&
       (!profile?.lastSeenIn || !profile?.lastSeenIn[location])
     ) {
-      const newLocations = {
-        ...prevLocations,
-        ...newLocation,
-      };
-
       updateLocationData(
         user,
         location ? newLocations : prevLocations,
@@ -146,10 +146,22 @@ const VenuePage = () => {
       );
       setUnmounted(false);
     }
+    if (
+      user &&
+      profile &&
+      (profile.lastSeenIn === null || profile?.lastSeenIn === undefined)
+    ) {
+      updateLocationData(
+        user,
+        location ? newLocations : prevLocations,
+        profile?.lastSeenIn
+      );
+    }
   }, [
     isNewLocation,
     location,
     newLocation,
+    newLocations,
     prevLocations,
     profile,
     retainAttendance,
