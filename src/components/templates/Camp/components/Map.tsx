@@ -121,11 +121,11 @@ export const Map: React.FC<PropsType> = ({
                       <div className="playa-venue-maininfo">
                         <div className="playa-venue-title">{room.title}</div>
 
-                        {(attendances[room.title] ?? 0) +
+                        {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                           (room.attendanceBoost ?? 0) >
                           0 && (
                           <div className="playa-venue-people">
-                            {(attendances[room.title] ?? 0) +
+                            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                               (room.attendanceBoost ?? 0)}
                           </div>
                         )}
@@ -143,11 +143,11 @@ export const Map: React.FC<PropsType> = ({
                         <div className="playa-venue-title">{room.title}</div>
                       )}
 
-                      {(attendances[room.title] ?? 0) +
+                      {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                         (room.attendanceBoost ?? 0) >
                         0 && (
                         <div className="playa-venue-people">
-                          {(attendances[room.title] ?? 0) +
+                          {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                             (room.attendanceBoost ?? 0)}
                         </div>
                       )}
