@@ -152,7 +152,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               Camp logo
             </div>
             <div className="content">
-              <img className="icon" src={venue.host.icon} alt="icon" />
+              <img className="icon" src={venue.host?.icon} alt="icon" />
             </div>
           </div>
         </div>
