@@ -2,12 +2,13 @@ import firebase from "firebase/app";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { TICKET_URL } from "settings";
+import { useKeyedSelector } from "hooks/useSelector";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -56,7 +57,14 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const { venueId } = useParams();
+  const { currentVenue } = useKeyedSelector(
+    (state) => ({
+      currentVenue: state.firestore.ordered.currentVenue ?? {},
+    }),
+    ["currentVenue"]
+  );
+
+  const venueName = currentVenue[0]?.name;
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -84,11 +92,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      history.push(
-        IS_BURN
-          ? "/enter/step2"
-          : `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`
-      );
+      const accountProfileUrl = `/account/profile${
+        venueName ? `?venueId=${venueName}` : ""
+      }`;
+      history.push(IS_BURN ? "/enter/step2" : accountProfileUrl);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
