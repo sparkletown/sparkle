@@ -8,9 +8,9 @@ import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { RouterLocation } from "types/RouterLocation";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
-import { venueInsideUrl } from "utils/url";
 import getQueryParameters from "utils/getQueryParameters";
 import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
+import { useVenueId } from "hooks/useVenueId";
 
 export interface ProfileFormData {
   partyName: string;
@@ -24,12 +24,11 @@ interface PropsType {
 const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const history = useHistory();
   const { user } = useUser();
+  const venueName = useVenueId();
   const venueId =
+    venueName ??
     getQueryParameters(window.location.search)?.venueId?.toString() ??
     DEFAULT_VENUE;
-  const returnUrl = getQueryParameters(
-    window.location.search
-  )?.returnUrl?.toString();
 
   const {
     register,
@@ -45,9 +44,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    history.push(
-      IS_BURN ? `/enter/step3` : returnUrl ? returnUrl : venueInsideUrl(venueId)
-    );
+    const accountQuestionsUrl = `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`;
+    const nextUrl = venueId ? accountQuestionsUrl : `/${DEFAULT_VENUE}`;
+    history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
   const pictureUrl = watch("pictureUrl");
