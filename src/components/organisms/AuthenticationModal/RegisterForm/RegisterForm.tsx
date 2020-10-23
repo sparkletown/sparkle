@@ -8,7 +8,7 @@ import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { TICKET_URL } from "settings";
-import { useKeyedSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -57,14 +57,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const { currentVenue } = useKeyedSelector(
-    (state) => ({
-      currentVenue: state.firestore.ordered.currentVenue ?? {},
-    }),
-    ["currentVenue"]
-  );
-
-  const venueId = currentVenue[0]?.id;
+  const venue = useSelector((state) => state.firestore.ordered.currentVenue);
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -80,6 +73,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   } = useForm<RegisterFormData>({
     mode: "onChange",
   });
+
+  if (!venue) {
+    return <>Loading...</>;
+  }
+
+  const venueId = venue[0]?.id;
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
