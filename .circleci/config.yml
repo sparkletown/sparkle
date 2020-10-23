@@ -3,26 +3,26 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-and-test:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
-          parameters:
-            cache-version: v2
           steps:
             - run: npm install
             - run: npm run init
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
   smoke-test:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
-          parameters:
-            cache-version: v2
           steps:
             - run: sudo apt-get update
             - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
@@ -30,13 +30,13 @@ jobs:
             - run: npm run cy:install # cache this instead
             - run: npm run cy:run
   deploy-functions:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
       - checkout
       - node/with-cache:
-          parameters:
-            cache-version: v2
           steps:
             - run: cd functions && npm i
             - run:
@@ -57,6 +57,8 @@ jobs:
                   ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
 
   deploy-hosting:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
