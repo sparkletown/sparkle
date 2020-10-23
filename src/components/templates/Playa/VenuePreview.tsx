@@ -72,8 +72,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   const usersInVenue = partygoers
     ? partygoers.filter(
         (partygoer) =>
+          partygoer.lastSeenIn &&
           partygoer.lastSeenIn[venue.name] >
-          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
 
