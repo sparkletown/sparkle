@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 
+// Utils | Settings | Constants
+import { REACTION_TIMEOUT } from "settings";
+
 type ExperienceContextType = {
   reactions: Reaction[];
   addReaction: (newReaction: Reaction) => void;
@@ -130,11 +133,12 @@ export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
           if (change.type === "added") {
             const newReaction = change.doc.data() as Reaction;
             setReactions((prevReactions) => [...prevReactions, newReaction]);
+
             setTimeout(() => {
               setReactions((prevReactions) => {
                 return prevReactions.filter((r) => r !== newReaction);
               });
-            }, 4000);
+            }, REACTION_TIMEOUT);
           }
         });
       });
