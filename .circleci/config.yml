@@ -8,6 +8,8 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
+          parameters:
+            cache-version: v2
           steps:
             - run: npm install
             - run: npm run init
@@ -19,6 +21,8 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
+          parameters:
+            cache-version: v2
           steps:
             - run: sudo apt-get update
             - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
@@ -31,6 +35,8 @@ jobs:
     steps:
       - checkout
       - node/with-cache:
+          parameters:
+            cache-version: v2
           steps:
             - run: cd functions && npm i
             - run:
