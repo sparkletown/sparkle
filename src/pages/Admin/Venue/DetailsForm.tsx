@@ -587,6 +587,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
+          <div>One or more errors occurred when saving the form:</div>
           {Object.keys(errors).map((fieldName) => (
             <div>
               <span>Error in {fieldName}:</span>
@@ -607,13 +608,24 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          {`You'll be able to add rooms to your theme camp on the next page`}
+          You'll be able to add rooms to your theme camp on the next page
         </div>
       )}
       {formError && (
-        <span className="input-error">
-          {"An error occured when saving the form"}
-        </span>
+        <div className="input-error">
+          <div>One or more errors occurred when saving the form:</div>
+          {Object.keys(errors).map((fieldName) => (
+            <div>
+              <span>Error in {fieldName}:</span>
+              <ErrorMessage
+                errors={errors}
+                name={fieldName as any}
+                as="span"
+                key={fieldName}
+              />
+            </div>
+          ))}
+        </div>
       )}
     </form>
   );

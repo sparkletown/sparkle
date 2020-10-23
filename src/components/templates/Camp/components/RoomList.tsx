@@ -4,6 +4,7 @@ import { CampRoomData } from "types/CampRoomData";
 import RoomCard from "./RoomCard";
 
 import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   rooms: CampRoomData[];
@@ -18,6 +19,10 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
+  const { venue } = useSelector((state) => ({
+    venue: state.firestore.ordered.currentVenue?.[0],
+  }));
+
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
@@ -31,7 +36,8 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
             key={room.title}
             room={room}
             attendance={
-              (attendances[room.title] ?? 0) + (room.attendanceBoost ?? 0)
+              (attendances[`${venue.name}/${room?.title}`] ?? 0) +
+              (room.attendanceBoost ?? 0)
             }
             onClick={() => openModal(room)}
           />

@@ -8,6 +8,8 @@ import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
+import { useVenueId } from "hooks/useVenueId";
+import { venueLandingUrl } from "utils/url";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -24,6 +26,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const profileQuestions = useSelector(
     (state) => state.firestore.data.currentVenue?.profile_questions
   );
+  const venueId = useVenueId();
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -31,7 +34,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
-    history.push(IS_BURN ? "/enter" : "/");
+    history.push(IS_BURN ? "/enter" : venueId ? venueLandingUrl(venueId) : "/");
   };
 
   if (!user) return <></>;
