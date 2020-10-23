@@ -3,6 +3,8 @@ orbs:
   node: circleci/node@1.1.6
 jobs:
   build-and-test:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
@@ -14,6 +16,8 @@ jobs:
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
   smoke-test:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
@@ -26,6 +30,8 @@ jobs:
             - run: npm run cy:install # cache this instead
             - run: npm run cy:run
   deploy-functions:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
@@ -51,6 +57,8 @@ jobs:
                   ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
 
   deploy-hosting:
+    parameters:
+      cache-version: v2
     executor:
       name: node/default
     steps:
