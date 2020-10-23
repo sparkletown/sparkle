@@ -321,6 +321,9 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   </div>
                   {formError && (
                     <div className="input-error">
+                      <div>
+                        One or more errors occurred when saving the form:
+                      </div>
                       {Object.keys(errors).map((fieldName) => (
                         <div>
                           <span>Error in {fieldName}:</span>
