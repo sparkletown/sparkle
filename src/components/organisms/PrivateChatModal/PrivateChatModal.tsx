@@ -20,10 +20,9 @@ interface LastMessageByUser {
 
 const PrivateChatModal: React.FunctionComponent = () => {
   const { user } = useUser();
-
-  const { privateChats, allUsers } = useSelector((state) => ({
+  const { privateChats, users } = useSelector((state) => ({
     privateChats: state.firestore.ordered.privatechats,
-    allUsers: state.firestore.data.allUsers,
+    users: state.firestore.data.partygoers,
   }));
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
@@ -92,7 +91,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
                   )
               )
               .map((userId: string) => {
-                const sender = { ...allUsers![userId], id: userId };
+                const sender = { ...users![userId], id: userId };
                 const lastMessageExchanged =
                   discussionPartnerWithLastMessageExchanged[userId];
                 return (
