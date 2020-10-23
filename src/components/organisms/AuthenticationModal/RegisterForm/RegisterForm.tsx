@@ -64,7 +64,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     ["currentVenue"]
   );
 
-  const venueName = currentVenue[0]?.name;
+  const venueId = currentVenue[0]?.id;
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -93,7 +93,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
       const accountProfileUrl = `/account/profile${
-        venueName ? `?venueId=${venueName}` : ""
+        venueId ? `?venueId=${venueId}` : ""
       }`;
       history.push(IS_BURN ? "/enter/step2" : accountProfileUrl);
     } catch (error) {

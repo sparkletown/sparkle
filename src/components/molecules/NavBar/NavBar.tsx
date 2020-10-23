@@ -58,10 +58,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       doc: venue?.parentId,
       storeAs: "parentVenue",
     },
-    {
-      collection: "users",
-      storeAs: "allUsers",
-    },
   ]);
 
   const {
