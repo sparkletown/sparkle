@@ -14,7 +14,11 @@ import {
 } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
-import { ENABLE_SUSPECTED_LOCATION, PLAYA_VENUE_NAME } from "settings";
+import {
+  ENABLE_SUSPECTED_LOCATION,
+  PLAYA_VENUE_NAME,
+  RANDOM_AVATARS,
+} from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
@@ -72,6 +76,17 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 <img
                   src={fullUserProfile.pictureUrl || "/default-profile-pic.png"}
                   alt="profile"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).onerror = null;
+                    (e.target as HTMLImageElement).src =
+                      "/avatars/" +
+                      RANDOM_AVATARS[
+                        Math.floor(
+                          fullUserProfile.id.charCodeAt(0) %
+                            RANDOM_AVATARS.length
+                        )
+                      ];
+                  }}
                 />
               </div>
               <div className="profile-text">
