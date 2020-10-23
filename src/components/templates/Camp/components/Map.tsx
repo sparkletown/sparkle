@@ -57,7 +57,7 @@ export const Map: React.FC<PropsType> = ({
       user &&
       enterRoom(
         user,
-        { [room.title]: currentTimeInUnixEpoch },
+        { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
         profile?.lastSeenIn
       );
   };
