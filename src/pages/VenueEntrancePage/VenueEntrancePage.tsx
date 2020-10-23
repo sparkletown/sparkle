@@ -19,6 +19,10 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   useConnectCurrentVenue();
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
+  if (!venue || !venueId) {
+    return <LoadingPage />;
+  }
+
   if (!user || !profile) {
     return (
       <WithNavigationBar>
@@ -29,10 +33,6 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
         />
       </WithNavigationBar>
     );
-  }
-
-  if (!venue || !venueId) {
-    return <LoadingPage />;
   }
 
   if (

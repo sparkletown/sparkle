@@ -40,7 +40,10 @@ export const RoomModal: React.FC<PropsType> = ({
   }
 
   const usersToDisplay = users
-    ? users.filter((user) => user.lastSeenIn[`${venue?.name}/${room?.title}`])
+    ? users.filter(
+        (user) =>
+          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
+      )
     : [];
 
   const roomVenues = venues?.filter((venue) => venue.name === room.url);
