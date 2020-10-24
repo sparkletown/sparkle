@@ -91,7 +91,7 @@ const PrivateChatModal: React.FunctionComponent = () => {
                   )
               )
               .map((userId: string) => {
-                const sender = { ...users[userId], id: userId };
+                const sender = { ...users![userId], id: userId };
                 const lastMessageExchanged =
                   discussionPartnerWithLastMessageExchanged[userId];
                 return (

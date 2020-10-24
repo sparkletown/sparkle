@@ -7,7 +7,8 @@ import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
 import { useSelector } from "hooks/useSelector";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 import { TABLES } from "./constants";
 import "./ConversationSpace.scss";
 
@@ -19,11 +20,24 @@ const ConversationSpace: React.FunctionComponent = () => {
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [nowMs, setNowMs] = useState(new Date().getTime());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowMs(new Date().getTime());
+    }, LOC_UPDATE_FREQ_MS);
+
+    return () => clearInterval(interval);
+  }, [setNowMs]);
 
   if (!venue) return <>Loading...</>;
 
   const venueUsers = users
-    ? users.filter((user) => user.lastSeenIn ?? user.lastSeenIn[venue.name])
+    ? users.filter(
+        (user) =>
+          user.lastSeenIn ??
+          user.lastSeenIn[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+      )
     : [];
 
   return (

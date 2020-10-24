@@ -65,6 +65,14 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     <div className="profile-picture-container">
       <img
         onClick={() => setSelectedUserProfile(user)}
+        onError={(e) => {
+          (e.target as HTMLImageElement).onerror = null;
+          (e.target as HTMLImageElement).src =
+            "/avatars/" +
+            RANDOM_AVATARS[
+              Math.floor(user.id.charCodeAt(0) % RANDOM_AVATARS.length)
+            ];
+        }}
         key={user.id}
         className={profileStyle}
         src={

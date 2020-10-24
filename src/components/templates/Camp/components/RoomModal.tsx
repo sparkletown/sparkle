@@ -28,10 +28,11 @@ export const RoomModal: React.FC<PropsType> = ({
 }) => {
   useFirestoreConnect("venues");
   const { user, profile } = useUser();
-  const { users, venueEvents, venues } = useSelector((state) => ({
+  const { users, venueEvents, venues, venue } = useSelector((state) => ({
     users: state.firestore.ordered.partygoers,
     venueEvents: state.firestore.ordered.venueEvents,
     venues: state.firestore.ordered.venues,
+    venue: state.firestore.ordered.currentVenue?.[0],
   }));
 
   if (!room) {
@@ -39,7 +40,10 @@ export const RoomModal: React.FC<PropsType> = ({
   }
 
   const usersToDisplay = users
-    ? users.filter((user) => user.lastSeenIn[room!.title])
+    ? users.filter(
+        (user) =>
+          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
+      )
     : [];
 
   const roomVenues = venues?.filter((venue) => venue.name === room.url);
@@ -51,7 +55,10 @@ export const RoomModal: React.FC<PropsType> = ({
       user &&
       enterRoom(
         user,
-        { [room.title]: currentTimeInUnixEpoch, ...venueRoom },
+        {
+          [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch,
+          ...venueRoom,
+        },
         profile?.lastSeenIn
       );
   };

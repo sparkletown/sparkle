@@ -33,9 +33,10 @@ export const RoomModal: React.FC<PropsType> = ({
   miniAvatars,
 }) => {
   const { user, profile } = useUser();
-  const { partygoers, venueEvents } = useSelector((state) => ({
+  const { partygoers, venueEvents, venue } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
     venueEvents: state.firestore.ordered.venueEvents,
+    venue: state.firestore.ordered.currentVenue,
   }));
 
   const dispatch = useDispatch();
@@ -44,12 +45,14 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
+  const venueName = venue[0].name;
+
   const enter = () => {
     room &&
       user &&
       enterRoom(
         user,
-        { [room.title]: currentTimeInUnixEpoch },
+        { [`${venueName}/${room.title}`]: currentTimeInUnixEpoch },
         profile?.lastSeenIn
       );
   };
@@ -64,7 +67,9 @@ export const RoomModal: React.FC<PropsType> = ({
           getCurrentTimeInUTCSeconds()
     );
 
-  const usersInRoom = partygoers.filter((goer) => goer.room === room.title);
+  const usersInRoom = partygoers.filter(
+    (goer) => goer.room === `${venueName}/${room.title}`
+  );
 
   return (
     <Modal show={show} onHide={onHide}>
