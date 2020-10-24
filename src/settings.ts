@@ -243,3 +243,5 @@ export const RANDOM_AVATARS = [
   "avatar-11.png",
   "avatar-12.png",
 ];
+
+export const REACTION_TIMEOUT = 5000; // time im ms

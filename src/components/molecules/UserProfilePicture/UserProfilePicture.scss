@@ -1,37 +1,63 @@
 @import "scss/constants.scss";
 
+$fadedWhite: rgba(255, 255, 255, 0.8);
+$borderWidth: 5px;
+
 .profile-picture-container {
   position: relative;
 
-  .reaction-container {
-    animation: fade-in-and-out 4500ms ease;
+  .messageToBand {
+    width: max-content;
+    max-width: 20em;
+    padding: 6px 10px;
 
-    .messageToBand {
-      animation: pulse 4s ease infinite;
-      font-size: 20px;
-      top: -15px;
-      right: none;
-      width: fit-content;
-      background: $white;
-      color: $black;
-      border-radius: 10px;
-      padding: 6px 10px;
-    }
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    background: $fadedWhite;
+
+    color: $black;
+    font-size: 20px;
+    border-radius: 10px;
+
+    transform-origin: 2vh center;
+
+    animation: expand-bounce 5s ease;
   }
 
   .reaction {
+    width: 50px;
+
     position: absolute;
-    font-size: 50px;
     top: -25px;
     right: -20px;
-    width: 50px;
-    animation: pulse 4s ease-in-out infinite;
     z-index: 1000;
+
+    font-size: 50px;
+
+    animation: pulse 4s ease-in-out infinite;
   }
 
   .heart {
     fill: red;
     z-index: 99999;
+  }
+
+  @keyframes expand-bounce {
+    0%,
+    100% {
+      transform: scale(0) translateX(0);
+    }
+
+    25% {
+      transform: scale(1.25) translateX(5vh); // 5vh = imageWidth (4vh) + 1v (padding)
+    }
+
+    40%,
+    80% {
+      transform: scale(1) translateX(5vh);
+    }
   }
 
   @keyframes pulse {
