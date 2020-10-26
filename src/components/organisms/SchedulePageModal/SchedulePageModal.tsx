@@ -10,6 +10,7 @@ import { REFETCH_SCHEDULE_MS } from "settings";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -31,6 +32,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
   const [, setLoaded] = useState(false);
   const { profile } = useUser();
   const venueId = useVenueId();
+  const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   useEffect(() => {
     const getOnlineStats = firebase
@@ -41,11 +43,14 @@ export const SchedulePageModal: React.FunctionComponent = () => {
         .then((result) => {
           const { openVenues } = result.data as OnlineStatsData;
           setOpenVenues(
-            profile?.kidsMode
-              ? openVenues.filter(
-                  (v) => !v.venue.adultContent && v.venue.id === venueId
-                )
-              : openVenues.filter((v) => v.venue.id === venueId)
+            openVenues.filter(
+              (v) =>
+                (!profile?.kidsMode || !v.venue.adultContent) &&
+                venueId &&
+                (v.venue.id === venueId ||
+                  (venue?.liveScheduleOtherVenues &&
+                    venue.liveScheduleOtherVenues.includes(v.venue.id)))
+            )
           );
           setLoaded(true);
         })
@@ -56,7 +61,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
       updateStats();
     }, REFETCH_SCHEDULE_MS);
     return () => clearInterval(id);
-  }, [profile, venueId]);
+  }, [profile, venueId, venue]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
