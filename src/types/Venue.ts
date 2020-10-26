@@ -80,6 +80,7 @@ export interface Venue {
     text: string;
   };
   showLearnMoreLink?: boolean;
+  liveScheduleOtherVenues?: string[];
 }
 
 export interface VenuePlacement {
