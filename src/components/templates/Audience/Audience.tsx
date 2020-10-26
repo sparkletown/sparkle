@@ -1,33 +1,41 @@
 import React, {
+  useCallback,
+  useContext,
+  useEffect,
   useMemo,
   useState,
-  useEffect,
-  useContext,
-  useCallback,
 } from "react";
 import firebase, { UserInfo } from "firebase/app";
+
+// Components
+import {
+  EmojiReactionType,
+  ExperienceContext,
+  Reactions,
+  TextReactionType,
+} from "components/context/ExperienceContext";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
+import { useForm } from "react-hook-form";
 import { useSelector } from "hooks/useSelector";
-import { User } from "types/User";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+// Utils | Settings | Constants
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
 
-import "./Audience.scss";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { useUser } from "hooks/useUser";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-import {
-  ExperienceContext,
-  EmojiReactionType,
-  TextReactionType,
-  Reactions,
-} from "components/context/ExperienceContext";
-import { useForm } from "react-hook-form";
-import { useVenueId } from "hooks/useVenueId";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+// Typings
+import { User } from "types/User";
 
-type PropsType = {};
+// Styles
+import "./Audience.scss";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -120,7 +128,7 @@ const requiredAuditoriumSize = (occupants: number) => {
   return size;
 };
 
-export const Audience: React.FunctionComponent<PropsType> = () => {
+export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const { venue, partygoers } = useSelector((state) => ({
@@ -153,7 +161,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
     if (isShoutSent) {
       setTimeout(() => {
         setIsShoutSent(false);
-      }, 2000);
+      }, REACTION_TIMEOUT);
     }
   }, [isShoutSent, setIsShoutSent]);
 
@@ -328,6 +336,7 @@ export const Audience: React.FunctionComponent<PropsType> = () => {
                         className="text"
                         placeholder="Shout out to the crowd"
                         ref={register({ required: true })}
+                        disabled={isShoutSent}
                       />
                       <input
                         className={`shout-button ${

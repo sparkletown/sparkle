@@ -119,9 +119,18 @@ $light: #ffffff;
 
           .text {
             flex: 4;
+
+            &:disabled {
+              cursor: not-allowed;
+            }
           }
+
           .shout-button {
             flex: 1;
+
+            &:disabled {
+              cursor: not-allowed;
+            }
           }
         }
       }

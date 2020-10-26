@@ -22,6 +22,7 @@ import { useSelector } from "hooks/useSelector";
 // Utils | Settings
 import { WithId } from "utils/id";
 import {
+  DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
   USE_RANDOM_AVATAR,
@@ -51,21 +52,33 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   }));
 
   const [pictureUrl, setPictureUrl] = useState("");
+
+  const randomAvatarUrl = (id: string) =>
+    "/avatars/" +
+    RANDOM_AVATARS[Math.floor(id.charCodeAt(0) % RANDOM_AVATARS.length)];
+
+  const avatarUrl = useCallback(
+    (id: string, anonMode?: boolean, pictureUrl?: string) => {
+      if (anonMode) {
+        return setPictureUrl(DEFAULT_PROFILE_IMAGE);
+      }
+
+      if (miniAvatars && pictureUrl) {
+        return setPictureUrl(pictureUrl);
+      }
+
+      if (USE_RANDOM_AVATAR || !pictureUrl) {
+        return setPictureUrl(randomAvatarUrl(id));
+      }
+
+      return setPictureUrl(DEFAULT_PROFILE_IMAGE);
+    },
+    [miniAvatars]
+  );
+
   useEffect(() => {
-    if (!user.id) return;
-    if (user.anonMode) {
-      setPictureUrl(DEFAULT_PROFILE_IMAGE);
-    } else if (USE_RANDOM_AVATAR || !user.pictureUrl) {
-      const randomUrl =
-        "/avatars/" +
-        RANDOM_AVATARS[
-          Math.floor(user.id.charCodeAt(0) % RANDOM_AVATARS.length)
-        ];
-      setPictureUrl(randomUrl);
-    } else {
-      setPictureUrl(user.pictureUrl);
-    }
-  }, [user.pictureUrl, user.id, user.anonMode]);
+    avatarUrl(user.id, user.anonMode, user.pictureUrl);
+  }, [avatarUrl, user.anonMode, user.id, user.pictureUrl]);
 
   const typedReaction = experienceContext?.reactions ?? [];
 
@@ -73,23 +86,35 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
   ) as MessageToTheBandReaction | undefined;
 
-  // This can be removed as the pictureUrl is already being set in the useEffect
-  const avatarSrc = useCallback(() => {
-    if (miniAvatars) return pictureUrl;
+  const imageErrorHandler = useCallback(
+    (
+      event: HTMLImageElement | React.SyntheticEvent<HTMLImageElement, Event>
+    ) => {
+      const randomAvatar = randomAvatarUrl(user.id);
+      setPictureUrl(randomAvatar);
 
-    if (!user.anonMode) return user.pictureUrl;
-
-    return DEFAULT_PROFILE_IMAGE;
-  }, [miniAvatars, pictureUrl, user.anonMode, user.pictureUrl]);
+      (event as HTMLImageElement).onerror = null;
+      (event as HTMLImageElement).src = randomAvatar;
+    },
+    [user.id]
+  );
 
   return useMemo(() => {
     return (
       <div className="profile-picture-container">
+        {/* Hidden image, used to handle error if image is not loaded */}
+        <img
+          src={pictureUrl}
+          onError={(event) => imageErrorHandler(event)}
+          hidden
+          style={{ display: "none" }}
+          alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+        />
         <div
           onClick={() => setSelectedUserProfile(user)}
           className={profileStyle}
           style={{
-            backgroundImage: `url(${avatarSrc()})`, // this should be `pictureUrl`
+            backgroundImage: `url(${pictureUrl})`,
           }}
         />
 
@@ -129,14 +154,15 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       </div>
     );
   }, [
-    avatarSrc,
-    experienceContext,
-    isAudioEffectDisabled,
-    messagesToBand,
-    muteReactions,
-    profileStyle,
-    setSelectedUserProfile,
+    pictureUrl,
     user,
+    profileStyle,
+    messagesToBand,
+    imageErrorHandler,
+    setSelectedUserProfile,
+    experienceContext,
+    muteReactions,
+    isAudioEffectDisabled,
   ]);
 };
 

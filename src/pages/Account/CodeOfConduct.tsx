@@ -67,13 +67,12 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   });
 
   const proceed = () => {
-    history.push(
-      returnUrl
-        ? returnUrl.toString()
-        : venueId
-        ? venueInsideUrl(venueId.toString())
-        : ""
-    );
+    const nextUrl = venueId
+      ? venueInsideUrl(venueId.toString())
+      : returnUrl
+      ? returnUrl.toString()
+      : "";
+    history.push(nextUrl);
   };
 
   const onSubmit = async (data: CodeOfConductFormData) => {
@@ -105,33 +104,34 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
       <div className="login-container">
         <h2>Final step: agree to our code of conduct</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {codeOfConductQuestions.map((q) => (
-            <div className="input-group" key={q.name}>
-              <label
-                htmlFor={q.name}
-                className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
-              >
-                {q.link && (
-                  <a href={q.link} target="_blank" rel="noopener noreferrer">
-                    {q.text}
-                  </a>
+          {codeOfConductQuestions &&
+            codeOfConductQuestions.map((q) => (
+              <div className="input-group" key={q.name}>
+                <label
+                  htmlFor={q.name}
+                  className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
+                >
+                  {q.link && (
+                    <a href={q.link} target="_blank" rel="noopener noreferrer">
+                      {q.text}
+                    </a>
+                  )}
+                  {!q.link && q.text}
+                </label>
+                <input
+                  type="checkbox"
+                  name={q.name}
+                  id={q.name}
+                  ref={register({
+                    required: true,
+                  })}
+                />
+                {/* @ts-ignore @debt questions should be typed if possible */}
+                {q.name in errors && errors[q.name].type === "required" && (
+                  <span className="input-error">Required</span>
                 )}
-                {!q.link && q.text}
-              </label>
-              <input
-                type="checkbox"
-                name={q.name}
-                id={q.name}
-                ref={register({
-                  required: true,
-                })}
-              />
-              {/* @ts-ignore @debt questions should be typed if possible */}
-              {q.name in errors && errors[q.name].type === "required" && (
-                <span className="input-error">Required</span>
-              )}
-            </div>
-          ))}
+              </div>
+            ))}
 
           <input
             className="btn btn-primary btn-block btn-centered"
