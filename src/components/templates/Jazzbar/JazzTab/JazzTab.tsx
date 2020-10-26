@@ -59,7 +59,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   const venueUsers = users
     ? users.filter(
         (user) =>
-          user.lastSeenIn ??
+          !!user.lastSeenIn &&
           user.lastSeenIn[venueToUse?.name ?? ""] >
             (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
