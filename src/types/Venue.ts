@@ -81,6 +81,7 @@ export interface Venue {
   };
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
+  start_utc_seconds?: number;
 }
 
 export interface VenuePlacement {

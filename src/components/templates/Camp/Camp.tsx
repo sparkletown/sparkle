@@ -109,7 +109,10 @@ const Camp: React.FC = () => {
               )}
             </div>
             {venue.start_utc_seconds && (
-              <CountDown startUtcSeconds={venue.start_utc_seconds} />
+              <CountDown
+                startUtcSeconds={venue.start_utc_seconds}
+                textBeforeCountdown="Party begins in"
+              />
             )}
           </div>
         </div>

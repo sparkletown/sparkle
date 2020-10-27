@@ -13,7 +13,7 @@ const CountDown: React.FunctionComponent<PropsType> = ({
   const timeBeforeParty = getTimeBeforeParty(startUtcSeconds);
   const isPartyOngoing = timeBeforeParty === 0;
   return !isPartyOngoing ? (
-    <div className="primary count-down-container">
+    <div className="count-down-container">
       {`${textBeforeCountdown || "Begins in"} ${timeBeforeParty}`}
     </div>
   ) : (
