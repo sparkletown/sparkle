@@ -572,7 +572,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               <select name="roomVisibility" ref={register}>
                 <option value="hover">Hover</option>
                 <option value="count">Count</option>
-                <option value="count/names">Count and names</option>
+                <option value="count/name">Count and names</option>
               </select>
             </div>
           </>

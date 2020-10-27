@@ -1,21 +1,31 @@
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import React, { useCallback, useEffect, useState } from "react";
 import firebase from "firebase/app";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+
+// Components
+import { RoomModal } from "./RoomModal";
+import Announcement from "./Announcement";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useEffect, useState } from "react";
-import { WithId } from "utils/id";
-import { User } from "types/User";
-import "./AvatarGrid.scss";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { AvatarGridRoom } from "types/AvatarGrid";
-import Announcement from "./Announcement";
-import { RoomModal } from "./RoomModal";
-import ChatDrawer from "components/organisms/ChatDrawer";
 import { useVenueId } from "hooks/useVenueId";
 
-type Props = {
-  venueName: string;
-};
+// Utils | Settings | Constants
+import { WithId } from "utils/id";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+import { currentTimeInUnixEpoch } from "utils/time";
+
+// Typings
+import { AvatarGridRoom } from "types/AvatarGrid";
+import { User } from "types/User";
+
+// Styles
+import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -34,6 +44,22 @@ const AvatarGrid = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+  const [keyDown, setKeyDown] = useState(false);
+  const [isHittingRoom, setIsHittingRoom] = useState(false);
+
+  const enterAvatarGridRoom = useCallback(
+    (room: AvatarGridRoom) => {
+      if (room && user) {
+        enterRoom(
+          user,
+          { [`${venue?.name}/${room.title}`]: currentTimeInUnixEpoch },
+          profile?.lastSeenIn
+        );
+        window.open(room.url);
+      }
+    },
+    [profile, user, venue]
+  );
 
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
@@ -97,6 +123,11 @@ const AvatarGrid = () => {
       ) {
         setSelectedRoom(room);
         setIsRoomModalOpen(true);
+      } else {
+        if (isHittingRoom && selectedRoom) {
+          setSelectedRoom(undefined);
+          setIsHittingRoom(false);
+        }
       }
     });
   };
@@ -112,6 +143,7 @@ const AvatarGrid = () => {
 
     const upHandler = ({ key }: { key: string }) => {
       if (key === targetKey) {
+        setKeyDown(false);
         setKeyPressed(false);
       }
     };
@@ -133,47 +165,7 @@ const AvatarGrid = () => {
   const upPress = useKeyPress("ArrowUp");
   const leftPress = useKeyPress("ArrowLeft");
   const rightPress = useKeyPress("ArrowRight");
-
-  const isRoomBorder = (row: number, column: number) => {
-    const borders = {
-      left: false,
-      right: false,
-      top: false,
-      bottom: false,
-    };
-
-    venue?.spaces?.forEach((room) => {
-      if (
-        room.column === column &&
-        row >= room.row &&
-        row < room.row + room.height
-      ) {
-        borders.left = true;
-      }
-      if (
-        room.row === row &&
-        column >= room.column &&
-        column < room.column + room.width
-      ) {
-        borders.top = true;
-      }
-      if (
-        room.column + room.width - 1 === column &&
-        row >= room.row &&
-        row < room.row + room.height
-      ) {
-        borders.right = true;
-      }
-      if (
-        room.row + room.height - 1 === row &&
-        column >= room.column &&
-        column < room.column + room.width
-      ) {
-        borders.bottom = true;
-      }
-    });
-    return borders;
-  };
+  const enterPress = useKeyPress("Enter");
 
   const hitRoom = useCallback(
     (r: number, c: number) => {
@@ -186,70 +178,66 @@ const AvatarGrid = () => {
           c <= room.column + room.width - 1
         ) {
           setSelectedRoom(room);
-          setIsRoomModalOpen(true);
+          setIsHittingRoom(true);
           isHitting = true;
         } else {
-          if (isRoomModalOpen) {
+          if (isHittingRoom && selectedRoom === room) {
             setSelectedRoom(undefined);
-            setIsRoomModalOpen(false);
+            setIsHittingRoom(false);
           }
         }
       });
       return isHitting;
     },
-    [isRoomModalOpen, venue]
+    [isHittingRoom, selectedRoom, venue]
   );
 
   useEffect(() => {
     if (!venueId) return;
 
     const currentPosition = profile?.data?.[venueId];
-    if (!currentPosition?.row && !currentPosition?.column) {
+    if ((!currentPosition?.row && !currentPosition?.column) || keyDown) {
       return;
     }
+
+    setKeyDown(true);
+
     const { row, column } = currentPosition;
     if (row && column) {
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
+      if (enterPress && selectedRoom) {
+        enterAvatarGridRoom(selectedRoom);
+      }
       if (downPress) {
-        if (
-          row + 1 > DEFAULT_ROWS ||
-          seatTaken(row + 1, column) ||
-          hitRoom(row + 1, column)
-        ) {
+        if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
+        hitRoom(row + 1, column);
         takeSeat(row + 1, column);
       }
       if (upPress) {
-        if (
-          row - 1 < 1 ||
-          seatTaken(row - 1, column) ||
-          hitRoom(row - 1, column)
-        ) {
+        if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
+        hitRoom(row - 1, column);
         takeSeat(row - 1, column);
         return;
       }
       if (leftPress) {
-        if (
-          column - 1 < 1 ||
-          seatTaken(row, column - 1) ||
-          hitRoom(row, column - 1)
-        ) {
+        if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
+        hitRoom(row, column - 1);
+
         takeSeat(row, column - 1);
         return;
       }
       if (rightPress) {
-        if (
-          column + 1 > DEFAULT_COLUMNS ||
-          seatTaken(row, column + 1) ||
-          hitRoom(row, column + 1)
-        ) {
+        if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
+        hitRoom(row, column + 1);
+
         takeSeat(row, column + 1);
         return;
       }
@@ -266,7 +254,114 @@ const AvatarGrid = () => {
     venue,
     hitRoom,
     venueId,
+    keyDown,
+    enterPress,
+    selectedRoom,
+    enterAvatarGridRoom,
   ]);
+
+  const checkAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 1]?.[column] &&
+      partygoersBySeat?.[row + 1]?.[column].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 1]?.[column] &&
+      partygoersBySeat?.[row - 1]?.[column].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column + 1] &&
+      partygoersBySeat?.[row]?.[column + 1].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column - 1] &&
+      partygoersBySeat?.[row]?.[column - 1].id === user?.uid;
+
+    return top || bottom || right || left;
+  };
+
+  const checkNearAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 2]?.[column] &&
+      partygoersBySeat?.[row + 2]?.[column].id === user?.uid;
+    const topRight =
+      partygoersBySeat?.[row + 1]?.[column - 1] &&
+      partygoersBySeat?.[row + 1]?.[column - 1].id === user?.uid;
+    const topRightLong =
+      partygoersBySeat?.[row + 2]?.[column - 2] &&
+      partygoersBySeat?.[row + 2]?.[column - 2].id === user?.uid;
+    const topRightHorizontal =
+      partygoersBySeat?.[row + 2]?.[column - 1] &&
+      partygoersBySeat?.[row + 2]?.[column - 1].id === user?.uid;
+    const topRightVertical =
+      partygoersBySeat?.[row + 1]?.[column - 2] &&
+      partygoersBySeat?.[row + 1]?.[column - 2].id === user?.uid;
+    const topLeft =
+      partygoersBySeat?.[row + 1]?.[column + 1] &&
+      partygoersBySeat?.[row + 1]?.[column + 1].id === user?.uid;
+    const topLeftLong =
+      partygoersBySeat?.[row + 2]?.[column + 2] &&
+      partygoersBySeat?.[row + 2]?.[column + 2].id === user?.uid;
+    const topLeftHorizontal =
+      partygoersBySeat?.[row + 2]?.[column + 1] &&
+      partygoersBySeat?.[row + 2]?.[column + 1].id === user?.uid;
+    const topLeftVertical =
+      partygoersBySeat?.[row + 1]?.[column + 2] &&
+      partygoersBySeat?.[row + 1]?.[column + 2].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 2]?.[column] &&
+      partygoersBySeat?.[row - 2]?.[column].id === user?.uid;
+    const bottomRight =
+      partygoersBySeat?.[row - 1]?.[column - 1] &&
+      partygoersBySeat?.[row - 1]?.[column - 1].id === user?.uid;
+    const bottomRightLong =
+      partygoersBySeat?.[row - 2]?.[column - 2] &&
+      partygoersBySeat?.[row - 2]?.[column - 2].id === user?.uid;
+    const bottomRightHorizontal =
+      partygoersBySeat?.[row - 2]?.[column - 1] &&
+      partygoersBySeat?.[row - 2]?.[column - 1].id === user?.uid;
+    const bottomRightVertical =
+      partygoersBySeat?.[row - 1]?.[column - 2] &&
+      partygoersBySeat?.[row - 1]?.[column - 2].id === user?.uid;
+    const bottomLeft =
+      partygoersBySeat?.[row - 1]?.[column + 1] &&
+      partygoersBySeat?.[row - 1]?.[column + 1].id === user?.uid;
+    const bottomLeftLong =
+      partygoersBySeat?.[row - 2]?.[column + 2] &&
+      partygoersBySeat?.[row - 2]?.[column + 2].id === user?.uid;
+    const bottomLeftHorizontal =
+      partygoersBySeat?.[row - 2]?.[column + 1] &&
+      partygoersBySeat?.[row - 2]?.[column + 1].id === user?.uid;
+    const bottomLeftVertical =
+      partygoersBySeat?.[row - 1]?.[column + 2] &&
+      partygoersBySeat?.[row - 1]?.[column + 2].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column + 2] &&
+      partygoersBySeat?.[row]?.[column + 2].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column - 2] &&
+      partygoersBySeat?.[row]?.[column - 2].id === user?.uid;
+
+    return (
+      top ||
+      topLeft ||
+      topLeftLong ||
+      topLeftHorizontal ||
+      topLeftVertical ||
+      topRight ||
+      topRightLong ||
+      topRightHorizontal ||
+      topRightVertical ||
+      bottom ||
+      bottomLeft ||
+      bottomLeftLong ||
+      bottomLeftHorizontal ||
+      bottomLeftVertical ||
+      bottomRight ||
+      bottomRightLong ||
+      bottomRightHorizontal ||
+      bottomRightVertical ||
+      right ||
+      left
+    );
+  };
 
   if (!venue) {
     return null;
@@ -280,13 +375,104 @@ const AvatarGrid = () => {
       <div
         className="avatar-grid-container"
         style={{
+          height: window.innerHeight,
           backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
           backgroundSize: "cover",
+          display: "grid",
+          gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+          gridTemplateRows: `repeat(${rows}, 1fr)`,
         }}
       >
+        <div className="grid-rooms-container">
+          {venue.spaces?.map((room: AvatarGridRoom, index: number) => {
+            const peopleInRoom = partygoers
+              ? partygoers.filter(
+                  (partygoer) =>
+                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+                )
+              : [];
+            return (
+              <div
+                style={{
+                  backgroundImage: `url(${room.image_url})`,
+                  width: `calc((100% / 40) * ${room.width})`,
+                  height: `calc((100% / 25)* ${room.height})`,
+                  left: `calc((100% / 40) * ${room.column - 1})`,
+                  top: `calc((100% / 25) * ${room.row - 1})`,
+                }}
+                className={`grid-room grid-room-blue ${
+                  isHittingRoom && room === selectedRoom && "hitting-room"
+                }`}
+                key={`${room.title}-${index}`}
+              >
+                <div
+                  className={`grid-room-info-btn ${
+                    isHittingRoom && room === selectedRoom && "hitting-room"
+                  }`}
+                >
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      setSelectedRoom(room);
+                      setIsRoomModalOpen(true);
+                    }}
+                    className={"search-icon"}
+                    icon={faInfoCircle}
+                  />
+                </div>
+                <div className="grid-room-title">{room.title}</div>
+                <div className="grid-room-infos">
+                  <div
+                    className={`grid-room-btn ${
+                      isHittingRoom && room === selectedRoom && "hitting-room"
+                    }`}
+                  >
+                    <div
+                      onClick={() => enterAvatarGridRoom(room)}
+                      className="btn btn-white btn-small btn-block"
+                    >
+                      Join now
+                    </div>
+                  </div>
+
+                  {peopleInRoom.length ? (
+                    <div
+                      className={`grid-room-people ${
+                        isHittingRoom && room === selectedRoom && "hitting-room"
+                      }`}
+                    >
+                      {peopleInRoom.map((roomPerson, index) => {
+                        if (index + 1 < room.width) {
+                          return (
+                            <div
+                              key={index}
+                              style={{
+                                backgroundImage: `url(${roomPerson.pictureUrl})`,
+                              }}
+                              className={`grid-room-avatar grid-room-avatar-${
+                                index + 1
+                              }`}
+                            ></div>
+                          );
+                        }
+                        return null;
+                      })}
+                      {peopleInRoom.length >= room.width && (
+                        <div className="grid-room-avatar grid-room-avatar-more">
+                          +{peopleInRoom.length - room.width + 1}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
         {Array.from(Array(columns)).map((_, colIndex) => {
           return (
-            <div className="seat-row" key={`col${colIndex}`}>
+            <div className="seat-row" key={`column${colIndex}`}>
               {Array.from(Array(rows)).map((_, rowIndex) => {
                 const column = colIndex + 1;
                 const row = rowIndex + 1;
@@ -294,29 +480,18 @@ const AvatarGrid = () => {
                   ? partygoersBySeat[row][column]
                   : null;
                 const isMe = seatedPartygoer?.id === user?.uid;
-                const { top, left, right, bottom } = isRoomBorder(row, column);
+                const isAdjacentSeat = checkAdjacentSeats(row, column);
+                const isNearAdjacentSeat = checkNearAdjacentSeats(row, column);
                 return (
-                  <div
-                    key={`row${rowIndex}`}
-                    style={{
-                      borderWidth: 1,
-                      borderTop: top ? "solid #1ba52e" : "solid transparent",
-                      borderLeft: left ? "solid #1ba52e" : "solid transparent",
-                      borderRight: right
-                        ? "solid #1ba52e"
-                        : "solid transparent",
-                      borderBottom: bottom
-                        ? "solid #1ba52e"
-                        : "solid transparent",
-                      borderTopLeftRadius: top && left ? "20%" : 0,
-                      borderBottomLeftRadius: bottom && left ? "20%" : 0,
-                      borderTopRightRadius: top && right ? "20%" : 0,
-                      borderBottomRightRadius: bottom && right ? "20%" : 0,
-                    }}
-                    onClick={() => hitRoom(row, column)}
-                  >
+                  <div key={`row${rowIndex}`} className={`seat-container`}>
                     <div
-                      className={seatedPartygoer ? "seat" : "not-seat"}
+                      className={
+                        seatedPartygoer
+                          ? "seat"
+                          : `not-seat ${isAdjacentSeat ? "adjacent" : ""} ${
+                              isNearAdjacentSeat ? "near-adjacent" : ""
+                            }`
+                      }
                       onClick={() => onSeatClick(row, column, seatedPartygoer)}
                       key={`row${rowIndex}`}
                     >
@@ -327,7 +502,6 @@ const AvatarGrid = () => {
                             profileStyle={"profile-avatar"}
                             setSelectedUserProfile={setSelectedUserProfile}
                             miniAvatars={venue?.miniAvatars}
-                            imageSize={undefined}
                           />
                         </div>
                       )}

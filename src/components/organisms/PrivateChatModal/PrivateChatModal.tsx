@@ -1,18 +1,28 @@
 import React, { useState } from "react";
-import "./PrivateChatModal.scss";
-import { PrivateChatMessage } from "components/context/ChatContext";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-import Chatbox from "components/organisms/Chatbox";
-import { formatUtcSeconds } from "utils/time";
-import { User } from "types/User";
-import { setPrivateChatMessageIsRead } from "./helpers";
+
+// Components
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { PrivateChatMessage } from "components/context/ChatContext";
+import Chatbox from "components/organisms/Chatbox";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
-import { useUser } from "hooks/useUser";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
 import { useSelector } from "hooks/useSelector";
-import { WithId } from "utils/id";
+import { useUser } from "hooks/useUser";
+
+// Utils | Settings | Constants
 import { DEFAULT_PARTY_NAME } from "settings";
+import { formatUtcSeconds } from "utils/time";
+import { setPrivateChatMessageIsRead } from "./helpers";
+import { WithId } from "utils/id";
+
+// Typings
+import { User } from "types/User";
+
+// Styles
+import "./PrivateChatModal.scss";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -104,7 +114,6 @@ const PrivateChatModal: React.FunctionComponent = () => {
                     <UserProfilePicture
                       user={sender}
                       setSelectedUserProfile={() => null}
-                      imageSize={50}
                     />
                     <div className="sender-info-container">
                       <div className="sender-party-name">

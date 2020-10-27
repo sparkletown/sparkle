@@ -7,11 +7,7 @@ import Chatbox from "../Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import {
-  venuePlayaPreviewUrl,
-  venueInsideUrl,
-  venuePreviewUrl,
-} from "utils/url";
+import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import {
@@ -255,7 +251,7 @@ const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
     return venuePreviewUrl(venue.id, room.title);
   }
 
-  return venuePlayaPreviewUrl(venue.id);
+  return venueInsideUrl(venue.id);
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {

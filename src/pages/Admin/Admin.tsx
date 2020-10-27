@@ -26,7 +26,7 @@ import {
 } from "utils/venue";
 import "./Admin.scss";
 import AdminEventModal from "./AdminEventModal";
-import { venuePlayaPreviewUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
@@ -316,7 +316,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
         {venue.name && (
           <>
             <Link
-              to={venuePlayaPreviewUrl(venue.id)}
+              to={venueInsideUrl(venue.id)}
               target="_blank"
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
