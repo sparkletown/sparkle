@@ -394,7 +394,6 @@ export const Audience: React.FunctionComponent = () => {
                                   }
                                   miniAvatars={venue.miniAvatars}
                                   isAudioEffectDisabled={isAudioEffectDisabled}
-                                  imageSize={undefined}
                                 />
                               </div>
                             )}

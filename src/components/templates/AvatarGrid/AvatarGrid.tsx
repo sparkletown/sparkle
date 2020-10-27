@@ -1,20 +1,31 @@
-import firebase from "firebase/app";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import React, { useCallback, useEffect, useState } from "react";
-import { WithId } from "utils/id";
-import { User } from "types/User";
-import "./AvatarGrid.scss";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { AvatarGridRoom } from "types/AvatarGrid";
-import Announcement from "./Announcement";
-import { RoomModal } from "./RoomModal";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import { useVenueId } from "hooks/useVenueId";
+import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+
+// Components
+import { RoomModal } from "./RoomModal";
+import Announcement from "./Announcement";
+import ChatDrawer from "components/organisms/ChatDrawer";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+// Hooks
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+// Utils | Settings | Constants
+import { WithId } from "utils/id";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
+
+// Typings
+import { AvatarGridRoom } from "types/AvatarGrid";
+import { User } from "types/User";
+
+// Styles
+import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -468,6 +479,7 @@ const AvatarGrid = () => {
                 const seatedPartygoer = partygoersBySeat?.[row]?.[column]
                   ? partygoersBySeat[row][column]
                   : null;
+                const isMe = seatedPartygoer?.id === user?.uid;
                 const isAdjacentSeat = checkAdjacentSeats(row, column);
                 const isNearAdjacentSeat = checkNearAdjacentSeats(row, column);
                 return (
@@ -484,15 +496,14 @@ const AvatarGrid = () => {
                       key={`row${rowIndex}`}
                     >
                       {seatedPartygoer && (
-                        <div
-                          onClick={() =>
-                            setSelectedUserProfile(seatedPartygoer)
-                          }
-                          className={"user"}
-                          style={{
-                            backgroundImage: `url(${seatedPartygoer.pictureUrl})`,
-                          }}
-                        />
+                        <div className={isMe ? "user me" : "user"}>
+                          <UserProfilePicture
+                            user={seatedPartygoer}
+                            profileStyle={"profile-avatar"}
+                            setSelectedUserProfile={setSelectedUserProfile}
+                            miniAvatars={venue?.miniAvatars}
+                          />
+                        </div>
                       )}
                     </div>
                   </div>
