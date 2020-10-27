@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import { venuePlayaPreviewUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -43,7 +43,7 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
     afterSelect();
 
     // there is a bug in useConnectCurrentVenue that does not update correctly on url change
-    window.location.href = venuePlayaPreviewUrl(randomVenue.id);
+    window.location.href = venueInsideUrl(randomVenue.id);
   }, [venues, afterSelect]);
   if (!venues) {
     return <></>;

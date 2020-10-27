@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import "./VenueInfoEvents.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
-import { venuePlayaPreviewUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
 import "../EventDisplay/EventDisplay.scss";
 import { PLAYA_VENUE_NAME } from "settings";
@@ -85,9 +85,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               eventsNow.length ? "btn-primary" : "btn-secondary"
             } btn-block`}
             // @debt would be nice not to refresh the page
-            onClick={() =>
-              (window.location.href = venuePlayaPreviewUrl(venue.id))
-            }
+            onClick={() => (window.location.href = venueInsideUrl(venue.id))}
           >
             {eventsNow.length ? "Join now" : `View on ${PLAYA_VENUE_NAME}`}
           </button>
