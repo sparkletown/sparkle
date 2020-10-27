@@ -188,7 +188,6 @@ export const Map: React.FC<PropsType> = ({
         <img
           className="img-fluid map-image"
           src={venue.mapBackgroundImageUrl}
-          title="Clickable Map"
           alt="Clickable Map"
         />
       </div>

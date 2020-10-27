@@ -217,24 +217,29 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         onClick={() =>
                           (window.location.href = venueInsideUrl(DEFAULT_VENUE))
                         }
-                        className="playa-link"
+                        className="back-link"
                       >
                         Back to {PLAYA_VENUE_NAME}
                       </span>
                     )}
                   </div>
                 )}
-                {!IS_BURN && venue?.parentId && (
-                  <span
-                    onClick={() =>
-                      (window.location.href = venueInsideUrl(
-                        venue.parentId ?? ""
-                      ))
-                    }
-                    className="playa-link"
-                  >
-                    Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-                  </span>
+                {!IS_BURN && (
+                  <div className="venue-bar">
+                    <div className="venue-name">{venue?.name}</div>
+                    {venue?.parentId && (
+                      <span
+                        onClick={() =>
+                          (window.location.href = venueInsideUrl(
+                            venue?.parentId ?? ""
+                          ))
+                        }
+                        className="back-link"
+                      >
+                        Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+                      </span>
+                    )}
+                  </div>
                 )}
                 <div className="navbar-links">
                   {venue?.showLiveSchedule && (

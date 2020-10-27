@@ -149,6 +149,7 @@ export const validationSchema = Yup.object()
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
+    parentId: Yup.string().notRequired(),
   })
   .required();
 

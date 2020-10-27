@@ -22,7 +22,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
-import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { getTimeBeforeParty, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
@@ -160,6 +160,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               onClick={onJoinClick}
             >
               Join the event
+              {(venue?.start_utc_seconds ?? 0) >
+                new Date().getTime() / 1000 && (
+                <span className="countdown">
+                  Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                </span>
+              )}
             </button>
           )}
         </div>
