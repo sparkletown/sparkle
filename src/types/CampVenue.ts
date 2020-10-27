@@ -22,6 +22,7 @@ export interface CampVenue extends Venue {
   activity?: any;
   showChat?: any;
   joinButtonText?: string;
+  start_utc_seconds?: number;
 }
 
 export const isCampVenue = (val: AnyVenue): val is CampVenue =>

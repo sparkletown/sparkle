@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { useSelector } from "hooks/useSelector";
-import { BURN_START_UTC_SECONDS, LOC_UPDATE_FREQ_MS } from "settings";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 import { IS_BURN } from "secrets";
 import UserList from "components/molecules/UserList";
 import { CampRoomData } from "types/CampRoomData";
@@ -108,7 +108,9 @@ const Camp: React.FC = () => {
                 </a>
               )}
             </div>
-            <CountDown startUtcSeconds={BURN_START_UTC_SECONDS} />
+            {venue.start_utc_seconds && (
+              <CountDown startUtcSeconds={venue.start_utc_seconds} />
+            )}
           </div>
         </div>
         <div className="row">
