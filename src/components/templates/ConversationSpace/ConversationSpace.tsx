@@ -98,7 +98,7 @@ const ConversationSpace: React.FunctionComponent = () => {
               seatedAtTable={seatedAtTable}
               venueName={venue.name}
               TableComponent={TableComponent}
-              joinMessage={!venue.hideVideo ?? true}
+              joinMessage={venue.hideVideo === false}
               customTables={TABLES}
             />
           </div>
