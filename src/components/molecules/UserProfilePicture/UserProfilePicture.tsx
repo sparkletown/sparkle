@@ -39,7 +39,7 @@ type UserProfilePictureProp = {
   profileStyle?: string;
   setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
-  reactionPosition?: 'right' | 'left' | undefined;
+  reactionPosition?: "right" | "left" | undefined;
 };
 
 // This would be the global variables and configuration,
@@ -159,7 +159,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           )}
           {messagesToBand && (
             <div className="reaction-container">
-              <S.ShoutOutMessage role="img" aria-label="messageToTheBand">
+              <S.ShoutOutMessage
+                role="img"
+                aria-label="messageToTheBand"
+                reactionPosition={reactionPosition}
+              >
                 {messagesToBand.text}
               </S.ShoutOutMessage>
             </div>
@@ -168,15 +172,16 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       </ThemeProvider>
     );
   }, [
-    pictureUrl,
-    user,
-    profileStyle,
-    messagesToBand,
-    imageErrorHandler,
-    setSelectedUserProfile,
     experienceContext,
-    muteReactions,
+    imageErrorHandler,
     isAudioEffectDisabled,
+    messagesToBand,
+    muteReactions,
+    pictureUrl,
+    profileStyle,
+    reactionPosition,
+    setSelectedUserProfile,
+    user,
   ]);
 };
 

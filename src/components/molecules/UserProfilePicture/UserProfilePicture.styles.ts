@@ -1,5 +1,6 @@
 import styled, { css, keyframes } from "styled-components";
 
+// --- Avatar
 type TAvatar = {
   backgroundImage?: string;
 };
@@ -11,6 +12,7 @@ export const Avatar = styled.div`
   background-image: url(${(props: TAvatar) => props?.backgroundImage ?? ""});
 `;
 
+// --- Reaction
 const reactionOffset = "-20px";
 const reactionLeft = css`
   left: ${reactionOffset};
@@ -36,6 +38,7 @@ export const Reaction = styled.div`
   animation: pulse 4s ease-in-out infinite;
 `;
 
+// --- Reaction Container
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -53,20 +56,49 @@ export const Container = styled.div`
   }
 `;
 
-const expandBounce = keyframes`
+// --- Shout-out message
+
+const translateXOffset = '5vh'; // 5vh = imageWidth (4vh) + 1v (padding)
+const expandBounceRight = keyframes`
   0%,
   100% {
     transform: scale(0) translateX(0);
   }
 
   25% {
-    transform: scale(1.25) translateX(5vh); // 5vh = imageWidth (4vh) + 1v (padding)
+    transform: scale(1.25) translateX(${translateXOffset});
   }
 
   40%,
   80% {
-    transform: scale(1) translateX(5vh);
+    transform: scale(1) translateX(${translateXOffset});
   }
+`;
+const expandBounceLeft = keyframes`
+  0%,
+  100% {
+    transform: scale(0) translateX(0);
+  }
+
+  25% {
+    transform: scale(1.25) translateX(-${translateXOffset});
+  }
+
+  40%,
+  80% {
+    transform: scale(1) translateX(-${translateXOffset});
+  }
+`;
+
+const messageLeft = css`
+  right: 0;
+  transform-origin: right center;
+  animation: ${expandBounceLeft} 5s ease;
+`;
+const messageRight = css`
+  left: 0;
+  transform-origin: 2vh center;
+  animation: ${expandBounceRight} 5s ease;
 `;
 
 export const ShoutOutMessage = styled.div`
@@ -76,7 +108,9 @@ export const ShoutOutMessage = styled.div`
 
   position: absolute;
   top: 0;
-  left: 0;
+
+  ${(props: TReaction) =>
+    props.reactionPosition === "right" ? messageRight : messageLeft};
 
   background-color: ${(props) => props.theme.fadedWhite};
 
@@ -84,7 +118,4 @@ export const ShoutOutMessage = styled.div`
   font-size: 20px;
   border-radius: 10px;
 
-  transform-origin: 2vh center;
-
-  animation: ${expandBounce} 5s ease;
 `;
