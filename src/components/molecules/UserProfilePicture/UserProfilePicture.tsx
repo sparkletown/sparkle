@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { ThemeProvider } from "styled-components";
 
 // Typings
 import { User } from "types/User";
@@ -30,6 +31,7 @@ import {
 
 // Styles
 import "./UserProfilePicture.scss";
+import * as S from "./UserProfilePicture.styles";
 
 type UserProfilePictureProp = {
   isAudioEffectDisabled?: boolean;
@@ -37,6 +39,15 @@ type UserProfilePictureProp = {
   profileStyle?: string;
   setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
+  reactionPosition?: 'right' | 'left' | undefined;
+};
+
+// This would be the global variables and configuration,
+// it is here only for the duration of the demo
+const DEMO_THEME = {
+  fadedWhite: "rgba(255, 255, 255, 0.8)",
+  black: "#000",
+  borderWidth: "5px",
 };
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -44,6 +55,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   miniAvatars,
   profileStyle,
   setSelectedUserProfile,
+  reactionPosition,
   user,
 }) => {
   const experienceContext = useContext(ExperienceContext);
@@ -59,7 +71,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const avatarUrl = useCallback(
     (id: string, anonMode?: boolean, pictureUrl?: string) => {
-      if (anonMode) {
+      if (anonMode || !id) {
         return setPictureUrl(DEFAULT_PROFILE_IMAGE);
       }
 
@@ -101,57 +113,59 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return useMemo(() => {
     return (
-      <div className="profile-picture-container">
-        {/* Hidden image, used to handle error if image is not loaded */}
-        <img
-          src={pictureUrl}
-          onError={(event) => imageErrorHandler(event)}
-          hidden
-          style={{ display: "none" }}
-          alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-        />
-        <div
-          onClick={() => setSelectedUserProfile(user)}
-          className={profileStyle}
-          style={{
-            backgroundImage: `url(${pictureUrl})`,
-          }}
-        />
+      // Theme provider is supposed to wrap the entire app,
+      // not every component individualle
+      //
+      // This is just a demo
+      <ThemeProvider theme={DEMO_THEME}>
+        <S.Container>
+          {/* Hidden image, used to handle error if image is not loaded */}
+          <img
+            src={pictureUrl}
+            onError={(event) => imageErrorHandler(event)}
+            hidden
+            style={{ display: "none" }}
+            alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+          />
+          <S.Avatar
+            onClick={() => setSelectedUserProfile(user)}
+            className={profileStyle}
+            backgroundImage={pictureUrl}
+          />
 
-        {Reactions.map(
-          (reaction, index) =>
-            experienceContext &&
-            experienceContext.reactions.find(
-              (r) => r.created_by === user.id && r.reaction === reaction.type
-            ) && (
-              <div key={index} className="reaction-container">
-                <span
-                  className={`reaction ${reaction.name}`}
-                  role="img"
-                  aria-label={reaction.ariaLabel}
-                >
-                  {reaction.text}
-                </span>
-                {!muteReactions && !isAudioEffectDisabled && (
-                  <audio autoPlay loop>
-                    <source src={reaction.audioPath} />
-                  </audio>
-                )}
-              </div>
-            )
-        )}
-        {messagesToBand && (
-          <div className="reaction-container">
-            <div
-              className="reaction messageToBand"
-              role="img"
-              aria-label="messageToTheBand"
-            >
-              {messagesToBand.text}
+          {Reactions.map(
+            (reaction, index) =>
+              experienceContext &&
+              experienceContext.reactions.find(
+                (r) => r.created_by === user.id && r.reaction === reaction.type
+              ) && (
+                <div key={index} className="reaction-container">
+                  <S.Reaction
+                    role="img"
+                    aria-label={reaction.ariaLabel}
+                    className={reaction.name}
+                    reactionPosition={reactionPosition}
+                  >
+                    {reaction.text}
+                  </S.Reaction>
+
+                  {!muteReactions && !isAudioEffectDisabled && (
+                    <audio autoPlay loop>
+                      <source src={reaction.audioPath} />
+                    </audio>
+                  )}
+                </div>
+              )
+          )}
+          {messagesToBand && (
+            <div className="reaction-container">
+              <S.ShoutOutMessage role="img" aria-label="messageToTheBand">
+                {messagesToBand.text}
+              </S.ShoutOutMessage>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </S.Container>
+      </ThemeProvider>
     );
   }, [
     pictureUrl,
@@ -167,7 +181,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 };
 
 UserProfilePicture.defaultProps = {
-  profileStyle: "profile-icon",
+  // profileStyle: "profile-icon",
   miniAvatars: false,
 };
 
