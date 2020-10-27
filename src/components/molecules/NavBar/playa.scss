@@ -124,12 +124,21 @@ $sand: #937c63;
       }
     }
 
-    .playa-link {
-      letter-spacing: 1.5px;
-      font-size: 1.3em;
-      cursor: pointer;
-      &:hover {
-        text-decoration: underline;
+    .venue-bar {
+      text-align: center;
+
+      .venue-name {
+        font-size: 1.8em;
+        font-weight: 700;
+      }
+
+      .back-link {
+        letter-spacing: 1.5px;
+        font-size: 1.3em;
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
 
@@ -159,7 +168,7 @@ $sand: #937c63;
         }
       }
       span,
-      .playa-link {
+      .back-link {
         display: block;
         white-space: nowrap;
         overflow: hidden;

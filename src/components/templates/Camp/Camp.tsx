@@ -81,9 +81,6 @@ const Camp: React.FC = () => {
     <>
       <BannerMessage venue={venue} />
       <div className="camp-container">
-        <div className="small-right-margin">
-          <h1 className="title">{venue.name}</h1>
-        </div>
         <div className="row">
           {usersInCamp && (
             <div className="col">

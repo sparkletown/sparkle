@@ -65,6 +65,7 @@ export type VenueInput = AdvancedVenueInput &
     width?: number;
     height?: number;
     bannerMessage?: string;
+    parentId?: string;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

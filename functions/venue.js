@@ -349,6 +349,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.bannerMessage) {
         updated.bannerMessage = data.bannerMessage;
       }
+      if (data.parentId) {
+        updated.parentId = data.parentId;
+      }
       if (data.showLiveSchedule) {
         updated.showLiveSchedule = data.showLiveSchedule;
       }

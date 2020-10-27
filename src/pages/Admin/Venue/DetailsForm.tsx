@@ -563,6 +563,27 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Enter the ID of the venue you would like for the "back" button
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            The nav bar can show a "back" button. Enter the venue ID you wish to
+            use. A venue ID is the part of the URL after /in/, so eg. for
+            sparkle.space/in/abcdef you would enter abcdef below
+          </div>
+          <input
+            type="text"
+            disabled={disable}
+            name="parentId"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="abcdef"
+          />
+          {errors.parentId && (
+            <span className="input-error">{errors.parentId.message}</span>
+          )}
+        </div>
         {templateID && HAS_ROOMS_TEMPLATES.includes(templateID) && (
           <>
             <h4 className="italic" style={{ fontSize: "20px" }}>
