@@ -66,7 +66,7 @@
   "scripts": {
     "start": "react-scripts start",
     "init": "node scripts/init.js",
-    "build": "npm rebuild node-sass && react-scripts build",
+    "build": "react-scripts build",
     "lint": "prettier --write \"{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "lint:src": "eslint src --ext .js,.jsx,.ts,.tsx",
     "test": "react-scripts test",
