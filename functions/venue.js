@@ -86,6 +86,7 @@ const createVenueData = (data, context) => {
       venueData.rooms = data.rooms;
       venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       venueData.roomVisibility = data.roomVisibility;
+      venueData.showGrid = data.showGrid ? data.showGrid : false;
       break;
     case "zoomroom":
     case "artcar":
@@ -352,12 +353,19 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
       if (data.parentId) {
         updated.parentId = data.parentId;
       }
-      if (data.showLiveSchedule) {
-        updated.showLiveSchedule = data.showLiveSchedule;
+
+      if (data.rows) {
+        updated.rows = data.rows;
+      }
+      if (data.columns) {
+        updated.columns = data.columns;
       }
       if (data.roomVisibility) {
         updated.roomVisibility = data.roomVisibility;
       }
+
+      updated.showLiveSchedule = data.showLiveSchedule;
+      updated.showGrid = data.showGrid;
 
       switch (updated.template) {
         case VenueTemplate.jazzbar:

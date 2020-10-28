@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
@@ -9,32 +9,279 @@ import { RoomVisibility } from "types/Venue";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 import { currentTimeInUnixEpoch } from "utils/time";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { User } from "types/User";
+import { WithId } from "utils/id";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+import firebase from "firebase/app";
+import UserProfileModal from "components/organisms/UserProfileModal";
 
 interface PropsType {
   venue: CampVenue;
   attendances: { [location: string]: number };
-  setSelectedRoom: (room: CampRoomData) => void;
+  selectedRoom: CampRoomData | undefined;
+  setSelectedRoom: (room: CampRoomData | undefined) => void;
   setIsRoomModalOpen: (value: boolean) => void;
 }
+
+const DEFAULT_COLUMNS = 40;
+const DEFAULT_ROWS = 25;
 
 export const Map: React.FC<PropsType> = ({
   venue,
   attendances,
+  selectedRoom,
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const dispatch = useDispatch();
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
   const [roomHovered, setRoomHovered] = useState<CampRoomData | undefined>(
     undefined
   );
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
+  const [keyDown, setKeyDown] = useState(false);
+  const [isHittingRoom, setIsHittingRoom] = useState(false);
+
+  const columns = venue.columns ?? DEFAULT_COLUMNS;
+  const rows = venue.rows ?? DEFAULT_ROWS;
+  const rooms = [...venue.rooms];
+
+  const { partygoers } = useSelector((state) => ({
+    partygoers: state.firestore.ordered.partygoers,
+  }));
+
+  const takeSeat = useCallback(
+    (row: number | null, column: number | null) => {
+      if (!user || !profile || !venueId) return;
+      const doc = `users/${user.uid}`;
+      const existingData = profile?.data;
+      const update = {
+        data: {
+          ...existingData,
+          [venueId]: {
+            row,
+            column,
+          },
+        },
+      };
+      const firestore = firebase.firestore();
+      firestore
+        .doc(doc)
+        .update(update)
+        .catch(() => {
+          firestore.doc(doc).set(update);
+        });
+    },
+    [profile, user, venueId]
+  );
+
+  const useKeyPress = function (targetKey: string) {
+    const [keyPressed, setKeyPressed] = useState(false);
+
+    function downHandler({ key }: { key: string }) {
+      if (key === targetKey) {
+        setKeyPressed(true);
+      }
+    }
+
+    const upHandler = ({ key }: { key: string }) => {
+      if (key === targetKey) {
+        setKeyDown(false);
+        setKeyPressed(false);
+      }
+    };
+
+    useEffect(() => {
+      window.addEventListener("keydown", downHandler);
+      window.addEventListener("keyup", upHandler);
+
+      return () => {
+        window.removeEventListener("keydown", downHandler);
+        window.removeEventListener("keyup", upHandler);
+      };
+    });
+
+    return keyPressed;
+  };
+
+  const downPress = useKeyPress("ArrowDown");
+  const upPress = useKeyPress("ArrowUp");
+  const leftPress = useKeyPress("ArrowLeft");
+  const rightPress = useKeyPress("ArrowRight");
+  const enterPress = useKeyPress("Enter");
+
+  const hitRoom = useCallback(
+    (r: number, c: number) => {
+      let isHitting = false;
+      rooms.forEach((room: CampRoomData) => {
+        const rowPosition = (100 / rows) * r;
+        const colPosition = (100 / columns) * c;
+        const roomX = Math.round(room.x_percent);
+        const roomY = Math.round(room.y_percent);
+        const roomWidth = Math.round(room.width_percent);
+        const roomHeight = Math.round(room.height_percent);
+
+        if (
+          rowPosition >= roomY &&
+          rowPosition <= roomY + roomHeight &&
+          colPosition >= roomX &&
+          colPosition <= roomX + roomWidth
+        ) {
+          setSelectedRoom(room);
+          setIsHittingRoom(true);
+          isHitting = true;
+        } else {
+          if (isHittingRoom && selectedRoom === room) {
+            setSelectedRoom(undefined);
+            setIsHittingRoom(false);
+          }
+        }
+        return isHitting;
+      });
+      return isHitting;
+    },
+    [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
+  );
+
+  const isExternalLink = useCallback(
+    (url: string) =>
+      url.includes("http") &&
+      new URL(window.location.href).host !== new URL(getRoomUrl(url)).host,
+    []
+  );
+
+  const roomEnter = useCallback(
+    (room: CampRoomData) => {
+      room &&
+        user &&
+        enterRoom(
+          user,
+          { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+          profile?.lastSeenIn
+        );
+    },
+    [profile, user, venue]
+  );
+
+  const partygoersBySeat: WithId<User>[][] = [];
+  partygoers &&
+    partygoers.forEach((partygoer) => {
+      if (
+        !venueId ||
+        !partygoer?.data ||
+        partygoer.data[venueId] === undefined ||
+        partygoer.data[venueId].row === undefined ||
+        partygoer.data[venueId].column === undefined
+      )
+        return;
+      const row = partygoer.data[venueId].row || 0;
+      const column = partygoer.data[venueId].column || 0;
+      if (!(row in partygoersBySeat)) {
+        partygoersBySeat[row] = [];
+      }
+      partygoersBySeat[row][column] = partygoer;
+    });
+
+  const checkAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 1]?.[column] &&
+      partygoersBySeat?.[row + 1]?.[column].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 1]?.[column] &&
+      partygoersBySeat?.[row - 1]?.[column].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column + 1] &&
+      partygoersBySeat?.[row]?.[column + 1].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column - 1] &&
+      partygoersBySeat?.[row]?.[column - 1].id === user?.uid;
+
+    return top || bottom || right || left;
+  };
+
+  useEffect(() => {
+    if (!venueId) return;
+
+    const currentPosition = profile?.data?.[venueId];
+    if ((!currentPosition?.row && !currentPosition?.column) || keyDown) {
+      return;
+    }
+
+    setKeyDown(true);
+
+    const { row, column } = currentPosition;
+    if (row && column) {
+      const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
+      if (enterPress && selectedRoom) {
+        const isExternalUrl = isExternalLink(selectedRoom.url);
+        window.open(
+          getRoomUrl(selectedRoom.url),
+          isExternalUrl ? "_blank" : "noopener,noreferrer"
+        );
+        roomEnter(selectedRoom);
+      }
+      if (downPress) {
+        if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
+          return;
+        }
+        hitRoom(row + 1, column);
+        takeSeat(row + 1, column);
+      }
+      if (upPress) {
+        if (row - 1 < 1 || seatTaken(row - 1, column)) {
+          return;
+        }
+        hitRoom(row - 1, column);
+        takeSeat(row - 1, column);
+        return;
+      }
+      if (leftPress) {
+        if (column - 1 < 1 || seatTaken(row, column - 1)) {
+          return;
+        }
+        hitRoom(row, column - 1);
+
+        takeSeat(row, column - 1);
+        return;
+      }
+      if (rightPress) {
+        if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
+          return;
+        }
+        hitRoom(row, column + 1);
+
+        takeSeat(row, column + 1);
+        return;
+      }
+    }
+  }, [
+    downPress,
+    leftPress,
+    profile,
+    rightPress,
+    takeSeat,
+    upPress,
+    user,
+    venue,
+    hitRoom,
+    venueId,
+    keyDown,
+    enterPress,
+    selectedRoom,
+    partygoersBySeat,
+    roomEnter,
+    isExternalLink,
+  ]);
 
   if (!venue) {
     return <>Loading map...</>;
   }
-
-  const rooms = [...venue.rooms];
 
   if (roomHovered) {
     const idx = rooms.findIndex((room) => room.title === roomHovered.title);
@@ -48,35 +295,201 @@ export const Map: React.FC<PropsType> = ({
     return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
   };
 
-  const isExternalLink = (url: string) =>
-    url.includes("http") &&
-    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
-
-  const roomEnter = (room: CampRoomData) => {
-    room &&
-      user &&
-      enterRoom(
-        user,
-        { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
-        profile?.lastSeenIn
-      );
-  };
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
   };
 
+  const onSeatClick = (
+    row: number,
+    column: number,
+    seatedPartygoer: WithId<User> | null
+  ) => {
+    if (!seatedPartygoer) {
+      takeSeat(row, column);
+    }
+    rooms.forEach((room: CampRoomData) => {
+      const rowPosition = (100 / rows) * row;
+      const colPosition = (100 / columns) * column;
+      const roomX = Math.trunc(room.x_percent);
+      const roomY = Math.trunc(room.y_percent);
+      const roomWidth = Math.trunc(room.width_percent);
+      const roomHeight = Math.trunc(room.height_percent);
+
+      if (
+        !seatedPartygoer &&
+        rowPosition >= roomY &&
+        rowPosition <= roomY + roomHeight &&
+        colPosition >= roomX &&
+        colPosition <= roomX + roomWidth
+      ) {
+        setSelectedRoom(room);
+        setIsRoomModalOpen(true);
+      } else {
+        if (isHittingRoom && selectedRoom) {
+          setSelectedRoom(undefined);
+          setIsHittingRoom(false);
+        }
+      }
+    });
+  };
+
+  const checkNearAdjacentSeats = (row: number, column: number): boolean => {
+    const top =
+      partygoersBySeat?.[row + 2]?.[column] &&
+      partygoersBySeat?.[row + 2]?.[column].id === user?.uid;
+    const topRight =
+      partygoersBySeat?.[row + 1]?.[column - 1] &&
+      partygoersBySeat?.[row + 1]?.[column - 1].id === user?.uid;
+    const topRightLong =
+      partygoersBySeat?.[row + 2]?.[column - 2] &&
+      partygoersBySeat?.[row + 2]?.[column - 2].id === user?.uid;
+    const topRightHorizontal =
+      partygoersBySeat?.[row + 2]?.[column - 1] &&
+      partygoersBySeat?.[row + 2]?.[column - 1].id === user?.uid;
+    const topRightVertical =
+      partygoersBySeat?.[row + 1]?.[column - 2] &&
+      partygoersBySeat?.[row + 1]?.[column - 2].id === user?.uid;
+    const topLeft =
+      partygoersBySeat?.[row + 1]?.[column + 1] &&
+      partygoersBySeat?.[row + 1]?.[column + 1].id === user?.uid;
+    const topLeftLong =
+      partygoersBySeat?.[row + 2]?.[column + 2] &&
+      partygoersBySeat?.[row + 2]?.[column + 2].id === user?.uid;
+    const topLeftHorizontal =
+      partygoersBySeat?.[row + 2]?.[column + 1] &&
+      partygoersBySeat?.[row + 2]?.[column + 1].id === user?.uid;
+    const topLeftVertical =
+      partygoersBySeat?.[row + 1]?.[column + 2] &&
+      partygoersBySeat?.[row + 1]?.[column + 2].id === user?.uid;
+    const bottom =
+      partygoersBySeat?.[row - 2]?.[column] &&
+      partygoersBySeat?.[row - 2]?.[column].id === user?.uid;
+    const bottomRight =
+      partygoersBySeat?.[row - 1]?.[column - 1] &&
+      partygoersBySeat?.[row - 1]?.[column - 1].id === user?.uid;
+    const bottomRightLong =
+      partygoersBySeat?.[row - 2]?.[column - 2] &&
+      partygoersBySeat?.[row - 2]?.[column - 2].id === user?.uid;
+    const bottomRightHorizontal =
+      partygoersBySeat?.[row - 2]?.[column - 1] &&
+      partygoersBySeat?.[row - 2]?.[column - 1].id === user?.uid;
+    const bottomRightVertical =
+      partygoersBySeat?.[row - 1]?.[column - 2] &&
+      partygoersBySeat?.[row - 1]?.[column - 2].id === user?.uid;
+    const bottomLeft =
+      partygoersBySeat?.[row - 1]?.[column + 1] &&
+      partygoersBySeat?.[row - 1]?.[column + 1].id === user?.uid;
+    const bottomLeftLong =
+      partygoersBySeat?.[row - 2]?.[column + 2] &&
+      partygoersBySeat?.[row - 2]?.[column + 2].id === user?.uid;
+    const bottomLeftHorizontal =
+      partygoersBySeat?.[row - 2]?.[column + 1] &&
+      partygoersBySeat?.[row - 2]?.[column + 1].id === user?.uid;
+    const bottomLeftVertical =
+      partygoersBySeat?.[row - 1]?.[column + 2] &&
+      partygoersBySeat?.[row - 1]?.[column + 2].id === user?.uid;
+    const left =
+      partygoersBySeat?.[row]?.[column + 2] &&
+      partygoersBySeat?.[row]?.[column + 2].id === user?.uid;
+    const right =
+      partygoersBySeat?.[row]?.[column - 2] &&
+      partygoersBySeat?.[row]?.[column - 2].id === user?.uid;
+
+    return (
+      top ||
+      topLeft ||
+      topLeftLong ||
+      topLeftHorizontal ||
+      topLeftVertical ||
+      topRight ||
+      topRightLong ||
+      topRightHorizontal ||
+      topRightVertical ||
+      bottom ||
+      bottomLeft ||
+      bottomLeftLong ||
+      bottomLeftHorizontal ||
+      bottomLeftVertical ||
+      bottomRight ||
+      bottomRightLong ||
+      bottomRightHorizontal ||
+      bottomRightVertical ||
+      right ||
+      left
+    );
+  };
+
   return (
     <>
-      <div id="map" className="col map-container">
+      <div
+        className="grid-container"
+        style={{
+          backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
+          backgroundSize: "cover",
+          display: "grid",
+          gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+          gridTemplateRows: `repeat(${rows}, 1fr)`,
+        }}
+      >
+        {Array.from(Array(columns)).map((_, colIndex) => {
+          return (
+            <div className="seat-row" key={`column${colIndex}`}>
+              {Array.from(Array(rows)).map((_, rowIndex) => {
+                const column = colIndex + 1;
+                const row = rowIndex + 1;
+                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                  ? partygoersBySeat[row][column]
+                  : null;
+                const isMe = seatedPartygoer?.id === user?.uid;
+                const isAdjacentSeat = checkAdjacentSeats(row, column);
+                const isNearAdjacentSeat = checkNearAdjacentSeats(row, column);
+                return (
+                  <div key={`row${rowIndex}`} className={`seat-container`}>
+                    {venue.showGrid && (
+                      <div
+                        className={
+                          seatedPartygoer
+                            ? "seat"
+                            : `not-seat ${isAdjacentSeat ? "adjacent" : ""} ${
+                                isNearAdjacentSeat ? "near-adjacent" : ""
+                              }`
+                        }
+                        onClick={() =>
+                          onSeatClick(row, column, seatedPartygoer)
+                        }
+                        key={`row${rowIndex}`}
+                      >
+                        {seatedPartygoer && (
+                          <div className={isMe ? "user me" : "user"}>
+                            <UserProfilePicture
+                              user={seatedPartygoer}
+                              profileStyle={"profile-avatar"}
+                              setSelectedUserProfile={setSelectedUserProfile}
+                              miniAvatars={venue?.miniAvatars}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
         {rooms.map((room) => {
           const left = room.x_percent;
           const top = room.y_percent;
           const width = room.width_percent;
           const height = room.height_percent;
+          const isUnderneathRoom = isHittingRoom && room === selectedRoom;
+
           return (
             <div
-              className="room position-absolute"
+              className={`room position-absolute ${
+                isUnderneathRoom && "isUnderneath"
+              }`}
               style={{
                 left: left + "%",
                 top: top + "%",
@@ -103,11 +516,31 @@ export const Map: React.FC<PropsType> = ({
               }}
             >
               <div
-                className={`playa-venue ${
+                className={`camp-venue ${
                   roomClicked === room.title ? "clicked" : ""
                 }`}
               >
-                <div className="playa-venue-img">
+                <div
+                  className={`grid-room-btn ${
+                    isUnderneathRoom && "isUnderneath"
+                  }`}
+                >
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const isExternalUrl = isExternalLink(room.url);
+                      window.open(
+                        getRoomUrl(room.url),
+                        isExternalUrl ? "_blank" : "noopener,noreferrer"
+                      );
+                      roomEnter(room);
+                    }}
+                    className="btn btn-white btn-small btn-block"
+                  >
+                    Join now
+                  </div>
+                </div>
+                <div className="camp-venue-img">
                   <img
                     src={room.image_url}
                     title={room.title}
@@ -117,14 +550,14 @@ export const Map: React.FC<PropsType> = ({
                 {venue.roomVisibility === RoomVisibility.nameCount &&
                   roomHovered &&
                   roomHovered.title === room.title && (
-                    <div className={`playa-venue-text`}>
-                      <div className="playa-venue-maininfo">
-                        <div className="playa-venue-title">{room.title}</div>
+                    <div className="camp-venue-text">
+                      <div className="camp-venue-maininfo">
+                        <div className="camp-venue-title">{room.title}</div>
 
                         {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                           (room.attendanceBoost ?? 0) >
                           0 && (
-                          <div className="playa-venue-people">
+                          <div className="camp-venue-people">
                             {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                               (room.attendanceBoost ?? 0)}
                           </div>
@@ -133,32 +566,32 @@ export const Map: React.FC<PropsType> = ({
                     </div>
                   )}
 
-                <div className={`playa-venue-text`}>
+                <div className={`camp-venue-text`}>
                   {(!venue.roomVisibility ||
                     venue.roomVisibility === RoomVisibility.nameCount ||
                     venue.roomVisibility === RoomVisibility.count) && (
-                    <div className="playa-venue-maininfo">
+                    <div className="camp-venue-maininfo">
                       {(!venue.roomVisibility ||
                         venue.roomVisibility === RoomVisibility.nameCount) && (
-                        <div className="playa-venue-title">{room.title}</div>
+                        <div className="camp-venue-title">{room.title}</div>
                       )}
 
                       {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                         (room.attendanceBoost ?? 0) >
                         0 && (
-                        <div className="playa-venue-people">
+                        <div className="camp-venue-people">
                           {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                             (room.attendanceBoost ?? 0)}
                         </div>
                       )}
                     </div>
                   )}
-                  <div className="playa-venue-secondinfo">
-                    <div className="playa-venue-desc">
+                  <div className="camp-venue-secondinfo">
+                    <div className="camp-venue-desc">
                       <p>{room.subtitle}</p>
                       <p>{room.about}</p>
                     </div>
-                    <div className="playa-venue-actions">
+                    <div className="camp-venue-actions">
                       {isExternalLink(room.url) ? (
                         <a
                           className="btn btn-block btn-small btn-primary"
@@ -185,11 +618,13 @@ export const Map: React.FC<PropsType> = ({
             </div>
           );
         })}
-        <img
-          className="img-fluid map-image"
-          src={venue.mapBackgroundImageUrl}
-          alt="Clickable Map"
-        />
+        {selectedUserProfile && (
+          <UserProfileModal
+            show={!!selectedUserProfile}
+            onHide={() => setSelectedUserProfile(undefined)}
+            userProfile={selectedUserProfile}
+          />
+        )}
       </div>
     </>
   );
