@@ -29,6 +29,7 @@ const VALID_TEMPLATES = [
   "themecamp",
   "artpiece",
   "artcar",
+  "audience",
   "performancevenue",
 ];
 
