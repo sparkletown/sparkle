@@ -25,7 +25,6 @@ import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
-  USE_RANDOM_AVATAR,
 } from "settings";
 
 // Styles
@@ -63,11 +62,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         return setPictureUrl(DEFAULT_PROFILE_IMAGE);
       }
 
-      if (miniAvatars && pictureUrl) {
+      if (!miniAvatars && pictureUrl) {
         return setPictureUrl(pictureUrl);
       }
 
-      if (USE_RANDOM_AVATAR || !pictureUrl) {
+      if (miniAvatars) {
         return setPictureUrl(randomAvatarUrl(id));
       }
 
