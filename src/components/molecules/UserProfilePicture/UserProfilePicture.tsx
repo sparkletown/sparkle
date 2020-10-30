@@ -55,7 +55,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const randomAvatarUrl = (id: string) =>
     "/avatars/" +
-    RANDOM_AVATARS[Math.floor(id.charCodeAt(0) % RANDOM_AVATARS.length)];
+    RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
   const avatarUrl = useCallback(
     (id: string, anonMode?: boolean, pictureUrl?: string) => {
