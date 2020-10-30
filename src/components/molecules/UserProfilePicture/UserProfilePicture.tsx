@@ -25,7 +25,6 @@ import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
-  USE_RANDOM_AVATAR,
 } from "settings";
 
 // Styles
@@ -55,7 +54,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const randomAvatarUrl = (id: string) =>
     "/avatars/" +
-    RANDOM_AVATARS[Math.floor(id.charCodeAt(0) % RANDOM_AVATARS.length)];
+    RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
   const avatarUrl = useCallback(
     (id: string, anonMode?: boolean, pictureUrl?: string) => {
@@ -63,11 +62,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         return setPictureUrl(DEFAULT_PROFILE_IMAGE);
       }
 
-      if (miniAvatars && pictureUrl) {
+      if (!miniAvatars && pictureUrl) {
         return setPictureUrl(pictureUrl);
       }
 
-      if (USE_RANDOM_AVATAR || !pictureUrl) {
+      if (miniAvatars) {
         return setPictureUrl(randomAvatarUrl(id));
       }
 

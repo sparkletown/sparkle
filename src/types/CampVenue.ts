@@ -4,6 +4,7 @@ import { CampRoomData } from "./CampRoomData";
 import { AnyVenue } from "./Firestore";
 
 export interface CampVenue extends Venue {
+  id: string;
   template: VenueTemplate.themecamp;
   mapBackgroundImageUrl?: string;
   host: {
