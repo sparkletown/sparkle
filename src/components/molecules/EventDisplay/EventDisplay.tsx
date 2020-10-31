@@ -60,8 +60,27 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
           <div className="event-badge-live">Live</div>
         )}
         <div style={{ marginTop: 10 }}>
-          Venue: <a href={venueInsideUrl(venue.id)}>{venue.name}</a>
+          Venue:{" "}
+          <a
+            href={venueInsideUrl(venue.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {venue.name}
+          </a>
         </div>
+        {venue.rooms?.find((r) => r.title === event.room) && (
+          <div>
+            Room:{" "}
+            <a
+              href={venueRoomUrl(venue, event.room)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {event.room}
+            </a>
+          </div>
+        )}
       </div>
       <div className="event-text">
         <h5>{event.name}</h5>
