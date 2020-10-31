@@ -563,6 +563,63 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
+        {templateID === VenueTemplate.themecamp && (
+          <div className="toggle-room">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Show grid layout
+            </h4>
+            <label id={"showGrid"} className="switch">
+              <input
+                type="checkbox"
+                id={"showGrid"}
+                name={"showGrid"}
+                ref={register}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
+        {templateID === VenueTemplate.themecamp && values.showGrid && (
+          <>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of rows
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={1}
+                name="rows"
+                type="number"
+                ref={register}
+                onChange={(e) => {
+                  setValue("rows", parseInt(e.target.value));
+                }}
+                className="align-left"
+                placeholder={`Number of grid rows`}
+              />
+              {errors.name ? (
+                <span className="input-error">{errors.name.message}</span>
+              ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of columns
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={1}
+                name="columns"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder={`Number of grid columns`}
+              />
+              {errors.name ? (
+                <span className="input-error">{errors.name.message}</span>
+              ) : null}
+            </div>
+          </>
+        )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Enter the ID of the venue you would like for the "back" button
@@ -608,9 +665,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
-          <div>One or more errors occurred when saving the form:</div>
-          {Object.keys(errors).map((fieldName) => (
-            <div>
+          {!!Object.keys(errors).length && (
+            <div>One or more errors occurred when saving the form:</div>
+          )}
+          {Object.keys(errors).map((fieldName, index) => (
+            <div key={`error-${index}`}>
               <span>Error in {fieldName}:</span>
               <ErrorMessage
                 errors={errors}

@@ -17,10 +17,9 @@ $page-max-width: 1240px;
 
 .avatar-grid-container {
   position: relative;
-  z-index: 8;
   left: 0;
   width: 100%;
-  max-width: 1440px;
+  max-width: 1800px;
   margin: 80px auto 0;
   display: flex;
   align-items: center;
@@ -34,9 +33,10 @@ $page-max-width: 1240px;
   .seat-container {
     display: flex;
     justify-content: center;
-    height: 100%;
-    width: 100%;
+    align-items: center;
     position: relative;
+    width: 100%;
+    height: 100%;
   }
 
   .seat {
@@ -51,6 +51,8 @@ $page-max-width: 1240px;
     }
 
     .user {
+      background-size: cover;
+      background-position: center;
       width: 100%;
       height: 100%;
       border-radius: 100%;
@@ -58,6 +60,8 @@ $page-max-width: 1240px;
     }
 
     .profile-avatar {
+      background-size: cover;
+      background-position: center;
       width: 100%;
       height: 100%;
       border-radius: 100%;
@@ -69,7 +73,7 @@ $page-max-width: 1240px;
     height: 80%;
     position: relative;
     background-color: white;
-    opacity: 0.1;
+    opacity: 0.05;
     border-radius: 100%;
 
     &:hover {
@@ -131,14 +135,12 @@ $page-max-width: 1240px;
   top: 20px;
   width: calc(100% - 40px);
   height: calc(100% - 40px);
-  z-index: 2;
   pointer-events: none;
   user-select: none;
 
   .grid-room {
     pointer-events: all;
     position: absolute;
-    z-index: 100;
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
     border-radius: 20px;
     cursor: pointer;
