@@ -27,7 +27,7 @@ interface PropsType {
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
-const MOVEMENT_INTERVAL = 250;
+const MOVEMENT_INTERVAL = 350;
 
 export const Map: React.FC<PropsType> = ({
   venue,
@@ -52,6 +52,7 @@ export const Map: React.FC<PropsType> = ({
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
+  const currentPosition = profile?.data?.[venue.id];
 
   const { partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
@@ -88,12 +89,12 @@ export const Map: React.FC<PropsType> = ({
     function downHandler({ key }: { key: string }) {
       if (key === targetKey) {
         setKeyPressed(true);
+        setTimeout(() => setKeyPressed(false), MOVEMENT_INTERVAL);
       }
     }
 
     const upHandler = ({ key }: { key: string }) => {
       if (key === targetKey) {
-        setKeyDown(false);
         setKeyPressed(false);
       }
     };
@@ -149,9 +150,9 @@ export const Map: React.FC<PropsType> = ({
           if (isHittingRoom && selectedRoom === room) {
             setSelectedRoom(undefined);
             setIsHittingRoom(false);
+            isHitting = false;
           }
         }
-        return isHitting;
       });
       return isHitting;
     },
@@ -201,18 +202,17 @@ export const Map: React.FC<PropsType> = ({
   useEffect(() => {
     if (!venueId) return;
 
-    const currentPosition = profile?.data?.[venueId];
     if ((!currentPosition?.row && !currentPosition?.column) || keyDown) {
       return;
     }
 
-    setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
-
     const { row, column } = currentPosition;
     if (row && column) {
+      console.log(keyDown, enterPress);
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (enterPress && selectedRoom) {
         setKeyDown(true);
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
 
         const isExternalUrl = isExternalLink(selectedRoom.url);
         window.open(
@@ -220,19 +220,21 @@ export const Map: React.FC<PropsType> = ({
           isExternalUrl ? "_blank" : "noopener,noreferrer"
         );
         roomEnter(selectedRoom);
+        return;
       }
       if (downPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
         hitRoom(row + 1, column);
         takeSeat(row + 1, column);
+        return;
       }
       if (upPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
@@ -242,44 +244,40 @@ export const Map: React.FC<PropsType> = ({
       }
       if (leftPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
         hitRoom(row, column - 1);
-
         takeSeat(row, column - 1);
         return;
       }
       if (rightPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
         hitRoom(row, column + 1);
-
         takeSeat(row, column + 1);
         return;
       }
     }
   }, [
     downPress,
-    leftPress,
-    profile,
     rightPress,
-    takeSeat,
+    leftPress,
     upPress,
-    user,
-    venue,
-    hitRoom,
+    keyDown,
     venueId,
+    currentPosition,
     enterPress,
     selectedRoom,
     partygoersBySeat,
-    roomEnter,
     isExternalLink,
-    keyDown,
+    roomEnter,
+    hitRoom,
+    takeSeat,
   ]);
 
   if (!venue) {
@@ -327,6 +325,7 @@ export const Map: React.FC<PropsType> = ({
         colPosition <= roomX + roomWidth
       ) {
         setSelectedRoom(room);
+        setIsHittingRoom(true);
         setIsRoomModalOpen(true);
       } else {
         if (isHittingRoom && selectedRoom) {
@@ -359,7 +358,7 @@ export const Map: React.FC<PropsType> = ({
       >
         {Array.from(Array(columns)).map((_, colIndex) => {
           return (
-            <div className="seat-row" key={`column${colIndex}`}>
+            <div className="seat-column" key={`column${colIndex}`}>
               {Array.from(Array(rows)).map((_, rowIndex) => {
                 const column = colIndex + 1;
                 const row = rowIndex + 1;
@@ -368,27 +367,33 @@ export const Map: React.FC<PropsType> = ({
                   : null;
                 const isMe = seatedPartygoer?.id === user?.uid;
                 return (
-                  <div key={`row${rowIndex}`} className={`seat-container`}>
+                  <div key={`row${rowIndex}`} className={`seat-row`}>
                     {venue.showGrid && (
                       <div
-                        className={seatedPartygoer ? "seat" : `not-seat`}
+                        className={"seat-container"}
                         onClick={() =>
                           onSeatClick(row, column, seatedPartygoer)
                         }
-                        key={`row${rowIndex}`}
                       >
-                        {seatedPartygoer && (
-                          <div className={isMe ? "user avatar" : "user"}>
-                            {!isMe && (
-                              <UserProfilePicture
-                                user={seatedPartygoer}
-                                profileStyle={"profile-avatar"}
-                                setSelectedUserProfile={setSelectedUserProfile}
-                                miniAvatars={venue?.miniAvatars}
-                              />
-                            )}
-                          </div>
-                        )}
+                        <div
+                          className={seatedPartygoer ? "seat" : `not-seat`}
+                          key={`row${rowIndex}`}
+                        >
+                          {seatedPartygoer && (
+                            <div className={isMe ? "user avatar" : "user"}>
+                              {!isMe && (
+                                <UserProfilePicture
+                                  user={seatedPartygoer}
+                                  profileStyle={"profile-avatar"}
+                                  setSelectedUserProfile={
+                                    setSelectedUserProfile
+                                  }
+                                  miniAvatars={venue?.miniAvatars}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
