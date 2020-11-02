@@ -81,6 +81,10 @@ export const validationSchema = Yup.object()
     bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
+    showGrid: Yup.bool().notRequired(),
+    rows: Yup.number().notRequired().min(1).max(100),
+    columns: Yup.number().notRequired().min(1).max(100),
+
     mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
     mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
 
@@ -164,6 +168,9 @@ export const editVenueCastSchema = Yup.object()
   .from("profile_questions", "profileQuestions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
+  .from("showGrid", "showGrid")
+  .from("rows", "rows")
+  .from("columns", "columns")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")

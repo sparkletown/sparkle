@@ -7,7 +7,7 @@ import {
   daysFromEndOfEvent,
 } from "utils/time";
 import "./EventDisplay.scss";
-import { venueInsideUrl } from "utils/url";
+import { venueInsideUrl, venueRoomUrl } from "utils/url";
 
 interface PropsType {
   event: firebase.firestore.DocumentData;
@@ -60,8 +60,27 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
           <div className="event-badge-live">Live</div>
         )}
         <div style={{ marginTop: 10 }}>
-          Venue: <a href={venueInsideUrl(venue.id)}>{venue.name}</a>
+          Venue:{" "}
+          <a
+            href={venueInsideUrl(venue.id)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {venue.name}
+          </a>
         </div>
+        {venue.rooms?.find((r) => r.title === event.room) && (
+          <div>
+            Room:{" "}
+            <a
+              href={venueRoomUrl(venue, event.room)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {event.room}
+            </a>
+          </div>
+        )}
       </div>
       <div className="event-text">
         <h5>{event.name}</h5>
@@ -71,7 +90,7 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
         </p>
         {Date.now() > event.start_utc_seconds * 1000 && joinNowButton && (
           <a
-            href={venueInsideUrl(venue.id)}
+            href={venueRoomUrl(venue, event.room)}
             className="btn btn-primary button-join-now"
           >
             Join Now
