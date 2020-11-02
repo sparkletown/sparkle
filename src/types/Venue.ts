@@ -1,9 +1,9 @@
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
 import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
+import { FormValues } from "pages/Admin/Details/Details.types";
 
 interface Question {
   name: string;
@@ -135,8 +135,8 @@ export const createJazzbar = (values: FormValues): Venue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
+        subtitle: values.subtitle || "Subtitle for your Party Map",
+        description: values.description || "Description of your Party Map",
         presentation: [],
         checkList: [],
         quotations: [],

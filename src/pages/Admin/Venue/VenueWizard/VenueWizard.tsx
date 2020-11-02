@@ -5,6 +5,7 @@ import VenueWizardEdit from "./Edit";
 
 // Hooks
 import { useParams } from "react-router-dom";
+import VenueWizardCreate from "./Create/VenueWizardCreate";
 
 
 const VenueWizard: React.FC = () => {
@@ -13,7 +14,8 @@ const VenueWizard: React.FC = () => {
   if (venueId) return <VenueWizardEdit venueId={venueId} />;
   // if (venueId) return <h1>Edit</h1>
 
-  return <h1>Create Venue</h1>;
+  // return <h1>Create Venue</h1>;
+  return <VenueWizardCreate />
 };
 
 export default VenueWizard;

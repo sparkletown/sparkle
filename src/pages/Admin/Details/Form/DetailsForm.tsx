@@ -1,41 +1,37 @@
+import React, { useState } from "react";
+
+// API
 import { createUrlSafeName } from "api/admin";
+
+// Components
 import SubmitButton from "components/atoms/SubmitButton/SubmitButton";
 import { ImageInput } from "components/molecules/ImageInput";
-import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
-import React from "react";
-import { useForm, FieldErrors, ErrorMessage } from "react-hook-form";
+
+// Hooks
+import { ErrorMessage } from "react-hook-form";
+
+// Utils | Settings | Constants | Helpers
 import {
-  BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
 } from "settings";
+import { venueLandingUrl } from "utils/url";
+
+// Typings
 import { createJazzbar } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
-import { venueLandingUrl } from "utils/url";
-import { WizardState } from "../Venue/VenueWizard/redux/types";
-import { VenueWizard } from "../Venue/VenueWizard/VenueWizard.types";
-import { FormValues } from "./DetailsForm";
 
-interface DetailsFormLeftProps {
-  state: WizardState;
-  previous: VenueWizard["previous"];
-  values: FormValues;
-  isSubmitting: boolean;
-  register: ReturnType<typeof useForm>["register"];
-  watch: ReturnType<typeof useForm>["watch"];
-  control: ReturnType<typeof useForm>["control"];
-  onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
-  errors: FieldErrors<FormValues>;
-  editing?: boolean;
-  setValue: ReturnType<typeof useForm>["setValue"];
-  formError: boolean;
-}
+// Typings
+import { DetailsFormProps } from './DetailsForm.types'
+import { setBannerURL, setSquareLogoUrl } from "pages/Admin/Venue/VenueWizard/redux/actions";
 
-const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
+
+const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
   const {
     editing,
+    dispatch,
     state,
     values,
     isSubmitting,
@@ -48,16 +44,30 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     formError,
   } = props;
 
+  console.log('values: ', values)
+
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+      createUrlSafeName(values.name)
+    )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template?.name;
   const templateID = state.templatePage?.template?.template;
 
   const defaultVenue = createJazzbar({});
+
+  const handleBannerUpload = (files: FileList | null) => {
+    if (!files) return;
+
+    setBannerURL(dispatch, URL.createObjectURL(files[0]));
+  }
+
+  const handleLogoUpload = (files: FileList | null) => {
+    if (!files) return;
+
+    setSquareLogoUrl(dispatch, URL.createObjectURL(files[0]));
+  }
 
   const renderTagline = () => (
     <div className="input-container">
@@ -99,9 +109,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     <div className="input-container">
       <label
         htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
+        className={`checkbox ${watch("adultContent", false) && "checkbox-checked"
+          }`}
       >
         Restrict entry to adults aged 18+
       </label>
@@ -120,7 +129,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a banner photo
       </h4>
-      <ImageInput
+      {/* <ImageInput
         disabled={disable}
         name={"bannerImageFile"}
         image={values.bannerImageFile}
@@ -128,7 +137,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         remoteImageUrl={values.bannerImageUrl}
         ref={register}
         error={errors.bannerImageFile || errors.bannerImageUrl}
-      />
+      /> */}
+
+      <input type="file" accept="image/x-png,image/gif,image/jpeg" onChange={event => handleBannerUpload(event.target.files)} />
     </div>
   );
 
@@ -137,7 +148,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a square logo
       </h4>
-      <ImageInput
+      {/* <ImageInput
         disabled={disable}
         ref={register}
         image={values.logoImageFile}
@@ -147,7 +158,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         containerClassName="input-square-container"
         imageClassName="input-square-image"
         error={errors.logoImageFile || errors.logoImageUrl}
-      />
+      /> */}
+
+      <input type="file" accept="image/x-png,image/gif,image/jpeg" onChange={event => handleLogoUpload(event.target.files)} />
     </div>
   );
 
@@ -252,16 +265,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         ) : null}
       </div>
     ) : (
-      <div className="input-container">
-        <h4 className="italic" style={{ fontSize: "20px" }}>
-          Your {templateType}: {values.name}
-        </h4>
-        <input type="hidden" name="name" ref={register} value={values.name} />
-        <span className="input-info">
-          The URL of your venue will be: <b>{urlSafeName}</b>
-        </span>
-      </div>
-    );
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Your {templateType}: {values.name}
+          </h4>
+          <input type="hidden" name="name" ref={register} value={values.name} />
+          <span className="input-info">
+            The URL of your venue will be: <b>{urlSafeName}</b>
+          </span>
+        </div>
+      );
 
   const renderAnnouncement = () => (
     <>
@@ -286,9 +299,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
-        <h4 className="italic" style={{ fontSize: "30px" }}>{`${
-          editing ? "Edit" : "Create"
-        } your ${templateType}`}</h4>
+        <h4 className="italic" style={{ fontSize: "30px" }}>{`${editing ? "Edit" : "Create"
+          } your Party Map`}</h4>
         <p
           className="small light"
           style={{ marginBottom: "2rem", fontSize: "16px" }}
@@ -300,50 +312,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
         {renderTagline()}
         {renderDescription()}
-        {renderAdultRestriction()}
+        {/* {renderAdultRestriction()} */}
         {renderBannerPhotoUpload()}
         {renderSquareLogo()}
-
-        <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
-            {`Choose how you'd like your venue to appear on the map`}
-          </h4>
-          <ImageCollectionInput
-            collectionPath={"assets/mapIcons2"}
-            disabled={disable}
-            fieldName={"mapIconImage"}
-            register={register}
-            imageUrl={values.mapIconImageUrl}
-            containerClassName="input-square-container"
-            imageClassName="input-square-image"
-            image={values.mapIconImageFile}
-            error={errors.mapIconImageFile || errors.mapIconImageUrl}
-            setValue={setValue}
-            imageType="icons"
-          />
-          {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
-            <>
-              <h4 className="italic" style={{ fontSize: "20px" }}>
-                {`Choose the background for your Theme Camp`}
-              </h4>
-              <ImageCollectionInput
-                collectionPath={"assets/mapBackgrounds"}
-                disabled={disable}
-                fieldName={"mapBackgroundImage"}
-                register={register}
-                imageUrl={values.mapBackgroundImageUrl}
-                containerClassName="input-square-container"
-                imageClassName="input-square-image"
-                image={values.mapBackgroundImageFile}
-                error={
-                  errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
-                }
-                setValue={setValue}
-                imageType="backgrounds"
-              />
-            </>
-          )}
-        </div>
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
@@ -398,9 +369,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </>
         )}
 
-        {renderPlacementRequest()}
-        {renderLiveSchedule()}
-        {renderBackButtonSetup()}
+        {/* {renderPlacementRequest()} */}
+        {/* {renderLiveSchedule()} */}
+        {/* {renderBackButtonSetup()} */}
 
         {templateID &&
           HAS_ROOMS_TEMPLATES.includes(templateID) &&
@@ -408,26 +379,30 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       </div>
 
       <div className="page-container-left-bottombar">
-        {previous ? (
-          <button className="btn btn-primary nav-btn" onClick={previous}>
+        {/* {previous ? (
+          <button className="btn btn-primary nav-btn" onClick={() => previous()}>
             Go Back
           </button>
         ) : (
-          <div />
-        )}
+            <div />
+          )} */}
         <div>
-          <div>One or more errors occurred when saving the form:</div>
-          {Object.keys(errors).map((fieldName) => (
-            <div key={fieldName}>
-              <span>Error in {fieldName}:</span>
-              <ErrorMessage
-                errors={errors}
-                name={fieldName as any}
-                as="span"
-                key={fieldName}
-              />
-            </div>
-          ))}
+          {Object.keys(errors).length > 0 && (
+            <>
+              <div>One or more errors occurred when saving the form:</div>
+              {Object.keys(errors).map((fieldName) => (
+                <div key={fieldName}>
+                  <span>Error in {fieldName}:</span>
+                  <ErrorMessage
+                    errors={errors}
+                    name={fieldName as any}
+                    as="span"
+                    key={fieldName}
+                  />
+                </div>
+              ))}
+            </>
+          )}
 
           <SubmitButton
             loading={isSubmitting}

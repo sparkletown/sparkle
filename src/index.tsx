@@ -40,6 +40,7 @@ import { User } from "types/User";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
+import { ThemeProvider } from "styled-components";
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -94,17 +95,19 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 };
 
 render(
-  <Elements stripe={stripePromise}>
-    <DndProvider backend={HTML5Backend}>
-      <Provider store={store}>
-        <ReactReduxFirebaseProvider {...rrfProps}>
-          <AuthIsLoaded>
-            <AppRouter />
-          </AuthIsLoaded>
-        </ReactReduxFirebaseProvider>
-      </Provider>
-    </DndProvider>
-  </Elements>,
+  <ThemeProvider theme={{}}>
+    <Elements stripe={stripePromise}>
+      <DndProvider backend={HTML5Backend}>
+        <Provider store={store}>
+          <ReactReduxFirebaseProvider {...rrfProps}>
+            <AuthIsLoaded>
+              <AppRouter />
+            </AuthIsLoaded>
+          </ReactReduxFirebaseProvider>
+        </Provider>
+      </DndProvider>
+    </Elements>
+  </ThemeProvider>,
   document.getElementById("root")
 );
 

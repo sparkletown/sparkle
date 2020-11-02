@@ -22,7 +22,7 @@ import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
+import VenueWizard from "pages/Admin/Venue/VenueWizard";
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";

@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
 
 // Components
-import DetailsForm from 'pages/Admin/DetailsForm';
+import Details from 'pages/Admin/Details';
 
 // Hooks
 import { useFirestore } from 'react-redux-firebase';
@@ -22,8 +22,6 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   // get the venue
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
-
-  console.log('state: ', state)
 
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
@@ -49,7 +47,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
 
   if (!state.detailsPage) return <div>Loading...</div>;
 
-  return <DetailsForm venueId={venueId} state={state} />;
+  return <Details venueId={venueId} />;
 };
 
 export default VenueWizardEdit;
