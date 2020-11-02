@@ -388,7 +388,7 @@ export const Audience: React.FunctionComponent = () => {
                               <div className="user">
                                 <UserProfilePicture
                                   user={seatedPartygoer}
-                                  profileStyle={"profile-avatar"}
+                                  avatarClassName={"profile-avatar"}
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }

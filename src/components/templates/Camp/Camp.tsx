@@ -118,6 +118,7 @@ const Camp: React.FC = () => {
         </div>
         <Map
           venue={venue}
+          partygoers={usersInCamp}
           attendances={attendances}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
