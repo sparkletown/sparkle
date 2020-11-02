@@ -147,7 +147,9 @@ export const Audience: React.FunctionComponent = () => {
       .firestore()
       .collection("venues")
       .doc(venueId as string)
-      .onSnapshot((doc) => setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true)));
+      .onSnapshot((doc) =>
+        setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
+      );
   }, [venueId]);
 
   const experienceContext = useContext(ExperienceContext);
@@ -436,17 +438,18 @@ export const Audience: React.FunctionComponent = () => {
   }, [
     auditoriumSize,
     venue,
-    selectedUserProfile,
-    user,
     profile,
     venueId,
+    iframeUrl,
+    isAudioEffectDisabled,
+    handleSubmit,
+    register,
+    isShoutSent,
+    selectedUserProfile,
+    user,
+    experienceContext,
+    reset,
     reactionClicked,
     partygoersBySeat,
-    handleSubmit,
-    isShoutSent,
-    isAudioEffectDisabled,
-    experienceContext,
-    register,
-    reset,
   ]);
 };
