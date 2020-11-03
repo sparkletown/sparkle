@@ -67,7 +67,6 @@ const Room: React.FC<RoomProps> = ({
       name: roomName,
     })
       .then((room) => {
-        console.log("surrece", room);
         setRoom(room);
       })
       .catch((error) => setVideoError(error.message));

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import firebase from "firebase/app";
-import Video from "twilio-video";
 import { User } from "types/User";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";

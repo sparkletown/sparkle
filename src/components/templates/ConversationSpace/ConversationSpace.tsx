@@ -35,7 +35,7 @@ const ConversationSpace: React.FunctionComponent = () => {
   const venueUsers = users
     ? users.filter(
         (user) =>
-          user.lastSeenIn ??
+          user.lastSeenIn &&
           user.lastSeenIn[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
