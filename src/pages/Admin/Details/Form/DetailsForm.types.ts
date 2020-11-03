@@ -6,15 +6,8 @@ import { FormValues } from "../Details.types";
 export interface DetailsFormProps {
   state: WizardState;
   previous: TVenueWizard["previous"];
-  values: FormValues;
-  isSubmitting: boolean;
-  register: ReturnType<typeof useForm>["register"];
-  watch: ReturnType<typeof useForm>["watch"];
-  control: ReturnType<typeof useForm>["control"];
-  onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
-  errors: FieldErrors<FormValues>;
-  editing?: boolean;
-  setValue: ReturnType<typeof useForm>["setValue"];
-  formError: boolean;
+
   dispatch: any;
+  venueId: string;
+
 }

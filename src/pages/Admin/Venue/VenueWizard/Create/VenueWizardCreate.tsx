@@ -1,17 +1,23 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 
 // Components
-import AuthenticationModal from 'components/organisms/AuthenticationModal';
-import WithNavigationBar from 'components/organisms/WithNavigationBar';
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 // Pages
-import DetailsForm from 'pages/Admin/Details';
+import Details from "pages/Admin/Details";
 
 // Hooks
-import { useHistory } from 'react-router-dom';
-import { useUser } from 'hooks/useUser';
+import { useHistory } from "react-router-dom";
+import { useUser } from "hooks/useUser";
 
-const VenueWizardCreate: React.FC = () => {
+// Typings
+import { VenueWizardCreateProps } from "./VenueWizardCreate.types";
+
+const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
+  state,
+  dispatch,
+}) => {
   const history = useHistory();
   const { user } = useUser();
 
@@ -23,18 +29,16 @@ const VenueWizardCreate: React.FC = () => {
   if (!user) {
     return (
       <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => { }} showAuth="login" />
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
       </WithNavigationBar>
     );
   }
 
-  // return (
-  //   <WithNavigationBar fullscreen>
-  //     <DetailsForm previous={previous} />
-  //   </WithNavigationBar>
-  // );
-  return <DetailsForm previous={previous} />
-
+  return (
+    <WithNavigationBar fullscreen>
+      <Details previous={previous} state={state} dispatch={dispatch} />
+    </WithNavigationBar>
+  );
 };
 
 export default VenueWizardCreate;

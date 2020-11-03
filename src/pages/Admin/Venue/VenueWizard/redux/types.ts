@@ -4,6 +4,12 @@ import { Venue } from "types/Venue";
 // Action Types
 import * as ActionTypes from "./actionTypes";
 
+export type FormValues = {
+  name?: string;
+  subtitle?: string;
+  description?: string;
+}
+
 export interface WizardState {
   templatePage: {
     template?: Template;
@@ -15,6 +21,7 @@ export interface WizardState {
 
   bannerURL?: string;
   squareLogoURL?: string;
+  formValues?: FormValues;
 }
 
 export interface SubmitTemplatePage {
@@ -37,11 +44,17 @@ export interface SetSquareLogoUrl {
   payload: string;
 }
 
+export interface SetFormValues {
+  type: typeof ActionTypes.SET_FORM_VALUES;
+  payload: FormValues;
+}
+
 export type WizardAction =
 | SubmitTemplatePage
 | SubmitDetailsPage
 | SetBannerUrl
-| SetSquareLogoUrl;
+| SetSquareLogoUrl
+| SetFormValues;
 
 
 export interface WizardReducer {

@@ -1,21 +1,25 @@
-import React from "react";
+import React, { useReducer } from "react";
 
 // Components
 import VenueWizardEdit from "./Edit";
+import VenueWizardCreate from "./Create";
 
 // Hooks
 import { useParams } from "react-router-dom";
-import VenueWizardCreate from "./Create/VenueWizardCreate";
 
+// Reducer
+import { VenueWizardReducer, initialState } from "./redux";
 
 const VenueWizard: React.FC = () => {
   const { venueId } = useParams<{ venueId?: string | undefined }>();
+  const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
-  if (venueId) return <VenueWizardEdit venueId={venueId} />;
-  // if (venueId) return <h1>Edit</h1>
+  if (venueId)
+    return (
+      <VenueWizardEdit venueId={venueId} state={state} dispatch={dispatch} />
+    );
 
-  // return <h1>Create Venue</h1>;
-  return <VenueWizardCreate />
+  return <VenueWizardCreate state={state} dispatch={dispatch} />;
 };
 
 export default VenueWizard;

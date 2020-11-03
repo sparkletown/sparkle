@@ -1,7 +1,6 @@
 import { WizardState } from "../redux";
 
-export interface VenueWizardEditProps {
-  venueId: string;
+export interface VenueWizardCreateProps {
   state: WizardState;
   dispatch: any;
 }

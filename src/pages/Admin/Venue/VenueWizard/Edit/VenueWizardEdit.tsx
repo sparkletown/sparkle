@@ -1,27 +1,27 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect } from "react";
 
 // Components
-import Details from 'pages/Admin/Details';
+import Details from "pages/Admin/Details";
 
 // Hooks
-import { useFirestore } from 'react-redux-firebase';
+import { useFirestore } from "react-redux-firebase";
 
 // Utils | Settings | Constants | Helpers
-import { ALL_VENUE_TEMPLATES } from 'settings';
-
-// Reducer
-import { VenueWizardReducer, initialState } from '../redux/reducer';
+import { ALL_VENUE_TEMPLATES } from "settings";
 
 // Typings
-import { Venue } from 'types/Venue';
-import { VenueWizardEditProps } from './VenueWizardEdit.types';
-import { submitDetailsPage, submitTemplatePage } from '../redux/actions';
+import { Venue } from "types/Venue";
+import { VenueWizardEditProps } from "./VenueWizardEdit.types";
+import { submitTemplatePage } from "../redux/actions";
+import { SET_FORM_VALUES } from "../redux";
 
-
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
+  venueId,
+  state,
+  dispatch,
+}) => {
   // get the venue
   const firestore = useFirestore();
-  const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
@@ -40,14 +40,19 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
 
       // ensure reducer is synchronised with API data
       submitTemplatePage(dispatch, template);
-      submitDetailsPage(dispatch, data);
+      dispatch({
+        type: SET_FORM_VALUES,
+        payload: {
+          name: data.name,
+          subtitle: template?.subtitle,
+          description: template.description[0],
+        },
+      });
     };
     fetchVenueFromAPI();
-  }, [firestore, venueId]);
+  }, [dispatch, firestore, venueId]);
 
-  if (!state.detailsPage) return <div>Loading...</div>;
-
-  return <Details venueId={venueId} />;
+  return <Details venueId={venueId} state={state} dispatch={dispatch} />;
 };
 
 export default VenueWizardEdit;

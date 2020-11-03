@@ -123,8 +123,9 @@ export const PLACEABLE_VENUE_TEMPLATES = [
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
 export interface Template {
-  template: VenueTemplate;
+  template?: VenueTemplate;
   name: string;
+  subtitle?: string;
   description: Array<string>;
 }
 

@@ -12,17 +12,19 @@ import * as ActionTypes from "./actionTypes";
 export const initialState = {
   templatePage: null,
   detailsPage: null,
-  bannerURL: '',
-  squareLogoURL: '',
+  bannerURL: "",
+  squareLogoURL: "",
+  formValues: {},
 } as WizardState;
 
 const submitTemplatePage = (state: WizardState, action: SubmitTemplatePage) => {
   return {
-  ...state,
-  templatePage: {
-    template: action.payload,
-  },
-}};
+    ...state,
+    templatePage: {
+      template: action.payload,
+    },
+  };
+};
 
 const submitDetailsPage = (state: WizardState, action: SubmitDetailsPage) => ({
   ...state,
@@ -34,12 +36,17 @@ const submitDetailsPage = (state: WizardState, action: SubmitDetailsPage) => ({
 const setBannerURL = (state: WizardState, action: SetBannerUrl) => ({
   ...state,
   bannerURL: action.payload,
-})
+});
 
 const setSquareLogoURL = (state: WizardState, action: SetSquareLogoUrl) => ({
   ...state,
-  bannerURL: action.payload,
-})
+  squareLogoURL: action.payload,
+});
+
+const updateFormValues = (state: WizardState, action: any) => ({
+  ...state,
+  formValues: action.payload,
+});
 
 export const VenueWizardReducer = (
   state: WizardState,
@@ -54,8 +61,10 @@ export const VenueWizardReducer = (
       return setBannerURL(state, action);
     case ActionTypes.SET_SQUARE_LOGO_URL:
       return setSquareLogoURL(state, action);
+    case ActionTypes.SET_FORM_VALUES:
+      return updateFormValues(state, action);
 
     default:
-      return state;
+      return initialState;
   }
 };

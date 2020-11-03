@@ -36,7 +36,8 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({ bannerURL, logoURL, nam
 
 DetailsPreview.defaultProps = {
   name: 'Party name',
-  subtitle: 'Party subtitle'
+  subtitle: 'Party subtitle',
+  description: 'Description'
 }
 
 export default DetailsPreview;
