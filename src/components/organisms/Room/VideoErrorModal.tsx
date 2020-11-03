@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Modal } from "react-bootstrap";
+import "./VideoErrorModal.scss";
 
 interface PropsType {
   show: boolean;
@@ -28,24 +29,11 @@ const VideoErrorModal: FC<PropsType> = ({
 }) => {
   return (
     <Modal show={show} onHide={onHide}>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          flex: 1,
-        }}
-      >
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-            padding: 20,
-          }}
-        >
-          {errorMessages[errorMessage] ??
-            "Unknown video error, please try again."}
+      <div className="modal-container">
+        <div className="modal-title">
+          {errorMessage &&
+            (errorMessages[errorMessage] ??
+              "Unknown video error, please try again.")}
         </div>
 
         <div>

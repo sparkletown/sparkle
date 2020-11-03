@@ -67,10 +67,23 @@ const Room: React.FC<RoomProps> = ({
       name: roomName,
     })
       .then((room) => {
+        console.log("surrece", room);
         setRoom(room);
       })
       .catch((error) => setVideoError(error.message));
   };
+
+  useEffect(() => {
+    return () => {
+      if (room && room.localParticipant.state === "connected") {
+        room.localParticipant.tracks.forEach(function (trackPublication) {
+          //@ts-ignored
+          trackPublication.track.stop(); //@debt typing does this work?
+        });
+        room.disconnect();
+      }
+    };
+  }, [room]);
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
