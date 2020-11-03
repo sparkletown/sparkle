@@ -188,11 +188,11 @@ const Room: React.FC<RoomProps> = ({
   }
 
   return (
-    <>
+    <div className="participants-room">
       {meComponent}
       {othersComponents}
       {emptyComponents}
-    </>
+    </div>
   );
 };
 
