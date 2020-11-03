@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
@@ -7,28 +7,35 @@ import "./Room.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
+import VideoErrorModal from "./VideoErrorModal";
 
 interface RoomProps {
   roomName: string;
+  venueName: string;
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
+  setSeatedAtTable?: (val: string) => void;
+  onBack?: () => void;
   hasChairs?: boolean;
   defaultMute?: boolean;
 }
 
 const Room: React.FC<RoomProps> = ({
   roomName,
+  venueName,
   setUserList,
   setParticipantCount,
+  setSeatedAtTable,
   hasChairs = true,
   defaultMute,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
+  const [videoError, setVideoError] = useState<string>("");
   const [participants, setParticipants] = useState<Array<Video.Participant>>(
     []
   );
 
-  const { user } = useUser();
+  const { user, profile } = useUser();
   const users = useSelector((state) => state.firestore.data.partygoers);
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
@@ -51,6 +58,42 @@ const Room: React.FC<RoomProps> = ({
       setToken(response.data.token);
     })();
   }, [firebase, roomName, user]);
+
+  const connectToVideoRoom = () => {
+    if (!token) return;
+    setVideoError("");
+
+    Video.connect(token, {
+      name: roomName,
+    })
+      .then((room) => {
+        setRoom(room);
+      })
+      .catch((error) => setVideoError(error.message));
+  };
+
+  const leaveSeat = useCallback(async () => {
+    if (!user || !profile) return;
+    const doc = `users/${user.uid}`;
+    const existingData = profile.data;
+    const update = {
+      data: {
+        ...existingData,
+        [venueName]: {
+          table: null,
+          videoRoom: null,
+        },
+      },
+    };
+    const firestore = firebase.firestore();
+    await firestore
+      .doc(doc)
+      .update(update)
+      .catch(() => {
+        firestore.doc(doc).set(update);
+      });
+    setSeatedAtTable && setSeatedAtTable("");
+  }, [firebase, profile, setSeatedAtTable, user, venueName]);
 
   useEffect(() => {
     if (!token) return;
@@ -78,13 +121,15 @@ const Room: React.FC<RoomProps> = ({
 
     Video.connect(token, {
       name: roomName,
-    }).then((room) => {
-      setRoom(room);
-      localRoom = room;
-      room.on("participantConnected", participantConnected);
-      room.on("participantDisconnected", participantDisconnected);
-      room.participants.forEach(participantConnected);
-    });
+    })
+      .then((room) => {
+        setRoom(room);
+        localRoom = room;
+        room.on("participantConnected", participantConnected);
+        room.on("participantDisconnected", participantDisconnected);
+        room.participants.forEach(participantConnected);
+      })
+      .catch((error) => setVideoError(error.message));
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
@@ -192,6 +237,13 @@ const Room: React.FC<RoomProps> = ({
       {meComponent}
       {othersComponents}
       {emptyComponents}
+      <VideoErrorModal
+        show={!!videoError}
+        onHide={() => setVideoError("")}
+        errorMessage={videoError}
+        onRetry={connectToVideoRoom}
+        onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
+      />
     </div>
   );
 };
