@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // API
 import {
@@ -16,12 +16,6 @@ import ImageInput from "components/atoms/ImageInput";
 import { ErrorMessage, useForm } from "react-hook-form";
 
 // Utils | Settings | Constants | Helpers
-import {
-  BANNER_MESSAGE_TEMPLATES,
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
-  HAS_ROOMS_TEMPLATES,
-} from "settings";
 import { venueLandingUrl } from "utils/url";
 
 // Typings
@@ -35,7 +29,7 @@ import {
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 
-import { editVenueCastSchema, validationSchema } from "../ValidationSchema";
+import { editVenueCastSchema, venueSchema } from "../ValidationSchema";
 import { FormValues } from "../Details.types";
 import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
@@ -44,7 +38,7 @@ import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes
 
 import * as S from "./DetailsForm.styles";
 
-const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
+const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   const { venueId, dispatch, state } = props;
 
   const [formError, setFormError] = useState(false);
@@ -74,7 +68,7 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
     () =>
       !!venueId
         ? editVenueCastSchema.cast(state.formValues)
-        : validationSchema.cast(),
+        : venueSchema.cast(),
     [state.formValues, venueId]
   );
 
@@ -88,9 +82,9 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: validationSchema,
+    validationSchema: venueSchema,
     validationContext: {
-      template: VenueTemplate.partymap,
+      editing: !!venueId,
     },
     defaultValues,
   });
@@ -118,17 +112,31 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
     }
   }, [defaultValues, setValue, venueId]);
 
-  const handleBannerUpload = (files: FileList | null) => {
-    if (!files) return;
+  const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
 
-    setBannerURL(dispatch, URL.createObjectURL(files[0]));
-  };
+  const handleLogoUpload = (url: string) => setSquareLogoUrl(dispatch, url);
 
-  const handleLogoUpload = (files: FileList | null) => {
-    if (!files) return;
-
-    setSquareLogoUrl(dispatch, URL.createObjectURL(files[0]));
-  };
+  const renderVenueName = () => (
+    <div className="input-container">
+      <h4 className="italic" style={{ fontSize: "20px" }}>
+        Name your party
+      </h4>
+      <input
+        disabled={disable}
+        name="name"
+        ref={register}
+        className="align-left"
+        placeholder="My Party Name"
+      />
+      {errors.name ? (
+        <span className="input-error">{errors.name.message}</span>
+      ) : urlSafeName ? (
+        <span className="input-info">
+          The URL of your venue will be: <b>{urlSafeName}</b>
+        </span>
+      ) : null}
+    </div>
+  );
 
   const renderSubtitle = () => (
     <div className="input-container">
@@ -172,11 +180,10 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
         Upload a banner photo
       </h4>
       <ImageInput
-        onChange={(event) => handleBannerUpload(event.target.files)}
-        name="bannerImageUrl"
+        onChange={handleBannerUpload}
+        name="bannerImage"
         error={errors.bannerImageFile}
         forwardRef={register}
-        imageURL={state?.bannerURL}
       />
     </div>
   );
@@ -187,69 +194,13 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
         Upload a square logo
       </h4>
       <ImageInput
-        onChange={(event) => handleLogoUpload(event.target.files)}
-        name="logoImageUrl"
+        onChange={handleLogoUpload}
+        name="logoImage"
         small
-        error={errors.logoImageFile || errors.logoImageUrl}
+        error={errors.logoImageFile}
         forwardRef={register}
       />
     </div>
-  );
-
-  const renderRoomAppearanceOnMap = () => (
-    <>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Choose how you&apos;d like your rooms to appear on the map
-      </h4>
-      <div className="input-container">
-        <select name="roomVisibility" ref={register}>
-          <option value="hover">Hover</option>
-          <option value="count">Count</option>
-          <option value="count/name">Count and names</option>
-        </select>
-      </div>
-    </>
-  );
-
-  const renderVenueName = () => (
-    <div className="input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Name your party
-      </h4>
-      <input
-        disabled={disable}
-        name="name"
-        ref={register}
-        className="align-left"
-        placeholder="My Party Name"
-      />
-      {errors.name ? (
-        <span className="input-error">{errors.name.message}</span>
-      ) : urlSafeName ? (
-        <span className="input-info">
-          The URL of your venue will be: <b>{urlSafeName}</b>
-        </span>
-      ) : null}
-    </div>
-  );
-
-  const renderAnnouncement = () => (
-    <>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Show an announcement in the venue (or leave blank for none)
-      </h4>
-      <input
-        type="text"
-        disabled={disable}
-        name="bannerMessage"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Enter your announcement"
-      />
-      {errors.bannerMessage && (
-        <span className="input-error">{errors.bannerMessage.message}</span>
-      )}
-    </>
   );
 
   const handleOnChange = () => {
@@ -265,11 +216,7 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
 
   return (
     <S.Wrapper>
-      <form
-        className="full-height-container"
-        onSubmit={handleSubmit(onSubmit)}
-        onChange={handleOnChange}
-      >
+      <form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
         <input
           type="hidden"
           name="template"
@@ -288,71 +235,10 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
           </p>
 
           {renderVenueName()}
-
           {renderSubtitle()}
           {renderDescription()}
           {renderBannerPhotoUpload()}
           {renderSquareLogo()}
-
-          {templateID &&
-            BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
-            renderAnnouncement()}
-          {templateID && (
-            <>
-              {ZOOM_URL_TEMPLATES.includes(templateID) && (
-                <div className="input-container">
-                  <h4 className="italic" style={{ fontSize: "20px" }}>
-                    URL
-                  </h4>
-                  <div style={{ fontSize: "16px" }}>
-                    Please post a URL to, for example, a Zoom room, Twitch
-                    stream, other Universe, or any interesting thing out there
-                    on the open web.
-                  </div>
-                  <textarea
-                    disabled={disable}
-                    name={"zoomUrl"}
-                    ref={register}
-                    className="wide-input-block input-centered align-left"
-                    placeholder="https://us02web.zoom.us/j/654123654123"
-                  />
-                  {errors.zoomUrl && (
-                    <span className="input-error">
-                      {errors.zoomUrl.message}
-                    </span>
-                  )}
-                </div>
-              )}
-              {IFRAME_TEMPLATES.includes(templateID) && (
-                <div className="input-container">
-                  <div className="input-title">
-                    Livestream URL, or embed URL, for people to view in your
-                    venue
-                  </div>
-                  <div className="input-title">
-                    (Enter an embeddable URL link. You can edit this later so
-                    you can leave a placeholder for now)
-                  </div>
-                  <textarea
-                    disabled={disable}
-                    name={"iframeUrl"}
-                    ref={register}
-                    className="wide-input-block input-centered align-left"
-                    placeholder="https://youtu.be/embed/abcDEF987w"
-                  />
-                  {errors.iframeUrl && (
-                    <span className="input-error">
-                      {errors.iframeUrl.message}
-                    </span>
-                  )}
-                </div>
-              )}
-            </>
-          )}
-
-          {templateID &&
-            HAS_ROOMS_TEMPLATES.includes(templateID) &&
-            renderRoomAppearanceOnMap()}
         </div>
 
         <div className="page-container-left-bottombar">
@@ -374,7 +260,11 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
               </>
             )}
 
-            <SubmitButton editing={!!venueId} loading={isSubmitting} templateType="Venue" />
+            <SubmitButton
+              editing={!!venueId}
+              loading={isSubmitting}
+              templateType="Venue"
+            />
           </div>
         </div>
 
@@ -399,4 +289,4 @@ const DetailsFormLeft: React.FC<DetailsFormProps> = (props) => {
   );
 };
 
-export default DetailsFormLeft;
+export default DetailsForm;

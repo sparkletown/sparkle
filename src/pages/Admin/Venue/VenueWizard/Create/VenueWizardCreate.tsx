@@ -35,7 +35,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar>
       <Details previous={previous} state={state} dispatch={dispatch} />
     </WithNavigationBar>
   );

@@ -47,30 +47,27 @@ export const TEMP = styled.div`
 
 type WrapperType = {
   small?: boolean;
-}
+  hasError?: boolean
+};
 
 const smallWrapper = css`
   display: inline-block;
   padding: 2.5em;
 `;
 const defaultWrapper = css`
-display: flex;
-padding: 2.5em 0;
+  display: flex;
+  padding: 2.5em 0;
 `;
 export const Wrapper = styled.div`
-  ${(props: WrapperType) => props.small ? smallWrapper : defaultWrapper};
+  ${(props: WrapperType) => (props.small ? smallWrapper : defaultWrapper)};
 
   align-items: center;
   justify-content: center;
 
   background-color: #1a1d24;
   border-radius: 22px;
+  border: ${(props) => props.hasError ? '2px solid red' : 'none'};
 `;
-
-export const Input = styled.input.attrs({
-  type: "file",
-  hidden: true,
-})``;
 
 export const Label = styled.label`
   padding: 0.7em 4.2em;
@@ -91,4 +88,11 @@ export const Label = styled.label`
     transform: translateY(-1px);
     background-color: rgba(55, 90, 127, 0.18);
   }
+`;
+
+export const Error = styled.span`
+  display: block;
+
+  color: red;
+  font-style: italic;
 `;
