@@ -12,6 +12,7 @@ export enum ChatRequestType {
 }
 
 export type ChatRequest = {
+  id?: string;
   fromUid: string;
   toUid: string;
   toJoinRoomOwnedByUid: string;

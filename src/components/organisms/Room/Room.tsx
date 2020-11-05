@@ -98,7 +98,7 @@ const Room: React.FC<RoomProps> = ({
   }, [roomName, token, setParticipantCount]);
 
   useEffect(() => {
-    if (!room) return;
+    if (!room || users) return;
 
     setUserList([
       ...participants.map((p) => users[p.identity]),
@@ -189,6 +189,7 @@ const Room: React.FC<RoomProps> = ({
 
   return (
     <>
+      {meComponent}
       {meComponent}
       {othersComponents}
       {emptyComponents}

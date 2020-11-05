@@ -14,8 +14,16 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
-import firebase from "firebase/app";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
+import {
+  ChatRequest,
+  ChatRequestState,
+  ChatRequestType,
+} from "types/ChatRequest";
+import { startOfDay } from "date-fns";
+import ChatRequestModal from "./ChatRequestModal";
+import Room from "components/organisms/Room";
 
 interface PropsType {
   venue: CampVenue;
@@ -36,6 +44,7 @@ export const Map: React.FC<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
+  const firebase = useFirebase();
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const dispatch = useDispatch();
@@ -48,13 +57,27 @@ export const Map: React.FC<PropsType> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
+  const [chatRequest, setChatRequest] = useState<ChatRequest>();
+  const [startVideoChat, setStartVideoStart] = useState(false);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
 
-  const { partygoers } = useSelector((state) => ({
+  useFirestoreConnect([
+    {
+      collection: "experiences",
+      doc: venue.id,
+      subcollections: [{ collection: "chatRequests" }],
+      storeAs: "chatRequests",
+      where: [["createdAt", ">=", startOfDay(new Date()).getTime()]],
+      orderBy: ["createdAt", "asc"],
+    },
+  ]);
+
+  const { partygoers, chatRequests } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
+    chatRequests: state.firestore.ordered.chatRequests,
   }));
 
   const takeSeat = useCallback(
@@ -79,7 +102,7 @@ export const Map: React.FC<PropsType> = ({
           firestore.doc(doc).set(update);
         });
     },
-    [profile, user, venueId]
+    [profile, user, venueId, firebase]
   );
 
   const useKeyPress = function (targetKey: string) {
@@ -282,6 +305,16 @@ export const Map: React.FC<PropsType> = ({
     keyDown,
   ]);
 
+  useEffect(() => {
+    let requests: ChatRequest[] = chatRequests ?? [];
+    const currentChatRequest = requests.filter((request) => {
+      return (
+        request.state === ChatRequestState.Asked && request.toUid === user?.uid
+      );
+    })[0];
+    setChatRequest(currentChatRequest ?? {});
+  }, [chatRequests, setChatRequest, user]);
+
   if (!venue) {
     return <>Loading map...</>;
   }
@@ -337,6 +370,23 @@ export const Map: React.FC<PropsType> = ({
     });
   };
 
+  const sendChatRequest = (userId: string) => {
+    const chatRequest: ChatRequest = {
+      fromUid: user!.uid,
+      toUid: userId,
+      toJoinRoomOwnedByUid: user!.uid,
+      type: ChatRequestType.JoinMyChat,
+      state: ChatRequestState.Asked,
+      createdAt: new Date().getTime(),
+      fromJoined: false,
+      toJoined: false,
+    };
+    firebase
+      .firestore()
+      .collection(`experiences/${venue.id}/chatRequests`)
+      .add(chatRequest);
+  };
+
   const myPosition = profile?.data?.[venue.id];
   const currentRow = myPosition?.row ?? 0;
   const currentCol = myPosition?.column ?? 0;
@@ -344,6 +394,9 @@ export const Map: React.FC<PropsType> = ({
   const avatarHeight = 100 / rows;
   const colPosition = avatarWidth * currentCol;
   const rowPosition = avatarHeight * currentRow;
+  const videoChatHost = partygoers.find(
+    (partygoer) => partygoer.id === chatRequest?.fromUid
+  );
 
   return (
     <>
@@ -566,6 +619,29 @@ export const Map: React.FC<PropsType> = ({
               </div>
             );
           })}
+        <button
+          style={{ marginLeft: "50%", width: 100, height: 50, zIndex: 2000 }}
+          title="test"
+          onClick={() => sendChatRequest("add target UID here")}
+        >
+          Test invite
+        </button>
+        {chatRequest && videoChatHost && (
+          <ChatRequestModal
+            show={!!chatRequest}
+            host={videoChatHost}
+            request={chatRequest}
+          />
+        )}
+        {startVideoChat && (
+          <div className="grid-video-container">
+            <Room
+              roomName={`${venue.name}/${user?.uid}`}
+              venueName={venue.name}
+              setUserList={() => {}}
+            />
+          </div>
+        )}
         {selectedUserProfile && (
           <UserProfileModal
             show={!!selectedUserProfile}

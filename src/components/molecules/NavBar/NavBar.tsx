@@ -115,7 +115,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
     [radioStations]
   );
 
-  const { volume, setVolume } = useRadio(sound);
+  const { volume, setVolume } = useRadio(IS_BURN ? sound : undefined);
 
   const radioPopover = (
     <Popover id="radio-popover">
