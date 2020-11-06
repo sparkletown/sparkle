@@ -9,6 +9,7 @@ import {
 import { WithId } from "utils/id";
 import { getLinkFromText } from "../../../utils/getLinkFromText";
 import { formatUtcSeconds } from "../../../utils/time";
+import { useUser } from "hooks/useUser";
 
 interface MessageProps {
   sender: WithId<User>;
@@ -25,9 +26,12 @@ export const Message: React.FC<MessageProps> = ({
   deletable,
   onDelete,
 }) => {
+  const { user } = useUser();
+  const profileImageSize = 30;
+  const isMe = sender.id === user!.uid;
   return (
     <div
-      className="message chat-message"
+      className={`message chat-message ${isMe ? "isMe" : ""}`}
       key={`${message.from}-${message.ts_utc}`}
     >
       <div className="sender-info">
@@ -37,9 +41,8 @@ export const Message: React.FC<MessageProps> = ({
           className="profile-icon"
           src={(!sender.anonMode && sender.pictureUrl) || DEFAULT_PROFILE_IMAGE}
           title={(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}
-          alt={`${
-            (!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME
-          } profile`}
+          alt={`${(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME
+            } profile`}
           width={PROFILE_IMAGE_SIZE}
           height={PROFILE_IMAGE_SIZE}
         />

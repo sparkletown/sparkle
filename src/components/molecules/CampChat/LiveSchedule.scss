@@ -1,0 +1,51 @@
+.live-event-container {
+  display: flex;
+  flex-direction: row;
+  background-color: rgba(0, 94, 229, 0.35);
+  padding: 10px;
+  border: solid black 2px;
+
+  .live-schedule-date {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+    .live-schedule-start-date {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .live-schedule-start-end {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .live-schedule-indicator {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-top: 10px;
+      background-color: #005ee5;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 14px;
+      text-align: center;
+    }
+  }
+
+  .live-schedule-info {
+    flex: 3;
+
+    .live-schedule-title {
+      font-weight: 700;
+    }
+
+    .live-schedule-description {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  }
+}

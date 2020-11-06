@@ -19,8 +19,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { ChatContext, chatSort } from "components/context/ChatContext";
 import ChatBox from "components/molecules/Chatbox";
 
-import "./CampChat.scss";
-
 interface ChatOutDataType {
   messageToTheBand: string;
 }

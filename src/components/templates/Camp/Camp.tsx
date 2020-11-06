@@ -12,18 +12,14 @@ import { CampVenue } from "types/CampVenue";
 import { useCampPartygoers } from "hooks/useCampPartygoers";
 import { useSelector } from "hooks/useSelector";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
-import UserList from "components/molecules/UserList";
 import CountDown from "components/molecules/CountDown";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import BannerMessage from "components/molecules/BannerMessage";
-import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 
 import { Map } from "./components/Map";
-import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
 
 import "./Camp.scss";
@@ -41,11 +37,11 @@ const Camp: React.FC = () => {
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        Object.keys(value.lastSeenIn).forEach((key) => {
-          acc[key] = (acc[key] || 0) + 1;
-        });
-        return acc;
-      }, {})
+      Object.keys(value.lastSeenIn).forEach((key) => {
+        acc[key] = (acc[key] || 0) + 1;
+      });
+      return acc;
+    }, {})
     : {};
 
   const modalHidden = useCallback(() => {
@@ -70,7 +66,7 @@ const Camp: React.FC = () => {
     <>
       <BannerMessage venue={venue} />
       <div className="camp-container">
-        <div className="row">
+        {/* <div className="row">
           {usersInCamp && (
             <div className="col">
               <UserList
@@ -82,7 +78,7 @@ const Camp: React.FC = () => {
               />
             </div>
           )}
-        </div>
+        </div> */}
         <div className="row">
           <div className="col">
             <div className="starting-indication">
@@ -107,13 +103,12 @@ const Camp: React.FC = () => {
         </div>
         <Map
           venue={venue}
-          partygoers={usersInCamp}
           attendances={attendances}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
         />
-        <div className="row">
+        {/* <div className="row">
           <div className="col">
             <RoomList
               rooms={venue.rooms}
@@ -122,14 +117,14 @@ const Camp: React.FC = () => {
               setIsRoomModalOpen={setIsRoomModalOpen}
             />
           </div>
-        </div>
+        </div> */}
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
           onHide={modalHidden}
           joinButtonText={venue.joinButtonText}
         />
-        {(IS_BURN || venue.showChat) && (
+        {/* {(IS_BURN || venue.showChat) && (
           <div className="chat-pop-up" style={{ zIndex: 100 }}>
             <ChatDrawer
               roomName={venue.name}
@@ -137,15 +132,15 @@ const Camp: React.FC = () => {
               chatInputPlaceholder="Chat"
             />
           </div>
-        )}
+        )} */}
         {IS_BURN && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
         )}
-        <div className="info-drawer-camp">
+        {/* <div className="info-drawer-camp">
           <InfoDrawer venue={venue} />
-        </div>
+        </div> */}
         <Modal
           show={showEventSchedule}
           onHide={() => setShowEventSchedule(false)}

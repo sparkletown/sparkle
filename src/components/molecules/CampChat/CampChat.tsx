@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
-import { MessageList } from "components/molecules/MessageList";
+import { MessageList } from "./MessageList";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
-import { ChatContext, chatSort } from "components/context/ChatContext";
-import "./ChatDrawer.scss";
+import { ChatContext } from "components/context/ChatContext";
+import "./CampChat.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,7 +16,6 @@ import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
-import { currentVenueSelectorData } from "utils/selectors";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -25,24 +24,16 @@ interface ChatOutDataType {
 interface PropsType {
   roomName: string;
   chatInputPlaceholder: string;
-  title: string;
-  defaultShow?: boolean;
 }
 
-const ChatDrawer: React.FC<PropsType> = ({
-  roomName,
-  chatInputPlaceholder,
-  title,
-  defaultShow,
-}) => {
+const CampChat: React.FC<PropsType> = ({ roomName, chatInputPlaceholder }) => {
   const { user } = useUser();
   const venueId = useVenueId();
   const { userRoles } = useRoles();
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
-  const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(defaultShow);
 
   useEffect(() => {
     if (isMessageToTheBarSent) {
@@ -84,7 +75,7 @@ const ChatDrawer: React.FC<PropsType> = ({
             message.to === roomName &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(chatSort),
+        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
     [chats, roomName, HIDE_BEFORE]
   );
 
@@ -101,59 +92,30 @@ const ChatDrawer: React.FC<PropsType> = ({
   };
 
   return (
-    <div
-      className={`chat-drawer-container ${
-        isChatDrawerExpanded ? "expanded" : ""
-      }`}
-      onClick={() => !isChatDrawerExpanded && setIsChatDrawerExpanded(true)}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>Party Chat</div>
-        <div>Messages</div>
-        <div>Live Schedule</div>
-      </div>
-      {chatsToDisplay && (
-        <MessageList
-          messages={chatsToDisplay}
-          allowDelete={allowDelete}
-          deleteMessage={deleteMessage}
-        />
-      )}
-      {/* {!isChatDrawerExpanded ? (
-        <div className="chat-icon-container">
-          <FontAwesomeIcon icon={faCommentDots} className="chat-icon" />
-        </div>
-      ) : (
-        <div className="band-reaction-container">
-          <h3>{title}</h3>
-          <h4>Chat with everybody</h4>
-          <div className="call-out-band-container-at-table">
-            <CallOutMessageForm
-              onSubmit={handleSubmit(onBarMessageSubmit)}
-              ref={register({ required: true })}
-              placeholder={chatInputPlaceholder}
-              isMessageToTheBandSent={isMessageToTheBarSent}
+    <div className={`camp-chat-container`}>
+      <div className="band-reaction-container">
+        <div className="messages-container">
+          {chatsToDisplay && (
+            <MessageList
+              messages={chatsToDisplay}
+              allowDelete={allowDelete}
+              deleteMessage={deleteMessage}
             />
-            <div>
-              {chatsToDisplay && (
-                <MessageList
-                  messages={chatsToDisplay}
-                  allowDelete={allowDelete}
-                  deleteMessage={deleteMessage}
-                />
-              )}
-            </div>
-          </div>
+          )}
+          {chatsToDisplay && !chatsToDisplay.length && (
+            <div>There are no messages</div>
+          )}
+          {!chatsToDisplay && <div>Loading messages</div>}
         </div>
-      )} */}
+        <CallOutMessageForm
+          onSubmit={handleSubmit(onBarMessageSubmit)}
+          ref={register({ required: true })}
+          placeholder={chatInputPlaceholder}
+          isMessageToTheBandSent={isMessageToTheBarSent}
+        />
+      </div>
     </div>
   );
 };
 
-export default ChatDrawer;
+export default CampChat;

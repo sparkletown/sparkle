@@ -1,39 +1,26 @@
 import React, { useCallback, useEffect, useState } from "react";
-
-import { IS_BURN } from "secrets";
-
-import { retainAttendance } from "store/actions/Attendance";
-
-import firebase from "firebase/app";
-
-import { orderedVenuesSelector } from "utils/selectors";
-
-import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
-import { User } from "types/User";
+import { CampRoomData } from "types/CampRoomData";
+import "./Map.scss";
+import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
+import { useUser } from "../../../../hooks/useUser";
+import { IS_BURN } from "secrets";
 import { RoomVisibility } from "types/Venue";
-
-import { WithId } from "utils/id";
-import { currentTimeInUnixEpoch } from "utils/time";
-import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-
-import { useUser } from "hooks/useUser";
 import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
-
-import UserProfileModal from "components/organisms/UserProfileModal";
-
+import { retainAttendance } from "store/actions/Attendance";
+import { currentTimeInUnixEpoch } from "utils/time";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-
+import { User } from "types/User";
+import { WithId } from "utils/id";
+import { useVenueId } from "hooks/useVenueId";
+import firebase from "firebase/app";
+import { useSelector } from "hooks/useSelector";
+import Sidebar from "components/molecules/Sidebar";
+import UserProfileModal from "components/organisms/UserProfileModal";
 import CampAttendance from "./CampAttendance";
 
-import "./Map.scss";
-
-interface MapProps {
+interface PropsType {
   venue: CampVenue;
-  partygoers: WithId<User>[];
   attendances: { [location: string]: number };
   selectedRoom: CampRoomData | undefined;
   setSelectedRoom: (room: CampRoomData | undefined) => void;
@@ -44,9 +31,8 @@ const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 const MOVEMENT_INTERVAL = 350;
 
-export const Map: React.FC<MapProps> = ({
+export const Map: React.FC<PropsType> = ({
   venue,
-  partygoers,
   attendances,
   selectedRoom,
   setSelectedRoom,
@@ -64,25 +50,14 @@ export const Map: React.FC<MapProps> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
-  const [rows, setRows] = useState<number>(0);
-
-  const venues = useSelector(orderedVenuesSelector);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
+  const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
   const currentPosition = profile?.data?.[venue.id];
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = venue.mapBackgroundImageUrl ?? "";
-    img.onload = () => {
-      const imgRatio = img.width ? img.width / img.height : 1;
-      const calcRows = venue.columns
-        ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
-        : DEFAULT_ROWS;
-      setRows(calcRows);
-    };
-  }, [venue.columns, venue.mapBackgroundImageUrl]);
+  const { partygoers } = useSelector((state) => ({
+    partygoers: state.firestore.ordered.partygoers,
+  }));
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -185,26 +160,24 @@ export const Map: React.FC<MapProps> = ({
     [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
   );
 
+  const isExternalLink = useCallback(
+    (url: string) =>
+      url.includes("http") &&
+      new URL(window.location.href).host !== new URL(getRoomUrl(url)).host,
+    []
+  );
+
   const roomEnter = useCallback(
     (room: CampRoomData) => {
-      const roomVenue = venues?.find((venue) =>
-        room.url.endsWith(`/${venue.id}`)
-      );
-      const venueRoom = roomVenue
-        ? { [roomVenue.name]: currentTimeInUnixEpoch }
-        : {};
       room &&
         user &&
         enterRoom(
           user,
-          {
-            [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
-            ...venueRoom,
-          },
+          { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
           profile?.lastSeenIn
         );
     },
-    [profile, user, venue, venues]
+    [profile, user, venue]
   );
 
   const partygoersBySeat: WithId<User>[][] = [];
@@ -240,7 +213,12 @@ export const Map: React.FC<MapProps> = ({
       if (enterPress && selectedRoom) {
         setKeyDown(true);
         setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
-        openRoomUrl(selectedRoom.url);
+
+        const isExternalUrl = isExternalLink(selectedRoom.url);
+        window.open(
+          getRoomUrl(selectedRoom.url),
+          isExternalUrl ? "_blank" : "noopener,noreferrer"
+        );
         roomEnter(selectedRoom);
         return;
       }
@@ -296,6 +274,7 @@ export const Map: React.FC<MapProps> = ({
     enterPress,
     selectedRoom,
     partygoersBySeat,
+    isExternalLink,
     roomEnter,
     hitRoom,
     takeSeat,
@@ -312,6 +291,10 @@ export const Map: React.FC<MapProps> = ({
       rooms.push(chosenRoom[0]);
     }
   }
+
+  const getRoomUrl = (roomUrl: string) => {
+    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+  };
 
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
@@ -358,246 +341,267 @@ export const Map: React.FC<MapProps> = ({
     room: CampRoomData
   ) => {
     e.stopPropagation();
-    if (isExternalUrl(room.url)) {
-      openRoomUrl(room.url);
+    if (isExternalLink(room.url)) {
+      window.open(getRoomUrl(room.url));
     } else {
       window.location.href = getRoomUrl(room.url);
     }
     roomEnter(room);
   };
 
-  const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
-  const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
-
   return (
-    <>
-      <div
-        className="grid-container"
-        style={{
-          backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
-          backgroundSize: "cover",
-          display: "grid",
-          gridTemplateColumns: `repeat(${templateColumns}, calc(100% / ${templateColumns}))`,
-          gridTemplateRows: `repeat(${templateRows}, 1fr)`,
-        }}
-      >
-        {venue.showGrid && rows ? (
-          Array.from(Array(columns)).map((_, colIndex) => {
-            return (
-              <div className="seat-column" key={`column${colIndex}`}>
-                {Array.from(Array(rows)).map((_, rowIndex) => {
-                  const column = colIndex + 1;
-                  const row = rowIndex + 1;
-                  const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                    ? partygoersBySeat[row][column]
-                    : null;
-                  const isMe = seatedPartygoer?.id === user?.uid;
-                  return (
-                    <div key={`row${rowIndex}`} className={`seat-row`}>
-                      {venue.showGrid && (
-                        <div
-                          className={"seat-container"}
-                          onClick={() =>
-                            onSeatClick(row, column, seatedPartygoer)
-                          }
-                        >
-                          <div
-                            className={seatedPartygoer ? "seat" : `not-seat`}
-                            key={`row${rowIndex}`}
-                          >
-                            {seatedPartygoer && (
-                              <div className={isMe ? "user avatar" : "user"} />
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-                {venue.showGrid &&
-                  rows &&
-                  partygoers.map((partygoer, index) => {
-                    const isMe = partygoer.id === user?.uid;
-                    const position = partygoer?.data?.[venue.id];
-                    const currentRow = position?.row ?? 0;
-                    const currentCol = position?.column ?? 0;
-                    const avatarWidth = 100 / columns;
-                    const avatarHeight = 100 / rows;
-                    return (
-                      !!partygoer.id && (
-                        <UserProfilePicture
-                          key={`partygoer-${index}`}
-                          user={partygoer}
-                          containerStyle={{
-                            display: "flex",
-                            width: `${avatarWidth}%`,
-                            height: `${avatarHeight}%`,
-                            position: "absolute",
-                            cursor: "pointer",
-                            transition:
-                              "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
-                            top: `${avatarHeight * (currentRow - 1)}%`,
-                            left: `${avatarWidth * (currentCol - 1)}%`,
-                            justifyContent: "center",
-                          }}
-                          avatarStyle={{
-                            width: "80%",
-                            height: "80%",
-                            borderRadius: "100%",
-                            alignSelf: "center",
-                            backgroundImage: `url(${partygoer?.pictureUrl})`,
-                            backgroundSize: "cover",
-                          }}
-                          avatarClassName={`${
-                            isMe ? "me profile-avatar" : "profile-avatar"
-                          }`}
-                          setSelectedUserProfile={setSelectedUserProfile}
-                          miniAvatars={venue?.miniAvatars}
-                        />
-                      )
-                    );
-                  })}
-              </div>
-            );
-          })
-        ) : (
-          <div />
-        )}
-        {!!rooms.length &&
-          rooms.map((room) => {
-            const left = room.x_percent;
-            const top = room.y_percent;
-            const width = room.width_percent;
-            const height = room.height_percent;
-            const isUnderneathRoom = isHittingRoom && room === selectedRoom;
-            const hasAttendance = attendances[`${venue.name}/${room.title}`];
-            return (
-              <div
-                className={`room position-absolute ${
-                  isUnderneathRoom && "isUnderneath"
-                }`}
-                style={{
-                  left: left + "%",
-                  top: top + "%",
-                  width: width + "%",
-                  height: height + "%",
-                }}
-                key={room.title}
-                onClick={() => {
-                  if (!IS_BURN) {
-                    openModal(room);
-                  } else {
-                    setRoomClicked((prevRoomClicked) =>
-                      prevRoomClicked === room.title ? undefined : room.title
-                    );
-                  }
-                }}
-                onMouseEnter={() => {
-                  dispatch(retainAttendance(true));
-                  setRoomHovered(room);
-                }}
-                onMouseLeave={() => {
-                  dispatch(retainAttendance(false));
-                  setRoomHovered(undefined);
-                }}
-              >
-                <div
-                  className={`camp-venue ${
-                    roomClicked === room.title ? "clicked" : ""
-                  }`}
-                >
+    <div style={{ display: "flex", flexDirection: "row", marginTop: 20 }}>
+      <div style={{ width: "80%" }}>
+        <div
+          style={{ flex: 1, display: "flex", margin: "20px auto 20px auto" }}
+        >
+          <img
+            width="100%"
+            className="map-background"
+            src={venue.mapBackgroundImageUrl}
+            alt=""
+          />
+          <div style={{ position: "absolute", width: "80%", height: "100%" }}>
+            {!!rooms.length &&
+              rooms.map((room) => {
+                const left = room.x_percent;
+                const top = room.y_percent;
+                const width = room.width_percent;
+                const height = room.height_percent;
+                const isUnderneathRoom = isHittingRoom && room === selectedRoom;
+                const hasAttendance =
+                  attendances[`${venue.name}/${room.title}`];
+                return (
                   <div
-                    className={`grid-room-btn ${
-                      isUnderneathRoom && "isUnderneath"
-                    }`}
+                    className={`room position-absolute ${isUnderneathRoom && "isUnderneath"
+                      }`}
+                    style={{
+                      left: left + "%",
+                      top: top + "%",
+                      width: width + "%",
+                      height: height + "%",
+                    }}
+                    key={room.title}
+                    onClick={() => {
+                      if (!IS_BURN) {
+                        openModal(room);
+                      } else {
+                        setRoomClicked((prevRoomClicked) =>
+                          prevRoomClicked === room.title
+                            ? undefined
+                            : room.title
+                        );
+                      }
+                    }}
+                    onMouseEnter={() => {
+                      dispatch(retainAttendance(true));
+                      setRoomHovered(room);
+                    }}
+                    onMouseLeave={() => {
+                      dispatch(retainAttendance(false));
+                      setRoomHovered(undefined);
+                    }}
                   >
                     <div
-                      className="btn btn-white btn-small btn-block"
-                      onClick={(e) => onJoinRoom(e, room)}
+                      className={`camp-venue ${roomClicked === room.title ? "clicked" : ""
+                        }`}
                     >
-                      {venue.joinButtonText ?? "Join now"}
-                    </div>
-                  </div>
-                  <div className="camp-venue-img">
-                    <img
-                      src={room.image_url}
-                      title={room.title}
-                      alt={room.title}
-                    />
-                  </div>
-                  {venue.roomVisibility === RoomVisibility.hover &&
-                    roomHovered &&
-                    roomHovered.title === room.title && (
-                      <div className="camp-venue-text">
-                        <div className="camp-venue-maininfo">
-                          <div className="camp-venue-title">{room.title}</div>
-                          <CampAttendance
-                            attendances={attendances}
-                            venue={venue}
-                            room={room}
-                          />
+                      <div
+                        className={`grid-room-btn ${isUnderneathRoom && "isUnderneath"
+                          }`}
+                      >
+                        <div
+                          className="btn btn-white btn-small btn-block"
+                          onClick={(e) => onJoinRoom(e, room)}
+                        >
+                          {venue.joinButtonText ?? "Join now"}
                         </div>
                       </div>
-                    )}
-
-                  <div className={`camp-venue-text`}>
-                    {(!venue.roomVisibility ||
-                      venue.roomVisibility === RoomVisibility.nameCount ||
-                      (venue.roomVisibility === RoomVisibility.count &&
-                        hasAttendance)) && (
-                      <div className="camp-venue-maininfo">
-                        {(!venue.roomVisibility ||
-                          venue.roomVisibility ===
-                            RoomVisibility.nameCount) && (
-                          <div className="camp-venue-title">{room.title}</div>
-                        )}
-                        <CampAttendance
-                          attendances={attendances}
-                          venue={venue}
-                          room={room}
+                      <div className="camp-venue-img">
+                        <img
+                          src={room.image_url}
+                          title={room.title}
+                          alt={room.title}
                         />
                       </div>
-                    )}
-                    <div className="camp-venue-secondinfo">
-                      <div className="camp-venue-desc">
-                        <p>{room.subtitle}</p>
-                        <p>{room.about}</p>
-                      </div>
-                      <div className="camp-venue-actions">
-                        {isExternalUrl(room.url) ? (
-                          <a
-                            className="btn btn-block btn-small btn-primary"
-                            onClick={() => roomEnter(room)}
-                            href={getRoomUrl(room.url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {venue.joinButtonText ?? "Join the room"}
-                          </a>
-                        ) : (
-                          <a
-                            className="btn btn-block btn-small btn-primary"
-                            onClick={() => roomEnter(room)}
-                            href={getRoomUrl(room.url)}
-                          >
-                            {venue.joinButtonText ?? "Join the room"}
-                          </a>
+                      {venue.roomVisibility === RoomVisibility.hover &&
+                        roomHovered &&
+                        roomHovered.title === room.title && (
+                          <div className="camp-venue-text">
+                            <div className="camp-venue-maininfo">
+                              <div className="camp-venue-title">
+                                {room.title}
+                              </div>
+                              <CampAttendance
+                                attendances={attendances}
+                                venue={venue}
+                                room={room}
+                              />
+                            </div>
+                          </div>
                         )}
+
+                      <div className={`camp-venue-text`}>
+                        {(!venue.roomVisibility ||
+                          venue.roomVisibility === RoomVisibility.nameCount ||
+                          (venue.roomVisibility === RoomVisibility.count &&
+                            hasAttendance)) && (
+                            <div className="camp-venue-maininfo">
+                              {(!venue.roomVisibility ||
+                                venue.roomVisibility ===
+                                RoomVisibility.nameCount) && (
+                                  <div className="camp-venue-title">
+                                    {room.title}
+                                  </div>
+                                )}
+                              <CampAttendance
+                                attendances={attendances}
+                                venue={venue}
+                                room={room}
+                              />
+                            </div>
+                          )}
+                        <div className="camp-venue-secondinfo">
+                          <div className="camp-venue-desc">
+                            <p>{room.subtitle}</p>
+                            <p>{room.about}</p>
+                          </div>
+                          <div className="camp-venue-actions">
+                            {isExternalLink(room.url) ? (
+                              <a
+                                className="btn btn-block btn-small btn-primary"
+                                onClick={() => roomEnter(room)}
+                                href={getRoomUrl(room.url)}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {venue.joinButtonText ?? "Join the room"}
+                              </a>
+                            ) : (
+                                <a
+                                  className="btn btn-block btn-small btn-primary"
+                                  onClick={() => roomEnter(room)}
+                                  href={getRoomUrl(room.url)}
+                                >
+                                  {venue.joinButtonText ?? "Join the room"}
+                                </a>
+                              )}
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
-        {selectedUserProfile && (
-          <UserProfileModal
-            show={!!selectedUserProfile}
-            onHide={() => setSelectedUserProfile(undefined)}
-            userProfile={selectedUserProfile}
-          />
-        )}
+                );
+              })}
+          </div>
+
+          <div
+            className="grid-container"
+            style={{
+              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+            }}
+          >
+            {venue.showGrid && rows ? (
+              Array.from(Array(columns)).map((_, colIndex) => {
+                return (
+                  <div className="seat-column" key={`column${colIndex}`}>
+                    {Array.from(Array(rows)).map((_, rowIndex) => {
+                      const column = colIndex + 1;
+                      const row = rowIndex + 1;
+                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                        ? partygoersBySeat[row][column]
+                        : null;
+                      const isMe = seatedPartygoer?.id === user?.uid;
+                      return (
+                        <div key={`row${rowIndex}`} className={`seat-row`}>
+                          {venue.showGrid && (
+                            <div
+                              className={"seat-container"}
+                              onClick={() =>
+                                onSeatClick(row, column, seatedPartygoer)
+                              }
+                            >
+                              <div
+                                className={
+                                  seatedPartygoer ? "seat" : `not-seat`
+                                }
+                                key={`row${rowIndex}`}
+                              >
+                                {seatedPartygoer && (
+                                  <div
+                                    className={isMe ? "user avatar" : "user"}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {venue.showGrid &&
+                      rows &&
+                      partygoers.map((partygoer, index) => {
+                        const isMe = partygoer.id === user?.uid;
+                        const position = partygoer?.data?.[venue.id];
+                        const currentRow = position?.row ?? 0;
+                        const currentCol = position?.column ?? 0;
+                        const avatarWidth = 100 / columns;
+                        const avatarHeight = 100 / rows;
+                        return (
+                          !!partygoer.id && (
+                            <UserProfilePicture
+                              key={`partygoer-${index}`}
+                              user={partygoer}
+                              containerStyle={{
+                                display: "flex",
+                                width: `${avatarWidth}%`,
+                                height: `${avatarHeight}%`,
+                                position: "absolute",
+                                cursor: "pointer",
+                                transition:
+                                  "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
+                                top: `${avatarHeight * (currentRow - 1)}%`,
+                                left: `${avatarWidth * (currentCol - 1)}%`,
+                                justifyContent: "center",
+                              }}
+                              avatarStyle={{
+                                width: "80%",
+                                height: "80%",
+                                borderRadius: "100%",
+                                alignSelf: "center",
+                                backgroundImage: `url(${partygoer?.pictureUrl})`,
+                                backgroundSize: "cover",
+                              }}
+                              avatarClassName={`${isMe ? "me profile-avatar" : "profile-avatar"
+                                }`}
+                              setSelectedUserProfile={setSelectedUserProfile}
+                              miniAvatars={venue?.miniAvatars}
+                            />
+                          )
+                        );
+                      })}
+                  </div>
+                );
+              })
+            ) : (
+                <div />
+              )}
+          </div>
+
+          {selectedUserProfile && (
+            <UserProfileModal
+              show={!!selectedUserProfile}
+              onHide={() => setSelectedUserProfile(undefined)}
+              userProfile={selectedUserProfile}
+            />
+          )}
+        </div>
       </div>
-    </>
+
+      <div style={{ width: "20%" }}>
+        <Sidebar />
+      </div>
+    </div>
   );
 };

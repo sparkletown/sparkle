@@ -76,8 +76,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         .filter((chat) =>
           room
             ? //@ts-ignore
-              chat.type === "global" || //@debt can privateChats or venueChats ever be global?
-              (chat.type === "room" && chat.to === room)
+            chat.type === "global" || //@debt can privateChats or venueChats ever be global?
+            (chat.type === "room" && chat.to === room)
             : true
         )
         .concat()
@@ -144,16 +144,16 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
               : discussionPartner.partyName ?? DEFAULT_PARTY_NAME}
           </div>
         ) : (
-          <div className="chatbox-title">
-            <img
-              src="/sparkle-icon.png"
-              className="side-title-icon"
-              alt="sparkle icon"
-              width="20"
-            />
+            <div className="chatbox-title">
+              <img
+                src="/sparkle-icon.png"
+                className="side-title-icon"
+                alt="sparkle icon"
+                width="20"
+              />
             Chat
-          </div>
-        )}
+            </div>
+          )}
 
         {users && (
           <>
@@ -195,15 +195,15 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                           : privateRecipient.partyName}
                       </>
                     ) : (
-                      <>
-                        {chatboxMessageType === "global" ? "Everybody" : ""}
-                        {chatboxMessageType === "room"
-                          ? room === "jazz"
-                            ? "Chat to the band"
-                            : `This Room: ${room}`
-                          : ""}
-                      </>
-                    )}
+                        <>
+                          {chatboxMessageType === "global" ? "Everybody" : ""}
+                          {chatboxMessageType === "room"
+                            ? room === "jazz"
+                              ? "Chat to the band"
+                              : `This Room: ${room}`
+                            : ""}
+                        </>
+                      )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item

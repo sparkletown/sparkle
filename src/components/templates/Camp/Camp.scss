@@ -1,4 +1,8 @@
 .camp-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
   overflow-x: hidden;
 
   .title {
