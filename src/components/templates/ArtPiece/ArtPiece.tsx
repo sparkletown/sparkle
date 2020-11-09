@@ -54,6 +54,7 @@ const ArtPiece = () => {
           ></iframe>
           <div className="video-chat-wrapper">
             <Room
+              venueName={venue.name}
               roomName={venue.name}
               setUserList={() => null}
               hasChairs={false}

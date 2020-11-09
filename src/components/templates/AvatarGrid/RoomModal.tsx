@@ -98,7 +98,7 @@ export const RoomModal: React.FC<PropsType> = ({
                 <div key={index} className={"user"}>
                   <UserProfilePicture
                     user={user}
-                    profileStyle={"profile-avatar"}
+                    avatarClassName={"profile-avatar"}
                     setSelectedUserProfile={() => {}}
                     miniAvatars={miniAvatars}
                   />
