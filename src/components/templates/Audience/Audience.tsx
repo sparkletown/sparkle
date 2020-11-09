@@ -140,6 +140,18 @@ export const Audience: React.FunctionComponent = () => {
   >();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
+  const [iframeUrl, setIframeUrl] = useState<string>("");
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("venues")
+      .doc(venueId as string)
+      .onSnapshot((doc) =>
+        setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
+      );
+  }, [venueId]);
+
   const experienceContext = useContext(ExperienceContext);
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
     created_at: new Date().getTime(),
@@ -280,8 +292,6 @@ export const Audience: React.FunctionComponent = () => {
     const userSeated =
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
-
-    const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl, true);
 
     return (
       <>
@@ -439,17 +449,18 @@ export const Audience: React.FunctionComponent = () => {
   }, [
     auditoriumSize,
     venue,
-    selectedUserProfile,
-    user,
     profile,
     venueId,
+    iframeUrl,
+    isAudioEffectDisabled,
+    handleSubmit,
+    register,
+    isShoutSent,
+    selectedUserProfile,
+    user,
+    experienceContext,
+    reset,
     reactionClicked,
     partygoersBySeat,
-    handleSubmit,
-    isShoutSent,
-    isAudioEffectDisabled,
-    experienceContext,
-    register,
-    reset,
   ]);
 };
