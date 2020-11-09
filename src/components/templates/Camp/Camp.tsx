@@ -24,7 +24,7 @@ import BannerMessage from "components/molecules/BannerMessage";
 const Camp: React.FC = () => {
   useConnectPartyGoers();
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
+  const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [nowMs, setNowMs] = useState(new Date().getTime());
 
@@ -116,14 +116,14 @@ const Camp: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="row">
-          <Map
-            venue={venue}
-            attendances={attendances}
-            setSelectedRoom={setSelectedRoom}
-            setIsRoomModalOpen={setIsRoomModalOpen}
-          />
-        </div>
+        <Map
+          venue={venue}
+          partygoers={usersInCamp}
+          attendances={attendances}
+          selectedRoom={selectedRoom}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+        />
         <div className="row">
           <div className="col">
             <RoomList

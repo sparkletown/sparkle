@@ -91,6 +91,7 @@ export interface Venue {
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
+  showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: any[];
   width: number;
