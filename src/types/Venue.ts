@@ -17,6 +17,25 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
+export interface VenueNew {
+  name: string;
+  config: {
+    landingPageConfig: {
+      subtitle: string;
+      description: string;
+      coverImageUrl: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners?: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+}
+
 export interface Venue {
   parentId?: string;
   template: VenueTemplate;
@@ -117,7 +136,7 @@ export const urlFromImage = (
     : defaultValue;
 };
 
-export const createJazzbar = (values: FormValues): Venue => {
+export const createJazzbar = (values: any): Venue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",

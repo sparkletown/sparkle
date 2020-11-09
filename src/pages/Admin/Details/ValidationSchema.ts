@@ -23,12 +23,12 @@ const initialMapIconPlacement: VenueInput["placement"] = {
 
 type Question = VenueInput["profileQuestions"][number];
 
-interface SchemaShape extends FormValues {
+export interface SchemaShape extends FormValues {
   bannerImageFile: FileList;
-  bannerImageUrl?: string;
+  bannerImageUrl: string;
 
   logoImageFile: FileList;
-  logoImageUrl?: string;
+  logoImageUrl: string;
 }
 
 const createFileSchema = (
@@ -101,11 +101,17 @@ export const venueSchema = Yup.object()
       .required("Description is required!")
       .min(3, ({ min }) => mustBeMinimum("Description", min)),
 
-    bannerImageFile: createFileSchema("bannerImageUrl", true, "Banner"),
-    bannerImageUrl: Yup.string().required('Banner is required!'),
+    bannerImageFile: Yup.mixed<FileList>().when("$editing", {
+      is: false,
+      then: createFileSchema("bannerImageUrl", true, "Banner"),
+    }),
+    bannerImageUrl: Yup.string().required("Banner is required!"),
 
-    logoImageFile: createFileSchema("logoImageUrl", true, "Logo"),
-    logoImageUrl: Yup.string().required('Logo is required!'),
+    logoImageFile: Yup.mixed<FileList>().when("$editing", {
+      is: false,
+      then: createFileSchema("logoImageUrl", true, "Logo"),
+    }),
+    logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();
 
@@ -125,7 +131,6 @@ export const validationSchema = Yup.object()
         (schema: Yup.StringSchema) => schema //will be set from the data from the api. Does not need to be unique
       ),
     bannerImageFile: createFileSchema("bannerImageFile", false),
-    // .notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),

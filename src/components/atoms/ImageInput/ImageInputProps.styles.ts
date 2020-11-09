@@ -45,14 +45,53 @@ export const TEMP = styled.div`
   }
 `;
 
+type UploadButtonType = {
+  isHidden?: boolean;
+};
+const defaultButton = css`
+  background-color: #462a87;
+
+  cursor: pointer;
+
+  &:hover,
+  &:active,
+  &:focus {
+    transform: translateY(-1px);
+    background-color: rgba(55, 90, 127, 0.18);
+  }
+`;
+const hiddenButton = css`
+  background-color: transparent;
+  color: transparent;
+  cursor: default;
+`;
+export const UploadButton = styled.span`
+  ${(props: UploadButtonType) =>
+    props.isHidden ? hiddenButton : defaultButton};
+
+  padding: 0.7em 4.2em;
+  margin: 0;
+
+  border-radius: 22px;
+
+  font-weight: bold;
+
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+`;
+
 type WrapperType = {
   small?: boolean;
-  hasError?: boolean
+  hasError?: boolean;
+  backgroundImage?: string;
 };
 
 const smallWrapper = css`
   display: inline-block;
   padding: 2.5em;
+
+  ${UploadButton} {
+    padding: 0.7em 2em;
+  }
 `;
 const defaultWrapper = css`
   display: flex;
@@ -66,28 +105,12 @@ export const Wrapper = styled.div`
 
   background-color: #1a1d24;
   border-radius: 22px;
-  border: ${(props) => props.hasError ? '2px solid red' : 'none'};
-`;
+  border: ${(props) => (props.hasError ? "2px solid red" : "none")};
 
-export const Label = styled.label`
-  padding: 0.7em 4.2em;
-  margin: 0;
-
-  background-color: #462a87;
-  border-radius: 22px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-
-  &:hover,
-  &:active,
-  &:focus {
-    transform: translateY(-1px);
-    background-color: rgba(55, 90, 127, 0.18);
-  }
+  background-image: ${(props) =>
+    props.backgroundImage ? `url(${props.backgroundImage})` : "none"};
+  background-size: cover;
+  background-position: center;
 `;
 
 export const Error = styled.span`

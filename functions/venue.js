@@ -58,6 +58,7 @@ const createVenueData = (data, context) => {
         description: data.description,
       },
     },
+
     presentation: [],
     quotations: [],
     theme: {
@@ -96,8 +97,27 @@ const createVenueData = (data, context) => {
       venueData.roomVisibility = data.roomVisibility;
       break;
   }
+
   return venueData;
 };
+
+const createVenueNew = (data, context) => ({
+  name: data.name,
+  config: {
+    landingPageConfig: {
+      coverImageUrl: data.bannerImageUrl,
+      subtitle: data.subtitle,
+      description: data.description,
+    },
+  },
+  theme: {
+    primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
+  },
+  host: {
+    icon: data.logoImageUrl,
+  },
+  owners: [context.auth.token.user_id],
+});
 
 const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
@@ -172,6 +192,22 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 
   // @debt this should be typed
   const venueData = createVenueData(data, context);
+  const venueId = getVenueId(data.name);
+
+  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+
+  return venueData;
+});
+
+// This has the suffix 'New' due to the uncertain future
+// of how the documents/collections will be structured
+//
+// To not interfere with the current documents and their structures,
+// new venues will be created with this function
+exports.createVenueNew = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const venueData = createVenueNew(data, context);
   const venueId = getVenueId(data.name);
 
   await admin.firestore().collection("venues").doc(venueId).set(venueData);
@@ -375,6 +411,61 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
             updated.zoomUrl = data.zoomUrl;
           }
           break;
+      }
+
+      admin.firestore().collection("venues").doc(venueId).update(updated);
+    });
+});
+
+exports.updateVenueNew = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then((doc) => {
+      if (!doc || !doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} not found`);
+      }
+      const updated = doc.data();
+
+      if (data.bannerImageUrl || data.subtitle || data.description) {
+        if (!updated.config) {
+          updated.config = {};
+        }
+        if (!updated.config.landingPageConfig) {
+          updated.config.landingPageConfig = {};
+        }
+      }
+
+      if (data.bannerImageUrl) {
+        updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
+      }
+      if (data.subtitle) {
+        updated.config.landingPageConfig.subtitle = data.subtitle;
+      }
+      if (data.description) {
+        updated.config.landingPageConfig.description = data.description;
+      }
+      if (data.primaryColor) {
+        if (!updated.theme) {
+          updated.theme = {};
+        }
+        updated.theme.primaryColor = data.primaryColor;
+      }
+      if (data.logoImageUrl) {
+        if (!updated.host) {
+          updated.host = {};
+        }
+        updated.host.icon = data.logoImageUrl;
+      }
+      if (data.parentId) {
+        updated.parentId = data.parentId;
       }
 
       admin.firestore().collection("venues").doc(venueId).update(updated);

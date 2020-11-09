@@ -20,7 +20,7 @@ import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import {
   editPlacementCastSchema,
   editPlacementSchema,
-} from "./Venue/DetailsValidationSchema";
+} from "pages/Admin/Details/ValidationSchema";
 import * as Yup from "yup";
 import { useForm, FieldErrors, ErrorMessage } from "react-hook-form";
 import { useUser } from "hooks/useUser";
@@ -34,7 +34,7 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import { Link } from "react-router-dom";
 import { isCampVenue } from "types/CampVenue";
 
-import SubmitButton from 'components/atoms/SubmitButton';
+import SubmitButton from "components/atoms/SubmitButton";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 type FormErrors = FieldErrors<Required<FormValues>>;

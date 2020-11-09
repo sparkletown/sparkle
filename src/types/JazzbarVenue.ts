@@ -13,7 +13,7 @@ export interface JazzbarVenue extends Venue {
   };
 }
 
-export const createJazzbar = (values: FormValues): Venue => {
+export const createJazzbar = (values: any): Venue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",

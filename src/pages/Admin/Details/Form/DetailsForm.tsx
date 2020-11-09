@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // API
 import {
   createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
+  createVenueNew,
+  Input,
+  updateVenueNew,
 } from "api/admin";
 
 // Components
@@ -29,7 +29,7 @@ import {
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 
-import { editVenueCastSchema, venueSchema } from "../ValidationSchema";
+import { venueSchema } from "../ValidationSchema";
 import { FormValues } from "../Details.types";
 import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
@@ -39,7 +39,7 @@ import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes
 import * as S from "./DetailsForm.styles";
 
 const DetailsForm: React.FC<DetailsFormProps> = (props) => {
-  const { venueId, dispatch, state } = props;
+  const { venueId, dispatch, editData } = props;
 
   const [formError, setFormError] = useState(false);
   const history = useHistory();
@@ -50,8 +50,8 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue(vals as VenueInput, user);
-        else await createVenue(vals as VenueInput, user);
+        if (!!venueId) await updateVenueNew(vals as Input, user);
+        else await createVenueNew(vals as Input, user);
 
         vals.name
           ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
@@ -62,14 +62,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       }
     },
     [user, venueId, history]
-  );
-
-  const defaultValues = useMemo(
-    () =>
-      !!venueId
-        ? editVenueCastSchema.cast(state.formValues)
-        : venueSchema.cast(),
-    [state.formValues, venueId]
   );
 
   const {
@@ -86,7 +78,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     validationContext: {
       editing: !!venueId,
     },
-    defaultValues,
+    defaultValues: venueSchema.cast(),
   });
 
   const values = watch();
@@ -103,14 +95,16 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   const defaultVenue = createJazzbar({});
 
   useEffect(() => {
-    if (defaultValues && venueId) {
+    if (editData && venueId) {
       setValue([
-        { name: defaultValues?.name },
-        { subtitle: defaultValues?.subtitle },
-        { description: defaultValues?.description },
+        { name: editData?.name },
+        { subtitle: editData?.subtitle },
+        { description: editData?.description },
+        { bannerImageUrl: editData?.bannerImageUrl },
+        { logoImageUrl: editData?.logoImageUrl },
       ]);
     }
-  }, [defaultValues, setValue, venueId]);
+  }, [editData, setValue, venueId]);
 
   const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
 
@@ -182,8 +176,9 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       <ImageInput
         onChange={handleBannerUpload}
         name="bannerImage"
-        error={errors.bannerImageFile}
+        error={errors.bannerImageFile || errors.bannerImageUrl}
         forwardRef={register}
+        imgUrl={editData?.bannerImageUrl}
       />
     </div>
   );
@@ -197,8 +192,9 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         onChange={handleLogoUpload}
         name="logoImage"
         small
-        error={errors.logoImageFile}
+        error={errors.logoImageFile || errors.logoImageUrl}
         forwardRef={register}
+        imgUrl={editData?.logoImageUrl}
       />
     </div>
   );
@@ -215,77 +211,56 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   };
 
   return (
-    <S.Wrapper>
-      <form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
+    <S.Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
+      <S.FormInnerWrapper>
         <input
           type="hidden"
           name="template"
           value={templateID}
           ref={register}
         />
-        <div className="scrollable-content">
-          <h4 className="italic" style={{ fontSize: "30px" }}>
-            {venueId ? "Edit your Party Map" : "Create your Party Map"}
-          </h4>
-          <p
-            className="small light"
-            style={{ marginBottom: "2rem", fontSize: "16px" }}
-          >
-            You can change anything except for the name of your venue later
-          </p>
+        <h4 className="italic" style={{ fontSize: "30px" }}>
+          {venueId ? "Edit your Party Map" : "Create your Party Map"}
+        </h4>
+        <p
+          className="small light"
+          style={{ marginBottom: "2rem", fontSize: "16px" }}
+        >
+          You can change anything except for the name of your venue later
+        </p>
 
-          {renderVenueName()}
-          {renderSubtitle()}
-          {renderDescription()}
-          {renderBannerPhotoUpload()}
-          {renderSquareLogo()}
+        {renderVenueName()}
+        {renderSubtitle()}
+        {renderDescription()}
+        {renderBannerPhotoUpload()}
+        {renderSquareLogo()}
+      </S.FormInnerWrapper>
+
+      <S.FormFooter>
+        <SubmitButton
+          editing={!!venueId}
+          loading={isSubmitting}
+          templateType="Venue"
+        />
+      </S.FormFooter>
+
+      {formError && (
+        <div className="input-error">
+          <div>One or more errors occurred when saving the form:</div>
+          {Object.keys(errors).map((fieldName) => (
+            <div key={fieldName}>
+              <span>Error in {fieldName}:</span>
+              <ErrorMessage
+                errors={errors}
+                name={fieldName as string}
+                as="span"
+                key={fieldName}
+              />
+            </div>
+          ))}
         </div>
-
-        <div className="page-container-left-bottombar">
-          <div>
-            {Object.keys(errors).length > 0 && (
-              <>
-                <div>One or more errors occurred when saving the form:</div>
-                {Object.keys(errors).map((fieldName) => (
-                  <div key={fieldName}>
-                    <span>Error in {fieldName}:</span>
-                    <ErrorMessage
-                      errors={errors}
-                      name={fieldName as string}
-                      as="span"
-                      key={fieldName}
-                    />
-                  </div>
-                ))}
-              </>
-            )}
-
-            <SubmitButton
-              editing={!!venueId}
-              loading={isSubmitting}
-              templateType="Venue"
-            />
-          </div>
-        </div>
-
-        {formError && (
-          <div className="input-error">
-            <div>One or more errors occurred when saving the form:</div>
-            {Object.keys(errors).map((fieldName) => (
-              <div key={fieldName}>
-                <span>Error in {fieldName}:</span>
-                <ErrorMessage
-                  errors={errors}
-                  name={fieldName as string}
-                  as="span"
-                  key={fieldName}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-      </form>
-    </S.Wrapper>
+      )}
+    </S.Form>
   );
 };
 

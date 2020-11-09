@@ -29,11 +29,16 @@ type VenueImageFileKeys =
   | "logoImageFile"
   | "mapIconImageFile"
   | "mapBackgroundImageFile";
+
 type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
   | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
+
+type ImageFileKeys = "bannerImageFile" | "logoImageFile";
+
+type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl";
 
 type RoomImageFileKeys = "image_file";
 type RoomImageUrlKeys = "image_url";
@@ -68,8 +73,8 @@ export type VenueInput = AdvancedVenueInput &
     parentId?: string;
   };
 
-type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
-  VenueImageUrls;
+type FirestoreVenueInput = Omit<Input, ImageFileKeys> &
+  Partial<Record<ImageUrlKeys, string>>;
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 
@@ -83,16 +88,27 @@ export type PlacementInput = {
   height: number;
 };
 
+export interface Input {
+  name: string;
+  description: string;
+  subtitle: string;
+  bannerImageFile: FileList;
+  bannerImageUrl: string;
+  logoImageFile: FileList;
+  logoImageUrl: string;
+  rooms: Array<unknown>;
+}
+
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
+const createFirestoreVenueInput = async (input: Input, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
 
   const urlVenueName = createUrlSafeName(input.name);
   type ImageNaming = {
-    fileKey: VenueImageFileKeys;
-    urlKey: VenueImageUrlKeys;
+    fileKey: ImageFileKeys;
+    urlKey: ImageUrlKeys;
   };
   const imageKeys: Array<ImageNaming> = [
     {
@@ -102,14 +118,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     {
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapIconImageFile",
-      urlKey: "mapIconImageUrl",
-    },
-    {
-      fileKey: "mapBackgroundImageFile",
-      urlKey: "mapBackgroundImageUrl",
     },
   ];
 
@@ -130,7 +138,11 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
 
     await uploadFileRef.put(file);
     const downloadUrl: string = await uploadFileRef.getDownloadURL();
-    imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
+
+    imageInputData = {
+      ...imageInputData,
+      [entry.urlKey]: downloadUrl,
+    };
   }
 
   const firestoreVenueInput: FirestoreVenueInput = {
@@ -139,8 +151,9 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
       imageKeys.map((entry) => entry.fileKey)
     ),
     ...imageInputData,
-    rooms: [], // eventually we will be getting the rooms from the form
+    // rooms: [], // eventually we will be getting the rooms from the form
   };
+
   return firestoreVenueInput;
 };
 
@@ -191,17 +204,32 @@ const createFirestoreRoomInput = async (
   return firestoreRoomInput;
 };
 
-export const createVenue = async (input: VenueInput, user: UserInfo) => {
+export const createVenue = async (input: Input, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue")(
     firestoreVenueInput
   );
 };
 
-export const updateVenue = async (input: VenueInput, user: UserInfo) => {
+export const createVenueNew = async (input: Input, user: UserInfo) => {
+  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
+  return await firebase.functions().httpsCallable("venue-createVenueNew")(
+    firestoreVenueInput
+  );
+};
+
+export const updateVenue = async (input: Input, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
   return await firebase.functions().httpsCallable("venue-updateVenue")(
+    firestoreVenueInput
+  );
+};
+
+export const updateVenueNew = async (input: Input, user: UserInfo) => {
+  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
+
+  return await firebase.functions().httpsCallable("venue-updateVenueNew")(
     firestoreVenueInput
   );
 };
