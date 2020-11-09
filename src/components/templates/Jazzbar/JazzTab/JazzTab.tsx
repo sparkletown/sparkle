@@ -232,8 +232,10 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
               {seatedAtTable && (
                 <Room
                   roomName={seatedAtTable}
+                  venueName={venueToUse.name}
                   setUserList={setUserList}
                   setParticipantCount={setParticipantCount}
+                  setSeatedAtTable={setSeatedAtTable}
                 />
               )}
             </div>

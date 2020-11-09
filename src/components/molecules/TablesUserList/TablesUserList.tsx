@@ -131,15 +131,15 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     } else {
       setJoiningTable(table);
       setVideoRoom(videoRoom);
-      joinMessage ? setShowJoinMessage(true) : onAcceptJoinMessage();
+      joinMessage ? setShowJoinMessage(true) : onAcceptJoinMessage(table);
     }
   };
 
-  const onAcceptJoinMessage = () => {
+  const onAcceptJoinMessage = (table: string) => {
     window.scrollTo(0, 0);
     setShowJoinMessage(false);
-    takeSeat(joiningTable);
-    setSeatedAtTable(joiningTable);
+    takeSeat(table);
+    setSeatedAtTable(table);
   };
 
   const takeSeat = (table: string) => {
@@ -219,7 +219,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             <button
               type="button"
               className="btn btn-block btn-centered"
-              onClick={() => onAcceptJoinMessage()}
+              onClick={() => onAcceptJoinMessage(joiningTable)}
             >
               OK
             </button>

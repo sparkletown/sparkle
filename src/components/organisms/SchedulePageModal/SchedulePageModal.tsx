@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import "./SchedulePageModal.scss";
-import { OnlineStatsData } from "types/OnlineStatsData";
+import { VenueEvent } from "types/VenueEvent";
 import firebase from "firebase/app";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
@@ -11,14 +11,8 @@ import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
-
-type OpenVenues = OnlineStatsData["openVenues"];
-type OpenVenue = OpenVenues[number];
-
-type VenueEvent = {
-  venue: OpenVenue["venue"];
-  event: OpenVenue["currentEvents"][number];
-};
+import { Venue } from "types/Venue";
+import { WithId } from "utils/id";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -28,30 +22,19 @@ type DatedEvents = Array<{
 const DAYS_AHEAD = 7;
 
 export const SchedulePageModal: React.FunctionComponent = () => {
-  const [openVenues, setOpenVenues] = useState<OpenVenues>();
-  const [, setLoaded] = useState(false);
+  const [venueEvents, setVenueEvents] = useState<VenueEvent[]>();
+  const [loaded, setLoaded] = useState(false);
   const { profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
   useEffect(() => {
-    const getOnlineStats = firebase
-      .functions()
-      .httpsCallable("stats-getLiveAndFutureEvents");
     const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(
-            openVenues.filter(
-              (v) =>
-                (!profile?.kidsMode || !v.venue.adultContent) &&
-                venueId &&
-                (v.venue.id === venueId ||
-                  (venue?.liveScheduleOtherVenues &&
-                    venue.liveScheduleOtherVenues.includes(v.venue.id)))
-            )
-          );
+      firebase
+        .functions()
+        .httpsCallable("venue-getVenueEvents")({ venueId })
+        .then((response) => {
+          setVenueEvents(response.data as VenueEvent[]);
           setLoaded(true);
         })
         .catch(() => {}); // REVISIT: consider a bug report tool
@@ -64,53 +47,41 @@ export const SchedulePageModal: React.FunctionComponent = () => {
   }, [profile, venueId, venue]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    if (!openVenues) return [];
+    if (!venueEvents) return [];
 
     const nowDay = startOfDay(new Date());
-
-    const allEvents = openVenues.reduce<Array<VenueEvent>>(
-      (acc, ov) => [
-        ...acc,
-        ...ov.currentEvents.map((event) => ({ venue: ov.venue, event })),
-      ],
-      []
-    );
 
     const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
+      const todaysEvents = venueEvents
+        ?.filter((event) => {
+          return isWithinInterval(day, {
+            start: startOfDay(new Date(event.start_utc_seconds * 1000)),
+            end: endOfDay(
+              new Date(
+                (event.start_utc_seconds + event.duration_minutes * 60) * 1000
+              )
+            ),
+          });
+        })
+        .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+
       return {
         dateDay: day,
-        events: allEvents
-          .filter((ve) =>
-            // some events will span multiple days. Pick events for which `day` is between the event start and end
-            {
-              if (ve?.event?.start_utc_seconds && ve?.event?.duration_minutes) {
-                return isWithinInterval(day, {
-                  start: startOfDay(
-                    new Date(ve.event.start_utc_seconds * 1000)
-                  ),
-                  end: endOfDay(
-                    new Date(
-                      (ve.event.start_utc_seconds +
-                        ve.event.duration_minutes * 60) *
-                        1000
-                    )
-                  ),
-                });
-              } else return undefined;
-            }
-          )
-          .sort(
-            (a, b) => a.event.start_utc_seconds - b.event.start_utc_seconds
-          ),
+        events: todaysEvents,
       };
     });
 
     return dates;
-  }, [openVenues]);
+  }, [venueEvents]);
 
   const [date, setDate] = useState(0);
+
+  const venueWithId: WithId<Venue> = {
+    ...venue!,
+    id: venueId!,
+  };
 
   return (
     <div>
@@ -123,32 +94,33 @@ export const SchedulePageModal: React.FunctionComponent = () => {
                 : "Schedule"}
             </h3>
           </div>
-          {typeof openVenues !== "object" && <div className="spinner-border" />}
+          {!loaded && <div className="spinner-border" />}
         </div>
         <div className="modal-tabs">
-          {orderedEvents
-            .filter((day) => day.events?.length)
-            .map((day, idx) => (
-              <button
-                key={formatDate(day?.dateDay.getTime())}
-                className={`button ${idx === date ? "selected" : ""}`}
-                style={{ width: 100 }}
-                onClick={() => setDate(idx)}
-              >
-                {formatDate(day?.dateDay.getTime() / 1000)}
-              </button>
-            ))}
+          {orderedEvents.map((day, idx) => (
+            <button
+              key={formatDate(day.dateDay.getTime())}
+              className={`button ${idx === date ? "selected" : ""}`}
+              style={{ width: 100 }}
+              onClick={() => setDate(idx)}
+            >
+              {formatDate(day.dateDay.getTime() / 1000)}
+            </button>
+          ))}
         </div>
         <div className="events-list events-list_monday" style={{ height: 480 }}>
           {orderedEvents[date] &&
             orderedEvents[date].events.map((event) => (
               <EventDisplay
-                key={event.event.name + Math.random().toString()}
-                event={event.event}
-                venue={event.venue}
+                key={event.name + Math.random().toString()}
+                event={event}
+                venue={venueWithId}
                 joinNowButton
               />
             ))}
+          {orderedEvents[date] && !orderedEvents[date].events.length && (
+            <div>There are no events schedule for this day.</div>
+          )}
         </div>
       </div>
     </div>

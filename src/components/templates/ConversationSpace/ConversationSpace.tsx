@@ -35,7 +35,7 @@ const ConversationSpace: React.FunctionComponent = () => {
   const venueUsers = users
     ? users.filter(
         (user) =>
-          user.lastSeenIn ??
+          user.lastSeenIn &&
           user.lastSeenIn[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
@@ -87,7 +87,11 @@ const ConversationSpace: React.FunctionComponent = () => {
               )}
               {seatedAtTable && (
                 <div className="participants-container">
-                  <Room roomName={seatedAtTable} setUserList={() => {}} />
+                  <Room
+                    venueName={venue.name}
+                    roomName={seatedAtTable}
+                    setUserList={() => {}}
+                  />
                 </div>
               )}
             </div>
