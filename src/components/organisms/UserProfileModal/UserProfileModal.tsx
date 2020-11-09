@@ -265,7 +265,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     () => ({
       venue: venues?.find(
         (v) =>
-          (user.lastSeenIn ?? user.lastSeenIn[venue?.name ?? ""]) ||
+          (user.lastSeenIn && user.lastSeenIn[venue?.name ?? ""]) ||
           v.name === user.room
       ),
       camp: venues?.find(
