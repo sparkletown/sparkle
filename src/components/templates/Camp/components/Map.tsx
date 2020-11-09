@@ -332,6 +332,9 @@ export const Map: React.FC<PropsType> = ({
     });
   };
 
+  const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
+  const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
+
   return (
     <>
       <div
@@ -340,8 +343,8 @@ export const Map: React.FC<PropsType> = ({
           backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
           backgroundSize: "cover",
           display: "grid",
-          gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-          gridTemplateRows: `repeat(${rows}, 1fr)`,
+          gridTemplateColumns: `repeat(${templateColumns}, calc(100% / ${templateColumns}))`,
+          gridTemplateRows: `repeat(${templateRows}, 1fr)`,
         }}
       >
         {Array.from(Array(columns)).map((_, colIndex) => {
