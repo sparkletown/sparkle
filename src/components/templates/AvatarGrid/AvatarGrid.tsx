@@ -499,7 +499,7 @@ const AvatarGrid = () => {
                         <div className={isMe ? "user me" : "user"}>
                           <UserProfilePicture
                             user={seatedPartygoer}
-                            profileStyle={"profile-avatar"}
+                            avatarClassName={"profile-avatar"}
                             setSelectedUserProfile={setSelectedUserProfile}
                             miniAvatars={venue?.miniAvatars}
                           />

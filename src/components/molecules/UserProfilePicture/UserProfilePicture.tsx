@@ -33,7 +33,9 @@ import "./UserProfilePicture.scss";
 type UserProfilePictureProp = {
   isAudioEffectDisabled?: boolean;
   miniAvatars?: boolean;
-  profileStyle?: string;
+  avatarClassName?: string;
+  avatarStyle?: object;
+  containerStyle?: object;
   setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
 };
@@ -41,7 +43,9 @@ type UserProfilePictureProp = {
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
-  profileStyle,
+  avatarClassName,
+  avatarStyle,
+  containerStyle,
   setSelectedUserProfile,
   user,
 }) => {
@@ -100,7 +104,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return useMemo(() => {
     return (
-      <div className="profile-picture-container">
+      <div style={containerStyle} className="profile-picture-container">
         {/* Hidden image, used to handle error if image is not loaded */}
         <img
           src={pictureUrl}
@@ -111,8 +115,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         />
         <div
           onClick={() => setSelectedUserProfile(user)}
-          className={profileStyle}
+          className={avatarClassName}
           style={{
+            ...avatarStyle,
             backgroundImage: `url(${pictureUrl})`,
           }}
         />
@@ -153,9 +158,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       </div>
     );
   }, [
+    containerStyle,
     pictureUrl,
     user,
-    profileStyle,
+    avatarClassName,
+    avatarStyle,
     messagesToBand,
     imageErrorHandler,
     setSelectedUserProfile,
@@ -166,7 +173,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 };
 
 UserProfilePicture.defaultProps = {
-  profileStyle: "profile-icon",
+  avatarClassName: "profile-icon",
   miniAvatars: false,
 };
 
