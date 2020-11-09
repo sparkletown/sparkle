@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 
 // Components
 import Details from "pages/Admin/Details";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 // Hooks
 import { useFirestore } from "react-redux-firebase";
@@ -9,6 +10,8 @@ import { useFirestore } from "react-redux-firebase";
 // Typings
 import { VenueNew } from "types/Venue";
 import { VenueWizardEditProps } from "./VenueWizardEdit.types";
+
+// Reducer
 import { setBannerURL, setSquareLogoUrl } from "../redux/actions";
 import { SET_FORM_VALUES } from "../redux";
 
@@ -44,15 +47,11 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
     fetchVenueFromAPI();
   }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
 
-  const editData = {
-    bannerImageUrl: state.bannerURL,
-    logoImageUrl: state.squareLogoURL,
-    name: state.formValues?.name,
-    description: state.formValues?.description,
-    subtitle: state.formValues?.subtitle,
-  };
-
-  return <Details venueId={venueId} editData={editData} dispatch={dispatch} />;
+  return (
+    <WithNavigationBar>
+      <Details venueId={venueId} data={state} dispatch={dispatch} />
+    </WithNavigationBar>
+  );
 };
 
 export default VenueWizardEdit;

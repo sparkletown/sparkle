@@ -1,51 +1,34 @@
 import {
-  SubmitDetailsPage,
-  SubmitTemplatePage,
   SetBannerUrl,
   SetSquareLogoUrl,
   WizardAction,
   WizardState,
+  SetFormValues,
 } from "./types";
 
 import * as ActionTypes from "./actionTypes";
 
 export const initialState = {
-  templatePage: null,
-  detailsPage: null,
-  bannerURL: "",
-  squareLogoURL: "",
-  formValues: {},
+  bannerImageUrl: "",
+  logoImageUrl: "",
+  name: "",
+  subtitle: "",
+  description: "",
 } as WizardState;
-
-const submitTemplatePage = (state: WizardState, action: SubmitTemplatePage) => {
-  return {
-    ...state,
-    templatePage: {
-      template: action.payload,
-    },
-  };
-};
-
-const submitDetailsPage = (state: WizardState, action: SubmitDetailsPage) => ({
-  ...state,
-  detailsPage: {
-    venue: action.payload,
-  },
-});
 
 const setBannerURL = (state: WizardState, action: SetBannerUrl) => ({
   ...state,
-  bannerURL: action.payload,
+  bannerImageUrl: action.payload,
 });
 
 const setSquareLogoURL = (state: WizardState, action: SetSquareLogoUrl) => ({
   ...state,
-  squareLogoURL: action.payload,
+  logoImageUrl: action.payload,
 });
 
-const updateFormValues = (state: WizardState, action: any) => ({
+const updateFormValues = (state: WizardState, action: SetFormValues) => ({
   ...state,
-  formValues: action.payload,
+  ...action.payload,
 });
 
 export const VenueWizardReducer = (
@@ -53,10 +36,6 @@ export const VenueWizardReducer = (
   action: WizardAction
 ) => {
   switch (action.type) {
-    case ActionTypes.SUBMIT_TEMPLATE_PAGE:
-      return submitTemplatePage(state, action);
-    case ActionTypes.SUBMIT_DETAILS_PAGE:
-      return submitDetailsPage(state, action);
     case ActionTypes.SET_BANNER_URL:
       return setBannerURL(state, action);
     case ActionTypes.SET_SQUARE_LOGO_URL:

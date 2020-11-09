@@ -1,50 +1,5 @@
 import styled, { css } from "styled-components";
 
-export const TEMP = styled.div`
-  .image-input.default-container {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .image-input .default-image {
-    width: 100%;
-  }
-
-  .image-input .default-input {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    opacity: 0;
-    color: transparent;
-  }
-  .image-input .default-input::-webkit-file-upload-button {
-    visibility: hidden;
-  }
-
-  .image-input .default-input:focus {
-    opacity: 1;
-    border-radius: 0;
-  }
-
-  .image-input .empty {
-    flex: 1;
-    padding: 40px 10px;
-    background-color: gray;
-    height: 100%;
-  }
-
-  .image-input .empty .text {
-    text-align: center;
-  }
-`;
-
 type UploadButtonType = {
   isHidden?: boolean;
 };
@@ -103,14 +58,16 @@ export const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
 
-  background-color: #1a1d24;
-  border-radius: 22px;
   border: ${(props) => (props.hasError ? "2px solid red" : "none")};
+  border-radius: 22px;
 
+  background-size: cover;
+  background-color: #1a1d24;
   background-image: ${(props) =>
     props.backgroundImage ? `url(${props.backgroundImage})` : "none"};
-  background-size: cover;
   background-position: center;
+
+  cursor: pointer;
 `;
 
 export const Error = styled.span`

@@ -444,7 +444,7 @@ exports.updateVenueNew = functions.https.onCall(async (data, context) => {
       }
 
       if (data.bannerImageUrl) {
-        updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
+        updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
       }
       if (data.subtitle) {
         updated.config.landingPageConfig.subtitle = data.subtitle;

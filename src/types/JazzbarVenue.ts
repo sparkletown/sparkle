@@ -2,7 +2,7 @@ import { Venue, urlFromImage } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
 
 // Typings
-import { FormValues } from "pages/Admin/Details/Details.types";
+// import { FormValues } from "pages/Admin/Details/Details.types";
 
 export interface JazzbarVenue extends Venue {
   template: VenueTemplate.jazzbar;

@@ -3,7 +3,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
-import { FormValues } from "pages/Admin/Details/Details.types";
+// import { FormValues } from "pages/Admin/Details/Details.types";
 
 interface Question {
   name: string;

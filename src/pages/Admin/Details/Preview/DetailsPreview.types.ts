@@ -1,6 +1,6 @@
 export interface DetailsPreviewProps {
-  bannerURL?: string;
-  logoURL?: string;
+  bannerImageUrl?: string;
+  logoImageUrl?: string;
   name?: string;
   subtitle?: string;
   description?: string;

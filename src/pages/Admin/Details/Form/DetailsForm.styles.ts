@@ -20,3 +20,29 @@ export const FormFooter = styled.div`
     padding: 12px 5em;
   }
 `;
+
+type InputContainerType = {
+  hasError?: boolean;
+};
+export const InputContainer = styled.div`
+  margin-top: 20px;
+  position: relative;
+
+  input {
+    border: ${(props: InputContainerType) =>
+      props.hasError ? "2px solid red" : "none"};
+
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+export const InputInfo = styled.span`
+  display: block;
+  margin-top: 0.2rem;
+
+  opacity: 0.8;
+
+  font-size: 0.8em;
+`;

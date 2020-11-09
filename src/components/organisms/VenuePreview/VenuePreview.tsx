@@ -6,10 +6,10 @@ import JazzBar from "components/templates/Jazzbar";
 // Typings
 import { createJazzbar } from "types/JazzbarVenue";
 import { VenueTemplate } from "types/VenueTemplate";
-import { FormValues } from "pages/Admin/Details/Details.types";
+// import { FormValues } from "pages/Admin/Details/Details.types";
 
 interface PropsType {
-  values: FormValues;
+  values: any;
 }
 
 const VenuePreview: React.FunctionComponent<PropsType> = ({ values }) => {

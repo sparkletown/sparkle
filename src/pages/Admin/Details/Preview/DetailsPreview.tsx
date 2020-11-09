@@ -1,43 +1,38 @@
-import React from 'react';
+import React from "react";
 
 // Typings
-import { DetailsPreviewProps } from './DetailsPreview.types';
+import { DetailsPreviewProps } from "./DetailsPreview.types";
 
 // Styles
-import * as S from './DetailsPreview.styles';
+import * as S from "./DetailsPreview.styles";
 
-const DetailsPreview: React.FC<DetailsPreviewProps> = ({ bannerURL, logoURL, name, subtitle, description }) => {
-
-  const renderLogo = () => (
-    <S.Logo backgroundImage={logoURL} />
-  )
+const DetailsPreview: React.FC<DetailsPreviewProps> = ({
+  bannerImageUrl,
+  logoImageUrl,
+  name,
+  subtitle,
+  description,
+}) => {
+  const renderLogo = () => <S.Logo backgroundImage={logoImageUrl} />;
 
   const renderName = () => (
     <S.TitleWrapper>
       <S.Title>{name}</S.Title>
       <S.Subtitle>{subtitle}</S.Subtitle>
     </S.TitleWrapper>
-  )
+  );
 
-  const renderDescription = () => (
-    <p>{description}</p>
-  )
+  const renderDescription = () => <S.Description>{description}</S.Description>;
 
   return (
     <S.Wrapper>
-      <S.PreviewCard backgroundImage={bannerURL}>
+      <S.PreviewCard backgroundImage={bannerImageUrl}>
         {renderLogo()}
         {renderName()}
         {renderDescription()}
       </S.PreviewCard>
     </S.Wrapper>
-  )
-}
-
-DetailsPreview.defaultProps = {
-  name: 'Party name',
-  subtitle: 'Party subtitle',
-  description: 'Description'
-}
+  );
+};
 
 export default DetailsPreview;

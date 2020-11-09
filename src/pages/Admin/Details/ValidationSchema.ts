@@ -14,7 +14,6 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import { FormValues } from "../Venue/VenueWizard/redux";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -23,7 +22,11 @@ const initialMapIconPlacement: VenueInput["placement"] = {
 
 type Question = VenueInput["profileQuestions"][number];
 
-export interface SchemaShape extends FormValues {
+export interface SchemaShape {
+  name: string;
+  subtitle: string;
+  description: string;
+
   bannerImageFile: FileList;
   bannerImageUrl: string;
 

@@ -13,7 +13,9 @@ import SubmitButton from "components/atoms/SubmitButton/SubmitButton";
 import ImageInput from "components/atoms/ImageInput";
 
 // Hooks
+import { useHistory } from "react-router-dom";
 import { ErrorMessage, useForm } from "react-hook-form";
+import { useUser } from "hooks/useUser";
 
 // Utils | Settings | Constants | Helpers
 import { venueLandingUrl } from "utils/url";
@@ -21,21 +23,22 @@ import { venueLandingUrl } from "utils/url";
 // Typings
 import { createJazzbar } from "types/Venue";
 import { VenueTemplate } from "types/VenueTemplate";
-
-// Typings
 import { DetailsFormProps } from "./DetailsForm.types";
 import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 
+import { FormValues } from "./DetailsForm.types";
+
+// Validation schemas
 import { venueSchema } from "../ValidationSchema";
-import { FormValues } from "../Details.types";
-import { useUser } from "hooks/useUser";
-import { useHistory } from "react-router-dom";
 
+// Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
+import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 
+// Stylings
 import * as S from "./DetailsForm.styles";
 
 const DetailsForm: React.FC<DetailsFormProps> = (props) => {
@@ -46,7 +49,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   const { user } = useUser();
 
   const onSubmit = useCallback(
-    async (vals: Partial<FormValues>) => {
+    async (vals: Partial<WizardState>) => {
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
@@ -73,7 +76,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     handleSubmit,
   } = useForm<FormValues>({
     mode: "onSubmit",
-    reValidateMode: "onChange",
+    reValidateMode: "onSubmit",
     validationSchema: venueSchema,
     validationContext: {
       editing: !!venueId,
@@ -91,6 +94,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     : undefined;
   const disable = isSubmitting;
   const templateID = VenueTemplate.partymap;
+  const nameDisabled = isSubmitting || !!venueId;
 
   const defaultVenue = createJazzbar({});
 
@@ -111,29 +115,30 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   const handleLogoUpload = (url: string) => setSquareLogoUrl(dispatch, url);
 
   const renderVenueName = () => (
-    <div className="input-container">
+    <S.InputContainer hasError={!!errors?.name}>
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Name your party
       </h4>
       <input
-        disabled={disable}
+        disabled={disable || !!venueId}
         name="name"
         ref={register}
         className="align-left"
         placeholder="My Party Name"
+        style={{ cursor: nameDisabled ? "disabled" : "text" }}
       />
       {errors.name ? (
         <span className="input-error">{errors.name.message}</span>
       ) : urlSafeName ? (
-        <span className="input-info">
-          The URL of your venue will be: <b>{urlSafeName}</b>
-        </span>
+        <S.InputInfo>
+          The URL of your party will be: <b>{urlSafeName}</b>
+        </S.InputInfo>
       ) : null}
-    </div>
+    </S.InputContainer>
   );
 
   const renderSubtitle = () => (
-    <div className="input-container">
+    <S.InputContainer hasError={!!errors?.subtitle}>
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Party subtitle
       </h4>
@@ -147,11 +152,11 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       {errors.subtitle && (
         <span className="input-error">{errors.subtitle.message}</span>
       )}
-    </div>
+    </S.InputContainer>
   );
 
   const renderDescription = () => (
-    <div className="input-container">
+    <S.InputContainer hasError={!!errors?.description}>
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Party description
       </h4>
@@ -165,10 +170,10 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       {errors.description && (
         <span className="input-error">{errors.description.message}</span>
       )}
-    </div>
+    </S.InputContainer>
   );
 
-  const renderBannerPhotoUpload = () => (
+  const renderBannerUpload = () => (
     <div className="input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a banner photo
@@ -183,10 +188,10 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     </div>
   );
 
-  const renderSquareLogo = () => (
+  const renderLogoUpload = () => (
     <div className="input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload a square logo
+        Upload your logo
       </h4>
       <ImageInput
         onChange={handleLogoUpload}
@@ -220,7 +225,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
           ref={register}
         />
         <h4 className="italic" style={{ fontSize: "30px" }}>
-          {venueId ? "Edit your Party Map" : "Create your Party Map"}
+          {venueId ? "Edit your party" : "Create your party"}
         </h4>
         <p
           className="small light"
@@ -232,8 +237,8 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         {renderVenueName()}
         {renderSubtitle()}
         {renderDescription()}
-        {renderBannerPhotoUpload()}
-        {renderSquareLogo()}
+        {renderBannerUpload()}
+        {renderLogoUpload()}
       </S.FormInnerWrapper>
 
       <S.FormFooter>

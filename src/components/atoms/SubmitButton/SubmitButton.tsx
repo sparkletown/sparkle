@@ -27,6 +27,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
 
 SubmitButton.defaultProps = {
   editing: false,
+  templateType: "Venue",
 };
 
 export default SubmitButton;

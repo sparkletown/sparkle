@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SubmitButton /> renders correctly 1`] = `
+<input
+  className="btn btn-primary undefined"
+  type="submit"
+  value="Create Venue"
+/>
+`;

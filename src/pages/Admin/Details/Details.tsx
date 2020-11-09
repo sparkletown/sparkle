@@ -14,27 +14,21 @@ import * as S from "./Details.styles";
 const Details: React.FC<DetailsProps> = ({
   previous,
   venueId,
-  editData,
   dispatch,
+  data,
 }) => (
   <S.DetailsContainer>
     <S.DetailsFormWrapper>
       <DetailsForm
         previous={previous}
-        editData={editData}
+        editData={data}
         dispatch={dispatch}
-        venueId={venueId || ""}
+        venueId={venueId}
       />
     </S.DetailsFormWrapper>
 
     <S.PreviewWrapper>
-      <DetailsPreview
-        bannerURL={editData?.bannerImageUrl}
-        logoURL={editData?.logoImageUrl}
-        name={editData?.name}
-        subtitle={editData?.subtitle}
-        description={editData?.description}
-      />
+      <DetailsPreview {...data} />
     </S.PreviewWrapper>
   </S.DetailsContainer>
 );
