@@ -82,7 +82,6 @@ export const validationSchema = Yup.object()
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
     showGrid: Yup.bool().notRequired(),
-    rows: Yup.number().notRequired().min(1).max(100),
     columns: Yup.number().notRequired().min(1).max(100),
 
     mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
@@ -169,7 +168,6 @@ export const editVenueCastSchema = Yup.object()
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
-  .from("rows", "rows")
   .from("columns", "columns")
 
   // possible locations for the banner image

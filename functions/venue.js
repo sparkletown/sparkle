@@ -356,9 +356,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
         updated.parentId = data.parentId;
       }
 
-      if (data.rows) {
-        updated.rows = data.rows;
-      }
       if (data.columns) {
         updated.columns = data.columns;
       }

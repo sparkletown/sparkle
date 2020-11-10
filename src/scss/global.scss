@@ -233,6 +233,10 @@ textarea {
   &.btn {
     font-weight: 700;
   }
+  &.disabled {
+    background-color: rgba($concrete, 1);
+    cursor: default;
+  }
 }
 
 textarea {
