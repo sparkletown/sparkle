@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, {
   useCallback,
   useContext,
@@ -35,6 +36,8 @@ type UserProfilePictureProp = {
   miniAvatars?: boolean;
   avatarClassName?: string;
   avatarStyle?: object;
+  forwardRef?: (el: any) => any;
+  onAnimationEnd?: () => void;
   containerStyle?: object;
   setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
@@ -45,6 +48,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   miniAvatars,
   avatarClassName,
   avatarStyle,
+  forwardRef,
   containerStyle,
   setSelectedUserProfile,
   user,
@@ -104,7 +108,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return useMemo(() => {
     return (
-      <div style={containerStyle} className="profile-picture-container">
+      <div
+        style={containerStyle}
+        className="profile-picture-container"
+        ref={forwardRef}
+      >
         {/* Hidden image, used to handle error if image is not loaded */}
         <img
           src={pictureUrl}
@@ -159,6 +167,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     );
   }, [
     containerStyle,
+    forwardRef,
     pictureUrl,
     user,
     avatarClassName,

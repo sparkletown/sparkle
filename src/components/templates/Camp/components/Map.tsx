@@ -1,4 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
@@ -49,11 +56,14 @@ export const Map: React.FC<PropsType> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
+  const [myAvatarOffset, setMyAvatarOffset] = useState({ top: 0, left: 0 });
+  const [roomsRefs, setRoomsRefs] = useState<{ [key: string]: any }[]>([]);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
   const currentPosition = profile?.data?.[venue.id];
+  const myAvatarRef = useRef();
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -126,13 +136,18 @@ export const Map: React.FC<PropsType> = ({
   const hitRoom = useCallback(
     (r: number, c: number) => {
       let isHitting = false;
+      console.log("hitRoom:", roomsRefs);
       rooms.forEach((room: CampRoomData) => {
-        const rowPosition = (100 / rows) * r;
-        const colPosition = (100 / columns) * c;
-        const roomX = Math.round(room.x_percent);
-        const roomY = Math.round(room.y_percent);
-        const roomWidth = Math.round(room.width_percent);
-        const roomHeight = Math.round(room.height_percent);
+        const ref = roomsRefs.find((roomRef) => roomRef[room.title]);
+        const roomRef = ref?.[room.title].getBoundingClientRect();
+        const myAvatar: any = myAvatarRef.current;
+        const avatarPosition = myAvatar.getBoundingClientRect();
+        const rowPosition = avatarPosition.y + avatarPosition.height / 2;
+        const colPosition = avatarPosition.x + avatarPosition.width / 2;
+        const roomX = Math.round(roomRef.x);
+        const roomY = Math.round(roomRef.y);
+        const roomWidth = Math.round(roomRef.width);
+        const roomHeight = Math.round(roomRef.height);
 
         if (
           rowPosition >= roomY &&
@@ -153,7 +168,7 @@ export const Map: React.FC<PropsType> = ({
       });
       return isHitting;
     },
-    [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
+    [isHittingRoom, rooms, roomsRefs, selectedRoom, setSelectedRoom]
   );
 
   const isExternalLink = useCallback(
@@ -305,201 +320,131 @@ export const Map: React.FC<PropsType> = ({
     if (!seatedPartygoer) {
       takeSeat(row, column);
     }
-    rooms.forEach((room: CampRoomData) => {
-      const rowPosition = (100 / rows) * row;
-      const colPosition = (100 / columns) * column;
-      const roomX = Math.trunc(room.x_percent);
-      const roomY = Math.trunc(room.y_percent);
-      const roomWidth = Math.trunc(room.width_percent);
-      const roomHeight = Math.trunc(room.height_percent);
-
-      if (
-        !seatedPartygoer &&
-        rowPosition >= roomY &&
-        rowPosition <= roomY + roomHeight &&
-        colPosition >= roomX &&
-        colPosition <= roomX + roomWidth
-      ) {
-        setSelectedRoom(room);
-        setIsHittingRoom(true);
-        setIsRoomModalOpen(true);
-      } else {
-        if (isHittingRoom && selectedRoom) {
-          setSelectedRoom(undefined);
-          setIsHittingRoom(false);
-        }
-      }
-    });
+    if (isHittingRoom && selectedRoom) {
+      setSelectedRoom(undefined);
+      setIsHittingRoom(false);
+    }
   };
-
-  const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
-  const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
 
   return (
     <>
-      <div
-        className="grid-container"
-        style={{
-          backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
-          backgroundSize: "cover",
-          display: "grid",
-          gridTemplateColumns: `repeat(${templateColumns}, calc(100% / ${templateColumns}))`,
-          gridTemplateRows: `repeat(${templateRows}, 1fr)`,
-        }}
-      >
-        {Array.from(Array(columns)).map((_, colIndex) => {
-          return (
-            <div className="seat-column" key={`column${colIndex}`}>
-              {Array.from(Array(rows)).map((_, rowIndex) => {
-                const column = colIndex + 1;
-                const row = rowIndex + 1;
-                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                  ? partygoersBySeat[row][column]
-                  : null;
-                const isMe = seatedPartygoer?.id === user?.uid;
-                return (
-                  <div key={`row${rowIndex}`} className={`seat-row`}>
-                    {venue.showGrid && (
-                      <div
-                        className={"seat-container"}
-                        onClick={() =>
-                          onSeatClick(row, column, seatedPartygoer)
-                        }
-                      >
-                        <div
-                          className={seatedPartygoer ? "seat" : `not-seat`}
-                          key={`row${rowIndex}`}
-                        >
-                          {seatedPartygoer && (
-                            <div className={isMe ? "user avatar" : "user"} />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-              {venue.showGrid &&
-                partygoers.map((partygoer, index) => {
-                  const isMe = partygoer.id === user?.uid;
-                  const position = partygoer?.data?.[venue.id];
-                  const currentRow = position?.row ?? 0;
-                  const currentCol = position?.column ?? 0;
-                  const avatarWidth = 100 / columns;
-                  const avatarHeight = 100 / rows;
-                  return (
-                    !!partygoer.id && (
-                      <UserProfilePicture
-                        key={`partygoer-${index}`}
-                        user={partygoer}
-                        containerStyle={{
-                          display: "flex",
-                          width: `${avatarWidth}%`,
-                          height: `${avatarHeight}%`,
-                          position: "absolute",
-                          cursor: "pointer",
-                          transition:
-                            "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
-                          top: `${avatarHeight * (currentRow - 1)}%`,
-                          left: `${avatarWidth * (currentCol - 1)}%`,
-                          justifyContent: "center",
-                        }}
-                        avatarStyle={{
-                          width: "80%",
-                          height: "80%",
-                          borderRadius: "100%",
-                          alignSelf: "center",
-                          backgroundImage: `url(${partygoer?.pictureUrl})`,
-                          backgroundSize: "cover",
-                        }}
-                        avatarClassName={`${
-                          isMe ? "me profile-avatar" : "profile-avatar"
-                        }`}
-                        setSelectedUserProfile={setSelectedUserProfile}
-                        miniAvatars={venue?.miniAvatars}
-                      />
-                    )
-                  );
-                })}
-            </div>
-          );
-        })}
-        {!!rooms.length &&
-          rooms.map((room) => {
-            const left = room.x_percent;
-            const top = room.y_percent;
-            const width = room.width_percent;
-            const height = room.height_percent;
-            const isUnderneathRoom = isHittingRoom && room === selectedRoom;
+      <div style={{ flex: 1, display: "flex", margin: "20px auto 20px auto" }}>
+        <img
+          width="100%"
+          src={venue.mapBackgroundImageUrl}
+          alt="map-background"
+        />
 
-            return (
-              <div
-                className={`room position-absolute ${
-                  isUnderneathRoom && "isUnderneath"
-                }`}
-                style={{
-                  left: left + "%",
-                  top: top + "%",
-                  width: width + "%",
-                  height: height + "%",
-                }}
-                key={room.title}
-                onClick={() => {
-                  if (!IS_BURN) {
-                    openModal(room);
-                  } else {
-                    setRoomClicked((prevRoomClicked) =>
-                      prevRoomClicked === room.title ? undefined : room.title
-                    );
-                  }
-                }}
-                onMouseEnter={() => {
-                  dispatch(retainAttendance(true));
-                  setRoomHovered(room);
-                }}
-                onMouseLeave={() => {
-                  dispatch(retainAttendance(false));
-                  setRoomHovered(undefined);
-                }}
-              >
+        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+          {!!rooms.length &&
+            rooms.map((room) => {
+              const left = room.x_percent;
+              const top = room.y_percent;
+              const width = room.width_percent;
+              const height = room.height_percent;
+              const isUnderneathRoom = isHittingRoom && room === selectedRoom;
+
+              return (
                 <div
-                  className={`camp-venue ${
-                    roomClicked === room.title ? "clicked" : ""
+                  ref={(el) => {
+                    if (!el) return;
+                    const checkForRoom = roomsRefs.find(
+                      (roomRef) => roomRef[room.title]
+                    );
+                    if (!checkForRoom) {
+                      const prevRefs = [...roomsRefs, { [room.title]: el }];
+                      setRoomsRefs(prevRefs);
+                    }
+                  }}
+                  className={`room position-absolute ${
+                    isUnderneathRoom && "isUnderneath"
                   }`}
+                  style={{
+                    left: left + "%",
+                    top: top + "%",
+                    width: width + "%",
+                    height: height + "%",
+                  }}
+                  key={room.title}
+                  onClick={() => {
+                    if (!IS_BURN) {
+                      openModal(room);
+                    } else {
+                      setRoomClicked((prevRoomClicked) =>
+                        prevRoomClicked === room.title ? undefined : room.title
+                      );
+                    }
+                  }}
+                  onMouseEnter={() => {
+                    dispatch(retainAttendance(true));
+                    setRoomHovered(room);
+                  }}
+                  onMouseLeave={() => {
+                    dispatch(retainAttendance(false));
+                    setRoomHovered(undefined);
+                  }}
                 >
                   <div
-                    className={`grid-room-btn ${
-                      isUnderneathRoom && "isUnderneath"
+                    className={`camp-venue ${
+                      roomClicked === room.title ? "clicked" : ""
                     }`}
                   >
                     <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const isExternalUrl = isExternalLink(room.url);
-                        window.open(
-                          getRoomUrl(room.url),
-                          isExternalUrl ? "_blank" : "noopener,noreferrer"
-                        );
-                        roomEnter(room);
-                      }}
-                      className="btn btn-white btn-small btn-block"
+                      className={`grid-room-btn ${
+                        isUnderneathRoom && "isUnderneath"
+                      }`}
                     >
-                      Join now
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const isExternalUrl = isExternalLink(room.url);
+                          window.open(
+                            getRoomUrl(room.url),
+                            isExternalUrl ? "_blank" : "noopener,noreferrer"
+                          );
+                          roomEnter(room);
+                        }}
+                        className="btn btn-white btn-small btn-block"
+                      >
+                        Join now
+                      </div>
                     </div>
-                  </div>
-                  <div className="camp-venue-img">
-                    <img
-                      src={room.image_url}
-                      title={room.title}
-                      alt={room.title}
-                    />
-                  </div>
-                  {venue.roomVisibility === RoomVisibility.nameCount &&
-                    roomHovered &&
-                    roomHovered.title === room.title && (
-                      <div className="camp-venue-text">
+                    <div className="camp-venue-img">
+                      <img
+                        src={room.image_url}
+                        title={room.title}
+                        alt={room.title}
+                      />
+                    </div>
+                    {venue.roomVisibility === RoomVisibility.nameCount &&
+                      roomHovered &&
+                      roomHovered.title === room.title && (
+                        <div className="camp-venue-text">
+                          <div className="camp-venue-maininfo">
+                            <div className="camp-venue-title">{room.title}</div>
+
+                            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
+                              (room.attendanceBoost ?? 0) >
+                              0 && (
+                              <div className="camp-venue-people">
+                                {(attendances[`${venue.name}/${room.title}`] ??
+                                  0) + (room.attendanceBoost ?? 0)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                    <div className={`camp-venue-text`}>
+                      {(!venue.roomVisibility ||
+                        venue.roomVisibility === RoomVisibility.nameCount ||
+                        venue.roomVisibility === RoomVisibility.count) && (
                         <div className="camp-venue-maininfo">
-                          <div className="camp-venue-title">{room.title}</div>
+                          {(!venue.roomVisibility ||
+                            venue.roomVisibility ===
+                              RoomVisibility.nameCount) && (
+                            <div className="camp-venue-title">{room.title}</div>
+                          )}
 
                           {(attendances[`${venue.name}/${room.title}`] ?? 0) +
                             (room.attendanceBoost ?? 0) >
@@ -510,62 +455,151 @@ export const Map: React.FC<PropsType> = ({
                             </div>
                           )}
                         </div>
-                      </div>
-                    )}
-
-                  <div className={`camp-venue-text`}>
-                    {(!venue.roomVisibility ||
-                      venue.roomVisibility === RoomVisibility.nameCount ||
-                      venue.roomVisibility === RoomVisibility.count) && (
-                      <div className="camp-venue-maininfo">
-                        {(!venue.roomVisibility ||
-                          venue.roomVisibility ===
-                            RoomVisibility.nameCount) && (
-                          <div className="camp-venue-title">{room.title}</div>
-                        )}
-
-                        {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                          (room.attendanceBoost ?? 0) >
-                          0 && (
-                          <div className="camp-venue-people">
-                            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                              (room.attendanceBoost ?? 0)}
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    <div className="camp-venue-secondinfo">
-                      <div className="camp-venue-desc">
-                        <p>{room.subtitle}</p>
-                        <p>{room.about}</p>
-                      </div>
-                      <div className="camp-venue-actions">
-                        {isExternalLink(room.url) ? (
-                          <a
-                            className="btn btn-block btn-small btn-primary"
-                            onClick={() => roomEnter(room)}
-                            href={getRoomUrl(room.url)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {venue.joinButtonText ?? "Join the room"}
-                          </a>
-                        ) : (
-                          <a
-                            className="btn btn-block btn-small btn-primary"
-                            onClick={() => roomEnter(room)}
-                            href={getRoomUrl(room.url)}
-                          >
-                            {venue.joinButtonText ?? "Join the room"}
-                          </a>
-                        )}
+                      )}
+                      <div className="camp-venue-secondinfo">
+                        <div className="camp-venue-desc">
+                          <p>{room.subtitle}</p>
+                          <p>{room.about}</p>
+                        </div>
+                        <div className="camp-venue-actions">
+                          {isExternalLink(room.url) ? (
+                            <a
+                              className="btn btn-block btn-small btn-primary"
+                              onClick={() => roomEnter(room)}
+                              href={getRoomUrl(room.url)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {venue.joinButtonText ?? "Join the room"}
+                            </a>
+                          ) : (
+                            <a
+                              className="btn btn-block btn-small btn-primary"
+                              onClick={() => roomEnter(room)}
+                              href={getRoomUrl(room.url)}
+                            >
+                              {venue.joinButtonText ?? "Join the room"}
+                            </a>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              );
+            })}
+        </div>
+
+        <div
+          className="grid-container"
+          style={{
+            gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+            gridTemplateRows: `repeat(${rows}, 1fr)`,
+          }}
+        >
+          {Array.from(Array(columns)).map((_, colIndex) => {
+            return (
+              <div className="seat-column" key={`column${colIndex}`}>
+                {Array.from(Array(rows)).map((_, rowIndex) => {
+                  const column = colIndex + 1;
+                  const row = rowIndex + 1;
+                  const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                    ? partygoersBySeat[row][column]
+                    : null;
+                  const isMe = seatedPartygoer?.id === user?.uid;
+                  return (
+                    <div key={`row${rowIndex}`} className={`seat-row`}>
+                      {venue.showGrid && (
+                        <div
+                          className={"seat-container"}
+                          onClick={() =>
+                            onSeatClick(row, column, seatedPartygoer)
+                          }
+                        >
+                          <div
+                            className={seatedPartygoer ? "seat" : `not-seat`}
+                            key={`row${rowIndex}`}
+                          >
+                            {seatedPartygoer && (
+                              <div className={isMe ? "user avatar" : "user"} />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                {venue.showGrid &&
+                  partygoers.map((partygoer, index) => {
+                    const isMe = partygoer.id === user?.uid;
+                    const position = partygoer?.data?.[venue.id];
+                    const currentRow = position?.row ?? 0;
+                    const currentCol = position?.column ?? 0;
+                    const avatarWidth = 100 / columns;
+                    const avatarHeight = 100 / rows;
+                    return (
+                      !!partygoer.id && (
+                        <UserProfilePicture
+                          onAnimationEnd={() => {
+                            // if (testRef && testRef.current) {
+                            //   console.log('animation end')
+                            //   const { top, left } = testRef.current.getBoundingClientRect()
+                            //   setMyAvatarOffset({ top, left })
+                            // }
+                          }}
+                          key={`partygoer-${index}`}
+                          forwardRef={(ref) => {
+                            // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
+                            if (!ref) return;
+                            myAvatarRef.current = ref;
+
+                            const { top, left } = ref.getBoundingClientRect();
+
+                            if (
+                              (isMe &&
+                                !myAvatarOffset.top &&
+                                !myAvatarOffset.left) ||
+                              top !== myAvatarOffset.top ||
+                              left !== myAvatarOffset.left
+                            ) {
+                              setMyAvatarOffset({ top, left });
+                            }
+                          }}
+                          user={partygoer}
+                          containerStyle={{
+                            display: "flex",
+                            width: `${avatarWidth}%`,
+                            height: `${avatarHeight}%`,
+                            position: "absolute",
+                            cursor: "pointer",
+                            transition:
+                              "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
+                            top: `${avatarHeight * (currentRow - 1)}%`,
+                            left: `${avatarWidth * (currentCol - 1)}%`,
+                            justifyContent: "center",
+                          }}
+                          avatarStyle={{
+                            width: "80%",
+                            height: "80%",
+                            borderRadius: "100%",
+                            alignSelf: "center",
+                            backgroundImage: `url(${partygoer?.pictureUrl})`,
+                            backgroundSize: "cover",
+                          }}
+                          avatarClassName={`${
+                            isMe ? "me profile-avatar" : "profile-avatar"
+                          }`}
+                          setSelectedUserProfile={setSelectedUserProfile}
+                          miniAvatars={venue?.miniAvatars}
+                        />
+                      )
+                    );
+                  })}
               </div>
             );
           })}
+        </div>
+
         {selectedUserProfile && (
           <UserProfileModal
             show={!!selectedUserProfile}

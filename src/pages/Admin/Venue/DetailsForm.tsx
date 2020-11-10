@@ -583,6 +583,23 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <>
             <div className="input-container">
               <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of columns
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={1}
+                name="columns"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder={`Number of grid columns`}
+              />
+              {errors.name ? (
+                <span className="input-error">{errors.name.message}</span>
+              ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
                 Number of rows
               </h4>
               <input
@@ -596,23 +613,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 }}
                 className="align-left"
                 placeholder={`Number of grid rows`}
-              />
-              {errors.name ? (
-                <span className="input-error">{errors.name.message}</span>
-              ) : null}
-            </div>
-            <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
-                Number of columns
-              </h4>
-              <input
-                disabled={disable}
-                defaultValue={1}
-                name="columns"
-                type="number"
-                ref={register}
-                className="align-left"
-                placeholder={`Number of grid columns`}
               />
               {errors.name ? (
                 <span className="input-error">{errors.name.message}</span>
