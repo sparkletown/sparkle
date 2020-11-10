@@ -8,7 +8,7 @@ import React, {
 import { ThemeProvider } from "styled-components";
 
 // Typings
-import { User } from "types/User";
+import { UserProfilePictureProp } from "./UserProfilePicture.types";
 
 // Components
 import {
@@ -21,7 +21,6 @@ import {
 import { useSelector } from "hooks/useSelector";
 
 // Utils | Settings
-import { WithId } from "utils/id";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
@@ -31,15 +30,6 @@ import {
 // Styles
 import "./UserProfilePicture.scss";
 import * as S from "./UserProfilePicture.styles";
-
-type UserProfilePictureProp = {
-  isAudioEffectDisabled?: boolean;
-  miniAvatars?: boolean;
-  profileStyle?: string;
-  setSelectedUserProfile: (user: WithId<User>) => void;
-  user: WithId<User>;
-  reactionPosition?: "right" | "left" | undefined;
-};
 
 // This would be the global variables and configuration,
 // it is here only for the duration of the demo
@@ -52,7 +42,9 @@ const DEMO_THEME = {
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
-  profileStyle,
+  avatarClassName,
+  avatarStyle,
+  containerStyle,
   setSelectedUserProfile,
   reactionPosition,
   user,
@@ -117,7 +109,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       //
       // This is just a demo
       <ThemeProvider theme={DEMO_THEME}>
-        <S.Container>
+        <S.Container style={{ ...containerStyle }}>
           {/* Hidden image, used to handle error if image is not loaded */}
           <img
             src={pictureUrl}
@@ -128,8 +120,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           />
           <S.Avatar
             onClick={() => setSelectedUserProfile(user)}
-            className={profileStyle}
+            className={avatarClassName}
             backgroundImage={pictureUrl}
+            style={{ ...avatarStyle }}
           />
 
           {Reactions.map(
@@ -171,21 +164,24 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       </ThemeProvider>
     );
   }, [
-    experienceContext,
-    imageErrorHandler,
-    isAudioEffectDisabled,
-    messagesToBand,
-    muteReactions,
+    containerStyle,
     pictureUrl,
-    profileStyle,
-    reactionPosition,
-    setSelectedUserProfile,
     user,
+    avatarClassName,
+    avatarStyle,
+    messagesToBand,
+    reactionPosition,
+    imageErrorHandler,
+    setSelectedUserProfile,
+    experienceContext,
+    muteReactions,
+    isAudioEffectDisabled,
   ]);
 };
 
 UserProfilePicture.defaultProps = {
   // profileStyle: "profile-icon",
+  avatarClassName: "profile-icon",
   miniAvatars: false,
 };
 

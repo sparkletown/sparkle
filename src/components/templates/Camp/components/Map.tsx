@@ -12,13 +12,13 @@ import { currentTimeInUnixEpoch } from "utils/time";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 import firebase from "firebase/app";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 interface PropsType {
   venue: CampVenue;
+  partygoers: WithId<User>[];
   attendances: { [location: string]: number };
   selectedRoom: CampRoomData | undefined;
   setSelectedRoom: (room: CampRoomData | undefined) => void;
@@ -27,10 +27,11 @@ interface PropsType {
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
-const MOVEMENT_INTERVAL = 250;
+const MOVEMENT_INTERVAL = 350;
 
 export const Map: React.FC<PropsType> = ({
   venue,
+  partygoers,
   attendances,
   selectedRoom,
   setSelectedRoom,
@@ -52,10 +53,7 @@ export const Map: React.FC<PropsType> = ({
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
-
-  const { partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+  const currentPosition = profile?.data?.[venue.id];
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -88,12 +86,12 @@ export const Map: React.FC<PropsType> = ({
     function downHandler({ key }: { key: string }) {
       if (key === targetKey) {
         setKeyPressed(true);
+        setTimeout(() => setKeyPressed(false), MOVEMENT_INTERVAL);
       }
     }
 
     const upHandler = ({ key }: { key: string }) => {
       if (key === targetKey) {
-        setKeyDown(false);
         setKeyPressed(false);
       }
     };
@@ -149,9 +147,9 @@ export const Map: React.FC<PropsType> = ({
           if (isHittingRoom && selectedRoom === room) {
             setSelectedRoom(undefined);
             setIsHittingRoom(false);
+            isHitting = false;
           }
         }
-        return isHitting;
       });
       return isHitting;
     },
@@ -201,18 +199,16 @@ export const Map: React.FC<PropsType> = ({
   useEffect(() => {
     if (!venueId) return;
 
-    const currentPosition = profile?.data?.[venueId];
     if ((!currentPosition?.row && !currentPosition?.column) || keyDown) {
       return;
     }
-
-    setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
 
     const { row, column } = currentPosition;
     if (row && column) {
       const seatTaken = (r: number, c: number) => partygoersBySeat?.[r]?.[c];
       if (enterPress && selectedRoom) {
         setKeyDown(true);
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
 
         const isExternalUrl = isExternalLink(selectedRoom.url);
         window.open(
@@ -220,19 +216,21 @@ export const Map: React.FC<PropsType> = ({
           isExternalUrl ? "_blank" : "noopener,noreferrer"
         );
         roomEnter(selectedRoom);
+        return;
       }
       if (downPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
         hitRoom(row + 1, column);
         takeSeat(row + 1, column);
+        return;
       }
       if (upPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
@@ -242,44 +240,40 @@ export const Map: React.FC<PropsType> = ({
       }
       if (leftPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
         hitRoom(row, column - 1);
-
         takeSeat(row, column - 1);
         return;
       }
       if (rightPress) {
         setKeyDown(true);
-
+        setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
         if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
         hitRoom(row, column + 1);
-
         takeSeat(row, column + 1);
         return;
       }
     }
   }, [
     downPress,
-    leftPress,
-    profile,
     rightPress,
-    takeSeat,
+    leftPress,
     upPress,
-    user,
-    venue,
-    hitRoom,
+    keyDown,
     venueId,
+    currentPosition,
     enterPress,
     selectedRoom,
     partygoersBySeat,
-    roomEnter,
     isExternalLink,
-    keyDown,
+    roomEnter,
+    hitRoom,
+    takeSeat,
   ]);
 
   if (!venue) {
@@ -327,6 +321,7 @@ export const Map: React.FC<PropsType> = ({
         colPosition <= roomX + roomWidth
       ) {
         setSelectedRoom(room);
+        setIsHittingRoom(true);
         setIsRoomModalOpen(true);
       } else {
         if (isHittingRoom && selectedRoom) {
@@ -337,13 +332,8 @@ export const Map: React.FC<PropsType> = ({
     });
   };
 
-  const myPosition = profile?.data?.[venue.id];
-  const currentRow = myPosition?.row ?? 0;
-  const currentCol = myPosition?.column ?? 0;
-  const avatarWidth = 100 / columns;
-  const avatarHeight = 100 / rows;
-  const colPosition = avatarWidth * currentCol;
-  const rowPosition = avatarHeight * currentRow;
+  const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
+  const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
 
   return (
     <>
@@ -353,13 +343,13 @@ export const Map: React.FC<PropsType> = ({
           backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
           backgroundSize: "cover",
           display: "grid",
-          gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-          gridTemplateRows: `repeat(${rows}, 1fr)`,
+          gridTemplateColumns: `repeat(${templateColumns}, calc(100% / ${templateColumns}))`,
+          gridTemplateRows: `repeat(${templateRows}, 1fr)`,
         }}
       >
         {Array.from(Array(columns)).map((_, colIndex) => {
           return (
-            <div className="seat-row" key={`column${colIndex}`}>
+            <div className="seat-column" key={`column${colIndex}`}>
               {Array.from(Array(rows)).map((_, rowIndex) => {
                 const column = colIndex + 1;
                 const row = rowIndex + 1;
@@ -368,59 +358,69 @@ export const Map: React.FC<PropsType> = ({
                   : null;
                 const isMe = seatedPartygoer?.id === user?.uid;
                 return (
-                  <div key={`row${rowIndex}`} className={`seat-container`}>
+                  <div key={`row${rowIndex}`} className={`seat-row`}>
                     {venue.showGrid && (
                       <div
-                        className={seatedPartygoer ? "seat" : `not-seat`}
+                        className={"seat-container"}
                         onClick={() =>
                           onSeatClick(row, column, seatedPartygoer)
                         }
-                        key={`row${rowIndex}`}
                       >
-                        {seatedPartygoer && (
-                          <div className={isMe ? "user avatar" : "user"}>
-                            {!isMe && (
-                              <UserProfilePicture
-                                user={seatedPartygoer}
-                                profileStyle={"profile-avatar"}
-                                setSelectedUserProfile={setSelectedUserProfile}
-                                miniAvatars={venue?.miniAvatars}
-                              />
-                            )}
-                          </div>
-                        )}
+                        <div
+                          className={seatedPartygoer ? "seat" : `not-seat`}
+                          key={`row${rowIndex}`}
+                        >
+                          {seatedPartygoer && (
+                            <div className={isMe ? "user avatar" : "user"} />
+                          )}
+                        </div>
                       </div>
                     )}
                   </div>
                 );
               })}
-              {venue.showGrid && rowPosition && colPosition && (
-                <div
-                  style={{
-                    display: "flex",
-                    width: `${avatarWidth}%`,
-                    height: `${avatarHeight}%`,
-                    position: "absolute",
-                    cursor: "pointer",
-                    transition: "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
-                    top: `${avatarHeight * (currentRow - 1)}%`,
-                    left: `${avatarWidth * (currentCol - 1)}%`,
-                    justifyContent: "center",
-                  }}
-                >
-                  <div
-                    className="me"
-                    style={{
-                      width: "80%",
-                      height: "80%",
-                      borderRadius: "100%",
-                      alignSelf: "center",
-                      backgroundImage: `url(${profile?.pictureUrl})`,
-                      backgroundSize: "cover",
-                    }}
-                  ></div>
-                </div>
-              )}
+              {venue.showGrid &&
+                partygoers.map((partygoer, index) => {
+                  const isMe = partygoer.id === user?.uid;
+                  const position = partygoer?.data?.[venue.id];
+                  const currentRow = position?.row ?? 0;
+                  const currentCol = position?.column ?? 0;
+                  const avatarWidth = 100 / columns;
+                  const avatarHeight = 100 / rows;
+                  return (
+                    !!partygoer.id && (
+                      <UserProfilePicture
+                        key={`partygoer-${index}`}
+                        user={partygoer}
+                        containerStyle={{
+                          display: "flex",
+                          width: `${avatarWidth}%`,
+                          height: `${avatarHeight}%`,
+                          position: "absolute",
+                          cursor: "pointer",
+                          transition:
+                            "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
+                          top: `${avatarHeight * (currentRow - 1)}%`,
+                          left: `${avatarWidth * (currentCol - 1)}%`,
+                          justifyContent: "center",
+                        }}
+                        avatarStyle={{
+                          width: "80%",
+                          height: "80%",
+                          borderRadius: "100%",
+                          alignSelf: "center",
+                          backgroundImage: `url(${partygoer?.pictureUrl})`,
+                          backgroundSize: "cover",
+                        }}
+                        avatarClassName={`${
+                          isMe ? "me profile-avatar" : "profile-avatar"
+                        }`}
+                        setSelectedUserProfile={setSelectedUserProfile}
+                        miniAvatars={venue?.miniAvatars}
+                      />
+                    )
+                  );
+                })}
             </div>
           );
         })}

@@ -140,6 +140,18 @@ export const Audience: React.FunctionComponent = () => {
   >();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
+  const [iframeUrl, setIframeUrl] = useState<string>("");
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("venues")
+      .doc(venueId as string)
+      .onSnapshot((doc) =>
+        setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
+      );
+  }, [venueId]);
+
   const experienceContext = useContext(ExperienceContext);
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
     created_at: new Date().getTime(),
@@ -281,8 +293,6 @@ export const Audience: React.FunctionComponent = () => {
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
 
-    const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl, true);
-
     return (
       <>
         <div
@@ -398,8 +408,10 @@ export const Audience: React.FunctionComponent = () => {
                               <div className="user">
                                 <UserProfilePicture
                                   user={seatedPartygoer}
-                                  // profileStyle={"profile-avatar"}
-                                  reactionPosition={isOnRight ? 'left' : 'right'}
+                                  reactionPosition={
+                                    isOnRight ? "left" : "right"
+                                  }
+                                  avatarClassName={"profile-avatar"}
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
                                   }
@@ -437,19 +449,24 @@ export const Audience: React.FunctionComponent = () => {
       </>
     );
   }, [
-    auditoriumSize,
     venue,
-    selectedUserProfile,
-    user,
     profile,
     venueId,
-    reactionClicked,
-    partygoersBySeat,
-    handleSubmit,
-    isShoutSent,
+    iframeUrl,
     isAudioEffectDisabled,
-    experienceContext,
+    handleSubmit,
     register,
+    isShoutSent,
+    rowsForSizedAuditorium,
+    selectedUserProfile,
+    user,
+    experienceContext,
     reset,
+    reactionClicked,
+    translateRow,
+    columnsForSizedAuditorium,
+    translateColumn,
+    isSeat,
+    partygoersBySeat,
   ]);
 };

@@ -39,10 +39,16 @@ export const Reaction = styled.div`
 `;
 
 // --- Reaction Container
+type ContainerType = {
+  style?: any;
+};
 export const Container = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+
+  background-position: center;
+  background-size: cover;
 
   ${Avatar} {
     border-radius: 10rem;
@@ -57,8 +63,7 @@ export const Container = styled.div`
 `;
 
 // --- Shout-out message
-
-const translateXOffset = '5vh'; // 5vh = imageWidth (4vh) + 1v (padding)
+const translateXOffset = "5vh"; // 5vh = imageWidth (4vh) + 1v (padding)
 const expandBounceRight = keyframes`
   0%,
   100% {
@@ -117,5 +122,4 @@ export const ShoutOutMessage = styled.div`
   color: ${(props) => props.theme.black};
   font-size: 20px;
   border-radius: 10px;
-
 `;
