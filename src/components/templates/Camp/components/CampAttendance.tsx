@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
@@ -16,14 +17,14 @@ const CampAttendance: FC<PropsType> = ({ attendances, venue, room }) => {
       {(attendances[`${venue.name}/${room.title}`] ?? 0) +
         (room.attendanceBoost ?? 0) >
         0 && (
-        <>
-          <div className="camp-venue-people">
-            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-              (room.attendanceBoost ?? 0)}
-          </div>
-          <FontAwesomeIcon icon={faUser} />
-        </>
-      )}
+          <>
+            <div className="camp-venue-people">
+              {(attendances[`${venue.name}/${room.title}`] ?? 0) +
+                (room.attendanceBoost ?? 0)}
+            </div>
+            <FontAwesomeIcon icon={faUser} />
+          </>
+        )}
     </>
   );
 };

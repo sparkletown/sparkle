@@ -493,7 +493,7 @@ export const Map: React.FC<PropsType> = ({
                   </div>
                 );
               })}
-          </div>
+          </div >
 
           <div
             className="grid-container"
@@ -589,19 +589,21 @@ export const Map: React.FC<PropsType> = ({
               )}
           </div>
 
-          {selectedUserProfile && (
-            <UserProfileModal
-              show={!!selectedUserProfile}
-              onHide={() => setSelectedUserProfile(undefined)}
-              userProfile={selectedUserProfile}
-            />
-          )}
-        </div>
-      </div>
+          {
+            selectedUserProfile && (
+              <UserProfileModal
+                show={!!selectedUserProfile}
+                onHide={() => setSelectedUserProfile(undefined)}
+                userProfile={selectedUserProfile}
+              />
+            )
+          }
+        </div >
+      </div >
 
       <div style={{ width: "20%" }}>
         <Sidebar />
       </div>
-    </div>
+    </div >
   );
 };

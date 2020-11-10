@@ -64,6 +64,10 @@ export function formatDate(utcSeconds) {
   return format(new Date(utcSeconds * 1000), "MMM do");
 }
 
+export function formatDateToWeekday(utcSeconds) {
+  return format(new Date(utcSeconds * 1000), "E");
+}
+
 export function oneHourAfterTimestamp(timestamp) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }

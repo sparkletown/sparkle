@@ -107,25 +107,20 @@ const ChatDrawer: React.FC<PropsType> = ({
       }`}
       onClick={() => !isChatDrawerExpanded && setIsChatDrawerExpanded(true)}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
-        <div>Party Chat</div>
-        <div>Messages</div>
-        <div>Live Schedule</div>
+      <div className="chevron-container">
+        <div
+          className={`rotating-chevron ${
+            isChatDrawerExpanded ? "expanded" : ""
+          }`}
+        >
+          <FontAwesomeIcon
+            icon={faAngleDoubleLeft}
+            size="lg"
+            onClick={() => setIsChatDrawerExpanded(!isChatDrawerExpanded)}
+          />
+        </div>
       </div>
-      {chatsToDisplay && (
-        <MessageList
-          messages={chatsToDisplay}
-          allowDelete={allowDelete}
-          deleteMessage={deleteMessage}
-        />
-      )}
-      {/* {!isChatDrawerExpanded ? (
+      {!isChatDrawerExpanded ? (
         <div className="chat-icon-container">
           <FontAwesomeIcon icon={faCommentDots} className="chat-icon" />
         </div>
@@ -151,7 +146,7 @@ const ChatDrawer: React.FC<PropsType> = ({
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

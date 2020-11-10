@@ -1,51 +1,65 @@
-.live-event-container {
-  display: flex;
-  flex-direction: row;
-  background-color: rgba(0, 94, 229, 0.35);
-  padding: 10px;
-  border: solid black 2px;
+@import "scss/constants.scss";
 
-  .live-schedule-date {
+.sidebar-container .schedule-container {
+  height: calc(100% - 114px);
+  flex-direction: column;
+  display: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  // styling scrollbar
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.1);
+  }
+
+  &.show {
     display: flex;
-    flex-direction: column;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+  }
 
-    .live-schedule-start-date {
+  .schedule-tabs {
+    height: auto;
+    padding: 20px 12px;
+    li {
       font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .live-schedule-start-end {
-      font-size: 0.9rem;
-      opacity: 0.8;
-    }
-
-    .live-schedule-indicator {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      margin-top: 10px;
-      background-color: #005ee5;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-      padding: 4px 10px;
-      border-radius: 14px;
-      text-align: center;
+      padding: 10px 6px;
     }
   }
 
-  .live-schedule-info {
-    flex: 3;
+  .schedule-event-container {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px;
+    margin-bottom: 4px;
 
-    .live-schedule-title {
-      font-weight: 700;
+    &:nth-child(odd) {
+      background-color: rgba($black, 0.3);
+    }
+    &.schedule-event-container_live {
+      background-color: rgba($primary, 0.2);
     }
 
-    .live-schedule-description {
-      font-size: 0.9rem;
-      opacity: 0.8;
+    .schedule-event-time {
+      width: 88px;
+      flex-shrink: 0;
     }
   }
+}
+
+.schedule-event-empty {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

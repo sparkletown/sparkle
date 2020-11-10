@@ -31,7 +31,7 @@ export const Message: React.FC<MessageProps> = ({
   const isMe = sender.id === user!.uid;
   return (
     <div
-      className={`message chat-message ${isMe ? "isMe" : ""}`}
+      className={`message chat-message ${isMe ? "chat-message_own" : ""}`}
       key={`${message.from}-${message.ts_utc}`}
     >
       <div className="sender-info">

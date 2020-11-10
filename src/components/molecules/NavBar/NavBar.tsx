@@ -46,21 +46,21 @@ import OnlineStats from "components/molecules/OnlineStats";
 import PlayaAddress from "components/molecules/PlayaAddress";
 import PlayaTime from "components/molecules/PlayaTime";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
+import NavSearchBar from "components/molecules/NavSearchBar";
 
 import "./NavBar.scss";
 import "./playa.scss";
-import { currentVenueSelectorData } from "utils/selectors";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
 ) => (
-  <Popover id="popover-basic" {...props}>
-    <Popover.Content>
-      <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
+    <Popover id="popover-basic" {...props}>
+      <Popover.Content>
+        <UpcomingTickets events={futureUpcoming} />
+      </Popover.Content>
+    </Popover>
+  );
 
 const ChatPopover = (
   <Popover id="popover-basic">
@@ -95,7 +95,7 @@ const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
 );
 
 const navBarSelector = (state: RootState) => ({
-  venue: currentVenueSelectorData(state),
+  venue: state.firestore.data.currentVenue,
   privateChats: state.firestore.ordered.privatechats,
   radioStations: state.firestore.data.venues?.playa?.radioStations,
   parentVenue: state.firestore.data.parentVenue,
@@ -111,6 +111,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { venue, privateChats, radioStations, parentVenue } = useSelector(
     navBarSelector
   );
+  const [eventScheduleVisible, setEventScheduleVisible] = useState(false);
 
   const venueParentId = venue?.parentId;
   const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
@@ -181,7 +182,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     );
   }, [privateChats, user]);
 
-  const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
   const showEventSchedule = useCallback(() => {
     setEventScheduleVisible(true);
   }, []);
@@ -190,12 +190,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   }, []);
 
   const venueTemplate = venue?.template;
-  const getHeaderLogo = useCallback(() => {
-    if (venueTemplate === VenueTemplate.avatargrid) {
-      return MEMRISE_LOGO_URL;
-    }
-    return IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
-  }, [venueTemplate]);
 
   const venueLink =
     redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
@@ -213,15 +207,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       <header>
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
-            <div className="navbar-logo_container">
+            {/* <div className="navbar-logo_container">
               <div className="navbar-logo">
                 <Link to={venueLink}>
                   <img
                     src={getHeaderLogo()}
                     alt="Logo"
-                    className={`logo-img ${
-                      IS_BURN ? "sparkleverse" : "sparkle"
-                    }`}
+                    className={`logo-img ${IS_BURN ? "sparkleverse" : "sparkle"
+                      }`}
                   />
                 </Link>
                 {venue?.showLearnMoreLink && (
@@ -243,36 +236,22 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   {venue?.showAddress && <PlayaAddress />}
                 </div>
               )}
-            </div>
+            </div> */}
             {user ? (
               <>
-                {IS_BURN && (
-                  <div className="navbar-dropdown-middle">
-                    {isOnPlaya ? (
-                      <OnlineStats />
-                    ) : (
-                      <span onClick={backToDefaultVenue} className="back-link">
-                        Back to {PLAYA_VENUE_NAME}
-                      </span>
-                    )}
+                <div className="nav-logos">
+                  <div className="nav-sparkle-logo">
+                    <a href={HOMEPAGE_URL}></a>
                   </div>
-                )}
-                {!IS_BURN && (
-                  <div className="venue-bar">
-                    <div className="venue-name">{venue?.name}</div>
-                    {venue?.parentId && (
-                      <span onClick={backToParentVenue} className="back-link">
-                        Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-                      </span>
-                    )}
+                  <div className="nav-sparkle-logo_small">
+                    <a href={HOMEPAGE_URL}></a>
                   </div>
-                )}
+                  <div className="nav-party-logo" onClick={showEventSchedule}>
+                    Jam Online
+                  </div>
+                </div>
                 <div className="navbar-links">
-                  {venue?.showLiveSchedule && (
-                    <div className="profile-icon button-container navbar-link-schedule">
-                      <div onClick={showEventSchedule}>Live Schedule</div>
-                    </div>
-                  )}
+                  <NavSearchBar />
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -330,9 +309,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       defaultShow={showRadioOverlay}
                     >
                       <div
-                        className={`profile-icon navbar-link-radio ${
-                          volume === 0 && "off"
-                        }`}
+                        className={`profile-icon navbar-link-radio ${volume === 0 && "off"
+                          }`}
                       />
                     </OverlayTrigger>
                   )}
@@ -355,14 +333,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                 </div>
               </>
             ) : (
-              <div
-                className="log-in-button"
-                style={{ marginTop: "20px" }}
-                onClick={openAuthenticationModal}
-              >
-                Log in
-              </div>
-            )}
+                <div
+                  className="log-in-button"
+                  style={{ marginTop: "20px" }}
+                  onClick={openAuthenticationModal}
+                >
+                  Log in
+                </div>
+              )}
           </div>
         </div>
       </header>
@@ -371,15 +349,12 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         onHide={closeAuthenticationModal}
         showAuth="login"
       />
-      <Modal
-        show={isEventScheduleVisible}
-        onHide={hideEventSchedule}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
+      <SchedulePageModal isVisible={eventScheduleVisible} />
+      <div
+        className={`schedule-dropdown-backdrop ${eventScheduleVisible ? "show" : ""
+          }`}
+        onClick={hideEventSchedule}
+      />
     </>
   );
 };

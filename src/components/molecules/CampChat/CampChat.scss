@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$own-chat-bubble-color: #005ee5;
+
 .nav-tabs {
   justify-content: space-around;
 }
@@ -25,6 +27,9 @@
   .message {
     align-self: flex-start;
   }
+  .message-bubble.split-words.isMe {
+    background-color: $own-chat-bubble-color;
+  }
 
   .reaction-list {
     height: 100%;
@@ -34,6 +39,21 @@
     display: flex;
     flex-direction: column-reverse;
     padding: 24px 16px 0;
+
+    &::-webkit-scrollbar-track {
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba($white, 0.1);
+    }
   }
 
   .isMe {

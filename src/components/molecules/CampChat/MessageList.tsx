@@ -1,28 +1,42 @@
 import React, { useState } from "react";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { RestrictedChatMessage } from "components/context/ChatContext";
-import { Message } from "components/molecules/Message";
+import {
+  PrivateChatMessage,
+  RestrictedChatMessage,
+} from "components/context/ChatContext";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { Modal } from "react-bootstrap";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { useVenueId } from "hooks/useVenueId";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { formatUtcSeconds } from "utils/time";
 import { getLinkFromText } from "utils/getLinkFromText";
 import { useUser } from "hooks/useUser";
+import "./MessageList.scss";
 
 interface MessageListProps {
-  messages: WithId<RestrictedChatMessage>[];
-  allowDelete: boolean;
+  messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
+  emptyListMessage?: string;
+  allowDelete?: boolean;
   deleteMessage: (id: string) => Promise<void>;
 }
 
 export const MessageList: React.FC<MessageListProps> = ({
   messages,
   allowDelete,
+  emptyListMessage,
   deleteMessage,
 }) => {
-  const usersById = useSelector((state) => state.firestore.data.partygoers);
+  const venueId = useVenueId();
+  useFirestoreConnect({
+    collection: "users",
+    where: ["enteredVenueIds", "array-contains", venueId],
+    storeAs: "chatUsers",
+  });
+  const { user } = useUser();
+  const usersById = useSelector((state) => state.firestore.data.chatUsers);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -30,87 +44,90 @@ export const MessageList: React.FC<MessageListProps> = ({
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>();
   const [messageToDelete, setMessageToDelete] = useState<
-    WithId<RestrictedChatMessage>
+    WithId<RestrictedChatMessage | PrivateChatMessage>
   >();
-  const { user } = useUser();
 
-  const profileImageSize = 30;
   return (
     <>
-      <div className="reaction-list small">
-        {usersById &&
-          messages.map((message) => {
-            const sender = { ...usersById[message.from], id: message.from };
-            const isMe = user!.uid === sender.id;
-
-            return (
-              <React.Fragment
-                key={`${message.from}-${message.to}-${message.ts_utc}`}
-              >
-                {message.from in usersById && (
-                  <>
-                    <div
-                      className={`message chat-message ${isMe ? "isMe" : ""}`}
-                      key={`${message.from}-${message.ts_utc}`}
-                    >
-                      <div
-                        className={`message-bubble split-words ${
-                          isMe ? "isMe" : ""
-                        }`}
-                      >
-                        {getLinkFromText(message.text)}
-                      </div>
-                      <div className={`sender-info ${isMe ? "isMe" : ""}`}>
-                        <img
-                          onClick={() => {
-                            setSelectedUserProfile({
-                              ...usersById[message.from],
-                              id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
-                            });
-                          }}
-                          key={`${message.from}-messaging-the-band`}
-                          className="profile-icon"
-                          src={
-                            (!sender.anonMode && sender.pictureUrl) ||
-                            DEFAULT_PROFILE_IMAGE
-                          }
-                          title={
-                            (!sender.anonMode && sender.partyName) ||
-                            DEFAULT_PARTY_NAME
-                          }
-                          alt={`${
-                            (!sender.anonMode && sender.partyName) ||
-                            DEFAULT_PARTY_NAME
-                          } profile`}
-                          width={profileImageSize}
-                          height={profileImageSize}
-                        />
-                        <div>
-                          {(!sender.anonMode && sender.partyName) ||
-                            DEFAULT_PARTY_NAME}{" "}
-                          <span className="timestamp">
-                            {formatUtcSeconds(message.ts_utc)}
-                          </span>
-                          {allowDelete && (
-                            <button
-                              className="btn btn-small btn-danger delete-button"
+      {!!messages.length && (
+        <div className="chat-messages-container">
+          {usersById &&
+            messages.map(
+              (message: WithId<RestrictedChatMessage | PrivateChatMessage>) => {
+                const sender = { ...usersById[message.from], id: message.from };
+                const profileImageSize = 30;
+                const isMe = sender.id === user!.uid;
+                return (
+                  <React.Fragment
+                    key={`${message.from}-${message.to}-${message.ts_utc}`}
+                  >
+                    {message.from in usersById && (
+                      <>
+                        <div
+                          className={`message chat-message ${
+                            isMe ? "chat-message_own" : ""
+                          }`}
+                          key={`${message.from}-${message.ts_utc}`}
+                        >
+                          <div className="chat-message-bubble">
+                            {getLinkFromText(message.text)}
+                          </div>
+                          <div className="chat-message-author">
+                            <img
                               onClick={() => {
-                                setMessageToDelete(message);
-                                setShowDeleteModal(true);
+                                setSelectedUserProfile({
+                                  ...usersById[message.from],
+                                  id: message.from,
+                                });
                               }}
-                            >
-                              Delete
-                            </button>
-                          )}
+                              key={`${message.from}-messaging-the-band`}
+                              className="chat-message-avatar"
+                              src={
+                                (!sender.anonMode && sender.pictureUrl) ||
+                                DEFAULT_PROFILE_IMAGE
+                              }
+                              title={
+                                (!sender.anonMode && sender.partyName) ||
+                                DEFAULT_PARTY_NAME
+                              }
+                              alt={`${
+                                (!sender.anonMode && sender.partyName) ||
+                                DEFAULT_PARTY_NAME
+                              } profile`}
+                              width={profileImageSize}
+                              height={profileImageSize}
+                            />
+                            <div className="chat-message-pseudo">
+                              {(!sender.anonMode && sender.partyName) ||
+                                DEFAULT_PARTY_NAME}{" "}
+                              <span className="timestamp">
+                                {formatUtcSeconds(message.ts_utc)}
+                              </span>
+                            </div>
+                            {allowDelete && (
+                              <div
+                                className="chat-message-delete"
+                                onClick={() => {
+                                  setMessageToDelete(message);
+                                  setShowDeleteModal(true);
+                                }}
+                              ></div>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </React.Fragment>
-            );
-          })}
-      </div>
+                      </>
+                    )}
+                  </React.Fragment>
+                );
+              }
+            )}
+        </div>
+      )}
+      {!messages.length && (
+        <div className="chat-messages-empty">
+          {emptyListMessage ?? "No private messages yet."}
+        </div>
+      )}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
@@ -120,7 +137,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <div className="text-center">
           <p>
             Permanently delete message &quot;{messageToDelete?.text}&quot; from{" "}
-            {usersById[messageToDelete?.from ?? ""]?.partyName}?
+            {usersById?.[messageToDelete?.from ?? ""]?.partyName}?
           </p>
           <button
             type="button"

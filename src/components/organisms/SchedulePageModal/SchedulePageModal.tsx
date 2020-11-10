@@ -1,14 +1,9 @@
-import React, { useEffect, useState, useMemo } from "react";
-import "./SchedulePageModal.scss";
+import React, { useState, useMemo, FC } from "react";
 import { VenueEvent } from "types/VenueEvent";
-import firebase from "firebase/app";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
-import { formatDate } from "../../../utils/time";
+import { formatDate, formatDateToWeekday } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
-import { REFETCH_SCHEDULE_MS } from "settings";
-import { useUser } from "hooks/useUser";
-import { IS_BURN } from "secrets";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
@@ -22,30 +17,16 @@ type DatedEvents = Array<{
 
 const DAYS_AHEAD = 7;
 
-export const SchedulePageModal: React.FunctionComponent = () => {
+interface SchedulePageModalProps {
+  isVisible: boolean;
+}
+
+export const SchedulePageModal: FC<SchedulePageModalProps> = ({ isVisible }) => {
   const [venueEvents, setVenueEvents] = useState<VenueEvent[]>();
   const [loaded, setLoaded] = useState(false);
   const { profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
-
-  useEffect(() => {
-    const updateStats = () => {
-      firebase
-        .functions()
-        .httpsCallable("venue-getVenueEvents")({ venueId })
-        .then((response) => {
-          setVenueEvents(response.data as VenueEvent[]);
-          setLoaded(true);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, REFETCH_SCHEDULE_MS);
-    return () => clearInterval(id);
-  }, [profile, venueId, venue]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!venueEvents) return [];
@@ -86,43 +67,55 @@ export const SchedulePageModal: React.FunctionComponent = () => {
 
   return (
     <div>
-      <div className="/modal-content /modal-content-events">
-        <div style={{ display: "flex" }}>
-          <div>
-            <h3 className="italic">
-              {IS_BURN
-                ? "SparkleVerse Schedule of One-time Events"
-                : "Schedule"}
-            </h3>
+      <div>
+        {isVisible && (
+          <div className={`schedule-dropdown-body ${isVisible ? "show" : ""}`}>
+            <div className="partyinfo-container">
+              <div className="partyinfo-main">
+                <div
+                  className="partyinfo-pic"
+                  style={{ backgroundImage: `url(${venue?.host?.icon})` }}
+                ></div>
+                <div className="partyinfo-title">
+                  <h2>{venue?.name}</h2>
+                  <h3>{venue?.config?.landingPageConfig.subtitle}</h3>
+                </div>
+              </div>
+              <div className="partyinfo-desc">
+                <p>{venue?.config?.landingPageConfig.description}</p>
+              </div>
+            </div>
+
+            <div className="schedule-container">
+              <ul className="schedule-tabs">
+                {orderedEvents.map((day, idx) => (
+                  <li
+                    key={formatDate(day.dateDay.getTime())}
+                    className={`button ${idx === date ? "active" : ""}`}
+                    style={{ width: 100 }}
+                    onClick={() => setDate(idx)}
+                  >
+                    {formatDateToWeekday(day.dateDay.getTime() / 1000)}
+                  </li>
+                ))}
+              </ul>
+              <div className="schedule-day-container">
+                {orderedEvents[date] &&
+                  orderedEvents[date].events.map((event) => (
+                    <EventDisplay
+                      key={event.name + Math.random().toString()}
+                      event={event}
+                      venue={venueWithId}
+                      joinNowButton
+                    />
+                  ))}
+                {orderedEvents[date] && !orderedEvents[date].events.length && (
+                  <div>There are no events scheduled for this day.</div>
+                )}
+              </div>
+            </div>
           </div>
-          {!loaded && <div className="spinner-border" />}
-        </div>
-        <div className="modal-tabs">
-          {orderedEvents.map((day, idx) => (
-            <button
-              key={formatDate(day.dateDay.getTime())}
-              className={`button ${idx === date ? "selected" : ""}`}
-              style={{ width: 100 }}
-              onClick={() => setDate(idx)}
-            >
-              {formatDate(day.dateDay.getTime() / 1000)}
-            </button>
-          ))}
-        </div>
-        <div className="events-list events-list_monday" style={{ height: 480 }}>
-          {orderedEvents[date] &&
-            orderedEvents[date].events.map((event) => (
-              <EventDisplay
-                key={event.name + Math.random().toString()}
-                event={event}
-                venue={venueWithId}
-                joinNowButton
-              />
-            ))}
-          {orderedEvents[date] && !orderedEvents[date].events.length && (
-            <div>There are no events schedule for this day.</div>
-          )}
-        </div>
+        )}
       </div>
     </div>
     //</Modal>

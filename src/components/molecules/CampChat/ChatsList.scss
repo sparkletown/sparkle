@@ -1,71 +1,91 @@
 @import "scss/constants.scss";
 
-.chats-modal-container {
-  position: absolute;
-  width: 20%;
-
-  .back-button {
-    position: absolute;
-    left: 15px;
-    top: 15px;
-    font-size: 20px;
+.private-container {
+  display: none;
+  &.show {
+    display: flex;
   }
-  .private-chat-title {
-    margin-left: 20px;
-    margin-top: 10px;
+  .private-messages-list {
+    width: 100%;
+    .private-message-item {
+      cursor: pointer;
+      display: flex;
+      align-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+
+      &:hover {
+        background-color: $black;
+      }
+      .private-message-author-pic {
+        position: relative;
+        width: 26px;
+        height: 26px;
+        border-radius: 13px;
+        flex-shrink: 0;
+        margin-right: 14px;
+        background-color: $black;
+        background-size: cover;
+      }
+      .private-message-content {
+        width: 100%;
+        .private-message-author {
+          opacity: 0.7;
+        }
+        .private-message-last {
+          font-size: 0.9rem;
+          opacity: 0.4;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .private-message-status {
+        width: 80px;
+        align-items: flex-start;
+        margin-left: 4px;
+        text-align: right;
+
+        .private-message-date {
+          font-size: 0.9rem;
+          opacity: 0.4;
+        }
+      }
+
+      &.private-message-item_noread {
+        .private-message-content {
+          .private-message-author {
+            opacity: 1;
+          }
+          .private-message-last {
+            opacity: 1;
+          }
+        }
+      }
+    }
   }
 }
 
-.private-message-sender {
+.private-container-back-btn {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  width: 30px;
+  height: 30px;
+  background-image: url(/icons/slide-btn-icon.png);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 16px 0;
+  cursor: pointer;
+}
+
+.private-messages-empty {
+  width: 100%;
+  height: calc(100% - 114px);
+  flex-grow: 1;
   display: flex;
-  height: 70px;
   align-items: center;
-
-  &:hover {
-    background-image: linear-gradient(
-      0deg,
-      rgba($white, 0.1) 0%,
-      rgba($white, 0.1) 100%
-    );
-  }
-  padding: 10px;
-
-  .profile-picture-container {
-    margin-right: 20px;
-  }
-
-  .sender-info-container {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-
-  &:not(:last-child) {
-    border-bottom: 1px solid $light-grey;
-  }
-
-  .sender-party-name {
-    font-size: 20px;
-    font-weight: 700;
-  }
-  .sender-last-message {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .not-read-indicator {
-    background: $primaryColor;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-right: 5px;
-  }
-
-  .chat-wrapper {
-    position: relative;
-  }
+  justify-content: center;
 }

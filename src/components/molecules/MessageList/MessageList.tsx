@@ -18,7 +18,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useSelector((state) => state.firestore.data.partygoers);
+  const usersById = useSelector((state) => state.firestore.data.chatUsers);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -33,7 +33,7 @@ export const MessageList: React.FC<MessageListProps> = ({
     <>
       <div className="reaction-list small">
         {usersById &&
-          messages.map((message) => (
+          messages.map((message: WithId<RestrictedChatMessage>) => (
             <React.Fragment
               key={`${message.from}-${message.to}-${message.ts_utc}`}
             >
@@ -66,7 +66,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <div className="text-center">
           <p>
             Permanently delete message &quot;{messageToDelete?.text}&quot; from{" "}
-            {usersById[messageToDelete?.from ?? ""]?.partyName}?
+            {usersById?.[messageToDelete?.from ?? ""]?.partyName}?
           </p>
           <button
             type="button"
