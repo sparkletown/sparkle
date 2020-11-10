@@ -1,11 +1,4 @@
-import React, {
-  RefObject,
-  useCallback,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
 import "./Map.scss";
@@ -56,8 +49,9 @@ export const Map: React.FC<PropsType> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
-  const [myAvatarOffset, setMyAvatarOffset] = useState({ top: 0, left: 0 });
-  const [roomsRefs, setRoomsRefs] = useState<{ [key: string]: any }[]>([]);
+  const [roomsRefs, setRoomsRefs] = useState<
+    { [key: string]: HTMLDivElement }[]
+  >([]);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rows = venue.rows ?? DEFAULT_ROWS;
@@ -133,43 +127,39 @@ export const Map: React.FC<PropsType> = ({
   const rightPress = useKeyPress("ArrowRight");
   const enterPress = useKeyPress("Enter");
 
-  const hitRoom = useCallback(
-    (r: number, c: number) => {
-      let isHitting = false;
-      console.log("hitRoom:", roomsRefs);
-      rooms.forEach((room: CampRoomData) => {
-        const ref = roomsRefs.find((roomRef) => roomRef[room.title]);
-        const roomRef = ref?.[room.title].getBoundingClientRect();
-        const myAvatar: any = myAvatarRef.current;
-        const avatarPosition = myAvatar.getBoundingClientRect();
-        const rowPosition = avatarPosition.y + avatarPosition.height / 2;
-        const colPosition = avatarPosition.x + avatarPosition.width / 2;
-        const roomX = Math.round(roomRef.x);
-        const roomY = Math.round(roomRef.y);
-        const roomWidth = Math.round(roomRef.width);
-        const roomHeight = Math.round(roomRef.height);
+  const hitRoom = useCallback(() => {
+    let isHitting = false;
+    rooms.forEach((room: CampRoomData) => {
+      const ref = roomsRefs.find((roomRef) => roomRef[room.title]);
+      const roomRef = ref?.[room.title].getBoundingClientRect();
+      const myAvatar: any = myAvatarRef.current;
+      const avatarPosition = myAvatar.getBoundingClientRect();
+      const rowPosition = avatarPosition.y + avatarPosition.height / 2;
+      const colPosition = avatarPosition.x + avatarPosition.width / 2;
+      const roomX = Math.round(roomRef!.x);
+      const roomY = Math.round(roomRef!.y);
+      const roomWidth = Math.round(roomRef!.width);
+      const roomHeight = Math.round(roomRef!.height);
 
-        if (
-          rowPosition >= roomY &&
-          rowPosition <= roomY + roomHeight &&
-          colPosition >= roomX &&
-          colPosition <= roomX + roomWidth
-        ) {
-          setSelectedRoom(room);
-          setIsHittingRoom(true);
-          isHitting = true;
-        } else {
-          if (isHittingRoom && selectedRoom === room) {
-            setSelectedRoom(undefined);
-            setIsHittingRoom(false);
-            isHitting = false;
-          }
+      if (
+        rowPosition >= roomY &&
+        rowPosition <= roomY + roomHeight &&
+        colPosition >= roomX &&
+        colPosition <= roomX + roomWidth
+      ) {
+        setSelectedRoom(room);
+        setIsHittingRoom(true);
+        isHitting = true;
+      } else {
+        if (isHittingRoom && selectedRoom === room) {
+          setSelectedRoom(undefined);
+          setIsHittingRoom(false);
+          isHitting = false;
         }
-      });
-      return isHitting;
-    },
-    [isHittingRoom, rooms, roomsRefs, selectedRoom, setSelectedRoom]
-  );
+      }
+    });
+    return isHitting;
+  }, [isHittingRoom, rooms, roomsRefs, selectedRoom, setSelectedRoom]);
 
   const isExternalLink = useCallback(
     (url: string) =>
@@ -239,7 +229,7 @@ export const Map: React.FC<PropsType> = ({
         if (row + 1 > DEFAULT_ROWS || seatTaken(row + 1, column)) {
           return;
         }
-        hitRoom(row + 1, column);
+        hitRoom();
         takeSeat(row + 1, column);
         return;
       }
@@ -249,7 +239,7 @@ export const Map: React.FC<PropsType> = ({
         if (row - 1 < 1 || seatTaken(row - 1, column)) {
           return;
         }
-        hitRoom(row - 1, column);
+        hitRoom();
         takeSeat(row - 1, column);
         return;
       }
@@ -259,7 +249,7 @@ export const Map: React.FC<PropsType> = ({
         if (column - 1 < 1 || seatTaken(row, column - 1)) {
           return;
         }
-        hitRoom(row, column - 1);
+        hitRoom();
         takeSeat(row, column - 1);
         return;
       }
@@ -269,7 +259,7 @@ export const Map: React.FC<PropsType> = ({
         if (column + 1 > DEFAULT_COLUMNS || seatTaken(row, column + 1)) {
           return;
         }
-        hitRoom(row, column + 1);
+        hitRoom();
         takeSeat(row, column + 1);
         return;
       }
@@ -328,14 +318,14 @@ export const Map: React.FC<PropsType> = ({
 
   return (
     <>
-      <div style={{ flex: 1, display: "flex", margin: "20px auto 20px auto" }}>
+      <div className="map-content">
         <img
           width="100%"
           src={venue.mapBackgroundImageUrl}
           alt="map-background"
         />
 
-        <div style={{ position: "absolute", width: "100%", height: "100%" }}>
+        <div className="rooms-content">
           {!!rooms.length &&
             rooms.map((room) => {
               const left = room.x_percent;
@@ -540,30 +530,10 @@ export const Map: React.FC<PropsType> = ({
                     return (
                       !!partygoer.id && (
                         <UserProfilePicture
-                          onAnimationEnd={() => {
-                            // if (testRef && testRef.current) {
-                            //   console.log('animation end')
-                            //   const { top, left } = testRef.current.getBoundingClientRect()
-                            //   setMyAvatarOffset({ top, left })
-                            // }
-                          }}
                           key={`partygoer-${index}`}
                           forwardRef={(ref) => {
-                            // el can be null - see https://reactjs.org/docs/refs-and-the-dom.html#caveats-with-callback-refs
                             if (!ref) return;
                             myAvatarRef.current = ref;
-
-                            const { top, left } = ref.getBoundingClientRect();
-
-                            if (
-                              (isMe &&
-                                !myAvatarOffset.top &&
-                                !myAvatarOffset.left) ||
-                              top !== myAvatarOffset.top ||
-                              left !== myAvatarOffset.left
-                            ) {
-                              setMyAvatarOffset({ top, left });
-                            }
                           }}
                           user={partygoer}
                           containerStyle={{
