@@ -15,6 +15,7 @@ import { WithId } from "utils/id";
 import { useVenueId } from "hooks/useVenueId";
 import firebase from "firebase/app";
 import UserProfileModal from "components/organisms/UserProfileModal";
+import CampAttendance from "./CampAttendance";
 
 interface PropsType {
   venue: CampVenue;
@@ -500,15 +501,11 @@ export const Map: React.FC<PropsType> = ({
                       <div className="camp-venue-text">
                         <div className="camp-venue-maininfo">
                           <div className="camp-venue-title">{room.title}</div>
-
-                          {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                            (room.attendanceBoost ?? 0) >
-                            0 && (
-                            <div className="camp-venue-people">
-                              {(attendances[`${venue.name}/${room.title}`] ??
-                                0) + (room.attendanceBoost ?? 0)}
-                            </div>
-                          )}
+                          <CampAttendance
+                            attendances={attendances}
+                            venue={venue}
+                            room={room}
+                          />
                         </div>
                       </div>
                     )}
@@ -523,15 +520,11 @@ export const Map: React.FC<PropsType> = ({
                             RoomVisibility.nameCount) && (
                           <div className="camp-venue-title">{room.title}</div>
                         )}
-
-                        {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                          (room.attendanceBoost ?? 0) >
-                          0 && (
-                          <div className="camp-venue-people">
-                            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                              (room.attendanceBoost ?? 0)}
-                          </div>
-                        )}
+                        <CampAttendance
+                          attendances={attendances}
+                          venue={venue}
+                          room={room}
+                        />
                       </div>
                     )}
                     <div className="camp-venue-secondinfo">
