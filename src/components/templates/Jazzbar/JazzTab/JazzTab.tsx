@@ -23,6 +23,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import "./JazzTab.scss";
 import { LOC_UPDATE_FREQ_MS } from "settings";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -38,6 +39,14 @@ type ReactionType =
   | { reaction: TextReactionType; text: string };
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
+  useFirestoreConnect([
+    {
+      collection: "experiences",
+      doc: venue?.name,
+      storeAs: "experiences",
+    },
+  ]);
+
   const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const { user } = useUser();
