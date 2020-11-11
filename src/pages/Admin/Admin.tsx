@@ -29,6 +29,7 @@ import AdminEventModal from "./AdminEventModal";
 import { venueInsideUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import { isCampVenue } from "types/CampVenue";
+import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
@@ -44,7 +45,6 @@ import {
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent";
 import { VenueOwnersModal } from "./VenueOwnersModal";
-import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
 import EventsComponent from "./EventsComponent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
@@ -409,6 +409,10 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
 
 const Admin: React.FC = () => {
   const { user } = useUser();
+  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(
+    user?.uid
+  );
+
   const { venueId } = useParams();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
@@ -422,13 +426,9 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
-  const { roles } = useRoles();
-  if (!roles) {
-    return <>Loading...</>;
-  }
-  if (!IS_BURN && !roles.includes("admin")) {
-    return <>Forbidden</>;
-  }
+
+  if (isAdminUserLoading) return <>Loading...</>;
+  if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
 
   return (
     <WithNavigationBar fullscreen>
