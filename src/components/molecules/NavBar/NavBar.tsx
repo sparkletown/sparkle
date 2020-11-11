@@ -1,18 +1,11 @@
 import React, { useState, useMemo, useRef } from "react";
-import firebase from "firebase/app";
-import "./NavBar.scss";
-import "./playa.scss";
+import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isChatValid } from "validation";
 import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
-import PrivateChatModal from "components/organisms/PrivateChatModal";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import { RadioModal } from "../../organisms/RadioModal/RadioModal";
-import UpcomingTickets from "components/molecules/UpcomingTickets";
-import { useUser } from "hooks/useUser";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+
+import firebase from "firebase/app";
 import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
@@ -24,17 +17,29 @@ import {
   HOMEPAGE_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
-import { useSelector } from "hooks/useSelector";
-import OnlineStats from "../OnlineStats";
-import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
-import { useRadio } from "hooks/useRadio";
-import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
-import PlayaTime from "../PlayaTime";
-import PlayaAddress from "../PlayaAddress";
-import { venueInsideUrl } from "utils/url";
+import { isChatValid } from "validation";
 import { VenueTemplate } from "types/VenueTemplate";
+import { venueInsideUrl } from "utils/url";
+
+import { useRadio } from "hooks/useRadio";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "react-redux-firebase";
+
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
+import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
+import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+
+import OnlineStats from "components/molecules/OnlineStats";
+import PlayaAddress from "components/molecules/PlayaAddress";
+import PlayaTime from "components/molecules/PlayaTime";
+import UpcomingTickets from "components/molecules/UpcomingTickets";
+
+import "./NavBar.scss";
+import "./playa.scss";
 
 interface PropsType {
   redirectionUrl?: string;
