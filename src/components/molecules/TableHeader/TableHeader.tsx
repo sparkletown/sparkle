@@ -19,10 +19,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   tables,
 }) => {
   const { user, profile } = useUser();
-  const { experience, users } = useSelector((state) => ({
-    experience:
-      state.firestore.data.experiences &&
-      state.firestore.data.experiences[venueName],
+  const { experiences, users } = useSelector((state) => ({
+    experiences: state.firestore.data.experiences,
     users: state.firestore.ordered.partygoers,
   }));
 
@@ -58,13 +56,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       return false;
     }
     // Locked state is in the experience record
-    return experience?.tables?.[table]?.locked;
+    return experiences?.[venueName]?.tables?.[table]?.locked;
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
     const doc = `experiences/${venueName}`;
     const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
+      tables: { ...experiences?.[venueName]?.tables, [tableName]: { locked } },
     };
     firestoreUpdate(doc, update);
   };
@@ -96,7 +94,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   return (
     <div className="row no-margin at-table table-header">
       <div className="header" style={{ marginRight: "60px" }}>
-        <div className="action">
+        <div className="back-button-container">
           <button
             type="button"
             title={"Leave " + seatedAtTable}
@@ -128,24 +126,24 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             <div className="private-table-subtitle">{tableOfUser.subtitle}</div>
           )}
         </div>
-        <div className="action">
+        <div className="lock-button-container">
+          <div className="lock-table-checbox-indication">
+            {!!tableLocked(seatedAtTable) ? (
+              <p className="locked-text">Table is locked</p>
+            ) : (
+              <p className="unlocked-text">Others can join this table</p>
+            )}
+          </div>
           <label className="switch">
             <input
               type="checkbox"
-              checked={!tableLocked(seatedAtTable)}
+              checked={!!tableLocked(seatedAtTable)}
               onChange={() =>
                 onLockedChanged(seatedAtTable, !tableLocked(seatedAtTable))
               }
             />
             <span className="slider" />
           </label>
-          <div className="lock-table-checbox-indication">
-            {tableLocked(seatedAtTable) ? (
-              <p className="locked-text">Table is locked</p>
-            ) : (
-              <p className="unlocked-text">Others can join this table</p>
-            )}
-          </div>
         </div>
       </div>
     </div>
