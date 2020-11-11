@@ -305,8 +305,11 @@
 }
 
 .mute-button {
+  width: 44px;
+  height: 44px;
   display: flex;
-  align-items: center;
+  justify-content: center;
+  align-self: center;
 }
 
 .table-header {

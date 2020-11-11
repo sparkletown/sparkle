@@ -139,10 +139,39 @@ const checkUserIsAdminOrOwner = async (venueId, uid) => {
   }
 };
 
+/** Add a user to the list of admins
+ *
+ * @param {string} newAdminId
+ */
+const addAdmin = async (newAdminId) => {
+  await admin
+    .firestore()
+    .collection("roles")
+    .doc("admin")
+    .update({
+      users: admin.firestore.FieldValue.arrayUnion(newAdminId),
+    });
+};
+
+/** Remove a user from the list of admins
+ *
+ * @param {string} adminId
+ */
+const removeAdmin = async (adminId) => {
+  await admin
+    .firestore()
+    .collection("roles")
+    .doc("admin")
+    .update({
+      users: admin.firestore.FieldValue.arrayRemove(adminId),
+    });
+};
+
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const { venueId, newOwnerId } = data;
+
   await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
   await admin
@@ -152,6 +181,10 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
     .update({
       owners: admin.firestore.FieldValue.arrayUnion(newOwnerId),
     });
+
+  // When adding a user to the list of owners,
+  // the user is also added to the list of admins in the "roles" collection
+  await addAdmin(newOwnerId);
 });
 
 exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
@@ -166,6 +199,17 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
     .doc(venueId)
     .update({
       owners: admin.firestore.FieldValue.arrayRemove(ownerId),
+    });
+
+  // If a user is not an owner of any venue,
+  // remove the user from the list of admins
+  await admin
+    .firestore()
+    .collection("venues")
+    .where("owners", "array-contains", ownerId)
+    .get()
+    .then((snap) => {
+      if (snap.empty) return removeAdmin(ownerId);
     });
 });
 
@@ -356,9 +400,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
         updated.parentId = data.parentId;
       }
 
-      if (data.rows) {
-        updated.rows = data.rows;
-      }
       if (data.columns) {
         updated.columns = data.columns;
       }
