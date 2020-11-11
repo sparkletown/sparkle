@@ -583,26 +583,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <>
             <div className="input-container">
               <h4 className="italic" style={{ fontSize: "20px" }}>
-                Number of rows
-              </h4>
-              <input
-                disabled={disable}
-                defaultValue={1}
-                name="rows"
-                type="number"
-                ref={register}
-                onChange={(e) => {
-                  setValue("rows", parseInt(e.target.value));
-                }}
-                className="align-left"
-                placeholder={`Number of grid rows`}
-              />
-              {errors.name ? (
-                <span className="input-error">{errors.name.message}</span>
-              ) : null}
-            </div>
-            <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
                 Number of columns
               </h4>
               <input
@@ -617,6 +597,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               {errors.name ? (
                 <span className="input-error">{errors.name.message}</span>
               ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of rows
+              </h4>
+              <div>
+                Not editable. The number of rows is derived from the number of
+                specified columns and the width:height ratio of the party map,
+                to keep the two aligned.
+              </div>
             </div>
           </>
         )}
