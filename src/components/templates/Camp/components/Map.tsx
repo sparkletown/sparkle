@@ -476,7 +476,7 @@ export const Map: React.FC<PropsType> = ({
             const width = room.width_percent;
             const height = room.height_percent;
             const isUnderneathRoom = isHittingRoom && room === selectedRoom;
-
+            const hasAttendance = attendances[`${venue.name}/${room.title}`];
             return (
               <div
                 className={`room position-absolute ${
@@ -531,7 +531,7 @@ export const Map: React.FC<PropsType> = ({
                       alt={room.title}
                     />
                   </div>
-                  {venue.roomVisibility === RoomVisibility.nameCount &&
+                  {venue.roomVisibility === RoomVisibility.hover &&
                     roomHovered &&
                     roomHovered.title === room.title && (
                       <div className="camp-venue-text">
@@ -549,7 +549,8 @@ export const Map: React.FC<PropsType> = ({
                   <div className={`camp-venue-text`}>
                     {(!venue.roomVisibility ||
                       venue.roomVisibility === RoomVisibility.nameCount ||
-                      venue.roomVisibility === RoomVisibility.count) && (
+                      (venue.roomVisibility === RoomVisibility.count &&
+                        hasAttendance)) && (
                       <div className="camp-venue-maininfo">
                         {(!venue.roomVisibility ||
                           venue.roomVisibility ===
