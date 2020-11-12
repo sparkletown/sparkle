@@ -333,102 +333,110 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const updated = doc.data();
-      if (data.bannerImageUrl || data.subtitle || data.description) {
-        if (!updated.config) {
-          updated.config = {};
-        }
-        if (!updated.config.landingPageConfig) {
-          updated.config.landingPageConfig = {};
-        }
-      }
-      if (data.bannerImageUrl) {
-        updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
-      }
-      if (data.subtitle) {
-        updated.config.landingPageConfig.subtitle = data.subtitle;
-      }
-      if (data.description) {
-        updated.config.landingPageConfig.description = data.description;
-      }
-      if (data.primaryColor) {
-        if (!updated.theme) {
-          updated.theme = {};
-        }
-        updated.theme.primaryColor = data.primaryColor;
-      }
-      if (data.logoImageUrl) {
-        if (!updated.host) {
-          updated.host = {};
-        }
-        updated.host.icon = data.logoImageUrl;
-      }
-      if (data.profileQuestions) {
-        updated.profileQuestions = data.profileQuestions;
-      }
-      if (data.mapIconImageUrl) {
-        updated.mapIconImageUrl = data.mapIconImageUrl;
-      }
-      if (data.mapBackgroundImageUrl) {
-        updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-      }
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-      if (
-        !data.placement.state ||
-        data.placement.state === PlacementState.SelfPlaced
-      ) {
-        updated.placement = {
-          ...data.placement,
-          state: PlacementState.SelfPlaced,
-        };
-      } else if (data.placementRequests) {
-        updated.placementRequests = data.placementRequests;
-      }
-      if (data.bannerMessage) {
-        updated.bannerMessage = data.bannerMessage;
-      }
-      if (data.parentId) {
-        updated.parentId = data.parentId;
-      }
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
 
-      if (data.columns) {
-        updated.columns = data.columns;
-      }
-      if (data.roomVisibility) {
-        updated.roomVisibility = data.roomVisibility;
-      }
+  const updated = doc.data();
 
-      updated.showLiveSchedule = data.showLiveSchedule;
-      updated.showGrid = data.showGrid;
+  if (data.bannerImageUrl || data.subtitle || data.description) {
+    if (!updated.config) {
+      updated.config = {};
+    }
+    if (!updated.config.landingPageConfig) {
+      updated.config.landingPageConfig = {};
+    }
+  }
 
-      switch (updated.template) {
-        case VenueTemplate.jazzbar:
-        case VenueTemplate.performancevenue:
-        case VenueTemplate.artpiece:
-        case VenueTemplate.audience:
-          if (data.iframeUrl) {
-            updated.iframeUrl = data.iframeUrl;
-          }
-          break;
-        case VenueTemplate.zoomroom:
-        case VenueTemplate.artcar:
-          if (data.zoomUrl) {
-            updated.zoomUrl = data.zoomUrl;
-          }
-          break;
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
+  }
+
+  if (data.subtitle) {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+
+  if (data.description) {
+    updated.config.landingPageConfig.description = data.description;
+  }
+
+  if (data.primaryColor) {
+    if (!updated.theme) {
+      updated.theme = {};
+    }
+    updated.theme.primaryColor = data.primaryColor;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.profileQuestions) {
+    updated.profileQuestions = data.profileQuestions;
+  }
+
+  if (data.mapIconImageUrl) {
+    updated.mapIconImageUrl = data.mapIconImageUrl;
+  }
+
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  if (
+    !data.placement.state ||
+    data.placement.state === PlacementState.SelfPlaced
+  ) {
+    updated.placement = {
+      ...data.placement,
+      state: PlacementState.SelfPlaced,
+    };
+  } else if (data.placementRequests) {
+    updated.placementRequests = data.placementRequests;
+  }
+
+  if (data.bannerMessage) {
+    updated.bannerMessage = data.bannerMessage;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (data.columns) {
+    updated.columns = data.columns;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  updated.showLiveSchedule = data.showLiveSchedule;
+  updated.showGrid = data.showGrid;
+
+  switch (updated.template) {
+    case VenueTemplate.jazzbar:
+    case VenueTemplate.performancevenue:
+    case VenueTemplate.artpiece:
+    case VenueTemplate.audience:
+      if (data.iframeUrl) {
+        updated.iframeUrl = data.iframeUrl;
       }
+      break;
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.artcar:
+      if (data.zoomUrl) {
+        updated.zoomUrl = data.zoomUrl;
+      }
+      break;
+  }
 
-      admin.firestore().collection("venues").doc(venueId).update(updated);
-    });
+  await admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
