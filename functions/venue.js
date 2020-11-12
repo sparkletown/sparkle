@@ -119,6 +119,8 @@ const createVenueNew = (data, context) => ({
     icon: data.logoImageUrl,
   },
   owners: [context.auth.token.user_id],
+  showGrid: data.showGrid || false,
+  columns: data.columns || 1,
 });
 
 const getVenueId = (name) => {
@@ -530,6 +532,17 @@ exports.updateVenueNew = functions.https.onCall(async (data, context) => {
       if (data.parentId) {
         updated.parentId = data.parentId;
       }
+
+      if (data.showGrid) {
+        updated.showGrid = data.showGrid;
+        updated.columns = data.columns;
+      }
+
+      // updated = {
+      //   ...updated,
+      //   showGrid: data.showGrid || false,
+      //   columns: data.columns || 1,
+      // }
 
       admin.firestore().collection("venues").doc(venueId).update(updated);
     });

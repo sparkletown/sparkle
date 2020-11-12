@@ -5,7 +5,7 @@ export const Form = styled.form`
 `;
 
 export const FormInnerWrapper = styled.div`
-  padding: 3em 5em;
+  padding: 1em 5em;
 `;
 
 export const FormFooter = styled.div`
@@ -25,7 +25,7 @@ type InputContainerType = {
   hasError?: boolean;
 };
 export const InputContainer = styled.div`
-  margin-top: 20px;
+  margin-top: 15px;
   position: relative;
 
   input {

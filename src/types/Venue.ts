@@ -34,6 +34,8 @@ export interface VenueNew {
     primaryColor: string;
     backgroundColor?: string;
   };
+  showGrid: boolean;
+  columns?: number;
 }
 
 export interface Venue {

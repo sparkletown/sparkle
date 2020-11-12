@@ -37,6 +37,8 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
         name: data.name,
         subtitle: data.config.landingPageConfig.subtitle,
         description: data.config.landingPageConfig.description,
+        showGrid: data.showGrid,
+        columns: data.columns,
       },
     });
     setBannerURL(dispatch, data.config.landingPageConfig.coverImageUrl);

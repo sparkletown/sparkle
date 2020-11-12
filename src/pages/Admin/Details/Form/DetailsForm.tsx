@@ -11,6 +11,7 @@ import {
 // Components
 import SubmitButton from "components/atoms/SubmitButton/SubmitButton";
 import ImageInput from "components/atoms/ImageInput";
+import ToggleSwitch from "components/atoms/ToggleSwitch";
 
 // Hooks
 import { useHistory } from "react-router-dom";
@@ -106,9 +107,14 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         { description: editData?.description },
         { bannerImageUrl: editData?.bannerImageUrl },
         { logoImageUrl: editData?.logoImageUrl },
+        { showGrid: editData?.showGrid },
       ]);
+
+      if (values.columns === undefined) {
+        setValue([{ columns: editData?.columns }]);
+      }
     }
-  }, [editData, setValue, venueId]);
+  }, [editData, setValue, values.columns, venueId]);
 
   const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
 
@@ -174,7 +180,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   );
 
   const renderBannerUpload = () => (
-    <div className="input-container">
+    <S.InputContainer>
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a banner photo
       </h4>
@@ -185,11 +191,11 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         forwardRef={register}
         imgUrl={editData?.bannerImageUrl}
       />
-    </div>
+    </S.InputContainer>
   );
 
   const renderLogoUpload = () => (
-    <div className="input-container">
+    <S.InputContainer>
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload your logo
       </h4>
@@ -201,7 +207,33 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         forwardRef={register}
         imgUrl={editData?.logoImageUrl}
       />
-    </div>
+    </S.InputContainer>
+  );
+
+  const renderShowGrid = () => (
+    <S.InputContainer>
+      <h4>Show grid</h4>
+
+      <ToggleSwitch
+        name="showGrid"
+        forwardRef={register}
+        isChecked={editData?.showGrid}
+      />
+
+      {values.showGrid && (
+        <div>
+          <label htmlFor="grid_columns">Number of columns:</label>
+          <input
+            disabled={disable}
+            name="columns"
+            ref={register}
+            id="grid_columns"
+            placeholder="Number of grid columns"
+            type="number"
+          />
+        </div>
+      )}
+    </S.InputContainer>
   );
 
   const handleOnChange = () => {
@@ -239,6 +271,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         {renderDescription()}
         {renderBannerUpload()}
         {renderLogoUpload()}
+        {renderShowGrid()}
       </S.FormInnerWrapper>
 
       <S.FormFooter>

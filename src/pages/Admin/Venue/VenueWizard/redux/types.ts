@@ -7,6 +7,8 @@ export interface WizardState {
   name?: string;
   subtitle?: string;
   description?: string;
+  showGrid?: boolean;
+  columns?: number;
 }
 
 export interface SetBannerUrl {

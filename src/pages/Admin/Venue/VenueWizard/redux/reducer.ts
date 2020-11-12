@@ -14,6 +14,8 @@ export const initialState = {
   name: "",
   subtitle: "",
   description: "",
+  showGrid: false,
+  columns: 1,
 } as WizardState;
 
 const setBannerURL = (state: WizardState, action: SetBannerUrl) => ({
