@@ -16,6 +16,7 @@ import { useVenueId } from "hooks/useVenueId";
 import firebase from "firebase/app";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import CampAttendance from "./CampAttendance";
+import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
   venue: CampVenue;
@@ -51,6 +52,10 @@ export const Map: React.FC<PropsType> = ({
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
   const [rows, setRows] = useState<number>(0);
+
+  const { venues } = useSelector((state) => ({
+    venues: state.firestore.ordered.venues,
+  }));
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rooms = [...venue.rooms];
@@ -178,15 +183,24 @@ export const Map: React.FC<PropsType> = ({
 
   const roomEnter = useCallback(
     (room: CampRoomData) => {
+      const roomVenue = venues?.find((venue) =>
+        room.url.endsWith(`/${venue.name}`)
+      );
+      const venueRoom = roomVenue
+        ? { [roomVenue.name]: currentTimeInUnixEpoch }
+        : {};
       room &&
         user &&
         enterRoom(
           user,
-          { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+          {
+            [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
+            ...venueRoom,
+          },
           profile?.lastSeenIn
         );
     },
-    [profile, user, venue]
+    [profile, user, venue, venues]
   );
 
   const partygoersBySeat: WithId<User>[][] = [];
@@ -345,6 +359,19 @@ export const Map: React.FC<PropsType> = ({
     });
   };
 
+  const onJoinRoom = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    room: CampRoomData
+  ) => {
+    e.stopPropagation();
+    if (isExternalLink(room.url)) {
+      window.open(getRoomUrl(room.url));
+    } else {
+      window.location.href = getRoomUrl(room.url);
+    }
+    roomEnter(room);
+  };
+
   const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
   const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
 
@@ -488,20 +515,21 @@ export const Map: React.FC<PropsType> = ({
                       isUnderneathRoom && "isUnderneath"
                     }`}
                   >
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const isExternalUrl = isExternalLink(room.url);
-                        window.open(
-                          getRoomUrl(room.url),
-                          isExternalUrl ? "_blank" : "noopener,noreferrer"
-                        );
-                        roomEnter(room);
-                      }}
-                      className="btn btn-white btn-small btn-block"
-                    >
-                      Join now
-                    </div>
+                    {isExternalLink(room.url) ? (
+                      <div
+                        className="btn btn-white btn-small btn-block"
+                        onClick={(e) => onJoinRoom(e, room)}
+                      >
+                        {venue.joinButtonText ?? "Join now"}
+                      </div>
+                    ) : (
+                      <div
+                        className="btn btn-white btn-small btn-block"
+                        onClick={(e) => onJoinRoom(e, room)}
+                      >
+                        {venue.joinButtonText ?? "Join now"}
+                      </div>
+                    )}
                   </div>
                   <div className="camp-venue-img">
                     <img

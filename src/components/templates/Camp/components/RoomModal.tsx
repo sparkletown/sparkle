@@ -46,11 +46,13 @@ export const RoomModal: React.FC<PropsType> = ({
       )
     : [];
 
-  const roomVenues = venues?.filter((venue) => venue.name === room.url);
-  const venueRoom = roomVenues?.length
-    ? { [roomVenues[0].id]: currentTimeInUnixEpoch }
-    : {};
   const enter = () => {
+    const roomVenue = venues?.find((venue) =>
+      room.url.endsWith(`/${venue.name}`)
+    );
+    const venueRoom = roomVenue
+      ? { [roomVenue.name]: currentTimeInUnixEpoch }
+      : {};
     room &&
       user &&
       enterRoom(
