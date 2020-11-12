@@ -184,7 +184,7 @@ export const Map: React.FC<PropsType> = ({
   const roomEnter = useCallback(
     (room: CampRoomData) => {
       const roomVenue = venues?.find((venue) =>
-        room.url.endsWith(`/${venue.name}`)
+        room.url.endsWith(`/${venue.id}`)
       );
       const venueRoom = roomVenue
         ? { [roomVenue.name]: currentTimeInUnixEpoch }
@@ -517,21 +517,12 @@ export const Map: React.FC<PropsType> = ({
                       isUnderneathRoom && "isUnderneath"
                     }`}
                   >
-                    {isExternalLink(room.url) ? (
-                      <div
-                        className="btn btn-white btn-small btn-block"
-                        onClick={(e) => onJoinRoom(e, room)}
-                      >
-                        {venue.joinButtonText ?? "Join now"}
-                      </div>
-                    ) : (
-                      <div
-                        className="btn btn-white btn-small btn-block"
-                        onClick={(e) => onJoinRoom(e, room)}
-                      >
-                        {venue.joinButtonText ?? "Join now"}
-                      </div>
-                    )}
+                    <div
+                      className="btn btn-white btn-small btn-block"
+                      onClick={(e) => onJoinRoom(e, room)}
+                    >
+                      {venue.joinButtonText ?? "Join now"}
+                    </div>
                   </div>
                   <div className="camp-venue-img">
                     <img
