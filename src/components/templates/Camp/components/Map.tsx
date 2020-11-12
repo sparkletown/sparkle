@@ -387,8 +387,7 @@ export const Map: React.FC<PropsType> = ({
           gridTemplateRows: `repeat(${templateRows}, 1fr)`,
         }}
       >
-        {venue.showGrid &&
-          rows &&
+        {venue.showGrid && rows ? (
           Array.from(Array(columns)).map((_, colIndex) => {
             return (
               <div className="seat-column" key={`column${colIndex}`}>
@@ -466,7 +465,10 @@ export const Map: React.FC<PropsType> = ({
                   })}
               </div>
             );
-          })}
+          })
+        ) : (
+          <div />
+        )}
         {!!rooms.length &&
           rooms.map((room) => {
             const left = room.x_percent;
