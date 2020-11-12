@@ -5,23 +5,23 @@ exports[`<DetailsPreview /> renders correctly 1`] = `
   className="sc-bdfBwQ bBeRob"
 >
   <div
-    className="sc-gsTCUz kBMueP"
+    className="sc-gsTCUz eGlvzr"
   >
     <div
-      className="sc-jSgupP fCrqkn"
+      className="sc-jSgupP fnAQnX"
     />
     <div
       className="sc-dlfnbm cxRrbB"
     >
       <h1
-        className="sc-hKgILt ezwIag"
+        className="sc-hKgILt kLrxSF"
       />
       <h2
-        className="sc-eCssSg ibNsou"
+        className="sc-eCssSg fRLehA"
       />
     </div>
     <p
-      className="sc-gKsewC gJWLlR"
+      className="sc-gKsewC dravmq"
     />
   </div>
 </div>

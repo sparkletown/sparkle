@@ -3,7 +3,7 @@
 exports[`<ImageInput /> renders correctly 1`] = `
 Array [
   <label
-    className="sc-dlfnbm gaNdZf"
+    className="sc-gsTCUz gGtXOY"
   >
     <input
       accept="image/x-png,image/gif,image/jpeg"
@@ -15,7 +15,7 @@ Array [
       type="file"
     />
     <span
-      className="sc-gsTCUz bYlgsb"
+      className="sc-bdfBwQ izHeuX"
     >
       Upload
     </span>

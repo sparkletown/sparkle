@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ToggleSwitch /> renders correctly 1`] = `
+<label
+  className="sc-bdfBwQ jGgSFq"
+>
+  <input
+    checked={false}
+    className="sc-dlfnbm"
+    hidden={true}
+    name="mySwitch"
+    onChange={[Function]}
+    type="checkbox"
+  />
+  <span
+    checked={false}
+    className="sc-gsTCUz HBMiV"
+  />
+</label>
+`;
