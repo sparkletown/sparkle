@@ -48,7 +48,7 @@ export const RoomModal: React.FC<PropsType> = ({
 
   const enter = () => {
     const roomVenue = venues?.find((venue) =>
-      room.url.endsWith(`/${venue.name}`)
+      room.url.endsWith(`/${venue.id}`)
     );
     const venueRoom = roomVenue
       ? { [roomVenue.name]: currentTimeInUnixEpoch }
