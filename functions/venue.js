@@ -416,8 +416,13 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  updated.showLiveSchedule = data.showLiveSchedule;
-  updated.showGrid = data.showGrid;
+  if (typeof data.showLiveSchedule === "boolean") {
+    updated.showLiveSchedule = data.showLiveSchedule;
+  }
+
+  if (typeof data.showGrid === "boolean") {
+    updated.showGrid = data.showGrid;
+  }
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:
