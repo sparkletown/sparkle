@@ -476,7 +476,7 @@ export const Map: React.FC<PropsType> = ({
             const width = room.width_percent;
             const height = room.height_percent;
             const isUnderneathRoom = isHittingRoom && room === selectedRoom;
-
+            const hasAttendance = attendances[`${venue.name}/${room.title}`];
             return (
               <div
                 className={`room position-absolute ${
@@ -549,20 +549,21 @@ export const Map: React.FC<PropsType> = ({
                   <div className={`camp-venue-text`}>
                     {(!venue.roomVisibility ||
                       venue.roomVisibility === RoomVisibility.nameCount ||
-                      venue.roomVisibility === RoomVisibility.count) && (
-                      <div className="camp-venue-maininfo">
-                        {(!venue.roomVisibility ||
-                          venue.roomVisibility ===
-                            RoomVisibility.nameCount) && (
-                          <div className="camp-venue-title">{room.title}</div>
-                        )}
-                        <CampAttendance
-                          attendances={attendances}
-                          venue={venue}
-                          room={room}
-                        />
-                      </div>
-                    )}
+                      venue.roomVisibility === RoomVisibility.count) &&
+                      hasAttendance && (
+                        <div className="camp-venue-maininfo">
+                          {(!venue.roomVisibility ||
+                            venue.roomVisibility ===
+                              RoomVisibility.nameCount) && (
+                            <div className="camp-venue-title">{room.title}</div>
+                          )}
+                          <CampAttendance
+                            attendances={attendances}
+                            venue={venue}
+                            room={room}
+                          />
+                        </div>
+                      )}
                     <div className="camp-venue-secondinfo">
                       <div className="camp-venue-desc">
                         <p>{room.subtitle}</p>
