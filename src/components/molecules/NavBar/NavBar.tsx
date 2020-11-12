@@ -175,7 +175,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       user &&
       privateChats
         .filter(isChatValid)
-        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+        .filter((chat) => chat.to === user.uid && !chat.isRead).length
     );
   }, [privateChats, user]);
 
@@ -293,7 +293,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       rootClose={true}
                     >
                       <span className="private-chat-icon">
-                        <div className="navbar-link-gift"></div>
+                        <div className="navbar-link-gift" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -311,7 +311,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                               {numberOfUnreadMessages}
                             </div>
                           )}
-                        <div className="navbar-link-message"></div>
+                        <div className="navbar-link-message" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -331,7 +331,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                         className={`profile-icon navbar-link-radio ${
                           volume === 0 && "off"
                         }`}
-                      ></div>
+                      />
                     </OverlayTrigger>
                   )}
                   <OverlayTrigger
