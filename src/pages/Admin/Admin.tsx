@@ -423,9 +423,18 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
 
 const Admin: React.FC = () => {
   const { user } = useUser();
-  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(
-    user?.uid
+  const userId = user?.uid || "";
+
+  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
+
+  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
+    () => ({
+      collection: "venues",
+      where: [["owners", "array-contains", userId]],
+    }),
+    [userId]
   );
+  useFirestoreConnect(venuesOwnedByUserQuery);
 
   const { venueId } = useParams();
   const queryParams = useQuery();
@@ -433,13 +442,6 @@ const Admin: React.FC = () => {
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
-
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      where: [["owners", "array-contains", user?.uid || ""]],
-    },
-  ]);
 
   if (isAdminUserLoading) return <>Loading...</>;
   if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
