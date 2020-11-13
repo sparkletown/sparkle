@@ -1,12 +1,4 @@
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import dayjs from "dayjs";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import "firebase/storage";
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
   Route,
@@ -16,24 +8,11 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
-import { WithId } from "utils/id";
-import {
-  canHaveSubvenues,
-  canBeDeleted,
-  canHaveEvents,
-  canHavePlacement,
-} from "utils/venue";
-import "./Admin.scss";
-import AdminEventModal from "./AdminEventModal";
-import { venueInsideUrl } from "utils/url";
-import { AdminVenuePreview } from "./AdminVenuePreview";
-import { isCampVenue } from "types/CampVenue";
-import { useIsAdminUser } from "hooks/roles";
-import { useQuery } from "hooks/useQuery";
-import { VenueTemplate } from "types/VenueTemplate";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import { useFirestoreConnect } from "react-redux-firebase";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import "firebase/storage";
+
 import {
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
@@ -43,11 +22,39 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent";
-import { VenueOwnersModal } from "./VenueOwnersModal";
 import { IS_BURN } from "secrets";
-import EventsComponent from "./EventsComponent";
+
+import { isCampVenue } from "types/CampVenue";
+import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
+
+import { WithId } from "utils/id";
+import { venueInsideUrl } from "utils/url";
+import {
+  canHaveSubvenues,
+  canBeDeleted,
+  canHaveEvents,
+  canHavePlacement,
+} from "utils/venue";
+
+import { useIsAdminUser } from "hooks/roles";
+import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
+
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import AdminEditComponent from "./AdminEditComponent";
+import AdminEventModal from "./AdminEventModal";
+import { AdminVenuePreview } from "./AdminVenuePreview";
+import EventsComponent from "./EventsComponent";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
+import { VenueOwnersModal } from "./VenueOwnersModal";
+
+import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
 
