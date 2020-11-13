@@ -63,7 +63,6 @@ export type VenueInput = AdvancedVenueInput &
     placementRequests?: string;
     adultContent: boolean;
     showGrid?: boolean;
-    rows?: number;
     columns?: number;
     width?: number;
     height?: number;
