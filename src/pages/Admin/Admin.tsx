@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+import { shallowEqual } from "react-redux";
 import {
   Link,
   Route,
@@ -8,7 +15,10 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import {
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
@@ -28,7 +38,9 @@ import { isCampVenue } from "types/CampVenue";
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
 
+import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
+import { makeVenueSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 import {
   canHaveSubvenues,
@@ -38,7 +50,7 @@ import {
 } from "utils/venue";
 
 import { useIsAdminUser } from "hooks/roles";
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 
@@ -115,30 +127,41 @@ type VenueDetailsProps = {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
-  const match = useRouteMatch();
-  const location = useLocation();
-  const { venues } = useKeyedSelector(
-    (state) => ({
-      venues: state.firestore.data.venues ?? {},
-    }),
-    ["venues"]
-  );
+  const { url: matchUrl } = useRouteMatch();
+  const { pathname: urlPath } = useLocation();
 
-  const venue = venues[venueId];
+  const venueSelector = useCallback(makeVenueSelector(venueId), [venueId]);
+  const venue = useSelector(venueSelector, shallowEqual);
+
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
-  if (!venue) {
-    return <>{`Oops, seems we can't find your venue!`}</>;
-  }
+  const adminEventModalOnHide = useCallback(() => {
+    setShowCreateEventModal(false);
+    setEditedEvent(undefined);
+  }, []);
 
-  const tabs = [{ url: `${match.url}`, label: "Venue Info" }];
-  if (canHaveEvents(venue)) {
-    tabs.push({ url: `${match.url}/events`, label: "Events" });
-  }
-  if (canHavePlacement(venue)) {
-    tabs.push({ url: `${match.url}/placement`, label: "Placement & Editing" });
+  const adminDeleteEventOnHide = useCallback(() => {
+    setShowDeleteEventModal(false);
+    setEditedEvent && setEditedEvent(undefined);
+  }, []);
+
+  const tabs = useMemo(() => {
+    if (!venue) return [];
+
+    return [
+      { url: matchUrl, label: "Venue Info" },
+      canHaveEvents(venue) && { url: `${matchUrl}/events`, label: "Events" },
+      canHavePlacement(venue) && {
+        url: `${matchUrl}/placement`,
+        label: "Placement & Editing",
+      },
+    ].filter(isTruthyFilter);
+  }, [matchUrl, venue]);
+
+  if (!venue) {
+    return <>{"Oops, seems we can't find your venue!"}</>;
   }
 
   return (
@@ -148,7 +171,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <div
             key={tab.url}
             className={`page-container-adminpanel-tab ${
-              location.pathname === tab.url ? "selected" : ""
+              urlPath === tab.url ? "selected" : ""
             }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
@@ -157,49 +180,36 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       </div>
       <div className="page-container-adminpanel-venuepage">
         <Switch>
-          <Route
-            path={`${match.url}/events`}
-            render={() => (
-              <EventsComponent
-                venue={venue}
-                showCreateEventModal={showCreateEventModal}
-                setShowCreateEventModal={setShowCreateEventModal}
-                editedEvent={editedEvent}
-                setEditedEvent={setEditedEvent}
-              />
-            )}
-            venue={venue}
-          />
-          <Route
-            path={`${match.url}/placement`}
-            render={() => <AdminEditComponent />}
-            venue={venue}
-          />
-          <Route
-            path={`${match.url}/Appearance`}
-            render={() => <>Appearance Component</>}
-          />
-          <Route
-            path={`${match.url}`}
-            render={() => (
-              <VenueInfoComponent
-                venue={venue}
-                roomIndex={roomIndex}
-                showCreateEventModal={showCreateEventModal}
-                setShowCreateEventModal={setShowCreateEventModal}
-                setShowDeleteEventModal={setShowDeleteEventModal}
-              />
-            )}
-          />
+          <Route path={`${matchUrl}/events`}>
+            <EventsComponent
+              venue={venue}
+              showCreateEventModal={showCreateEventModal}
+              setShowCreateEventModal={setShowCreateEventModal}
+              editedEvent={editedEvent}
+              setEditedEvent={setEditedEvent}
+            />
+          </Route>
+          <Route path={`${matchUrl}/placement`}>
+            <AdminEditComponent />
+          </Route>
+          <Route path={`${matchUrl}/Appearance`}>
+            <>Appearance Component</>
+          </Route>
+          <Route path={matchUrl}>
+            <VenueInfoComponent
+              venue={venue}
+              roomIndex={roomIndex}
+              showCreateEventModal={showCreateEventModal}
+              setShowCreateEventModal={setShowCreateEventModal}
+              setShowDeleteEventModal={setShowDeleteEventModal}
+            />
+          </Route>
         </Switch>
       </div>
       <AdminEventModal
         show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
+        onHide={adminEventModalOnHide}
+        venueId={venueId}
         event={editedEvent}
         template={venue.template}
         setEditedEvent={setEditedEvent}
@@ -207,11 +217,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}
-        onHide={() => {
-          setShowDeleteEventModal(false);
-          setEditedEvent && setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
+        onHide={adminDeleteEventOnHide}
+        venueId={venueId}
         event={editedEvent}
       />
     </>
