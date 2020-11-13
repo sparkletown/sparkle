@@ -141,10 +141,10 @@ interface UserRowProps {
 const UserRow: React.FC<UserRowProps> = (props) => {
   const { user, isOwner, venueId } = props;
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const onRemoveUserClick = useCallback(async () => {
+  const removeOwner = useCallback(async () => {
     setError(undefined);
     setLoading(true);
     await removeVenueOwner(venueId, user.id);
@@ -152,7 +152,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const onMakeUserClick = useCallback(async () => {
+  const makeOwner = useCallback(async () => {
     setError(undefined);
     setLoading(true);
     await addVenueOwner(venueId, user.id);
@@ -160,32 +160,25 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
+  const userPicture = user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl;
+  const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+
   return (
     <>
       <div className="user-row">
         <div className="info-container">
-          <img
-            src={user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl}
-            alt="profile pic"
-          />
-          {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+          <img src={userPicture} alt="profile pic" />
+          {userName}
         </div>
-        {isOwner &&
-          (loading ? (
-            <div>Loading...</div>
-          ) : (
-            <button className="btn btn-primary" onClick={onRemoveUserClick}>
-              Remove Owner
-            </button>
-          ))}
-        {!isOwner &&
-          (loading ? (
-            <div>Loading...</div>
-          ) : (
-            <button className="btn btn-primary" onClick={onMakeUserClick}>
-              Make Owner
-            </button>
-          ))}
+        {isLoading && <div>Loading...</div>}
+        {!isLoading && (
+          <button
+            className="btn btn-primary"
+            onClick={isOwner ? removeOwner : makeOwner}
+          >
+            {isOwner ? "Remove Owner" : "Make Owner"}
+          </button>
+        )}
       </div>
       {error && <div>{error}</div>}
     </>
