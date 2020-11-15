@@ -43,3 +43,6 @@ reporting/env
 reporting/*.pdf
 reporting/*.txt
 reporting/cookies.json
+
+#IDEs
+.idea/
