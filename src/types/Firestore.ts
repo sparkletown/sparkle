@@ -13,6 +13,7 @@ import { WithId } from "utils/id";
 import { CampVenue } from "./CampVenue";
 import { ChatRequest } from "./ChatRequest";
 import { Role } from "./Role";
+import { AdminRole } from "hooks/roles";
 
 interface VenueStatus {
   currentVenue: boolean;
@@ -61,6 +62,7 @@ export interface Firestore {
     userModalVisits?: Record<string, UserVisit>;
     userRoles: Record<string, Role>;
     allowAllRoles: Record<string, Role>;
+    adminRole: AdminRole;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
