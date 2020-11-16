@@ -1,7 +1,30 @@
+import { FirebaseReducer } from "react-redux-firebase";
+
 import { RootState } from "index";
+
 import { AnyVenue } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
-import { WithId } from "./id";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
+
+/**
+ * Selector to retrieve Firebase auth from Redux.
+ *
+ * @param state the Redux store
+ */
+export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
+  state: RootState
+) => state.firebase.auth;
+
+/**
+ * Selector to retrieve Firebase profile from Redux.
+ *
+ * @param state the Redux store
+ */
+export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
+  state: RootState
+) => state.firebase.profile;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
