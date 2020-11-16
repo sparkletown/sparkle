@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
 
-import CountDown from "components/molecules/CountDown";
-import UserList from "components/molecules/UserList";
-import RoomList from "./components/RoomList";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { updateTheme } from "pages/VenuePage/helpers";
-import { updateLocationData } from "utils/useLocationUpdateEffect";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { PartyTitle } from "./components";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import { currentTimeInUnixEpoch } from "utils/time";
+import { updateLocationData } from "utils/useLocationUpdateEffect";
+import { venueLandingUrl } from "utils/url";
+
 import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
-import RoomModal from "./RoomModal";
-import { venueLandingUrl } from "utils/url";
-import { Map } from "./components/Map/Map";
-import { currentTimeInUnixEpoch } from "utils/time";
-import { LOC_UPDATE_FREQ_MS } from "settings";
+
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import CountDown from "components/molecules/CountDown";
+import UserList from "components/molecules/UserList";
+
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import { PartyTitle, RoomList, Map } from "./components";
+import { RoomModal } from "./RoomModal/RoomModal";
 
 const PartyMap = () => {
   useConnectPartyGoers();
