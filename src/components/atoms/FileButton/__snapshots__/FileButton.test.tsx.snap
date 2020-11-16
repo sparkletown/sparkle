@@ -5,7 +5,7 @@ exports[`<FileButton /> renders correctly 1`] = `
   className="sc-gsTCUz bsXUus"
 >
   <label
-    className="sc-bdfBwQ sc-dlfnbm dLZbZN cbbQCX"
+    className="sc-bdfBwQ sc-dlfnbm eqEdkr cbbQCX"
     htmlFor="backgroundMap"
   >
     Import a map background
