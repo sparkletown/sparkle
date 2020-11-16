@@ -92,13 +92,14 @@ export type PlacementInput = {
 
 export interface Input {
   name: string;
-  description: string;
-  subtitle: string;
-  bannerImageFile: FileList;
-  bannerImageUrl: string;
-  logoImageFile: FileList;
-  logoImageUrl: string;
-  rooms: Array<unknown>;
+  description?: string;
+  subtitle?: string;
+  bannerImageFile?: FileList;
+  bannerImageUrl?: string;
+  logoImageFile?: FileList;
+  logoImageUrl?: string;
+  rooms?: Array<unknown>;
+  mapBackgroundImageUrl?: string;
 }
 
 export const createUrlSafeName = (name: string) =>
@@ -279,7 +280,7 @@ export const deleteEvent = async (venueId: string, eventId: string) => {
 };
 
 export const addVenueOwner = async (venueId: string, newOwnerId: string) =>
-  firebase.functions().httpsCallable("venue-addVenueOwner")({
+  await firebase.functions().httpsCallable("venue-addVenueOwner")({
     venueId,
     newOwnerId,
   });

@@ -1,12 +1,7 @@
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import "firebase/storage";
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import {
   Link,
   Route,
@@ -16,7 +11,35 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
+
+// Components
+import { AdminVenuePreview } from "./AdminVenuePreview";
+import { VenueOwnersModal } from "./VenueOwnersModal";
+import AdminDeleteEvent from "./AdminDeleteEvent";
+import AdminEditComponent from "./AdminEditComponent";
+import AdminEventModal from "./AdminEventModal";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import EventsComponent from "./EventsComponent";
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import VenueDetails from "./Venue/Details";
+
+// Pages
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+
+// Hooks
+import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { useQuery } from "hooks/useQuery";
+import useRoles from "hooks/useRoles";
+
+// Typings
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { isCampVenue } from "types/CampVenue";
+import { VenueTemplate } from "types/VenueTemplate";
+
+// Utils | Settings | Constants | Helpers
 import { WithId } from "utils/id";
 import {
   canHaveSubvenues,
@@ -24,15 +47,10 @@ import {
   canHaveEvents,
   canHavePlacement,
 } from "utils/venue";
-import "./Admin.scss";
-import AdminEventModal from "./AdminEventModal";
 import { venueInsideUrl } from "utils/url";
-import { AdminVenuePreview } from "./AdminVenuePreview";
-import { isCampVenue } from "types/CampVenue";
-import { useQuery } from "hooks/useQuery";
-import { VenueTemplate } from "types/VenueTemplate";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+
+// Styles
+import "./Admin.scss";
 import {
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
@@ -42,12 +60,8 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent";
-import { VenueOwnersModal } from "./VenueOwnersModal";
-import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
-import EventsComponent from "./EventsComponent";
-import AdminDeleteEvent from "./AdminDeleteEvent";
+import { VenueNew } from "types/Venue";
 
 dayjs.extend(advancedFormat);
 
@@ -107,7 +121,10 @@ type VenueDetailsProps = {
   roomIndex?: number;
 };
 
-const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
+const VenueDetails_OLD: React.FC<VenueDetailsProps> = ({
+  venueId,
+  roomIndex,
+}) => {
   const match = useRouteMatch();
   const location = useLocation();
   const { venues } = useKeyedSelector(
@@ -409,12 +426,20 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
 
 const Admin: React.FC = () => {
   const { user } = useUser();
-  const { venueId } = useParams();
+  const { venueId } = useParams<{ venueId: string }>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
+
+  const { venues } = useKeyedSelector(
+    (state) => ({
+      venues: state.firestore.data.venues ?? {},
+    }),
+    ["venues"]
+  );
+  const venue = venues[venueId];
 
   useFirestoreConnect([
     {
@@ -438,13 +463,14 @@ const Admin: React.FC = () => {
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
           </div>
-          <div className="page-container-adminpanel">
-            {venueId ? (
-              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
-            ) : (
-              <>Select a venue to see its details</>
-            )}
-          </div>
+          {/* <div className="page-container-adminpanel"> */}
+          {venueId ? (
+            // <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+            <VenueDetails venue={venue as VenueNew} />
+          ) : (
+            <>Select a venue to see its details</>
+          )}
+          {/* </div> */}
         </div>
       </div>
     </WithNavigationBar>

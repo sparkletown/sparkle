@@ -538,11 +538,9 @@ exports.updateVenueNew = functions.https.onCall(async (data, context) => {
         updated.columns = data.columns;
       }
 
-      // updated = {
-      //   ...updated,
-      //   showGrid: data.showGrid || false,
-      //   columns: data.columns || 1,
-      // }
+      if (data.mapBackgroundImageUrl || data.mapBackgroundImageUrl === "") {
+        updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+      }
 
       admin.firestore().collection("venues").doc(venueId).update(updated);
     });
@@ -690,9 +688,31 @@ exports.getVenueEvents = functions.https.onCall(
   }
 );
 
+exports.updateDefaultMapImageUrls = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+    await admin
+      .firestore()
+      .collection("defaultVenueConfig")
+      .doc("mapBackgrounds")
+      .update(data);
+  }
+);
+
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
   (updated &&
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
+
+exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
+  const user = (
+    await admin.firestore().collection("users").doc(userId).get()
+  ).data();
+
+  return user;
+});

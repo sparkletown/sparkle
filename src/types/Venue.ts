@@ -29,7 +29,7 @@ export interface VenueNew {
   host: {
     icon: string;
   };
-  owners?: string[];
+  owners: string[];
   theme?: {
     primaryColor: string;
     backgroundColor?: string;
