@@ -1,6 +1,10 @@
 import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
+
+import { currentVenueSelector } from "utils/selectors";
 import getQueryParameters from "utils/getQueryParameters";
+
+import { useSelector } from "./useSelector";
 
 const useConnectCurrentVenue = () => {
   let { venueId } = useParams();
@@ -25,6 +29,8 @@ const useConnectCurrentVenue = () => {
       storeAs: "venueEvents",
     },
   ]);
+
+  return useSelector(currentVenueSelector);
 };
 
 export default useConnectCurrentVenue;
