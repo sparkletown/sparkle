@@ -3,12 +3,16 @@ import React from "react";
 // Typings
 import { ButtonProps } from "./Button.types";
 
-const Button: React.FC<ButtonProps> = ({
+// Styles
+import * as S from "./Button.styles";
+
+const AppButton: React.FC<ButtonProps> = ({
   customClass,
   loading,
   onClick,
   text,
   type,
+  customStyle,
 }) => {
   if (loading)
     return (
@@ -18,18 +22,19 @@ const Button: React.FC<ButtonProps> = ({
     );
 
   return (
-    <button
-      className={`btn btn-primary ${customClass}`}
+    <S.Button
+      className={customClass}
+      style={customStyle}
       type={type}
       onClick={onClick}
     >
       {text}
-    </button>
+    </S.Button>
   );
 };
 
-Button.defaultProps = {
+AppButton.defaultProps = {
   type: "button",
 };
 
-export default Button;
+export default AppButton;
