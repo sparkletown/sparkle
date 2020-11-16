@@ -73,7 +73,9 @@
     "eject": "react-scripts eject",
     "deploy": "npm run build && firebase deploy",
     "cy:install": "cypress install",
-    "cy:run": "cypress run"
+    "cy:run": "cypress run",
+    "firebase": "npx --no-install -- firebase",
+    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
