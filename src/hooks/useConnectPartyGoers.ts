@@ -1,4 +1,8 @@
 import { useFirestoreConnect } from "react-redux-firebase";
+
+import { partygoersSelector } from "utils/selectors";
+
+import { useSelector } from "./useSelector";
 import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
 
 const useConnectPartyGoers = () => {
@@ -11,6 +15,8 @@ const useConnectPartyGoers = () => {
       storeAs: "partygoers",
     },
   ]);
+
+  return useSelector(partygoersSelector);
 };
 
 export default useConnectPartyGoers;

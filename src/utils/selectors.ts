@@ -27,6 +27,15 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
 ) => state.firebase.profile;
 
 /**
+ * Selector to retrieve partygoers from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const partygoersSelector: SparkleSelector<WithId<User>[]> = (
+  state: RootState
+) => state.firestore.ordered.partygoers;
+
+/**
  * Selector to retrieve venues from the Redux Firestore.
  *
  * @param state the Redux store
