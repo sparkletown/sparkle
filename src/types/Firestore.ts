@@ -63,6 +63,7 @@ export interface Firestore {
     userRoles: Record<string, Role>;
     allowAllRoles: Record<string, Role>;
     adminRole: AdminRole;
+    chatUsers?: Record<string, User>;
   };
   ordered: {
     currentVenue: Array<WithId<AnyVenue>>;
@@ -84,5 +85,6 @@ export interface Firestore {
     allUsers?: Array<WithId<User>>;
     userModalVisits?: Array<WithId<UserVisit>>;
     chatRequests?: Array<WithId<ChatRequest>>;
+    chatUsers?: Array<WithId<User>>;
   };
 }

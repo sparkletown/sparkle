@@ -24,3 +24,11 @@ export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
   );
   return venueRoom ? venueRoom.url : venueInsideUrl(venue.id);
 };
+
+export const isExternalUrl = (url: string) =>
+  url.includes("http") &&
+  window.location.host !== new URL(getRoomUrl(url)).host;
+
+const getRoomUrl = (roomUrl: string) => {
+  return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+};

@@ -1,0 +1,180 @@
+import React, { useCallback, useContext, useMemo, useState } from "react";
+import { isEmpty } from "lodash";
+
+import { DEFAULT_PARTY_NAME, VENUE_CHAT_AGE_DAYS } from "settings";
+
+import { User } from "types/User";
+
+import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
+import { WithId } from "utils/id";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import {
+  ChatContext,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+import ChatBox from "components/molecules/Chatbox";
+import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+
+import "./ChatsList.scss";
+
+interface LastMessageByUser {
+  [userId: string]: PrivateChatMessage;
+}
+
+const ChatsList: React.FunctionComponent = () => {
+  const { user } = useUser();
+  const { privateChats, chatUsers } = useSelector((state) => ({
+    privateChats: state.firestore.ordered.privatechats,
+    chatUsers: state.firestore.data.chatUsers,
+  }));
+
+  const [selectedUser, setSelectedUser] = useState<WithId<User>>();
+
+  const lastMessageByUserReducer = useCallback(
+    (agg, item) => {
+      let lastMessageTimeStamp;
+      let discussionPartner;
+      if (item.from === user?.uid) {
+        discussionPartner = item.to;
+      } else {
+        discussionPartner = item.from;
+      }
+      try {
+        lastMessageTimeStamp = agg[discussionPartner].ts_utc;
+        if (lastMessageTimeStamp < item.ts_utc) {
+          agg[discussionPartner] = item;
+        }
+      } catch {
+        agg[discussionPartner] = item;
+      }
+      return agg;
+    },
+    [user]
+  );
+
+  const discussionPartnerWithLastMessageExchanged = useMemo(() => {
+    if (!privateChats) return {};
+    return privateChats.reduce<LastMessageByUser>(lastMessageByUserReducer, {});
+  }, [lastMessageByUserReducer, privateChats]);
+
+  const onClickOnSender = useCallback(
+    (sender: WithId<User>) => {
+      const chatsToUpdate = privateChats.filter(
+        (chat) => !chat.isRead && chat.from === sender.id
+      );
+      chatsToUpdate.map(
+        (chat) => user && setPrivateChatMessageIsRead(user.uid, chat.id)
+      );
+      setSelectedUser(sender);
+    },
+    [privateChats, user]
+  );
+
+  const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+  const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+
+  const chatsToDisplay = useMemo(
+    () =>
+      privateChats &&
+      privateChats
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.type === "private" &&
+            (message.to === selectedUser?.id ||
+              message.from === selectedUser?.id) &&
+            message.ts_utc.seconds > HIDE_BEFORE
+        )
+        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
+    [privateChats, selectedUser, HIDE_BEFORE]
+  );
+
+  const chatContext = useContext(ChatContext);
+  const onMessageSubmit = useCallback(
+    async (data: { messageToTheBand: string }) => {
+      chatContext &&
+        user &&
+        chatContext.sendPrivateChat(
+          user.uid,
+          selectedUser!.id,
+          data.messageToTheBand
+        );
+    },
+    [chatContext, selectedUser, user]
+  );
+
+  const hasPrivateChats = !isEmpty(discussionPartnerWithLastMessageExchanged);
+
+  const discussions = useMemo(() => {
+    return Object.keys(discussionPartnerWithLastMessageExchanged).sort((a, b) =>
+      discussionPartnerWithLastMessageExchanged[b].ts_utc
+        .valueOf()
+        .localeCompare(
+          discussionPartnerWithLastMessageExchanged[a].ts_utc.valueOf()
+        )
+    );
+  }, [discussionPartnerWithLastMessageExchanged]);
+
+  return selectedUser ? (
+    <>
+      <div
+        className="private-container-back-btn"
+        onClick={() => setSelectedUser(undefined)}
+      />
+      <ChatBox chats={chatsToDisplay} onMessageSubmit={onMessageSubmit} />
+    </>
+  ) : (
+    <>
+      {hasPrivateChats && (
+        <div className="private-container show">
+          <div className="private-messages-list">
+            {discussions.map((userId: string) => {
+              const sender = { ...chatUsers![userId], id: userId };
+              const lastMessageExchanged =
+                discussionPartnerWithLastMessageExchanged?.[userId];
+              const profileName = sender.anonMode
+                ? DEFAULT_PARTY_NAME
+                : sender.partyName;
+
+              return (
+                <div
+                  key={userId}
+                  className="private-message-item"
+                  onClick={() => onClickOnSender(sender)}
+                  id="private-chat-modal-select-private-recipient"
+                >
+                  <UserProfilePicture
+                    avatarClassName="private-message-author-pic"
+                    user={sender}
+                    setSelectedUserProfile={() => null}
+                  />
+                  <div className="private-message-content">
+                    <div className="private-message-author">{profileName}</div>
+                    <div className="private-message-last">
+                      {lastMessageExchanged.text}
+                    </div>
+                  </div>
+                  {lastMessageExchanged.from !== user?.uid &&
+                    !lastMessageExchanged.isRead && (
+                      <div className="not-read-indicator" />
+                    )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+      {!hasPrivateChats && (
+        <div className="private-messages-empty">
+          <div>No private messages yet</div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ChatsList;
