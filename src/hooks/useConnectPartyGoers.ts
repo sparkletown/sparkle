@@ -1,18 +1,8 @@
-import { useEffect, useState } from "react";
-import { getHoursAgoInSeconds } from "utils/time";
 import { useFirestoreConnect } from "react-redux-firebase";
+import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
 
 const useConnectPartyGoers = () => {
-  const [userLastSeenLimit, setUserLastSeenLimit] = useState(
-    getHoursAgoInSeconds(3)
-  );
-  useEffect(() => {
-    const id = setInterval(() => {
-      setUserLastSeenLimit(getHoursAgoInSeconds(3));
-    }, 5 * 60 * 1000);
-
-    return () => clearInterval(id);
-  }, [setUserLastSeenLimit]);
+  const userLastSeenLimit = useUserLastSeenLimit();
 
   useFirestoreConnect([
     {
