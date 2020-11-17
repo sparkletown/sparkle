@@ -10,6 +10,16 @@ import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
+  currentEventSelector,
+  currentVenueSelector,
+  isCurrentEventRequestedSelector,
+  isCurrentVenueRequestedSelector,
+  isUserPurchaseHistoryRequestedSelector,
+  partygoersSelector,
+  shouldRetainAttendanceSelector,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
+import {
   canUserJoinTheEvent,
   currentTimeInUnixEpoch,
   ONE_MINUTE_IN_SECONDS,
@@ -64,28 +74,21 @@ const VenuePage = () => {
   const [unmounted, setUnmounted] = useState(false);
 
   const { user, profile } = useUser();
-  const {
-    venue,
-    users,
-    userPurchaseHistory,
-    userPurchaseHistoryRequestStatus,
-    currentEvent,
-    eventRequestStatus,
-    venueRequestStatus,
-    retainAttendance,
-  } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    venueRequestStatus: state.firestore.status.requested.currentVenue,
-    users: state.firestore.ordered.partygoers,
-    currentEvent: state.firestore.ordered.currentEvent,
-    eventRequestStatus: state.firestore.status.requested.currentEvent,
-    eventPurchase: state.firestore.data.eventPurchase,
-    eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
-    userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    userPurchaseHistoryRequestStatus:
-      state.firestore.status.requested.userPurchaseHistory,
-    retainAttendance: state.attendance.retainAttendance,
-  }));
+
+  const users = useSelector(partygoersSelector);
+
+  const venue = useSelector(currentVenueSelector);
+  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+
+  const currentEvent = useSelector(currentEventSelector);
+  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+
+  const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
+  const userPurchaseHistoryRequestStatus = useSelector(
+    isUserPurchaseHistoryRequestedSelector
+  );
+
+  const retainAttendance = useSelector(shouldRetainAttendanceSelector);
 
   const venueName = venue?.name ?? "";
   const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
