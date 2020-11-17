@@ -6,7 +6,11 @@ import getQueryParameters from "utils/getQueryParameters";
 
 import { useSelector } from "./useSelector";
 
-const useConnectCurrentVenue = () => {
+/**
+ * @deprecated use useConnectCurrentVenueNG instead
+ * @see useConnectCurrentVenueNG
+ */
+export const useConnectCurrentVenue = () => {
   let { venueId } = useParams();
   if (!venueId) {
     venueId = getQueryParameters(window.location.search)?.venueId;
@@ -33,4 +37,7 @@ const useConnectCurrentVenue = () => {
   return useSelector(currentVenueSelector);
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default useConnectCurrentVenue;

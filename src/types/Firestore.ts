@@ -49,6 +49,8 @@ export interface FirestoreData {
   allUsers?: Record<string, User>;
   currentEvent: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
+  currentVenueEventsNG?: Record<string, VenueEvent>;
+  currentVenueNG?: AnyVenue;
   eventPurchase: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experiences: Record<string, Experience>;
@@ -72,6 +74,8 @@ export interface FirestoreOrdered {
   chatRequests?: Array<WithId<ChatRequest>>;
   currentEvent: Array<WithId<VenueEvent>>;
   currentVenue: Array<WithId<AnyVenue>>;
+  currentVenueEventsNG?: Array<WithId<VenueEvent>>;
+  currentVenueNG?: Array<WithId<AnyVenue>>;
   eventPurchase: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experiences: Array<WithId<Experience>>;
