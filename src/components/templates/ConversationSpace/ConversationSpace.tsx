@@ -12,7 +12,7 @@ import { LOC_UPDATE_FREQ_MS } from "settings";
 import { TABLES } from "./constants";
 import "./ConversationSpace.scss";
 
-const ConversationSpace: React.FunctionComponent = () => {
+export const ConversationSpace: React.FunctionComponent = () => {
   const { venue, users } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
     users: state.firestore.ordered.partygoers,
@@ -124,4 +124,7 @@ const ConversationSpace: React.FunctionComponent = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default ConversationSpace;

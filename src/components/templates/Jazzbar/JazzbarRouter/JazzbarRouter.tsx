@@ -8,7 +8,7 @@ import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import VideoAdmin from "pages/VideoAdmin";
 
-const JazzbarRouter: React.FunctionComponent = () => {
+export const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
 
@@ -27,4 +27,7 @@ const JazzbarRouter: React.FunctionComponent = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default JazzbarRouter;

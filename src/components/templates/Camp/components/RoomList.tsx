@@ -5,6 +5,7 @@ import RoomCard from "./RoomCard";
 
 import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 
 interface PropsType {
   rooms: CampRoomData[];
@@ -19,9 +20,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
   setSelectedRoom,
   setIsRoomModalOpen,
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0],
-  }));
+  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
 
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);

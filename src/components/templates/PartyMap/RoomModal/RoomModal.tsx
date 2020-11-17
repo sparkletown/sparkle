@@ -1,15 +1,23 @@
 import React from "react";
-import { currentTimeInUnixEpoch, getCurrentEvent } from "utils/time";
-import RoomModalOngoingEvent from "components/templates/PartyMap/components/RoomModalOngoingEvent";
-import UserList from "components/molecules/UserList";
-import ScheduleItem from "components/templates/PartyMap/components/ScheduleItem";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-import "./RoomModal.scss";
-import { isPartyMapVenue } from "types/PartyMapVenue";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { Modal } from "react-bootstrap";
+
+import { currentTimeInUnixEpoch, getCurrentEvent } from "utils/time";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+
+import { isPartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import UserList from "components/molecules/UserList";
+
+import { RoomModalOngoingEvent } from "../components";
+import { ScheduleItem } from "../components";
+
+import "./RoomModal.scss";
+import { partygoersSelector } from "utils/selectors";
+import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 
 interface PropsType {
   show: boolean;
@@ -17,12 +25,11 @@ interface PropsType {
   room: RoomData | undefined;
 }
 
-const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
+export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
-  const { users, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0],
-    users: state.firestore.ordered.partygoers,
-  }));
+
+  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const users = useSelector(partygoersSelector);
 
   if (!isPartyMapVenue(venue)) {
     return <></>;
@@ -99,5 +106,3 @@ const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
     </Modal>
   );
 };
-
-export default RoomModal;

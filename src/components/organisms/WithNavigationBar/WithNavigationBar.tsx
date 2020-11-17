@@ -8,7 +8,7 @@ interface PropsType {
   fullscreen?: boolean;
 }
 
-const WithNavigationBar: React.FunctionComponent<PropsType> = ({
+export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
   redirectionUrl,
   fullscreen,
   children,
@@ -21,4 +21,7 @@ const WithNavigationBar: React.FunctionComponent<PropsType> = ({
   </>
 );
 
+/**
+ * @deprecated use named export instead
+ */
 export default WithNavigationBar;
