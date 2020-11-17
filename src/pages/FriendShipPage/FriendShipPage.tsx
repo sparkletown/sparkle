@@ -10,7 +10,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import TableHeader from "components/molecules/TableHeader";
 import { useSelector } from "hooks/useSelector";
 
-const FriendShipPage: React.FunctionComponent = () => {
+export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
@@ -88,4 +88,7 @@ const FriendShipPage: React.FunctionComponent = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default FriendShipPage;

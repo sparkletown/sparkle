@@ -1,18 +1,12 @@
-import { useEffect, useState } from "react";
-import { getHoursAgoInSeconds } from "utils/time";
 import { useFirestoreConnect } from "react-redux-firebase";
 
-const useConnectPartyGoers = () => {
-  const [userLastSeenLimit, setUserLastSeenLimit] = useState(
-    getHoursAgoInSeconds(3)
-  );
-  useEffect(() => {
-    const id = setInterval(() => {
-      setUserLastSeenLimit(getHoursAgoInSeconds(3));
-    }, 5 * 60 * 1000);
+import { partygoersSelector } from "utils/selectors";
 
-    return () => clearInterval(id);
-  }, [setUserLastSeenLimit]);
+import { useSelector } from "./useSelector";
+import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
+
+export const useConnectPartyGoers = () => {
+  const userLastSeenLimit = useUserLastSeenLimit();
 
   useFirestoreConnect([
     {
@@ -21,6 +15,11 @@ const useConnectPartyGoers = () => {
       storeAs: "partygoers",
     },
   ]);
+
+  return useSelector(partygoersSelector);
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default useConnectPartyGoers;

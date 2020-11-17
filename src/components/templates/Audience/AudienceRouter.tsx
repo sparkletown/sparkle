@@ -6,7 +6,7 @@ import { Venue } from "types/Venue";
 import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Audience } from "./Audience";
 
-const AudienceRouter: React.FunctionComponent = () => {
+export const AudienceRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
 
   const { venue } = useSelector((state) => ({
@@ -28,4 +28,7 @@ const AudienceRouter: React.FunctionComponent = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default AudienceRouter;
