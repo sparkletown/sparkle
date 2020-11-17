@@ -19,7 +19,6 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
 import { IS_BURN } from "secrets";
-import { venuesOrderedSelector } from "utils/selectors";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -139,7 +138,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const visits = useSelector(
     (state) => state.firestore.ordered.userModalVisits
   );
-  const venues = useSelector(venuesOrderedSelector);
+  const venues = useSelector((state) => state.firestore.ordered.venues);
 
   const playaTime = useMemo(() => {
     if (!visits) return undefined;

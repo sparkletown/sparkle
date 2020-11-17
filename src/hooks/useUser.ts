@@ -1,10 +1,7 @@
-import { authSelector, profileSelector } from "utils/selectors";
-import { useSelector } from "hooks/useSelector";
+import { useSelector } from "./useSelector";
 
 export const useUser = () => {
-  const auth = useSelector(authSelector);
-  const profile = useSelector(profileSelector);
-
+  const { auth, profile } = useSelector((state) => state.firebase);
   return {
     user: !auth.isEmpty ? auth : undefined,
     profile: !profile.isEmpty ? profile : undefined,

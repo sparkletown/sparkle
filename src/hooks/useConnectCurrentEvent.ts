@@ -4,7 +4,7 @@ import { oneHourAfterTimestamp } from "utils/time";
 import { useState } from "react";
 import { useUser } from "./useUser";
 
-export const useConnectCurrentEvent = () => {
+const useConnectCurrentEvent = () => {
   const { venueId } = useParams();
   const { user } = useUser();
   const [currentTimestamp] = useState(Date.now() / 1000);
@@ -36,7 +36,4 @@ export const useConnectCurrentEvent = () => {
   ]);
 };
 
-/**
- * @deprecated use named export instead
- */
 export default useConnectCurrentEvent;
