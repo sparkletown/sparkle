@@ -3,10 +3,17 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "index";
 
 import { AnyVenue } from "types/Firestore";
+import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
+import { VenueEvent } from "types/VenueEvent";
 
 import { WithId } from "utils/id";
+
+import {
+  makeIsRequestedSelector,
+  makeOrderedSelector,
+} from "./firestoreSelectors";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -74,3 +81,27 @@ export const makeVenueSelector = (venueId: string) => (
 
   return { ...venues[venueId], id: venueId };
 };
+
+export const currentEventSelector: SparkleSelector<
+  WithId<VenueEvent>[]
+> = makeOrderedSelector("currentEvent");
+
+export const userPurchaseHistorySelector: SparkleSelector<
+  WithId<Purchase>[]
+> = makeOrderedSelector("userPurchaseHistory");
+
+export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
+  state: RootState
+) => state.attendance.retainAttendance;
+
+export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenue"
+);
+
+export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentEvent"
+);
+
+export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "userPurchaseHistory"
+);
