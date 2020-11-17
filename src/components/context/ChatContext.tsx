@@ -1,9 +1,6 @@
 import React, { useCallback } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
-
 import firebase from "firebase/app";
-
-import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
 
 interface ChatContextType {
@@ -83,7 +80,11 @@ function buildMessage(data: MessageBuilderInput): ChatMessage {
 export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const { venue } = useSelector((state) => ({
+    venue: state.firestore.ordered.currentVenue?.[0],
+  }));
+
+  const chatCollectionName = `venues/${venue.id}/chats`;
 
   useFirestoreConnect({
     collection: "venues",
@@ -91,8 +92,6 @@ export const ChatContextWrapper: React.FC<React.PropsWithChildren<{}>> = ({
     subcollections: [{ collection: "chats" }],
     storeAs: "venueChats",
   });
-
-  const chatCollectionName = `venues/${venue.id}/chats`;
 
   const sendGlobalChat = useCallback(
     (from, text) => {

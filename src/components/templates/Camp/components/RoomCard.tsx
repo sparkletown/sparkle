@@ -5,7 +5,6 @@ import { CampRoomData } from "types/CampRoomData";
 import { useSelector } from "hooks/useSelector";
 import { getCurrentEvent } from "utils/event";
 import "../../../templates/PartyMap/components/RoomCard/RoomCard.scss";
-import { currentVenueEventsNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 
 interface PropsType {
   room: CampRoomData;
@@ -18,7 +17,9 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
   attendance,
   onClick,
 }) => {
-  const venueEvents = useSelector(currentVenueEventsNGLegacyWorkaroundSelector);
+  const venueEvents = useSelector(
+    (state) => state.firestore.ordered.venueEvents
+  );
 
   if (!venueEvents) return <></>;
 
