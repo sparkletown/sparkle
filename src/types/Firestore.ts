@@ -17,80 +17,72 @@ import { User } from "./User";
 import { Venue } from "./Venue";
 import { VenueEvent } from "./VenueEvent";
 
-interface VenueStatus {
-  currentVenue: boolean;
-  currentEvent: boolean;
-  eventPurchase: boolean;
-  venueChats: boolean;
-  venueEvents: boolean;
-  userPurchaseHistory: boolean;
-}
+export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
 interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Table>;
 }
 
-type VenueTimestamps = Record<keyof VenueStatus, number>;
-export type AnyVenue = Venue | PartyMapVenue | CampVenue;
-
 interface UserVisit {
   timeSpent: number;
 }
 
 export interface Firestore {
-  status: FirestoreStatus;
   data: FirestoreData;
   ordered: FirestoreOrdered;
+  status: FirestoreStatus;
 }
 
 export interface FirestoreStatus {
-  requesting: VenueStatus;
-  requested: VenueStatus;
-  timestamps: VenueTimestamps;
+  requesting: Record<keyof FirestoreData, boolean>;
+  requested: Record<keyof FirestoreData, boolean>;
+  timestamps: Record<keyof FirestoreData, number>;
 }
 
+// note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  currentVenue?: AnyVenue;
-  parentVenue?: AnyVenue;
+  adminRole: AdminRole;
+  allowAllRoles: Record<string, Role>;
+  allUsers?: Record<string, User>;
   currentEvent: Record<string, VenueEvent>;
+  currentVenue?: AnyVenue;
+  eventPurchase: Record<string, Purchase>;
+  events?: Record<string, VenueEvent>;
+  experiences: Record<string, Experience>;
+  parentVenue?: AnyVenue;
+  partygoers: Record<string, User>;
+  playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
+  privatechats: Record<string, PrivateChatMessage>;
+  reactions: Record<string, Reaction>;
+  userModalVisits?: Record<string, UserVisit>;
+  userPurchaseHistory: Record<string, Purchase>;
+  userRoles: Record<string, Role>;
+  users: Record<string, User>;
   venueChats: Record<string, RestrictedChatMessage> | null;
   venueEvents: Record<string, VenueEvent>;
-  userPurchaseHistory: Record<string, Purchase>;
-  partygoers: Record<string, User>;
-  users: Record<string, User>;
-  privatechats: Record<string, PrivateChatMessage>;
-  experiences: Record<string, Experience>;
-  eventPurchase: Record<string, Purchase>;
-  reactions: Record<string, Reaction>;
   venues?: Record<string, AnyVenue>;
-  events?: Record<string, VenueEvent>;
-  playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
-  allUsers?: Record<string, User>;
-  userModalVisits?: Record<string, UserVisit>;
-  userRoles: Record<string, Role>;
-  allowAllRoles: Record<string, Role>;
-  adminRole: AdminRole;
 }
 
+// note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  currentVenue: Array<WithId<AnyVenue>>;
+  allUsers?: Array<WithId<User>>;
+  chatRequests?: Array<WithId<ChatRequest>>;
   currentEvent: Array<WithId<VenueEvent>>;
-  venueChats: Array<WithId<RestrictedChatMessage>>;
-  venueEvents: Array<WithId<VenueEvent>>;
-  userPurchaseHistory: Array<WithId<Purchase>>;
-  partygoers: Array<WithId<User>>;
-  users: Array<WithId<User>>;
-  privatechats: Array<WithId<PrivateChatMessage>>;
-  experiences: Array<WithId<Experience>>;
+  currentVenue: Array<WithId<AnyVenue>>;
   eventPurchase: Array<WithId<Purchase>>;
-  reactions: Array<WithId<Reaction>>;
-  venues?: Array<WithId<AnyVenue>>;
   events?: Array<WithId<VenueEvent>>;
+  experiences: Array<WithId<Experience>>;
+  partygoers: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;
+  privatechats: Array<WithId<PrivateChatMessage>>;
+  reactions: Array<WithId<Reaction>>;
   statsOnlineUsers?: Array<WithId<User>>;
   statsOpenVenues?: Array<WithId<AnyVenue>>;
-  allUsers?: Array<WithId<User>>;
   userModalVisits?: Array<WithId<UserVisit>>;
-  chatRequests?: Array<WithId<ChatRequest>>;
+  userPurchaseHistory: Array<WithId<Purchase>>;
+  users: Array<WithId<User>>;
+  venueChats: Array<WithId<RestrictedChatMessage>>;
+  venueEvents: Array<WithId<VenueEvent>>;
+  venues?: Array<WithId<AnyVenue>>;
 }
