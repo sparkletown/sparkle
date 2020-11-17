@@ -1,18 +1,12 @@
-import { ChatContextWrapper } from "components/context/ChatContext";
-import CountDown from "components/molecules/CountDown";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import ArtPiece from "components/templates/ArtPiece";
-import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
-import PartyMap from "components/templates/PartyMap";
-import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import FriendShipPage from "pages/FriendShipPage";
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+
+import { LOC_UPDATE_FREQ_MS } from "settings";
+
 import { VenueTemplate } from "types/VenueTemplate";
+
+import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
@@ -24,21 +18,38 @@ import {
   updateLocationData,
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
-import { updateTheme } from "./helpers";
-import "./VenuePage.scss";
-import { PlayaRouter } from "components/templates/Playa/Router";
+import { venueEntranceUrl } from "utils/url";
+
+import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
+import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
+import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { ChatContextWrapper } from "components/context/ChatContext";
+
+import { FriendShipPage } from "pages/FriendShipPage";
+import { updateUserProfile } from "pages/Account/helpers";
+
+import { ArtPiece } from "components/templates/ArtPiece";
+import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { CampRouter } from "components/templates/Camp/Router";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
+import { PartyMap } from "components/templates/PartyMap";
+import { PlayaRouter } from "components/templates/Playa/Router";
+
+import { AuthenticationModal } from "components/organisms/AuthenticationModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
+import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
-import AudienceRouter from "components/templates/Audience/AudienceRouter";
-import { useVenueId } from "hooks/useVenueId";
-import { venueEntranceUrl } from "utils/url";
-import getQueryParameters from "utils/getQueryParameters";
-import ConversationSpace from "components/templates/ConversationSpace";
-import { updateUserProfile } from "pages/Account/helpers";
-import { LOC_UPDATE_FREQ_MS } from "settings";
+
+import { updateTheme } from "./helpers";
+
+import "./VenuePage.scss";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
