@@ -52,7 +52,7 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const { venueId } = useParams();
+  const { venueId } = useParams<{ venueId?: string }>();
 
   return venueId ? (
     <VenueWizardEdit venueId={venueId} />
@@ -99,7 +99,11 @@ const VenueWizardCreate: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const queryParams = useQuery();
+
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  const parentIdQuery = queryParams.get("parentId");
+  const hasParent = !!parentIdQuery;
 
   const queryPageString = queryParams.get("page");
   const queryPage = queryPageString ? parseInt(queryPageString) : 1;
@@ -107,14 +111,18 @@ const VenueWizardCreate: React.FC = () => {
   const next = useCallback(
     (action: WizardActions) => {
       dispatch(action);
-      history.push(`${history.location.pathname}?page=${queryPage + 1}`);
+      const path = `${history.location.pathname}?page=${queryPage + 1}`;
+
+      history.push(hasParent ? `${path}&parentId=${parentIdQuery}` : path);
     },
-    [history, queryPage]
+    [hasParent, history, parentIdQuery, queryPage]
   );
-  const previous = useCallback(
-    () => history.push(`${history.location.pathname}?page=${queryPage - 1}`),
-    [history, queryPage]
-  );
+
+  const previous = useCallback(() => {
+    const path = `${history.location.pathname}?page=${queryPage - 1}`;
+
+    history.push(hasParent ? `${path}&parentId=${parentIdQuery}` : path);
+  }, [hasParent, history, parentIdQuery, queryPage]);
 
   const Page = useMemo(() => {
     switch (queryPage) {
