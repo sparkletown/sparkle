@@ -6,7 +6,7 @@ interface PropsType {
   textBeforeCountdown?: string;
 }
 
-const CountDown: React.FunctionComponent<PropsType> = ({
+export const CountDown: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   textBeforeCountdown,
 }) => {
@@ -21,4 +21,7 @@ const CountDown: React.FunctionComponent<PropsType> = ({
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default CountDown;

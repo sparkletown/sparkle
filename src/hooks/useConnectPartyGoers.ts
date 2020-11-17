@@ -5,7 +5,7 @@ import { partygoersSelector } from "utils/selectors";
 import { useSelector } from "./useSelector";
 import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
 
-const useConnectPartyGoers = () => {
+export const useConnectPartyGoers = () => {
   const userLastSeenLimit = useUserLastSeenLimit();
 
   useFirestoreConnect([
@@ -19,4 +19,7 @@ const useConnectPartyGoers = () => {
   return useSelector(partygoersSelector);
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default useConnectPartyGoers;

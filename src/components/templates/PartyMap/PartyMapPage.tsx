@@ -24,7 +24,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { PartyTitle, RoomList, Map } from "./components";
 import { RoomModal } from "./RoomModal/RoomModal";
 
-const PartyMap = () => {
+export const PartyMap = () => {
   useConnectPartyGoers();
   useConnectCurrentVenue();
 
@@ -161,4 +161,7 @@ const PartyMap = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default PartyMap;
