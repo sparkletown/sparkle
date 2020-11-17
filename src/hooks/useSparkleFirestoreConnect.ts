@@ -1,8 +1,15 @@
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
+  isLoaded as _isLoaded,
+  isEmpty as _isEmpty,
 } from "react-redux-firebase";
 import { ValidFirestoreKeys } from "types/Firestore";
+
+/**
+ * Type helper representing all types of T except undefined
+ */
+export type Defined<T> = T & Exclude<T, undefined>;
 
 /**
  * This type allows us to automagically constrain the storeAs
@@ -35,3 +42,18 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  */
 export const useSparkleFirestoreConnect = (config: SparkleRFQConfig[]) =>
   useFirestoreConnect(config);
+
+/**
+ * Use react-redux-firestore's isEmpty helper with
+ * user-defined type guards to properly narrow types
+ * when using this helper.
+ *
+ * @param item item fetched by react-redux-firestore
+ */
+export const hasData = <T>(item: T): item is Defined<T> =>
+  !_isEmpty(item) && item !== undefined;
+
+/**
+ * Re-export react-redux-firestore's isLoaded helper for convenience.
+ */
+export const isLoaded = <T>(item: T) => _isLoaded(item);
