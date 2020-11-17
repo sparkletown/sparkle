@@ -1,10 +1,8 @@
-import React from "react";
-
-import { retainAttendance } from "store/actions/Attendance";
-import { formatMinute } from "utils/time";
-import { RoomEventData } from "types/RoomEventData";
 import { useDispatch } from "hooks/useDispatch";
-
+import React from "react";
+import { retainAttendance } from "store/actions/Attendance";
+import { RoomEventData } from "types/RoomEventData";
+import { formatMinute } from "utils/time";
 import "./ScheduleItem.scss";
 
 interface PropsType {
@@ -15,7 +13,7 @@ interface PropsType {
   roomUrl: string;
 }
 
-export const ScheduleItem: React.FunctionComponent<PropsType> = ({
+const ScheduleItem: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   event,
   isCurrentEvent,
@@ -68,3 +66,5 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
+
+export default ScheduleItem;

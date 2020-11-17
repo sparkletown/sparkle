@@ -6,10 +6,6 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useDispatch } from "hooks/useDispatch";
-import {
-  currentVenueEventsNGLegacyWorkaroundSelector,
-  currentVenueNGLegacyWorkaroundSelector,
-} from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -22,7 +18,6 @@ import {
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
-import { partygoersSelector } from "utils/selectors";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -50,10 +45,11 @@ export const RoomModal: React.FC<PropsType> = ({
   miniAvatars,
 }) => {
   const { user, profile } = useUser();
-
-  const partygoers = useSelector(partygoersSelector);
-  const venueEvents = useSelector(currentVenueEventsNGLegacyWorkaroundSelector);
-  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const { partygoers, venueEvents, venue } = useSelector((state) => ({
+    partygoers: state.firestore.ordered.partygoers,
+    venueEvents: state.firestore.ordered.venueEvents,
+    venue: state.firestore.ordered.currentVenue,
+  }));
 
   const dispatch = useDispatch();
 
@@ -61,7 +57,7 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
-  const venueName = venue.name;
+  const venueName = venue[0].name;
 
   const enter = () => {
     room &&

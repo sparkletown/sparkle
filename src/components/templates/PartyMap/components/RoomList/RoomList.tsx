@@ -1,10 +1,9 @@
 import React from "react";
-
-import { eventHappeningNow } from "utils/time";
-import { RoomData } from "types/RoomData";
-
-import { RoomCard } from "..";
 import "./RoomList.scss";
+
+import { RoomData } from "types/RoomData";
+import RoomCard from "../RoomCard";
+import { eventHappeningNow } from "utils/time";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -14,7 +13,7 @@ interface PropsType {
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
-export const RoomList: React.FunctionComponent<PropsType> = ({
+const RoomList: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   rooms,
   attendances,
@@ -49,3 +48,5 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
     </>
   );
 };
+
+export default RoomList;

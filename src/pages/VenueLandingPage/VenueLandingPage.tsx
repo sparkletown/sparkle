@@ -25,12 +25,6 @@ import { isUserAMember } from "utils/isUserAMember";
 import { getTimeBeforeParty, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import {
-  currentVenueEventsNGLegacyWorkaroundSelector,
-  currentVenueNGLegacyWorkaroundSelector,
-} from "hooks/useConnectCurrentVenueNG";
-import { userPurchaseHistorySelector } from "utils/selectors";
-import { hasData, isLoaded } from "hooks/useSparkleFirestoreConnect";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -44,9 +38,17 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { venueId } = useParams();
   useConnectCurrentVenue();
 
-  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
-  const venueEvents = useSelector(currentVenueEventsNGLegacyWorkaroundSelector);
-  const purchaseHistory = useSelector(userPurchaseHistorySelector);
+  const {
+    venue,
+    venueEvents,
+    venueRequestStatus,
+    purchaseHistory,
+  } = useSelector((state) => ({
+    venue: state.firestore.data.currentVenue,
+    venueRequestStatus: state.firestore.status.requested.currentVenue,
+    venueEvents: state.firestore.ordered.venueEvents,
+    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
+  }));
 
   useFirestoreConnect({
     collection: "venues",
@@ -86,11 +88,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
-  if (!isLoaded(venue)) {
-    return <>Loading...</>;
-  }
-  if (!hasData(venue)) {
+  if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
+  }
+
+  if (!venue) {
+    return <>Loading...</>;
   }
 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);
