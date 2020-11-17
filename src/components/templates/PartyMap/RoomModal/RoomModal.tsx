@@ -16,6 +16,8 @@ import { RoomModalOngoingEvent } from "../components";
 import { ScheduleItem } from "../components";
 
 import "./RoomModal.scss";
+import { partygoersSelector } from "utils/selectors";
+import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 
 interface PropsType {
   show: boolean;
@@ -25,10 +27,9 @@ interface PropsType {
 
 export const RoomModal: React.FC<PropsType> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
-  const { users, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0],
-    users: state.firestore.ordered.partygoers,
-  }));
+
+  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const users = useSelector(partygoersSelector);
 
   if (!isPartyMapVenue(venue)) {
     return <></>;

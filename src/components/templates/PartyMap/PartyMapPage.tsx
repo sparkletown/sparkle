@@ -23,6 +23,8 @@ import { updateTheme } from "pages/VenuePage/helpers";
 
 import { PartyTitle, RoomList, Map } from "./components";
 import { RoomModal } from "./RoomModal/RoomModal";
+import { partygoersSelector } from "utils/selectors";
+import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
 
 export const PartyMap = () => {
   useConnectPartyGoers();
@@ -33,10 +35,9 @@ export const PartyMap = () => {
   const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const { user, profile } = useUser();
-  const { partygoers, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0],
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+
+  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const partygoers = useSelector(partygoersSelector);
 
   venue && updateTheme(venue);
 
