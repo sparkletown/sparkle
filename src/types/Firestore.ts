@@ -28,6 +28,8 @@ interface UserVisit {
   timeSpent: number;
 }
 
+export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
+
 export interface Firestore {
   data: FirestoreData;
   ordered: FirestoreOrdered;
@@ -35,9 +37,9 @@ export interface Firestore {
 }
 
 export interface FirestoreStatus {
-  requesting: Record<keyof FirestoreData, boolean>;
-  requested: Record<keyof FirestoreData, boolean>;
-  timestamps: Record<keyof FirestoreData, number>;
+  requesting: Record<ValidFirestoreKeys, boolean>;
+  requested: Record<ValidFirestoreKeys, boolean>;
+  timestamps: Record<ValidFirestoreKeys, number>;
 }
 
 // note: these entries should be sorted alphabetically
