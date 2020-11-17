@@ -12,6 +12,11 @@ import { CampRoomData } from "types/CampRoomData";
 import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
 import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { useFirestoreConnect } from "react-redux-firebase";
+import {
+  currentVenueEventsNGLegacyWorkaroundSelector,
+  currentVenueNGLegacyWorkaroundSelector,
+} from "hooks/useConnectCurrentVenueNG";
+import { partygoersSelector, venuesOrderedSelector } from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -28,12 +33,11 @@ export const RoomModal: React.FC<PropsType> = ({
 }) => {
   useFirestoreConnect("venues");
   const { user, profile } = useUser();
-  const { users, venueEvents, venues, venue } = useSelector((state) => ({
-    users: state.firestore.ordered.partygoers,
-    venueEvents: state.firestore.ordered.venueEvents,
-    venues: state.firestore.ordered.venues,
-    venue: state.firestore.ordered.currentVenue?.[0],
-  }));
+
+  const venue = useSelector(currentVenueNGLegacyWorkaroundSelector);
+  const venueEvents = useSelector(currentVenueEventsNGLegacyWorkaroundSelector);
+  const venues = useSelector(venuesOrderedSelector);
+  const users = useSelector(partygoersSelector);
 
   if (!room) {
     return <></>;
