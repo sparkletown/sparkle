@@ -40,7 +40,7 @@ const ChatList: React.FC<ChatListProps> = ({
     WithId<RestrictedChatMessage | PrivateChatMessage>
   >();
 
-  const onAvatarClick = useCallback(
+  const showUserProfile = useCallback(
     (message) => {
       if (!usersById) {
         return;
@@ -53,12 +53,12 @@ const ChatList: React.FC<ChatListProps> = ({
     [usersById]
   );
 
-  const onDeleteClick = useCallback((message) => {
+  const toggleDeleteModal = useCallback((message) => {
     setMessageToDelete(message);
     setShowDeleteModal(true);
   }, []);
 
-  const onDeleteConfirm = useCallback(async () => {
+  const confirmDelete = useCallback(async () => {
     if (messageToDelete) {
       setDeleting(true);
       try {
@@ -72,10 +72,16 @@ const ChatList: React.FC<ChatListProps> = ({
     }
   }, [deleteMessage, messageToDelete]);
 
-  const onDeleteCancel = useCallback(() => {
+  const cancelDelete = useCallback(() => {
     setError(undefined);
     setShowDeleteModal(false);
   }, []);
+
+  const hideUserProfile = useCallback(
+    () => setSelectedUserProfile(undefined),
+    []
+  );
+  const hideDeleteModal = useCallback(() => setShowDeleteModal(false), []);
 
   const hasMessages = !!messages.length;
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
@@ -90,8 +96,8 @@ const ChatList: React.FC<ChatListProps> = ({
                 usersById={usersById}
                 message={message}
                 allowDelete={allowDelete ?? false}
-                onDeleteClick={onDeleteClick}
-                onAvatarClick={onAvatarClick}
+                onDeleteClick={toggleDeleteModal}
+                onAvatarClick={showUserProfile}
               />
             ))}
         </div>
@@ -104,16 +110,16 @@ const ChatList: React.FC<ChatListProps> = ({
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        onHide={hideUserProfile}
       />
-      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+      <Modal show={showDeleteModal} onHide={hideDeleteModal}>
         <div className="text-center">
           <p>{`Permanently delete message '${messageToDelete?.text}' from ${messageSender}?`}</p>
           <button
             type="button"
             disabled={deleting}
             className="btn btn-block btn-danger btn-centered"
-            onClick={onDeleteConfirm}
+            onClick={confirmDelete}
           >
             Yes, delete
           </button>
@@ -121,7 +127,7 @@ const ChatList: React.FC<ChatListProps> = ({
           <button
             disabled={deleting}
             className="btn btn-block btn-primary btn-centered"
-            onClick={onDeleteCancel}
+            onClick={cancelDelete}
           >
             No, Cancel
           </button>

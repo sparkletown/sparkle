@@ -10,11 +10,10 @@ import {
   PrivateChatMessage,
   RestrictedChatMessage,
 } from "components/context/ChatContext";
-import ChatboxMessageList from "./ChatboxMessageList";
+import ChatList from "../ChatList";
 
 import "./CampChat.scss";
 import "./Chatbox.scss";
-import ChatList from "../ChatList";
 
 interface ChatOutDataType {
   messageToTheBand: string;

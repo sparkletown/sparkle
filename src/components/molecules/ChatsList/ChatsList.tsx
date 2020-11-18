@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { isEmpty } from "lodash";
 
 import { DEFAULT_PARTY_NAME, VENUE_CHAT_AGE_DAYS } from "settings";
@@ -7,6 +13,7 @@ import { User } from "types/User";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
+import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -25,12 +32,12 @@ interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
 }
 
+const noopHandler = () => {};
+
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
-  const { privateChats, chatUsers } = useSelector((state) => ({
-    privateChats: state.firestore.ordered.privatechats,
-    chatUsers: state.firestore.data.chatUsers,
-  }));
+  const privateChats = useSelector(privateChatsSelector);
+  const chatUsers = useSelector(chatUsersSelector);
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
@@ -94,7 +101,7 @@ const ChatsList: React.FunctionComponent = () => {
   );
 
   const chatContext = useContext(ChatContext);
-  const onMessageSubmit = useCallback(
+  const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
       chatContext &&
         user &&
@@ -106,6 +113,8 @@ const ChatsList: React.FunctionComponent = () => {
     },
     [chatContext, selectedUser, user]
   );
+
+  const hideUserChat = useCallback(() => setSelectedUser(undefined), []);
 
   const hasPrivateChats = !isEmpty(discussionPartnerWithLastMessageExchanged);
 
@@ -119,16 +128,17 @@ const ChatsList: React.FunctionComponent = () => {
     );
   }, [discussionPartnerWithLastMessageExchanged]);
 
-  return selectedUser ? (
-    <>
-      <div
-        className="private-container-back-btn"
-        onClick={() => setSelectedUser(undefined)}
-      />
-      <ChatBox chats={chatsToDisplay} onMessageSubmit={onMessageSubmit} />
-    </>
-  ) : (
-    <>
+  if (selectedUser) {
+    return (
+      <Fragment>
+        <div className="private-container-back-btn" onClick={hideUserChat} />
+        <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
+      </Fragment>
+    );
+  }
+
+  return (
+    <Fragment>
       {hasPrivateChats && (
         <div className="private-container show">
           <div className="private-messages-list">
@@ -150,7 +160,7 @@ const ChatsList: React.FunctionComponent = () => {
                   <UserProfilePicture
                     avatarClassName="private-message-author-pic"
                     user={sender}
-                    setSelectedUserProfile={() => null}
+                    setSelectedUserProfile={noopHandler}
                   />
                   <div className="private-message-content">
                     <div className="private-message-author">{profileName}</div>
@@ -173,7 +183,7 @@ const ChatsList: React.FunctionComponent = () => {
           <div>No private messages yet</div>
         </div>
       )}
-    </>
+    </Fragment>
   );
 };
 
