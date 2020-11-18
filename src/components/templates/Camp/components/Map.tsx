@@ -1,24 +1,34 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CampVenue } from "types/CampVenue";
-import { CampRoomData } from "types/CampRoomData";
-import "./Map.scss";
-import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
-import { useUser } from "../../../../hooks/useUser";
-import { IS_BURN } from "secrets";
-import { RoomVisibility } from "types/Venue";
-import { useDispatch } from "hooks/useDispatch";
-import { retainAttendance } from "store/actions/Attendance";
-import { currentTimeInUnixEpoch } from "utils/time";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { User } from "types/User";
-import { WithId } from "utils/id";
-import { useVenueId } from "hooks/useVenueId";
-import firebase from "firebase/app";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import CampAttendance from "./CampAttendance";
-import { useSelector } from "hooks/useSelector";
 
-interface PropsType {
+import { IS_BURN } from "secrets";
+
+import { retainAttendance } from "store/actions/Attendance";
+
+import firebase from "firebase/app";
+
+import { CampRoomData } from "types/CampRoomData";
+import { CampVenue } from "types/CampVenue";
+import { User } from "types/User";
+import { RoomVisibility } from "types/Venue";
+
+import { WithId } from "utils/id";
+import { currentTimeInUnixEpoch } from "utils/time";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+
+import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+import CampAttendance from "./CampAttendance";
+
+import "./Map.scss";
+
+interface MapProps {
   venue: CampVenue;
   partygoers: WithId<User>[];
   attendances: { [location: string]: number };
@@ -31,7 +41,7 @@ const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 const MOVEMENT_INTERVAL = 350;
 
-export const Map: React.FC<PropsType> = ({
+export const Map: React.FC<MapProps> = ({
   venue,
   partygoers,
   attendances,
