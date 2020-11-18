@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -11,7 +11,9 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
   currentEventSelector,
+  currentVenueSelector,
   isCurrentEventRequestedSelector,
+  isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
   partygoersSelector,
   shouldRetainAttendanceSelector,
@@ -29,11 +31,9 @@ import {
 import { venueEntranceUrl } from "utils/url";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useSelector } from "hooks/useSelector";
-import { hasData, isLoaded } from "hooks/useSparkleFirestoreConnect";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -66,9 +66,8 @@ const hasPaidEvents = (template: VenueTemplate) => {
 };
 
 const VenuePage = () => {
-  const venueId =
-    useVenueId() ||
-    (getQueryParameters(window.location.search)?.venueId as string);
+  const venueId = useVenueId();
+  const firestore = useFirestore();
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
@@ -77,21 +76,9 @@ const VenuePage = () => {
   const { user, profile } = useUser();
 
   const users = useSelector(partygoersSelector);
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  useConnectCurrentEvent();
-  useConnectPartyGoers();
-  useConnectUserPurchaseHistory();
 
-  useFirestoreConnect(
-    user
-      ? {
-          collection: "privatechats",
-          doc: user.uid,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
-        }
-      : undefined
-  );
+  const venue = useSelector(currentVenueSelector);
+  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
@@ -103,7 +90,7 @@ const VenuePage = () => {
 
   const retainAttendance = useSelector(shouldRetainAttendanceSelector);
 
-  const venueName = currentVenue?.name ?? "";
+  const venueName = venue?.name ?? "";
   const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
 
   const updateUserLocation = useCallback(() => {
@@ -130,7 +117,7 @@ const VenuePage = () => {
 
   const event = currentEvent?.[0];
 
-  currentVenue && updateTheme(currentVenue);
+  venue && updateTheme(venue);
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
@@ -139,11 +126,9 @@ const VenuePage = () => {
     currentTimestamp >
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
-  const isUserVenueOwner = user && currentVenue?.owners?.includes(user.uid);
+  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
   const isMember =
-    user &&
-    currentVenue &&
-    isUserAMember(user.email, currentVenue.config?.memberEmails);
+    user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
@@ -213,6 +198,30 @@ const VenuePage = () => {
     };
   }, [prevLocations, user, venueName]);
 
+  const venueIdFromParams = getQueryParameters(window.location.search)
+    ?.venueId as string;
+
+  useConnectPartyGoers();
+  useConnectCurrentEvent();
+  useConnectUserPurchaseHistory();
+  useEffect(() => {
+    firestore.get({
+      collection: "venues",
+      doc: venueId ? venueId : venueIdFromParams,
+      storeAs: "currentVenue",
+    });
+  }, [firestore, venueId, venueIdFromParams]);
+  useFirestoreConnect(
+    user
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
+
   if (!user) {
     return (
       <WithNavigationBar>
@@ -225,32 +234,28 @@ const VenuePage = () => {
     );
   }
 
-  if (!isLoaded(currentVenue)) {
+  if (!venue || !venueId) {
     return <LoadingPage />;
-  }
-  if (!hasData(currentVenue)) {
-    return <>This venue does not exist</>;
   }
 
   if (profile?.enteredVenueIds && !profile.enteredVenueIds?.includes(venueId)) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
+  }
+
   if (
-    hasPaidEvents(currentVenue.template) &&
-    currentVenue.hasPaidEvents &&
+    hasPaidEvents(venue.template) &&
+    venue.hasPaidEvents &&
     !isUserVenueOwner
   ) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
 
-    if (
-      !event ||
-      !currentVenue ||
-      !users ||
-      !userPurchaseHistoryRequestStatus
-    ) {
+    if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 
@@ -286,7 +291,7 @@ const VenuePage = () => {
 
   let template;
   let fullscreen = false;
-  switch (currentVenue.template) {
+  switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzbarRouter />;
       break;
@@ -310,12 +315,12 @@ const VenuePage = () => {
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
-      if (currentVenue.zoomUrl) {
-        window.location.replace(currentVenue.zoomUrl);
+      if (venue.zoomUrl) {
+        window.location.replace(venue.zoomUrl);
       }
       template = (
         <p>
-          Venue {currentVenue.name} should redirect to a URL, but none was set.
+          Venue {venue.name} should redirect to a URL, but none was set.
           <br />
           <button
             role="link"

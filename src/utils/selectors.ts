@@ -60,10 +60,6 @@ export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
 
-export const venuesOrderedSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.venues;
-
 /**
  * Makes a venueSelector selector for a given venueId, which when called
  * will retrieve the specified venue from the Redux Firestore.

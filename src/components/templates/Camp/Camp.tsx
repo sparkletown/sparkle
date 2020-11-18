@@ -20,8 +20,6 @@ import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
 import BannerMessage from "components/molecules/BannerMessage";
-import { currentVenueNGLegacyWorkaroundSelector } from "hooks/useConnectCurrentVenueNG";
-import { partygoersSelector } from "utils/selectors";
 
 const Camp: React.FC = () => {
   useConnectPartyGoers();
@@ -30,10 +28,10 @@ const Camp: React.FC = () => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [nowMs, setNowMs] = useState(new Date().getTime());
 
-  const venue = useSelector(
-    currentVenueNGLegacyWorkaroundSelector
-  ) as CampVenue;
-  const partygoers = useSelector(partygoersSelector);
+  const { partygoers, venue } = useSelector((state) => ({
+    venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
+    partygoers: state.firestore.ordered.partygoers,
+  }));
 
   useEffect(() => {
     const interval = setInterval(() => {
