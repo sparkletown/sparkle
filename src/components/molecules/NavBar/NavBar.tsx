@@ -50,17 +50,18 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 import "./NavBar.scss";
 import "./playa.scss";
 
-const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({
-  futureUpcoming,
-}) => (
-  <Popover id="popover-basic">
+const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
+  props: unknown,
+  { futureUpcoming }
+) => (
+  <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
     </Popover.Content>
   </Popover>
 );
 
-const ChatPopover: React.FC = () => (
+const ChatPopover = (
   <Popover id="popover-basic">
     <Popover.Content>
       <PrivateChatModal />
@@ -68,7 +69,7 @@ const ChatPopover: React.FC = () => (
   </Popover>
 );
 
-const ProfilePopover: React.FC = () => (
+const ProfilePopover = (
   <Popover id="profile-popover">
     <Popover.Content>
       <ProfilePopoverContent />
@@ -76,7 +77,7 @@ const ProfilePopover: React.FC = () => (
   </Popover>
 );
 
-const GiftPopover: React.FC = () => (
+const GiftPopover = (
   <Popover id="gift-popover">
     <Popover.Content>
       <GiftTicketModal />
@@ -289,7 +290,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={<GiftPopover />}
+                      overlay={GiftPopover}
                       rootClose={true}
                     >
                       <span className="private-chat-icon">
@@ -301,7 +302,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={<ChatPopover />}
+                      overlay={ChatPopover}
                       rootClose={true}
                     >
                       <span className="private-chat-icon">
@@ -337,7 +338,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
-                    overlay={<ProfilePopover />}
+                    overlay={ProfilePopover}
                     rootClose={true}
                   >
                     <div className="navbar-link-profile">
