@@ -6,13 +6,12 @@ import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
 import { formatDate } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
-import { REFETCH_SCHEDULE_MS } from "settings";
-import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
+import { isFutureOrLiveEvent } from "utils/event";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -22,39 +21,51 @@ type DatedEvents = Array<{
 const DAYS_AHEAD = 7;
 
 export const SchedulePageModal: React.FunctionComponent = () => {
-  const [venueEvents, setVenueEvents] = useState<VenueEvent[]>();
-  const [loaded, setLoaded] = useState(false);
-  const { profile } = useUser();
   const venueId = useVenueId();
+  const venueEvents = useSelector(
+    (state) => state.firestore.ordered.venueEvents
+  );
   const venue = useSelector((state) => state.firestore.data.currentVenue);
 
+  const [loaded, setLoaded] = useState(venue?.parentId ? false : true);
+  const [liveAndFutureEvents, setLiveAndFutureEvents] = useState<VenueEvent[]>(
+    []
+  );
+
+  const filterFutureAndLiveEvents = (events: VenueEvent[]) => {
+    return events.filter((event) => isFutureOrLiveEvent(event));
+  };
+
   useEffect(() => {
-    const updateStats = () => {
+    if (venue?.parentId) {
       firebase
-        .functions()
-        .httpsCallable("venue-getVenueEvents")({ venueId })
-        .then((response) => {
-          setVenueEvents(response.data as VenueEvent[]);
-          setLoaded(true);
+        .firestore()
+        .collection(`venues/${venue?.parentId}/events`)
+        .get()
+        .then((data) => {
+          const parentVenueEvents = data.docs.map((doc) => doc.data());
+          const futureAndLiveEvents = filterFutureAndLiveEvents(
+            parentVenueEvents as VenueEvent[]
+          );
+          setLiveAndFutureEvents(futureAndLiveEvents);
         })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, REFETCH_SCHEDULE_MS);
-    return () => clearInterval(id);
-  }, [profile, venueId, venue]);
+        .finally(() => setLoaded(true));
+    } else {
+      const hasVenueEvents = venueEvents && venueEvents.length;
+      const futureAndLiveVenueEvents = filterFutureAndLiveEvents(venueEvents);
+      setLiveAndFutureEvents(hasVenueEvents ? futureAndLiveVenueEvents : []);
+    }
+  }, [venue, venueEvents]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    if (!venueEvents) return [];
+    if (!liveAndFutureEvents) return [];
 
     const nowDay = startOfDay(new Date());
 
     const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
-      const todaysEvents = venueEvents
+      const todaysEvents = liveAndFutureEvents
         ?.filter((event) => {
           return isWithinInterval(day, {
             start: startOfDay(new Date(event.start_utc_seconds * 1000)),
@@ -74,7 +85,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
     });
 
     return dates;
-  }, [venueEvents]);
+  }, [liveAndFutureEvents]);
 
   const [date, setDate] = useState(0);
 

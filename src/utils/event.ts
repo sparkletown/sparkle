@@ -10,6 +10,17 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   );
 };
 
+export const isFutureOrLiveEvent = (event: VenueEvent) => {
+  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+
+  return (
+    event.start_utc_seconds > currentTimeInUTCSeconds ||
+    (event.start_utc_seconds < currentTimeInUTCSeconds &&
+      event.start_utc_seconds + event.duration_minutes * 60 >
+        currentTimeInUTCSeconds)
+  );
+};
+
 export const isEventLive = (event: VenueEvent) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
 

@@ -114,7 +114,7 @@ export const ExperienceContext = React.createContext<
 >(undefined);
 
 interface ExperienceContextWrapperProps {
-  venueName: string;
+  venueName: string | undefined;
 }
 
 export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
