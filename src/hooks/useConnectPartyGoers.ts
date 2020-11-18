@@ -5,6 +5,7 @@ import { partygoersSelector } from "utils/selectors";
 import { useSelector } from "./useSelector";
 import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
 
+// @debt rename this useConnectPartygoers for consistency
 export const useConnectPartyGoers = () => {
   const userLastSeenLimit = useUserLastSeenLimit();
 
