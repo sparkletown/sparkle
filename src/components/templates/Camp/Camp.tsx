@@ -2,14 +2,14 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 
+import { RootState } from "index";
 import { createUrlSafeName } from "api/admin";
-import { LOC_UPDATE_FREQ_MS } from "settings";
 import { IS_BURN } from "secrets";
 
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { useCampPartygoers } from "hooks/useCampPartygoers";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -28,34 +28,16 @@ import { RoomModal } from "./components/RoomModal";
 
 import "./Camp.scss";
 
+const campVenueSelector = (state: RootState) =>
+  state.firestore.ordered.currentVenue?.[0] as CampVenue;
+
 const Camp: React.FC = () => {
-  useConnectPartyGoers();
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-  const [nowMs, setNowMs] = useState(new Date().getTime());
 
-  const { partygoers, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
-    partygoers: state.firestore.ordered.partygoers,
-  }));
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
-
-    return () => clearInterval(interval);
-  }, [setNowMs]);
-
-  const usersInCamp = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer?.lastSeenIn &&
-          partygoer?.lastSeenIn[venue.name] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const venue = useSelector(campVenueSelector);
+  const usersInCamp = useCampPartygoers(venue.name);
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
