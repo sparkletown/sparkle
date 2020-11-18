@@ -13,7 +13,7 @@ import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
 
-const ArtPiece = () => {
+export const ArtPiece = () => {
   const { venue } = useSelector((state) => ({
     venue: state.firestore.data.currentVenue,
   }));
@@ -89,4 +89,7 @@ const ArtPiece = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default ArtPiece;
