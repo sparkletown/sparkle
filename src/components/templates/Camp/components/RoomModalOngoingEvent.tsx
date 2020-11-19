@@ -1,32 +1,35 @@
 import React from "react";
-import { CampRoomData } from "types/CampRoomData";
-import { getCurrentEvent } from "utils/event";
-import { VenueEvent } from "types/VenueEvent";
 
-import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
-import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
-interface PropsType {
+import { CampRoomData } from "types/CampRoomData";
+import { VenueEvent } from "types/VenueEvent";
+
+import { getCurrentEvent } from "utils/event";
+
+import { useDispatch } from "hooks/useDispatch";
+
+import "./RoomModalOngoingEvent.scss";
+
+interface RoomModalOngoingEventProps {
   room: CampRoomData;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
   joinButtonText?: string;
 }
 
-export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
+export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
   room,
   roomEvents,
   enterRoom,
   joinButtonText,
 }) => {
+  const dispatch = useDispatch();
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
-  const whatsOnText = currentEvent ? "What's on now" : "What's on next";
-  const dispatch = useDispatch();
   const getRoomUrl = (roomUrl: string) => {
     return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
   };
@@ -45,7 +48,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            {whatsOnText}
+            {currentEvent ? "What's on now" : "What's on next"}
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>
