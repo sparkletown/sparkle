@@ -27,11 +27,11 @@
     "plugin:prettier/recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:react-hooks/recommended"
-    "react-app",
+    "plugin:react-hooks/recommended",
     "prettier",
     "prettier/react",
-    "prettier/@typescript-eslint"
+    "prettier/@typescript-eslint",
+    "react-app"
   ],
   "rules": {
     "@typescript-eslint/no-explicit-any": "warn",
