@@ -40,7 +40,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { makeVenueSelector } from "utils/selectors";
+import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 import {
   canHaveSubvenues,
@@ -79,7 +79,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;
 

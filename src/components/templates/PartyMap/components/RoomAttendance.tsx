@@ -1,7 +1,7 @@
 import React from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+
 import { RoomData } from "types/RoomData";
 
 interface PropsType {
@@ -11,7 +11,7 @@ interface PropsType {
   onClick?: () => void;
 }
 
-const RoomAttendance: React.FunctionComponent<PropsType> = ({
+export const RoomAttendance: React.FunctionComponent<PropsType> = ({
   room,
   attendance,
   positioned,
@@ -41,5 +41,3 @@ const RoomAttendance: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default RoomAttendance;

@@ -1,9 +1,10 @@
 import React from "react";
-import "./RoomCard.scss";
-import RoomAttendance from "../RoomAttendance";
-import { formatMinute } from "utils/time";
+
+import { formatMinute, getCurrentEvent } from "utils/time";
 import { RoomData } from "types/RoomData";
-import { getCurrentEvent } from "utils/time";
+
+import { RoomAttendance } from "..";
+import "./RoomCard.scss";
 
 interface PropsType {
   startUtcSeconds: number;
@@ -12,7 +13,7 @@ interface PropsType {
   onClick: () => void;
 }
 
-const RoomCard: React.FunctionComponent<PropsType> = ({
+export const RoomCard: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   room,
   attendance,
@@ -56,5 +57,3 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default RoomCard;

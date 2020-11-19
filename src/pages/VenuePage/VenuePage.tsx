@@ -1,20 +1,24 @@
-import { ChatContextWrapper } from "components/context/ChatContext";
-import CountDown from "components/molecules/CountDown";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import ArtPiece from "components/templates/ArtPiece";
-import JazzbarRouter from "components/templates/Jazzbar/JazzbarRouter";
-import PartyMap from "components/templates/PartyMap";
-import useConnectCurrentEvent from "hooks/useConnectCurrentEvent";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import FriendShipPage from "pages/FriendShipPage";
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
+import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+
+import { LOC_UPDATE_FREQ_MS } from "settings";
+
 import { VenueTemplate } from "types/VenueTemplate";
+
+import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
+import {
+  currentEventSelector,
+  currentVenueSelector,
+  isCurrentEventRequestedSelector,
+  isCurrentVenueRequestedSelector,
+  isUserPurchaseHistoryRequestedSelector,
+  partygoersSelector,
+  shouldRetainAttendanceSelector,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
 import {
   canUserJoinTheEvent,
   currentTimeInUnixEpoch,
@@ -24,21 +28,38 @@ import {
   updateLocationData,
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
-import { updateTheme } from "./helpers";
-import "./VenuePage.scss";
-import { PlayaRouter } from "components/templates/Playa/Router";
+import { venueEntranceUrl } from "utils/url";
+
+import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
+import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
+import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { ChatContextWrapper } from "components/context/ChatContext";
+
+import { FriendShipPage } from "pages/FriendShipPage";
+import { updateUserProfile } from "pages/Account/helpers";
+
+import { ArtPiece } from "components/templates/ArtPiece";
+import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { CampRouter } from "components/templates/Camp/Router";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
+import { PartyMap } from "components/templates/PartyMap";
+import { PlayaRouter } from "components/templates/Playa/Router";
+
+import { AuthenticationModal } from "components/organisms/AuthenticationModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
+import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
-import AudienceRouter from "components/templates/Audience/AudienceRouter";
-import { useVenueId } from "hooks/useVenueId";
-import { venueEntranceUrl } from "utils/url";
-import getQueryParameters from "utils/getQueryParameters";
-import ConversationSpace from "components/templates/ConversationSpace";
-import { updateUserProfile } from "pages/Account/helpers";
-import { LOC_UPDATE_FREQ_MS } from "settings";
+
+import { updateTheme } from "./helpers";
+
+import "./VenuePage.scss";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -53,28 +74,21 @@ const VenuePage = () => {
   const [unmounted, setUnmounted] = useState(false);
 
   const { user, profile } = useUser();
-  const {
-    venue,
-    users,
-    userPurchaseHistory,
-    userPurchaseHistoryRequestStatus,
-    currentEvent,
-    eventRequestStatus,
-    venueRequestStatus,
-    retainAttendance,
-  } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    venueRequestStatus: state.firestore.status.requested.currentVenue,
-    users: state.firestore.ordered.partygoers,
-    currentEvent: state.firestore.ordered.currentEvent,
-    eventRequestStatus: state.firestore.status.requested.currentEvent,
-    eventPurchase: state.firestore.data.eventPurchase,
-    eventPurchaseRequestStatus: state.firestore.status.requested.eventPurchase,
-    userPurchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    userPurchaseHistoryRequestStatus:
-      state.firestore.status.requested.userPurchaseHistory,
-    retainAttendance: state.attendance.retainAttendance,
-  }));
+
+  const users = useSelector(partygoersSelector);
+
+  const venue = useSelector(currentVenueSelector);
+  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+
+  const currentEvent = useSelector(currentEventSelector);
+  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+
+  const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
+  const userPurchaseHistoryRequestStatus = useSelector(
+    isUserPurchaseHistoryRequestedSelector
+  );
+
+  const retainAttendance = useSelector(shouldRetainAttendanceSelector);
 
   const venueName = venue?.name ?? "";
   const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};

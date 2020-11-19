@@ -8,20 +8,17 @@ import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 import { useSelector } from "hooks/useSelector";
 import { MessageToTheBandReaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
 
-  const { reactions, usersById, partyGoers, venue, chats } = useSelector(
-    (state) => ({
-      reactions: state.firestore.ordered.reactions,
-      usersById: state.firestore.data.partygoers,
-      partyGoers: state.firestore.ordered.partygoers,
-      venue: state.firestore.data.currentVenue,
-      chats: state.firestore.ordered.venueChats?.filter(
-        (chat) => chat.deleted !== true
-      ),
-    })
+  const venue = useSelector(currentVenueSelectorData);
+  const partygoers = useSelector(partygoersSelector);
+  const usersById = partygoers;
+  const reactions = useSelector((state) => state.firestore.ordered.reactions);
+  const chats = useSelector((state) =>
+    state.firestore.ordered.venueChats?.filter((chat) => chat.deleted !== true)
   );
 
   useFirestoreConnect([
@@ -50,10 +47,10 @@ const ReactionPage = () => {
               <ReactionList reactions={messagesToTheBand} chats={chats} />
             )}
           </div>
-          {partyGoers && (
+          {partygoers && (
             <div className="col-4">
               <UserList
-                users={partyGoers}
+                users={partygoers}
                 isAudioEffectDisabled
                 imageSize={50}
               />

@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { currentVenueSelectorData } from "utils/selectors";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
 import { QuestionType } from "types/Question";
@@ -26,9 +27,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const history = useHistory();
   const { user } = useUser();
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  })) as { venue: Venue };
+  const venue = useSelector(currentVenueSelectorData) as Venue;
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });

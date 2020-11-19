@@ -16,6 +16,7 @@ import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -37,7 +38,7 @@ const ChatDrawer: React.FC<PropsType> = ({
   const { user } = useUser();
   const venueId = useVenueId();
   const { userRoles } = useRoles();
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const venue = useSelector(currentVenueSelectorData);
 
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);

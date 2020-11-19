@@ -10,6 +10,7 @@ import { RouterLocation } from "types/RouterLocation";
 import { updateTheme } from "pages/VenuePage/helpers";
 import { useSelector } from "hooks/useSelector";
 import { venueLandingUrl } from "utils/url";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface LoginFormData {
   email: string;
@@ -28,9 +29,7 @@ const Login: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
   const history = useHistory();
   const { venueId } = getQueryParameters(location.search);
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({

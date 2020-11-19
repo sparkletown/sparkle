@@ -1,21 +1,23 @@
 import React from "react";
-import CountDown from "components/molecules/CountDown";
-import "./PartyTitle.scss";
+
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { currentVenueSelectorData } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
+
+import CountDown from "components/molecules/CountDown";
+
+import "./PartyTitle.scss";
 
 interface PropsType {
   startUtcSeconds: number;
   withCountDown: boolean;
 }
 
-const PartyTitle: React.FunctionComponent<PropsType> = ({
+export const PartyTitle: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   withCountDown,
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  })) as { venue: PartyMapVenue };
+  const venue = useSelector(currentVenueSelectorData) as PartyMapVenue;
 
   return (
     <div className="col">
@@ -35,5 +37,3 @@ const PartyTitle: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default PartyTitle;

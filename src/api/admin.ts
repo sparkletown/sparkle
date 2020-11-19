@@ -68,6 +68,7 @@ export type VenueInput = AdvancedVenueInput &
     height?: number;
     bannerMessage?: string;
     parentId?: string;
+    owners?: string[];
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -87,6 +88,14 @@ export type PlacementInput = {
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
+
+const getVenueOwners = async (venueId: string): Promise<string[]> => {
+  const owners = (
+    await firebase.firestore().collection("venues").doc(venueId).get()
+  ).data()?.owners;
+
+  return owners;
+};
 
 const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   const storageRef = firebase.storage().ref();
@@ -135,11 +144,17 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
 
+  let owners: string[] = [];
+  if (input.parentId) {
+    owners = await getVenueOwners(input.parentId);
+  }
+
   const firestoreVenueInput: FirestoreVenueInput = {
     ..._.omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
+    owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
