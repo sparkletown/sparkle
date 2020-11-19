@@ -10,6 +10,7 @@ import { useFirebase } from "react-redux-firebase";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { EntranceStepTemplate } from "types/EntranceStep";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import { currentVenueSelectorData } from "utils/selectors";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -17,7 +18,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const history = useHistory();
   const { step, venueId } = useParams();
   useConnectCurrentVenue();
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const venue = useSelector(currentVenueSelectorData);
 
   if (!venue || !venueId) {
     return <LoadingPage />;

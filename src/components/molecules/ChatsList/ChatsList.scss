@@ -1,0 +1,93 @@
+@import "scss/constants.scss";
+
+$primary: #005ee5;
+
+.private-container {
+  display: none;
+  &.show {
+    display: flex;
+  }
+  .private-messages-list {
+    width: 100%;
+    .private-message-item {
+      cursor: pointer;
+      display: flex;
+      align-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px;
+
+      &:hover {
+        background-color: $black;
+      }
+      .private-message-author-pic {
+        position: relative;
+        width: 26px;
+        height: 26px;
+        border-radius: 13px;
+        flex-shrink: 0;
+        margin-right: 14px;
+        background-color: $black;
+        background-size: cover;
+      }
+      .private-message-content {
+        width: 100%;
+        .private-message-author {
+          opacity: 0.7;
+        }
+        .private-message-last {
+          font-size: 0.9rem;
+          opacity: 0.4;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .private-message-status {
+        width: 80px;
+        align-items: flex-start;
+        margin-left: 4px;
+        text-align: right;
+
+        .private-message-date {
+          font-size: 0.9rem;
+          opacity: 0.4;
+        }
+      }
+
+      &.private-message-item_noread {
+        .private-message-content {
+          .private-message-author {
+            opacity: 1;
+          }
+          .private-message-last {
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+}
+
+.private-container-back-btn {
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  width: 30px;
+  height: 30px;
+  background-image: url(/icons/slide-btn-icon.png);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
+  border-radius: 0 0 16px 0;
+  cursor: pointer;
+}
+
+.private-messages-empty {
+  width: 100%;
+  height: calc(100% - 114px);
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

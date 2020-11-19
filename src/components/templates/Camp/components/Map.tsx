@@ -1,24 +1,37 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CampVenue } from "types/CampVenue";
-import { CampRoomData } from "types/CampRoomData";
-import "./Map.scss";
-import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
-import { useUser } from "../../../../hooks/useUser";
-import { IS_BURN } from "secrets";
-import { RoomVisibility } from "types/Venue";
-import { useDispatch } from "hooks/useDispatch";
-import { retainAttendance } from "store/actions/Attendance";
-import { currentTimeInUnixEpoch } from "utils/time";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { User } from "types/User";
-import { WithId } from "utils/id";
-import { useVenueId } from "hooks/useVenueId";
-import firebase from "firebase/app";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import CampAttendance from "./CampAttendance";
-import { useSelector } from "hooks/useSelector";
 
-interface PropsType {
+import { IS_BURN } from "secrets";
+
+import { retainAttendance } from "store/actions/Attendance";
+
+import firebase from "firebase/app";
+
+import { orderedVenuesSelector } from "utils/selectors";
+
+import { CampRoomData } from "types/CampRoomData";
+import { CampVenue } from "types/CampVenue";
+import { User } from "types/User";
+import { RoomVisibility } from "types/Venue";
+
+import { WithId } from "utils/id";
+import { currentTimeInUnixEpoch } from "utils/time";
+import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+
+import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+import CampAttendance from "./CampAttendance";
+
+import "./Map.scss";
+
+interface MapProps {
   venue: CampVenue;
   partygoers: WithId<User>[];
   attendances: { [location: string]: number };
@@ -31,7 +44,7 @@ const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 const MOVEMENT_INTERVAL = 350;
 
-export const Map: React.FC<PropsType> = ({
+export const Map: React.FC<MapProps> = ({
   venue,
   partygoers,
   attendances,
@@ -53,9 +66,7 @@ export const Map: React.FC<PropsType> = ({
   const [isHittingRoom, setIsHittingRoom] = useState(false);
   const [rows, setRows] = useState<number>(0);
 
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector(orderedVenuesSelector);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rooms = [...venue.rooms];
@@ -174,13 +185,6 @@ export const Map: React.FC<PropsType> = ({
     [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
   );
 
-  const isExternalLink = useCallback(
-    (url: string) =>
-      url.includes("http") &&
-      new URL(window.location.href).host !== new URL(getRoomUrl(url)).host,
-    []
-  );
-
   const roomEnter = useCallback(
     (room: CampRoomData) => {
       const roomVenue = venues?.find((venue) =>
@@ -236,12 +240,7 @@ export const Map: React.FC<PropsType> = ({
       if (enterPress && selectedRoom) {
         setKeyDown(true);
         setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
-
-        const isExternalUrl = isExternalLink(selectedRoom.url);
-        window.open(
-          getRoomUrl(selectedRoom.url),
-          isExternalUrl ? "_blank" : "noopener,noreferrer"
-        );
+        openRoomUrl(selectedRoom.url);
         roomEnter(selectedRoom);
         return;
       }
@@ -297,7 +296,6 @@ export const Map: React.FC<PropsType> = ({
     enterPress,
     selectedRoom,
     partygoersBySeat,
-    isExternalLink,
     roomEnter,
     hitRoom,
     takeSeat,
@@ -314,10 +312,6 @@ export const Map: React.FC<PropsType> = ({
       rooms.push(chosenRoom[0]);
     }
   }
-
-  const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
-  };
 
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
@@ -364,8 +358,8 @@ export const Map: React.FC<PropsType> = ({
     room: CampRoomData
   ) => {
     e.stopPropagation();
-    if (isExternalLink(room.url)) {
-      window.open(getRoomUrl(room.url));
+    if (isExternalUrl(room.url)) {
+      openRoomUrl(room.url);
     } else {
       window.location.href = getRoomUrl(room.url);
     }
@@ -570,7 +564,7 @@ export const Map: React.FC<PropsType> = ({
                         <p>{room.about}</p>
                       </div>
                       <div className="camp-venue-actions">
-                        {isExternalLink(room.url) ? (
+                        {isExternalUrl(room.url) ? (
                           <a
                             className="btn btn-block btn-small btn-primary"
                             onClick={() => roomEnter(room)}

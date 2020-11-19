@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
+
+import {
+  currentVenueSelectorData,
+  orderedVenuesSelector,
+} from "utils/selectors";
+
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
@@ -36,9 +42,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   zIndex,
   ...rest
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
 
   const { user } = useUser();
 
@@ -138,7 +142,7 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const visits = useSelector(
     (state) => state.firestore.ordered.userModalVisits
   );
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const venues = useSelector(orderedVenuesSelector);
 
   const playaTime = useMemo(() => {
     if (!visits) return undefined;
@@ -256,10 +260,8 @@ const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   useFirestoreConnect("venues");
-  const { venues, venue } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const venues = useSelector(orderedVenuesSelector);
 
   const suspectedLocation = useMemo(
     () => ({

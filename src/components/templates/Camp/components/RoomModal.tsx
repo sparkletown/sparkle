@@ -1,26 +1,36 @@
 import React from "react";
-import { getCurrentEvent } from "utils/event";
-import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
-import UserList from "components/molecules/UserList";
-import { ScheduleItem } from "./ScheduleItem";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
+
 import { CampRoomData } from "types/CampRoomData";
 
-import "../../../templates/PartyMap/RoomModal/RoomModal.scss";
+import { getCurrentEvent } from "utils/event";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+import {
+  currentVenueSelector,
+  orderedVenuesSelector,
+  partygoersSelector,
+} from "utils/selectors";
 import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import { useFirestoreConnect } from "react-redux-firebase";
 
-interface PropsType {
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+
+import UserList from "components/molecules/UserList";
+
+import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
+import { ScheduleItem } from "./ScheduleItem";
+
+import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
+
+interface RoomModalProps {
   show: boolean;
   onHide: () => void;
   room: CampRoomData | undefined;
   joinButtonText?: string;
 }
 
-export const RoomModal: React.FC<PropsType> = ({
+export const RoomModal: React.FC<RoomModalProps> = ({
   show,
   onHide,
   room,
@@ -28,12 +38,13 @@ export const RoomModal: React.FC<PropsType> = ({
 }) => {
   useFirestoreConnect("venues");
   const { user, profile } = useUser();
-  const { users, venueEvents, venues, venue } = useSelector((state) => ({
-    users: state.firestore.ordered.partygoers,
-    venueEvents: state.firestore.ordered.venueEvents,
-    venues: state.firestore.ordered.venues,
-    venue: state.firestore.ordered.currentVenue?.[0],
-  }));
+
+  const venue = useSelector(currentVenueSelector);
+  const venues = useSelector(orderedVenuesSelector);
+  const venueEvents = useSelector(
+    (state) => state.firestore.ordered.venueEvents
+  );
+  const users = useSelector(partygoersSelector);
 
   if (!room) {
     return <></>;

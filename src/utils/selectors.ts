@@ -42,6 +42,11 @@ export const currentVenueSelector: SparkleSelector<AnyVenue> = (
   state: RootState
 ) => state.firestore.ordered.currentVenue?.[0];
 
+// @debt can we merge this with currentVenueSelector and just use 1 canonical version?
+export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
+  state
+) => state.firestore.data.currentVenue;
+
 /**
  * Selector to retrieve partygoers from the Redux Firestore.
  *
@@ -59,6 +64,10 @@ export const partygoersSelector: SparkleSelector<WithId<User>[]> = (
 export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
+
+export const orderedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.venues;
 
 /**
  * Makes a venueSelector selector for a given venueId, which when called
@@ -105,3 +114,13 @@ export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsR
 export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "userPurchaseHistory"
 );
+
+export const privateChatsSelector = (state: RootState) =>
+  state.firestore.ordered.privatechats;
+export const chatUsersSelector = (state: RootState) =>
+  state.firestore.data.chatUsers;
+export const venueSelector = (state: RootState) =>
+  state.firestore.ordered.currentVenue &&
+  state.firestore.ordered.currentVenue[0];
+export const venueEventsSelector = (state: RootState) =>
+  state.firestore.ordered.venueEvents;

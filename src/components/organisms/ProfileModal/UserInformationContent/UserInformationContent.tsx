@@ -10,6 +10,7 @@ import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
 import { useVenueId } from "hooks/useVenueId";
 import { venueLandingUrl } from "utils/url";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -24,7 +25,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
-    (state) => state.firestore.data.currentVenue?.profile_questions
+    (state) => currentVenueSelectorData(state)?.profile_questions
   );
   const venueId = useVenueId();
 
