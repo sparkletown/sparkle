@@ -3,11 +3,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { LOC_UPDATE_FREQ_MS } from "settings";
 import { User } from "types/User";
 import { WithId } from "utils/id";
+import { partygoersSelector } from "utils/selectors";
 
-import {
-  partygoersSelector,
-  useConnectPartyGoers,
-} from "./useConnectPartyGoers";
+import { useConnectPartyGoers } from "./useConnectPartyGoers";
 import { useSelector } from "./useSelector";
 
 /**
