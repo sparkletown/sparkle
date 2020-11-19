@@ -13,6 +13,7 @@ import { RoomVisibility } from "types/Venue";
 
 import { WithId } from "utils/id";
 import { currentTimeInUnixEpoch } from "utils/time";
+import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";
@@ -184,13 +185,6 @@ export const Map: React.FC<MapProps> = ({
     [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
   );
 
-  const isExternalLink = useCallback(
-    (url: string) =>
-      url.includes("http") &&
-      new URL(window.location.href).host !== new URL(getRoomUrl(url)).host,
-    []
-  );
-
   const roomEnter = useCallback(
     (room: CampRoomData) => {
       const roomVenue = venues?.find((venue) =>
@@ -246,12 +240,7 @@ export const Map: React.FC<MapProps> = ({
       if (enterPress && selectedRoom) {
         setKeyDown(true);
         setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
-
-        const isExternalUrl = isExternalLink(selectedRoom.url);
-        window.open(
-          getRoomUrl(selectedRoom.url),
-          isExternalUrl ? "_blank" : "noopener,noreferrer"
-        );
+        openRoomUrl(selectedRoom.url);
         roomEnter(selectedRoom);
         return;
       }
@@ -307,7 +296,6 @@ export const Map: React.FC<MapProps> = ({
     enterPress,
     selectedRoom,
     partygoersBySeat,
-    isExternalLink,
     roomEnter,
     hitRoom,
     takeSeat,
@@ -324,10 +312,6 @@ export const Map: React.FC<MapProps> = ({
       rooms.push(chosenRoom[0]);
     }
   }
-
-  const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
-  };
 
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
@@ -374,8 +358,8 @@ export const Map: React.FC<MapProps> = ({
     room: CampRoomData
   ) => {
     e.stopPropagation();
-    if (isExternalLink(room.url)) {
-      window.open(getRoomUrl(room.url));
+    if (isExternalUrl(room.url)) {
+      openRoomUrl(room.url);
     } else {
       window.location.href = getRoomUrl(room.url);
     }
@@ -580,7 +564,7 @@ export const Map: React.FC<MapProps> = ({
                         <p>{room.about}</p>
                       </div>
                       <div className="camp-venue-actions">
-                        {isExternalLink(room.url) ? (
+                        {isExternalUrl(room.url) ? (
                           <a
                             className="btn btn-block btn-small btn-primary"
                             onClick={() => roomEnter(room)}

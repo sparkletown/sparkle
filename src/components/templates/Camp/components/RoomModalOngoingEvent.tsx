@@ -6,6 +6,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
+import { isExternalUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -30,13 +31,6 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
-  const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
-  };
-
-  const isExternalLink = (url: string) =>
-    url.includes("http") &&
-    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
 
   return (
     <div className="room-modal-ongoing-event-container">
@@ -71,7 +65,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           </div>
         </>
       )}
-      {isExternalLink(room.url) ? (
+      {isExternalUrl(room.url) ? (
         <a
           onMouseOver={() => dispatch(retainAttendance(true))}
           onMouseOut={() => dispatch(retainAttendance(false))}
