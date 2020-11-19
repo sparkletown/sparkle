@@ -7,6 +7,7 @@ import { Link, useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import NavSearchBar from "components/molecules/NavSearchBar";
 
 import firebase from "firebase/app";
 
@@ -213,66 +214,26 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       <header>
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
-            <div className="navbar-logo_container">
-              <div className="navbar-logo">
-                <Link to={venueLink}>
-                  <img
-                    src={getHeaderLogo()}
-                    alt="Logo"
-                    className={`logo-img ${
-                      IS_BURN ? "sparkleverse" : "sparkle"
-                    }`}
-                  />
-                </Link>
-                {venue?.showLearnMoreLink && (
-                  <div className="button-container about-button-container">
-                    <a
-                      href={HOMEPAGE_URL}
-                      className="about-button"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Learn More
-                    </a>
-                  </div>
-                )}
+            <div className="nav-logos">
+              <div className="nav-sparkle-logo">
+                <a href={HOMEPAGE_URL}></a>
               </div>
-              {IS_BURN && (
-                <div className="navbar-info">
-                  <PlayaTime />
-                  {venue?.showAddress && <PlayaAddress />}
-                </div>
+              <div className="nav-sparkle-logo_small">
+                <a href={HOMEPAGE_URL}></a>
+              </div>
+              <div className="nav-party-logo" onClick={showEventSchedule}>
+                Jam Online
+              </div>
+              {venue?.parentId && parentVenue?.name && (
+                <span onClick={backToParentVenue} className="back-link">
+                  Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+                </span>
               )}
             </div>
             {user ? (
               <>
-                {IS_BURN && (
-                  <div className="navbar-dropdown-middle">
-                    {isOnPlaya ? (
-                      <OnlineStats />
-                    ) : (
-                      <span onClick={backToDefaultVenue} className="back-link">
-                        Back to {PLAYA_VENUE_NAME}
-                      </span>
-                    )}
-                  </div>
-                )}
-                {!IS_BURN && (
-                  <div className="venue-bar">
-                    <div className="venue-name">{venue?.name}</div>
-                    {venue?.parentId && (
-                      <span onClick={backToParentVenue} className="back-link">
-                        Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-                      </span>
-                    )}
-                  </div>
-                )}
                 <div className="navbar-links">
-                  {venue?.showLiveSchedule && (
-                    <div className="profile-icon button-container navbar-link-schedule">
-                      <div onClick={showEventSchedule}>Live Schedule</div>
-                    </div>
-                  )}
+                  <NavSearchBar />
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -371,15 +332,13 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         onHide={closeAuthenticationModal}
         showAuth="login"
       />
-      <Modal
-        show={isEventScheduleVisible}
-        onHide={hideEventSchedule}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
+      <SchedulePageModal isVisible={isEventScheduleVisible} />
+      <div
+        className={`schedule-dropdown-backdrop ${
+          isEventScheduleVisible ? "show" : ""
+        }`}
+        onClick={hideEventSchedule}
+      />
     </>
   );
 };
