@@ -98,7 +98,7 @@ const ChatsList: React.FunctionComponent = () => {
             message.ts_utc.seconds > HIDE_BEFORE
         )
         .sort(chatSort),
-    [privateChats, selectedUser, HIDE_BEFORE]
+    [privateChats, selectedUser]
   );
 
   const chatContext = useContext(ChatContext);

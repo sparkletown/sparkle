@@ -79,7 +79,7 @@ const VenueChat: FC = () => {
         (user && venue?.owners?.includes(user.uid))) ??
       false
     );
-  }, [user, userRoles, venue?.owners]);
+  }, [user, userRoles, venue]);
 
   return (
     <ChatBox

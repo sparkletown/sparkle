@@ -29,7 +29,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const venueEvents = useSelector(venueEventsSelector);
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    if (!venueEvents) return [];
+    const hasVenueEvents = venueEvents && venueEvents.length;
 
     const nowDay = startOfDay(new Date());
 
@@ -51,7 +51,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       return {
         dateDay: day,
-        events: todaysEvents,
+        events: hasVenueEvents ? todaysEvents : [],
       };
     });
 

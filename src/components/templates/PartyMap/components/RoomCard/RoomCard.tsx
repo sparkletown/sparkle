@@ -3,7 +3,6 @@ import React from "react";
 import { formatMinute, getCurrentEvent } from "utils/time";
 import { RoomData } from "types/RoomData";
 
-import { RoomAttendance } from "..";
 import "./RoomCard.scss";
 
 interface PropsType {
