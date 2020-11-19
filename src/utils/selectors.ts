@@ -114,3 +114,13 @@ export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsR
 export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "userPurchaseHistory"
 );
+
+export const privateChatsSelector = (state: RootState) =>
+  state.firestore.ordered.privatechats;
+export const chatUsersSelector = (state: RootState) =>
+  state.firestore.data.chatUsers;
+export const venueSelector = (state: RootState) =>
+  state.firestore.ordered.currentVenue &&
+  state.firestore.ordered.currentVenue[0];
+export const venueEventsSelector = (state: RootState) =>
+  state.firestore.ordered.venueEvents;
