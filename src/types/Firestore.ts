@@ -47,6 +47,7 @@ export interface FirestoreData {
   adminRole: AdminRole;
   allowAllRoles: Record<string, Role>;
   allUsers?: Record<string, User>;
+  chatUsers?: Record<string, User>;
   currentEvent: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;

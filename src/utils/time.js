@@ -157,3 +157,8 @@ export const getCurrentTimeInUTCSeconds = () => {
     ) / 1000
   );
 };
+
+export const roundToNearestHour = (seconds) => {
+  const oneHour = 60 * 60;
+  return Math.floor(seconds / oneHour) * oneHour;
+};
