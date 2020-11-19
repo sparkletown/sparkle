@@ -39,6 +39,7 @@ import getQueryParameters from "utils/getQueryParameters";
 import ConversationSpace from "components/templates/ConversationSpace";
 import { updateUserProfile } from "pages/Account/helpers";
 import { LOC_UPDATE_FREQ_MS } from "settings";
+import FireBarrel from "components/templates/FireBarrel";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -327,6 +328,10 @@ const VenuePage = () => {
       break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
+      break;
+
+    case VenueTemplate.firebarrel:
+      template = <FireBarrel />;
       break;
   }
 
