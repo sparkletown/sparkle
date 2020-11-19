@@ -81,7 +81,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       },
       defaultValues: {
         ...defaultValues,
-        parentId: parentIdQuery ?? "",
+        parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
       },
     }
   );
