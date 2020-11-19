@@ -1,7 +1,11 @@
 import React from "react";
 import { User } from "types/User";
 import { RestrictedChatMessage } from "components/context/ChatContext";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  PROFILE_IMAGE_SIZE,
+} from "settings";
 import { WithId } from "utils/id";
 import { getLinkFromText } from "../../../utils/getLinkFromText";
 import { formatUtcSeconds } from "../../../utils/time";
@@ -21,7 +25,6 @@ export const Message: React.FC<MessageProps> = ({
   deletable,
   onDelete,
 }) => {
-  const profileImageSize = 30;
   return (
     <div
       className="message chat-message"
@@ -37,8 +40,8 @@ export const Message: React.FC<MessageProps> = ({
           alt={`${
             (!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME
           } profile`}
-          width={profileImageSize}
-          height={profileImageSize}
+          width={PROFILE_IMAGE_SIZE}
+          height={PROFILE_IMAGE_SIZE}
         />
         <div>
           {(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}{" "}
