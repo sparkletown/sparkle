@@ -20,16 +20,16 @@ const LiveSchedule: FC = () => {
 
   const hasLiveEvents = !!liveEvents.length;
 
-  if (!hasLiveEvents) {
-    return <div className="schedule-event-empty">No live events for now</div>;
-  }
-
   return (
     <div className="schedule-container show">
       <div className="schedule-day-container">
-        {liveEvents.map((liveEvent, index) => (
-          <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
-        ))}
+        {hasLiveEvents &&
+          liveEvents.map((liveEvent, index) => (
+            <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
+          ))}
+        {!hasLiveEvents && (
+          <div className="schedule-event-empty">No live events for now</div>
+        )}
       </div>
     </div>
   );

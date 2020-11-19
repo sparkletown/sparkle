@@ -373,8 +373,9 @@ export const Map: React.FC<PropsType> = ({
                   attendances[`${venue.name}/${room.title}`];
                 return (
                   <div
-                    className={`room position-absolute ${isUnderneathRoom && "isUnderneath"
-                      }`}
+                    className={`room position-absolute ${
+                      isUnderneathRoom && "isUnderneath"
+                    }`}
                     style={{
                       left: left + "%",
                       top: top + "%",
@@ -403,20 +404,10 @@ export const Map: React.FC<PropsType> = ({
                     }}
                   >
                     <div
-                      className={`camp-venue ${roomClicked === room.title ? "clicked" : ""
-                        }`}
+                      className={`camp-venue ${
+                        roomClicked === room.title ? "clicked" : ""
+                      }`}
                     >
-                      <div
-                        className={`grid-room-btn ${isUnderneathRoom && "isUnderneath"
-                          }`}
-                      >
-                        <div
-                          className="btn btn-white btn-small btn-block"
-                          onClick={(e) => onJoinRoom(e, room)}
-                        >
-                          {venue.joinButtonText ?? "Join now"}
-                        </div>
-                      </div>
                       <div className="camp-venue-img">
                         <img
                           src={room.image_url}
@@ -446,21 +437,21 @@ export const Map: React.FC<PropsType> = ({
                           venue.roomVisibility === RoomVisibility.nameCount ||
                           (venue.roomVisibility === RoomVisibility.count &&
                             hasAttendance)) && (
-                            <div className="camp-venue-maininfo">
-                              {(!venue.roomVisibility ||
-                                venue.roomVisibility ===
+                          <div className="camp-venue-maininfo">
+                            {(!venue.roomVisibility ||
+                              venue.roomVisibility ===
                                 RoomVisibility.nameCount) && (
-                                  <div className="camp-venue-title">
-                                    {room.title}
-                                  </div>
-                                )}
-                              <CampAttendance
-                                attendances={attendances}
-                                venue={venue}
-                                room={room}
-                              />
-                            </div>
-                          )}
+                              <div className="camp-venue-title">
+                                {room.title}
+                              </div>
+                            )}
+                            <CampAttendance
+                              attendances={attendances}
+                              venue={venue}
+                              room={room}
+                            />
+                          </div>
+                        )}
                         <div className="camp-venue-secondinfo">
                           <div className="camp-venue-desc">
                             <p>{room.subtitle}</p>
@@ -478,14 +469,14 @@ export const Map: React.FC<PropsType> = ({
                                 {venue.joinButtonText ?? "Join the room"}
                               </a>
                             ) : (
-                                <a
-                                  className="btn btn-block btn-small btn-primary"
-                                  onClick={() => roomEnter(room)}
-                                  href={getRoomUrl(room.url)}
-                                >
-                                  {venue.joinButtonText ?? "Join the room"}
-                                </a>
-                              )}
+                              <a
+                                className="btn btn-block btn-small btn-primary"
+                                onClick={() => roomEnter(room)}
+                                href={getRoomUrl(room.url)}
+                              >
+                                {venue.joinButtonText ?? "Join the room"}
+                              </a>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -493,7 +484,7 @@ export const Map: React.FC<PropsType> = ({
                   </div>
                 );
               })}
-          </div >
+          </div>
 
           <div
             className="grid-container"
@@ -573,8 +564,9 @@ export const Map: React.FC<PropsType> = ({
                                 backgroundImage: `url(${partygoer?.pictureUrl})`,
                                 backgroundSize: "cover",
                               }}
-                              avatarClassName={`${isMe ? "me profile-avatar" : "profile-avatar"
-                                }`}
+                              avatarClassName={`${
+                                isMe ? "me profile-avatar" : "profile-avatar"
+                              }`}
                               setSelectedUserProfile={setSelectedUserProfile}
                               miniAvatars={venue?.miniAvatars}
                             />
@@ -585,25 +577,23 @@ export const Map: React.FC<PropsType> = ({
                 );
               })
             ) : (
-                <div />
-              )}
+              <div />
+            )}
           </div>
 
-          {
-            selectedUserProfile && (
-              <UserProfileModal
-                show={!!selectedUserProfile}
-                onHide={() => setSelectedUserProfile(undefined)}
-                userProfile={selectedUserProfile}
-              />
-            )
-          }
-        </div >
-      </div >
+          {selectedUserProfile && (
+            <UserProfileModal
+              show={!!selectedUserProfile}
+              onHide={() => setSelectedUserProfile(undefined)}
+              userProfile={selectedUserProfile}
+            />
+          )}
+        </div>
+      </div>
 
       <div style={{ width: "20%" }}>
         <Sidebar />
       </div>
-    </div >
+    </div>
   );
 };
