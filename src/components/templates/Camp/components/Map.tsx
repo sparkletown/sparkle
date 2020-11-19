@@ -6,6 +6,8 @@ import { retainAttendance } from "store/actions/Attendance";
 
 import firebase from "firebase/app";
 
+import { orderedVenuesSelector } from "utils/selectors";
+
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 import { User } from "types/User";
@@ -64,9 +66,7 @@ export const Map: React.FC<MapProps> = ({
   const [isHittingRoom, setIsHittingRoom] = useState(false);
   const [rows, setRows] = useState<number>(0);
 
-  const { venues } = useSelector((state) => ({
-    venues: state.firestore.ordered.venues,
-  }));
+  const venues = useSelector(orderedVenuesSelector);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const rooms = [...venue.rooms];

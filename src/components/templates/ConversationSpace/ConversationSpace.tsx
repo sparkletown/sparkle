@@ -1,3 +1,9 @@
+import React, { useEffect, useState } from "react";
+
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
@@ -6,17 +12,13 @@ import UserList from "components/molecules/UserList";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
-import { useSelector } from "hooks/useSelector";
-import React, { useEffect, useState } from "react";
 import { LOC_UPDATE_FREQ_MS } from "settings";
 import { TABLES } from "./constants";
 import "./ConversationSpace.scss";
 
 export const ConversationSpace: React.FunctionComponent = () => {
-  const { venue, users } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    users: state.firestore.ordered.partygoers,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const users = useSelector(partygoersSelector);
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");

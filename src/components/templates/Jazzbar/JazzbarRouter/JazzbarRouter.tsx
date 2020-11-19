@@ -7,14 +7,13 @@ import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Venue } from "types/Venue";
 import { useSelector } from "hooks/useSelector";
 import VideoAdmin from "pages/VideoAdmin";
+import { currentVenueSelectorData } from "utils/selectors";
 
 export const JazzbarRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
   useConnectPartyGoers();
 
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  })) as { venue: Venue };
+  const venue = useSelector(currentVenueSelectorData) as Venue;
 
   return (
     <ExperienceContextWrapper venueName={venue.name}>

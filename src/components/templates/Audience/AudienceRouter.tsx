@@ -5,13 +5,12 @@ import VideoAdmin from "pages/VideoAdmin";
 import { Venue } from "types/Venue";
 import { ExperienceContextWrapper } from "components/context/ExperienceContext";
 import { Audience } from "./Audience";
+import { currentVenueSelectorData } from "utils/selectors";
 
 export const AudienceRouter: React.FunctionComponent = () => {
   const match = useRouteMatch();
 
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  })) as { venue: Venue };
+  const venue = useSelector(currentVenueSelectorData) as Venue;
 
   return (
     <Switch>
