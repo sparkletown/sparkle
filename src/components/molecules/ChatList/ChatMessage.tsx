@@ -1,6 +1,10 @@
 import React, { FC, useCallback } from "react";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  PROFILE_IMAGE_SIZE,
+} from "settings";
 
 import { WithId } from "utils/id";
 import { formatUtcSeconds } from "utils/time";
@@ -36,9 +40,8 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 }) => {
   const { user } = useUser();
 
-  const profileImageSize = 30;
   const sender = { ...usersById[message.from], id: message.from };
-  const isMe = sender.id === user!.uid;
+  const isMe = sender.id === user?.uid;
   const profileImage = sender.anonMode
     ? DEFAULT_PROFILE_IMAGE
     : sender.pictureUrl;
@@ -52,42 +55,33 @@ export const ChatMessage: FC<ChatMessageProps> = ({
     onDeleteClick(message);
   }, [message, onDeleteClick]);
 
-  return (
-    <>
-      {message.from in usersById && (
-        <div
-          className={`message chat-message ${isMe ? "chat-message_own" : ""}`}
-          key={`${message.from}-${message.ts_utc}`}
-        >
-          <div className="chat-message-bubble">
-            {getLinkFromText(message.text)}
-          </div>
-          <div className="chat-message-author">
-            <img
-              onClick={showMessage}
-              key={`${message.from}-messaging-the-band`}
-              className="chat-message-avatar"
-              src={profileImage}
-              title={profileName}
-              alt={`${profileName} profile`}
-              width={profileImageSize}
-              height={profileImageSize}
-            />
-            <div className="chat-message-pseudo">
-              {profileName}{" "}
-              <span className="timestamp">
-                {formatUtcSeconds(message.ts_utc)}
-              </span>
-            </div>
-            {allowDelete && (
-              <div
-                className="chat-message-delete"
-                onClick={deleteMessage}
-              ></div>
-            )}
-          </div>
+  return message.from in usersById ? (
+    <div
+      className={`message chat-message ${isMe ? "chat-message_own" : ""}`}
+      key={`${message.from}-${message.ts_utc}`}
+    >
+      <div className="chat-message-bubble">{getLinkFromText(message.text)}</div>
+      <div className="chat-message-author">
+        <img
+          onClick={showMessage}
+          key={`${message.from}-messaging-the-band`}
+          className="chat-message-avatar"
+          src={profileImage}
+          title={profileName}
+          alt={`${profileName} profile`}
+          width={PROFILE_IMAGE_SIZE}
+          height={PROFILE_IMAGE_SIZE}
+        />
+        <div className="chat-message-pseudo">
+          {profileName}{" "}
+          <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
         </div>
-      )}
-    </>
+        {allowDelete && (
+          <div className="chat-message-delete" onClick={deleteMessage}></div>
+        )}
+      </div>
+    </div>
+  ) : (
+    <></>
   );
 };

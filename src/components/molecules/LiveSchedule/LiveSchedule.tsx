@@ -27,11 +27,9 @@ const LiveSchedule: FC = () => {
   return (
     <div className="schedule-container show">
       <div className="schedule-day-container">
-        {liveEvents.map((liveEvent, index) => {
-          return (
-            <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
-          );
-        })}
+        {liveEvents.map((liveEvent, index) => (
+          <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
+        ))}
       </div>
     </div>
   );

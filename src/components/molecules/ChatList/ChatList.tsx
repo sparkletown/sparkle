@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
+import { chatUsersSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -29,7 +30,7 @@ const ChatList: React.FC<ChatListProps> = ({
   emptyListMessage,
   deleteMessage,
 }) => {
-  const usersById = useSelector((state) => state.firestore.data.chatUsers);
+  const usersById = useSelector(chatUsersSelector);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

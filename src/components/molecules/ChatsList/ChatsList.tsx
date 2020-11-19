@@ -20,6 +20,7 @@ import { useUser } from "hooks/useUser";
 
 import {
   ChatContext,
+  ChatSort,
   PrivateChatMessage,
 } from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
@@ -31,6 +32,9 @@ import "./ChatsList.scss";
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
 }
+
+const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
 const noopHandler = () => {};
 
@@ -81,9 +85,6 @@ const ChatsList: React.FunctionComponent = () => {
     [privateChats, user]
   );
 
-  const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-  const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
-
   const chatsToDisplay = useMemo(
     () =>
       privateChats &&
@@ -96,7 +97,7 @@ const ChatsList: React.FunctionComponent = () => {
               message.from === selectedUser?.id) &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
+        .sort(ChatSort),
     [privateChats, selectedUser, HIDE_BEFORE]
   );
 
