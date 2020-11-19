@@ -16,7 +16,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
-import { ChatContext, ChatSort } from "components/context/ChatContext";
+import { ChatContext, chatSort } from "components/context/ChatContext";
 import ChatBox from "components/molecules/Chatbox";
 
 import "./CampChat.scss";
@@ -69,7 +69,7 @@ const VenueChat: FC = () => {
             message.to === venueId &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(ChatSort),
+        .sort(chatSort),
     [chats, venueId, HIDE_BEFORE]
   );
 

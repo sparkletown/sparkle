@@ -20,7 +20,7 @@ import { useUser } from "hooks/useUser";
 
 import {
   ChatContext,
-  ChatSort,
+  chatSort,
   PrivateChatMessage,
 } from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
@@ -97,7 +97,7 @@ const ChatsList: React.FunctionComponent = () => {
               message.from === selectedUser?.id) &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(ChatSort),
+        .sort(chatSort),
     [privateChats, selectedUser, HIDE_BEFORE]
   );
 

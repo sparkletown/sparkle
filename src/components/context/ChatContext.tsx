@@ -52,7 +52,7 @@ interface BaseMessageBuilderInput {
   from: string;
 }
 
-export const ChatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
+export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());

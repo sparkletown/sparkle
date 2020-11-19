@@ -14,7 +14,7 @@ import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { ChatSort } from "components/context/ChatContext";
+import { chatSort } from "components/context/ChatContext";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -81,7 +81,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
             : true
         )
         .concat()
-        .sort(ChatSort)
+        .sort(chatSort)
         .slice(0, RECENT_MESSAGE_COUNT);
 
     if (user && isInProfileModal && discussionPartner) {
