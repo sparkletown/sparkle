@@ -12,7 +12,6 @@ import {
 } from "components/context/ChatContext";
 import ChatList from "../ChatList";
 
-import "./CampChat.scss";
 import "./Chatbox.scss";
 
 interface ChatOutDataType {

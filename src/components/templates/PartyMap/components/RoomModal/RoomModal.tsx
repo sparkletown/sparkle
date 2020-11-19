@@ -18,10 +18,7 @@ import { useSelector } from "hooks/useSelector";
 
 import UserList from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
-import { ScheduleItem } from "./ScheduleItem";
-
-import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
+import { RoomModalOngoingEvent, ScheduleItem } from "../";
 
 interface RoomModalProps {
   show: boolean;
