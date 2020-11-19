@@ -44,6 +44,7 @@ import { ImageCollectionInput } from "components/molecules/ImageInput/ImageColle
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
+import { useQuery } from "hooks/useQuery";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -66,6 +67,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
+  const queryParams = useQuery();
+  const parentIdQuery = queryParams.get("parentId");
+
   const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
     {
       mode: "onSubmit",
@@ -75,7 +79,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         template: state.templatePage?.template,
         editing: !!venueId,
       },
-      defaultValues,
+      defaultValues: {
+        ...defaultValues,
+        parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+      },
     }
   );
   const { user } = useUser();
@@ -583,26 +590,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <>
             <div className="input-container">
               <h4 className="italic" style={{ fontSize: "20px" }}>
-                Number of rows
-              </h4>
-              <input
-                disabled={disable}
-                defaultValue={1}
-                name="rows"
-                type="number"
-                ref={register}
-                onChange={(e) => {
-                  setValue("rows", parseInt(e.target.value));
-                }}
-                className="align-left"
-                placeholder={`Number of grid rows`}
-              />
-              {errors.name ? (
-                <span className="input-error">{errors.name.message}</span>
-              ) : null}
-            </div>
-            <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
                 Number of columns
               </h4>
               <input
@@ -617,6 +604,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               {errors.name ? (
                 <span className="input-error">{errors.name.message}</span>
               ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of rows
+              </h4>
+              <div>
+                Not editable. The number of rows is derived from the number of
+                specified columns and the width:height ratio of the party map,
+                to keep the two aligned.
+              </div>
             </div>
           </>
         )}

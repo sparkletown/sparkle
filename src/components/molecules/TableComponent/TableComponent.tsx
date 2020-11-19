@@ -3,6 +3,7 @@ import { TableComponentPropsType } from "types/Table";
 import "./TableComponent.scss";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelectorData } from "utils/selectors";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
@@ -14,9 +15,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   table,
   tableLocked,
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
   const locked = tableLocked(table.reference);
   const usersSeatedAtTable = users.filter(
     (u) => u.data?.[experienceName]?.table === table.reference

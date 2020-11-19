@@ -30,6 +30,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -131,10 +132,9 @@ const requiredAuditoriumSize = (occupants: number) => {
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
-  const { venue, partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const partygoers = useSelector(partygoersSelector);
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

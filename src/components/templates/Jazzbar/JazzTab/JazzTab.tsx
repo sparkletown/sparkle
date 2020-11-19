@@ -23,6 +23,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import "./JazzTab.scss";
 import { LOC_UPDATE_FREQ_MS } from "settings";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 interface PropsType {
   setUserList: (value: User[]) => void;
@@ -38,13 +40,20 @@ type ReactionType =
   | { reaction: TextReactionType; text: string };
 
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
+  useFirestoreConnect([
+    {
+      collection: "experiences",
+      doc: venue?.name,
+      storeAs: "experiences",
+    },
+  ]);
+
   const [nowMs, setNowMs] = useState(new Date().getTime());
 
   const { user } = useUser();
-  const { firestoreVenue, users } = useSelector((state) => ({
-    firestoreVenue: state.firestore.data.currentVenue,
-    users: state.firestore.ordered.partygoers,
-  }));
+
+  const firestoreVenue = useSelector(currentVenueSelectorData);
+  const users = useSelector(partygoersSelector);
 
   const venueToUse = venue ? venue : firestoreVenue;
 

@@ -1,22 +1,37 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CampVenue } from "types/CampVenue";
-import { CampRoomData } from "types/CampRoomData";
-import "./Map.scss";
-import { enterRoom } from "../../../../utils/useLocationUpdateEffect";
-import { useUser } from "../../../../hooks/useUser";
+
 import { IS_BURN } from "secrets";
-import { RoomVisibility } from "types/Venue";
-import { useDispatch } from "hooks/useDispatch";
+
 import { retainAttendance } from "store/actions/Attendance";
-import { currentTimeInUnixEpoch } from "utils/time";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { User } from "types/User";
-import { WithId } from "utils/id";
-import { useVenueId } from "hooks/useVenueId";
+
 import firebase from "firebase/app";
+
+import { orderedVenuesSelector } from "utils/selectors";
+
+import { CampRoomData } from "types/CampRoomData";
+import { CampVenue } from "types/CampVenue";
+import { User } from "types/User";
+import { RoomVisibility } from "types/Venue";
+
+import { WithId } from "utils/id";
+import { currentTimeInUnixEpoch } from "utils/time";
+import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+
+import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-interface PropsType {
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+
+import CampAttendance from "./CampAttendance";
+
+import "./Map.scss";
+
+interface MapProps {
   venue: CampVenue;
   partygoers: WithId<User>[];
   attendances: { [location: string]: number };
@@ -29,7 +44,7 @@ const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 const MOVEMENT_INTERVAL = 350;
 
-export const Map: React.FC<PropsType> = ({
+export const Map: React.FC<MapProps> = ({
   venue,
   partygoers,
   attendances,
@@ -49,11 +64,25 @@ export const Map: React.FC<PropsType> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
+  const [rows, setRows] = useState<number>(0);
+
+  const venues = useSelector(orderedVenuesSelector);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
-  const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
   const currentPosition = profile?.data?.[venue.id];
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = venue.mapBackgroundImageUrl ?? "";
+    img.onload = () => {
+      const imgRatio = img.width ? img.width / img.height : 1;
+      const calcRows = venue.columns
+        ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
+        : DEFAULT_ROWS;
+      setRows(calcRows);
+    };
+  }, [venue.columns, venue.mapBackgroundImageUrl]);
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -156,24 +185,26 @@ export const Map: React.FC<PropsType> = ({
     [columns, isHittingRoom, rooms, rows, selectedRoom, setSelectedRoom]
   );
 
-  const isExternalLink = useCallback(
-    (url: string) =>
-      url.includes("http") &&
-      new URL(window.location.href).host !== new URL(getRoomUrl(url)).host,
-    []
-  );
-
   const roomEnter = useCallback(
     (room: CampRoomData) => {
+      const roomVenue = venues?.find((venue) =>
+        room.url.endsWith(`/${venue.id}`)
+      );
+      const venueRoom = roomVenue
+        ? { [roomVenue.name]: currentTimeInUnixEpoch }
+        : {};
       room &&
         user &&
         enterRoom(
           user,
-          { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+          {
+            [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
+            ...venueRoom,
+          },
           profile?.lastSeenIn
         );
     },
-    [profile, user, venue]
+    [profile, user, venue, venues]
   );
 
   const partygoersBySeat: WithId<User>[][] = [];
@@ -209,12 +240,7 @@ export const Map: React.FC<PropsType> = ({
       if (enterPress && selectedRoom) {
         setKeyDown(true);
         setTimeout(() => setKeyDown(false), MOVEMENT_INTERVAL);
-
-        const isExternalUrl = isExternalLink(selectedRoom.url);
-        window.open(
-          getRoomUrl(selectedRoom.url),
-          isExternalUrl ? "_blank" : "noopener,noreferrer"
-        );
+        openRoomUrl(selectedRoom.url);
         roomEnter(selectedRoom);
         return;
       }
@@ -270,7 +296,6 @@ export const Map: React.FC<PropsType> = ({
     enterPress,
     selectedRoom,
     partygoersBySeat,
-    isExternalLink,
     roomEnter,
     hitRoom,
     takeSeat,
@@ -287,10 +312,6 @@ export const Map: React.FC<PropsType> = ({
       rooms.push(chosenRoom[0]);
     }
   }
-
-  const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
-  };
 
   const openModal = (room: CampRoomData) => {
     setSelectedRoom(room);
@@ -332,6 +353,19 @@ export const Map: React.FC<PropsType> = ({
     });
   };
 
+  const onJoinRoom = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    room: CampRoomData
+  ) => {
+    e.stopPropagation();
+    if (isExternalUrl(room.url)) {
+      openRoomUrl(room.url);
+    } else {
+      window.location.href = getRoomUrl(room.url);
+    }
+    roomEnter(room);
+  };
+
   const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
   const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
 
@@ -347,83 +381,88 @@ export const Map: React.FC<PropsType> = ({
           gridTemplateRows: `repeat(${templateRows}, 1fr)`,
         }}
       >
-        {Array.from(Array(columns)).map((_, colIndex) => {
-          return (
-            <div className="seat-column" key={`column${colIndex}`}>
-              {Array.from(Array(rows)).map((_, rowIndex) => {
-                const column = colIndex + 1;
-                const row = rowIndex + 1;
-                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                  ? partygoersBySeat[row][column]
-                  : null;
-                const isMe = seatedPartygoer?.id === user?.uid;
-                return (
-                  <div key={`row${rowIndex}`} className={`seat-row`}>
-                    {venue.showGrid && (
-                      <div
-                        className={"seat-container"}
-                        onClick={() =>
-                          onSeatClick(row, column, seatedPartygoer)
-                        }
-                      >
-                        <div
-                          className={seatedPartygoer ? "seat" : `not-seat`}
-                          key={`row${rowIndex}`}
-                        >
-                          {seatedPartygoer && (
-                            <div className={isMe ? "user avatar" : "user"} />
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-              {venue.showGrid &&
-                partygoers.map((partygoer, index) => {
-                  const isMe = partygoer.id === user?.uid;
-                  const position = partygoer?.data?.[venue.id];
-                  const currentRow = position?.row ?? 0;
-                  const currentCol = position?.column ?? 0;
-                  const avatarWidth = 100 / columns;
-                  const avatarHeight = 100 / rows;
+        {venue.showGrid && rows ? (
+          Array.from(Array(columns)).map((_, colIndex) => {
+            return (
+              <div className="seat-column" key={`column${colIndex}`}>
+                {Array.from(Array(rows)).map((_, rowIndex) => {
+                  const column = colIndex + 1;
+                  const row = rowIndex + 1;
+                  const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                    ? partygoersBySeat[row][column]
+                    : null;
+                  const isMe = seatedPartygoer?.id === user?.uid;
                   return (
-                    !!partygoer.id && (
-                      <UserProfilePicture
-                        key={`partygoer-${index}`}
-                        user={partygoer}
-                        containerStyle={{
-                          display: "flex",
-                          width: `${avatarWidth}%`,
-                          height: `${avatarHeight}%`,
-                          position: "absolute",
-                          cursor: "pointer",
-                          transition:
-                            "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
-                          top: `${avatarHeight * (currentRow - 1)}%`,
-                          left: `${avatarWidth * (currentCol - 1)}%`,
-                          justifyContent: "center",
-                        }}
-                        avatarStyle={{
-                          width: "80%",
-                          height: "80%",
-                          borderRadius: "100%",
-                          alignSelf: "center",
-                          backgroundImage: `url(${partygoer?.pictureUrl})`,
-                          backgroundSize: "cover",
-                        }}
-                        avatarClassName={`${
-                          isMe ? "me profile-avatar" : "profile-avatar"
-                        }`}
-                        setSelectedUserProfile={setSelectedUserProfile}
-                        miniAvatars={venue?.miniAvatars}
-                      />
-                    )
+                    <div key={`row${rowIndex}`} className={`seat-row`}>
+                      {venue.showGrid && (
+                        <div
+                          className={"seat-container"}
+                          onClick={() =>
+                            onSeatClick(row, column, seatedPartygoer)
+                          }
+                        >
+                          <div
+                            className={seatedPartygoer ? "seat" : `not-seat`}
+                            key={`row${rowIndex}`}
+                          >
+                            {seatedPartygoer && (
+                              <div className={isMe ? "user avatar" : "user"} />
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   );
                 })}
-            </div>
-          );
-        })}
+                {venue.showGrid &&
+                  rows &&
+                  partygoers.map((partygoer, index) => {
+                    const isMe = partygoer.id === user?.uid;
+                    const position = partygoer?.data?.[venue.id];
+                    const currentRow = position?.row ?? 0;
+                    const currentCol = position?.column ?? 0;
+                    const avatarWidth = 100 / columns;
+                    const avatarHeight = 100 / rows;
+                    return (
+                      !!partygoer.id && (
+                        <UserProfilePicture
+                          key={`partygoer-${index}`}
+                          user={partygoer}
+                          containerStyle={{
+                            display: "flex",
+                            width: `${avatarWidth}%`,
+                            height: `${avatarHeight}%`,
+                            position: "absolute",
+                            cursor: "pointer",
+                            transition:
+                              "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
+                            top: `${avatarHeight * (currentRow - 1)}%`,
+                            left: `${avatarWidth * (currentCol - 1)}%`,
+                            justifyContent: "center",
+                          }}
+                          avatarStyle={{
+                            width: "80%",
+                            height: "80%",
+                            borderRadius: "100%",
+                            alignSelf: "center",
+                            backgroundImage: `url(${partygoer?.pictureUrl})`,
+                            backgroundSize: "cover",
+                          }}
+                          avatarClassName={`${
+                            isMe ? "me profile-avatar" : "profile-avatar"
+                          }`}
+                          setSelectedUserProfile={setSelectedUserProfile}
+                          miniAvatars={venue?.miniAvatars}
+                        />
+                      )
+                    );
+                  })}
+              </div>
+            );
+          })
+        ) : (
+          <div />
+        )}
         {!!rooms.length &&
           rooms.map((room) => {
             const left = room.x_percent;
@@ -431,7 +470,7 @@ export const Map: React.FC<PropsType> = ({
             const width = room.width_percent;
             const height = room.height_percent;
             const isUnderneathRoom = isHittingRoom && room === selectedRoom;
-
+            const hasAttendance = attendances[`${venue.name}/${room.title}`];
             return (
               <div
                 className={`room position-absolute ${
@@ -473,18 +512,10 @@ export const Map: React.FC<PropsType> = ({
                     }`}
                   >
                     <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const isExternalUrl = isExternalLink(room.url);
-                        window.open(
-                          getRoomUrl(room.url),
-                          isExternalUrl ? "_blank" : "noopener,noreferrer"
-                        );
-                        roomEnter(room);
-                      }}
                       className="btn btn-white btn-small btn-block"
+                      onClick={(e) => onJoinRoom(e, room)}
                     >
-                      Join now
+                      {venue.joinButtonText ?? "Join now"}
                     </div>
                   </div>
                   <div className="camp-venue-img">
@@ -494,21 +525,17 @@ export const Map: React.FC<PropsType> = ({
                       alt={room.title}
                     />
                   </div>
-                  {venue.roomVisibility === RoomVisibility.nameCount &&
+                  {venue.roomVisibility === RoomVisibility.hover &&
                     roomHovered &&
                     roomHovered.title === room.title && (
                       <div className="camp-venue-text">
                         <div className="camp-venue-maininfo">
                           <div className="camp-venue-title">{room.title}</div>
-
-                          {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                            (room.attendanceBoost ?? 0) >
-                            0 && (
-                            <div className="camp-venue-people">
-                              {(attendances[`${venue.name}/${room.title}`] ??
-                                0) + (room.attendanceBoost ?? 0)}
-                            </div>
-                          )}
+                          <CampAttendance
+                            attendances={attendances}
+                            venue={venue}
+                            room={room}
+                          />
                         </div>
                       </div>
                     )}
@@ -516,22 +543,19 @@ export const Map: React.FC<PropsType> = ({
                   <div className={`camp-venue-text`}>
                     {(!venue.roomVisibility ||
                       venue.roomVisibility === RoomVisibility.nameCount ||
-                      venue.roomVisibility === RoomVisibility.count) && (
+                      (venue.roomVisibility === RoomVisibility.count &&
+                        hasAttendance)) && (
                       <div className="camp-venue-maininfo">
                         {(!venue.roomVisibility ||
                           venue.roomVisibility ===
                             RoomVisibility.nameCount) && (
                           <div className="camp-venue-title">{room.title}</div>
                         )}
-
-                        {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                          (room.attendanceBoost ?? 0) >
-                          0 && (
-                          <div className="camp-venue-people">
-                            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-                              (room.attendanceBoost ?? 0)}
-                          </div>
-                        )}
+                        <CampAttendance
+                          attendances={attendances}
+                          venue={venue}
+                          room={room}
+                        />
                       </div>
                     )}
                     <div className="camp-venue-secondinfo">
@@ -540,7 +564,7 @@ export const Map: React.FC<PropsType> = ({
                         <p>{room.about}</p>
                       </div>
                       <div className="camp-venue-actions">
-                        {isExternalLink(room.url) ? (
+                        {isExternalUrl(room.url) ? (
                           <a
                             className="btn btn-block btn-small btn-primary"
                             onClick={() => roomEnter(room)}

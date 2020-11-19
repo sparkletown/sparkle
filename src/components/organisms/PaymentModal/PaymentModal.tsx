@@ -12,6 +12,10 @@ import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import {
+  currentVenueSelectorData,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -30,18 +34,13 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
-  const { purchaseHistory, purchaseHistoryRequestStatus, venue } = useSelector(
-    (state) => ({
-      purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-      purchaseHistoryRequestStatus:
-        state.firestore.status.requested.userPurchaseHistory,
-      venue: state.firestore.data.currentVenue,
-    })
-  ) as {
-    purchaseHistory: Purchase[];
-    purchaseHistoryRequestStatus: boolean;
-    venue: Venue;
-  };
+  const venue = useSelector(currentVenueSelectorData) as Venue;
+  const purchaseHistory = useSelector(
+    userPurchaseHistorySelector
+  ) as Purchase[];
+  const purchaseHistoryRequestStatus = useSelector(
+    (state) => state.firestore.status.requested.userPurchaseHistory
+  );
 
   const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
   const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);

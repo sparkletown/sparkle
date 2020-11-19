@@ -12,11 +12,10 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
+import { currentVenueSelectorData } from "utils/selectors";
 
-const ArtPiece = () => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+export const ArtPiece = () => {
+  const venue = useSelector(currentVenueSelectorData);
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
@@ -89,4 +88,7 @@ const ArtPiece = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default ArtPiece;

@@ -1,10 +1,12 @@
 import React from "react";
-import { isRoomValid } from "validation";
-import RoomAttendance from "../RoomAttendance";
-import { PartyMapVenue } from "types/PartyMapVenue";
 
-import "./Map.scss";
+import { isRoomValid } from "validation";
+
+import { PartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
+
+import { RoomAttendance } from "..";
+import "./Map.scss";
 
 interface PropsType {
   config: PartyMapVenue;

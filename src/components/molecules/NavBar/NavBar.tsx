@@ -1,18 +1,16 @@
-import React, { useState, useMemo, useRef } from "react";
-import firebase from "firebase/app";
-import "./NavBar.scss";
-import "./playa.scss";
+import React, { useState, useMemo, useRef, useCallback } from "react";
+import {
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { isChatValid } from "validation";
 import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
-import PrivateChatModal from "components/organisms/PrivateChatModal";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import { RadioModal } from "../../organisms/RadioModal/RadioModal";
-import UpcomingTickets from "components/molecules/UpcomingTickets";
-import { useUser } from "hooks/useUser";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+
+import firebase from "firebase/app";
+
+import { RootState } from "index";
 import {
   DEFAULT_PROFILE_IMAGE,
   SPARKLEVERSE_LOGO_URL,
@@ -24,41 +22,106 @@ import {
   HOMEPAGE_URL,
 } from "settings";
 import { IS_BURN } from "secrets";
-import { useSelector } from "hooks/useSelector";
-import OnlineStats from "../OnlineStats";
-import { SchedulePageModal } from "../../organisms/SchedulePageModal/SchedulePageModal";
-import { useRadio } from "hooks/useRadio";
-import { GiftTicketModal } from "../../organisms/GiftTicketModal/GiftTicketModal";
-import PlayaTime from "../PlayaTime";
-import PlayaAddress from "../PlayaAddress";
-import { venueInsideUrl } from "utils/url";
+import { isChatValid } from "validation";
+import { UpcomingEvent } from "types/UpcomingEvent";
 import { VenueTemplate } from "types/VenueTemplate";
-import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { venueInsideUrl } from "utils/url";
 
-interface PropsType {
+import { useRadio } from "hooks/useRadio";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
+import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
+import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import {
+  RadioModal,
+  RadioModalPropsType,
+} from "components/organisms/RadioModal/RadioModal";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+
+import OnlineStats from "components/molecules/OnlineStats";
+import PlayaAddress from "components/molecules/PlayaAddress";
+import PlayaTime from "components/molecules/PlayaTime";
+import UpcomingTickets from "components/molecules/UpcomingTickets";
+
+import "./NavBar.scss";
+import "./playa.scss";
+import { currentVenueSelectorData } from "utils/selectors";
+
+const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
+  props: unknown,
+  { futureUpcoming }
+) => (
+  <Popover id="popover-basic" {...props}>
+    <Popover.Content>
+      <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
+
+const ChatPopover = (
+  <Popover id="popover-basic">
+    <Popover.Content>
+      <PrivateChatModal />
+    </Popover.Content>
+  </Popover>
+);
+
+const ProfilePopover = (
+  <Popover id="profile-popover">
+    <Popover.Content>
+      <ProfilePopoverContent />
+    </Popover.Content>
+  </Popover>
+);
+
+const GiftPopover = (
+  <Popover id="gift-popover">
+    <Popover.Content>
+      <GiftTicketModal />
+    </Popover.Content>
+  </Popover>
+);
+
+const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
+  <Popover id="radio-popover">
+    <Popover.Content>
+      <RadioModal {...props} />
+    </Popover.Content>
+  </Popover>
+);
+
+const navBarSelector = (state: RootState) => ({
+  venue: currentVenueSelectorData(state),
+  privateChats: state.firestore.ordered.privatechats,
+  radioStations: state.firestore.data.venues?.playa?.radioStations,
+  parentVenue: state.firestore.data.parentVenue,
+});
+
+interface NavBarPropsType {
   redirectionUrl?: string;
 }
 
-const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
+const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const { venue, privateChats, radioStations, parentVenue } = useSelector(
-    (state) => ({
-      venue: state.firestore.data.currentVenue,
-      privateChats: state.firestore.ordered.privatechats,
-      radioStations: state.firestore.data.venues?.playa?.radioStations,
-      parentVenue: state.firestore.data.parentVenue,
-    })
+    navBarSelector
   );
 
-  useFirestoreConnect([
-    {
+  const venueParentId = venue?.parentId;
+  const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
+    () => ({
       collection: "venues",
-      doc: venue?.parentId,
+      doc: venueParentId,
       storeAs: "parentVenue",
-    },
-  ]);
+    }),
+    [venueParentId]
+  );
+  useFirestoreConnect(venueParentQuery);
 
   const {
     location: { pathname },
@@ -71,41 +134,16 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
+  // Authentication Modal
   const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
     false
   );
-
-  const ticketsPopover = (
-    <Popover id="popover-basic">
-      <Popover.Content>
-        <UpcomingTickets events={futureUpcoming} />
-      </Popover.Content>
-    </Popover>
-  );
-
-  const chatPopover = (
-    <Popover id="popover-basic">
-      <Popover.Content>
-        <PrivateChatModal />
-      </Popover.Content>
-    </Popover>
-  );
-
-  const profilePopover = (
-    <Popover id="profile-popover">
-      <Popover.Content>
-        <ProfilePopoverContent />
-      </Popover.Content>
-    </Popover>
-  );
-
-  const giftPopover = (
-    <Popover id="gift-popover">
-      <Popover.Content>
-        <GiftTicketModal />
-      </Popover.Content>
-    </Popover>
-  );
+  const openAuthenticationModal = useCallback(() => {
+    setIsAuthenticationModalOpen(true);
+  }, []);
+  const closeAuthenticationModal = useCallback(() => {
+    setIsAuthenticationModalOpen(false);
+  }, []);
 
   const sound = useMemo(
     () =>
@@ -116,18 +154,6 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
   );
 
   const { volume, setVolume } = useRadio(sound);
-
-  const radioPopover = (
-    <Popover id="radio-popover">
-      <Popover.Content>
-        <RadioModal
-          volume={volume}
-          setVolume={setVolume}
-          title={venue?.radioTitle}
-        />
-      </Popover.Content>
-    </Popover>
-  );
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -151,19 +177,37 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       user &&
       privateChats
         .filter(isChatValid)
-        .filter((chat) => chat.to === user.uid && chat.isRead === false).length
+        .filter((chat) => chat.to === user.uid && !chat.isRead).length
     );
   }, [privateChats, user]);
 
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
+  const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
+  const showEventSchedule = useCallback(() => {
+    setEventScheduleVisible(true);
+  }, []);
+  const hideEventSchedule = useCallback(() => {
+    setEventScheduleVisible(false);
+  }, []);
 
-  const getHeaderLogo = () => {
-    if (venue?.template === VenueTemplate.avatargrid) {
+  const venueTemplate = venue?.template;
+  const getHeaderLogo = useCallback(() => {
+    if (venueTemplate === VenueTemplate.avatargrid) {
       return MEMRISE_LOGO_URL;
     }
     return IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
-  };
+  }, [venueTemplate]);
 
+  const venueLink =
+    redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
+
+  const backToDefaultVenue = useCallback(() => {
+    window.location.href = venueInsideUrl(DEFAULT_VENUE);
+  }, []);
+
+  const parentVenueId = venue?.parentId ?? "";
+  const backToParentVenue = useCallback(() => {
+    window.location.href = venueInsideUrl(parentVenueId);
+  }, [parentVenueId]);
   return (
     <>
       <header>
@@ -171,13 +215,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
           <div className="navbar-container">
             <div className="navbar-logo_container">
               <div className="navbar-logo">
-                <Link
-                  to={
-                    redirectionUrl ?? venueId
-                      ? venueInsideUrl(venueId ?? "")
-                      : "/"
-                  }
-                >
+                <Link to={venueLink}>
                   <img
                     src={getHeaderLogo()}
                     alt="Logo"
@@ -213,12 +251,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     {isOnPlaya ? (
                       <OnlineStats />
                     ) : (
-                      <span
-                        onClick={() =>
-                          (window.location.href = venueInsideUrl(DEFAULT_VENUE))
-                        }
-                        className="back-link"
-                      >
+                      <span onClick={backToDefaultVenue} className="back-link">
                         Back to {PLAYA_VENUE_NAME}
                       </span>
                     )}
@@ -228,14 +261,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                   <div className="venue-bar">
                     <div className="venue-name">{venue?.name}</div>
                     {venue?.parentId && (
-                      <span
-                        onClick={() =>
-                          (window.location.href = venueInsideUrl(
-                            venue?.parentId ?? ""
-                          ))
-                        }
-                        className="back-link"
-                      >
+                      <span onClick={backToParentVenue} className="back-link">
                         Back{parentVenue ? ` to ${parentVenue.name}` : ""}
                       </span>
                     )}
@@ -244,16 +270,16 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                 <div className="navbar-links">
                   {venue?.showLiveSchedule && (
                     <div className="profile-icon button-container navbar-link-schedule">
-                      <div onClick={() => setShowEventSchedule(true)}>
-                        Live Schedule
-                      </div>
+                      <div onClick={showEventSchedule}>Live Schedule</div>
                     </div>
                   )}
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={ticketsPopover}
+                      overlay={
+                        <TicketsPopover futureUpcoming={futureUpcoming} />
+                      }
                       rootClose={true}
                     >
                       <span className="tickets-icon">
@@ -265,11 +291,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={giftPopover}
+                      overlay={GiftPopover}
                       rootClose={true}
                     >
                       <span className="private-chat-icon">
-                        <div className="navbar-link-gift"></div>
+                        <div className="navbar-link-gift" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -277,7 +303,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={chatPopover}
+                      overlay={ChatPopover}
                       rootClose={true}
                     >
                       <span className="private-chat-icon">
@@ -287,7 +313,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                               {numberOfUnreadMessages}
                             </div>
                           )}
-                        <div className="navbar-link-message"></div>
+                        <div className="navbar-link-message" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -295,7 +321,11 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                     <OverlayTrigger
                       trigger="click"
                       placement="bottom-end"
-                      overlay={radioPopover}
+                      overlay={
+                        <RadioPopover
+                          {...{ volume, setVolume, title: venue?.radioTitle }}
+                        />
+                      }
                       rootClose={true}
                       defaultShow={showRadioOverlay}
                     >
@@ -303,13 +333,13 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
                         className={`profile-icon navbar-link-radio ${
                           volume === 0 && "off"
                         }`}
-                      ></div>
+                      />
                     </OverlayTrigger>
                   )}
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
-                    overlay={profilePopover}
+                    overlay={ProfilePopover}
                     rootClose={true}
                   >
                     <div className="navbar-link-profile">
@@ -328,7 +358,7 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
               <div
                 className="log-in-button"
                 style={{ marginTop: "20px" }}
-                onClick={() => setIsAuthenticationModalOpen(true)}
+                onClick={openAuthenticationModal}
               >
                 Log in
               </div>
@@ -338,12 +368,12 @@ const NavBar: React.FunctionComponent<PropsType> = ({ redirectionUrl }) => {
       </header>
       <AuthenticationModal
         show={isAuthenticationModalOpen}
-        onHide={() => setIsAuthenticationModalOpen(false)}
+        onHide={closeAuthenticationModal}
         showAuth="login"
       />
       <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
+        show={isEventScheduleVisible}
+        onHide={hideEventSchedule}
         dialogClassName="custom-dialog"
       >
         <Modal.Body>

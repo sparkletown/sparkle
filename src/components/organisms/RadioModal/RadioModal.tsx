@@ -2,13 +2,13 @@ import React from "react";
 import { PLAYA_VENUE_NAME } from "settings";
 import "./RadioModal.scss";
 
-interface PropsType {
+export interface RadioModalPropsType {
   volume: number;
   setVolume: Function;
   title?: string;
 }
 
-export const RadioModal: React.FunctionComponent<PropsType> = ({
+export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
   volume,
   setVolume,
   title,

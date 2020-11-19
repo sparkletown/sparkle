@@ -9,6 +9,7 @@ import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -21,7 +22,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
-    (state) => state.firestore.data.currentVenue?.profile_questions
+    (state) => currentVenueSelectorData(state)?.profile_questions
   );
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
