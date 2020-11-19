@@ -19,7 +19,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { ChatContext, chatSort } from "components/context/ChatContext";
 import ChatBox from "components/molecules/Chatbox";
 
-import "./VenueChat.scss";
+import "./CampChat.scss";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -79,7 +79,7 @@ const VenueChat: FC = () => {
         (user && venue?.owners?.includes(user.uid))) ??
       false
     );
-  }, [user, userRoles, venue]);
+  }, [user, userRoles, venue?.owners]);
 
   return (
     <ChatBox

@@ -1,6 +1,6 @@
-export { PartyMap } from "./PartyMap";
+export { PartyMap } from "./PartyMapPage";
 
 /**
  * @deprecated use named export instead
  */
-export { default } from "./PartyMap";
+export { default } from "./PartyMapPage";
