@@ -21,7 +21,7 @@ import UserList from "components/molecules/UserList";
 import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
 import { ScheduleItem } from "./ScheduleItem";
 
-import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
+import "components/templates/PartyMap/RoomModal/RoomModal.scss";
 
 interface RoomModalProps {
   show: boolean;
