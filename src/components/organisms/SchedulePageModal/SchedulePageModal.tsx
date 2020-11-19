@@ -13,6 +13,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
+import { currentVenueSelectorData } from "utils/selectors";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -26,7 +27,7 @@ export const SchedulePageModal: React.FunctionComponent = () => {
   const [loaded, setLoaded] = useState(false);
   const { profile } = useUser();
   const venueId = useVenueId();
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const venue = useSelector(currentVenueSelectorData);
 
   useEffect(() => {
     const updateStats = () => {

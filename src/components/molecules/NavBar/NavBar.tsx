@@ -49,6 +49,7 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 
 import "./NavBar.scss";
 import "./playa.scss";
+import { currentVenueSelectorData } from "utils/selectors";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -94,7 +95,7 @@ const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
 );
 
 const navBarSelector = (state: RootState) => ({
-  venue: state.firestore.data.currentVenue,
+  venue: currentVenueSelectorData(state),
   privateChats: state.firestore.ordered.privatechats,
   radioStations: state.firestore.data.venues?.playa?.radioStations,
   parentVenue: state.firestore.data.parentVenue,

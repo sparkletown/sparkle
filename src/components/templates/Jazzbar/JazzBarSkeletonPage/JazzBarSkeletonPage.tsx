@@ -4,6 +4,7 @@ import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface PropsType {
   children: React.ReactNode;
@@ -12,9 +13,7 @@ interface PropsType {
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 

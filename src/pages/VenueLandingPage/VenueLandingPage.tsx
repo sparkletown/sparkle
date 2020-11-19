@@ -25,6 +25,10 @@ import { isUserAMember } from "utils/isUserAMember";
 import { getTimeBeforeParty, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import "./VenueLandingPage.scss";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import {
+  currentVenueSelectorData,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -38,17 +42,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { venueId } = useParams();
   useConnectCurrentVenue();
 
-  const {
-    venue,
-    venueEvents,
-    venueRequestStatus,
-    purchaseHistory,
-  } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    venueRequestStatus: state.firestore.status.requested.currentVenue,
-    venueEvents: state.firestore.ordered.venueEvents,
-    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const venueRequestStatus = useSelector(
+    (state) => state.firestore.status.requested.currentVenue
+  );
+  const venueEvents = useSelector(
+    (state) => state.firestore.ordered.venueEvents
+  );
+  const purchaseHistory = useSelector(userPurchaseHistorySelector);
 
   useFirestoreConnect({
     collection: "venues",
