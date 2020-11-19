@@ -47,10 +47,10 @@ const ReactionPage = () => {
               <ReactionList reactions={messagesToTheBand} chats={chats} />
             )}
           </div>
-          {partyGoers && (
+          {partygoers && (
             <div className="col-4">
               <UserList
-                users={partyGoers}
+                users={partygoers}
                 isAudioEffectDisabled
                 imageSize={50}
               />

@@ -10,7 +10,7 @@ import { isExternalUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
-import "./RoomModalOngoingEvent.scss";
+import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
 
 interface RoomModalOngoingEventProps {
   room: CampRoomData;
