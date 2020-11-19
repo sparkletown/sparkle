@@ -48,6 +48,11 @@ const createVenueData = (data, context) => {
     );
   }
 
+  let owners = [context.auth.token.user_id];
+  if (data.owners) {
+    owners = [...owners, ...data.owners];
+  }
+
   const venueData = {
     template: data.template,
     name: data.name,
@@ -68,12 +73,13 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     code_of_conduct_questions: [],
-    owners: [context.auth.token.user_id],
+    owners,
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
+    parentId: data.parentId,
   };
 
   switch (data.template) {
@@ -406,6 +412,12 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.parentId) {
     updated.parentId = data.parentId;
+  }
+
+  let owners = [context.auth.token.user_id];
+  if (data.owners) {
+    owners = [...owners, ...data.owners];
+    updated.owners = owners;
   }
 
   if (data.columns) {

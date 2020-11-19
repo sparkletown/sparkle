@@ -44,6 +44,7 @@ import { ImageCollectionInput } from "components/molecules/ImageInput/ImageColle
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
+import { useQuery } from "hooks/useQuery";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -66,6 +67,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
+  const queryParams = useQuery();
+  const parentIdQuery = queryParams.get("parentId");
+
   const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
     {
       mode: "onSubmit",
@@ -75,7 +79,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         template: state.templatePage?.template,
         editing: !!venueId,
       },
-      defaultValues,
+      defaultValues: {
+        ...defaultValues,
+        parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+      },
     }
   );
   const { user } = useUser();
