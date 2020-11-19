@@ -2,7 +2,6 @@ import React from "react";
 import { formatUtcSeconds } from "utils/time";
 import { VenueEvent } from "types/VenueEvent";
 
-import "../../../templates/PartyMap/components/ScheduleItem/ScheduleItem.scss";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 

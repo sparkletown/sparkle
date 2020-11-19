@@ -9,7 +9,6 @@ import { useSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
-import { useUser } from "hooks/useUser";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -25,8 +24,6 @@ interface SchedulePageModalProps {
 export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
-  const [loaded, setLoaded] = useState(false);
-  const { profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const venueEvents = useSelector(venueEventsSelector);

@@ -21,8 +21,6 @@ import UserList from "components/molecules/UserList";
 import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
 import { ScheduleItem } from "./ScheduleItem";
 
-import "./RoomModal.scss";
-
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;

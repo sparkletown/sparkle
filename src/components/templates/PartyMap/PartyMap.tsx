@@ -13,12 +13,12 @@ import { useSelector } from "hooks/useSelector";
 import { Map } from "./components/Map";
 import { RoomModal } from "./components/RoomModal";
 
-import "./Camp.scss";
+import "./PartyMap.scss";
 
 const campVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as CampVenue;
 
-const Camp: React.FC = () => {
+export const PartyMap: React.FC = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
 
@@ -73,4 +73,4 @@ const Camp: React.FC = () => {
   );
 };
 
-export default Camp;
+export default PartyMap;
