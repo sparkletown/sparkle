@@ -3,18 +3,28 @@ import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
 } from "react-redux-firebase";
-import { useHistory } from "react-router-dom";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { Link, useHistory } from "react-router-dom";
+import { OverlayTrigger, Popover, Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-import NavSearchBar from "components/molecules/NavSearchBar";
 
 import firebase from "firebase/app";
 
 import { RootState } from "index";
-import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
+import {
+  DEFAULT_PROFILE_IMAGE,
+  SPARKLEVERSE_LOGO_URL,
+  PLAYA_VENUE_ID,
+  SPARKLE_LOGO_URL,
+  DEFAULT_VENUE,
+  MEMRISE_LOGO_URL,
+  PLAYA_VENUE_NAME,
+  HOMEPAGE_URL,
+} from "settings";
 import { IS_BURN } from "secrets";
+import { isChatValid } from "validation";
 import { UpcomingEvent } from "types/UpcomingEvent";
+import { VenueTemplate } from "types/VenueTemplate";
 import { venueInsideUrl } from "utils/url";
 
 import { useRadio } from "hooks/useRadio";
@@ -23,6 +33,7 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PrivateChatModal from "components/organisms/PrivateChatModal";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import {
@@ -31,6 +42,9 @@ import {
 } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
+import OnlineStats from "components/molecules/OnlineStats";
+import PlayaAddress from "components/molecules/PlayaAddress";
+import PlayaTime from "components/molecules/PlayaTime";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 
 import "./NavBar.scss";
@@ -44,6 +58,14 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
+
+const ChatPopover = (
+  <Popover id="popover-basic">
+    <Popover.Content>
+      <PrivateChatModal />
     </Popover.Content>
   </Popover>
 );
@@ -86,7 +108,9 @@ interface NavBarPropsType {
 const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
-  const { venue, radioStations, parentVenue } = useSelector(navBarSelector);
+  const { venue, privateChats, radioStations, parentVenue } = useSelector(
+    navBarSelector
+  );
 
   const venueParentId = venue?.parentId;
   const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
@@ -147,6 +171,16 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
+  const numberOfUnreadMessages = useMemo(() => {
+    return (
+      privateChats &&
+      user &&
+      privateChats
+        .filter(isChatValid)
+        .filter((chat) => chat.to === user.uid && !chat.isRead).length
+    );
+  }, [privateChats, user]);
+
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
   const showEventSchedule = useCallback(() => {
     setEventScheduleVisible(true);
@@ -155,46 +189,90 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     setEventScheduleVisible(false);
   }, []);
 
+  const venueTemplate = venue?.template;
+  const getHeaderLogo = useCallback(() => {
+    if (venueTemplate === VenueTemplate.avatargrid) {
+      return MEMRISE_LOGO_URL;
+    }
+    return IS_BURN ? SPARKLEVERSE_LOGO_URL : SPARKLE_LOGO_URL;
+  }, [venueTemplate]);
+
+  const venueLink =
+    redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
+
+  const backToDefaultVenue = useCallback(() => {
+    window.location.href = venueInsideUrl(DEFAULT_VENUE);
+  }, []);
+
   const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
     window.location.href = venueInsideUrl(parentVenueId);
   }, [parentVenueId]);
-
-  const navigateToHomepage = () => {
-    const venueLink =
-      redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
-
-    window.location.href = venueLink;
-  };
-
   return (
     <>
       <header>
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
-            <div className="nav-logos">
-              <div className="nav-sparkle-logo">
-                <div></div>
+            <div className="navbar-logo_container">
+              <div className="navbar-logo">
+                <Link to={venueLink}>
+                  <img
+                    src={getHeaderLogo()}
+                    alt="Logo"
+                    className={`logo-img ${
+                      IS_BURN ? "sparkleverse" : "sparkle"
+                    }`}
+                  />
+                </Link>
+                {venue?.showLearnMoreLink && (
+                  <div className="button-container about-button-container">
+                    <a
+                      href={HOMEPAGE_URL}
+                      className="about-button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Learn More
+                    </a>
+                  </div>
+                )}
               </div>
-              <div
-                className="nav-sparkle-logo_small"
-                onClick={navigateToHomepage}
-              >
-                <div></div>
-              </div>
-              <div className="nav-party-logo" onClick={showEventSchedule}>
-                Jam Online
-              </div>
-              {venue?.parentId && parentVenue?.name && (
-                <span onClick={backToParentVenue} className="back-link">
-                  Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-                </span>
+              {IS_BURN && (
+                <div className="navbar-info">
+                  <PlayaTime />
+                  {venue?.showAddress && <PlayaAddress />}
+                </div>
               )}
             </div>
             {user ? (
               <>
+                {IS_BURN && (
+                  <div className="navbar-dropdown-middle">
+                    {isOnPlaya ? (
+                      <OnlineStats />
+                    ) : (
+                      <span onClick={backToDefaultVenue} className="back-link">
+                        Back to {PLAYA_VENUE_NAME}
+                      </span>
+                    )}
+                  </div>
+                )}
+                {!IS_BURN && (
+                  <div className="venue-bar">
+                    <div className="venue-name">{venue?.name}</div>
+                    {venue?.parentId && (
+                      <span onClick={backToParentVenue} className="back-link">
+                        Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <div className="navbar-links">
-                  <NavSearchBar />
+                  {venue?.showLiveSchedule && (
+                    <div className="profile-icon button-container navbar-link-schedule">
+                      <div onClick={showEventSchedule}>Live Schedule</div>
+                    </div>
+                  )}
                   {hasUpcomingEvents && (
                     <OverlayTrigger
                       trigger="click"
@@ -218,6 +296,24 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     >
                       <span className="private-chat-icon">
                         <div className="navbar-link-gift" />
+                      </span>
+                    </OverlayTrigger>
+                  )}
+                  {profile && (
+                    <OverlayTrigger
+                      trigger="click"
+                      placement="bottom-end"
+                      overlay={ChatPopover}
+                      rootClose={true}
+                    >
+                      <span className="private-chat-icon">
+                        {!!numberOfUnreadMessages &&
+                          numberOfUnreadMessages > 0 && (
+                            <div className="notification-card">
+                              {numberOfUnreadMessages}
+                            </div>
+                          )}
+                        <div className="navbar-link-message" />
                       </span>
                     </OverlayTrigger>
                   )}
@@ -275,13 +371,15 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         onHide={closeAuthenticationModal}
         showAuth="login"
       />
-      <SchedulePageModal isVisible={isEventScheduleVisible} />
-      <div
-        className={`schedule-dropdown-backdrop ${
-          isEventScheduleVisible ? "show" : ""
-        }`}
-        onClick={hideEventSchedule}
-      />
+      <Modal
+        show={isEventScheduleVisible}
+        onHide={hideEventSchedule}
+        dialogClassName="custom-dialog"
+      >
+        <Modal.Body>
+          <SchedulePageModal />
+        </Modal.Body>
+      </Modal>
     </>
   );
 };

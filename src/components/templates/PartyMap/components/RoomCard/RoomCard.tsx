@@ -3,6 +3,7 @@ import React from "react";
 import { formatMinute, getCurrentEvent } from "utils/time";
 import { RoomData } from "types/RoomData";
 
+import { RoomAttendance } from "..";
 import "./RoomCard.scss";
 
 interface PropsType {
@@ -43,7 +44,9 @@ export const RoomCard: React.FunctionComponent<PropsType> = ({
         />
       )}
       <h5 className="italic">{room.title}</h5>
-      <div className="room-attendance-container"></div>
+      <div className="room-attendance-container">
+        <RoomAttendance room={room} attendance={attendance} />
+      </div>
       <div className="card_room-now">
         <h6 className="primary">{eventToDisplay.name}</h6>
         <p className="small primary">by {eventToDisplay.host}</p>
