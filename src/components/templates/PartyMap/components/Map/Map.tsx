@@ -9,7 +9,8 @@ import { makeMatrixReducer } from "utils/reducers";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { WithId } from "utils/id";
-import { orderedVenuesSelector } from "utils/selectors";
+import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
+import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -22,6 +23,7 @@ import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
 import { PartyMapRoomOverlay } from "./PartyMapRoomOverlay";
 
 import "./Map.scss";
+import { makeCampRoomHitFilter } from "utils/filter";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -49,14 +51,13 @@ export const Map: React.FC<PropsType> = ({
   const [rows, setRows] = useState<number>(0);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
+  const currentPosition = profile?.data?.[venue.id];
 
   const columnsArray = Array.from(Array<JSX.Element>(columns));
   const rowsArray = Array.from(Array(rows));
 
   const venues = useSelector(orderedVenuesSelector);
-  const { partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+  const partygoers = useSelector(partygoersSelector);
 
   useEffect(() => {
     const img = new Image();
@@ -69,6 +70,36 @@ export const Map: React.FC<PropsType> = ({
       setRows(calcRows);
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
+
+  const roomsHit = useMemo(() => {
+    if (!currentPosition?.row || !currentPosition?.column) return [];
+
+    const { row, column } = currentPosition;
+
+    const roomHitFilter = makeCampRoomHitFilter({
+      row,
+      column,
+      totalRows: rows,
+      totalColumns: columns,
+    });
+
+    return venue.rooms.filter(roomHitFilter);
+  }, [currentPosition, rows, columns, venue.rooms]);
+
+  useEffect(() => {
+    if (selectedRoom) {
+      const noRoomHits = !!roomsHit.length;
+      if (!noRoomHits && selectedRoom) {
+        setSelectedRoom(undefined);
+        setIsRoomModalOpen(false);
+      }
+    }
+
+    roomsHit.forEach((room) => {
+      setSelectedRoom(room);
+      setIsRoomModalOpen(true);
+    });
+  }, [roomsHit, selectedRoom, setIsRoomModalOpen, setSelectedRoom]);
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -95,6 +126,14 @@ export const Map: React.FC<PropsType> = ({
     [profile, user, venueId]
   );
 
+  const navigateRoomUrl = useCallback((room: PartyMapRoomData) => {
+    if (isExternalUrl(room.url)) {
+      openRoomUrl(room.url);
+    } else {
+      window.location.href = getRoomUrl(room.url);
+    }
+  }, []);
+
   const enterPartyMapRoom = useCallback(
     (room: PartyMapRoomData) => {
       if (!room || !user) return;
@@ -109,9 +148,10 @@ export const Map: React.FC<PropsType> = ({
         ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
       };
 
+      navigateRoomUrl(room);
       enterRoom(user, roomName, profile?.lastSeenIn);
     },
-    [profile, user, venue, venues]
+    [navigateRoomUrl, profile, user, venue.name, venues]
   );
 
   const partygoersBySeat = useMemo(() => {
