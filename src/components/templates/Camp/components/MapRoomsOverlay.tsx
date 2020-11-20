@@ -13,33 +13,26 @@ import { useDispatch } from "hooks/useDispatch";
 import CampAttendance from "./CampAttendance";
 
 interface MapRoomsProps {
-  // Passed down from useKeyboardControls() hook via Map component
-  roomEnter: (room: CampRoomData) => void;
-
-  // Passed down from Map component
-  isHittingRoom: boolean;
-
-  // Passed down from Camp component
+  // Passed down from Camp component (via Map component)
   venue: CampVenue;
-  // rooms: readonly CampRoomData[];
   attendances: { [location: string]: number };
   selectedRoom?: CampRoomData;
   setSelectedRoom: (room?: CampRoomData) => void;
   setIsRoomModalOpen: (value: boolean) => void;
+
+  // Passed down from Map component
+  enterCampRoom: (room: CampRoomData) => void;
 }
 
 export const MapRoomsOverlay: React.FC<MapRoomsProps> = ({
   venue,
-  // rooms: _rooms,
-  selectedRoom,
   attendances,
-  isHittingRoom,
+  selectedRoom,
   setSelectedRoom,
   setIsRoomModalOpen,
-  roomEnter,
+  enterCampRoom,
 }) => {
   // TODO: this is being spread here because other code modifies it with .push()/etc
-  // const rooms = [..._rooms];
   const rooms = [...venue.rooms];
 
   const dispatch = useDispatch();
@@ -77,137 +70,139 @@ export const MapRoomsOverlay: React.FC<MapRoomsProps> = ({
       window.location.href = getRoomUrl(room.url);
     }
 
-    roomEnter(room);
+    enterCampRoom(room);
   };
 
+  // TODO: if we move rooms.map() back out to the Map component,
+  //  we could rename this component MapRoomOverlay, then handle all the vars in the main block
+  //  (with proper useCallback)
   return (
     <div>
-      {!!rooms.length &&
-        rooms.map((room) => {
-          const left = room.x_percent;
-          const top = room.y_percent;
-          const width = room.width_percent;
-          const height = room.height_percent;
-          const isUnderneathRoom = isHittingRoom && room === selectedRoom;
-          const hasAttendance = attendances[`${venue.name}/${room.title}`];
-          return (
+      {rooms.map((room) => {
+        const left = room.x_percent;
+        const top = room.y_percent;
+        const width = room.width_percent;
+        const height = room.height_percent;
+
+        const isSelectedRoom = room === selectedRoom;
+        const hasAttendance = attendances[`${venue.name}/${room.title}`];
+        return (
+          <div
+            className={`room position-absolute ${
+              isSelectedRoom && "isUnderneath"
+            }`}
+            style={{
+              left: left + "%",
+              top: top + "%",
+              width: width + "%",
+              height: height + "%",
+            }}
+            key={room.title}
+            // TODO: useCallback()
+            onClick={() => {
+              if (!IS_BURN) {
+                openModal(room);
+              } else {
+                setRoomClicked((prevRoomClicked) =>
+                  prevRoomClicked === room.title ? undefined : room.title
+                );
+              }
+            }}
+            // TODO: useCallback()
+            onMouseEnter={() => {
+              dispatch(retainAttendance(true));
+              setRoomHovered(room);
+            }}
+            // TODO: useCallback()
+            onMouseLeave={() => {
+              dispatch(retainAttendance(false));
+              setRoomHovered(undefined);
+            }}
+          >
             <div
-              className={`room position-absolute ${
-                isUnderneathRoom && "isUnderneath"
+              className={`camp-venue ${
+                roomClicked === room.title ? "clicked" : ""
               }`}
-              style={{
-                left: left + "%",
-                top: top + "%",
-                width: width + "%",
-                height: height + "%",
-              }}
-              key={room.title}
-              onClick={() => {
-                if (!IS_BURN) {
-                  openModal(room);
-                } else {
-                  setRoomClicked((prevRoomClicked) =>
-                    prevRoomClicked === room.title ? undefined : room.title
-                  );
-                }
-              }}
-              onMouseEnter={() => {
-                dispatch(retainAttendance(true));
-                setRoomHovered(room);
-              }}
-              onMouseLeave={() => {
-                dispatch(retainAttendance(false));
-                setRoomHovered(undefined);
-              }}
             >
               <div
-                className={`camp-venue ${
-                  roomClicked === room.title ? "clicked" : ""
-                }`}
+                className={`grid-room-btn ${isSelectedRoom && "isUnderneath"}`}
               >
                 <div
-                  className={`grid-room-btn ${
-                    isUnderneathRoom && "isUnderneath"
-                  }`}
+                  className="btn btn-white btn-small btn-block"
+                  onClick={(e) => onJoinRoom(e, room)}
                 >
-                  <div
-                    className="btn btn-white btn-small btn-block"
-                    onClick={(e) => onJoinRoom(e, room)}
-                  >
-                    {venue.joinButtonText ?? "Join now"}
-                  </div>
+                  {venue.joinButtonText ?? "Join now"}
                 </div>
-                <div className="camp-venue-img">
-                  <img
-                    src={room.image_url}
-                    title={room.title}
-                    alt={room.title}
-                  />
-                </div>
-                {venue.roomVisibility === RoomVisibility.hover &&
-                  roomHovered &&
-                  roomHovered.title === room.title && (
-                    <div className="camp-venue-text">
-                      <div className="camp-venue-maininfo">
-                        <div className="camp-venue-title">{room.title}</div>
-                        <CampAttendance
-                          attendances={attendances}
-                          venue={venue}
-                          room={room}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                <div className={`camp-venue-text`}>
-                  {(!venue.roomVisibility ||
-                    venue.roomVisibility === RoomVisibility.nameCount ||
-                    (venue.roomVisibility === RoomVisibility.count &&
-                      hasAttendance)) && (
+              </div>
+              <div className="camp-venue-img">
+                <img src={room.image_url} title={room.title} alt={room.title} />
+              </div>
+              {venue.roomVisibility === RoomVisibility.hover &&
+                roomHovered &&
+                roomHovered.title === room.title && (
+                  <div className="camp-venue-text">
                     <div className="camp-venue-maininfo">
-                      {(!venue.roomVisibility ||
-                        venue.roomVisibility === RoomVisibility.nameCount) && (
-                        <div className="camp-venue-title">{room.title}</div>
-                      )}
+                      <div className="camp-venue-title">{room.title}</div>
                       <CampAttendance
                         attendances={attendances}
                         venue={venue}
                         room={room}
                       />
                     </div>
-                  )}
-                  <div className="camp-venue-secondinfo">
-                    <div className="camp-venue-desc">
-                      <p>{room.subtitle}</p>
-                      <p>{room.about}</p>
-                    </div>
-                    <div className="camp-venue-actions">
-                      {isExternalUrl(room.url) ? (
-                        <a
-                          className="btn btn-block btn-small btn-primary"
-                          onClick={() => roomEnter(room)}
-                          href={getRoomUrl(room.url)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {venue.joinButtonText ?? "Join the room"}
-                        </a>
-                      ) : (
-                        <a
-                          className="btn btn-block btn-small btn-primary"
-                          onClick={() => roomEnter(room)}
-                          href={getRoomUrl(room.url)}
-                        >
-                          {venue.joinButtonText ?? "Join the room"}
-                        </a>
-                      )}
-                    </div>
+                  </div>
+                )}
+
+              <div className={`camp-venue-text`}>
+                {(!venue.roomVisibility ||
+                  venue.roomVisibility === RoomVisibility.nameCount ||
+                  (venue.roomVisibility === RoomVisibility.count &&
+                    hasAttendance)) && (
+                  <div className="camp-venue-maininfo">
+                    {(!venue.roomVisibility ||
+                      venue.roomVisibility === RoomVisibility.nameCount) && (
+                      <div className="camp-venue-title">{room.title}</div>
+                    )}
+                    <CampAttendance
+                      attendances={attendances}
+                      venue={venue}
+                      room={room}
+                    />
+                  </div>
+                )}
+                <div className="camp-venue-secondinfo">
+                  <div className="camp-venue-desc">
+                    <p>{room.subtitle}</p>
+                    <p>{room.about}</p>
+                  </div>
+                  <div className="camp-venue-actions">
+                    {isExternalUrl(room.url) ? (
+                      <a
+                        className="btn btn-block btn-small btn-primary"
+                        // TODO: useCallback()
+                        onClick={() => enterCampRoom(room)}
+                        href={getRoomUrl(room.url)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {venue.joinButtonText ?? "Join the room"}
+                      </a>
+                    ) : (
+                      <a
+                        className="btn btn-block btn-small btn-primary"
+                        // TODO: useCallback()
+                        onClick={() => enterCampRoom(room)}
+                        href={getRoomUrl(room.url)}
+                      >
+                        {venue.joinButtonText ?? "Join the room"}
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          );
-        })}
+          </div>
+        );
+      })}
     </div>
   );
 };

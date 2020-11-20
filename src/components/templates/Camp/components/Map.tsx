@@ -6,17 +6,21 @@ import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 import { User } from "types/User";
 
+import { makeCampRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { makeMatrixReducer } from "utils/reducers";
+import { orderedVenuesSelector } from "utils/selectors";
+import { currentTimeInUnixEpoch } from "utils/time";
+import { enterRoom } from "utils/useLocationUpdateEffect";
 
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-
-import { MapRoomsOverlay } from "./MapRoomsOverlay";
-import { MapRow } from "./MapRow";
 
 import { useKeyboardControls } from "../hooks/useKeyboardControls";
 
+import { MapRoomsOverlay } from "./MapRoomsOverlay";
 import { MapPartygoersOverlay } from "./MapPartygoersOverlay";
+import { MapRow } from "./MapRow";
 
 import "./Map.scss";
 
@@ -44,14 +48,14 @@ export const Map: React.FC<MapProps> = ({
 
   const venueId = venue.id;
 
-  const columns = venue.columns ?? DEFAULT_COLUMNS;
-  const [rows, setRows] = useState<number>(0);
+  const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
+  const [totalRows, setTotalRows] = useState<number>(0);
 
-  const templateColumns = venue.showGrid ? columns : DEFAULT_COLUMNS;
-  const templateRows = venue.showGrid ? rows : DEFAULT_ROWS;
+  const templateColumns = venue.showGrid ? totalColumns : DEFAULT_COLUMNS;
+  const templateRows = venue.showGrid ? totalRows : DEFAULT_ROWS;
 
-  const columnsArray = Array.from(Array<JSX.Element>(columns));
-  const rowsArray = Array.from(Array(rows));
+  const columnsArray = Array.from(Array<JSX.Element>(totalColumns));
+  const rowsArray = Array.from(Array(totalRows));
 
   useEffect(() => {
     const img = new Image();
@@ -61,7 +65,7 @@ export const Map: React.FC<MapProps> = ({
       const calcRows = venue.columns
         ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
         : DEFAULT_ROWS;
-      setRows(calcRows);
+      setTotalRows(calcRows);
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
@@ -90,48 +94,58 @@ export const Map: React.FC<MapProps> = ({
     [profile, user, venueId]
   );
 
-  const [isHittingRoom, setIsHittingRoom] = useState(false);
+  const currentPosition = profile?.data?.[venue.id];
 
-  const handlePotentialRoomClick = useCallback(
+  const checkForRoomHit = useCallback(
     (row: number, column: number) => {
+      const roomHitFilter = makeCampRoomHitFilter({
+        row,
+        column,
+        totalRows,
+        totalColumns: totalColumns,
+      });
+
       // TODO: this will run through all of the rooms, but the logic looks like we want to stop at the first
       //   if so, could use .find() instead?
-      venue.rooms.forEach((room: CampRoomData) => {
-        const rowPosition = (100 / rows) * row;
-        const colPosition = (100 / columns) * column;
-        const roomX = Math.trunc(room.x_percent);
-        const roomY = Math.trunc(room.y_percent);
-        const roomWidth = Math.trunc(room.width_percent);
-        const roomHeight = Math.trunc(room.height_percent);
-
-        if (
-          rowPosition >= roomY &&
-          rowPosition <= roomY + roomHeight &&
-          colPosition >= roomX &&
-          colPosition <= roomX + roomWidth
-        ) {
-          // TODO: move these out into their own useCallback'd blocks?
-          setSelectedRoom(room);
-          setIsHittingRoom(true);
-          setIsRoomModalOpen(true);
-        } else {
-          if (isHittingRoom && selectedRoom) {
-            setSelectedRoom(undefined);
-            setIsHittingRoom(false);
-          }
-        }
+      venue.rooms.filter(roomHitFilter).forEach((room) => {
+        setSelectedRoom(room);
+        setIsRoomModalOpen(true);
       });
+
+      // TODO: MISS
+      //   if (selectedRoom) {
+      //     setSelectedRoom(undefined);
+      //   }
     },
-    [
-      isHittingRoom,
-      venue.rooms,
-      rows,
-      columns,
-      selectedRoom,
-      setIsRoomModalOpen,
-      setSelectedRoom,
-    ]
+    [venue.rooms, totalRows, totalColumns, setIsRoomModalOpen, setSelectedRoom]
   );
+
+  const roomsHit = useMemo(() => {
+    if (!currentPosition?.row || !currentPosition?.column) return [];
+
+    const { row, column } = currentPosition;
+
+    const roomHitFilter = makeCampRoomHitFilter({
+      row,
+      column,
+      totalRows,
+      totalColumns: totalColumns,
+    });
+
+    return venue.rooms.filter(roomHitFilter);
+  }, [currentPosition, totalRows, totalColumns, venue.rooms]);
+
+  useEffect(() => {
+    roomsHit.forEach((room) => {
+      setSelectedRoom(room);
+      // setIsRoomModalOpen(true); // TODO: do we need this here as well?
+    });
+
+    // TODO: NOT HIT
+    // if (selectedRoom === room) {
+    //   setSelectedRoom(undefined); // this comes from camp
+    // }
+  }, [roomsHit, setSelectedRoom]);
 
   // TODO: useCallback
   const onSeatClick = (
@@ -142,7 +156,7 @@ export const Map: React.FC<MapProps> = ({
     if (!seatedPartygoer) {
       takeSeat(row, column);
     } else {
-      handlePotentialRoomClick(row, column);
+      checkForRoomHit(row, column);
     }
   };
 
@@ -161,24 +175,45 @@ export const Map: React.FC<MapProps> = ({
     return partygoers?.reduce(partygoersReducer, []);
   }, [venueId, partygoers]);
 
-  // TODO: i think the logic in MapRoomsOverlay expects to be able to mutate this.. but maybe only locally to itself?
-  // const rooms = venue.rooms;
+  const isSeatTaken = useCallback(
+    (r: number, c: number): boolean => !!partygoersBySeat?.[r]?.[c],
+    [partygoersBySeat]
+  );
 
-  const { roomEnter } = useKeyboardControls({
-    user,
-    profile,
+  const venues = useSelector(orderedVenuesSelector);
+  const enterCampRoom = useCallback(
+    (room: CampRoomData) => {
+      if (!room || !user) return;
 
-    rows,
-    columns,
-    partygoersBySeat,
-    isHittingRoom,
-    setIsHittingRoom,
+      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
+      const roomVenue = venues?.find((venue) =>
+        room.url.endsWith(`/${venue.id}`)
+      );
+
+      const roomName = {
+        [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
+        ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
+      };
+
+      enterRoom(user, roomName, profile?.lastSeenIn);
+    },
+    [profile, user, venue, venues]
+  );
+
+  // TODO: can we move this into Camp or similar?
+  const enterSelectedRoom = useCallback(() => {
+    if (!selectedRoom) return;
+
+    enterCampRoom(selectedRoom);
+  }, [enterCampRoom, selectedRoom]);
+
+  useKeyboardControls({
+    venueId,
+    totalRows: totalRows,
+    totalColumns: totalColumns,
+    isSeatTaken,
     takeSeat,
-
-    venue,
-
-    selectedRoom,
-    setSelectedRoom,
+    enterSelectedRoom,
   });
 
   if (!user || !venue) {
@@ -214,7 +249,7 @@ export const Map: React.FC<MapProps> = ({
                 showGrid={venue.showGrid}
                 hasSeatedPartygoer={hasSeatedPartygoer}
                 seatedPartygoerIsMe={isMe}
-                // TODO: make this a submodule + useCallback()?
+                // TODO: useCallback()?
                 onSeatClick={() => onSeatClick(row, column, seatedPartygoer)}
               />
             );
@@ -223,8 +258,8 @@ export const Map: React.FC<MapProps> = ({
           <MapPartygoersOverlay
             venueId={venue.id}
             myUserUid={user.uid}
-            rows={rows}
-            columns={columns}
+            rows={totalRows}
+            columns={totalColumns}
             withMiniAvatars={venue.miniAvatars}
             partygoers={partygoers}
           />
@@ -233,12 +268,10 @@ export const Map: React.FC<MapProps> = ({
 
       <MapRoomsOverlay
         venue={venue}
-        // rooms={rooms}
         attendances={attendances}
-        isHittingRoom={isHittingRoom}
         setSelectedRoom={setSelectedRoom}
         setIsRoomModalOpen={setIsRoomModalOpen}
-        roomEnter={roomEnter}
+        enterCampRoom={enterCampRoom}
       />
     </div>
   );
