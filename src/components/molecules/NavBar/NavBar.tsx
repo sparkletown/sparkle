@@ -160,12 +160,12 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     window.location.href = venueInsideUrl(parentVenueId);
   }, [parentVenueId]);
 
-  const navigateToHomepage = () => {
+  const navigateToHomepage = useCallback(() => {
     const venueLink =
       redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
 
     window.location.href = venueLink;
-  };
+  }, [redirectionUrl, venueId]);
 
   return (
     <>
@@ -183,7 +183,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                 <div></div>
               </div>
               <div className="nav-party-logo" onClick={showEventSchedule}>
-                Jam Online
+                {venue?.name}
               </div>
               {venue?.parentId && parentVenue?.name && (
                 <span onClick={backToParentVenue} className="back-link">

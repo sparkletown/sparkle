@@ -337,18 +337,16 @@ export const Map: React.FC<PropsType> = ({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "row", marginTop: 20 }}>
-      <div style={{ width: "80%" }}>
-        <div
-          style={{ flex: 1, display: "flex", margin: "20px auto 20px auto" }}
-        >
+    <div className="content-container">
+      <div className="party-map-container">
+        <div className="party-map-content">
           <img
             width="100%"
             className="map-background"
             src={venue.mapBackgroundImageUrl}
             alt=""
           />
-          <div style={{ position: "absolute", width: "80%", height: "100%" }}>
+          <div className="rooms-container">
             {!!rooms.length &&
               rooms.map((room) => {
                 const left = room.x_percent;
@@ -578,7 +576,7 @@ export const Map: React.FC<PropsType> = ({
         </div>
       </div>
 
-      <div style={{ width: "20%" }}>
+      <div className="sidebar">
         <Sidebar />
       </div>
     </div>

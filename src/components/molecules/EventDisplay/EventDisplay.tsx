@@ -1,29 +1,29 @@
-import React from "react";
-import { WithId } from "utils/id";
+import React, { FC, useCallback } from "react";
+
 import { AnyVenue } from "types/Firestore";
+
 import {
   formatHourAndMinute,
   getCurrentTimeInUTCSeconds,
   currentTimeInUnixEpoch,
 } from "utils/time";
+import { WithId } from "utils/id";
 import { isExternalUrl } from "utils/url";
-import "./EventDisplay.scss";
 import { enterRoom } from "utils/useLocationUpdateEffect";
+
 import { useUser } from "hooks/useUser";
 
-interface PropsType {
+import "./EventDisplay.scss";
+
+interface EventDisplayProps {
   event: firebase.firestore.DocumentData;
   venue: WithId<AnyVenue>;
-  joinNowButton: boolean;
 }
 
-export const EventDisplay: React.FunctionComponent<PropsType> = ({
-  event,
-  venue,
-  joinNowButton,
-}) => {
+export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
   const { user, profile } = useUser();
-  const onEventClick = () => {
+
+  const enterEvent = useCallback(() => {
     const room = venue?.rooms?.find((room) => room.title === event.room);
 
     const isExternal = isExternalUrl(room.url);
@@ -38,11 +38,13 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
       profile?.lastSeenIn
     );
-  };
+  }, [event, profile, user, venue]);
+
   const isLiveEvent =
     event.start_utc_seconds < getCurrentTimeInUTCSeconds() &&
     event.start_utc_seconds + event.duration_minutes * 60 >
       getCurrentTimeInUTCSeconds();
+
   return (
     <div
       key={event.name + Math.random().toString()}
@@ -67,7 +69,7 @@ export const EventDisplay: React.FunctionComponent<PropsType> = ({
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={onEventClick}>{event.room}</div>
+          <div onClick={enterEvent}>{event.room}</div>
         </div>
       </div>
     </div>

@@ -26,6 +26,7 @@ import {
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
 
@@ -143,6 +144,7 @@ const ChatsList: React.FunctionComponent = () => {
       {hasPrivateChats && (
         <div className="private-container show">
           <div className="private-messages-list">
+            <UserSearchBar onSelect={setSelectedUser} />
             {discussions.map((userId: string) => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =

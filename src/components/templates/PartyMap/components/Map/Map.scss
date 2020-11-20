@@ -4,6 +4,32 @@ $white: #ffffff;
 $room-info-bg: #005ee5;
 $border-radius: 28px;
 
+.content-container {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20;
+
+  .party-map-container {
+    width: 80%;
+
+    .party-map-container {
+      flex: 1;
+      display: flex;
+      margin: 20px auto 20px auto;
+
+      .rooms-container {
+        position: absolute;
+        width: 80%;
+        height: 100%;
+      }
+    }
+  }
+
+  .sidebar {
+    width: 20%;
+  }
+}
+
 .map-container {
   display: flex;
   flex: 1;

@@ -1,9 +1,17 @@
+import UserProfileModal from "components/organisms/UserProfileModal";
+import { RoomModal } from "components/templates/PartyMap/components";
 import { useSelector } from "hooks/useSelector";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
+import {
+  currentVenueSelectorData,
+  partygoersSelector,
+  venueEventsSelector,
+} from "utils/selectors";
 import "./NavSearchBar.scss";
+import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
   rooms: CampRoomData[];
@@ -18,12 +26,12 @@ const NavSearchBar = () => {
     users: [],
     events: [],
   });
+  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
-  const { venue, partygoers, venueEvents } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    partygoers: state.firestore.data.partygoers,
-    venueEvents: state.firestore.data.venueEvents,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const partygoers = useSelector(partygoersSelector);
+  const venueEvents = useSelector(venueEventsSelector);
 
   useEffect(() => {
     if (!searchQuery) {
@@ -36,18 +44,20 @@ const NavSearchBar = () => {
     }
     const filteredPartygoers = partygoers
       ? Object.values(partygoers).filter((partygoer) =>
-          partygoer.partyName?.includes(searchQuery)
+          partygoer.partyName
+            ?.toLowerCase()
+            ?.includes(searchQuery.toLowerCase())
         )
       : [];
     const filteredEvents = venueEvents
       ? Object.values(venueEvents).filter((event) =>
-          event.name.includes(searchQuery)
+          event.name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       : [];
     const filteredRooms =
       venue && venue.rooms
         ? (venue?.rooms as CampRoomData[]).filter((room) =>
-            room.title.includes(searchQuery)
+            room.title.toLowerCase().includes(searchQuery.toLowerCase())
           )
         : [];
     setSearchResult({
@@ -62,22 +72,16 @@ const NavSearchBar = () => {
     searchResult.events.length +
     searchResult.users.length;
 
+  const clearSearchQuery = useCallback(() => {
+    setSearchQuery("");
+  }, []);
+
   return (
     <div className="nav-search-links">
       <div className="nav-search-icon" />
-      <input
-        className="nav-search-input"
-        type="text"
-        name=""
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search for people, rooms, events..."
-      ></input>
+      <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
       {!!searchQuery && (
-        <div
-          className="nav-search-close-icon"
-          onClick={() => setSearchQuery("")}
-        />
+        <div className="nav-search-close-icon" onClick={clearSearchQuery} />
       )}
       {!!numberOfSearchResults && (
         <>
@@ -87,7 +91,11 @@ const NavSearchBar = () => {
             </div>
             {searchResult.rooms.map((room, index) => {
               return (
-                <div className="row" key={`room-${index}`}>
+                <div
+                  className="row"
+                  key={`room-${index}`}
+                  onClick={() => setSelectedRoom(room)}
+                >
                   <div
                     className="result-avatar"
                     style={{
@@ -112,11 +120,37 @@ const NavSearchBar = () => {
               );
             })}
             {searchResult.users.map((user, index) => {
-              return <div key={`user-${index}`}>{user.partyName}</div>;
+              return (
+                <div
+                  className="row"
+                  key={`room-${index}`}
+                  onClick={() => setSelectedUserProfile(user)}
+                >
+                  <div
+                    className="result-avatar"
+                    style={{
+                      backgroundImage: `url(${user.pictureUrl})`,
+                    }}
+                  ></div>
+                  <div className="result-info">
+                    <div key={`user-${index}`}>{user.partyName}</div>
+                  </div>
+                </div>
+              );
             })}
           </div>
         </>
       )}
+      <UserProfileModal
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setSelectedUserProfile(undefined)}
+      />
+      <RoomModal
+        show={!!selectedRoom}
+        room={selectedRoom}
+        onHide={() => setSelectedRoom(undefined)}
+      />
     </div>
   );
 };

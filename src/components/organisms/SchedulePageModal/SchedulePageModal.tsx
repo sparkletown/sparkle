@@ -105,7 +105,6 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
                     key={event.name + Math.random().toString()}
                     event={event}
                     venue={venueWithId}
-                    joinNowButton
                   />
                 ))}
               {orderedEvents[date] && !orderedEvents[date].events.length && (

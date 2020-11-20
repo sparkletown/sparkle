@@ -1,8 +1,8 @@
-.nav-search-links {
+.user-search-links {
   display: flex;
   position: relative;
 
-  .nav-search-icon {
+  .user-search-icon {
     align-self: center;
     position: absolute;
     left: 10px;
@@ -13,7 +13,7 @@
     opacity: 0.4;
   }
 
-  .nav-search-close-icon {
+  .user-search-close-icon {
     position: absolute;
     align-self: center;
     z-index: 1;
@@ -54,8 +54,8 @@
   }
 }
 
-.nav-search-input {
-  width: 290px;
+.user-search-input {
+  width: 100%;
   outline: none;
   background-color: #19181a;
   border: solid 2px rgba(0, 0, 0, 0.13);
@@ -67,9 +67,9 @@
   color: #fff;
 }
 
-.nav-search-results {
+.user-search-results {
   position: absolute;
-  min-width: 290px;
+  width: 100%;
   position: fixed;
   z-index: 380;
   top: 60px;
@@ -80,7 +80,7 @@
   transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
   background-color: #19181a;
 
-  .nav-search-result-number {
+  .user-search-result-number {
     opacity: 0.5;
     font-size: 0.9rem;
   }
