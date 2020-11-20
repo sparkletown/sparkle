@@ -1,6 +1,5 @@
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import firebase from "firebase";
-// import { useUser } from "hooks/useUser";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "hooks/useSelector";
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
@@ -18,9 +17,7 @@ interface PROPS {
 
 const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
   const [token, setToken] = useState<string>();
-  const { user, profile } = useUser();
-
-  // console.log('FIRE SEAT PERSON:', person);
+  const { user } = useUser();
 
   useEffect(() => {
     (async () => {
@@ -130,7 +127,6 @@ const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
         errorMessage={videoError}
         onRetry={connectToVideoRoom}
         onBack={() => {}}
-        // onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
       />
     </S.Chair>
   );
