@@ -16,17 +16,17 @@ export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
-export const VENUE_CHAT_AGE_DAYS = 10;
+export const VENUE_CHAT_AGE_DAYS = 30;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
-export const PLAYA_INFO_URL = "https://burningseed.sparklever.se/in/centrecamp";
+export const PLAYA_INFO_URL =
+  "https://us02web.zoom.us/j/89955369645?pwd=VEY1VzFPemNKMEw2bHRLdDJpWnRmQT09";
 export const PLAYA_INFO_NAME = "Jam Info Booth";
-export const REALITY_RANGERS_URL =
-  "https://redearthcity.zoom.us/j/5127329136?pwd=Zk9rVHhDNDJqLzJldlJ0M2VJdHBPdz09";
+export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Red Earth Ranger Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
@@ -104,6 +104,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.audience,
   VenueTemplate.artpiece,
+  VenueTemplate.firebarrel,
 ];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
@@ -167,6 +168,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
   },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Fire Barrel",
+    description: ["Huddle around a fire barrel with your close friends"],
+  },
 ];
 
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
@@ -189,11 +195,23 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
       "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
     ],
   },
+  {
+    template: VenueTemplate.partymap,
+    name: "Party Map",
+    description: [""],
+  },
 ];
 
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
+  VenueTemplate.partymap,
   VenueTemplate.playa,
+];
+
+export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+  VenueTemplate.avatargrid,
 ];
 
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [

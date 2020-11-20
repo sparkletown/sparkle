@@ -16,6 +16,7 @@ export interface ParticipantProps {
   participant: Video.Participant;
   profileData: User;
   profileDataId: string;
+  showIcon?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -29,6 +30,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   bartender,
   children,
   defaultMute = false,
+  showIcon = true,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -129,12 +131,14 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
       {videos}
-      <div className="profile-icon">
-        <UserProfilePicture
-          user={{ ...profileData, id: participant.identity }}
-          setSelectedUserProfile={() => setShowProfile(true)}
-        />
-      </div>
+      {showIcon && (
+        <div className="profile-icon">
+          <UserProfilePicture
+            user={{ ...profileData, id: participant.identity }}
+            setSelectedUserProfile={() => setShowProfile(true)}
+          />
+        </div>
+      )}
       <UserProfileModal
         show={showProfile}
         onHide={() => setShowProfile(false)}

@@ -45,7 +45,6 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
                         key={event.name + idx}
                         event={event}
                         venue={venue}
-                        joinNowButton={joinNowButton}
                       />
                     ))}
                 </div>

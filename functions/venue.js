@@ -19,19 +19,21 @@ const VenueTemplate = {
   playa: "playa",
   audience: "audience",
   avatargrid: "avatargrid",
+  firebarrel: "firebarrel",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 const VALID_TEMPLATES = [
-  "jazzbar",
-  "friendship",
-  "partymap",
-  "zoomroom",
-  "themecamp",
-  "artpiece",
-  "artcar",
-  "audience",
-  "performancevenue",
+  VenueTemplate.jazzbar,
+  VenueTemplate.friendship,
+  VenueTemplate.partymap,
+  VenueTemplate.zoomroom,
+  VenueTemplate.themecamp,
+  VenueTemplate.artpiece,
+  VenueTemplate.artcar,
+  VenueTemplate.audience,
+  VenueTemplate.performancevenue,
+  VenueTemplate.firebarrel,
 ];
 
 const PlacementState = {
@@ -83,23 +85,27 @@ const createVenueData = (data, context) => {
   };
 
   switch (data.template) {
-    case "jazzbar":
-    case "performancevenue":
-    case "audience":
-    case "artpiece":
+    case VenueTemplate.jazzbar:
+    case VenueTemplate.performancevenue:
+    case VenueTemplate.audience:
+    case VenueTemplate.artpiece:
+    case VenueTemplate.firebarrel:
       venueData.iframeUrl = data.iframeUrl;
       break;
-    case "partymap":
-    case "themecamp":
+
+    case VenueTemplate.partymap:
+    case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
       venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
       break;
-    case "zoomroom":
-    case "artcar":
+
+    case VenueTemplate.zoomroom:
+    case VenueTemplate.artcar:
       venueData.zoomUrl = data.zoomUrl;
       break;
+
     case VenueTemplate.playa:
       venueData.roomVisibility = data.roomVisibility;
       break;

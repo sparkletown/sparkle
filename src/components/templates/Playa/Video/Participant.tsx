@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
@@ -12,6 +18,7 @@ export interface ParticipantProps {
   video?: boolean;
   local?: boolean;
   isHost?: boolean;
+  showName?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -27,6 +34,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   video,
   local,
   isHost,
+  showName = true,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -146,12 +154,19 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     ? " (host)"
     : "";
 
+  const onNameClick = useCallback(() => setSelectedUserProfile(user), [
+    setSelectedUserProfile,
+    user,
+  ]);
+
   return (
     <div className="participant">
       {videos}
-      <div className="name" onClick={() => setSelectedUserProfile(user)}>
-        {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
-      </div>
+      {showName && (
+        <div className="name" onClick={onNameClick}>
+          {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
+        </div>
+      )}
       {children}
     </div>
   );
