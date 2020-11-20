@@ -138,7 +138,7 @@ const Camp: React.FC = () => {
             />
           </div>
         )}
-        {IS_BURN && (
+        {venue?.config?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
           </div>
