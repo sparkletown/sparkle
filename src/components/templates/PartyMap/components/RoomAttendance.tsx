@@ -1,43 +1,31 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { FC } from "react";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
-
-import { RoomData } from "types/RoomData";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CampRoomData } from "types/CampRoomData";
+import { CampVenue } from "types/CampVenue";
 
 interface PropsType {
-  room: RoomData;
-  attendance?: number;
-  positioned?: boolean;
-  onClick?: () => void;
+  venue: CampVenue;
+  attendances: { [location: string]: number };
+  room: CampRoomData;
 }
 
-export const RoomAttendance: React.FunctionComponent<PropsType> = ({
-  room,
-  attendance,
-  positioned,
-  onClick,
-}) => {
-  attendance = attendance || 0;
-  const singularTitle = `${attendance} person in ${room.title}`;
-  const pluralTitle = `${attendance} people in ${room.title}`;
-  const title = attendance === 1 ? singularTitle : pluralTitle;
-
-  const className =
-    "d-flex room-attendance my-2" + (positioned ? " positioned" : "");
-  const style = positioned
-    ? { left: room.attendance_x, top: room.attendance_y }
-    : undefined;
-
+export const RoomAttendance: FC<PropsType> = ({ attendances, venue, room }) => {
   return (
-    <div
-      className={className}
-      style={style}
-      title={title}
-      onClick={onClick}
-      id={`attendance-number-${title}`}
-    >
-      <span className="attendance-number">{attendance}</span>
-      <FontAwesomeIcon icon={faUser} />
-    </div>
+    <>
+      {(attendances[`${venue.name}/${room.title}`] ?? 0) +
+        (room.attendanceBoost ?? 0) >
+        0 && (
+        <>
+          <div className="camp-venue-people">
+            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
+              (room.attendanceBoost ?? 0)}
+          </div>
+          <FontAwesomeIcon icon={faUser} />
+        </>
+      )}
+    </>
   );
 };
+
+export default RoomAttendance;
