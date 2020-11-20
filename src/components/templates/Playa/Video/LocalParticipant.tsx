@@ -5,7 +5,7 @@ import {
   faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Participant, { ParticipantProps } from "./Participant";
 
 type LocalParticipantProps = ParticipantProps & {
@@ -60,11 +60,13 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     }
   });
 
+  const onMicClick = useCallback(() => setMic(!mic), [mic]);
+
   const renderMicIcon = () => {
     if (useFontAwesome) {
       return (
         <FontAwesomeIcon
-          onClick={() => setMic(!mic)}
+          onClick={onMicClick}
           size="lg"
           icon={!mic ? faMicrophoneSlash : faMicrophone}
           color={!mic ? "red" : undefined}
@@ -73,17 +75,19 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     }
 
     return (
-      <div className="mic" onClick={() => setMic(!mic)}>
+      <div className="mic" onClick={onMicClick}>
         <div className={`btn ${mic ? "on" : "off"}`} />
       </div>
     );
   };
 
+  const onCameraClick = useCallback(() => setCamera(!camera), [camera]);
+
   const renderCameraIcon = () => {
     if (useFontAwesome) {
       return (
         <FontAwesomeIcon
-          onClick={() => setCamera(!camera)}
+          onClick={onCameraClick}
           size="lg"
           icon={!camera ? faVideoSlash : faVideo}
           color={!camera ? "red" : undefined}
@@ -92,7 +96,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     }
 
     return (
-      <div className="camera" onClick={() => setCamera(!camera)}>
+      <div className="camera" onClick={onCameraClick}>
         <div className={`btn ${camera ? "on" : "off"}`} />
       </div>
     );
@@ -108,7 +112,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       showName={showName}
     >
       {showLeave && (
-        <div className="leave" onClick={() => leave()}>
+        <div className="leave" onClick={leave}>
           <div className="btn" />
         </div>
       )}

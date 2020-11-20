@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
@@ -148,11 +154,16 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     ? " (host)"
     : "";
 
+  const onNameClick = useCallback(() => setSelectedUserProfile(user), [
+    setSelectedUserProfile,
+    user,
+  ]);
+
   return (
     <div className="participant">
       {videos}
       {showName && (
-        <div className="name" onClick={() => setSelectedUserProfile(user)}>
+        <div className="name" onClick={onNameClick}>
           {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
         </div>
       )}
