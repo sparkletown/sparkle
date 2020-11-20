@@ -45,7 +45,7 @@ const Camp: React.FC = () => {
     setIsRoomModalOpen(true);
   }, []);
 
-  const modalHidden = useCallback(() => {
+  const closeRoomModal = useCallback(() => {
     setIsRoomModalOpen(false);
   }, []);
 
@@ -130,7 +130,7 @@ const Camp: React.FC = () => {
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
-          onHide={modalHidden}
+          onHide={closeRoomModal}
           joinButtonText={venue.joinButtonText}
         />
         {(IS_BURN || venue.showChat) && (
