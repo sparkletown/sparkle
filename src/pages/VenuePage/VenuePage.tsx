@@ -47,6 +47,7 @@ import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { CampRouter } from "components/templates/Camp/Router";
 import { ConversationSpace } from "components/templates/ConversationSpace";
+import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
@@ -341,6 +342,10 @@ const VenuePage = () => {
       break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
+      break;
+
+    case VenueTemplate.firebarrel:
+      template = <FireBarrel />;
       break;
   }
 

@@ -104,6 +104,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.audience,
   VenueTemplate.artpiece,
+  VenueTemplate.firebarrel,
 ];
 
 export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
@@ -166,6 +167,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     description: [
       "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
+  },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Fire Barrel",
+    description: ["Huddle around a fire barrel with your close friends"],
   },
 ];
 

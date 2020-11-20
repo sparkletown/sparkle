@@ -12,4 +12,6 @@ export enum VenueTemplate {
   audience = "audience",
   avatargrid = "avatargrid",
   conversationspace = "conversationspace",
+
+  firebarrel = "firebarrel",
 }
