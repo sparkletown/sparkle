@@ -198,6 +198,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
 
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
+  VenueTemplate.partymap,
   VenueTemplate.playa,
 ];
 

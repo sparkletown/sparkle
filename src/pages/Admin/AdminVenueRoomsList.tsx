@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
-import { isCampVenue } from "types/CampVenue";
+import { isCampVenue, isVenueWithRooms } from "types/CampVenue";
 import { canHaveSubvenues } from "utils/venue";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
@@ -15,7 +15,7 @@ interface Props {
 }
 
 export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
-  const rooms = isCampVenue(venue) ? venue.rooms : [];
+  const rooms = isVenueWithRooms(venue) ? venue.rooms : [];
 
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);

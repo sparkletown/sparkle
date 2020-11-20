@@ -5,6 +5,7 @@ import {
   PLAYA_IMAGE,
   PLAYA_ICON_SIDE_PERCENTAGE,
   PLAYA_VENUE_STYLES,
+  HAS_ROOMS_TEMPLATES,
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
@@ -50,9 +51,7 @@ export const RoomsForm: React.FC = () => {
         (template) => data.template === template.template
       );
 
-      //TODO: Create global const with the templates that can contain rooms.
-      const roomTemplates = [VenueTemplate.themecamp, VenueTemplate.partymap];
-      if (!template || !roomTemplates.includes(template.template)) {
+      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
       setVenue(data as CampVenue);
