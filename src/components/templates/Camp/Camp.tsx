@@ -32,14 +32,22 @@ const campVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as CampVenue;
 
 const Camp: React.FC = () => {
-  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-
   // TODO: should we make some useCallback'd helpers here? selectRoom, unselectRoom ?
+  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const venue = useSelector(campVenueSelector);
   const usersInCamp = useCampPartygoers(venue.name);
+
+  const selectRoom = useCallback((campRoom: CampRoomData) => {
+    setSelectedRoom(campRoom);
+    setIsRoomModalOpen(true);
+  }, []);
+
+  const closeRoomModal = useCallback(() => {
+    setIsRoomModalOpen(false);
+  }, []);
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
@@ -50,23 +58,18 @@ const Camp: React.FC = () => {
       }, {})
     : {};
 
-  const modalHidden = useCallback(() => {
-    setIsRoomModalOpen(false);
-  }, []);
-
   const { roomTitle } = useParams();
-
   useEffect(() => {
-    if (roomTitle) {
-      const campRoom = venue?.rooms.find(
-        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
-      );
-      if (campRoom) {
-        setSelectedRoom(campRoom);
-        setIsRoomModalOpen(true);
-      }
+    if (!roomTitle || !venue) return;
+
+    const campRoom = venue.rooms.find(
+      (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
+    );
+
+    if (campRoom) {
+      selectRoom(campRoom);
     }
-  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
+  }, [roomTitle, selectRoom, venue]);
 
   return (
     <>
@@ -112,8 +115,7 @@ const Camp: React.FC = () => {
           partygoers={usersInCamp}
           attendances={attendances}
           selectedRoom={selectedRoom}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
+          selectRoom={selectRoom}
         />
         <div className="row">
           <div className="col">
@@ -128,7 +130,7 @@ const Camp: React.FC = () => {
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
-          onHide={modalHidden}
+          onHide={closeRoomModal}
           joinButtonText={venue.joinButtonText}
         />
         {(IS_BURN || venue.showChat) && (

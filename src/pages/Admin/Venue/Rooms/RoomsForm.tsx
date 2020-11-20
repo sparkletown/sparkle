@@ -5,12 +5,12 @@ import {
   PLAYA_IMAGE,
   PLAYA_ICON_SIDE_PERCENTAGE,
   PLAYA_VENUE_STYLES,
+  HAS_ROOMS_TEMPLATES,
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";
 import { useParams, useHistory } from "react-router-dom";
-import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -49,7 +49,8 @@ export const RoomsForm: React.FC = () => {
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
-      if (!template || template.template !== VenueTemplate.themecamp) {
+
+      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
       setVenue(data as CampVenue);

@@ -27,8 +27,7 @@ interface MapRoomOverlayProps {
   venue: CampVenue;
   attendances: Attendances;
   selectedRoom?: CampRoomData;
-  setSelectedRoom: (room?: CampRoomData) => void;
-  setIsRoomModalOpen: (value: boolean) => void;
+  selectRoom: (room: CampRoomData) => void;
 }
 
 export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
@@ -38,23 +37,13 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   venue,
   attendances,
   selectedRoom,
-  setSelectedRoom,
-  setIsRoomModalOpen,
+  selectRoom,
 }) => {
   const isSelectedRoom = room === selectedRoom;
   const hasAttendance = attendances[`${venue.name}/${room.title}`];
 
   const isRoomExternal = isExternalUrl(room.url);
   const currentRoomUrl = getRoomUrl(room.url);
-
-  // TODO: Pass this down from Camp, maybe called selectRoom?
-  const selectRoom = useCallback(
-    (room: CampRoomData) => {
-      setSelectedRoom(room);
-      setIsRoomModalOpen(true);
-    },
-    [setIsRoomModalOpen, setSelectedRoom]
-  );
 
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
 

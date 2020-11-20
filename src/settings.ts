@@ -16,7 +16,7 @@ export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const MEMRISE_LOGO_URL = "/memrise-logo.png";
 export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
-export const VENUE_CHAT_AGE_DAYS = 10;
+export const VENUE_CHAT_AGE_DAYS = 30;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
@@ -195,11 +195,23 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
       "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
     ],
   },
+  {
+    template: VenueTemplate.partymap,
+    name: "Party Map",
+    description: [""],
+  },
 ];
 
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
+  VenueTemplate.partymap,
   VenueTemplate.playa,
+];
+
+export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+  VenueTemplate.avatargrid,
 ];
 
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [

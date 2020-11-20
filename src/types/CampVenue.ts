@@ -2,6 +2,8 @@ import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
 import { CampRoomData } from "./CampRoomData";
 import { AnyVenue } from "./Firestore";
+import { PartyMapVenue } from "./PartyMapVenue";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 export interface CampVenue extends Venue {
   id: string;
@@ -28,3 +30,8 @@ export interface CampVenue extends Venue {
 
 export const isCampVenue = (val: AnyVenue): val is CampVenue =>
   val.template === VenueTemplate.themecamp;
+
+export const isVenueWithRooms = (
+  val: AnyVenue
+): val is CampVenue | PartyMapVenue =>
+  HAS_ROOMS_TEMPLATES.includes(val.template);

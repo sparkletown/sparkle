@@ -1,101 +1,76 @@
-import React from "react";
-import { WithId } from "utils/id";
+import React, { FC, useCallback } from "react";
+
 import { AnyVenue } from "types/Firestore";
+
 import {
   formatHourAndMinute,
-  daysFromStartOfEvent,
-  daysFromEndOfEvent,
+  getCurrentTimeInUTCSeconds,
+  currentTimeInUnixEpoch,
 } from "utils/time";
-import "./EventDisplay.scss";
-import { venueInsideUrl, venueRoomUrl } from "utils/url";
+import { WithId } from "utils/id";
+import { isExternalUrl } from "utils/url";
+import { enterRoom } from "utils/useLocationUpdateEffect";
 
-interface PropsType {
+import { useUser } from "hooks/useUser";
+
+import "./EventDisplay.scss";
+
+interface EventDisplayProps {
   event: firebase.firestore.DocumentData;
   venue: WithId<AnyVenue>;
-  joinNowButton: boolean;
 }
 
-export const EventDisplay: React.FunctionComponent<PropsType> = ({
-  event,
-  venue,
-  joinNowButton,
-}) => {
+export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
+  const { user, profile } = useUser();
+
+  const enterEvent = useCallback(() => {
+    const room = venue?.rooms?.find((room) => room.title === event.room);
+
+    const isExternal = isExternalUrl(room.url);
+    if (isExternal) {
+      window.open(room.url, "_blank", "noopener,noreferrer");
+    } else {
+      window.location.href = room.url;
+    }
+
+    enterRoom(
+      user!,
+      { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+      profile?.lastSeenIn
+    );
+  }, [event, profile, user, venue]);
+
+  const isLiveEvent =
+    event.start_utc_seconds < getCurrentTimeInUTCSeconds() &&
+    event.start_utc_seconds + event.duration_minutes * 60 >
+      getCurrentTimeInUTCSeconds();
+
   return (
     <div
       key={event.name + Math.random().toString()}
-      className={`event ${
-        Date.now() > event.start_utc_seconds * 1000 ? "event_live" : ""
+      className={`schedule-event-container ${
+        isLiveEvent && "schedule-event-container_live"
       }`}
     >
-      <div className="event-time">
-        <div className="event-time-start">
-          {daysFromStartOfEvent(event.start_utc_seconds) === 0
-            ? "Starts today at:"
-            : daysFromStartOfEvent(event.start_utc_seconds) > 0
-            ? `Started ${daysFromStartOfEvent(
-                event.start_utc_seconds
-              )} days ago at:`
-            : `Starts in ${-daysFromStartOfEvent(
-                event.start_utc_seconds
-              )} days at:`}
+      <div className="schedule-event-time">
+        <div className="schedule-event-time-start">
+          {formatHourAndMinute(event.start_utc_seconds)}
         </div>
-        <div>{formatHourAndMinute(event.start_utc_seconds)}</div>
-        <div className="event-time-end">
-          {daysFromEndOfEvent(
-            event.start_utc_seconds,
-            event.duration_minutes
-          ) === 0
-            ? "Ends today at:"
-            : `Ends in ${daysFromEndOfEvent(
-                event.start_utc_seconds,
-                event.duration_minutes
-              )} days at:`}
-        </div>
-        <div>
+        <div className="schedule-event-time-end">
           {formatHourAndMinute(
             event.start_utc_seconds + event.duration_minutes * 60
           )}
         </div>
-        {Date.now() > event.start_utc_seconds * 1000 && joinNowButton && (
-          <div className="event-badge-live">Live</div>
-        )}
-        <div style={{ marginTop: 10 }}>
-          Venue:{" "}
-          <a
-            href={venueInsideUrl(venue.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {venue.name}
-          </a>
-        </div>
-        {venue.rooms?.find((r) => r.title === event.room) && (
-          <div>
-            Room:{" "}
-            <a
-              href={venueRoomUrl(venue, event.room)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {event.room}
-            </a>
-          </div>
-        )}
+        {isLiveEvent && <span className="schedule-event-time-live">Live</span>}
       </div>
-      <div className="event-text">
-        <h5>{event.name}</h5>
-        <p className="small">
-          {joinNowButton ? event.description : event.description.slice(0, 100)}
-          {(!joinNowButton && event.description.length) > 100 ? "..." : ""}
-        </p>
-        {Date.now() > event.start_utc_seconds * 1000 && joinNowButton && (
-          <a
-            href={venueRoomUrl(venue, event.room)}
-            className="btn btn-primary button-join-now"
-          >
-            Join Now
-          </a>
-        )}
+      <div className="schedule-event-info">
+        <div className="schedule-event-info-title">{event.name}</div>
+        <div className="schedule-event-info-description">
+          {event.description}
+        </div>
+        <div className="schedule-event-info-room">
+          <div onClick={enterEvent}>{event.room}</div>
+        </div>
       </div>
     </div>
   );
