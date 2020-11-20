@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback, Fragment } from "react";
+import React, { useState, useMemo, useRef, useCallback } from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
