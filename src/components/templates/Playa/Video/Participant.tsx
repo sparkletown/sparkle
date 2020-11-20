@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { FirebaseReducer } from "react-redux-firebase";
 import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
@@ -7,7 +6,7 @@ import { WithId } from "utils/id";
 
 export interface ParticipantProps {
   participant: Video.Participant;
-  user: WithId<User> | FirebaseReducer.AuthState;
+  user: WithId<User>;
   setSelectedUserProfile: (user: WithId<User>) => void;
   audio?: boolean;
   video?: boolean;

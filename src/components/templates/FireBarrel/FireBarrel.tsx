@@ -107,7 +107,7 @@ const FireBarrel: React.FC = () => {
                 // TODO: FIX STYLING FOR BUTTONS
                 showLeave={false}
                 participant={room.localParticipant}
-                user={user}
+                user={users[user.uid]}
                 setSelectedUserProfile={() => {}}
                 isHost={false}
                 leave={leave}
