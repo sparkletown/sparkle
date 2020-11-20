@@ -18,6 +18,9 @@ export const LiveEvent: FC<LiveEventProps> = ({ liveEvent }) => {
   const { user, profile } = useUser();
   const venue = useSelector(venueSelector);
   const enterLiveEvent = useCallback(() => {
+    if (!venue) return;
+
+    // @debt room ends up as any here
     const room = venue?.rooms?.find((room) => room.title === liveEvent.room);
 
     const isExternal = isExternalUrl(room.url);
@@ -26,6 +29,7 @@ export const LiveEvent: FC<LiveEventProps> = ({ liveEvent }) => {
     } else {
       window.location.href = room.url;
     }
+
     enterRoom(
       user!,
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },

@@ -60,16 +60,15 @@ const VenueChat: FC = () => {
 
   const chatsToDisplay = useMemo(
     () =>
-      chats &&
       chats
-        .filter(
+        ?.filter(
           (message) =>
             message.deleted !== true &&
             message.type === "room" &&
             message.to === venueId &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(chatSort),
+        .sort(chatSort) ?? [],
     [chats, venueId, HIDE_BEFORE]
   );
 

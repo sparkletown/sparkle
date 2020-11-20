@@ -17,7 +17,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "components/context/ChatContext";
 
 // Don't pull everything
-// REVISIT: only grab most recent N from server
+// @debt REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
@@ -104,7 +104,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   };
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !userArray) return;
+
     if (!isRecipientChangeBlocked) {
       const lastChat = chatsToDisplay && chatsToDisplay[0];
       setPrivateRecipient(undefined);
@@ -231,31 +232,32 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     />
                     {searchValue && (
                       <ul className="list-unstyled">
-                        {userArray
-                          .filter(
-                            (u) =>
-                              !u.anonMode &&
-                              u.partyName
-                                ?.toLowerCase()
-                                .includes(searchValue.toLowerCase())
-                          )
-                          .filter((u) => u.id !== undefined)
-                          .map((u) => (
-                            <Dropdown.Item
-                              onClick={() => setPrivateRecipient(u)}
-                              id="chatbox-dropdown-private-recipient"
-                              key={u.id}
-                            >
-                              <img
-                                src={u.pictureUrl}
-                                className="picture-logo"
-                                alt={u.partyName}
-                                width="20"
-                                height="20"
-                              />
-                              {u.partyName}
-                            </Dropdown.Item>
-                          ))}
+                        {userArray &&
+                          userArray
+                            .filter(
+                              (u) =>
+                                !u.anonMode &&
+                                u.partyName
+                                  ?.toLowerCase()
+                                  .includes(searchValue.toLowerCase())
+                            )
+                            .filter((u) => u.id !== undefined)
+                            .map((u) => (
+                              <Dropdown.Item
+                                onClick={() => setPrivateRecipient(u)}
+                                id="chatbox-dropdown-private-recipient"
+                                key={u.id}
+                              >
+                                <img
+                                  src={u.pictureUrl}
+                                  className="picture-logo"
+                                  alt={u.partyName}
+                                  width="20"
+                                  height="20"
+                                />
+                                {u.partyName}
+                              </Dropdown.Item>
+                            ))}
                       </ul>
                     )}
                   </Dropdown.Menu>

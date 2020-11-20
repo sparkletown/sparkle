@@ -16,6 +16,7 @@ import {
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { ChatMessage } from "components/context/ChatContext";
+import { partygoersDataSelector } from "utils/selectors";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -28,9 +29,8 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers,
-  }));
+  const usersById = useSelector(partygoersDataSelector);
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

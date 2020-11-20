@@ -155,7 +155,7 @@ const Room: React.FC<RoomProps> = ({
   }, [roomName, token, setParticipantCount]);
 
   useEffect(() => {
-    if (!room) return;
+    if (!room || !users) return;
 
     setUserList([
       ...participants.map((p) => users[p.identity]),
@@ -178,7 +178,9 @@ const Room: React.FC<RoomProps> = ({
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
 
-  const profileData = room ? users[room.localParticipant.identity] : undefined;
+  const profileData = room
+    ? users?.[room.localParticipant.identity]
+    : undefined;
 
   const meComponent = useMemo(() => {
     return room && profileData ? (
@@ -198,12 +200,12 @@ const Room: React.FC<RoomProps> = ({
   const othersComponents = useMemo(
     () =>
       participants.map((participant, index) => {
-        if (!participant) {
+        if (!participant || !users) {
           return null;
         }
 
         const bartender = !!meIsBartender
-          ? users[participant.identity]?.data?.[roomName]?.bartender
+          ? users?.[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
         return (

@@ -75,32 +75,36 @@ const ChatsList: React.FunctionComponent = () => {
 
   const onClickOnSender = useCallback(
     (sender: WithId<User>) => {
+      if (!privateChats) return;
+
       const chatsToUpdate = privateChats.filter(
         (chat) => !chat.isRead && chat.from === sender.id
       );
+
+      // @debt we're not using the return value, so should this be .forEach() instead of .map()?
       chatsToUpdate.map(
         (chat) => user && setPrivateChatMessageIsRead(user.uid, chat.id)
       );
+
       setSelectedUser(sender);
     },
     [privateChats, user]
   );
 
-  const chatsToDisplay = useMemo(
-    () =>
-      privateChats &&
-      privateChats
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            message.type === "private" &&
-            (message.to === selectedUser?.id ||
-              message.from === selectedUser?.id) &&
-            message.ts_utc.seconds > HIDE_BEFORE
-        )
-        .sort(chatSort),
-    [privateChats, selectedUser]
-  );
+  const chatsToDisplay = useMemo(() => {
+    if (!privateChats) return [];
+
+    return privateChats
+      .filter(
+        (message) =>
+          message.deleted !== true &&
+          message.type === "private" &&
+          (message.to === selectedUser?.id ||
+            message.from === selectedUser?.id) &&
+          message.ts_utc.seconds > HIDE_BEFORE
+      )
+      .sort(chatSort);
+  }, [privateChats, selectedUser, HIDE_BEFORE]);
 
   const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(

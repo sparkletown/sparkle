@@ -61,11 +61,14 @@ export const RoomModal: React.FC<RoomModalProps> = ({
     const roomVenue = venues?.find((venue) =>
       room.url.endsWith(`/${venue.id}`)
     );
+
     const venueRoom = roomVenue
       ? { [roomVenue.name]: currentTimeInUnixEpoch }
       : {};
+
     room &&
       user &&
+      venue &&
       enterRoom(
         user,
         {
@@ -77,14 +80,15 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   };
 
   const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
-      (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          currentTimeInUnixEpoch
-    );
+    (venueEvents &&
+      venueEvents?.filter(
+        (event) =>
+          event.room === room.title &&
+          event.start_utc_seconds +
+            event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+            currentTimeInUnixEpoch
+      )) ??
+    [];
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   return (

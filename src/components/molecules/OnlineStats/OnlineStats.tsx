@@ -130,13 +130,14 @@ const OnlineStats: React.FC = () => {
         : undefined,
     [venuesWithAttendance]
   );
-  const fuseUsers = useMemo(
-    () =>
-      new Fuse(partygoers, {
-        keys: ["partyName"],
-      }),
-    [partygoers]
-  );
+
+  const fuseUsers = useMemo(() => {
+    if (!partygoers) return;
+
+    return new Fuse(partygoers, {
+      keys: ["partyName"],
+    });
+  }, [partygoers]);
 
   const filteredVenues = useMemo(() => {
     if (filterVenueText === "") return venuesWithAttendance;
@@ -278,7 +279,7 @@ const OnlineStats: React.FC = () => {
               </div>
               <div className="users-container">
                 <div className="online-users">
-                  {partygoers.length} burners live
+                  {partygoers?.length} burners live
                 </div>
                 <div className="search-container">
                   <input
@@ -290,7 +291,7 @@ const OnlineStats: React.FC = () => {
                   />
                 </div>
                 <div className="people">
-                  {filteredUsers.map(
+                  {filteredUsers?.map(
                     (user, index) =>
                       !user.anonMode && (
                         <div
@@ -342,7 +343,8 @@ const OnlineStats: React.FC = () => {
         >
           <span>
             <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
-            {liveEvents.length} live events / {partygoers.length} burners online
+            {liveEvents.length} live events / {partygoers?.length} burners
+            online
           </span>
         </OverlayTrigger>
       )}

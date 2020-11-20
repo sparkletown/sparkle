@@ -53,7 +53,7 @@ export const RoomModal: React.FC<PropsType> = ({
 
   const dispatch = useDispatch();
 
-  if (!room) {
+  if (!room || !venue) {
     return <></>;
   }
 
@@ -79,9 +79,9 @@ export const RoomModal: React.FC<PropsType> = ({
           getCurrentTimeInUTCSeconds()
     );
 
-  const usersInRoom = partygoers.filter(
-    (goer) => goer.room === `${venueName}/${room.title}`
-  );
+  const usersInRoom =
+    partygoers?.filter((goer) => goer.room === `${venueName}/${room.title}`) ??
+    [];
 
   return (
     <Modal show={show} onHide={onHide}>

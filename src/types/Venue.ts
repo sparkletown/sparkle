@@ -75,6 +75,7 @@ export interface Venue {
   showLiveSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
+  // @debt we probably should figure a better type than any here
   rooms?: any[];
   width: number;
   height: number;
