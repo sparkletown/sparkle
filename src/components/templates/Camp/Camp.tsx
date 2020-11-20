@@ -60,16 +60,16 @@ const Camp: React.FC = () => {
 
   const { roomTitle } = useParams();
   useEffect(() => {
-    if (!roomTitle) return;
+    if (!roomTitle || !venue) return;
 
-    const campRoom = venue?.rooms.find(
+    const campRoom = venue.rooms.find(
       (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
     );
 
     if (campRoom) {
       selectRoom(campRoom);
     }
-  }, [roomTitle, selectRoom, venue?.rooms]);
+  }, [roomTitle, selectRoom, venue]);
 
   return (
     <>
