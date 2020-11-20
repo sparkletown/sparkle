@@ -4,7 +4,7 @@ $white: #ffffff;
 $room-info-bg: #005ee5;
 $border-radius: 28px;
 
-.content-container {
+.party-map-content-container {
   display: flex;
   flex-direction: row;
   margin-top: 20;
@@ -12,12 +12,12 @@ $border-radius: 28px;
   .party-map-container {
     width: 80%;
 
-    .party-map-container {
+    .party-map-content {
       flex: 1;
       display: flex;
       margin: 20px auto 20px auto;
 
-      .rooms-container {
+      .party-map-rooms-container {
         position: absolute;
         width: 80%;
         height: 100%;
@@ -35,7 +35,7 @@ $border-radius: 28px;
   flex: 1;
 }
 
-.map-background {
+.party-map-background {
   border-radius: 15px;
 }
 

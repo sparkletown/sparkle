@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { CampVenue } from "types/CampVenue";
 import { CampRoomData } from "types/CampRoomData";
-import "./Map.scss";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
@@ -18,6 +17,8 @@ import { useSelector } from "hooks/useSelector";
 import Sidebar from "components/molecules/Sidebar";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomAttendance } from "../RoomAttendance";
+
+import "./Map.scss";
 
 interface PropsType {
   venue: CampVenue;
@@ -50,14 +51,26 @@ export const Map: React.FC<PropsType> = ({
   >();
   const [keyDown, setKeyDown] = useState(false);
   const [isHittingRoom, setIsHittingRoom] = useState(false);
+  const [rows, setRows] = useState<number>(0);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
-  const rows = venue.rows ?? DEFAULT_ROWS;
   const rooms = [...venue.rooms];
   const currentPosition = profile?.data?.[venue.id];
   const { partygoers } = useSelector((state) => ({
     partygoers: state.firestore.ordered.partygoers,
   }));
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = venue.mapBackgroundImageUrl ?? "";
+    img.onload = () => {
+      const imgRatio = img.width ? img.width / img.height : 1;
+      const calcRows = venue.columns
+        ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
+        : DEFAULT_ROWS;
+      setRows(calcRows);
+    };
+  }, [venue.columns, venue.mapBackgroundImageUrl]);
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -337,16 +350,16 @@ export const Map: React.FC<PropsType> = ({
   };
 
   return (
-    <div className="content-container">
+    <div className="party-map-content-container">
       <div className="party-map-container">
         <div className="party-map-content">
           <img
             width="100%"
-            className="map-background"
+            className="party-map-background"
             src={venue.mapBackgroundImageUrl}
             alt=""
           />
-          <div className="rooms-container">
+          <div className="party-map-rooms-container">
             {!!rooms.length &&
               rooms.map((room) => {
                 const left = room.x_percent;
@@ -471,15 +484,16 @@ export const Map: React.FC<PropsType> = ({
               })}
           </div>
 
-          {venue.showGrid && rows ? (
-            <div
-              className="party-map-grid-container"
-              style={{
-                gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-                gridTemplateRows: `repeat(${rows}, 1fr)`,
-              }}
-            >
-              {Array.from(Array(columns)).map((_, colIndex) => {
+          <div
+            className="party-map-grid-container"
+            style={{
+              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+            }}
+          >
+            {venue.showGrid &&
+              rows &&
+              Array.from(Array(columns)).map((_, colIndex) => {
                 return (
                   <div className="seat-column" key={`column${colIndex}`}>
                     {Array.from(Array(rows)).map((_, rowIndex) => {
@@ -561,10 +575,7 @@ export const Map: React.FC<PropsType> = ({
                   </div>
                 );
               })}
-            </div>
-          ) : (
-            <div />
-          )}
+          </div>
 
           {selectedUserProfile && (
             <UserProfileModal
