@@ -35,7 +35,7 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
             {PLAYA_INFO_NAME}
           </a>
           <div className="title">Call a Ranger</div>
-          <p className="title-sidebar">It's OK to need help!</p>
+          <p className="title-sidebar">It&apos;s OK to need help!</p>
           <p className="title-sidebar">
             Rangers and harm reduction volunteers are available 24/7 to provide
             support &amp; assistance, if you need it.

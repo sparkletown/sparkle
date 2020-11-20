@@ -39,6 +39,7 @@ export interface Venue {
       quotations?: Quotation[];
     };
     memberEmails?: string[];
+    showRangers?: boolean;
   };
   host: {
     icon: string;
