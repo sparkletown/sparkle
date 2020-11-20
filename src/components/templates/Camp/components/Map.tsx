@@ -168,10 +168,10 @@ export const Map: React.FC<MapProps> = ({
 
     // TODO: this may be why we don't use row 0...? If so, let's change it to use types better and use undefines
     const selectRow = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId].row ?? 0;
+      partygoer?.data?.[venueId]?.row ?? 0;
 
     const selectCol = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId].row ?? 0;
+      partygoer?.data?.[venueId]?.column ?? 0;
 
     const partygoersReducer = makeMatrixReducer(selectRow, selectCol);
 
