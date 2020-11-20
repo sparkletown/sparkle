@@ -33,6 +33,8 @@ const campVenueSelector = (state: RootState) =>
 
 const Camp: React.FC = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+
+  // TODO: should we make some useCallback'd helpers here? selectRoom, unselectRoom ?
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
