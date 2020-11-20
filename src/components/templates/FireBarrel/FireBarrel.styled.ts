@@ -16,7 +16,6 @@ export const Barrel = styled.iframe.attrs({
 })`
   width: 80%;
   height: 80%;
-  /* grid-area: barrel; */
   grid-column: 2 / span 2;
   grid-row: 1 / span 2;
   align-self: center;
@@ -83,5 +82,22 @@ export const Chair = styled.div<ChairProps>`
     height: 100%;
 
     border-radius: 28px;
+  }
+
+  .participant {
+    position: relative;
+  }
+
+  .av-controls {
+    display: flex;
+    justify-content: space-around;
+    margin: 4px;
+
+    position: absolute;
+    right: 0;
+    bottom: 1em;
+    left: 0;
+
+    text-align: center;
   }
 `;

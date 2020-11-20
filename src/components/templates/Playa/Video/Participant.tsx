@@ -12,6 +12,7 @@ export interface ParticipantProps {
   video?: boolean;
   local?: boolean;
   isHost?: boolean;
+  showName?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -27,6 +28,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   video,
   local,
   isHost,
+  showName = true,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -149,9 +151,11 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   return (
     <div className="participant">
       {videos}
-      <div className="name" onClick={() => setSelectedUserProfile(user)}>
-        {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
-      </div>
+      {showName && (
+        <div className="name" onClick={() => setSelectedUserProfile(user)}>
+          {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
+        </div>
+      )}
       {children}
     </div>
   );

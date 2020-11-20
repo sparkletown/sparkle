@@ -1,9 +1,18 @@
+import {
+  faMicrophone,
+  faMicrophoneSlash,
+  faVideo,
+  faVideoSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect } from "react";
 import Participant, { ParticipantProps } from "./Participant";
 
 type LocalParticipantProps = ParticipantProps & {
   leave: () => void;
   showLeave?: boolean;
+  useFontAwesome?: boolean;
+  showName?: boolean;
 };
 
 const LocalParticipant: React.FC<LocalParticipantProps> = ({
@@ -13,6 +22,8 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   isHost,
   showLeave = true,
   leave,
+  useFontAwesome,
+  showName,
 }) => {
   const [mic, setMic] = useState(true);
   const [camera, setCamera] = useState(true);
@@ -49,6 +60,44 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     }
   });
 
+  const renderMicIcon = () => {
+    if (useFontAwesome) {
+      return (
+        <FontAwesomeIcon
+          onClick={() => setMic(!mic)}
+          size="lg"
+          icon={!mic ? faMicrophoneSlash : faMicrophone}
+          color={!mic ? "red" : undefined}
+        />
+      );
+    }
+
+    return (
+      <div className="mic" onClick={() => setMic(!mic)}>
+        <div className={`btn ${mic ? "on" : "off"}`} />
+      </div>
+    );
+  };
+
+  const renderCameraIcon = () => {
+    if (useFontAwesome) {
+      return (
+        <FontAwesomeIcon
+          onClick={() => setCamera(!camera)}
+          size="lg"
+          icon={!camera ? faVideoSlash : faVideo}
+          color={!camera ? "red" : undefined}
+        />
+      );
+    }
+
+    return (
+      <div className="camera" onClick={() => setCamera(!camera)}>
+        <div className={`btn ${camera ? "on" : "off"}`} />
+      </div>
+    );
+  };
+
   return (
     <Participant
       participant={participant}
@@ -56,6 +105,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       setSelectedUserProfile={setSelectedUserProfile}
       isHost={isHost}
       local
+      showName={showName}
     >
       {showLeave && (
         <div className="leave" onClick={() => leave()}>
@@ -63,12 +113,8 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
         </div>
       )}
       <div className="av-controls">
-        <div className="mic" onClick={() => setMic(!mic)}>
-          <div className={`btn ${mic ? "on" : "off"}`} />
-        </div>
-        <div className="camera" onClick={() => setCamera(!camera)}>
-          <div className={`btn ${camera ? "on" : "off"}`} />
-        </div>
+        {renderMicIcon()}
+        {renderCameraIcon()}
       </div>
     </Participant>
   );

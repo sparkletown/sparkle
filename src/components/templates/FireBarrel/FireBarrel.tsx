@@ -16,10 +16,6 @@ import firebase from "firebase";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-export interface BarrelPeple extends WithId<User> {
-  seat: number;
-}
-
 const FireBarrel: React.FC = () => {
   const [currentPartygoers, setCurrentPartygoers] = useState<
     WithId<User>[] | []
@@ -112,13 +108,14 @@ const FireBarrel: React.FC = () => {
             return (
               <S.Chair key={user!.uid}>
                 <LocalParticipant
-                  // TODO: FIX STYLING FOR BUTTONS
                   showLeave={false}
                   participant={room.localParticipant}
                   user={users[user!.uid]}
                   setSelectedUserProfile={() => {}}
                   isHost={false}
                   leave={leave}
+                  useFontAwesome
+                  showName={false}
                 />
               </S.Chair>
             );
@@ -130,7 +127,6 @@ const FireBarrel: React.FC = () => {
             return (
               <S.Chair key={participant.identity}>
                 <RemoteParticipant
-                  // TODO: FIX STYLING FOR BUTTONS
                   participant={participant}
                   user={users[participant.identity]}
                   setSelectedUserProfile={() => {}}
@@ -142,7 +138,7 @@ const FireBarrel: React.FC = () => {
             );
           }
 
-          return <></>;
+          return <React.Fragment key={index}></React.Fragment>;
         })}
 
         <VideoErrorModal
