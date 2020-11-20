@@ -6,15 +6,13 @@ import React, {
   useMemo,
   useLayoutEffect,
 } from "react";
+import { unstable_batchedUpdates } from "react-dom";
+import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
-import {
-  RoomVisibility,
-  Venue,
-  VenuePlacement,
-  VenuePlacementState,
-} from "types/Venue";
-import { useSelector } from "hooks/useSelector";
+import { throttle } from "lodash";
+
+import { IS_BURN } from "secrets";
 import {
   DEFAULT_MAP_ICON_URL,
   PLAYA_TEMPLATES,
@@ -26,36 +24,50 @@ import {
   PLAYA_HEIGHT,
   LOC_UPDATE_FREQ_MS,
 } from "settings";
-import VenuePreview from "./VenuePreview";
+
+import firebase from "firebase/app";
+
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { UserVideoState } from "types/RelayMessage";
+import { User } from "types/User";
+import {
+  RoomVisibility,
+  Venue,
+  VenuePlacement,
+  VenuePlacementState,
+} from "types/Venue";
+
 import { WithId } from "utils/id";
 import { updateLocationData } from "utils/useLocationUpdateEffect";
-import { useUser } from "hooks/useUser";
-import { useParams } from "react-router-dom";
-import { throttle } from "lodash";
-import AvatarLayer from "./AvatarLayer";
-
-import "./Playa.scss";
+import {
+  currentVenueSelectorData,
+  orderedVenuesSelector,
+} from "utils/selectors";
+import { currentTimeInUnixEpoch } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
-import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import firebase from "firebase/app";
-import { User } from "types/User";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import VideoChatLayer from "./VideoChatLayer";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { UserVideoState } from "types/RelayMessage";
-import { unstable_batchedUpdates } from "react-dom";
+
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
+
+import ChatDrawer from "components/organisms/ChatDrawer";
+import { DustStorm } from "components/organisms/DustStorm/DustStorm";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import BannerMessage from "components/molecules/BannerMessage";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
-import { OnlineStatsData } from "types/OnlineStatsData";
+import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import UserList from "components/molecules/UserList";
+
+import AvatarLayer from "./AvatarLayer";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
-import { IS_BURN } from "secrets";
-import BannerMessage from "components/molecules/BannerMessage";
-import UserList from "components/molecules/UserList";
-import { currentTimeInUnixEpoch } from "utils/time";
+import VenuePreview from "./VenuePreview";
+import VideoChatLayer from "./VideoChatLayer";
+
+import "./Playa.scss";
 
 export type MenuConfig = {
   prompt?: string;
@@ -332,10 +344,8 @@ const Playa = () => {
     };
   }, []);
 
-  const { venue, venues } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-    venues: state.firestore.ordered.venues,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const venues = useSelector(orderedVenuesSelector);
 
   const showVenue = useCallback(
     (venue: WithId<Venue>) => {

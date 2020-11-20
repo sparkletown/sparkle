@@ -1,9 +1,11 @@
 import React from "react";
-import "./RoomModalOngoingEvent.scss";
+
 import { RoomData } from "types/RoomData";
 import { getCurrentEvent } from "utils/time";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
+
+import "./RoomModalOngoingEvent.scss";
 
 interface PropsType {
   room: RoomData;
@@ -11,7 +13,7 @@ interface PropsType {
   startUtcSeconds: number;
 }
 
-const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
+export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
   room,
   enterRoom,
   startUtcSeconds,
@@ -58,5 +60,3 @@ const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default RoomModalOngoingEvent;

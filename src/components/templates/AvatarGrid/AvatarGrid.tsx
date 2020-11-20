@@ -18,6 +18,7 @@ import { useVenueId } from "hooks/useVenueId";
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
 import { enterRoom } from "utils/useLocationUpdateEffect";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 import { currentTimeInUnixEpoch } from "utils/time";
 
 // Typings
@@ -33,10 +34,10 @@ const DEFAULT_ROWS = 25;
 const AvatarGrid = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
-  const { venue, partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-    venue: state.firestore.data.currentVenue,
-  }));
+
+  const venue = useSelector(currentVenueSelectorData);
+  const partygoers = useSelector(partygoersSelector);
+
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
     undefined

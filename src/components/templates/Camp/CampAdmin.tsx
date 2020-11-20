@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
 import { useVenueId } from "hooks/useVenueId";
+import { currentVenueSelectorData } from "utils/selectors";
 
 const CampAdmin: React.FC = () => {
   const [bannerMessage, setBannerMessage] = useState("");
   const [error, setError] = useState<string | null>();
 
-  const currentVenue = useSelector(
-    (state) => state.firestore.data.currentVenue
-  );
+  const currentVenue = useSelector(currentVenueSelectorData);
   const venueId = useVenueId();
 
   useEffect(() => {
