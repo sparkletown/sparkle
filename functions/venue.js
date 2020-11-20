@@ -5,6 +5,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PROJECT_ID = functions.config().project.id;
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
+
 const VenueTemplate = {
   jazzbar: "jazzbar",
   friendship: "friendship",
