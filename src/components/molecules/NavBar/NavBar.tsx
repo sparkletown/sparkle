@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback, Fragment } from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
@@ -185,11 +185,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               <div className="nav-party-logo" onClick={showEventSchedule}>
                 {venue?.name}
               </div>
-              {venue?.parentId && parentVenue?.name && (
-                <span onClick={backToParentVenue} className="back-link">
-                  Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-                </span>
-              )}
             </div>
             {user ? (
               <>
@@ -282,6 +277,16 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         }`}
         onClick={hideEventSchedule}
       />
+      <div className="back-map-btn">
+        {venue?.parentId && parentVenue?.name && (
+          <Fragment>
+            <div className="back-icon" />
+            <span onClick={backToParentVenue} className="back-link">
+              Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+            </span>
+          </Fragment>
+        )}
+      </div>
     </>
   );
 };
