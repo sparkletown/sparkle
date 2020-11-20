@@ -3,6 +3,7 @@ import Participant, { ParticipantProps } from "./Participant";
 
 type LocalParticipantProps = ParticipantProps & {
   leave: () => void;
+  showLeave?: boolean;
 };
 
 const LocalParticipant: React.FC<LocalParticipantProps> = ({
@@ -10,6 +11,7 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   user,
   setSelectedUserProfile,
   isHost,
+  showLeave = true,
   leave,
 }) => {
   const [mic, setMic] = useState(true);
@@ -55,9 +57,11 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       isHost={isHost}
       local
     >
-      <div className="leave" onClick={() => leave()}>
-        <div className="btn" />
-      </div>
+      {showLeave && (
+        <div className="leave" onClick={() => leave()}>
+          <div className="btn" />
+        </div>
+      )}
       <div className="av-controls">
         <div className="mic" onClick={() => setMic(!mic)}>
           <div className={`btn ${mic ? "on" : "off"}`} />
