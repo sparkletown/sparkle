@@ -7,6 +7,9 @@ import {
   MAX_IMAGE_FILE_SIZE_BYTES,
   MAX_IMAGE_FILE_SIZE_TEXT,
 } from "settings";
+import Compress from "compress.js";
+
+const compress = new Compress();
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
@@ -48,6 +51,15 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       );
       return;
     }
+
+    const smallFile = await compress.compress([file], {
+      size: 0.5, // Max size in MB
+      quality: 0.5, // Quality of image, max is 1
+    });
+
+    const img = smallFile[0];
+    const smallImage = Compress.convertBase64ToFile(img.data, img.ext);
+
     const storageRef = firebase.storage().ref();
     // TODO: add rule to forbid other users to edit a user's image
     const profilePictureRef = storageRef.child(
