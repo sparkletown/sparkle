@@ -6,7 +6,10 @@ import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
 import * as S from "./FireBarrel.styled";
-import FireSeat from "./FireSeat";
+import { useVideoState } from "./useVideo";
+import { useUser } from "../../../hooks/useUser";
+import { LocalParticipant, RemoteParticipant } from "twilio-video";
+import VideoErrorModal from "../../organisms/Room/VideoErrorModal";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
@@ -46,29 +49,69 @@ const FireBarrel: React.FC = () => {
     }
   }, [partygoers, venue]);
 
+  const { user } = useUser();
+
+  const { room } = useVideoState({ userUid: user?.uid, roomName: venue?.name });
+
+  const chairsArray = Array.from(Array(chairs));
+
+  const [videoError, setVideoError] = useState<string>("");
+
   return useMemo(
     () => (
       <S.Wrapper>
         <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
-        {Array.from(Array(chairs)).map((_, index) => {
+        {chairsArray.map((_, index) => {
           const partyPerson = currentPartygoers[index] ?? null;
+
+          const isMe = partyPerson?.id === user?.uid;
+
           if (!partyPerson) {
             return <S.Chair key={index} isEmpty />;
           }
 
-          return (
-            <FireSeat
-              key={index}
-              person={partyPerson}
-              roomName={venue?.name}
-              chairNumber={index}
-            />
-          );
+          if (!!room && isMe) {
+            return (
+              <LocalParticipant
+                participant={room?.localParticipant}
+                profileData={profileData}
+                profileDataId={room?.localParticipant.identity}
+                showIcon={false}
+              />
+            );
+          }
+
+          if (!!room && !isMe) {
+            return (
+              <RemoteParticipant
+                participant={room?.TODO}
+                profileData={profileData}
+                profileDataId={room?.localParticipant.identity}
+                showIcon={false}
+              />
+            );
+          }
+
+          // return (
+          //   <S.Chair isEmpty={false}>
+          //     // TODO make the styled component stuff work again
+          //   </S.Chair>
+          // );
         })}
+
+        <VideoErrorModal
+          show={!!videoError}
+          onHide={() => setVideoError("")}
+          errorMessage={videoError}
+          // onRetry={connectToVideoRoom}
+          onRetry={() => {}}
+          onBack={() => {}}
+          // onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
+        />
       </S.Wrapper>
     ),
-    [chairs, currentPartygoers, venue]
+    [chairsArray, currentPartygoers, room, user?.uid, venue?.iframeUrl]
   );
 };
 
