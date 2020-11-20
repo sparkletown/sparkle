@@ -44,52 +44,52 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  adminRole: AdminRole;
-  allowAllRoles: Record<string, Role>;
+  adminRole?: AdminRole;
+  allowAllRoles?: Record<string, Role>;
   allUsers?: Record<string, User>;
   chatUsers?: Record<string, User>;
-  currentEvent: Record<string, VenueEvent>;
+  currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  eventPurchase: Record<string, Purchase>;
+  eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
-  experiences: Record<string, Experience>;
+  experiences?: Record<string, Experience>;
   parentVenue?: AnyVenue;
-  partygoers: Record<string, User>;
+  partygoers?: Record<string, User>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
-  privatechats: Record<string, PrivateChatMessage>;
-  reactions: Record<string, Reaction>;
+  privatechats?: Record<string, PrivateChatMessage>;
+  reactions?: Record<string, Reaction>;
   userModalVisits?: Record<string, UserVisit>;
-  userPurchaseHistory: Record<string, Purchase>;
-  userRoles: Record<string, Role>;
-  users: Record<string, User>;
-  venueChats: Record<string, RestrictedChatMessage> | null;
-  venueEvents: Record<string, VenueEvent>;
+  userPurchaseHistory?: Record<string, Purchase>;
+  userRoles?: Record<string, Role>;
+  users?: Record<string, User>;
+  venueChats?: Record<string, RestrictedChatMessage> | null;
+  venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  allUsers?: Array<WithId<User>>;
-  chatRequests?: Array<WithId<ChatRequest>>;
-  currentEvent: Array<WithId<VenueEvent>>;
-  currentVenue: Array<WithId<AnyVenue>>;
-  currentVenueEventsNG?: Array<WithId<VenueEvent>>;
-  currentVenueNG?: Array<WithId<AnyVenue>>;
-  eventPurchase: Array<WithId<Purchase>>;
-  events?: Array<WithId<VenueEvent>>;
-  experiences: Array<WithId<Experience>>;
-  partygoers: Array<WithId<User>>;
-  playaVenues?: Array<WithId<AnyVenue>>;
-  privatechats: Array<WithId<PrivateChatMessage>>;
-  reactions: Array<WithId<Reaction>>;
-  statsOnlineUsers?: Array<WithId<User>>;
-  statsOpenVenues?: Array<WithId<AnyVenue>>;
-  userModalVisits?: Array<WithId<UserVisit>>;
-  userPurchaseHistory: Array<WithId<Purchase>>;
-  users: Array<WithId<User>>;
-  venueChats: Array<WithId<RestrictedChatMessage>>;
-  venueEvents: Array<WithId<VenueEvent>>;
-  venues?: Array<WithId<AnyVenue>>;
+  allUsers?: WithId<User>[];
+  chatRequests?: WithId<ChatRequest>[];
+  currentEvent?: WithId<VenueEvent>[];
+  currentVenue?: WithId<AnyVenue>[];
+  currentVenueEventsNG?: WithId<VenueEvent>[];
+  currentVenueNG?: WithId<AnyVenue>[];
+  eventPurchase?: WithId<Purchase>[];
+  events?: WithId<VenueEvent>[];
+  experiences?: WithId<Experience>[];
+  partygoers?: WithId<User>[];
+  playaVenues?: WithId<AnyVenue>[];
+  privatechats?: WithId<PrivateChatMessage>[];
+  reactions?: WithId<Reaction>[];
+  statsOnlineUsers?: WithId<User>[];
+  statsOpenVenues?: WithId<AnyVenue>[];
+  userModalVisits?: WithId<UserVisit>[];
+  userPurchaseHistory?: WithId<Purchase>[];
+  users?: WithId<User>[];
+  venueChats?: WithId<RestrictedChatMessage>[];
+  venueEvents?: WithId<VenueEvent>[];
+  venues?: WithId<AnyVenue>[];
 }
