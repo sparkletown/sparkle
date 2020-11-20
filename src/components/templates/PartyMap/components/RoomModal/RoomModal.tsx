@@ -2,7 +2,7 @@ import React from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 
-import { CampRoomData } from "types/CampRoomData";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
 
 import { getCurrentEvent } from "utils/event";
 import { enterRoom } from "utils/useLocationUpdateEffect";
@@ -23,7 +23,7 @@ import { RoomModalOngoingEvent, ScheduleItem } from "../";
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
-  room: CampRoomData | undefined;
+  room: PartyMapRoomData | undefined;
   joinButtonText?: string;
 }
 

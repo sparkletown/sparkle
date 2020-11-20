@@ -11,7 +11,6 @@ import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";
 import { useParams, useHistory } from "react-router-dom";
-import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";

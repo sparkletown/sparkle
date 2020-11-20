@@ -53,7 +53,7 @@ export const PartyMap: React.FC = () => {
 
   return (
     <>
-      <div className="camp-container">
+      <div className="party-venue-container">
         <Map
           venue={venue}
           attendances={attendances}
