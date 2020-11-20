@@ -1,5 +1,4 @@
 import React from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 
 import { PartyMapRoomData } from "types/PartyMapRoomData";
@@ -33,7 +32,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   joinButtonText,
 }) => {
-  useFirestoreConnect("venues");
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
