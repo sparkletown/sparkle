@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import firebase from "firebase/app";
 
+import { Attendances } from "types/Attendances";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 import { User } from "types/User";
@@ -27,7 +28,7 @@ import "./Map.scss";
 interface MapProps {
   venue: CampVenue;
   partygoers: WithId<User>[];
-  attendances: { [location: string]: number };
+  attendances: Attendances;
   selectedRoom: CampRoomData | undefined;
   setSelectedRoom: (room: CampRoomData | undefined) => void;
   setIsRoomModalOpen: (value: boolean) => void;

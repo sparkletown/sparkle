@@ -2,6 +2,7 @@ import React from "react";
 
 import { isRoomValid } from "validation";
 
+import { Attendances } from "types/Attendances";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { RoomData } from "types/RoomData";
 
@@ -10,7 +11,7 @@ import "./Map.scss";
 
 interface PropsType {
   config: PartyMapVenue;
-  attendances: { [location: string]: number };
+  attendances: Attendances;
   setSelectedRoom: (room: RoomData) => void;
   setIsRoomModalOpen: (value: boolean) => void;
 }

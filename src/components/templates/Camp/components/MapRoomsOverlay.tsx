@@ -4,6 +4,7 @@ import { IS_BURN } from "secrets";
 import { retainAttendance } from "store/actions/Attendance";
 import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
 
+import { Attendances } from "types/Attendances";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 import { RoomVisibility } from "types/Venue";
@@ -15,7 +16,7 @@ import CampAttendance from "./CampAttendance";
 interface MapRoomsProps {
   // Passed down from Camp component (via Map component)
   venue: CampVenue;
-  attendances: { [location: string]: number };
+  attendances: Attendances;
   selectedRoom?: CampRoomData;
   setSelectedRoom: (room?: CampRoomData) => void;
   setIsRoomModalOpen: (value: boolean) => void;
