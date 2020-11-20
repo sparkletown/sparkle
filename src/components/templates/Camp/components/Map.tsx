@@ -17,10 +17,12 @@ import { enterRoom } from "utils/useLocationUpdateEffect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
+import UserProfileModal from "components/organisms/UserProfileModal";
+
 import { useKeyboardControls } from "../hooks/useKeyboardControls";
 
 import { MapRoomOverlay } from "./MapRoomOverlay";
-import { MapPartygoersOverlay } from "./MapPartygoersOverlay";
+import { MapPartygoerOverlay } from "./MapPartygoerOverlay";
 import { MapRow } from "./MapRow";
 
 import "./Map.scss";
@@ -217,6 +219,17 @@ export const Map: React.FC<MapProps> = ({
     enterSelectedRoom,
   });
 
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
+
+  const isUserProfileSelected: boolean = !!selectedUserProfile;
+
+  const deselectUserProfile = useCallback(
+    () => setSelectedUserProfile(undefined),
+    []
+  );
+
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -256,14 +269,18 @@ export const Map: React.FC<MapProps> = ({
             );
           })}
 
-          <MapPartygoersOverlay
-            venueId={venue.id}
-            myUserUid={user.uid}
-            rows={totalRows}
-            columns={totalColumns}
-            withMiniAvatars={venue.miniAvatars}
-            partygoers={partygoers}
-          />
+          {partygoers.map((partygoer, index) => (
+            <MapPartygoerOverlay
+              key={partygoer.id}
+              partygoer={partygoer}
+              venueId={venue.id}
+              myUserUid={user.uid}
+              totalRows={totalRows}
+              totalColumns={totalColumns}
+              withMiniAvatars={venue.miniAvatars}
+              setSelectedUserProfile={setSelectedUserProfile}
+            />
+          ))}
         </div>
       ))}
 
@@ -279,6 +296,14 @@ export const Map: React.FC<MapProps> = ({
           enterCampRoom={enterCampRoom}
         />
       ))}
+
+      {selectedUserProfile && (
+        <UserProfileModal
+          show={isUserProfileSelected}
+          userProfile={selectedUserProfile}
+          onHide={deselectUserProfile}
+        />
+      )}
     </div>
   );
 };
