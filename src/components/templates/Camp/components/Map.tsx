@@ -19,7 +19,7 @@ import { useUser } from "hooks/useUser";
 
 import { useKeyboardControls } from "../hooks/useKeyboardControls";
 
-import { MapRoomsOverlay } from "./MapRoomsOverlay";
+import { MapRoomOverlay } from "./MapRoomOverlay";
 import { MapPartygoersOverlay } from "./MapPartygoersOverlay";
 import { MapRow } from "./MapRow";
 
@@ -27,7 +27,7 @@ import "./Map.scss";
 
 interface MapProps {
   venue: CampVenue;
-  partygoers: WithId<User>[];
+  partygoers: readonly WithId<User>[];
   attendances: Attendances;
   selectedRoom: CampRoomData | undefined;
   setSelectedRoom: (room: CampRoomData | undefined) => void;
@@ -267,13 +267,18 @@ export const Map: React.FC<MapProps> = ({
         </div>
       ))}
 
-      <MapRoomsOverlay
-        venue={venue}
-        attendances={attendances}
-        setSelectedRoom={setSelectedRoom}
-        setIsRoomModalOpen={setIsRoomModalOpen}
-        enterCampRoom={enterCampRoom}
-      />
+      {venue.rooms.map((room) => (
+        <MapRoomOverlay
+          // TODO: is room.title unique? Is there something better we can use for the key?
+          key={room.title}
+          venue={venue}
+          room={room}
+          attendances={attendances}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+          enterCampRoom={enterCampRoom}
+        />
+      ))}
     </div>
   );
 };
