@@ -359,7 +359,100 @@ export const Map: React.FC<PropsType> = ({
             src={venue.mapBackgroundImageUrl}
             alt=""
           />
-          <div className="party-map-rooms-container">
+
+          <div
+            className="party-map-grid-container"
+            style={{
+              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+            }}
+          >
+            {venue.showGrid && rows ? (
+              Array.from(Array(columns)).map((_, colIndex) => {
+                return (
+                  <div className="seat-column" key={`column${colIndex}`}>
+                    {Array.from(Array(rows)).map((_, rowIndex) => {
+                      const column = colIndex + 1;
+                      const row = rowIndex + 1;
+                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                        ? partygoersBySeat[row][column]
+                        : null;
+                      const isMe = seatedPartygoer?.id === user?.uid;
+                      return (
+                        <div key={`row${rowIndex}`} className={`seat-row`}>
+                          {venue.showGrid && (
+                            <div
+                              className={"seat-container"}
+                              onClick={() =>
+                                onSeatClick(row, column, seatedPartygoer)
+                              }
+                            >
+                              <div
+                                className={
+                                  seatedPartygoer ? "seat" : `not-seat`
+                                }
+                                key={`row${rowIndex}`}
+                              >
+                                {seatedPartygoer && (
+                                  <div
+                                    className={isMe ? "user avatar" : "user"}
+                                  />
+                                )}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {venue.showGrid &&
+                      rows &&
+                      partygoers.map((partygoer, index) => {
+                        const isMe = partygoer.id === user?.uid;
+                        const position = partygoer?.data?.[venue.id];
+                        const currentRow = position?.row ?? 0;
+                        const currentCol = position?.column ?? 0;
+                        const avatarWidth = 100 / columns;
+                        const avatarHeight = 100 / rows;
+                        return (
+                          !!partygoer.id && (
+                            <UserProfilePicture
+                              key={`partygoer-${index}`}
+                              user={partygoer}
+                              containerStyle={{
+                                display: "flex",
+                                width: `${avatarWidth}%`,
+                                height: `${avatarHeight}%`,
+                                position: "absolute",
+                                cursor: "pointer",
+                                transition:
+                                  "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
+                                top: `${avatarHeight * (currentRow - 1)}%`,
+                                left: `${avatarWidth * (currentCol - 1)}%`,
+                                justifyContent: "center",
+                              }}
+                              avatarStyle={{
+                                width: "80%",
+                                height: "80%",
+                                borderRadius: "100%",
+                                alignSelf: "center",
+                                backgroundImage: `url(${partygoer?.pictureUrl})`,
+                                backgroundSize: "cover",
+                              }}
+                              avatarClassName={`${
+                                isMe ? "me profile-avatar" : "profile-avatar"
+                              }`}
+                              setSelectedUserProfile={setSelectedUserProfile}
+                              miniAvatars={venue?.miniAvatars}
+                            />
+                          )
+                        );
+                      })}
+                  </div>
+                );
+              })
+            ) : (
+              <div />
+            )}
             {!!rooms.length &&
               rooms.map((room) => {
                 const left = room.x_percent;
@@ -479,99 +572,6 @@ export const Map: React.FC<PropsType> = ({
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-          </div>
-
-          <div
-            className="party-map-grid-container"
-            style={{
-              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-              gridTemplateRows: `repeat(${rows}, 1fr)`,
-            }}
-          >
-            {venue.showGrid &&
-              rows &&
-              Array.from(Array(columns)).map((_, colIndex) => {
-                return (
-                  <div className="seat-column" key={`column${colIndex}`}>
-                    {Array.from(Array(rows)).map((_, rowIndex) => {
-                      const column = colIndex + 1;
-                      const row = rowIndex + 1;
-                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                        ? partygoersBySeat[row][column]
-                        : null;
-                      const isMe = seatedPartygoer?.id === user?.uid;
-                      return (
-                        <div key={`row${rowIndex}`} className={`seat-row`}>
-                          {venue.showGrid && (
-                            <div
-                              className={"seat-container"}
-                              onClick={() =>
-                                onSeatClick(row, column, seatedPartygoer)
-                              }
-                            >
-                              <div
-                                className={
-                                  seatedPartygoer ? "seat" : `not-seat`
-                                }
-                                key={`row${rowIndex}`}
-                              >
-                                {seatedPartygoer && (
-                                  <div
-                                    className={isMe ? "user avatar" : "user"}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    {venue.showGrid &&
-                      rows &&
-                      partygoers.map((partygoer, index) => {
-                        const isMe = partygoer.id === user?.uid;
-                        const position = partygoer?.data?.[venue.id];
-                        const currentRow = position?.row ?? 0;
-                        const currentCol = position?.column ?? 0;
-                        const avatarWidth = 100 / columns;
-                        const avatarHeight = 100 / rows;
-                        return (
-                          !!partygoer.id && (
-                            <UserProfilePicture
-                              key={`partygoer-${index}`}
-                              user={partygoer}
-                              containerStyle={{
-                                display: "flex",
-                                width: `${avatarWidth}%`,
-                                height: `${avatarHeight}%`,
-                                position: "absolute",
-                                cursor: "pointer",
-                                transition:
-                                  "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
-                                top: `${avatarHeight * (currentRow - 1)}%`,
-                                left: `${avatarWidth * (currentCol - 1)}%`,
-                                justifyContent: "center",
-                              }}
-                              avatarStyle={{
-                                width: "80%",
-                                height: "80%",
-                                borderRadius: "100%",
-                                alignSelf: "center",
-                                backgroundImage: `url(${partygoer?.pictureUrl})`,
-                                backgroundSize: "cover",
-                              }}
-                              avatarClassName={`${
-                                isMe ? "me profile-avatar" : "profile-avatar"
-                              }`}
-                              setSelectedUserProfile={setSelectedUserProfile}
-                              miniAvatars={venue?.miniAvatars}
-                            />
-                          )
-                        );
-                      })}
                   </div>
                 );
               })}

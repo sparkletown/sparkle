@@ -202,6 +202,12 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
 ];
 
+export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+  VenueTemplate.avatargrid,
+];
+
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
