@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { RootState } from "index";
 import { createUrlSafeName } from "api/admin";
 
-import { CampRoomData } from "types/CampRoomData";
-import { CampVenue } from "types/CampVenue";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 import { useCampPartygoers } from "hooks/useCampPartygoers";
 import { useSelector } from "hooks/useSelector";
@@ -14,14 +14,16 @@ import { Map, RoomModal } from "./components";
 
 import "./PartyMap.scss";
 
-const campVenueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue?.[0] as CampVenue;
+const partyMapVenueSelector = (state: RootState) =>
+  state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
+  const [selectedRoom, setSelectedRoom] = useState<
+    PartyMapRoomData | undefined
+  >();
 
-  const venue = useSelector(campVenueSelector);
+  const venue = useSelector(partyMapVenueSelector);
   const usersInCamp = useCampPartygoers(venue.name);
 
   const attendances = usersInCamp
@@ -41,11 +43,11 @@ export const PartyMap: React.FC = () => {
 
   useEffect(() => {
     if (roomTitle) {
-      const campRoom = venue?.rooms.find(
+      const partyRoom = venue?.rooms.find(
         (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
       );
-      if (campRoom) {
-        setSelectedRoom(campRoom);
+      if (partyRoom) {
+        setSelectedRoom(partyRoom);
         setIsRoomModalOpen(true);
       }
     }
@@ -65,7 +67,6 @@ export const PartyMap: React.FC = () => {
           show={isRoomModalOpen}
           room={selectedRoom}
           onHide={modalHidden}
-          joinButtonText={venue.joinButtonText}
         />
       </div>
     </>
