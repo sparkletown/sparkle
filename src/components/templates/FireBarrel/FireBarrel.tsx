@@ -19,10 +19,8 @@ const FireBarrel: React.FC = () => {
     BarrelPeple[] | []
   >([]);
 
-  const { venue, partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const chairs =
     currentPartygoers.length > DEFAULT_BURN_BARREL_SEATS

@@ -29,8 +29,6 @@ const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
         room: roomName,
       });
 
-      console.log("response: ", user);
-
       setToken(response.data.token);
     })();
   }, [user, roomName, token]);
@@ -93,7 +91,6 @@ const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
         room.participants.forEach(participantConnected);
       })
       .catch((error) => {
-        console.log("Error: ", error);
         setVideoError(error.message);
       });
 
