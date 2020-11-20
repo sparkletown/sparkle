@@ -1,8 +1,7 @@
 import React from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 
-import { CampRoomData } from "types/CampRoomData";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
 
 import { getCurrentEvent } from "utils/event";
 import { enterRoom } from "utils/useLocationUpdateEffect";
@@ -18,15 +17,12 @@ import { useSelector } from "hooks/useSelector";
 
 import UserList from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
-import { ScheduleItem } from "./ScheduleItem";
-
-import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
+import { RoomModalOngoingEvent, ScheduleItem } from "../";
 
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
-  room: CampRoomData | undefined;
+  room: PartyMapRoomData | undefined;
   joinButtonText?: string;
 }
 
@@ -36,7 +32,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   joinButtonText,
 }) => {
-  useFirestoreConnect("venues");
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);

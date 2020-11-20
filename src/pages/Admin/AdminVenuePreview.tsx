@@ -13,6 +13,12 @@ interface AdminVenuePreview {
   containerStyle: CSSProperties;
 }
 
+const infoTextByVenue: { [key: string]: string } = {
+  [VenueTemplate.themecamp]: "Camp Info:",
+  [VenueTemplate.artpiece]: "Art Piece Info:",
+  [VenueTemplate.partymap]: "Party Map Info:",
+};
+
 export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
   venue,
   containerStyle,
@@ -56,6 +62,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             </span>
           </div>
         );
+      case VenueTemplate.partymap:
       case VenueTemplate.themecamp:
         const campVenue = venue as WithId<CampVenue>;
         return (
@@ -83,12 +90,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
     }
   }, [venue]);
 
-  const venueTypeText =
-    venue.template === VenueTemplate.themecamp
-      ? "Camp Info:"
-      : venue.template === VenueTemplate.artpiece
-      ? "Art Piece Info:"
-      : "Experience Info:";
+  const venueTypeText = infoTextByVenue[venue.template] ?? "Experience Info:";
 
   return (
     <div style={containerStyle}>
