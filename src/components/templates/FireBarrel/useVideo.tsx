@@ -49,8 +49,6 @@ export const useVideoState = ({ userUid, roomName }: UseVideoStateProps) => {
         room: roomName,
       });
 
-      console.log("response: ", userUid);
-
       setToken(response.data.token);
     })();
   }, [userUid, roomName, token]);

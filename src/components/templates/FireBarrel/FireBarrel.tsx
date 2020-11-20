@@ -1,5 +1,5 @@
 import { useKeyedSelector, useSelector } from "hooks/useSelector";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User, VideoState } from "types/User";
 import { Venue } from "types/Venue";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -64,81 +64,108 @@ const FireBarrel: React.FC = () => {
     ["users"]
   );
 
-  if (!user || !profile) return <></>;
+  const updateVideoState = useCallback(
+    (update: VideoState) => {
+      if (!user) return;
+      firebase.firestore().doc(`users/${user.uid}`).update({ video: update });
+    },
+    [user]
+  );
 
-  const updateVideoState = (update: VideoState) => {
-    firebase.firestore().doc(`users/${user.uid}`).update({ video: update });
-  };
-
-  const leave = () => {
-    profile.video = {};
-    updateVideoState({});
-  };
-
-  const removeParticipant = (uid: string) => {
-    if (!profile.video) return;
-    const removed = profile.video.removedParticipantUids || [];
-    if (!removed.includes(uid)) {
-      removed.push(uid);
+  const leave = useCallback(() => {
+    if (profile) {
+      profile.video = {};
     }
-    updateVideoState({
-      ...profile.video,
-      removedParticipantUids: removed,
-    });
-  };
+    updateVideoState({});
+  }, [profile, updateVideoState]);
 
-  return (
-    <S.Wrapper>
-      <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
+  const removeParticipant = useCallback(
+    (uid: string) => {
+      if (!profile?.video) return;
+      const removed = profile.video.removedParticipantUids || [];
+      if (!removed.includes(uid)) {
+        removed.push(uid);
+      }
+      updateVideoState({
+        ...profile.video,
+        removedParticipantUids: removed,
+      });
+    },
+    [profile?.video, updateVideoState]
+  );
 
-      {chairsArray.map((_, index) => {
-        const partyPerson = currentPartygoers[index] ?? null;
+  return useMemo(
+    () => (
+      <S.Wrapper>
+        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
-        const isMe = partyPerson?.id === user?.uid;
+        {chairsArray.map((_, index) => {
+          const partyPerson = currentPartygoers[index] ?? null;
 
-        if (!partyPerson) {
-          return <S.Chair key={index} isEmpty />;
-        }
+          const isMe = partyPerson?.id === user?.uid;
 
-        if (!!room && isMe) {
-          return (
-            <S.Chair>
-              <LocalParticipant
-                // TODO: FIX STYLING FOR BUTTONS
-                showLeave={false}
-                participant={room.localParticipant}
-                user={users[user.uid]}
-                setSelectedUserProfile={() => {}}
-                isHost={false}
-                leave={leave}
-              />
-            </S.Chair>
-          );
-        }
+          if (!currentPartygoers[index]) {
+            return <S.Chair key={index} isEmpty />;
+          }
 
-        return participants.map((participant) => (
-          <S.Chair key={participant.identity}>
-            <RemoteParticipant
-              // TODO: FIX STYLING FOR BUTTONS
-              participant={participant}
-              user={users[participant.identity]}
-              setSelectedUserProfile={() => {}}
-              isHost={false}
-              showHostControls={false}
-              remove={() => removeParticipant(participant.identity)}
-            />
-          </S.Chair>
-        ));
-      })}
+          if (!!room && isMe) {
+            return (
+              <S.Chair key={user!.uid}>
+                <LocalParticipant
+                  // TODO: FIX STYLING FOR BUTTONS
+                  showLeave={false}
+                  participant={room.localParticipant}
+                  user={users[user!.uid]}
+                  setSelectedUserProfile={() => {}}
+                  isHost={false}
+                  leave={leave}
+                />
+              </S.Chair>
+            );
+          }
 
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={() => setVideoError("")}
-        errorMessage={videoError}
-        onRetry={() => {}}
-        onBack={() => {}}
-      />
-    </S.Wrapper>
+          if (participants.length && !!participants[index]) {
+            const participant = participants[index];
+
+            return (
+              <S.Chair key={participant.identity}>
+                <RemoteParticipant
+                  // TODO: FIX STYLING FOR BUTTONS
+                  participant={participant}
+                  user={users[participant.identity]}
+                  setSelectedUserProfile={() => {}}
+                  isHost={false}
+                  showHostControls={false}
+                  remove={() => removeParticipant(participant.identity)}
+                />
+              </S.Chair>
+            );
+          }
+
+          return <></>;
+        })}
+
+        <VideoErrorModal
+          show={!!videoError}
+          onHide={() => setVideoError("")}
+          errorMessage={videoError}
+          onRetry={() => {}}
+          onBack={() => {}}
+        />
+      </S.Wrapper>
+    ),
+    [
+      chairsArray,
+      currentPartygoers,
+      leave,
+      participants,
+      removeParticipant,
+      room,
+      user,
+      users,
+      venue?.iframeUrl,
+      videoError,
+    ]
   );
 };
 
