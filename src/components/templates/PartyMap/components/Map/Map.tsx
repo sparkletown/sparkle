@@ -471,15 +471,15 @@ export const Map: React.FC<PropsType> = ({
               })}
           </div>
 
-          <div
-            className="party-map-grid-container"
-            style={{
-              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-              gridTemplateRows: `repeat(${rows}, 1fr)`,
-            }}
-          >
-            {venue.showGrid && rows ? (
-              Array.from(Array(columns)).map((_, colIndex) => {
+          {venue.showGrid && rows ? (
+            <div
+              className="party-map-grid-container"
+              style={{
+                gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+                gridTemplateRows: `repeat(${rows}, 1fr)`,
+              }}
+            >
+              {Array.from(Array(columns)).map((_, colIndex) => {
                 return (
                   <div className="seat-column" key={`column${colIndex}`}>
                     {Array.from(Array(rows)).map((_, rowIndex) => {
@@ -560,11 +560,11 @@ export const Map: React.FC<PropsType> = ({
                       })}
                   </div>
                 );
-              })
-            ) : (
-              <div />
-            )}
-          </div>
+              })}
+            </div>
+          ) : (
+            <div />
+          )}
 
           {selectedUserProfile && (
             <UserProfileModal

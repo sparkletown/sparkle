@@ -189,6 +189,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
       "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
     ],
   },
+  {
+    template: VenueTemplate.partymap,
+    name: "Party Map",
+    description: [""],
+  },
 ];
 
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [

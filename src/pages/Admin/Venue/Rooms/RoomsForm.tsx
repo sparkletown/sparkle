@@ -49,7 +49,10 @@ export const RoomsForm: React.FC = () => {
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
-      if (!template || template.template !== VenueTemplate.themecamp) {
+
+      //TODO: Create global const with the templates that can contain rooms.
+      const roomTemplates = [VenueTemplate.themecamp, VenueTemplate.partymap];
+      if (!template || !roomTemplates.includes(template.template)) {
         history.replace("/admin");
       }
       setVenue(data as CampVenue);

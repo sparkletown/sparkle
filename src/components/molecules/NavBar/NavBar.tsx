@@ -277,16 +277,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         }`}
         onClick={hideEventSchedule}
       />
-      <div className="back-map-btn">
-        {venue?.parentId && parentVenue?.name && (
-          <Fragment>
-            <div className="back-icon" />
-            <span onClick={backToParentVenue} className="back-link">
-              Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-            </span>
-          </Fragment>
-        )}
-      </div>
+      {venue?.parentId && parentVenue?.name && (
+        <div className="back-map-btn">
+          <div className="back-icon" />
+          <span onClick={backToParentVenue} className="back-link">
+            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
+          </span>
+        </div>
+      )}
     </>
   );
 };
