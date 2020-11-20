@@ -32,8 +32,7 @@ interface MapProps {
   partygoers: readonly WithId<User>[];
   attendances: Attendances;
   selectedRoom: CampRoomData | undefined;
-  setSelectedRoom: (room: CampRoomData | undefined) => void;
-  setIsRoomModalOpen: (value: boolean) => void;
+  selectRoom: (room: CampRoomData) => void;
 }
 
 export const DEFAULT_COLUMNS = 40;
@@ -44,8 +43,7 @@ export const Map: React.FC<MapProps> = ({
   partygoers,
   attendances,
   selectedRoom,
-  setSelectedRoom,
-  setIsRoomModalOpen,
+  selectRoom,
 }) => {
   const { user, profile } = useUser();
 
@@ -111,8 +109,7 @@ export const Map: React.FC<MapProps> = ({
       // TODO: this will run through all of the rooms, but the logic looks like we want to stop at the first
       //   if so, could use .find() instead?
       venue.rooms.filter(roomHitFilter).forEach((room) => {
-        setSelectedRoom(room);
-        setIsRoomModalOpen(true);
+        selectRoom(room);
       });
 
       // TODO: MISS
@@ -120,7 +117,7 @@ export const Map: React.FC<MapProps> = ({
       //     setSelectedRoom(undefined);
       //   }
     },
-    [venue.rooms, totalRows, totalColumns, setIsRoomModalOpen, setSelectedRoom]
+    [selectRoom, totalColumns, totalRows, venue.rooms]
   );
 
   const roomsHit = useMemo(() => {
@@ -140,15 +137,14 @@ export const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     roomsHit.forEach((room) => {
-      setSelectedRoom(room);
-      // setIsRoomModalOpen(true); // TODO: do we need this here as well?
+      selectRoom(room);
     });
 
     // TODO: NOT HIT
     // if (selectedRoom === room) {
     //   setSelectedRoom(undefined); // this comes from camp
     // }
-  }, [roomsHit, setSelectedRoom]);
+  }, [roomsHit, selectRoom]);
 
   // TODO: useCallback
   const onSeatClick = (
@@ -291,9 +287,8 @@ export const Map: React.FC<MapProps> = ({
           venue={venue}
           room={room}
           attendances={attendances}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
           enterCampRoom={enterCampRoom}
+          selectRoom={selectRoom}
         />
       ))}
 
