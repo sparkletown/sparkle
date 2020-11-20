@@ -28,8 +28,6 @@ const FireBarrel: React.FC = () => {
     BarrelPeple[] | []
   >([]);
 
-  console.log("currentPartygoers: ", currentPartygoers);
-
   const venueId = useVenueId();
 
   const { venue, partygoers } = useSelector((state) => ({
@@ -87,7 +85,7 @@ const FireBarrel: React.FC = () => {
         {Array.from(Array(chairs)).map((_, index) => {
           const partyPerson = currentPartygoers[index] ?? null;
           if (!partyPerson) {
-            return <S.Chair key={index} chairNumber={index} />;
+            return <S.Chair key={index} isEmpty />;
           }
 
           return (

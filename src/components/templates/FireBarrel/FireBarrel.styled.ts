@@ -5,10 +5,6 @@ export const Wrapper = styled.div`
   width: 60%;
   margin: 6rem auto;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-areas:
-    "chair_0 barrel barrel chair_1"
-    "chair_2 barrel barrel chair_3"
-    "chair_4 chair_5 chair_6 chair_7";
   grid-gap: 1rem;
 `;
 
@@ -20,7 +16,9 @@ export const Barrel = styled.iframe.attrs({
 })`
   width: 80%;
   height: 80%;
-  grid-area: barrel;
+  /* grid-area: barrel; */
+  grid-column: 2 / span 2;
+  grid-row: 1 / span 2;
   align-self: center;
   justify-self: center;
 
@@ -28,7 +26,6 @@ export const Barrel = styled.iframe.attrs({
 `;
 
 type ChairProps = {
-  chairNumber: number;
   isEmpty?: boolean;
 };
 const emptyChair = css`
@@ -37,17 +34,23 @@ const emptyChair = css`
     font-size: 2rem;
   }
 `;
+const filledChair = css`
+  background-color: unset;
+`;
 export const Chair = styled.div<ChairProps>`
   display: flex;
-  grid-area: chair_ ${({ chairNumber }) => chairNumber};
   justify-content: center;
   align-items: center;
+
+  position: relative;
 
   border-radius: 28px;
 
   background-color: #1a1d24;
 
-  ${({ isEmpty }) => isEmpty && emptyChair};
+  overflow: hidden;
+
+  ${({ isEmpty }) => (isEmpty ? emptyChair : filledChair)};
 
   &:before {
     content: "";
@@ -57,8 +60,28 @@ export const Chair = styled.div<ChairProps>`
     padding-bottom: calc(100% / (1 / 1));
   }
 
+  .col {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
+  .mute-container {
+    position: absolute;
+    bottom: 15%;
+    left: 0.5em;
+  }
+
+  .mute-other-container {
+    position: absolute;
+    bottom: 15%;
+    right: 0.5em;
+  }
+
   video {
     width: 100%;
     height: 100%;
+
+    border-radius: 28px;
   }
 `;

@@ -8,6 +8,7 @@ import Video from "twilio-video";
 
 import * as S from "./FireBarrel.styled";
 import { BarrelPeple } from "./FireBarrel";
+import { useUser } from "hooks/useUser";
 
 interface PROPS {
   person: BarrelPeple;
@@ -17,25 +18,25 @@ interface PROPS {
 
 const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
   const [token, setToken] = useState<string>();
-  // const { user, profile } = useUser();
+  const { user, profile } = useUser();
 
   // console.log('FIRE SEAT PERSON:', person);
 
   useEffect(() => {
     (async () => {
-      if (!person || !!token) return;
+      if (!user || !!token) return;
 
       const getToken = firebase.functions().httpsCallable("video-getToken");
       const response = await getToken({
-        identity: person.id,
+        identity: user.uid,
         room: roomName,
       });
 
-      console.log("response: ", person);
+      console.log("response: ", user);
 
       setToken(response.data.token);
     })();
-  }, [person, roomName, token]);
+  }, [user, roomName, token]);
 
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
@@ -114,9 +115,8 @@ const FireSeat: React.FC<PROPS> = ({ person, chairNumber, roomName }) => {
   const profileData = room ? users[room.localParticipant.identity] : undefined;
 
   return (
-    <S.Chair chairNumber={chairNumber} isEmpty={false}>
-      {/* {seatedPartygoer && <div>{seatedPartygoer.partyName}</div>} */}
-      {person && room && profileData && (
+    <S.Chair isEmpty={false}>
+      {user && room && profileData && (
         <LocalParticipant
           participant={room?.localParticipant}
           profileData={profileData}
