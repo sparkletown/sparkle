@@ -87,7 +87,7 @@ const FireBarrel: React.FC = () => {
         removedParticipantUids: removed,
       });
     },
-    [profile?.video, updateVideoState]
+    [updateVideoState, profile]
   );
 
   return useMemo(
@@ -159,8 +159,8 @@ const FireBarrel: React.FC = () => {
       room,
       user,
       users,
-      venue?.iframeUrl,
       videoError,
+      venue,
     ]
   );
 };
