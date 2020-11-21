@@ -21,7 +21,7 @@ import {
  * @param state the Redux store
  */
 export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
-  state: RootState
+  state
 ) => state.firebase.auth;
 
 /**
@@ -30,7 +30,7 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  * @param state the Redux store
  */
 export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
-  state: RootState
+  state
 ) => state.firebase.profile;
 
 /**
@@ -38,13 +38,12 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<AnyVenue> = (
-  state: RootState
-) => state.firestore.ordered.currentVenue?.[0];
+export const currentVenueSelector: SparkleSelector<AnyVenue> = (state) =>
+  state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
-  state: RootState
+  state
 ) => state.firestore.data.currentVenue;
 
 /**
@@ -52,9 +51,8 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
  *
  * @param state the Redux store
  */
-export const partygoersSelector: SparkleSelector<WithId<User>[]> = (
-  state: RootState
-) => state.firestore.ordered.partygoers;
+export const partygoersSelector: SparkleSelector<WithId<User>[]> = (state) =>
+  state.firestore.ordered.partygoers;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -100,7 +98,7 @@ export const userPurchaseHistorySelector: SparkleSelector<
 > = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
-  state: RootState
+  state
 ) => state.attendance.retainAttendance;
 
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(

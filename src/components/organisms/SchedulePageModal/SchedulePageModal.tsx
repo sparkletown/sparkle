@@ -34,24 +34,22 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const venueId = useVenueId();
   useConnectRelatedVenues(venueId);
   const venue = useSelector(currentVenueSelectorData);
-  const venueEvents = useSelector(venueEventsSelector);
-  const subvenueEvents = useSelector(subvenueEventsSelector);
-  const parentVenueEvents = useSelector(parentVenueEventsSelector);
-  const siblingVenueEvents = useSelector(siblingVenueEventsSelector);
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const subvenueEvents = useSelector(subvenueEventsSelector) ?? [];
+  const parentVenueEvents = useSelector(parentVenueEventsSelector) ?? [];
+  const siblingVenueEvents = useSelector(siblingVenueEventsSelector) ?? [];
 
-  const events = useMemo(
-    () =>
-      [
-        ...(venueEvents ?? []),
-        ...(subvenueEvents ?? []),
-        ...(parentVenueEvents ?? []),
-        ...(siblingVenueEvents ?? []),
-      ].sort((a, b) => a.start_utc_seconds - b.start_utc_seconds),
-    [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]
-  );
+  const events = useMemo(() => {
+    return [
+      ...venueEvents,
+      ...subvenueEvents,
+      ...parentVenueEvents,
+      ...siblingVenueEvents,
+    ].sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+  }, [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]);
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    const hasEvents = events && events.length;
+    const hasEvents = events.length > 0;
 
     const nowDay = startOfDay(new Date());
 

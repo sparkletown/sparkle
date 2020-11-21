@@ -12,7 +12,7 @@ import { useUser } from "hooks/useUser";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
-import firebase from "firebase";
+import firebase from "firebase/app";
 import { currentVenueSelector, partygoersSelector } from "utils/selectors";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -93,9 +93,7 @@ const FireBarrel: React.FC = () => {
   );
 
   return useMemo(() => {
-    if (!currentPartygoers) {
-      return <LoadingPage />;
-    }
+    if (!currentPartygoers) return <LoadingPage />;
 
     return (
       <S.Wrapper>
