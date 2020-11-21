@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import "./AnnouncementMessage.scss";
+import { getLinkFromText } from "utils/getLinkFromText";
 
 type AnnouncementMessageProps = {
   message?: string;
@@ -27,7 +28,7 @@ const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
     <>
       {isVisible && message && (
         <div className={"announcement-container"}>
-          {message}
+          {getLinkFromText(message)}
           <span className="close-button" onClick={hideAnnouncement}>
             <FontAwesomeIcon icon={faTimesCircle} />
           </span>
