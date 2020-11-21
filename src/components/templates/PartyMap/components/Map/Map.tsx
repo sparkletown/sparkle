@@ -53,8 +53,10 @@ export const Map: React.FC<PropsType> = ({
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const currentPosition = profile?.data?.[venue.id];
 
-  const columnsArray = Array.from(Array<JSX.Element>(columns));
-  const rowsArray = Array.from(Array(rows));
+  const columnsArray = useMemo(() => Array.from(Array<JSX.Element>(columns)), [
+    columns,
+  ]);
+  const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
   const partygoers = useSelector(partygoersSelector);
