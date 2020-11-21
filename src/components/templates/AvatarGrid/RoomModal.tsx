@@ -184,7 +184,7 @@ export const RoomModal: React.FC<PropsType> = ({
               target={"_blank"}
               onClick={enter}
             >
-              Join the room
+              Enter
             </a>
           )}
         </div>
