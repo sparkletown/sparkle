@@ -104,7 +104,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     [currentVenue, date, orderedEvents, relatedVenuesById]
   );
 
-  const hasEvents = !orderedEvents?.[date]?.events.length;
+  const hasEvents = !!orderedEvents?.[date]?.events.length;
 
   // TODO: this was essentially used in the old logic, but the styles look
   //  as though they will hide it anyway, so I think it's better without this?
