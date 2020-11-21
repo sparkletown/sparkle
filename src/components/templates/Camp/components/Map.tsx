@@ -266,8 +266,8 @@ export const Map: React.FC<MapProps> = ({
               />
             );
           })}
-          // @debt this can be undefined because our types are broken so check
-          explicitly
+
+          {/*@debt this can be undefined because our types are broken so check explicitly*/}
           {partygoers?.map(
             (partygoer) =>
               partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
