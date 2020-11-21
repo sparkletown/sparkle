@@ -49,6 +49,7 @@ interface UseConnectRelatedVenuesProps {
 }
 
 interface UseConnectRelatedVenuesReturn {
+  parentVenue?: WithId<AnyVenue>;
   currentVenue?: WithId<AnyVenue>;
   relatedVenues: WithId<AnyVenue>[];
 
@@ -235,6 +236,7 @@ export const useConnectRelatedVenues: ReactHook<
 
   return useMemo(
     () => ({
+      parentVenue,
       currentVenue,
       relatedVenues,
       relatedVenueEvents,
@@ -244,6 +246,7 @@ export const useConnectRelatedVenues: ReactHook<
       subvenueEvents,
     }),
     [
+      parentVenue,
       currentVenue,
       relatedVenues,
       relatedVenueEvents,
