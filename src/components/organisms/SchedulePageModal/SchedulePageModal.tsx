@@ -8,7 +8,14 @@ import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  parentVenueEventsSelector,
+  siblingVenueEventsSelector,
+  subvenueEventsSelector,
+  venueEventsSelector,
+} from "utils/selectors";
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -25,18 +32,32 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
   const venueId = useVenueId();
+  useConnectRelatedVenues(venueId);
   const venue = useSelector(currentVenueSelectorData);
   const venueEvents = useSelector(venueEventsSelector);
+  const subvenueEvents = useSelector(subvenueEventsSelector);
+  const parentVenueEvents = useSelector(parentVenueEventsSelector);
+  const siblingVenueEvents = useSelector(siblingVenueEventsSelector);
+
+  const events = useMemo(
+    () => [
+      ...venueEvents,
+      ...subvenueEvents,
+      ...parentVenueEvents,
+      ...siblingVenueEvents,
+    ],
+    [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]
+  );
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    const hasVenueEvents = venueEvents && venueEvents.length;
+    const hasEvents = events && events.length;
 
     const nowDay = startOfDay(new Date());
 
     const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
-      const todaysEvents = venueEvents
+      const todaysEvents = events
         ?.filter((event) => {
           return isWithinInterval(day, {
             start: startOfDay(new Date(event.start_utc_seconds * 1000)),
@@ -51,12 +72,12 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       return {
         dateDay: day,
-        events: hasVenueEvents ? todaysEvents : [],
+        events: hasEvents ? todaysEvents : [],
       };
     });
 
     return dates;
-  }, [venueEvents]);
+  }, [events]);
 
   const [date, setDate] = useState(0);
 

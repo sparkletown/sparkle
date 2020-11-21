@@ -61,6 +61,7 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -202,6 +203,7 @@ const VenuePage = () => {
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
 
+  useConnectCurrentVenue();
   useConnectPartyGoers();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();

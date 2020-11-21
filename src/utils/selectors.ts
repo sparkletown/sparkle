@@ -44,7 +44,7 @@ export const currentVenueSelector: SparkleSelector<AnyVenue> = (
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
-  state
+  state: RootState
 ) => state.firestore.data.currentVenue;
 
 /**
@@ -122,5 +122,20 @@ export const chatUsersSelector = (state: RootState) =>
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue &&
   state.firestore.ordered.currentVenue[0];
+export const parentVenueSelector = (state: RootState) =>
+  state.firestore.data.parentVenue;
+export const subvenuesSelector = (state: RootState) =>
+  state.firestore.ordered.subvenues;
+export const siblingVenuesSelector = (state: RootState) =>
+  state.firestore.ordered.siblingVenues;
 export const venueEventsSelector = (state: RootState) =>
   state.firestore.ordered.venueEvents;
+export const subvenueEventsSelector = (state: RootState) =>
+  state.firestore.ordered.subvenueEvents;
+export const parentVenueEventsSelector = (state: RootState) =>
+  state.firestore.ordered.parentVenueEvents;
+export const siblingVenueEventsSelector = (state: RootState) =>
+  state.firestore.ordered.siblingVenueEvents;
+
+export const radioStationsSelector = (state: RootState) =>
+  state.firestore.data.venues?.playa?.radioStations;
