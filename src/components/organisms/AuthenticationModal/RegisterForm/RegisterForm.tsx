@@ -3,11 +3,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
-import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
+import { TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelector } from "utils/selectors";
 
@@ -79,7 +78,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     return <>Loading...</>;
   }
 
-  const venueId = venue[0]?.id;
+  const venueId = venue.id;
 
   const onSubmit = async (data: RegisterFormData) => {
     try {

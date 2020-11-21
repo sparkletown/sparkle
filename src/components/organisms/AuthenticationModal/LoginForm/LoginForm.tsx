@@ -2,12 +2,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
-import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
+import { DEFAULT_VENUE, TICKET_URL } from "settings";
 import { venueInsideUrl } from "utils/url";
-import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelector } from "utils/selectors";
 
