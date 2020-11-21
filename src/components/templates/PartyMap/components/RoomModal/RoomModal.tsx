@@ -23,15 +23,9 @@ interface RoomModalProps {
   show: boolean;
   onHide: () => void;
   room: PartyMapRoomData | undefined;
-  joinButtonText?: string;
 }
 
-export const RoomModal: React.FC<RoomModalProps> = ({
-  show,
-  onHide,
-  room,
-  joinButtonText,
-}) => {
+export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
@@ -114,7 +108,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({
                   room={room}
                   roomEvents={roomEvents}
                   enterRoom={enter}
-                  joinButtonText={joinButtonText}
                 />
               </div>
             </div>
