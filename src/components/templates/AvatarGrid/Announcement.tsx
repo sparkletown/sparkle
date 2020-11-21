@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-// import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
   message?: string;
-  className: string;
+  className?: string;
 };
 
 const Announcement = ({ message, className }: Props) => {

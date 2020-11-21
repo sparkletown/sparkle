@@ -193,6 +193,7 @@ $border-radius: 28px;
     }
 
     .camp-venue-text {
+      opacity: 1;
       transform: scale(1.1);
       background-color: $room-info-bg;
       box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
@@ -322,11 +323,13 @@ $border-radius: 28px;
       justify-content: space-between;
       padding: 10px;
 
-      .camp-venue-title {
+      //TODO: Rename everything to party map
+      .party-map-venue-title {
+        opacity: 1;
         display: block;
         line-height: 1;
         font-size: 0.9rem;
-        font-size: 20px;
+        font-size: 13px;
       }
 
       .camp-room-avatar {
