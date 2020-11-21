@@ -10,7 +10,7 @@ import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
-import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
+import { openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -86,7 +86,7 @@ export const Map: React.FC<PropsType> = ({
     return venue.rooms.filter(roomHitFilter);
   }, [currentPosition, rows, columns, venue.rooms]);
 
-  useEffect(() => {
+  const detectRoomsOnMove = useCallback(() => {
     if (selectedRoom) {
       const noRoomHits = !!roomsHit.length;
       if (!noRoomHits && selectedRoom) {
@@ -126,14 +126,6 @@ export const Map: React.FC<PropsType> = ({
     [profile, user, venueId]
   );
 
-  const navigateRoomUrl = useCallback((room: PartyMapRoomData) => {
-    if (isExternalUrl(room.url)) {
-      openRoomUrl(room.url);
-    } else {
-      window.location.href = getRoomUrl(room.url);
-    }
-  }, []);
-
   const enterPartyMapRoom = useCallback(
     (room: PartyMapRoomData) => {
       if (!room || !user) return;
@@ -148,10 +140,10 @@ export const Map: React.FC<PropsType> = ({
         ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
       };
 
-      navigateRoomUrl(room);
+      openRoomUrl(room.url);
       enterRoom(user, roomName, profile?.lastSeenIn);
     },
-    [navigateRoomUrl, profile, user, venue.name, venues]
+    [profile, user, venue.name, venues]
   );
 
   const partygoersBySeat = useMemo(() => {
@@ -196,6 +188,7 @@ export const Map: React.FC<PropsType> = ({
     isSeatTaken,
     takeSeat,
     enterSelectedRoom,
+    onMove: detectRoomsOnMove,
   });
 
   const isUserProfileSelected: boolean = !!selectedUserProfile;
@@ -279,7 +272,6 @@ export const Map: React.FC<PropsType> = ({
                   attendances={attendances}
                   setSelectedRoom={setSelectedRoom}
                   setIsRoomModalOpen={setIsRoomModalOpen}
-                  onEnterRoom={enterPartyMapRoom}
                 />
               );
             })}

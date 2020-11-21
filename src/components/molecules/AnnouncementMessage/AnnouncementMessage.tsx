@@ -1,27 +1,35 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-type Props = {
+import "./AnnouncementMessage.scss";
+
+type AnnouncementMessageProps = {
   message?: string;
   className?: string;
 };
 
-const Announcement = ({ message, className }: Props) => {
+const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
+  message,
+  className,
+}) => {
   const [announcement, setAnnouncement] = useState<string | undefined>("");
+  const [isVisible, setVisibility] = useState<boolean>(false);
+
+  const showAnnouncement = useCallback(() => {
+    setVisibility(true);
+  }, []);
+
+  const hideAnnouncement = useCallback(() => {
+    setVisibility(false);
+  }, []);
+
   useEffect(() => {
     if (message !== announcement && message !== null) {
       setAnnouncement(message);
       showAnnouncement();
     }
-  }, [announcement, message]);
-  const [isVisible, setVisibility] = useState<boolean>(false);
-  const showAnnouncement = () => {
-    setVisibility(true);
-  };
-  const hideAnnouncement = () => {
-    setVisibility(false);
-  };
+  }, [announcement, message, showAnnouncement]);
 
   return (
     <>
@@ -37,9 +45,9 @@ const Announcement = ({ message, className }: Props) => {
   );
 };
 
-Announcement.defaultProps = {
-  message: null,
+AnnouncementMessage.defaultProps = {
+  message: "",
   className: "announcement-container",
 };
 
-export default Announcement;
+export default AnnouncementMessage;
