@@ -152,3 +152,19 @@ export const makeSiblingVenueEventsSelector = (venueId?: string) => (
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.venues?.playa?.radioStations;
+
+export const maybeSelector = <T extends SparkleSelector<U>, U>(
+  ifTrue: boolean,
+  selector: SparkleSelector<U>
+) => (ifTrue ? selector : noopSelector);
+
+export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
+  ifTrue: boolean,
+  selector: SparkleSelector<U[]>
+) => (ifTrue ? selector : emptyArraySelector);
+
+export const noopSelector: SparkleSelector<undefined> = () => undefined;
+
+export const emptyArray = [];
+export const emptyArraySelector = <T extends SparkleSelector<U>, U>() =>
+  emptyArray as U[];
