@@ -7,6 +7,9 @@ import axios from "axios";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
 import { venueInsideUrl } from "utils/url";
+import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
+import { currentVenueSelector } from "utils/selectors";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -27,6 +30,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   afterUserIsLoggedIn,
 }) => {
   const firebase = useFirebase();
+  const venue = useSelector(currentVenueSelector);
 
   const history = useHistory();
   const { register, handleSubmit, errors, formState, setError } = useForm<
@@ -41,9 +45,10 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      if (venue.codeCheckEnabled)
+        await axios.get(venue.codeCheckUrl + data.email);
       const auth = await signIn(data);
-      if (CODE_CHECK_ENABLED && auth.user) {
+      if (venue.codeCheckEnabled && auth.user) {
         firebase
           .firestore()
           .doc(`userprivate/${auth.user.uid}`)

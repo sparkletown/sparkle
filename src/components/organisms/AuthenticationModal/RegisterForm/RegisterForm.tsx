@@ -9,6 +9,7 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelector } from "utils/selectors";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -57,7 +58,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector((state) => state.firestore.ordered.currentVenue);
+  const venue = useSelector(currentVenueSelector);
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -82,9 +83,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      if (venue.codeCheckEnabled)
+        await axios.get(venue.codeCheckUrl + data.email);
       const auth = await signUp(data);
-      if (CODE_CHECK_ENABLED && auth.user) {
+      if (venue.codeCheckEnabled && auth.user) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
         });

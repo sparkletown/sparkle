@@ -84,6 +84,8 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
+  codeCheckEnabled?: boolean;
+  codeCheckUrl?: string;
 }
 
 export interface VenuePlacement {
