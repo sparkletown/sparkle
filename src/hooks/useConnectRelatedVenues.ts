@@ -15,7 +15,7 @@ export const useConnectRelatedVenues = (venueId: string | null) => {
     storeAs: "subvenues",
   };
   const subvenues = useSelector(subvenuesSelector);
-  const subvenueEventsQueries: SparkleRFQConfig[] = subvenues.map(
+  const subvenueEventsQueries: SparkleRFQConfig[] = subvenues?.map(
     (subvenue) => ({
       collection: "venues",
       doc: subvenue.id,
@@ -24,7 +24,10 @@ export const useConnectRelatedVenues = (venueId: string | null) => {
       storeAs: "subvenueEvents",
     })
   );
-  useSparkleFirestoreConnect([subvenuesQuery, ...subvenueEventsQueries]);
+  useSparkleFirestoreConnect([
+    subvenuesQuery,
+    ...(subvenueEventsQueries ?? []),
+  ]);
 
   const parentVenueEventsQuery: SparkleRFQConfig = {
     collection: "venues",
@@ -41,7 +44,7 @@ export const useConnectRelatedVenues = (venueId: string | null) => {
   };
   const siblingVenues = useSelector(siblingVenuesSelector);
   const siblingVenueEventsQueries: SparkleRFQConfig[] = siblingVenues
-    .filter((v) => v.id !== venueId)
+    ?.filter((v) => v.id !== venueId)
     .map((siblingVenue) => ({
       collection: "venues",
       doc: siblingVenue.id,
@@ -52,7 +55,7 @@ export const useConnectRelatedVenues = (venueId: string | null) => {
       ? [
           parentVenueEventsQuery,
           siblingVenuesQuery,
-          ...siblingVenueEventsQueries,
+          ...(siblingVenueEventsQueries ?? []),
         ]
       : []
   );

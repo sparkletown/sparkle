@@ -13,6 +13,8 @@ import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 import firebase from "firebase";
+import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
@@ -21,11 +23,11 @@ const FireBarrel: React.FC = () => {
     WithId<User>[] | []
   >([]);
 
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const venue = useSelector(currentVenueSelector);
+  const partygoers = useSelector(partygoersSelector);
 
   const chairs =
-    currentPartygoers.length > DEFAULT_BURN_BARREL_SEATS
+    currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS
       ? currentPartygoers.length
       : DEFAULT_BURN_BARREL_SEATS;
 
@@ -33,7 +35,7 @@ const FireBarrel: React.FC = () => {
     venue: Venue,
     partygoers: WithId<User>[]
   ): WithId<User>[] =>
-    partygoers.filter((person) => person.room === venue?.name);
+    partygoers?.filter((person) => person.room === venue?.name);
 
   useEffect(() => {
     if (venue) {
@@ -90,8 +92,12 @@ const FireBarrel: React.FC = () => {
     [updateVideoState, profile]
   );
 
-  return useMemo(
-    () => (
+  return useMemo(() => {
+    if (!currentPartygoers) {
+      return <LoadingPage />;
+    }
+
+    return (
       <S.Wrapper>
         <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
@@ -149,20 +155,19 @@ const FireBarrel: React.FC = () => {
           onBack={() => {}}
         />
       </S.Wrapper>
-    ),
-    [
-      chairsArray,
-      currentPartygoers,
-      leave,
-      participants,
-      removeParticipant,
-      room,
-      user,
-      users,
-      videoError,
-      venue,
-    ]
-  );
+    );
+  }, [
+    chairsArray,
+    currentPartygoers,
+    leave,
+    participants,
+    removeParticipant,
+    room,
+    user,
+    users,
+    videoError,
+    venue,
+  ]);
 };
 
 export default FireBarrel;

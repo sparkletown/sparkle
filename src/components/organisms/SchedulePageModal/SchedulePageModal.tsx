@@ -42,10 +42,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const events = useMemo(
     () =>
       [
-        ...venueEvents,
-        ...subvenueEvents,
-        ...parentVenueEvents,
-        ...siblingVenueEvents,
+        ...(venueEvents ?? []),
+        ...(subvenueEvents ?? []),
+        ...(parentVenueEvents ?? []),
+        ...(siblingVenueEvents ?? []),
       ].sort((a, b) => a.start_utc_seconds - b.start_utc_seconds),
     [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]
   );
@@ -59,7 +59,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
       const day = addDays(nowDay, idx);
 
       const todaysEvents = events
-        ?.filter((event) => {
+        .filter((event) => {
           return isWithinInterval(day, {
             start: startOfDay(new Date(event.start_utc_seconds * 1000)),
             end: endOfDay(
