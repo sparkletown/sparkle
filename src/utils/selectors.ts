@@ -116,6 +116,7 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
 
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
+
 export const chatUsersSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
 
@@ -123,28 +124,35 @@ export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue &&
   state.firestore.ordered.currentVenue[0];
 
-export const parentVenueOrderedSelector = (state: RootState) =>
-  state.firestore.ordered.parentVenue?.[0];
+export const parentVenueOrderedSelector: SparkleSelector<
+  WithId<AnyVenue> | undefined
+> = (state) => state.firestore.ordered.parentVenue?.[0];
 
-export const parentVenueSelector = (state: RootState) =>
-  state.firestore.data.parentVenue;
+export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
+  state
+) => state.firestore.data.parentVenue;
 
-export const subvenuesSelector = (state: RootState) =>
-  state.firestore.ordered.subvenues;
+export const subvenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.subvenues;
 
-export const siblingVenuesSelector = (state: RootState) =>
-  state.firestore.ordered.siblingVenues;
+export const siblingVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.siblingVenues;
 
-export const venueEventsSelector = (state: RootState) =>
-  state.firestore.ordered.venueEvents;
+export const venueEventsSelector: SparkleSelector<
+  WithId<VenueEvent>[] | undefined
+> = (state) => state.firestore.ordered.venueEvents;
 
-export const parentVenueEventsSelector = (state: RootState) =>
-  state.firestore.ordered.parentVenueEvents;
+export const parentVenueEventsSelector: SparkleSelector<
+  WithId<VenueEvent>[] | undefined
+> = (state: RootState) => state.firestore.ordered.parentVenueEvents;
 
 export const makeSubvenueEventsSelector = (venueId?: string) => (
   state: RootState
 ): WithId<VenueEvent>[] | undefined =>
   (state.firestore.ordered as any)[`subvenueEvents-${venueId}`];
+
 export const makeSiblingVenueEventsSelector = (venueId?: string) => (
   state: RootState
 ): WithId<VenueEvent>[] | undefined =>
