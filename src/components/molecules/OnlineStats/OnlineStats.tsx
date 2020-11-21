@@ -72,7 +72,7 @@ const OnlineStats: React.FC = () => {
   >();
 
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = useSelector(partygoersSelector) ?? [];
 
   useEffect(() => {
     const getOnlineStats = firebase

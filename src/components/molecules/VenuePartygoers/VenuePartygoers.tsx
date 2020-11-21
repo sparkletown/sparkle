@@ -15,7 +15,7 @@ const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
 
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = useSelector(partygoersSelector) ?? [];
 
   const currentVenuePartygoers = filterVenuePartygoers(partygoers, venue);
   const numberOfPartygoers = currentVenuePartygoers.length;

@@ -29,7 +29,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   small = false,
 }) => {
   const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers,
+    usersById: state.firestore.data.partygoers ?? {},
   }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>

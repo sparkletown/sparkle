@@ -190,7 +190,7 @@ export const Audience: React.FunctionComponent = () => {
   // That way, when the audience size is expanded these people keep their seats
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
-  partygoers.forEach((partygoer) => {
+  partygoers?.forEach((partygoer) => {
     if (
       !venueId ||
       !partygoer?.data ||
