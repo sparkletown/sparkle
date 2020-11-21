@@ -36,6 +36,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     relatedVenueEvents,
   } = useConnectRelatedVenues({
     venueId,
+    withEvents: true,
   });
 
   const relatedVenuesById: Record<
