@@ -72,7 +72,7 @@ export const ArtPiece = () => {
       </div>
       {IS_BURN && (
         <div className="sparkle-fairies">
-          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          <SparkleFairiesPopUp />
         </div>
       )}
       <Modal

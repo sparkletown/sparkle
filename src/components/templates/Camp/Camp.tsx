@@ -144,7 +144,7 @@ const Camp: React.FC = () => {
         )}
         {venue?.config?.showRangers && (
           <div className="sparkle-fairies">
-            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+            <SparkleFairiesPopUp />
           </div>
         )}
         <div className="info-drawer-camp">
