@@ -1,5 +1,3 @@
-import { VenueEvent } from "types/VenueEvent";
-
 export type WithId<T extends object> = T & { id: string };
 
 export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
@@ -9,10 +7,10 @@ export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
 
 export type WithVenueId<T extends object> = T & { venueId: string };
 
-export const withVenueId = (
-  event: VenueEvent,
+export const withVenueId = <T extends object>(
+  obj: T,
   venueId: string
-): WithVenueId<VenueEvent> => ({
-  ...event,
+): WithVenueId<T> => ({
+  ...obj,
   venueId,
 });
