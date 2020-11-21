@@ -36,7 +36,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
             key={room.title}
             room={room}
             attendance={
-              (attendances[`${venue.name}/${room?.title}`] ?? 0) +
+              (attendances[`${venue.name} / ${room?.title}`] ?? 0) +
               (room.attendanceBoost ?? 0)
             }
             onClick={() => openModal(room)}

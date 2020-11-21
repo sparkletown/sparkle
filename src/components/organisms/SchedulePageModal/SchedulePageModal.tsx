@@ -1,18 +1,22 @@
 import React, { useState, useMemo, FC } from "react";
-import { VenueEvent } from "types/VenueEvent";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import _ from "lodash";
-import { formatDate, formatDateToWeekday } from "../../../utils/time";
-import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
+
+import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
+
+import { formatDate, formatDateToWeekday } from "utils/time";
+import { WithId, WithVenueId } from "utils/id";
+import { itemsToObjectByIdReducer } from "utils/reducers";
+
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
-import { useSelector } from "hooks/useSelector";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
-import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
+
+import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 
 type DatedEvents = Array<{
   dateDay: Date;
-  events: Array<VenueEvent>;
+  events: Array<WithVenueId<VenueEvent>>;
 }>;
 
 const DAYS_AHEAD = 7;
@@ -25,19 +29,29 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
   const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelectorData);
-  const venueEvents = useSelector(venueEventsSelector);
+  const {
+    currentVenue,
+    relatedVenues,
+    relatedVenueEvents,
+  } = useConnectRelatedVenues({
+    venueId,
+  });
+
+  const relatedVenuesById: Record<
+    string,
+    WithId<AnyVenue>
+  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    const hasVenueEvents = venueEvents && venueEvents.length;
+    const hasEvents = relatedVenueEvents.length > 0;
 
     const nowDay = startOfDay(new Date());
 
     const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
-      const todaysEvents = venueEvents
-        ?.filter((event) => {
+      const todaysEvents = relatedVenueEvents
+        .filter((event) => {
           return isWithinInterval(day, {
             start: startOfDay(new Date(event.start_utc_seconds * 1000)),
             end: endOfDay(
@@ -51,19 +65,14 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       return {
         dateDay: day,
-        events: hasVenueEvents ? todaysEvents : [],
+        events: hasEvents ? todaysEvents : [],
       };
     });
 
     return dates;
-  }, [venueEvents]);
+  }, [relatedVenueEvents]);
 
   const [date, setDate] = useState(0);
-
-  const venueWithId: WithId<Venue> = {
-    ...venue!,
-    id: venueId!,
-  };
 
   return (
     <div>
@@ -73,15 +82,15 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
             <div className="partyinfo-main">
               <div
                 className="partyinfo-pic"
-                style={{ backgroundImage: `url(${venue?.host?.icon})` }}
-              ></div>
+                style={{ backgroundImage: `url(${currentVenue?.host?.icon})` }}
+              />
               <div className="partyinfo-title">
-                <h2>{venue?.name}</h2>
-                <h3>{venue?.config?.landingPageConfig.subtitle}</h3>
+                <h2>{currentVenue?.name}</h2>
+                <h3>{currentVenue?.config?.landingPageConfig.subtitle}</h3>
               </div>
             </div>
             <div className="partyinfo-desc">
-              <p>{venue?.config?.landingPageConfig.description}</p>
+              <p>{currentVenue?.config?.landingPageConfig.description}</p>
             </div>
           </div>
 
@@ -104,7 +113,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
                   <EventDisplay
                     key={event.name + Math.random().toString()}
                     event={event}
-                    venue={venueWithId}
+                    venue={relatedVenuesById[event.venueId] ?? currentVenue}
                   />
                 ))}
               {orderedEvents[date] && !orderedEvents[date].events.length && (

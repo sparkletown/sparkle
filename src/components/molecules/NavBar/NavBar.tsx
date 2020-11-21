@@ -11,7 +11,6 @@ import NavSearchBar from "components/molecules/NavSearchBar";
 
 import firebase from "firebase/app";
 
-import { RootState } from "index";
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
 import { UpcomingEvent } from "types/UpcomingEvent";
@@ -35,7 +34,11 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 
 import "./NavBar.scss";
 import "./playa.scss";
-import { currentVenueSelectorData } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  parentVenueSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -72,13 +75,6 @@ const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
   </Popover>
 );
 
-const navBarSelector = (state: RootState) => ({
-  venue: currentVenueSelectorData(state),
-  privateChats: state.firestore.ordered.privatechats,
-  radioStations: state.firestore.data.venues?.playa?.radioStations,
-  parentVenue: state.firestore.data.parentVenue,
-});
-
 interface NavBarPropsType {
   redirectionUrl?: string;
 }
@@ -86,7 +82,9 @@ interface NavBarPropsType {
 const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
-  const { venue, radioStations, parentVenue } = useSelector(navBarSelector);
+  const venue = useSelector(currentVenueSelectorData);
+  const radioStations = useSelector(radioStationsSelector);
+  const parentVenue = useSelector(parentVenueSelector);
 
   const venueParentId = venue?.parentId;
   const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(

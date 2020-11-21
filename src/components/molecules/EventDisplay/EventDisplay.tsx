@@ -8,7 +8,7 @@ import {
   currentTimeInUnixEpoch,
 } from "utils/time";
 import { WithId } from "utils/id";
-import { isExternalUrl } from "utils/url";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";
@@ -26,11 +26,9 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
   const enterEvent = useCallback(() => {
     const room = venue?.rooms?.find((room) => room.title === event.room);
 
-    const isExternal = isExternalUrl(room.url);
-    if (isExternal) {
-      window.open(room.url, "_blank", "noopener,noreferrer");
-    } else {
-      window.location.href = room.url;
+    if (!room) {
+      openUrl(venueInsideUrl(venue.id));
+      return;
     }
 
     enterRoom(
@@ -38,6 +36,7 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
       profile?.lastSeenIn
     );
+    openRoomUrl(room.url);
   }, [event, profile, user, venue]);
 
   const isLiveEvent =
