@@ -6,48 +6,35 @@ import "./AnnouncementMessage.scss";
 
 type AnnouncementMessageProps = {
   message?: string;
-  className?: string;
 };
 
 const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
-  message,
-  className,
+  message = "",
 }) => {
-  const [announcement, setAnnouncement] = useState<string | undefined>("");
   const [isVisible, setVisibility] = useState<boolean>(false);
-
-  const showAnnouncement = useCallback(() => {
-    setVisibility(true);
-  }, []);
 
   const hideAnnouncement = useCallback(() => {
     setVisibility(false);
   }, []);
 
   useEffect(() => {
-    if (message !== announcement && message !== null) {
-      setAnnouncement(message);
-      showAnnouncement();
+    if (message) {
+      setVisibility(true);
     }
-  }, [announcement, message, showAnnouncement]);
+  }, [message]);
 
   return (
     <>
-      {isVisible && message !== null && (
-        <div className={className}>
+      {isVisible && message && (
+        <div className={"announcement-container"}>
           {message}
           <span className="close-button" onClick={hideAnnouncement}>
-            <FontAwesomeIcon icon={faTimesCircle} />{" "}
+            <FontAwesomeIcon icon={faTimesCircle} />
           </span>
         </div>
       )}
     </>
   );
-};
-
-AnnouncementMessage.defaultProps = {
-  message: "",
-  className: "announcement-container",
 };
 
 export default AnnouncementMessage;
