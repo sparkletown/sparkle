@@ -1,31 +1,49 @@
 import React, { FC } from "react";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { CampRoomData } from "types/CampRoomData";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
+
+import { partygoersSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
+import "./RoomAttendance.scss";
 
 interface PropsType {
   venue: PartyMapVenue;
-  attendances: { [location: string]: number };
-  room: CampRoomData;
+  room: PartyMapRoomData;
 }
 
-export const RoomAttendance: FC<PropsType> = ({ attendances, venue, room }) => {
+const MAX_AVATARS_VISIBLE = 2;
+
+export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
+  const partygoers = useSelector(partygoersSelector);
+  const usersInRoom =
+    partygoers?.filter(
+      (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+    ) ?? [];
+  const numberOfUsersInRoom = usersInRoom?.length;
   return (
-    <>
-      {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-        (room.attendanceBoost ?? 0) >
-        0 && (
-        <>
-          <div className="camp-venue-people">
-            {(attendances[`${venue.name}/${room.title}`] ?? 0) +
-              (room.attendanceBoost ?? 0)}
+    <div className="attendance-avatars">
+      {usersInRoom.map((user, index) => {
+        return (
+          <div key={`user-avatar-${index}`}>
+            {index < MAX_AVATARS_VISIBLE && (
+              <div
+                className="attendance-avatar"
+                style={{ backgroundImage: `url(${user.pictureUrl})` }}
+              />
+            )}
+            <div></div>
           </div>
-          <FontAwesomeIcon icon={faUser} />
-        </>
+        );
+      })}
+      {numberOfUsersInRoom > MAX_AVATARS_VISIBLE && (
+        <div className="avatars-inside">
+          +{numberOfUsersInRoom - MAX_AVATARS_VISIBLE}
+        </div>
       )}
-    </>
+    </div>
   );
 };
 

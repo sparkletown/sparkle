@@ -6,7 +6,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
-import { isExternalUrl } from "utils/url";
+import { getRoomUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -63,31 +63,18 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           </div>
         </>
       )}
-      {isExternalUrl(room.url) ? (
-        <a
-          onMouseOver={() => dispatch(retainAttendance(true))}
-          onMouseOut={() => dispatch(retainAttendance(false))}
-          className="btn btn-primary room-entry-button"
-          onClick={enterRoom}
-          id={`enter-room-in-ongoing-event-card-${room.title}`}
-          href={room.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {joinButtonText ?? "Join the room"}
-        </a>
-      ) : (
-        <a
-          onMouseOver={() => dispatch(retainAttendance(true))}
-          onMouseOut={() => dispatch(retainAttendance(false))}
-          className="btn btn-primary room-entry-button"
-          onClick={enterRoom}
-          id={`enter-room-in-ongoing-event-card-${room.title}`}
-          href={room.url}
-        >
-          {joinButtonText ?? "Join the room"}
-        </a>
-      )}
+      <a
+        onMouseOver={() => dispatch(retainAttendance(true))}
+        onMouseOut={() => dispatch(retainAttendance(false))}
+        className="btn btn-primary room-entry-button"
+        onClick={enterRoom}
+        id={`enter-room-in-ongoing-event-card-${room.title}`}
+        href={getRoomUrl(room.url)}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {joinButtonText ?? "Join the room"}
+      </a>
     </div>
   );
 };

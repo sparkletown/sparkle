@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
-import { getRoomUrl, isExternalUrl } from "utils/url";
 
 import { Attendances } from "types/Attendances";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
@@ -15,7 +14,6 @@ import RoomAttendance from "../RoomAttendance";
 interface PartyMapRoomOverlayProps {
   // Passed down from Map component
   room: PartyMapRoomData;
-  onEnterRoom: (room: PartyMapRoomData) => void;
 
   // Passed down from Camp component (via Map component)
   venue: PartyMapVenue;
@@ -26,7 +24,6 @@ interface PartyMapRoomOverlayProps {
 }
 
 export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
-  onEnterRoom,
   room,
   venue,
   attendances,
@@ -37,8 +34,6 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
   const isSelectedRoom = room === selectedRoom;
   const hasAttendance = attendances[`${venue.name}/${room.title}`];
 
-  const isRoomExternal = isExternalUrl(room.url);
-
   // TODO: Pass this down from Camp, maybe called selectRoom?
   const selectRoom = useCallback(
     (room: PartyMapRoomData) => {
@@ -47,10 +42,6 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
     },
     [setIsRoomModalOpen, setSelectedRoom]
   );
-
-  const enterPartyRoom = useCallback(() => {
-    onEnterRoom(room);
-  }, [onEnterRoom, room]);
 
   const toggleRoom = useCallback(() => {
     selectRoom(room);
@@ -100,12 +91,8 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
           isRoomHovered.title === room.title && (
             <div className="camp-venue-text">
               <div className="camp-venue-maininfo">
-                <div className="camp-venue-title">{room.title}</div>
-                <RoomAttendance
-                  attendances={attendances}
-                  venue={venue}
-                  room={room}
-                />
+                <div className="party-map-venue-title">{room.title}</div>
+                <RoomAttendance venue={venue} room={room} />
               </div>
             </div>
           )}
@@ -118,42 +105,11 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
             <div className="camp-venue-maininfo">
               {(!venue.roomVisibility ||
                 venue.roomVisibility === RoomVisibility.nameCount) && (
-                <div className="camp-venue-title">{room.title}</div>
+                <div className="party-map-venue-title">{room.title}</div>
               )}
-              <RoomAttendance
-                attendances={attendances}
-                venue={venue}
-                room={room}
-              />
+              <RoomAttendance venue={venue} room={room} />
             </div>
           )}
-          <div className="camp-venue-secondinfo">
-            <div className="camp-venue-desc">
-              <p>{room.subtitle}</p>
-              <p>{room.about}</p>
-            </div>
-            <div className="camp-venue-actions">
-              {isRoomExternal ? (
-                <a
-                  className="btn btn-block btn-small btn-primary"
-                  onClick={enterPartyRoom}
-                  href={getRoomUrl(room.url)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Join the room
-                </a>
-              ) : (
-                <a
-                  className="btn btn-block btn-small btn-primary"
-                  onClick={enterPartyRoom}
-                  href={getRoomUrl(room.url)}
-                >
-                  Join the room
-                </a>
-              )}
-            </div>
-          </div>
         </div>
       </div>
     </div>
