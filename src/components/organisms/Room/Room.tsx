@@ -8,6 +8,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { User } from "types/User";
 import VideoErrorModal from "./VideoErrorModal";
+import { partygoersSelectorData } from "utils/selectors";
 
 interface RoomProps {
   roomName: string;
@@ -36,7 +37,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user, profile } = useUser();
-  const users = useSelector((state) => state.firestore.data.partygoers);
+  const users = useSelector(partygoersSelectorData) ?? {};
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 

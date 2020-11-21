@@ -5,6 +5,7 @@ import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
 import AvatarImage from "./AvatarImage";
+import { partygoersSelector } from "utils/selectors";
 interface PropsType {
   user: WithId<User>;
   state: UserState;
@@ -15,7 +16,7 @@ const AvatarPartygoers: React.FC<PropsType> = ({
   state,
   useProfilePicture,
 }) => {
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const partygoers = useSelector(partygoersSelector) ?? [];
   const roomParticipants = user.video?.inRoomOwnedBy
     ? partygoers.filter(
         (partygoer) =>

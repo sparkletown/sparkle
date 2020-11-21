@@ -28,6 +28,11 @@ import { retainAttendance } from "store/actions/Attendance";
 // Styles
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
+import {
+  partygoersSelector,
+  venueEventsSelector,
+  venueSelector,
+} from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -45,11 +50,9 @@ export const RoomModal: React.FC<PropsType> = ({
   miniAvatars,
 }) => {
   const { user, profile } = useUser();
-  const { partygoers, venueEvents, venue } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-    venueEvents: state.firestore.ordered.venueEvents,
-    venue: state.firestore.ordered.currentVenue,
-  }));
+  const partygoers = useSelector(partygoersSelector) ?? [];
+  const venueEvents = useSelector(venueEventsSelector);
+  const venue = useSelector(venueSelector);
 
   const dispatch = useDispatch();
 
@@ -57,7 +60,7 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
-  const venueName = venue[0].name;
+  const venueName = venue.name;
 
   const enter = () => {
     room &&

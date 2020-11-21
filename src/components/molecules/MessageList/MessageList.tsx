@@ -6,6 +6,7 @@ import { Message } from "components/molecules/Message";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { Modal } from "react-bootstrap";
+import { partygoersSelectorData } from "utils/selectors";
 
 interface MessageListProps {
   messages: WithId<RestrictedChatMessage>[];
@@ -18,7 +19,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useSelector((state) => state.firestore.data.partygoers);
+  const usersById = useSelector(partygoersSelectorData) ?? {};
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

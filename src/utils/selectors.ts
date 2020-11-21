@@ -52,8 +52,18 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
  *
  * @param state the Redux store
  */
-export const partygoersSelector: SparkleSelector<WithId<User>[]> = (state) =>
-  state.firestore.ordered.partygoers;
+export const partygoersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+  state
+) => state.firestore.ordered.partygoers;
+
+/**
+ * Selector to retrieve partygoers from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const partygoersSelectorData: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.partygoers;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.

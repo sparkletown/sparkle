@@ -24,7 +24,7 @@ const FireBarrel: React.FC = () => {
   >([]);
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = useSelector(partygoersSelector) ?? [];
 
   const chairs =
     currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS
@@ -57,7 +57,7 @@ const FireBarrel: React.FC = () => {
   const [videoError, setVideoError] = useState<string>("");
   const { users } = useKeyedSelector(
     (state) => ({
-      users: state.firestore.data.partygoers,
+      users: state.firestore.data.partygoers ?? {},
     }),
     ["users"]
   );
