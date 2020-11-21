@@ -200,6 +200,81 @@ export const Map: React.FC<PropsType> = ({
     []
   );
 
+  const userUid = user?.uid;
+  const showGrid = venue.showGrid;
+  const mapGrid = useMemo(
+    () =>
+      showGrid ? (
+        columnsArray.map((_, colIndex) => {
+          return (
+            <div className="seat-column" key={`column${colIndex}`}>
+              {rowsArray.map((_, rowIndex) => {
+                const column = colIndex + 1;
+                const row = rowIndex + 1;
+
+                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                  ? partygoersBySeat[row][column]
+                  : null;
+
+                const hasSeatedPartygoer = !!seatedPartygoer;
+
+                const isMe = seatedPartygoer?.id === userUid;
+
+                return (
+                  <MapRow
+                    key={`row${rowIndex}`}
+                    row={row}
+                    column={column}
+                    showGrid={showGrid}
+                    seatedPartygoer={seatedPartygoer}
+                    hasSeatedPartygoer={hasSeatedPartygoer}
+                    seatedPartygoerIsMe={isMe}
+                    onSeatClick={onSeatClick}
+                  />
+                );
+              })}
+            </div>
+          );
+        })
+      ) : (
+        <div />
+      ),
+    [columnsArray, onSeatClick, partygoersBySeat, rowsArray, showGrid, userUid]
+  );
+
+  const partygoersOverlay = useMemo(
+    () =>
+      // @debt this can be undefined because our types are broken so check explicitly
+      partygoers?.map((partygoer) => (
+        <MapPartygoerOverlay
+          key={partygoer.id}
+          partygoer={partygoer}
+          venueId={venue.id}
+          myUserUid={userUid ?? ""} // @debt fix this to be less hacky
+          totalRows={rows}
+          totalColumns={columns}
+          withMiniAvatars={venue.miniAvatars}
+          setSelectedUserProfile={setSelectedUserProfile}
+        />
+      )),
+    [columns, partygoers, rows, userUid, venue.id, venue.miniAvatars]
+  );
+
+  const roomOverlay = useMemo(
+    () =>
+      venue.rooms.map((room) => (
+        <PartyMapRoomOverlay
+          key={room.title}
+          venue={venue}
+          room={room}
+          attendances={attendances}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+          // onEnterRoom={enterPartyMapRoom}
+        />
+      )),
+    [attendances, setIsRoomModalOpen, setSelectedRoom, venue]
+  );
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -222,65 +297,9 @@ export const Map: React.FC<PropsType> = ({
               gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
           >
-            {venue.showGrid && rows ? (
-              columnsArray.map((_, colIndex) => {
-                return (
-                  <div className="seat-column" key={`column${colIndex}`}>
-                    {rowsArray.map((_, rowIndex) => {
-                      const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
-                      const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
-
-                      const seatedPartygoer =
-                        partygoersBySeat?.[row]?.[column] ?? null;
-                      const hasSeatedPartygoer = !!seatedPartygoer;
-
-                      // TODO: our types imply that this shouldn't be able to be null, but it was..
-                      const isMe = seatedPartygoer?.id === user.uid;
-
-                      return (
-                        <MapRow
-                          row={row}
-                          column={column}
-                          seatedPartygoer={seatedPartygoer}
-                          key={`row${rowIndex}`}
-                          showGrid={venue.showGrid}
-                          hasSeatedPartygoer={hasSeatedPartygoer}
-                          seatedPartygoerIsMe={isMe}
-                          onSeatClick={onSeatClick}
-                        />
-                      );
-                    })}
-
-                    {partygoers.map((partygoer) => (
-                      <MapPartygoerOverlay
-                        key={partygoer.id}
-                        partygoer={partygoer}
-                        venueId={venue.id}
-                        myUserUid={user.uid}
-                        totalRows={rows}
-                        totalColumns={columns}
-                        withMiniAvatars={venue.miniAvatars}
-                        setSelectedUserProfile={setSelectedUserProfile}
-                      />
-                    ))}
-                  </div>
-                );
-              })
-            ) : (
-              <div />
-            )}
-            {venue.rooms.map((room) => {
-              return (
-                <PartyMapRoomOverlay
-                  key={room.title}
-                  venue={venue}
-                  room={room}
-                  attendances={attendances}
-                  setSelectedRoom={setSelectedRoom}
-                  setIsRoomModalOpen={setIsRoomModalOpen}
-                />
-              );
-            })}
+            {mapGrid}
+            {partygoersOverlay}
+            {roomOverlay}
           </div>
 
           {selectedUserProfile && (
