@@ -40,6 +40,8 @@ import {
   radioStationsSelector,
 } from "utils/selectors";
 
+import { NavBarLogin } from "./NavBarLogin";
+
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
@@ -165,6 +167,13 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     window.location.href = venueLink;
   }, [redirectionUrl, venueId]);
 
+  if (!venueId || !venue) return <div>Loading...</div>;
+
+  // TODO: ideally this would find the top most parent of parents and use those details
+  const navbarTitle = !!parentVenue?.name ? parentVenue.name : venue.name;
+
+  const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
+
   return (
     <>
       <header>
@@ -172,111 +181,110 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">
-                <div></div>
+                <div />
               </div>
               <div
                 className="nav-sparkle-logo_small"
                 onClick={navigateToHomepage}
               >
-                <div></div>
+                <div />
               </div>
-              {venueId && (
-                <div className="nav-party-logo" onClick={showEventSchedule}>
-                  {venue?.name}
-                </div>
-              )}
+              <div className="nav-party-logo" onClick={showEventSchedule}>
+                {navbarTitle}
+              </div>
             </div>
-            {user ? (
-              <>
-                <div className="navbar-links">
-                  <NavSearchBar />
-                  {hasUpcomingEvents && (
-                    <OverlayTrigger
-                      trigger="click"
-                      placement="bottom-end"
-                      overlay={
-                        <TicketsPopover futureUpcoming={futureUpcoming} />
-                      }
-                      rootClose={true}
-                    >
-                      <span className="tickets-icon">
-                        <FontAwesomeIcon icon={faTicketAlt} />
-                      </span>
-                    </OverlayTrigger>
-                  )}
-                  {IS_BURN && venue?.showGiftATicket && (
-                    <OverlayTrigger
-                      trigger="click"
-                      placement="bottom-end"
-                      overlay={GiftPopover}
-                      rootClose={true}
-                    >
-                      <span className="private-chat-icon">
-                        <div className="navbar-link-gift" />
-                      </span>
-                    </OverlayTrigger>
-                  )}
-                  {IS_BURN && (
-                    <OverlayTrigger
-                      trigger="click"
-                      placement="bottom-end"
-                      overlay={
-                        <RadioPopover
-                          {...{ volume, setVolume, title: venue?.radioTitle }}
-                        />
-                      }
-                      rootClose={true}
-                      defaultShow={showRadioOverlay}
-                    >
-                      <div
-                        className={`profile-icon navbar-link-radio ${
-                          volume === 0 && "off"
-                        }`}
-                      />
-                    </OverlayTrigger>
-                  )}
+
+            {!user && (
+              <NavBarLogin openAuthenticationModal={openAuthenticationModal} />
+            )}
+
+            {user && (
+              <div className="navbar-links">
+                <NavSearchBar />
+
+                {hasUpcomingEvents && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
-                    overlay={ProfilePopover}
+                    overlay={<TicketsPopover futureUpcoming={futureUpcoming} />}
                     rootClose={true}
                   >
-                    <div className="navbar-link-profile">
-                      <img
-                        src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-                        className="profile-icon"
-                        alt="avatar"
-                        width="40"
-                        height="40"
-                      />
-                    </div>
+                    <span className="tickets-icon">
+                      <FontAwesomeIcon icon={faTicketAlt} />
+                    </span>
                   </OverlayTrigger>
-                </div>
-              </>
-            ) : (
-              <div
-                className="log-in-button"
-                style={{ marginTop: "20px" }}
-                onClick={openAuthenticationModal}
-              >
-                Log in
+                )}
+
+                {IS_BURN && venue?.showGiftATicket && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={GiftPopover}
+                    rootClose={true}
+                  >
+                    <span className="private-chat-icon">
+                      <div className="navbar-link-gift" />
+                    </span>
+                  </OverlayTrigger>
+                )}
+
+                {IS_BURN && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={
+                      <RadioPopover
+                        {...{ volume, setVolume, title: venue?.radioTitle }}
+                      />
+                    }
+                    rootClose={true}
+                    defaultShow={showRadioOverlay}
+                  >
+                    <div
+                      className={`profile-icon navbar-link-radio ${
+                        volume === 0 && "off"
+                      }`}
+                    />
+                  </OverlayTrigger>
+                )}
+
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={ProfilePopover}
+                  rootClose={true}
+                >
+                  <div className="navbar-link-profile">
+                    <img
+                      src={profileImage}
+                      className="profile-icon"
+                      alt="avatar"
+                      width="40"
+                      height="40"
+                    />
+                  </div>
+                </OverlayTrigger>
               </div>
             )}
           </div>
         </div>
       </header>
+
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
         showAuth="login"
       />
+
       <SchedulePageModal isVisible={isEventScheduleVisible} />
+
       <div
         className={`schedule-dropdown-backdrop ${
           isEventScheduleVisible ? "show" : ""
         }`}
         onClick={hideEventSchedule}
       />
+
       {venue?.parentId && parentVenue?.name && (
         <div className="back-map-btn">
           <div className="back-icon" />
