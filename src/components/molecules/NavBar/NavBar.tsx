@@ -47,12 +47,12 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
 ) => (
-    <Popover id="popover-basic" {...props}>
-      <Popover.Content>
-        <UpcomingTickets events={futureUpcoming} />
-      </Popover.Content>
-    </Popover>
-  );
+  <Popover id="popover-basic" {...props}>
+    <Popover.Content>
+      <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
 
 const ProfilePopover = (
   <Popover id="profile-popover">
@@ -168,7 +168,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     window.location.href = venueLink;
   }, [redirectionUrl, venueId]);
 
-  if (!venueId || !venue) return <div>Loading...</div>;
+  if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = !!parentVenue?.name ? parentVenue.name : venue.name;
@@ -243,8 +243,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     defaultShow={showRadioOverlay}
                   >
                     <div
-                      className={`profile-icon navbar-link-radio ${volume === 0 && "off"
-                        }`}
+                      className={`profile-icon navbar-link-radio ${
+                        volume === 0 && "off"
+                      }`}
                     />
                   </OverlayTrigger>
                 )}
@@ -280,8 +281,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       <SchedulePageModal isVisible={isEventScheduleVisible} />
 
       <div
-        className={`schedule-dropdown-backdrop ${isEventScheduleVisible ? "show" : ""
-          }`}
+        className={`schedule-dropdown-backdrop ${
+          isEventScheduleVisible ? "show" : ""
+        }`}
         onClick={hideEventSchedule}
       />
 
