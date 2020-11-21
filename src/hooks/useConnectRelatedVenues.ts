@@ -105,12 +105,12 @@ export const useConnectRelatedVenues: ReactHook<
 
   const maybeParentEventsSelector = useCallback(
     maybeArraySelector(withEvents, parentEventsWithVenueIdsSelector),
-    [withEvents]
+    [withEvents, parentEventsWithVenueIdsSelector] // @debt our linters didnt tell us about these deps not being exhaustive
   );
 
   const maybeVenueEventsSelector = useCallback(
     maybeArraySelector(withEvents, venueEventsWithVenueIdsSelector),
-    [withEvents]
+    [withEvents, venueEventsWithVenueIdsSelector] // @debt our linters didnt tell us about these deps not being exhaustive
   );
 
   const maybeSiblingEventsSelector = useCallback(
@@ -118,7 +118,7 @@ export const useConnectRelatedVenues: ReactHook<
       withEvents,
       venueEventsSelectorToEventsWithVenueIds(siblingVenues)
     ),
-    [withEvents]
+    [withEvents, siblingVenues] // @debt our linters didnt tell us about these deps not being exhaustive
   );
 
   const maybeSubvenueEventsSelector = useCallback(
@@ -126,7 +126,7 @@ export const useConnectRelatedVenues: ReactHook<
       withEvents,
       venueEventsSelectorToEventsWithVenueIds(subvenues)
     ),
-    []
+    [withEvents, subvenues] // @debt our linters didnt tell us about these deps not being exhaustive
   );
 
   const parentVenueEvents: WithVenueId<VenueEvent>[] = useSelector(
