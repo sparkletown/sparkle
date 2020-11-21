@@ -70,6 +70,7 @@ $primary: #005ee5;
 }
 
 .private-container-back-btn {
+  z-index: 1;
   position: absolute;
   background-size: cover;
   background-position: center;
@@ -84,9 +85,12 @@ $primary: #005ee5;
 }
 
 .private-chat-user {
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  align-items: center;
   display: flex;
   width: 100%;
-  padding-top: 5px;
+  height: 30px;
   justify-content: center;
 }
 
