@@ -19,7 +19,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useSelector(partygoersSelectorData);
+  const usersById = useSelector(partygoersSelectorData) ?? {};
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -67,7 +67,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <div className="text-center">
           <p>
             Permanently delete message &quot;{messageToDelete?.text}&quot; from{" "}
-            {usersById?.[messageToDelete?.from ?? ""]?.partyName}?
+            {usersById[messageToDelete?.from ?? ""]?.partyName}?
           </p>
           <button
             type="button"
