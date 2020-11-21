@@ -1,11 +1,12 @@
 import React, { FC } from "react";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { CampRoomData } from "types/CampRoomData";
-import { CampVenue } from "types/CampVenue";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 interface PropsType {
-  venue: CampVenue;
+  venue: PartyMapVenue;
   attendances: { [location: string]: number };
   room: CampRoomData;
 }

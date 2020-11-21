@@ -16,14 +16,13 @@ import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useKeyboardControls } from "hooks/useKeyboardControls";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { useKeyboardControls } from "../hooks/useKeyboardControls";
-
 import { MapRoomOverlay } from "./MapRoomOverlay";
-import { MapPartygoerOverlay } from "./MapPartygoerOverlay";
-import { MapRow } from "./MapRow";
+import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
+import { MapRow } from "components/molecules/MapRow";
 
 import "./Map.scss";
 
@@ -125,11 +124,12 @@ export const Map: React.FC<MapProps> = ({
 
     const { row, column } = currentPosition;
 
+    //TODO: Move filter ouside and change name to something generic
     const roomHitFilter = makeCampRoomHitFilter({
       row,
       column,
       totalRows,
-      totalColumns: totalColumns,
+      totalColumns,
     });
 
     return venue.rooms.filter(roomHitFilter);
