@@ -191,7 +191,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                 <div />
               </div>
               <div className="nav-party-logo" onClick={showEventSchedule}>
-                {navbarTitle}
+                {navbarTitle} Schedule
               </div>
               <VenuePartygoers />
             </div>
