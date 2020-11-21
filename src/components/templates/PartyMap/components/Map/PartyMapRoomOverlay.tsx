@@ -91,7 +91,7 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
           isRoomHovered.title === room.title && (
             <div className="camp-venue-text">
               <div className="camp-venue-maininfo">
-                <div className="camp-venue-title">{room.title}</div>
+                <div className="party-map-venue-title">{room.title}</div>
                 <RoomAttendance venue={venue} room={room} />
               </div>
             </div>
@@ -105,7 +105,7 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
             <div className="camp-venue-maininfo">
               {(!venue.roomVisibility ||
                 venue.roomVisibility === RoomVisibility.nameCount) && (
-                <div className="camp-venue-title">{room.title}</div>
+                <div className="party-map-venue-title">{room.title}</div>
               )}
               <RoomAttendance venue={venue} room={room} />
             </div>
