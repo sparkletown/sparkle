@@ -204,7 +204,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
                 href={currentRoomUrl}
                 {...getExtraLinkProps(isRoomExternal)}
               >
-                {venue.joinButtonText ?? "Join the room"}
+                {venue.joinButtonText ?? "Enter"}
               </a>
             </div>
           </div>

@@ -18,7 +18,6 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { useParams } from "react-router-dom";
 import { Firestore } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
-import { VenueTemplate } from "types/VenueTemplate";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
@@ -147,7 +146,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
-          {venue.template === VenueTemplate.partymap && (
+          {venue.showSecretPasswordForm && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
                 buttonText={venue.config?.landingPageConfig.joinButtonText}

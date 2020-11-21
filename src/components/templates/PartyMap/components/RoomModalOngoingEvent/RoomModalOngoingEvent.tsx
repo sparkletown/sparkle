@@ -59,7 +59,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            No events scheduled
+            Please check the Live Schedule for events in this room.
           </div>
         </>
       )}
@@ -73,7 +73,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         target="_blank"
         rel="noopener noreferrer"
       >
-        {joinButtonText ?? "Join the room"}
+        {joinButtonText ?? "Enter"}
       </a>
     </div>
   );
