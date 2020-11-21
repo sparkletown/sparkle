@@ -53,11 +53,17 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   venue && updateTheme(venue);
 
+  const numberOfQuestions = venue?.profile_questions?.length;
+  const oneQuestionOnly = numberOfQuestions === 1;
+  const headerMessage = oneQuestionOnly
+    ? "Now complete your profile by answering this question"
+    : "Now complete your profile by answering some short questions";
+
   return (
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
       <div className="login-container">
-        <h2>Now complete your profile by answering some short questions</h2>
+        <h2>{headerMessage}</h2>
         <p>This will help your fellow partygoers break the ice</p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions &&
