@@ -54,7 +54,6 @@ export const PartyMap: React.FC = () => {
     }
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
-  console.log("isRoom", isRoomModalOpen);
   return (
     <>
       <div className="party-venue-container">
