@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { RootState } from "index";
@@ -27,14 +27,18 @@ export const PartyMap: React.FC = () => {
   const venue = useSelector(partyMapVenueSelector);
   const usersInCamp = useCampPartygoers(venue.name);
 
-  const attendances = usersInCamp
-    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-      Object.keys(value.lastSeenIn).forEach((key) => {
-        acc[key] = (acc[key] || 0) + 1;
-      });
-      return acc;
-    }, {})
-    : {};
+  const attendances = useMemo(
+    () =>
+      usersInCamp
+        ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
+            Object.keys(value.lastSeenIn).forEach((key) => {
+              acc[key] = (acc[key] || 0) + 1;
+            });
+            return acc;
+          }, {})
+        : {},
+    [usersInCamp]
+  );
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
