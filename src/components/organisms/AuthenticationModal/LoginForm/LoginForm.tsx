@@ -5,7 +5,7 @@ import { useFirebase } from "react-redux-firebase";
 import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
-import { DEFAULT_VENUE, TICKET_URL } from "settings";
+import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
 import { venueInsideUrl } from "utils/url";
 
 interface PropsType {
@@ -41,9 +41,9 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
+      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signIn(data);
-      if (IS_BURN && auth.user) {
+      if (CODE_CHECK_ENABLED && auth.user) {
         firebase
           .firestore()
           .doc(`userprivate/${auth.user.uid}`)
