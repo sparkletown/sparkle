@@ -134,6 +134,9 @@ const ChatsList: React.FunctionComponent = () => {
     return (
       <Fragment>
         <div className="private-container-back-btn" onClick={hideUserChat} />
+        <div className="private-chat-user">
+          Chatting with: {selectedUser.partyName}
+        </div>
         <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
       </Fragment>
     );

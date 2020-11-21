@@ -101,7 +101,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     <div className="page-container code-of-conduct-container">
       <div className="kansas-smittys-logo"></div>
       <div className="login-container">
-        <h2>Final step: agree to our code of conduct</h2>
+        <h2>Final step: agree to our terms</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {codeOfConductQuestions &&
             codeOfConductQuestions.map((q) => (

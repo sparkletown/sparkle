@@ -83,6 +83,13 @@ $primary: #005ee5;
   cursor: pointer;
 }
 
+.private-chat-user {
+  display: flex;
+  width: 100%;
+  padding-top: 5px;
+  justify-content: center;
+}
+
 .private-messages-empty {
   width: 100%;
   height: calc(100% - 114px);

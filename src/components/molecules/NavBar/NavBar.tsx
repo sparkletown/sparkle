@@ -31,6 +31,7 @@ import {
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import UpcomingTickets from "components/molecules/UpcomingTickets";
+import { VenuePartygoers } from "../VenuePartygoers";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -46,12 +47,12 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
 ) => (
-  <Popover id="popover-basic" {...props}>
-    <Popover.Content>
-      <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
+    <Popover id="popover-basic" {...props}>
+      <Popover.Content>
+        <UpcomingTickets events={futureUpcoming} />
+      </Popover.Content>
+    </Popover>
+  );
 
 const ProfilePopover = (
   <Popover id="profile-popover">
@@ -192,6 +193,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               <div className="nav-party-logo" onClick={showEventSchedule}>
                 {navbarTitle}
               </div>
+              <VenuePartygoers />
             </div>
 
             {!user && (
@@ -241,9 +243,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     defaultShow={showRadioOverlay}
                   >
                     <div
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
+                      className={`profile-icon navbar-link-radio ${volume === 0 && "off"
+                        }`}
                     />
                   </OverlayTrigger>
                 )}
@@ -279,9 +280,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       <SchedulePageModal isVisible={isEventScheduleVisible} />
 
       <div
-        className={`schedule-dropdown-backdrop ${
-          isEventScheduleVisible ? "show" : ""
-        }`}
+        className={`schedule-dropdown-backdrop ${isEventScheduleVisible ? "show" : ""
+          }`}
         onClick={hideEventSchedule}
       />
 
