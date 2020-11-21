@@ -40,12 +40,13 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const siblingVenueEvents = useSelector(siblingVenueEventsSelector);
 
   const events = useMemo(
-    () => [
-      ...venueEvents,
-      ...subvenueEvents,
-      ...parentVenueEvents,
-      ...siblingVenueEvents,
-    ],
+    () =>
+      [
+        ...venueEvents,
+        ...subvenueEvents,
+        ...parentVenueEvents,
+        ...siblingVenueEvents,
+      ].sort((a, b) => a.start_utc_seconds - b.start_utc_seconds),
     [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]
   );
 
