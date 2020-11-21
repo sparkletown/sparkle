@@ -19,5 +19,5 @@ export const useVenueId: () => string | undefined = () => {
     path: "/v/:venueId",
   });
 
-  return match?.params.venueId ? match.params.venueId : undefined;
+  return match?.params?.venueId;
 };

@@ -80,7 +80,7 @@ export interface FirestoreOrdered {
   eventPurchase: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experiences: Array<WithId<Experience>>;
-  parentVenue: Array<WithId<AnyVenue>>;
+  parentVenue?: Array<WithId<AnyVenue>>;
   parentVenueEvents?: Array<WithId<VenueEvent>>;
   partygoers: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;

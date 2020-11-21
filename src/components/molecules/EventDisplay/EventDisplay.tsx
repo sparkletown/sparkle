@@ -8,7 +8,7 @@ import {
   currentTimeInUnixEpoch,
 } from "utils/time";
 import { WithId } from "utils/id";
-import { isExternalUrl, openRoomUrl, venueInsideUrl } from "utils/url";
+import { openRoomUrl, venueInsideUrl } from "utils/url";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";

@@ -69,15 +69,22 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     venueEventsSelectorToEventsWithVenueIds(siblingVenues)
   );
 
-  const allKnownVenues = [venue, parentVenue, ...subvenues, ...siblingVenues]
-    .filter((v) => v !== undefined)
-    .reduce(
-      (acc: { [venueId: string]: WithId<AnyVenue> }, venue) => ({
-        ...acc,
-        [venue.id]: venue,
-      }),
-      {}
-    );
+  const allKnownVenues = useMemo(
+    () =>
+      [venue, parentVenue, ...subvenues, ...siblingVenues]
+        .filter((v) => v !== undefined && v !== null)
+        .reduce(
+          (
+            acc: { [venueId: string]: WithId<AnyVenue> | undefined },
+            venue
+          ) => ({
+            ...acc,
+            [venue?.id ?? ""]: venue,
+          }),
+          {}
+        ),
+    [venue, parentVenue, subvenues, siblingVenues]
+  );
 
   const events = useMemo(() => {
     return [
