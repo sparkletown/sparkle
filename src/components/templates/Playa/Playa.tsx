@@ -1049,9 +1049,7 @@ const Playa = () => {
                 <CreateEditPopUp />
               </div>
               <div className="sparkle-fairies">
-                <SparkleFairiesPopUp
-                  setShowEventSchedule={setShowEventSchedule}
-                />
+                <SparkleFairiesPopUp />
               </div>
             </>
           )}

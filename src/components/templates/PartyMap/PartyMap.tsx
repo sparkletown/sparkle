@@ -14,6 +14,7 @@ import { Map, RoomModal } from "./components";
 
 import "./PartyMap.scss";
 import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
@@ -74,6 +75,11 @@ export const PartyMap: React.FC = () => {
           onHide={modalHidden}
         />
         <AnnouncementMessage message={venue.bannerMessage} />
+        {venue?.config?.showRangers && (
+          <div className="sparkle-fairies">
+            <SparkleFairiesPopUp />
+          </div>
+        )}
       </div>
     </>
   );

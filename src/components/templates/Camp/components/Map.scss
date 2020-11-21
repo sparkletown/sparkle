@@ -175,8 +175,9 @@ $border-radius: 28px;
 
 .sparkle-fairies {
   position: fixed;
-  top: 160px;
+  top: 70px;
   left: 0px;
+  z-index: 2;
 }
 .info-drawer-camp {
   position: fixed;
