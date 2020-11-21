@@ -255,12 +255,14 @@ export const Map: React.FC<MapProps> = ({
 
             return (
               <MapRow
+                row={row}
+                column={column}
+                seatedPartygoer={seatedPartygoer}
                 key={`row${rowIndex}`}
                 showGrid={venue.showGrid}
                 hasSeatedPartygoer={hasSeatedPartygoer}
                 seatedPartygoerIsMe={isMe}
-                // TODO: useCallback()?
-                onSeatClick={() => onSeatClick(row, column, seatedPartygoer)}
+                onSeatClick={onSeatClick}
               />
             );
           })}

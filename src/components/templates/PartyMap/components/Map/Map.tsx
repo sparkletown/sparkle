@@ -225,26 +225,30 @@ export const Map: React.FC<PropsType> = ({
                 return (
                   <div className="seat-column" key={`column${colIndex}`}>
                     {rowsArray.map((_, rowIndex) => {
-                      const column = colIndex + 1;
-                      const row = rowIndex + 1;
-                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                        ? partygoersBySeat[row][column]
-                        : null;
+                      const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
+                      const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
+
+                      const seatedPartygoer =
+                        partygoersBySeat?.[row]?.[column] ?? null;
                       const hasSeatedPartygoer = !!seatedPartygoer;
-                      const isMe = seatedPartygoer?.id === user?.uid;
+
+                      // TODO: our types imply that this shouldn't be able to be null, but it was..
+                      const isMe = seatedPartygoer?.id === user.uid;
+
                       return (
                         <MapRow
+                          row={row}
+                          column={column}
+                          seatedPartygoer={seatedPartygoer}
                           key={`row${rowIndex}`}
                           showGrid={venue.showGrid}
                           hasSeatedPartygoer={hasSeatedPartygoer}
                           seatedPartygoerIsMe={isMe}
-                          // TODO: useCallback()?
-                          onSeatClick={() =>
-                            onSeatClick(row, column, seatedPartygoer)
-                          }
+                          onSeatClick={onSeatClick}
                         />
                       );
                     })}
+
                     {partygoers.map((partygoer) => (
                       <MapPartygoerOverlay
                         key={partygoer.id}
