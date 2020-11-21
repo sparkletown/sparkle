@@ -6,7 +6,7 @@ import {
   useSparkleFirestoreConnect,
 } from "./useSparkleFirestoreConnect";
 
-export const useConnectRelatedVenues = (venueId: string | null) => {
+export const useConnectRelatedVenues = (venueId?: string) => {
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
 
   const subvenuesQuery: SparkleRFQConfig = {

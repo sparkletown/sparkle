@@ -5,7 +5,7 @@ type VenueRoute = {
 };
 
 // Sometimes in a nested route we want venue ID
-export const useVenueId: () => string | null = () => {
+export const useVenueId: () => string | undefined = () => {
   const history = useHistory();
   let match = matchPath<VenueRoute>(history.location.pathname, {
     path: "/in/:venueId",
@@ -19,5 +19,5 @@ export const useVenueId: () => string | null = () => {
     path: "/v/:venueId",
   });
 
-  return match?.params.venueId ? match.params.venueId : null;
+  return match?.params.venueId ? match.params.venueId : undefined;
 };
