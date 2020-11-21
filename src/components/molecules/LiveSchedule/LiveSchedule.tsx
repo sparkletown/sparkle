@@ -1,22 +1,28 @@
 import React, { FC, useMemo } from "react";
 
 import { isEventLive } from "utils/event";
-import { venueEventsSelector } from "utils/selectors";
 
-import { useSelector } from "hooks/useSelector";
-
-import "./LiveSchedule.scss";
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
 
 import { LiveEvent } from "./LiveEvent";
 
+import "./LiveSchedule.scss";
+
 const LiveSchedule: FC = () => {
-  const venueEvents = useSelector(venueEventsSelector);
+  const venueId = useVenueId();
+  useConnectRelatedVenues({ venueId });
+
+  const { relatedVenueEvents } = useConnectRelatedVenues({
+    venueId,
+    withEvents: true,
+  });
 
   const liveEvents = useMemo(() => {
-    return venueEvents && venueEvents.length
-      ? venueEvents.filter((event) => isEventLive(event))
+    return relatedVenueEvents && relatedVenueEvents.length
+      ? relatedVenueEvents.filter((event) => isEventLive(event))
       : [];
-  }, [venueEvents]);
+  }, [relatedVenueEvents]);
 
   const hasLiveEvents = !!liveEvents.length;
 
