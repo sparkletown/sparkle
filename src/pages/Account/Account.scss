@@ -53,6 +53,8 @@ $page-max-width: 1240px;
 
 .page-container {
   background-color: $dark;
+  flex-direction: column;
+  flex: 1;
 }
 .page-container-onboarding {
   max-height: 100%;

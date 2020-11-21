@@ -10,7 +10,7 @@ import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
-import { getRoomUrl, isExternalUrl, openRoomUrl } from "utils/url";
+import { openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -53,8 +53,10 @@ export const Map: React.FC<PropsType> = ({
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const currentPosition = profile?.data?.[venue.id];
 
-  const columnsArray = Array.from(Array<JSX.Element>(columns));
-  const rowsArray = Array.from(Array(rows));
+  const columnsArray = useMemo(() => Array.from(Array<JSX.Element>(columns)), [
+    columns,
+  ]);
+  const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
   const partygoers = useSelector(partygoersSelector);
@@ -86,7 +88,7 @@ export const Map: React.FC<PropsType> = ({
     return venue.rooms.filter(roomHitFilter);
   }, [currentPosition, rows, columns, venue.rooms]);
 
-  useEffect(() => {
+  const detectRoomsOnMove = useCallback(() => {
     if (selectedRoom) {
       const noRoomHits = !!roomsHit.length;
       if (!noRoomHits && selectedRoom) {
@@ -126,14 +128,6 @@ export const Map: React.FC<PropsType> = ({
     [profile, user, venueId]
   );
 
-  const navigateRoomUrl = useCallback((room: PartyMapRoomData) => {
-    if (isExternalUrl(room.url)) {
-      openRoomUrl(room.url);
-    } else {
-      window.location.href = getRoomUrl(room.url);
-    }
-  }, []);
-
   const enterPartyMapRoom = useCallback(
     (room: PartyMapRoomData) => {
       if (!room || !user) return;
@@ -148,10 +142,10 @@ export const Map: React.FC<PropsType> = ({
         ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
       };
 
-      navigateRoomUrl(room);
+      openRoomUrl(room.url);
       enterRoom(user, roomName, profile?.lastSeenIn);
     },
-    [navigateRoomUrl, profile, user, venue.name, venues]
+    [profile, user, venue.name, venues]
   );
 
   const partygoersBySeat = useMemo(() => {
@@ -196,6 +190,7 @@ export const Map: React.FC<PropsType> = ({
     isSeatTaken,
     takeSeat,
     enterSelectedRoom,
+    onMove: detectRoomsOnMove,
   });
 
   const isUserProfileSelected: boolean = !!selectedUserProfile;
@@ -205,6 +200,81 @@ export const Map: React.FC<PropsType> = ({
     []
   );
 
+  const userUid = user?.uid;
+  const showGrid = venue.showGrid;
+  const mapGrid = useMemo(
+    () =>
+      showGrid ? (
+        columnsArray.map((_, colIndex) => {
+          return (
+            <div className="seat-column" key={`column${colIndex}`}>
+              {rowsArray.map((_, rowIndex) => {
+                const column = colIndex + 1;
+                const row = rowIndex + 1;
+
+                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
+                  ? partygoersBySeat[row][column]
+                  : null;
+
+                const hasSeatedPartygoer = !!seatedPartygoer;
+
+                const isMe = seatedPartygoer?.id === userUid;
+
+                return (
+                  <MapRow
+                    key={`row${rowIndex}`}
+                    row={row}
+                    column={column}
+                    showGrid={showGrid}
+                    seatedPartygoer={seatedPartygoer}
+                    hasSeatedPartygoer={hasSeatedPartygoer}
+                    seatedPartygoerIsMe={isMe}
+                    onSeatClick={onSeatClick}
+                  />
+                );
+              })}
+            </div>
+          );
+        })
+      ) : (
+        <div />
+      ),
+    [columnsArray, onSeatClick, partygoersBySeat, rowsArray, showGrid, userUid]
+  );
+
+  const partygoersOverlay = useMemo(
+    () =>
+      // @debt this can be undefined because our types are broken so check explicitly
+      partygoers?.map((partygoer) => (
+        <MapPartygoerOverlay
+          key={partygoer.id}
+          partygoer={partygoer}
+          venueId={venue.id}
+          myUserUid={userUid ?? ""} // @debt fix this to be less hacky
+          totalRows={rows}
+          totalColumns={columns}
+          withMiniAvatars={venue.miniAvatars}
+          setSelectedUserProfile={setSelectedUserProfile}
+        />
+      )),
+    [columns, partygoers, rows, userUid, venue.id, venue.miniAvatars]
+  );
+
+  const roomOverlay = useMemo(
+    () =>
+      venue.rooms.map((room) => (
+        <PartyMapRoomOverlay
+          key={room.title}
+          venue={venue}
+          room={room}
+          attendances={attendances}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+          // onEnterRoom={enterPartyMapRoom}
+        />
+      )),
+    [attendances, setIsRoomModalOpen, setSelectedRoom, venue]
+  );
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -227,62 +297,9 @@ export const Map: React.FC<PropsType> = ({
               gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
           >
-            {venue.showGrid && rows ? (
-              columnsArray.map((_, colIndex) => {
-                return (
-                  <div className="seat-column" key={`column${colIndex}`}>
-                    {rowsArray.map((_, rowIndex) => {
-                      const column = colIndex + 1;
-                      const row = rowIndex + 1;
-                      const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                        ? partygoersBySeat[row][column]
-                        : null;
-                      const hasSeatedPartygoer = !!seatedPartygoer;
-                      const isMe = seatedPartygoer?.id === user?.uid;
-                      return (
-                        <MapRow
-                          key={`row${rowIndex}`}
-                          showGrid={venue.showGrid}
-                          hasSeatedPartygoer={hasSeatedPartygoer}
-                          seatedPartygoerIsMe={isMe}
-                          // TODO: useCallback()?
-                          onSeatClick={() =>
-                            onSeatClick(row, column, seatedPartygoer)
-                          }
-                        />
-                      );
-                    })}
-                    {partygoers.map((partygoer) => (
-                      <MapPartygoerOverlay
-                        key={partygoer.id}
-                        partygoer={partygoer}
-                        venueId={venue.id}
-                        myUserUid={user.uid}
-                        totalRows={rows}
-                        totalColumns={columns}
-                        withMiniAvatars={venue.miniAvatars}
-                        setSelectedUserProfile={setSelectedUserProfile}
-                      />
-                    ))}
-                  </div>
-                );
-              })
-            ) : (
-              <div />
-            )}
-            {venue.rooms.map((room) => {
-              return (
-                <PartyMapRoomOverlay
-                  key={room.title}
-                  venue={venue}
-                  room={room}
-                  attendances={attendances}
-                  setSelectedRoom={setSelectedRoom}
-                  setIsRoomModalOpen={setIsRoomModalOpen}
-                  onEnterRoom={enterPartyMapRoom}
-                />
-              );
-            })}
+            {mapGrid}
+            {partygoersOverlay}
+            {roomOverlay}
           </div>
 
           {selectedUserProfile && (

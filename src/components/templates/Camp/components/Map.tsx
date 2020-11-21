@@ -255,17 +255,19 @@ export const Map: React.FC<MapProps> = ({
 
             return (
               <MapRow
+                row={row}
+                column={column}
+                seatedPartygoer={seatedPartygoer}
                 key={`row${rowIndex}`}
                 showGrid={venue.showGrid}
                 hasSeatedPartygoer={hasSeatedPartygoer}
                 seatedPartygoerIsMe={isMe}
-                // TODO: useCallback()?
-                onSeatClick={() => onSeatClick(row, column, seatedPartygoer)}
+                onSeatClick={onSeatClick}
               />
             );
           })}
 
-          {partygoers.map((partygoer, index) => (
+          {partygoers.map((partygoer) => (
             <MapPartygoerOverlay
               key={partygoer.id}
               partygoer={partygoer}

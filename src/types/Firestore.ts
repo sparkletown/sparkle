@@ -80,12 +80,18 @@ export interface FirestoreOrdered {
   eventPurchase: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experiences: Array<WithId<Experience>>;
+  parentVenue?: Array<WithId<AnyVenue>>;
+  parentVenueEvents?: Array<WithId<VenueEvent>>;
   partygoers: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;
   privatechats: Array<WithId<PrivateChatMessage>>;
   reactions: Array<WithId<Reaction>>;
+  siblingVenues?: WithId<AnyVenue>[];
+  siblingVenueEvents?: WithId<VenueEvent>[];
   statsOnlineUsers?: Array<WithId<User>>;
   statsOpenVenues?: Array<WithId<AnyVenue>>;
+  subvenues?: WithId<AnyVenue>[];
+  subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory: Array<WithId<Purchase>>;
   users: Array<WithId<User>>;

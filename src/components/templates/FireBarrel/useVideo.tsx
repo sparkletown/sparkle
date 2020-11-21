@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import Video, { LocalVideoTrack } from "twilio-video";
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 // export const VideoContext = createContext(null);
 //

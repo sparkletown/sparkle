@@ -1,4 +1,5 @@
 import { Matrix } from "types/utility";
+import { WithId } from "./id";
 
 /**
  * Create a matrix reducer function for use with .reduce()
@@ -26,3 +27,17 @@ export const makeMatrixReducer = <T>(
 
   return acc;
 };
+
+/**
+ * A reducer function to reduce items T[] to an object { [item.id]: item }
+ *
+ * @param obj
+ * @param item
+ */
+export const itemsToObjectByIdReducer = <T extends object>(
+  obj: Record<string, WithId<T>>,
+  item: WithId<T>
+) => ({
+  ...obj,
+  [item.id]: item,
+});

@@ -14,8 +14,8 @@ export const Barrel = styled.iframe.attrs({
   allow:
     "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
 })`
-  width: 80%;
-  height: 80%;
+  width: 100%;
+  height: 100%;
   grid-column: 2 / span 2;
   grid-row: 1 / span 2;
   align-self: center;

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import { RootState } from "index";
@@ -13,6 +13,7 @@ import { useSelector } from "hooks/useSelector";
 import { Map, RoomModal } from "./components";
 
 import "./PartyMap.scss";
+import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
@@ -26,14 +27,18 @@ export const PartyMap: React.FC = () => {
   const venue = useSelector(partyMapVenueSelector);
   const usersInCamp = useCampPartygoers(venue.name);
 
-  const attendances = usersInCamp
-    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        Object.keys(value.lastSeenIn).forEach((key) => {
-          acc[key] = (acc[key] || 0) + 1;
-        });
-        return acc;
-      }, {})
-    : {};
+  const attendances = useMemo(
+    () =>
+      usersInCamp
+        ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
+            Object.keys(value.lastSeenIn).forEach((key) => {
+              acc[key] = (acc[key] || 0) + 1;
+            });
+            return acc;
+          }, {})
+        : {},
+    [usersInCamp]
+  );
 
   const modalHidden = useCallback(() => {
     setIsRoomModalOpen(false);
@@ -68,6 +73,7 @@ export const PartyMap: React.FC = () => {
           room={selectedRoom}
           onHide={modalHidden}
         />
+        <AnnouncementMessage message={venue.bannerMessage} />
       </div>
     </>
   );

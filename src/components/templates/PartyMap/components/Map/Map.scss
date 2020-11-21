@@ -156,28 +156,44 @@ $border-radius: 28px;
   .near-adjacent {
     opacity: 0.2;
   }
-}
 
-.me {
-  box-shadow: 0 0 20px 5px rgba($white, 0.1);
+  @keyframes avatarpulse {
+    0% {
+      background-color: $primary;
+      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+    }
+    50% {
+      background-color: lighten($primary, 10%);
+      box-shadow: 0 0 0 3px $primary, 0 0 20px 10px rgba($primary, 0.65);
+    }
+    100% {
+      background-color: $primary;
+      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+    }
+  }
+
+  .me {
+    box-shadow: 0 0 0 5px $primary;
+    animation: avatarpulse 2s infinite;
+  }
+
+  .chat-drawer-container {
+    position: fixed;
+    display: flex;
+    flex: 1;
+  }
+
+  .chat-drawer-container.expanded {
+    position: fixed;
+    display: flex;
+    flex: 1;
+    height: 100%;
+    border-radius: 0px;
+  }
 }
 
 .tab-option {
   padding: 10px;
-}
-
-.chat-drawer-container {
-  position: fixed;
-  display: flex;
-  flex: 1;
-}
-
-.chat-drawer-container.expanded {
-  position: fixed;
-  display: flex;
-  flex: 1;
-  height: 100%;
-  border-radius: 0px;
 }
 
 .room {
@@ -193,6 +209,7 @@ $border-radius: 28px;
     }
 
     .camp-venue-text {
+      opacity: 1;
       transform: scale(1.1);
       background-color: $room-info-bg;
       box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
@@ -322,11 +339,13 @@ $border-radius: 28px;
       justify-content: space-between;
       padding: 10px;
 
-      .camp-venue-title {
+      //TODO: Rename everything to party map
+      .party-map-venue-title {
+        opacity: 1;
         display: block;
         line-height: 1;
         font-size: 0.9rem;
-        font-size: 20px;
+        font-size: 13px;
       }
 
       .camp-room-avatar {
