@@ -265,7 +265,7 @@ export const Map: React.FC<MapProps> = ({
             );
           })}
 
-          {partygoers.map((partygoer, index) => (
+          {partygoers.map((partygoer) => (
             <MapPartygoerOverlay
               key={partygoer.id}
               partygoer={partygoer}

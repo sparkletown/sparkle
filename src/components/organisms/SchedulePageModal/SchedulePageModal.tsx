@@ -6,20 +6,23 @@ import { formatDate, formatDateToWeekday } from "../../../utils/time";
 import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
+import { WithId, WithVenueId, withVenueId } from "utils/id";
 import {
-  currentVenueSelectorData,
+  currentVenueSelector,
+  makeSubvenueEventsSelector,
   parentVenueEventsSelector,
-  siblingVenueEventsSelector,
-  subvenueEventsSelector,
+  parentVenueOrderedSelector,
+  siblingVenuesSelector,
+  subvenuesSelector,
   venueEventsSelector,
 } from "utils/selectors";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { AnyVenue } from "types/Firestore";
+import { RootState } from "index";
 
 type DatedEvents = Array<{
   dateDay: Date;
-  events: Array<VenueEvent>;
+  events: Array<WithVenueId<VenueEvent>>;
 }>;
 
 const DAYS_AHEAD = 7;
@@ -33,17 +36,54 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 }) => {
   const venueId = useVenueId();
   useConnectRelatedVenues(venueId);
-  const venue = useSelector(currentVenueSelectorData);
-  const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const subvenueEvents = useSelector(subvenueEventsSelector) ?? [];
-  const parentVenueEvents = useSelector(parentVenueEventsSelector) ?? [];
-  const siblingVenueEvents = useSelector(siblingVenueEventsSelector) ?? [];
+  const venue = useSelector(currentVenueSelector);
+  const parentVenue = useSelector(parentVenueOrderedSelector);
+
+  const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
+    withVenueId(event, venueId);
+
+  const venueEvents = (useSelector(venueEventsSelector) ?? []).map(
+    toEventsWithVenueIds(venueId ?? "")
+  );
+  const parentVenueEvents = (useSelector(parentVenueEventsSelector) ?? []).map(
+    toEventsWithVenueIds(venue?.parentId ?? "")
+  );
+
+  const venueEventsSelectorToEventsWithVenueIds = (
+    venues: WithId<AnyVenue>[]
+  ) => (state: RootState) =>
+    venues.flatMap(
+      (venue) =>
+        makeSubvenueEventsSelector(venue.id)(state)?.map(
+          toEventsWithVenueIds(venue.id)
+        ) ?? []
+    );
+
+  const subvenues = useSelector(subvenuesSelector) ?? [];
+  const subvenueEvents = useSelector(
+    venueEventsSelectorToEventsWithVenueIds(subvenues)
+  );
+
+  const siblingVenues = useSelector(siblingVenuesSelector) ?? [];
+  const siblingVenueEvents = useSelector(
+    venueEventsSelectorToEventsWithVenueIds(siblingVenues)
+  );
+
+  const allKnownVenues = [venue, parentVenue, ...subvenues, ...siblingVenues]
+    .filter((v) => v !== undefined)
+    .reduce(
+      (acc: { [venueId: string]: WithId<AnyVenue> }, venue) => ({
+        ...acc,
+        [venue.id]: venue,
+      }),
+      {}
+    );
 
   const events = useMemo(() => {
     return [
       ...venueEvents,
-      ...subvenueEvents,
       ...parentVenueEvents,
+      ...subvenueEvents,
       ...siblingVenueEvents,
     ].sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
   }, [venueEvents, subvenueEvents, parentVenueEvents, siblingVenueEvents]);
@@ -79,11 +119,6 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   }, [events]);
 
   const [date, setDate] = useState(0);
-
-  const venueWithId: WithId<Venue> = {
-    ...venue!,
-    id: venueId!,
-  };
 
   return (
     <div>
@@ -124,7 +159,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
                   <EventDisplay
                     key={event.name + Math.random().toString()}
                     event={event}
-                    venue={venueWithId}
+                    venue={allKnownVenues[event.venueId] ?? venue}
                   />
                 ))}
               {orderedEvents[date] && !orderedEvents[date].events.length && (

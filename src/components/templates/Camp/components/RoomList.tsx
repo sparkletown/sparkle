@@ -33,7 +33,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
       <div className="rooms-container">
         {rooms.map((room) => (
           <RoomCard
-            key={room.title}
+            key={`${venue.name}/${room?.title}`}
             room={room}
             attendance={
               (attendances[`${venue.name}/${room?.title}`] ?? 0) +

@@ -38,8 +38,9 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<AnyVenue> = (state) =>
-  state.firestore.ordered.currentVenue?.[0];
+export const currentVenueSelector: SparkleSelector<WithId<AnyVenue>> = (
+  state
+) => state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
@@ -120,6 +121,8 @@ export const chatUsersSelector = (state: RootState) =>
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue &&
   state.firestore.ordered.currentVenue[0];
+export const parentVenueOrderedSelector = (state: RootState) =>
+  state.firestore.ordered.parentVenue?.[0];
 export const parentVenueSelector = (state: RootState) =>
   state.firestore.data.parentVenue;
 export const subvenuesSelector = (state: RootState) =>
@@ -128,12 +131,16 @@ export const siblingVenuesSelector = (state: RootState) =>
   state.firestore.ordered.siblingVenues;
 export const venueEventsSelector = (state: RootState) =>
   state.firestore.ordered.venueEvents;
-export const subvenueEventsSelector = (state: RootState) =>
-  state.firestore.ordered.subvenueEvents;
 export const parentVenueEventsSelector = (state: RootState) =>
   state.firestore.ordered.parentVenueEvents;
-export const siblingVenueEventsSelector = (state: RootState) =>
-  state.firestore.ordered.siblingVenueEvents;
+export const makeSubvenueEventsSelector = (venueId?: string) => (
+  state: RootState
+): WithId<VenueEvent>[] | undefined =>
+  (state.firestore.ordered as any)[`subvenueEvents-${venueId}`];
+export const makeSiblingVenueEventsSelector = (venueId?: string) => (
+  state: RootState
+): WithId<VenueEvent>[] | undefined =>
+  (state.firestore.ordered as any)[`siblingVenueEvents-${venueId}`];
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.venues?.playa?.radioStations;

@@ -1,10 +1,11 @@
+import {
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
 import { siblingVenuesSelector, subvenuesSelector } from "utils/selectors";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
-import {
-  SparkleRFQConfig,
-  useSparkleFirestoreConnect,
-} from "./useSparkleFirestoreConnect";
+import { SparkleRFQConfig } from "./useSparkleFirestoreConnect";
 
 export const useConnectRelatedVenues = (venueId?: string) => {
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
@@ -15,15 +16,15 @@ export const useConnectRelatedVenues = (venueId?: string) => {
     storeAs: "subvenues",
   };
   const subvenues = useSelector(subvenuesSelector);
-  const subvenueEventsQueries: SparkleRFQConfig[] =
+  const subvenueEventsQueries: ReduxFirestoreQuerySetting[] =
     subvenues?.map((subvenue) => ({
       collection: "venues",
       doc: subvenue.id,
       subcollections: [{ collection: "events" }],
       orderBy: ["start_utc_seconds", "asc"],
-      storeAs: "subvenueEvents",
+      storeAs: `subvenueEvents-${subvenue.id}`,
     })) ?? [];
-  useSparkleFirestoreConnect([subvenuesQuery, ...subvenueEventsQueries]);
+  useFirestoreConnect([subvenuesQuery, ...subvenueEventsQueries]);
 
   const parentVenueEventsQuery: SparkleRFQConfig = {
     collection: "venues",
@@ -39,16 +40,16 @@ export const useConnectRelatedVenues = (venueId?: string) => {
     storeAs: "siblingVenues",
   };
   const siblingVenues = useSelector(siblingVenuesSelector);
-  const siblingVenueEventsQueries: SparkleRFQConfig[] =
+  const siblingVenueEventsQueries: ReduxFirestoreQuerySetting[] =
     siblingVenues
       ?.filter((v) => v.id !== venueId)
       .map((siblingVenue) => ({
         collection: "venues",
         doc: siblingVenue.id,
-        storeAs: "siblingVenueEvents",
+        storeAs: `siblingVenueEvents-${siblingVenue.id}`,
       })) ?? [];
 
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     currentVenue?.parentId
       ? [
           parentVenueEventsQuery,
