@@ -4,6 +4,8 @@ import { AnyVenue } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 import { VenueEvent } from "types/VenueEvent";
 
+import { withId } from "utils/id";
+
 import { useSelector } from "./useSelector";
 import { useSparkleFirestoreConnect } from "./useSparkleFirestoreConnect";
 
@@ -40,9 +42,10 @@ export const useConnectCurrentVenueNG = (venueId?: string) => {
 
   return useMemo(
     () => ({
-      currentVenue: currentVenueNG,
+      currentVenue:
+        venueId && currentVenueNG ? withId(currentVenueNG, venueId) : undefined,
       currentVenueEvents: currentVenueEventsNG,
     }),
-    [currentVenueNG, currentVenueEventsNG]
+    [venueId, currentVenueNG, currentVenueEventsNG]
   );
 };
