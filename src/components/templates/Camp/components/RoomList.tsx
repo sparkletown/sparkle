@@ -33,10 +33,10 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
       <div className="rooms-container">
         {rooms.map((room) => (
           <RoomCard
-            key={`${venue.name}/${room?.title}`}
+            key={room.title}
             room={room}
             attendance={
-              (attendances[`${venue.name}/${room?.title}`] ?? 0) +
+              (attendances[`${venue.name} / ${room?.title}`] ?? 0) +
               (room.attendanceBoost ?? 0)
             }
             onClick={() => openModal(room)}

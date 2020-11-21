@@ -8,7 +8,7 @@ import {
   currentTimeInUnixEpoch,
 } from "utils/time";
 import { WithId } from "utils/id";
-import { openRoomUrl, venueInsideUrl } from "utils/url";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";
@@ -27,7 +27,7 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
     const room = venue?.rooms?.find((room) => room.title === event.room);
 
     if (!room) {
-      window.open(venueInsideUrl(venue.id), "_blank", "noopener,noreferrer");
+      openUrl(venueInsideUrl(venue.id));
       return;
     }
 
