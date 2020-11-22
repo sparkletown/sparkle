@@ -34,7 +34,7 @@ import {
 } from "settings";
 import { IS_BURN } from "secrets";
 
-import { isCampVenue, isVenueWithRooms } from "types/CampVenue";
+import { isVenueWithRooms } from "types/CampVenue";
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
 
