@@ -123,17 +123,40 @@ const checkUserIsOwner = async (venueId, uid) => {
     .collection("venues")
     .doc(venueId)
     .get()
-    .then((doc) => {
+    .then(async (doc) => {
       if (!doc.exists) {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
-      if (!venue.owners || !venue.owners.includes(uid)) {
-        throw new HttpsError(
-          "permission-denied",
-          `User is not an owner of ${venueId}`
-        );
+      if (venue.owners?.includes(uid)) return;
+
+      if (venue.parentId) {
+        await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get()
+          .then((doc) => {
+            if (!doc.exists) {
+              throw new HttpsError(
+                "not-found",
+                `Venue ${venueId} references missing parent ${venue.parentId}`
+              );
+            }
+            const parentVenue = doc.data();
+            if (!parentVenue.owners?.includes(uid)) {
+              throw new HttpsError(
+                "permission-denied",
+                `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+              );
+            }
+          });
       }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
     })
     .catch((err) => {
       throw new HttpsError(
@@ -141,14 +164,6 @@ const checkUserIsOwner = async (venueId, uid) => {
         `Error occurred obtaining venue ${venueId}: ${err.toString()}`
       );
     });
-};
-
-const checkUserIsAdminOrOwner = async (venueId, uid) => {
-  try {
-    return await checkUserIsOwner(venueId, uid);
-  } catch (e) {
-    return e.toString();
-  }
 };
 
 /** Add a user to the list of admins
@@ -184,7 +199,7 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
 
   const { venueId, newOwnerId } = data;
 
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -203,7 +218,7 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const { venueId, ownerId } = data;
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   await admin
     .firestore()
@@ -240,7 +255,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, roomIndex, room } = data;
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -265,7 +280,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
   await admin
     .firestore()
     .collection("venues")
@@ -343,7 +358,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -466,7 +481,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
   checkAuth(context);
 
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
@@ -534,7 +549,7 @@ exports.adminHideVenue = functions.https.onCall(async (data, context) => {
 
 exports.adminUpdateBannerMessage = functions.https.onCall(
   async (data, context) => {
-    await checkUserIsAdminOrOwner(data.venueId, context.auth.token.user_id);
+    await checkUserIsOwner(data.venueId, context.auth.token.user_id);
     await admin
       .firestore()
       .collection("venues")
