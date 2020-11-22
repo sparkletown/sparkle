@@ -351,7 +351,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                 Add a Room
               </Link>
             )}
-            {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
+            {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
                 to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
