@@ -121,5 +121,10 @@ workflows:
               only:
                 - staging
       - notify:
+          requires:
+            - build-and-test
+            - deploy-functions
+            - deploy-hosting
+            - smoke-test
           context:
             - slack
