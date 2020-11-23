@@ -212,13 +212,15 @@ const OnlineStats: React.FC = () => {
                                 />
                               </div>
                               <span className="venue-name">{venue.name}</span>
-                              <span className="venue-people">
-                                <b>
-                                  {peopleAttending(peopleByLastSeen, venue)
-                                    ?.length ?? 0}
-                                </b>{" "}
-                                people in this room
-                              </span>
+                              {venue.showRoomAttendance && (
+                                <span className="venue-people">
+                                  <b>
+                                    {peopleAttending(peopleByLastSeen, venue)
+                                      ?.length ?? 0}
+                                  </b>{" "}
+                                  people in this room
+                                </span>
+                              )}
                               {ENABLE_PLAYA_ADDRESS && venue.placement && (
                                 <span className="venue-address">
                                   Address:{" "}
