@@ -87,7 +87,9 @@ jobs:
     docker:
       - image: "cimg/base:stable"
     steps:
-      - slack/notify
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
 workflows:
   build-test-deploy:
     jobs:
