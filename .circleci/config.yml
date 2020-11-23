@@ -118,4 +118,6 @@ workflows:
             branches:
               only:
                 - staging
-      - notify
+      - notify:
+          context:
+            - slack
