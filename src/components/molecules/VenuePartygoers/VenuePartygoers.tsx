@@ -2,7 +2,11 @@ import React from "react";
 
 import { useSelector } from "hooks/useSelector";
 
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import {
+  currentVenueSelector,
+  parentVenueSelector,
+  partygoersSelector,
+} from "utils/selectors";
 
 import { Venue } from "types/Venue";
 import { User } from "types/User";
@@ -16,8 +20,16 @@ const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
   const partygoers = useSelector(partygoersSelector) ?? [];
+  const parentVenue = useSelector(parentVenueSelector);
 
+  const currentVenueTitle = venue.headerTitle ?? "partygoers";
+  const headerTitle = parentVenue?.headerTitle ?? currentVenueTitle;
   const currentVenuePartygoers = filterVenuePartygoers(partygoers, venue);
   const numberOfPartygoers = currentVenuePartygoers.length;
-  return <div>{numberOfPartygoers} burners online</div>;
+
+  return (
+    <div>
+      {numberOfPartygoers} {headerTitle} online
+    </div>
+  );
 };

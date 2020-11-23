@@ -85,6 +85,7 @@ export interface Venue {
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
+  headerTitle?: string;
 }
 
 export interface VenuePlacement {
