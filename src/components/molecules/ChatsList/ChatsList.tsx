@@ -153,6 +153,7 @@ const ChatsList: React.FunctionComponent = () => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =
                 discussionPartnerWithLastMessageExchanged?.[userId];
+              console.log(lastMessageExchanged);
               const profileName = sender.anonMode
                 ? DEFAULT_PARTY_NAME
                 : sender.partyName;
@@ -177,7 +178,7 @@ const ChatsList: React.FunctionComponent = () => {
                   </div>
                   {lastMessageExchanged.from !== user?.uid &&
                     !lastMessageExchanged.isRead && (
-                      <div className="not-read-indicator" />
+                      <div className="not-read-indicator">NOT READ</div>
                     )}
                 </div>
               );

@@ -3,6 +3,7 @@ import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
 
+import { filterUnreadPrivateChats } from "utils/filter";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 
@@ -31,6 +32,8 @@ const Sidebar = () => {
   const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
+  const unreadMessages = filterUnreadPrivateChats(privateChats);
+  const numberOfUnreadMessages = unreadMessages.length;
 
   // Create new array because privateChats is read only and cannot be sorted.
   // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
@@ -87,8 +90,12 @@ const Sidebar = () => {
           }`}
           onClick={selectPrivateChatTab}
         >
-          Messages
+          <div>Messages</div>
+          {!!numberOfUnreadMessages && (
+            <div className="unread-messages">{numberOfUnreadMessages}</div>
+          )}
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_schedule ${
             tab === TABS.LIVE_SCHEDULE && "active"
