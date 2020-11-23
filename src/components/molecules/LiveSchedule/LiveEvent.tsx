@@ -1,22 +1,22 @@
 import React, { FC, useCallback } from "react";
 
+import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 
-import { venueSelector } from "utils/selectors";
 import { currentTimeInUnixEpoch, formatHourAndMinute } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
 
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 interface LiveEventProps {
+  venue: WithId<Venue>;
   event: VenueEvent;
 }
 
-export const LiveEvent: FC<LiveEventProps> = ({ event }) => {
+export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
   const { user, profile } = useUser();
-  const venue = useSelector(venueSelector);
   const enterLiveEvent = useCallback(() => {
     const room = venue?.rooms?.find((room) => room.title === event.room);
 
