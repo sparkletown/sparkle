@@ -18,23 +18,23 @@ const LiveSchedule: FC = () => {
     withEvents: true,
   });
 
-  const liveEvents = useMemo(() => {
+  const events = useMemo(() => {
     return relatedVenueEvents && relatedVenueEvents.length
       ? relatedVenueEvents.filter((event) => isEventLive(event))
       : [];
   }, [relatedVenueEvents]);
 
-  const hasLiveEvents = !!liveEvents.length;
+  const hasEvents = !!events.length;
 
-  if (!hasLiveEvents) {
+  if (!hasEvents) {
     return <div className="schedule-event-empty">No live events for now</div>;
   }
 
   return (
     <div className="schedule-container show">
       <div className="schedule-day-container">
-        {liveEvents.map((liveEvent, index) => (
-          <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
+        {events.map((event, index) => (
+          <LiveEvent key={`live-event-${index}`} event={event} />
         ))}
       </div>
     </div>
