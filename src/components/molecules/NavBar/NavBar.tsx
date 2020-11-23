@@ -89,7 +89,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentId = venue?.parentId ?? venueId;
+  const venueParentId = venue?.parentId;
   const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
     () => ({
       collection: "venues",
@@ -98,7 +98,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     }),
     [venueParentId]
   );
-  useFirestoreConnect(venueParentQuery);
+  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
 
   const {
     location: { pathname },
