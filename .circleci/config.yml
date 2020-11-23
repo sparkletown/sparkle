@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+  slack: circleci/slack@4.1.1
 jobs:
   build-and-test:
     executor:
@@ -82,6 +83,11 @@ jobs:
                   npm run build
                   ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
                   ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+  notify:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - slack/notify
 workflows:
   build-test-deploy:
     jobs:
@@ -112,3 +118,4 @@ workflows:
             branches:
               only:
                 - staging
+      - notify
