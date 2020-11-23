@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { ThemeProvider } from "styled-components";
 
 // Typings
 import { UserProfilePictureProp } from "./UserProfilePicture.types";
@@ -30,14 +29,6 @@ import {
 // Styles
 import "./UserProfilePicture.scss";
 import * as S from "./UserProfilePicture.styles";
-
-// This would be the global variables and configuration,
-// it is here only for the duration of the demo
-const DEMO_THEME = {
-  fadedWhite: "rgba(255, 255, 255, 0.8)",
-  black: "#000",
-  borderWidth: "5px",
-};
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
@@ -102,64 +93,58 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return useMemo(() => {
     return (
-      // Theme provider is supposed to wrap the entire app,
-      // not every component individualle
-      //
-      // This is just a demo
-      <ThemeProvider theme={DEMO_THEME}>
-        <S.Container style={{ ...containerStyle }}>
-          {/* Hidden image, used to handle error if image is not loaded */}
-          <img
-            src={pictureUrl}
-            onError={(event) => imageErrorHandler(event)}
-            hidden
-            style={{ display: "none" }}
-            alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
-          />
-          <S.Avatar
-            onClick={() => setSelectedUserProfile(user)}
-            className={avatarClassName}
-            backgroundImage={pictureUrl}
-            style={{ ...avatarStyle }}
-          />
+      <S.Container style={{ ...containerStyle }}>
+        {/* Hidden image, used to handle error if image is not loaded */}
+        <img
+          src={pictureUrl}
+          onError={(event) => imageErrorHandler(event)}
+          hidden
+          style={{ display: "none" }}
+          alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+        />
+        <S.Avatar
+          onClick={() => setSelectedUserProfile(user)}
+          className={avatarClassName}
+          backgroundImage={pictureUrl}
+          style={{ ...avatarStyle }}
+        />
 
-          {Reactions.map(
-            (reaction, index) =>
-              experienceContext &&
-              experienceContext.reactions.find(
-                (r) => r.created_by === user.id && r.reaction === reaction.type
-              ) && (
-                <div key={index} className="reaction-container">
-                  <S.Reaction
-                    role="img"
-                    aria-label={reaction.ariaLabel}
-                    className={reaction.name}
-                    reactionPosition={reactionPosition}
-                  >
-                    {reaction.text}
-                  </S.Reaction>
+        {Reactions.map(
+          (reaction, index) =>
+            experienceContext &&
+            experienceContext.reactions.find(
+              (r) => r.created_by === user.id && r.reaction === reaction.type
+            ) && (
+              <div key={index} className="reaction-container">
+                <S.Reaction
+                  role="img"
+                  aria-label={reaction.ariaLabel}
+                  className={reaction.name}
+                  reactionPosition={reactionPosition}
+                >
+                  {reaction.text}
+                </S.Reaction>
 
-                  {!muteReactions && !isAudioEffectDisabled && (
-                    <audio autoPlay loop>
-                      <source src={reaction.audioPath} />
-                    </audio>
-                  )}
-                </div>
-              )
-          )}
-          {messagesToBand && (
-            <div className="reaction-container">
-              <S.ShoutOutMessage
-                role="img"
-                aria-label="messageToTheBand"
-                reactionPosition={reactionPosition}
-              >
-                {messagesToBand.text}
-              </S.ShoutOutMessage>
-            </div>
-          )}
-        </S.Container>
-      </ThemeProvider>
+                {!muteReactions && !isAudioEffectDisabled && (
+                  <audio autoPlay loop>
+                    <source src={reaction.audioPath} />
+                  </audio>
+                )}
+              </div>
+            )
+        )}
+        {messagesToBand && (
+          <div className="reaction-container">
+            <S.ShoutOutMessage
+              role="img"
+              aria-label="messageToTheBand"
+              reactionPosition={reactionPosition}
+            >
+              {messagesToBand.text}
+            </S.ShoutOutMessage>
+          </div>
+        )}
+      </S.Container>
     );
   }, [
     containerStyle,
@@ -178,7 +163,6 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 };
 
 UserProfilePicture.defaultProps = {
-  // profileStyle: "profile-icon",
   avatarClassName: "profile-icon",
   miniAvatars: false,
 };

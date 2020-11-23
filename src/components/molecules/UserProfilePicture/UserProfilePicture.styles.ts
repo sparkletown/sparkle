@@ -1,15 +1,15 @@
 import styled, { css, keyframes } from "styled-components";
 
 // --- Avatar
-type TAvatar = {
+type AvatarProps = {
   backgroundImage?: string;
 };
-export const Avatar = styled.div`
+export const Avatar = styled.div<AvatarProps>`
   background-position: center;
   background-size: cover;
   width: 4vh;
   height: 4vh;
-  background-image: url(${(props: TAvatar) => props?.backgroundImage ?? ""});
+  background-image: url(${({ backgroundImage }) => backgroundImage ?? ""});
 `;
 
 // --- Reaction
@@ -21,15 +21,15 @@ const reactionRight = css`
   right: ${reactionOffset};
 `;
 
-type TReaction = {
+type ReactionProps = {
   reactionPosition?: "right" | "left" | undefined;
 };
-export const Reaction = styled.div`
+export const Reaction = styled.div<ReactionProps>`
   width: 50px;
 
   position: absolute;
-  ${(props: TReaction) =>
-    props.reactionPosition === "right" ? reactionRight : reactionLeft};
+  ${({ reactionPosition }) =>
+    reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
   z-index: 1000;
 
@@ -39,9 +39,6 @@ export const Reaction = styled.div`
 `;
 
 // --- Reaction Container
-type ContainerType = {
-  style?: any;
-};
 export const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -106,7 +103,7 @@ const messageRight = css`
   animation: ${expandBounceRight} 5s ease;
 `;
 
-export const ShoutOutMessage = styled.div`
+export const ShoutOutMessage = styled.div<ReactionProps>`
   width: max-content;
   max-width: 20em;
   padding: 6px 10px;
@@ -114,12 +111,12 @@ export const ShoutOutMessage = styled.div`
   position: absolute;
   top: 0;
 
-  ${(props: TReaction) =>
-    props.reactionPosition === "right" ? messageRight : messageLeft};
+  ${({ reactionPosition }) =>
+    reactionPosition === "right" ? messageRight : messageLeft};
 
-  background-color: ${(props) => props.theme.fadedWhite};
+  background-color: rgba(255, 255, 255, 0.8);
 
-  color: ${(props) => props.theme.black};
+  color: #000;
   font-size: 20px;
   border-radius: 10px;
 `;
