@@ -89,7 +89,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentId = venue?.parentId;
+  const venueParentId = venue?.parentId ?? venueId;
   const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
     () => ({
       collection: "venues",
