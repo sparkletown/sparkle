@@ -128,7 +128,7 @@ const checkUserIsOwner = async (venueId, uid) => {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
-      if (venue.owners?.includes(uid)) return;
+      if (venue.owners && venue.owners.includes(uid)) return;
 
       if (venue.parentId) {
         await admin
@@ -144,7 +144,7 @@ const checkUserIsOwner = async (venueId, uid) => {
               );
             }
             const parentVenue = doc.data();
-            if (!parentVenue.owners?.includes(uid)) {
+            if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
               throw new HttpsError(
                 "permission-denied",
                 `User is not an owner of ${venueId} nor parent ${venue.parentId}`
