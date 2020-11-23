@@ -62,7 +62,7 @@ export const ArtPiece = () => {
           </div>
           <div className="chat-pop-up" style={{ zIndex: 100 }}>
             <ChatDrawer
-              title={"Art Piece Chat"}
+              title={`${venue.name ?? "Art Piece"} Chat`}
               roomName={venue.name}
               chatInputPlaceholder="Chat"
               defaultShow={true}
@@ -72,7 +72,7 @@ export const ArtPiece = () => {
       </div>
       {IS_BURN && (
         <div className="sparkle-fairies">
-          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          <SparkleFairiesPopUp />
         </div>
       )}
       <Modal

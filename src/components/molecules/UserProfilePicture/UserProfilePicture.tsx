@@ -50,9 +50,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
 }) => {
   const experienceContext = useContext(ExperienceContext);
-  const { muteReactions } = useSelector((state) => ({
-    muteReactions: state.room.mute,
-  }));
+  const muteReactions = useSelector((state) => state.room.mute);
 
   const [pictureUrl, setPictureUrl] = useState("");
 

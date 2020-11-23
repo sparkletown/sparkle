@@ -39,6 +39,7 @@ export interface Venue {
       quotations?: Quotation[];
     };
     memberEmails?: string[];
+    showRangers?: boolean;
   };
   host: {
     icon: string;
@@ -83,6 +84,7 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
+  showSecretPasswordForm?: boolean;
 }
 
 export interface VenuePlacement {

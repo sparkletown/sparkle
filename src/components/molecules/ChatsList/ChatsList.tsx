@@ -26,6 +26,7 @@ import {
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
 
@@ -98,7 +99,7 @@ const ChatsList: React.FunctionComponent = () => {
             message.ts_utc.seconds > HIDE_BEFORE
         )
         .sort(chatSort),
-    [privateChats, selectedUser, HIDE_BEFORE]
+    [privateChats, selectedUser]
   );
 
   const chatContext = useContext(ChatContext);
@@ -133,6 +134,9 @@ const ChatsList: React.FunctionComponent = () => {
     return (
       <Fragment>
         <div className="private-container-back-btn" onClick={hideUserChat} />
+        <div className="private-chat-user">
+          Chatting with: {selectedUser.partyName}
+        </div>
         <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
       </Fragment>
     );
@@ -143,6 +147,7 @@ const ChatsList: React.FunctionComponent = () => {
       {hasPrivateChats && (
         <div className="private-container show">
           <div className="private-messages-list">
+            <UserSearchBar onSelect={setSelectedUser} />
             {discussions.map((userId: string) => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =

@@ -1,43 +1,50 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import React, { FC } from "react";
 
-import { RoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { PartyMapVenue } from "types/PartyMapVenue";
+
+import { partygoersSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
+import "./RoomAttendance.scss";
 
 interface PropsType {
-  room: RoomData;
-  attendance?: number;
-  positioned?: boolean;
-  onClick?: () => void;
+  venue: PartyMapVenue;
+  room: PartyMapRoomData;
 }
 
-export const RoomAttendance: React.FunctionComponent<PropsType> = ({
-  room,
-  attendance,
-  positioned,
-  onClick,
-}) => {
-  attendance = attendance || 0;
-  const singularTitle = `${attendance} person in ${room.title}`;
-  const pluralTitle = `${attendance} people in ${room.title}`;
-  const title = attendance === 1 ? singularTitle : pluralTitle;
+const MAX_AVATARS_VISIBLE = 2;
 
-  const className =
-    "d-flex room-attendance my-2" + (positioned ? " positioned" : "");
-  const style = positioned
-    ? { left: room.attendance_x, top: room.attendance_y }
-    : undefined;
-
+export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
+  const partygoers = useSelector(partygoersSelector);
+  const usersInRoom =
+    partygoers?.filter(
+      (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+    ) ?? [];
+  const numberOfUsersInRoom = usersInRoom?.length;
   return (
-    <div
-      className={className}
-      style={style}
-      title={title}
-      onClick={onClick}
-      id={`attendance-number-${title}`}
-    >
-      <span className="attendance-number">{attendance}</span>
-      <FontAwesomeIcon icon={faUser} />
+    <div className="attendance-avatars">
+      {usersInRoom.map((user, index) => {
+        return (
+          <div key={`user-avatar-${index}`}>
+            {index < MAX_AVATARS_VISIBLE && (
+              <div
+                className="attendance-avatar"
+                style={{ backgroundImage: `url(${user.pictureUrl})` }}
+              />
+            )}
+            <div></div>
+          </div>
+        );
+      })}
+      {numberOfUsersInRoom > MAX_AVATARS_VISIBLE && (
+        <div className="avatars-inside">
+          +{numberOfUsersInRoom - MAX_AVATARS_VISIBLE}
+        </div>
+      )}
     </div>
   );
 };
+
+export default RoomAttendance;

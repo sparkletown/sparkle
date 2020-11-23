@@ -37,6 +37,7 @@ import {
   BANNER_MESSAGE_TEMPLATES,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  HAS_GRID_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -570,7 +571,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
-        {templateID === VenueTemplate.themecamp && (
+        {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
             <h4 className="italic" style={{ fontSize: "20px" }}>
               Show grid layout
@@ -586,37 +587,39 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
-        {templateID === VenueTemplate.themecamp && values.showGrid && (
-          <>
-            <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
-                Number of columns
-              </h4>
-              <input
-                disabled={disable}
-                defaultValue={1}
-                name="columns"
-                type="number"
-                ref={register}
-                className="align-left"
-                placeholder={`Number of grid columns`}
-              />
-              {errors.name ? (
-                <span className="input-error">{errors.name.message}</span>
-              ) : null}
-            </div>
-            <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
-                Number of rows
-              </h4>
-              <div>
-                Not editable. The number of rows is derived from the number of
-                specified columns and the width:height ratio of the party map,
-                to keep the two aligned.
+        {templateID &&
+          HAS_GRID_TEMPLATES.includes(templateID) &&
+          values.showGrid && (
+            <>
+              <div className="input-container">
+                <h4 className="italic" style={{ fontSize: "20px" }}>
+                  Number of columns
+                </h4>
+                <input
+                  disabled={disable}
+                  defaultValue={1}
+                  name="columns"
+                  type="number"
+                  ref={register}
+                  className="align-left"
+                  placeholder={`Number of grid columns`}
+                />
+                {errors.name ? (
+                  <span className="input-error">{errors.name.message}</span>
+                ) : null}
               </div>
-            </div>
-          </>
-        )}
+              <div className="input-container">
+                <h4 className="italic" style={{ fontSize: "20px" }}>
+                  Number of rows
+                </h4>
+                <div>
+                  Not editable. The number of rows is derived from the number of
+                  specified columns and the width:height ratio of the party map,
+                  to keep the two aligned.
+                </div>
+              </div>
+            </>
+          )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Enter the ID of the venue you would like for the "back" button

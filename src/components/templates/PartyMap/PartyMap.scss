@@ -1,0 +1,48 @@
+@import "scss/constants.scss";
+
+.party-venue-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
+
+  .title {
+    font-size: 34px;
+  }
+
+  .starting-indication {
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .count-down-container {
+    text-align: center;
+  }
+
+  .userlist-container {
+    margin: 0 80px;
+  }
+}
+
+body {
+  &.no-scroll {
+    overflow: hidden;
+  }
+  // styling scrollbar
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.1);
+  }
+}

@@ -18,6 +18,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.avatargrid]: undefined,
   [VenueTemplate.conversationspace]: undefined,
+  [VenueTemplate.firebarrel]: undefined,
 };
 
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
@@ -35,12 +36,19 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
   [VenueTemplate.conversationspace]: undefined,
+  [VenueTemplate.firebarrel]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
   const [selectedTemplate, setSelectedTemplate] = useState<
     Template | undefined
   >(state.templatePage?.template);
+
+  const templateImage = !!selectedTemplate
+    ? templateImageMap[selectedTemplate.template]
+    : undefined;
+  const hasTemplateImage = !!templateImage;
+
   return (
     <div className="page">
       <div className="page-side">
@@ -58,12 +66,8 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
         </div>
       </div>
       <div className="page-side">
-        {selectedTemplate && (
-          <img
-            src={templateImageMap[selectedTemplate.template]}
-            alt="venue"
-            className="venue-art"
-          />
+        {hasTemplateImage && (
+          <img src={templateImage} alt="venue" className="venue-art" />
         )}
       </div>
     </div>
@@ -117,12 +121,14 @@ interface TemplateCardProps {
   onClick: () => void;
 }
 
-const TemplateCard: React.FC<TemplateCardProps> = (props) => {
-  const {
-    template: { template, name, description },
-    onClick,
-    selected,
-  } = props;
+const TemplateCard: React.FC<TemplateCardProps> = ({
+  template: { template, name, description },
+  onClick,
+  selected,
+}) => {
+  const thumbnailImage = templateThumbImageMap[template];
+  const hasThumbnail = !!thumbnailImage;
+
   return (
     <div
       className={`pickspace-component-container pickspace-component-container_zoom ${
@@ -132,7 +138,7 @@ const TemplateCard: React.FC<TemplateCardProps> = (props) => {
     >
       <div className="centered-flex">
         <div className="pickspace-thumbnail">
-          <img src={templateThumbImageMap[template]} alt="venue thumb" />
+          {hasThumbnail && <img src={thumbnailImage} alt="venue thumb" />}
         </div>
         <div className="flex-one">
           <h3>{name}</h3>

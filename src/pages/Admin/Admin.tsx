@@ -34,7 +34,7 @@ import {
 } from "settings";
 import { IS_BURN } from "secrets";
 
-import { isCampVenue } from "types/CampVenue";
+import { isVenueWithRooms } from "types/CampVenue";
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -100,7 +100,7 @@ const VenueList: React.FC<VenueListProps> = ({
             }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
-            {isCampVenue(venue) && (
+            {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms.map((room, idx) => (
                   <li
@@ -351,7 +351,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                 Add a Room
               </Link>
             )}
-            {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
+            {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
                 to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"

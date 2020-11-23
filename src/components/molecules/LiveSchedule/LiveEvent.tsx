@@ -1,58 +1,58 @@
 import React, { FC, useCallback } from "react";
 
+import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 
-import { venueSelector } from "utils/selectors";
 import { currentTimeInUnixEpoch, formatHourAndMinute } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
-import { isExternalUrl } from "utils/url";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
 
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 interface LiveEventProps {
-  liveEvent: VenueEvent;
+  venue: WithId<Venue>;
+  event: VenueEvent;
 }
 
-export const LiveEvent: FC<LiveEventProps> = ({ liveEvent }) => {
+export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
   const { user, profile } = useUser();
-  const venue = useSelector(venueSelector);
   const enterLiveEvent = useCallback(() => {
-    const room = venue?.rooms?.find((room) => room.title === liveEvent.room);
+    const room = venue?.rooms?.find((room) => room.title === event.room);
 
-    const isExternal = isExternalUrl(room.url);
-    if (isExternal) {
-      window.open(room.url, "_blank", "noopener,noreferrer");
-    } else {
-      window.location.href = room.url;
+    if (!room) {
+      openUrl(venueInsideUrl(venue.id));
+      return;
     }
+
     enterRoom(
       user!,
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
       profile?.lastSeenIn
     );
-  }, [liveEvent, profile, user, venue]);
+    openRoomUrl(room.url);
+  }, [event, profile, user, venue]);
 
   return (
     <div className="schedule-event-container schedule-event-container_live">
       <div className="schedule-event-time">
         <div className="schedule-event-time-start">
-          {formatHourAndMinute(liveEvent.start_utc_seconds)}
+          {formatHourAndMinute(event.start_utc_seconds)}
         </div>
         <div className="schedule-event-time-end">
           {formatHourAndMinute(
-            liveEvent.start_utc_seconds + 60 * liveEvent.duration_minutes
+            event.start_utc_seconds + 60 * event.duration_minutes
           )}
         </div>
         <span className="schedule-event-time-live">Live</span>
       </div>
       <div className="schedule-event-info">
-        <div className="schedule-event-info-title">{liveEvent.name}</div>
+        <div className="schedule-event-info-title">{event.name}</div>
         <div className="schedule-event-info-description">
-          {liveEvent.description}
+          {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterLiveEvent}>{liveEvent.room}</div>
+          <div onClick={enterLiveEvent}>{event.room ?? "Enter"}</div>
         </div>
       </div>
     </div>

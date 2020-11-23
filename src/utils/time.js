@@ -162,3 +162,7 @@ export const roundToNearestHour = (seconds) => {
   const oneHour = 60 * 60;
   return Math.floor(seconds / oneHour) * oneHour;
 };
+
+export function formatDateToWeekday(utcSeconds) {
+  return format(new Date(utcSeconds * 1000), "E");
+}

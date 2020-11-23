@@ -56,7 +56,7 @@ export interface FirestoreData {
   events?: Record<string, VenueEvent>;
   experiences: Record<string, Experience>;
   parentVenue?: AnyVenue;
-  partygoers: Record<string, User>;
+  partygoers?: Record<string, User>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   privatechats: Record<string, PrivateChatMessage>;
   reactions: Record<string, Reaction>;
@@ -80,12 +80,18 @@ export interface FirestoreOrdered {
   eventPurchase: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experiences: Array<WithId<Experience>>;
-  partygoers: Array<WithId<User>>;
+  parentVenue?: Array<WithId<AnyVenue>>;
+  parentVenueEvents?: Array<WithId<VenueEvent>>;
+  partygoers?: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;
   privatechats: Array<WithId<PrivateChatMessage>>;
   reactions: Array<WithId<Reaction>>;
+  siblingVenues?: WithId<AnyVenue>[];
+  siblingVenueEvents?: WithId<VenueEvent>[];
   statsOnlineUsers?: Array<WithId<User>>;
   statsOpenVenues?: Array<WithId<AnyVenue>>;
+  subvenues?: WithId<AnyVenue>[];
+  subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory: Array<WithId<Purchase>>;
   users: Array<WithId<User>>;

@@ -21,7 +21,7 @@ import {
  * @param state the Redux store
  */
 export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
-  state: RootState
+  state
 ) => state.firebase.auth;
 
 /**
@@ -30,7 +30,7 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  * @param state the Redux store
  */
 export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
-  state: RootState
+  state
 ) => state.firebase.profile;
 
 /**
@@ -38,8 +38,8 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<AnyVenue> = (
-  state: RootState
+export const currentVenueSelector: SparkleSelector<WithId<AnyVenue>> = (
+  state
 ) => state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
@@ -52,9 +52,18 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
  *
  * @param state the Redux store
  */
-export const partygoersSelector: SparkleSelector<WithId<User>[]> = (
-  state: RootState
+export const partygoersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+  state
 ) => state.firestore.ordered.partygoers;
+
+/**
+ * Selector to retrieve partygoers from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const partygoersSelectorData: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.partygoers;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -100,7 +109,7 @@ export const userPurchaseHistorySelector: SparkleSelector<
 > = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
-  state: RootState
+  state
 ) => state.attendance.retainAttendance;
 
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
@@ -117,10 +126,63 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
 
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
+
 export const chatUsersSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
+
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue &&
   state.firestore.ordered.currentVenue[0];
-export const venueEventsSelector = (state: RootState) =>
-  state.firestore.ordered.venueEvents;
+
+export const parentVenueOrderedSelector: SparkleSelector<
+  WithId<AnyVenue> | undefined
+> = (state) => state.firestore.ordered.parentVenue?.[0];
+
+export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
+  state
+) => state.firestore.data.parentVenue;
+
+export const subvenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.subvenues;
+
+export const siblingVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.siblingVenues;
+
+export const venueEventsSelector: SparkleSelector<
+  WithId<VenueEvent>[] | undefined
+> = (state) => state.firestore.ordered.venueEvents;
+
+export const parentVenueEventsSelector: SparkleSelector<
+  WithId<VenueEvent>[] | undefined
+> = (state: RootState) => state.firestore.ordered.parentVenueEvents;
+
+export const makeSubvenueEventsSelector = (venueId?: string) => (
+  state: RootState
+): WithId<VenueEvent>[] | undefined =>
+  (state.firestore.ordered as any)[`subvenueEvents-${venueId}`];
+
+export const makeSiblingVenueEventsSelector = (venueId?: string) => (
+  state: RootState
+): WithId<VenueEvent>[] | undefined =>
+  (state.firestore.ordered as any)[`siblingVenueEvents-${venueId}`];
+
+export const radioStationsSelector = (state: RootState) =>
+  state.firestore.data.venues?.playa?.radioStations;
+
+export const maybeSelector = <T extends SparkleSelector<U>, U>(
+  ifTrue: boolean,
+  selector: SparkleSelector<U>
+) => (ifTrue ? selector : noopSelector);
+
+export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
+  ifTrue: boolean,
+  selector: SparkleSelector<U[]>
+) => (ifTrue ? selector : emptyArraySelector);
+
+export const noopSelector: SparkleSelector<undefined> = () => undefined;
+
+export const emptyArray = [];
+export const emptyArraySelector = <T extends SparkleSelector<U>, U>() =>
+  emptyArray as U[];

@@ -1,34 +1,56 @@
 import React, { FC, useMemo } from "react";
 
+import { VenueEvent } from "types/VenueEvent";
+
 import { isEventLive } from "utils/event";
-import { venueEventsSelector } from "utils/selectors";
+import { venueSelector } from "utils/selectors";
+import { WithVenueId } from "utils/id";
 
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useSelector } from "hooks/useSelector";
-
-import "./LiveSchedule.scss";
+import { useVenueId } from "hooks/useVenueId";
 
 import { LiveEvent } from "./LiveEvent";
 
+import "./LiveSchedule.scss";
+
 const LiveSchedule: FC = () => {
-  const venueEvents = useSelector(venueEventsSelector);
+  const venueId = useVenueId();
+  const currentVenue = useSelector(venueSelector);
+  useConnectRelatedVenues({ venueId });
 
-  const liveEvents = useMemo(() => {
-    return venueEvents && venueEvents.length
-      ? venueEvents.filter((event) => isEventLive(event))
+  const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
+    venueId,
+    withEvents: true,
+  });
+
+  const relatedVenueFor = (event: WithVenueId<VenueEvent>) => {
+    return (
+      relatedVenues.find((venue) => venue.id === event.venueId) ?? currentVenue
+    );
+  };
+
+  const events = useMemo(() => {
+    return relatedVenueEvents && relatedVenueEvents.length
+      ? relatedVenueEvents.filter((event) => isEventLive(event))
       : [];
-  }, [venueEvents]);
+  }, [relatedVenueEvents]);
 
-  const hasLiveEvents = !!liveEvents.length;
+  const hasEvents = !!events.length;
 
-  if (!hasLiveEvents) {
+  if (!hasEvents) {
     return <div className="schedule-event-empty">No live events for now</div>;
   }
 
   return (
     <div className="schedule-container show">
       <div className="schedule-day-container">
-        {liveEvents.map((liveEvent, index) => (
-          <LiveEvent key={`live-event-${index}`} liveEvent={liveEvent} />
+        {events.map((event, index) => (
+          <LiveEvent
+            key={`live-event-${index}`}
+            venue={relatedVenueFor(event)}
+            event={event}
+          />
         ))}
       </div>
     </div>

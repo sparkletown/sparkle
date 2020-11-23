@@ -31,7 +31,7 @@ const Room: React.FC<RoomProps> = ({
   const { user } = useUser();
   const { users } = useKeyedSelector(
     (state) => ({
-      users: state.firestore.data.partygoers,
+      users: state.firestore.data.partygoers ?? {},
     }),
     ["users"]
   );

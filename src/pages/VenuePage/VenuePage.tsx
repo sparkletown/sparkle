@@ -47,8 +47,8 @@ import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { CampRouter } from "components/templates/Camp/Router";
 import { ConversationSpace } from "components/templates/ConversationSpace";
+import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
-import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
 import { AuthenticationModal } from "components/organisms/AuthenticationModal";
@@ -60,6 +60,8 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -201,6 +203,7 @@ const VenuePage = () => {
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
 
+  useConnectCurrentVenue();
   useConnectPartyGoers();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
@@ -299,7 +302,7 @@ const VenuePage = () => {
       template = <FriendShipPage />;
       break;
     case VenueTemplate.partymap:
-      template = <PartyMap />;
+      template = <PartyMapRouter />;
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
@@ -341,6 +344,10 @@ const VenuePage = () => {
       break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
+      break;
+
+    case VenueTemplate.firebarrel:
+      template = <FireBarrel />;
       break;
   }
 
