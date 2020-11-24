@@ -121,6 +121,7 @@ const createVenueNew = (data, context) => ({
   owners: [context.auth.token.user_id],
   showGrid: data.showGrid || false,
   columns: data.columns || 1,
+  rooms: [],
 });
 
 const getVenueId = (name) => {
@@ -277,6 +278,7 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
         throw new HttpsError("not-found", `Venue ${venueId} not found`);
       }
       const docData = doc.data();
+      console.log("docData.rooms: ", docData.rooms);
 
       if (typeof roomIndex !== "number") {
         docData.rooms = [...docData.rooms, room];

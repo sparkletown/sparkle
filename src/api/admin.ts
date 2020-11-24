@@ -204,6 +204,8 @@ const createFirestoreRoomInput = async (
     ),
     ...imageInputData,
   };
+
+  console.log("firestoreRoomInput: ", firestoreRoomInput);
   return firestoreRoomInput;
 };
 
@@ -248,6 +250,29 @@ export const upsertRoom = async (
     venueId,
     user
   );
+
+  return await firebase.functions().httpsCallable("venue-upsertRoom")({
+    venueId,
+    roomIndex,
+    room: firestoreVenueInput,
+  });
+};
+
+export const createRoom = async (
+  input: any,
+  venueId: string,
+  user: UserInfo,
+  roomIndex?: number
+) => {
+  console.log("Input: ", input);
+
+  const firestoreVenueInput = await createFirestoreRoomInput(
+    input,
+    venueId,
+    user
+  );
+
+  console.log("Create ROom: ", firestoreVenueInput);
 
   return await firebase.functions().httpsCallable("venue-upsertRoom")({
     venueId,

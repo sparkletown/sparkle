@@ -8,4 +8,5 @@ export interface ImageInputProps {
   error?: FieldError;
   small?: boolean;
   forwardRef: any;
+  nameWithUnderscore?: boolean;
 }

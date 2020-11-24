@@ -15,19 +15,11 @@ import { BackgroundSelectProps } from "./BackgroundSelect.types";
 
 // Styles
 import * as S from "./BackgroundSelect.styles";
-
-// TODO: FETCH FROM FIRESTORE AND REMOVE THIS
-const defaultMaps = [
-  { id: "1", url: "https://placekitten.com/g/2000/1200" },
-  { id: "2", url: "https://placekitten.com/g/2000/1200" },
-  { id: "3", url: "https://placekitten.com/g/2000/1200" },
-  { id: "4", url: "https://placekitten.com/g/2000/1200" },
-  { id: "5", url: "https://placekitten.com/g/2000/1200" },
-  { id: "6", url: "https://placekitten.com/g/2000/1200" },
-];
+import { useFetchAssetImages } from "hooks/useFetchAssetImages";
 
 const BackgroundSelect: React.FC<BackgroundSelectProps> = ({ venueName }) => {
   const { user } = useUser();
+  const mapBackgrounds = useFetchAssetImages("mapBackgrounds");
 
   const handleUpload = (url: string) => {
     if (!user) return;
@@ -65,14 +57,15 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({ venueName }) => {
 
       <h3>Or choose a map</h3>
       <S.MapBrowserGrid>
-        {defaultMaps.map((map) => (
-          <S.MapItem
-            backgroundImage={map.url}
-            key={map.id}
-            aspectRatio="1.6/1"
-            onClick={() => handleUpload(map.url)}
-          />
-        ))}
+        {mapBackgrounds.length > 0 &&
+          mapBackgrounds.map((item, index) => (
+            <S.MapItem
+              backgroundImage={item}
+              key={index}
+              aspectRatio="1.6/1"
+              onClick={() => handleUpload(item)}
+            />
+          ))}
       </S.MapBrowserGrid>
     </S.Wrapper>
   );

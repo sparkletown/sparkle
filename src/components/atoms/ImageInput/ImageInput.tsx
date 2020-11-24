@@ -15,6 +15,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   error,
   small,
   forwardRef,
+  nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState("");
   const [imageSizeError, setImageSizeError] = useState(false);
@@ -48,6 +49,9 @@ const ImageInput: React.FC<ImageInputProps> = ({
     if (initialRender && imgUrl) setImageUrl(imgUrl);
   }, [imgUrl]);
 
+  const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
+  const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
+
   return (
     <>
       <S.Wrapper
@@ -61,7 +65,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           className={customClass}
           hidden
           id={name}
-          name={`${name}File`}
+          name={fileName}
           onChange={(event) => handleOnChange(event.target.files)}
           ref={forwardRef}
           type="file"
@@ -72,7 +76,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       <input
         type="hidden"
-        name={`${name}Url`}
+        name={fileUrl}
         ref={forwardRef}
         value={imageUrl}
         readOnly
