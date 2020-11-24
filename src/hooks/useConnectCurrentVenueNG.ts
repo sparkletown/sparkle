@@ -7,7 +7,7 @@ import { VenueEvent } from "types/VenueEvent";
 import { withId } from "utils/id";
 
 import { useSelector } from "./useSelector";
-import { useSparkleFirestoreConnect } from "./useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (
   state
@@ -18,7 +18,7 @@ export const currentVenueEventsNGSelector: SparkleSelector<
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
 export const useConnectCurrentVenueNG = (venueId?: string) => {
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     !!venueId
       ? [
           {

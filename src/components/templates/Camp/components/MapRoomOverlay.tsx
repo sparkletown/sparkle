@@ -135,6 +135,10 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   const width = room.width_percent;
   const height = room.height_percent;
 
+  const attendees =
+    (attendances[`${venue.name}/${room.title}`] ?? 0) +
+    (room.attendanceBoost ?? 0);
+
   return (
     <div
       className={`room position-absolute ${isSelectedRoom && "isUnderneath"}`}
@@ -162,15 +166,11 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
           <img src={room.image_url} title={room.title} alt={room.title} />
         </div>
 
-        {shouldShowHovered && (
+        {shouldShowHovered && attendees > 0 && (
           <div className="camp-venue-text">
             <div className="camp-venue-maininfo">
               <div className="camp-venue-title">{room.title}</div>
-              <CampAttendance
-                attendances={attendances}
-                venue={venue}
-                room={room}
-              />
+              <CampAttendance attendees={attendees} />
             </div>
           </div>
         )}
@@ -182,11 +182,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
               {shouldShow1 && (
                 <div className="camp-venue-title">{room.title}</div>
               )}
-              <CampAttendance
-                attendances={attendances}
-                venue={venue}
-                room={room}
-              />
+              <CampAttendance attendees={attendees} />
             </div>
           )}
 
