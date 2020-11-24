@@ -3,7 +3,7 @@ notify-on-fail: &notify-on-fail
     condition: always
     steps:
       - slack/notify:
-          event: fail
+          event: always
           custom: |
             {
               "blocks": [

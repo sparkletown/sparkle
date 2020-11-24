@@ -1,7 +1,5 @@
 import "./wdyr";
 
-throw new Error("TODO: remove this commit, forcing a break test for CircleCI");
-
 import React from "react";
 import { render } from "react-dom";
 import { Provider } from "react-redux";
