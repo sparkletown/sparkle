@@ -61,28 +61,27 @@ jobs:
       - run: npm run prettier:check
       - run: npm run eslint:src
       - run: npm run test
-#      - run: npm run build # is there any point in building here?
       - *notify-on-fail
-#  smoke-test:
-#    executor:
-#      name: node/default
-#    steps:
-#      - checkout
-#      - node/with-cache:
-#          cache-version: v2
-#          steps:
-#            - run: sudo apt-get update
-#            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-#            - run: npm install
-#            - run: npm run cy:install # cache this instead
-#            - run: npm run cy:run
-#            - *notify-on-fail
+  #  smoke-test:
+  #    executor:
+  #      name: node/default
+  #    steps:
+  #      - checkout
+  #      - node/with-cache:
+  #          cache-version: v2
+  #          steps:
+  #            - run: sudo apt-get update
+  #            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+  #            - run: npm install
+  #            - run: npm run cy:install # cache this instead
+  #            - run: npm run cy:run
+  #            - *notify-on-fail
   deploy-functions:
     executor: node/default
-    working_directory: ~/project/functions   # ensure our steps (except for checkout) run in this directory
+    working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
     steps:
       - checkout:
-          path: ~/project                    # override the path just for checkout
+          path: ~/project # override the path just for checkout
       - node/install-packages
       - run:
           command: |
