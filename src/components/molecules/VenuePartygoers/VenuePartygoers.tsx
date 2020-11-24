@@ -22,14 +22,14 @@ export const VenuePartygoers = () => {
   const partygoers = useSelector(partygoersSelector) ?? [];
   const parentVenue = useSelector(parentVenueSelector);
 
-  const currentVenueTitle = venue.headerTitle ?? "partygoers";
-  const headerTitle = parentVenue?.headerTitle ?? currentVenueTitle;
+  const currentVenueTitle = venue.attendeesTitle ?? "partygoers";
+  const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
   const currentVenuePartygoers = filterVenuePartygoers(partygoers, venue);
   const numberOfPartygoers = currentVenuePartygoers.length;
 
   return (
     <div>
-      {numberOfPartygoers} {headerTitle} online
+      {numberOfPartygoers} {attendeesTitle} online
     </div>
   );
 };
