@@ -884,7 +884,8 @@ const Playa = () => {
         {atEdge && (
           <div className="playa-banner">
             <>
-              <strong>You're at the edge of the map.</strong> {atEdgeMessage}
+              <strong>You&apos;re at the edge of the map.</strong>{" "}
+              {atEdgeMessage}
             </>
           </div>
         )}

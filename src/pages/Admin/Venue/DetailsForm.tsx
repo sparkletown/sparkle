@@ -540,9 +540,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             Placement Requests
           </h4>
           <div style={{ fontSize: "16px" }}>
-            SparkleVerse's placement team will put your venue in an appropriate
-            location before the burn. If you wish to be placed somewhere
-            specific, or give suggestions for the team, please write that here.
+            SparkleVerse&apos;s placement team will put your venue in an
+            appropriate location before the burn. If you wish to be placed
+            somewhere specific, or give suggestions for the team, please write
+            that here.
           </div>
           <textarea
             disabled={disable}
@@ -622,12 +623,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
-            Enter the ID of the venue you would like for the "back" button
+            Enter the ID of the venue you would like for the &quot;back&quot;
+            button
           </h4>
           <div style={{ fontSize: "16px" }}>
-            The nav bar can show a "back" button. Enter the venue ID you wish to
-            use. A venue ID is the part of the URL after /in/, so eg. for
-            sparkle.space/in/abcdef you would enter abcdef below
+            The nav bar can show a &quot;back&quot; button. Enter the venue ID
+            you wish to use. A venue ID is the part of the URL after /in/, so
+            eg. for sparkle.space/in/abcdef you would enter abcdef below
           </div>
           <input
             type="text"
@@ -644,7 +646,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         {templateID && HAS_ROOMS_TEMPLATES.includes(templateID) && (
           <>
             <h4 className="italic" style={{ fontSize: "20px" }}>
-              Choose how you'd like your rooms to appear on the map
+              Choose how you&apos;d like your rooms to appear on the map
             </h4>
             <div className="input-container">
               <select name="roomVisibility" ref={register}>
@@ -673,7 +675,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               <span>Error in {fieldName}:</span>
               <ErrorMessage
                 errors={errors}
-                name={fieldName as any}
+                name={fieldName}
                 as="span"
                 key={fieldName}
               />
@@ -688,18 +690,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          You'll be able to add rooms to your theme camp on the next page
+          You&apos;ll be able to add rooms to your theme camp on the next page
         </div>
       )}
       {formError && (
         <div className="input-error">
           <div>One or more errors occurred when saving the form:</div>
-          {Object.keys(errors).map((fieldName) => (
-            <div>
+          {Object.keys(errors).map((fieldName, index) => (
+            <div key={index}>
               <span>Error in {fieldName}:</span>
               <ErrorMessage
                 errors={errors}
-                name={fieldName as any}
+                name={fieldName}
                 as="span"
                 key={fieldName}
               />
