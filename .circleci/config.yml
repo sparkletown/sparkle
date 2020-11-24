@@ -58,8 +58,9 @@ jobs:
       - checkout
       - node/install-packages
       - run: npm run init
-      - run: npm run lint
-      - run: npm run build # somehow linting rules differ from eslint
+      - run: npm run prettier:check
+      - run: npm run eslint:src
+      - run: npm run build
       - *notify-on-fail
 #  smoke-test:
 #    executor:
