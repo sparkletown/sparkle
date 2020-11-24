@@ -52,7 +52,7 @@ orbs:
   node: circleci/node@4.1.0
   slack: circleci/slack@4.1.1
 jobs:
-  build-and-test:
+  lint-and-test:
     executor: node/default
     steps:
       - checkout
