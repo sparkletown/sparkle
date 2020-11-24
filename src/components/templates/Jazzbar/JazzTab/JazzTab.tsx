@@ -35,7 +35,7 @@ import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
 
-interface PropsType {
+interface JazzProps {
   setUserList: (value: User[]) => void;
   venue?: Venue;
 }
@@ -48,7 +48,7 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
-const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
+const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   useFirestoreConnect([
     {
       collection: "experiences",
