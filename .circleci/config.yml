@@ -57,7 +57,6 @@ jobs:
     steps:
       - checkout
       - node/install-packages
-      - run: npm run init
       - run: npm run prettier:check
       - run: npm run eslint:src
       - run: npm run test
