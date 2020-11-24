@@ -232,7 +232,7 @@ export const Map: React.FC<MapProps> = ({
 
   return (
     <div
-      className="grid-container"
+      className="camp-grid-container"
       style={{
         backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
         backgroundSize: "cover",
