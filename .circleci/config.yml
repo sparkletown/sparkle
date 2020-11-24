@@ -1,6 +1,15 @@
+notify-on-fail: &notify-on-fail
+  when:
+    condition: always
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+  slack: circleci/slack@4.1.1
 jobs:
   build-and-test:
     executor:
@@ -14,6 +23,7 @@ jobs:
             - run: npm run init
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
+            - *notify-on-fail
   smoke-test:
     executor:
       name: node/default
@@ -27,6 +37,7 @@ jobs:
             - run: npm install
             - run: npm run cy:install # cache this instead
             - run: npm run cy:run
+            - *notify-on-fail
   deploy-functions:
     executor:
       name: node/default
@@ -52,7 +63,7 @@ jobs:
                   ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
                   ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
                   ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
-
+            - *notify-on-fail
   deploy-hosting:
     executor:
       name: node/default
@@ -82,6 +93,7 @@ jobs:
                   npm run build
                   ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
                   ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+            - *notify-on-fail
 workflows:
   build-test-deploy:
     jobs:
