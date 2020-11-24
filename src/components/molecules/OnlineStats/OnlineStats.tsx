@@ -201,46 +201,49 @@ const OnlineStats: React.FC = () => {
                           live events now
                         </h5>
                         <div className="venues-container">
-                          {liveVenues.map(({ venue, currentEvents }, index) => (
-                            <div className="venue-card" key={index}>
-                              <div className="img-container">
-                                <img
-                                  className="venue-icon"
-                                  src={venue.host.icon}
-                                  alt={venue.name}
-                                  title={venue.name}
+                          {liveVenues.map(({ venue, currentEvents }, index) => {
+                            const attendance =
+                              peopleAttending(peopleByLastSeen, venue)
+                                ?.length ?? 0;
+                            return (
+                              <div className="venue-card" key={index}>
+                                <div className="img-container">
+                                  <img
+                                    className="venue-icon"
+                                    src={venue.host.icon}
+                                    alt={venue.name}
+                                    title={venue.name}
+                                  />
+                                </div>
+                                <span className="venue-name">{venue.name}</span>
+                                {attendance > 0 && (
+                                  <span className="venue-people">
+                                    <b>{attendance}</b> people in this room
+                                  </span>
+                                )}
+                                {ENABLE_PLAYA_ADDRESS && venue.placement && (
+                                  <span className="venue-address">
+                                    Address:{" "}
+                                    {playaAddress(
+                                      venue.placement.x,
+                                      venue.placement.y
+                                    )}
+                                  </span>
+                                )}
+                                <span className="venue-subtitle">
+                                  {venue.config?.landingPageConfig.subtitle}
+                                </span>
+
+                                <VenueInfoEvents
+                                  eventsNow={currentEvents}
+                                  venue={venue}
+                                  showButton={true}
+                                  futureEvents={false}
+                                  joinNowButton={false}
                                 />
                               </div>
-                              <span className="venue-name">{venue.name}</span>
-                              <span className="venue-people">
-                                <b>
-                                  {peopleAttending(peopleByLastSeen, venue)
-                                    ?.length ?? 0}
-                                </b>{" "}
-                                people in this room
-                              </span>
-                              {ENABLE_PLAYA_ADDRESS && venue.placement && (
-                                <span className="venue-address">
-                                  Address:{" "}
-                                  {playaAddress(
-                                    venue.placement.x,
-                                    venue.placement.y
-                                  )}
-                                </span>
-                              )}
-                              <span className="venue-subtitle">
-                                {venue.config?.landingPageConfig.subtitle}
-                              </span>
-
-                              <VenueInfoEvents
-                                eventsNow={currentEvents}
-                                venue={venue}
-                                showButton={true}
-                                futureEvents={false}
-                                joinNowButton={false}
-                              />
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </>
                     )}
