@@ -23,6 +23,7 @@ export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
       (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
     ) ?? [];
   const numberOfUsersInRoom = usersInRoom?.length;
+  if (numberOfUsersInRoom < 1) return <></>;
   return (
     <div className="attendance-avatars">
       {usersInRoom.map((user, index) => {
