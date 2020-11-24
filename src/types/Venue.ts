@@ -1,9 +1,10 @@
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
+import { AvatarGridRoom } from "./AvatarGrid";
+import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
-import { AvatarGridRoom } from "./AvatarGrid";
-import { EntranceStepConfig } from "./EntranceStep";
 
 interface Question {
   name: string;
