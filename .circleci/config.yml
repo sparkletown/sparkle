@@ -134,10 +134,10 @@ jobs:
 workflows:
   build-test-deploy:
     jobs:
-      - build-and-test
+      - lint-and-test
       - deploy-functions:
           requires:
-            - build-and-test
+            - lint-and-test
           filters:
             branches:
               only:
@@ -146,7 +146,7 @@ workflows:
                 - sparkleverse
       - deploy-hosting:
           requires:
-            - build-and-test
+            - lint-and-test
           filters:
             branches:
               only:
