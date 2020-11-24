@@ -6,11 +6,7 @@ import {
   WhereOptions,
 } from "react-redux-firebase";
 import { ValidFirestoreKeys } from "types/Firestore";
-
-/**
- * Type helper representing all types of T except undefined
- */
-export type Defined<T> = T & Exclude<T, undefined>;
+import { Defined } from "types/utility";
 
 /**
  * This type allows us to avoid bugs when doc is not specified, and
@@ -30,12 +26,13 @@ export interface SparkleRFQuery extends ReduxFirestoreQuerySetting {
 }
 
 /**
- * This type allows us to automagically constrain the storeAs
- * parameter to keys that exist within ValidFirestoreKeys, ensuring
- * that we can't forget to define it in our types when using functions
- * that rely on this type (eg. useFirestoreConnect)
+ * This type allows us to query for a single document, and automagically
+ * constrain the storeAs parameter to keys that exist within
+ * ValidFirestoreKeys, ensuring that we can't forget to define it in our
+ * types when using functions that rely on this type
+ * (eg. useFirestoreConnect)
  *
- * @see ValidFirestoreKeys
+ * @see AnySparkleRFQuery
  * @see useFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
@@ -57,14 +54,21 @@ export type AnySparkleRFQuery = SparkleRFQuery | SparkleRFDocQuery;
  * through a deep comparison using lodash's isEqual() function.
  *
  * @param config the config to be passed to useFirestoreConnect()
+ * @param shouldExecuteQuery if the value passed is falsy,
+ *  don't execute the query (ie. no-op).
  *
- * @see SparkleRFQConfig
+ * @see AnySparkleRFQuery
  * @see ValidFirestoreKeys
  * @see ReduxFirestoreQuerySetting
  */
 export const useFirestoreConnect = (
-  config: AnySparkleRFQuery | AnySparkleRFQuery[]
-) => _useFirestoreConnect(config);
+  config: AnySparkleRFQuery | AnySparkleRFQuery[],
+  shouldExecuteQuery?: boolean
+) => {
+  if (!shouldExecuteQuery) return;
+
+  return _useFirestoreConnect(config);
+};
 
 /**
  * Use react-redux-firestore's isEmpty helper with
