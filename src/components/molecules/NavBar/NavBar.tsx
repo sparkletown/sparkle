@@ -17,7 +17,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import {
-  SparkleDocRFQSetting,
+  SparkleRFDocQuery,
   useFirestoreConnect,
 } from "hooks/useFirestoreConnect";
 
@@ -89,7 +89,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentQuery = useMemo<SparkleDocRFQSetting[]>(
+  const venueParentQuery = useMemo<SparkleRFDocQuery[]>(
     () =>
       venue?.parentId
         ? [

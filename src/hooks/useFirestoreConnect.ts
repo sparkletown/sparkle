@@ -23,7 +23,7 @@ export type Defined<T> = T & Exclude<T, undefined>;
  * @see useFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
-export interface SparkleRFQSetting extends ReduxFirestoreQuerySetting {
+export interface SparkleRFQuery extends ReduxFirestoreQuerySetting {
   doc?: never;
   where: WhereOptions | WhereOptions[];
   storeAs?: ValidFirestoreKeys;
@@ -39,11 +39,13 @@ export interface SparkleRFQSetting extends ReduxFirestoreQuerySetting {
  * @see useFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
-export interface SparkleDocRFQSetting extends ReduxFirestoreQuerySetting {
+export interface SparkleRFDocQuery extends ReduxFirestoreQuerySetting {
   doc: string;
   where?: never;
   storeAs?: ValidFirestoreKeys;
 }
+
+export type AnySparkleRFQuery = SparkleRFQuery | SparkleRFDocQuery;
 
 /**
  * A wrapper for useFirestoreConnect() that ensures the config
@@ -61,9 +63,7 @@ export interface SparkleDocRFQSetting extends ReduxFirestoreQuerySetting {
  * @see ReduxFirestoreQuerySetting
  */
 export const useFirestoreConnect = (
-  config:
-    | (SparkleRFQSetting | SparkleDocRFQSetting)
-    | (SparkleRFQSetting | SparkleDocRFQSetting)[]
+  config: AnySparkleRFQuery | AnySparkleRFQuery[]
 ) => _useFirestoreConnect(config);
 
 /**
