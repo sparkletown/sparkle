@@ -36,6 +36,7 @@ export interface VenueNew {
   };
   showGrid: boolean;
   columns?: number;
+  id?: string;
 }
 
 export interface Venue {

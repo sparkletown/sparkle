@@ -15,6 +15,7 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 // Styles
 import * as S from "./VenueDetails.styles";
 import firebase from "firebase";
+import RoomModal from "pages/Admin/Room/Modal";
 
 type Owner = {
   id: string;
@@ -24,7 +25,7 @@ type Owner = {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const { name, owners } = venue;
+  const { name, owners, id } = venue;
   const {
     subtitle,
     description,
@@ -32,6 +33,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   } = venue.config.landingPageConfig;
   const { icon } = venue.host;
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     async function getOwnersData() {
@@ -42,6 +44,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           })
         ).data;
 
+        // if (ownersData.filter(i => i.id !== owner)) {
         setOwnersData((prevState) => [
           ...prevState,
           {
@@ -49,6 +52,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
             ...user,
           },
         ]);
+        // }
       }
     }
 
@@ -58,6 +62,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       console.error(error);
     }
   }, [owners]);
+
+  const toggleRoomModal = () => setModalOpen(!modalOpen);
 
   return (
     <S.Container>
@@ -93,7 +99,15 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <S.Main>
         <BackgroundSelect venueName={name} />
+
+        <Button onClick={() => toggleRoomModal()}>Add a room</Button>
       </S.Main>
+
+      <RoomModal
+        isVisible={modalOpen}
+        venueId={id!}
+        onSubmitHandler={() => setModalOpen(false)}
+      />
     </S.Container>
   );
 };
