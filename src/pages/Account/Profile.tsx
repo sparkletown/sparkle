@@ -84,7 +84,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name is less than 16 characters
+                Display name must be 16 characters or less
               </span>
             )}
             {user && (
