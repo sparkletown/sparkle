@@ -161,7 +161,7 @@ workflows:
 #          requires:
 #            - deploy-functions
 #            - deploy-hosting
-          filters:
-            branches:
-              only:
-                - staging
+#          filters:
+#            branches:
+#              only:
+#                - staging
