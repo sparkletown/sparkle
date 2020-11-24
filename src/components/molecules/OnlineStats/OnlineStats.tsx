@@ -212,7 +212,8 @@ const OnlineStats: React.FC = () => {
                                 />
                               </div>
                               <span className="venue-name">{venue.name}</span>
-                              {venue.showRoomAttendance && (
+                              {peopleAttending(peopleByLastSeen, venue)
+                                ?.length > 0 && (
                                 <span className="venue-people">
                                   <b>
                                     {peopleAttending(peopleByLastSeen, venue)
