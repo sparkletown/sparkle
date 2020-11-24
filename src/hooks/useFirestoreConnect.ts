@@ -1,8 +1,9 @@
 import {
   ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
+  useFirestoreConnect as _useFirestoreConnect,
   isLoaded as _isLoaded,
   isEmpty as _isEmpty,
+  WhereOptions,
 } from "react-redux-firebase";
 import { ValidFirestoreKeys } from "types/Firestore";
 
@@ -12,16 +13,35 @@ import { ValidFirestoreKeys } from "types/Firestore";
 export type Defined<T> = T & Exclude<T, undefined>;
 
 /**
+ * This type allows us to avoid bugs when doc is not specified, and
+ * automagically constrain the storeAs parameter to keys that exist
+ * within ValidFirestoreKeys, ensuring that we can't forget to define
+ * it in our types when using functions that rely on this type
+ * (eg. useFirestoreConnect)
+ *
+ * @see ValidFirestoreKeys
+ * @see useFirestoreConnect
+ * @see ReduxFirestoreQuerySetting
+ */
+export interface SparkleRFQSetting extends ReduxFirestoreQuerySetting {
+  doc?: never;
+  where: WhereOptions | WhereOptions[];
+  storeAs?: ValidFirestoreKeys;
+}
+
+/**
  * This type allows us to automagically constrain the storeAs
  * parameter to keys that exist within ValidFirestoreKeys, ensuring
  * that we can't forget to define it in our types when using functions
- * that rely on this type (eg. useSparkleFirestoreConnect)
+ * that rely on this type (eg. useFirestoreConnect)
  *
  * @see ValidFirestoreKeys
- * @see useSparkleFirestoreConnect
+ * @see useFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
-export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
+export interface SparkleDocRFQSetting extends ReduxFirestoreQuerySetting {
+  doc: string;
+  where?: never;
   storeAs?: ValidFirestoreKeys;
 }
 
@@ -31,7 +51,7 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  * in our FirestoreData/FirestoreOrdered types.
  *
  * Note: the config does NOT need to be memo'd before being passed
- * to this function as useSparkleFirestoreConnect() determines equality
+ * to this function as useFirestoreConnect() determines equality
  * through a deep comparison using lodash's isEqual() function.
  *
  * @param config the config to be passed to useFirestoreConnect()
@@ -40,8 +60,9 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  * @see ValidFirestoreKeys
  * @see ReduxFirestoreQuerySetting
  */
-export const useSparkleFirestoreConnect = (config: SparkleRFQConfig[]) =>
-  useFirestoreConnect(config);
+export const useFirestoreConnect = (
+  config: (SparkleRFQSetting | SparkleDocRFQSetting)[]
+) => _useFirestoreConnect(config);
 
 /**
  * Use react-redux-firestore's isEmpty helper with
