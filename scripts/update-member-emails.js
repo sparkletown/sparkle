@@ -1,5 +1,3 @@
-"use strict";
-
 var fs = require("fs");
 var firebase = require("firebase/app");
 require("firebase/auth");
