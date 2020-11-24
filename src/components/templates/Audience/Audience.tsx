@@ -215,12 +215,6 @@ export const Audience: React.FunctionComponent = () => {
   const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
   const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
 
-  const translateRow = (untranslatedRowIndex: number) =>
-    untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
-
-  const translateColumn = (untranslatedColumnIndex: number) =>
-    untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
-
   const isSeat = useCallback(
     (translatedRow: number, translatedColumn: number) => {
       const isInFireLaneColumn = translatedColumn === 0;
@@ -292,6 +286,12 @@ export const Audience: React.FunctionComponent = () => {
     const userSeated =
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
+
+    const translateRow = (untranslatedRowIndex: number) =>
+      untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
+
+    const translateColumn = (untranslatedColumnIndex: number) =>
+      untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
     return (
       <>
@@ -463,9 +463,7 @@ export const Audience: React.FunctionComponent = () => {
     experienceContext,
     reset,
     reactionClicked,
-    translateRow,
     columnsForSizedAuditorium,
-    translateColumn,
     isSeat,
     partygoersBySeat,
   ]);

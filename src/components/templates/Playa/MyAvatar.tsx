@@ -77,7 +77,7 @@ const MyAvatar: React.ForwardRefRenderFunction<HTMLDivElement, PropsType> = (
     stateInitialized.current = true;
   }, [serverSentState, setMyLocation, setBikeMode, setVideoState]);
 
-  const arrowMoveIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const arrowMoveIntervalRef = useRef<number | null>(null);
 
   useEffect(() => {
     const buttonMove = () => {
