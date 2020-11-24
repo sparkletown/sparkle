@@ -4,7 +4,48 @@ notify-on-fail: &notify-on-fail
     steps:
       - slack/notify:
           event: fail
-          template: basic_fail_1
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "⚠️ Job `${CIRCLE_JOB}` on branch `${CIRCLE_BRANCH}` has failed"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Committer*: ${CIRCLE_USERNAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*SHA:* ${CIRCLE_SHA1}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "\n *Mentions*: ${SLACK_PARAM_MENTIONS}"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
 
 version: 2.1
 orbs:
@@ -24,20 +65,20 @@ jobs:
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
             - *notify-on-fail
-  smoke-test:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run: sudo apt-get update
-            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-            - run: npm install
-            - run: npm run cy:install # cache this instead
-            - run: npm run cy:run
-            - *notify-on-fail
+#  smoke-test:
+#    executor:
+#      name: node/default
+#    steps:
+#      - checkout
+#      - node/with-cache:
+#          cache-version: v2
+#          steps:
+#            - run: sudo apt-get update
+#            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+#            - run: npm install
+#            - run: npm run cy:install # cache this instead
+#            - run: npm run cy:run
+#            - *notify-on-fail
   deploy-functions:
     executor:
       name: node/default
@@ -116,11 +157,11 @@ workflows:
                 - master
                 - staging
                 - sparkleverse
-      - smoke-test:
-          requires:
-            - deploy-functions
-            - deploy-hosting
-          filters:
-            branches:
-              only:
-                - staging
+#      - smoke-test:
+#          requires:
+#            - deploy-functions
+#            - deploy-hosting
+#          filters:
+#            branches:
+#              only:
+#                - staging

@@ -16,6 +16,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
+import { hasElements } from "utils/types";
 
 interface ChatListProps {
   messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
@@ -84,7 +85,7 @@ const ChatList: React.FC<ChatListProps> = ({
   );
   const hideDeleteModal = useCallback(() => setShowDeleteModal(false), []);
 
-  const hasMessages = !!messages.length;
+  const hasMessages = hasElements(messages);
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
   return (
     <>
