@@ -57,6 +57,9 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
+  const jazzbarConfig = venueToUse?.config?.jazzbarConfig;
+  const jazzbarTables = jazzbarConfig?.tables ?? JAZZBAR_TABLES;
+
   useEffect(() => {
     const interval = setInterval(() => {
       setNowMs(new Date().getTime());
@@ -161,7 +164,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
                 venueName={venueToUse.name}
-                tables={JAZZBAR_TABLES}
+                tables={jazzbarTables}
               />
             )}
             <div
@@ -263,7 +266,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
             venueName={venueToUse.name}
             TableComponent={TableComponent}
             joinMessage={!venueToUse?.hideVideo ?? true}
-            customTables={JAZZBAR_TABLES}
+            customTables={jazzbarTables}
           />
         </div>
       </div>
