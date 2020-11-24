@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 .chat-drawer-container {
+  z-index: 2;
   display: flex;
   flex-direction: column;
   transition: all 0.2s linear;
