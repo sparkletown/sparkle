@@ -1,4 +1,8 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
+import {
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,10 +20,6 @@ import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import {
-  SparkleRFDocQuery,
-  useFirestoreConnect,
-} from "hooks/useFirestoreConnect";
 
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
@@ -89,18 +89,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentQuery = useMemo<SparkleRFDocQuery[]>(
-    () =>
-      venue?.parentId
-        ? [
-            {
-              collection: "venues",
-              doc: venue.parentId,
-              storeAs: "parentVenue",
-            },
-          ]
-        : [],
-    [venue]
+  const venueParentId = venue?.parentId;
+  const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
+    () => ({
+      collection: "venues",
+      doc: venueParentId,
+      storeAs: "parentVenue",
+    }),
+    [venueParentId]
   );
   useFirestoreConnect(venueParentQuery);
 
