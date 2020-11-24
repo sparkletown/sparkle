@@ -60,7 +60,7 @@ jobs:
       - node/with-cache:
           cache-version: v2
           steps:
-            - run: npm install
+            - run: npm ci
             - run: npm run init
             - run: npm run lint
             - run: npm run build # somehow linting rules differ from eslint
