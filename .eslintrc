@@ -22,8 +22,8 @@
       "error",
       {
         "name": "react-redux",
-        "importNames": ["useSelector", "useDispatch"],
-        "message": "Import typed version from hooks/{useSelector|useDispatch}"
+        "importNames": ["useSelector", "useDispatch", "useFirestoreConnect"],
+        "message": "Import typed version from hooks/{useSelector|useDispatch|useFirestoreConnect}"
       }
     ],
     "react/prop-types": "off",

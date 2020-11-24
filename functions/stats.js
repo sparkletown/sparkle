@@ -19,7 +19,7 @@ const eventIsNow = (event, now) => {
   );
 };
 
-exports.getOnlineStats = functions.https.onCall(async (data, context) => {
+exports.getOnlineStats = functions.https.onCall(async () => {
   const now = new Date().getTime();
 
   let openVenues = [];
@@ -29,24 +29,21 @@ exports.getOnlineStats = functions.https.onCall(async (data, context) => {
       const template = venue.data().template;
       const openWithoutEvents =
         template === "artpiece" || template === "themecamp";
-      await venue.ref
-        .collection("events")
-        .get()
-        .then((events) => {
-          const currentEvents = events.docs
-            .map((event) => event.data())
-            .filter((event) => eventIsNow(event, now));
-          const venueOpen = currentEvents.length > 0;
+      const events = await venue.ref.collection("events").get();
 
-          if (venueOpen || openWithoutEvents) {
-            const venueWithId = venue.data();
-            venueWithId.id = venue.id;
-            openVenues.push({
-              venue: venueWithId,
-              currentEvents: currentEvents,
-            });
-          }
+      const currentEvents = events.docs
+        .map((event) => event.data())
+        .filter((event) => eventIsNow(event, now));
+      const venueOpen = currentEvents.length > 0;
+
+      if (venueOpen || openWithoutEvents) {
+        const venueWithId = venue.data();
+        venueWithId.id = venue.id;
+        openVenues.push({
+          venue: venueWithId,
+          currentEvents: currentEvents,
         });
+      }
     })
   );
   return { openVenues };
@@ -66,46 +63,42 @@ const eventIsLiveOrInFuture = (event, now) => {
   return eventIsTransient && (eventIsInFuture || eventIsNow);
 };
 
-exports.getAllEvents = functions.https.onCall(async (data, context) => {
+exports.getAllEvents = functions.https.onCall(async () => {
   throw new functions.https.HttpsError(
     "outdated",
     "use getLiveAndFutureEvents instead"
   );
 });
 
-exports.getLiveAndFutureEvents = functions.https.onCall(
-  async (data, context) => {
-    try {
-      const now = new Date().getTime();
+exports.getLiveAndFutureEvents = functions.https.onCall(async () => {
+  try {
+    const now = new Date().getTime();
 
-      let openVenues = [];
-      const venues = await admin.firestore().collection("venues").get();
-      await Promise.all(
-        venues.docs.map(async (venue) => {
-          const template = venue.data().template;
-          try {
-            const events = await venue.ref.collection("events").get();
-            const liveAndFutureEvents = events.docs
-              .map((eventRef) => sanitizeEvent(eventRef.data(), now))
-              .filter((event) => eventIsLiveOrInFuture(event, now));
+    let openVenues = [];
+    const venues = await admin.firestore().collection("venues").get();
+    await Promise.all(
+      venues.docs.map(async (venue) => {
+        try {
+          const events = await venue.ref.collection("events").get();
+          const liveAndFutureEvents = events.docs
+            .map((eventRef) => sanitizeEvent(eventRef.data(), now))
+            .filter((event) => eventIsLiveOrInFuture(event, now));
 
-            if (!liveAndFutureEvents) return;
+          if (!liveAndFutureEvents) return;
 
-            const venueWithId = { ...venue.data(), id: venue.id };
-            openVenues.push({
-              venue: venueWithId,
-              currentEvents: liveAndFutureEvents,
-            });
-          } catch (e) {
-            console.log("error", e);
-          }
-        })
-      );
+          const venueWithId = { ...venue.data(), id: venue.id };
+          openVenues.push({
+            venue: venueWithId,
+            currentEvents: liveAndFutureEvents,
+          });
+        } catch (e) {
+          throw new functions.https.HttpsError("internal", e.toString());
+        }
+      })
+    );
 
-      return { openVenues };
-    } catch (error) {
-      console.log(error);
-      console.error(error);
-    }
+    return { openVenues };
+  } catch (error) {
+    throw new functions.https.HttpsError("internal", error.toString());
   }
-);
+});

@@ -57,8 +57,8 @@ export type VenueInput = AdvancedVenueInput &
     description: string;
     zoomUrl?: string;
     iframeUrl?: string;
-    template: any;
-    rooms?: Array<any>;
+    template: string;
+    rooms?: Array<CampRoomData>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
     adultContent: boolean;

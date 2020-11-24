@@ -15,10 +15,6 @@ import {
   useRouteMatch,
   useHistory,
 } from "react-router-dom";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
@@ -67,6 +63,7 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
+import { SparkleRFQuery, useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 dayjs.extend(advancedFormat);
 
@@ -130,7 +127,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const venueSelector = useCallback(makeVenueSelector(venueId), [venueId]);
+  const venueSelector = useCallback(
+    (state) => makeVenueSelector(venueId)(state),
+    [venueId]
+  );
   const venue = useSelector(venueSelector, shallowEqual);
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
@@ -427,7 +427,7 @@ const Admin: React.FC = () => {
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
+  const venuesOwnedByUserQuery = useMemo<SparkleRFQuery>(
     () => ({
       collection: "venues",
       where: [["owners", "array-contains", userId]],
