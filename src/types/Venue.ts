@@ -3,6 +3,7 @@ import { FormValues } from "pages/Admin/Venue/DetailsForm";
 import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
+import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 
@@ -76,10 +77,15 @@ export interface VenueConfig {
     backgroundColor?: string;
   };
 
+  jazzbarConfig: VenueJazzbarConfig;
   landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
 
   memberEmails?: string[];
   showRangers?: boolean;
+}
+
+export interface VenueJazzbarConfig {
+  tables?: Table[];
 }
 
 export interface VenueLandingPageConfig {
