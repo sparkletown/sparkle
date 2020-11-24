@@ -116,10 +116,10 @@ workflows:
                 - master
                 - staging
                 - sparkleverse
-      - smoke-test:
-          requires:
-            - deploy-functions
-            - deploy-hosting
+#      - smoke-test:
+#          requires:
+#            - deploy-functions
+#            - deploy-hosting
           filters:
             branches:
               only:
