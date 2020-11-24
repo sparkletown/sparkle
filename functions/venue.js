@@ -2,7 +2,6 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const PROJECT_ID = functions.config().project.id;
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
@@ -109,6 +108,9 @@ const createVenueData = (data, context) => {
     case VenueTemplate.playa:
       venueData.roomVisibility = data.roomVisibility;
       break;
+
+    default:
+      break;
   }
   return venueData;
 };
@@ -131,26 +133,25 @@ const checkUserIsOwner = async (venueId, uid) => {
       if (venue.owners && venue.owners.includes(uid)) return;
 
       if (venue.parentId) {
-        await admin
+        const doc = await admin
           .firestore()
           .collection("venues")
           .doc(venue.parentId)
-          .get()
-          .then((doc) => {
-            if (!doc.exists) {
-              throw new HttpsError(
-                "not-found",
-                `Venue ${venueId} references missing parent ${venue.parentId}`
-              );
-            }
-            const parentVenue = doc.data();
-            if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-              throw new HttpsError(
-                "permission-denied",
-                `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-              );
-            }
-          });
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
       }
 
       throw new HttpsError(
@@ -230,14 +231,12 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
 
   // If a user is not an owner of any venue,
   // remove the user from the list of admins
-  await admin
+  const snap = await admin
     .firestore()
     .collection("venues")
     .where("owners", "array-contains", ownerId)
-    .get()
-    .then((snap) => {
-      if (snap.empty) return removeAdmin(ownerId);
-    });
+    .get();
+  if (snap.empty) removeAdmin(ownerId);
 });
 
 exports.createVenue = functions.https.onCall(async (data, context) => {
@@ -256,53 +255,43 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, roomIndex, room } = data;
   await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const docData = doc.data();
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-      if (typeof roomIndex !== "number") {
-        docData.rooms = [...docData.rooms, room];
-      } else {
-        docData.rooms[roomIndex] = room;
-      }
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const docData = doc.data();
 
-      admin.firestore().collection("venues").doc(venueId).update(docData);
-    });
+  if (typeof roomIndex !== "number") {
+    docData.rooms = [...docData.rooms, room];
+  } else {
+    docData.rooms[roomIndex] = room;
+  }
+
+  admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
   await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const docData = doc.data();
-      const rooms = docData.rooms;
+  await admin.firestore().collection("venues").doc(venueId).get();
 
-      //if the room exists under the same name, find it
-      const index = rooms.findIndex((val) => val.title === room.title);
-      if (index === -1) {
-        throw new HttpsError("not-found", "Room does not exist");
-      } else {
-        docData.rooms.splice(index, 1);
-      }
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const docData = doc.data();
+  const rooms = docData.rooms;
 
-      admin.firestore().collection("venues").doc(venueId).update(docData);
-    });
+  //if the room exists under the same name, find it
+  const index = rooms.findIndex((val) => val.title === room.title);
+  if (index === -1) {
+    throw new HttpsError("not-found", "Room does not exist");
+  } else {
+    docData.rooms.splice(index, 1);
+  }
+
+  admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
 exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
@@ -310,48 +299,46 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
 
   await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
 
+  const doc = await admin
+    .firestore()
+    .collection("venues")
+    .doc(PLAYA_VENUE_ID)
+    .get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
+  }
+  const updated = doc.data();
+  updated.dustStorm = !updated.dustStorm;
   await admin
     .firestore()
     .collection("venues")
     .doc(PLAYA_VENUE_ID)
-    .get()
-    .then(async (doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-      }
+    .update(updated);
+
+  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
+  // Fetch the doc again, in case anything changed meanwhile.
+  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
+  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
+  if (updated.dustStorm) {
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await wait(50 * 1000);
+    const doc = await admin
+      .firestore()
+      .collection("venues")
+      .doc(PLAYA_VENUE_ID)
+      .get();
+
+    if (doc && doc.exists) {
       const updated = doc.data();
-      updated.dustStorm = !updated.dustStorm;
+      updated.dustStorm = false;
       admin
         .firestore()
         .collection("venues")
         .doc(PLAYA_VENUE_ID)
         .update(updated);
-
-      // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-      // Fetch the doc again, in case anything changed meanwhile.
-      // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-      // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-      if (updated.dustStorm) {
-        const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-        await wait(50 * 1000);
-        await admin
-          .firestore()
-          .collection("venues")
-          .doc(PLAYA_VENUE_ID)
-          .get()
-          .then((doc) => {
-            if (doc && doc.exists) {
-              const updated = doc.data();
-              updated.dustStorm = false;
-              admin
-                .firestore()
-                .collection("venues")
-                .doc(PLAYA_VENUE_ID)
-                .update(updated);
-            }
-          });
-      }
-    });
+    }
+  }
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
@@ -472,6 +459,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
         updated.zoomUrl = data.zoomUrl;
       }
       break;
+
+    default:
+      break;
   }
 
   await admin.firestore().collection("venues").doc(venueId).update(updated);
@@ -490,61 +480,51 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);
   await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const updated = doc.data();
-      updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
-      updated.placement = {
-        x: dataOrUpdateKey(data.placement, updated.placement, "x"),
-        y: dataOrUpdateKey(data.placement, updated.placement, "y"),
-        state: PlacementState.AdminPlaced,
-      };
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-      updated.width = data.width;
-      updated.height = data.height;
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const updated = doc.data();
+  updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
+  updated.placement = {
+    x: dataOrUpdateKey(data.placement, updated.placement, "x"),
+    y: dataOrUpdateKey(data.placement, updated.placement, "y"),
+    state: PlacementState.AdminPlaced,
+  };
 
-      const addressText = dataOrUpdateKey(
-        data.placement,
-        updated.placement,
-        "addressText"
-      );
-      const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
+  updated.width = data.width;
+  updated.height = data.height;
 
-      if (addressText) {
-        updated.placement.addressText = addressText;
-      }
-      if (notes) {
-        updated.placement.notes = notes;
-      }
+  const addressText = dataOrUpdateKey(
+    data.placement,
+    updated.placement,
+    "addressText"
+  );
+  const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
 
-      admin.firestore().collection("venues").doc(venueId).update(updated);
-    });
+  if (addressText) {
+    updated.placement.addressText = addressText;
+  }
+  if (notes) {
+    updated.placement.notes = notes;
+  }
+
+  admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
 exports.adminHideVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);
   await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const updated = doc.data();
-      updated.placement.state = PlacementState.Hidden;
-      admin.firestore().collection("venues").doc(venueId).update(updated);
-    });
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const updated = doc.data();
+  updated.placement.state = PlacementState.Hidden;
+  admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
 exports.adminUpdateBannerMessage = functions.https.onCall(
@@ -581,40 +561,36 @@ exports.getVenueEvents = functions.https.onCall(
         .doc(venueId)
         .get();
       const events = await venue.ref.collection("events").get();
-      try {
-        const liveAndFutureEvents = events.docs
-          .map((eventRef) => {
-            const event = eventRef.data();
-            if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
-              event.start_utc_seconds = now / 1000;
-            }
-            return event;
-          })
-          .filter((event) => {
-            const nowSeconds = now / 1000;
 
-            const eventIsTransient =
-              event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
+      const liveAndFutureEvents = events.docs
+        .map((eventRef) => {
+          const event = eventRef.data();
+          if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
+            event.start_utc_seconds = now / 1000;
+          }
+          return event;
+        })
+        .filter((event) => {
+          const nowSeconds = now / 1000;
 
-            const eventIsInFuture = nowSeconds < event.start_utc_seconds;
+          const eventIsTransient =
+            event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
 
-            const eventEndSeconds =
-              60 * event.duration_minutes + event.start_utc_seconds;
-            const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
+          const eventIsInFuture = nowSeconds < event.start_utc_seconds;
 
-            return eventIsTransient && (eventIsInFuture || eventIsNow);
-          });
-        if (liveAndFutureEvents) {
-          venueEvents.push(...liveAndFutureEvents);
-        }
-      } catch (e) {
-        console.log("error", e);
+          const eventEndSeconds =
+            60 * event.duration_minutes + event.start_utc_seconds;
+          const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
+
+          return eventIsTransient && (eventIsInFuture || eventIsNow);
+        });
+      if (liveAndFutureEvents) {
+        venueEvents.push(...liveAndFutureEvents);
       }
 
       return venueEvents;
     } catch (error) {
-      console.log(error);
-      console.error(error);
+      throw new HttpsError("internal", e.toString());
     }
   }
 );

@@ -106,29 +106,33 @@ export const useConnectRelatedVenues: ReactHook<
   const siblingVenues = useSelector(siblingNotVenueSelector) ?? [];
 
   const maybeParentEventsSelector = useCallback(
-    maybeArraySelector(withEvents, parentEventsWithVenueIdsSelector),
-    [withEvents, parentEventsWithVenueIdsSelector] // @debt our linters didnt tell us about these deps not being exhaustive
+    (state) =>
+      maybeArraySelector(withEvents, parentEventsWithVenueIdsSelector)(state),
+    [withEvents, parentEventsWithVenueIdsSelector]
   );
 
   const maybeVenueEventsSelector = useCallback(
-    maybeArraySelector(withEvents, venueEventsWithVenueIdsSelector),
-    [withEvents, venueEventsWithVenueIdsSelector] // @debt our linters didnt tell us about these deps not being exhaustive
+    (state) =>
+      maybeArraySelector(withEvents, venueEventsWithVenueIdsSelector)(state),
+    [withEvents, venueEventsWithVenueIdsSelector]
   );
 
   const maybeSiblingEventsSelector = useCallback(
-    maybeArraySelector(
-      withEvents,
-      venueEventsSelectorToEventsWithVenueIds(siblingVenues)
-    ),
-    [withEvents, siblingVenues] // @debt our linters didnt tell us about these deps not being exhaustive
+    (state) =>
+      maybeArraySelector(
+        withEvents,
+        venueEventsSelectorToEventsWithVenueIds(siblingVenues)
+      )(state),
+    [withEvents, siblingVenues]
   );
 
   const maybeSubvenueEventsSelector = useCallback(
-    maybeArraySelector(
-      withEvents,
-      venueEventsSelectorToEventsWithVenueIds(subvenues)
-    ),
-    [withEvents, subvenues] // @debt our linters didnt tell us about these deps not being exhaustive
+    (state) =>
+      maybeArraySelector(
+        withEvents,
+        venueEventsSelectorToEventsWithVenueIds(subvenues)
+      )(state),
+    [withEvents, subvenues]
   );
 
   const parentVenueEvents: WithVenueId<VenueEvent>[] = useSelector(

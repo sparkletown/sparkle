@@ -32,7 +32,7 @@ import {
   ChatRequestState,
   ChatRequestType,
 } from "types/ChatRequest";
-import { useDispatch } from "react-redux";
+import { useDispatch } from "hooks/useDispatch";
 import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
 
@@ -139,7 +139,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   useEffect(() => {
     if (!user || wsInitedRef.current) return;
 
-    let unmounting = false;
+    const unmounting = false;
     const newWebSocket = () => {
       const newWs = new WebSocket(WS_RELAY_URL || DEFAULT_WS_RELAY_URL);
 
