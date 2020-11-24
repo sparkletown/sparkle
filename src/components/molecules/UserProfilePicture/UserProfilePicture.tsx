@@ -7,7 +7,7 @@ import React, {
 } from "react";
 
 // Typings
-import { User } from "types/User";
+import { UserProfilePictureProp } from "./UserProfilePicture.types";
 
 // Components
 import {
@@ -20,7 +20,6 @@ import {
 import { useSelector } from "hooks/useSelector";
 
 // Utils | Settings
-import { WithId } from "utils/id";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
@@ -29,16 +28,7 @@ import {
 
 // Styles
 import "./UserProfilePicture.scss";
-
-type UserProfilePictureProp = {
-  isAudioEffectDisabled?: boolean;
-  miniAvatars?: boolean;
-  avatarClassName?: string;
-  avatarStyle?: object;
-  containerStyle?: object;
-  setSelectedUserProfile: (user: WithId<User>) => void;
-  user: WithId<User>;
-};
+import * as S from "./UserProfilePicture.styles";
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
@@ -47,6 +37,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   avatarStyle,
   containerStyle,
   setSelectedUserProfile,
+  reactionPosition,
   user,
 }) => {
   const experienceContext = useContext(ExperienceContext);
@@ -60,7 +51,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const avatarUrl = useCallback(
     (id: string, anonMode?: boolean, pictureUrl?: string) => {
-      if (anonMode) {
+      if (anonMode || !id) {
         return setPictureUrl(DEFAULT_PROFILE_IMAGE);
       }
 
@@ -102,7 +93,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return useMemo(() => {
     return (
-      <div style={containerStyle} className="profile-picture-container">
+      <S.Container style={{ ...containerStyle }}>
         {/* Hidden image, used to handle error if image is not loaded */}
         <img
           src={pictureUrl}
@@ -111,13 +102,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           style={{ display: "none" }}
           alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
         />
-        <div
+        <S.Avatar
           onClick={() => setSelectedUserProfile(user)}
           className={avatarClassName}
-          style={{
-            ...avatarStyle,
-            backgroundImage: `url(${pictureUrl})`,
-          }}
+          backgroundImage={pictureUrl}
+          style={{ ...avatarStyle }}
         />
 
         {Reactions.map(
@@ -127,13 +116,15 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
               (r) => r.created_by === user.id && r.reaction === reaction.type
             ) && (
               <div key={index} className="reaction-container">
-                <span
-                  className={`reaction ${reaction.name}`}
+                <S.Reaction
                   role="img"
                   aria-label={reaction.ariaLabel}
+                  className={reaction.name}
+                  reactionPosition={reactionPosition}
                 >
                   {reaction.text}
-                </span>
+                </S.Reaction>
+
                 {!muteReactions && !isAudioEffectDisabled && (
                   <audio autoPlay loop>
                     <source src={reaction.audioPath} />
@@ -144,16 +135,16 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         )}
         {messagesToBand && (
           <div className="reaction-container">
-            <div
-              className="reaction messageToBand"
+            <S.ShoutOutMessage
               role="img"
               aria-label="messageToTheBand"
+              reactionPosition={reactionPosition}
             >
               {messagesToBand.text}
-            </div>
+            </S.ShoutOutMessage>
           </div>
         )}
-      </div>
+      </S.Container>
     );
   }, [
     containerStyle,
@@ -162,6 +153,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     avatarClassName,
     avatarStyle,
     messagesToBand,
+    reactionPosition,
     imageErrorHandler,
     setSelectedUserProfile,
     experienceContext,
