@@ -13,6 +13,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { LiveEvent } from "./LiveEvent";
 
 import "./LiveSchedule.scss";
+import { hasElements } from "utils/types";
 
 const LiveSchedule: FC = () => {
   const venueId = useVenueId();
@@ -36,7 +37,7 @@ const LiveSchedule: FC = () => {
       : [];
   }, [relatedVenueEvents]);
 
-  const hasEvents = !!events.length;
+  const hasEvents = hasElements(events);
 
   if (!hasEvents) {
     return <div className="schedule-event-empty">No live events for now</div>;
