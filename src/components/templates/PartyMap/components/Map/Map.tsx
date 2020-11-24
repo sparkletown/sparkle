@@ -24,6 +24,7 @@ import { PartyMapRoomOverlay } from "./PartyMapRoomOverlay";
 
 import "./Map.scss";
 import { makeCampRoomHitFilter } from "utils/filter";
+import { hasElements } from "utils/types";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -90,7 +91,7 @@ export const Map: React.FC<PropsType> = ({
 
   const detectRoomsOnMove = useCallback(() => {
     if (selectedRoom) {
-      const noRoomHits = !!roomsHit.length;
+      const noRoomHits = hasElements(roomsHit);
       if (!noRoomHits && selectedRoom) {
         setSelectedRoom(undefined);
         setIsRoomModalOpen(false);
