@@ -4,7 +4,48 @@ notify-on-fail: &notify-on-fail
     steps:
       - slack/notify:
           event: fail
-          template: basic_fail_1
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "⚠️ Job `${CIRCLE_JOB}` on branch `${CIRCLE_BRANCH}` has failed"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Committer*: ${CIRCLE_USERNAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*SHA:* ${CIRCLE_SHA1}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "\n *Mentions*: ${SLACK_PARAM_MENTIONS}"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
 
 version: 2.1
 orbs:
@@ -116,11 +157,11 @@ workflows:
                 - master
                 - staging
                 - sparkleverse
-      - smoke-test:
-          requires:
-            - deploy-functions
-            - deploy-hosting
-          filters:
-            branches:
-              only:
-                - staging
+#      - smoke-test:
+#          requires:
+#            - deploy-functions
+#            - deploy-hosting
+#          filters:
+#            branches:
+#              only:
+#                - staging
