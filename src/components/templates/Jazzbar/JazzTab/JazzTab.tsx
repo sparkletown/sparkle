@@ -1,32 +1,41 @@
+import React, { useContext, useEffect, useState } from "react";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { useForm } from "react-hook-form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+
+import { LOC_UPDATE_FREQ_MS } from "settings";
+import { UserInfo } from "firebase/app";
+
+import { User } from "types/User";
+import { Venue } from "types/Venue";
+
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+
 import {
   EmojiReactionType,
   ExperienceContext,
   Reactions,
   TextReactionType,
 } from "components/context/ExperienceContext";
+
+import ChatDrawer from "components/organisms/ChatDrawer";
+import Room from "components/organisms/Room";
+
 import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import Room from "components/organisms/Room";
-import { UserInfo } from "firebase/app";
+
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React, { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { User } from "types/User";
-import { Venue } from "types/Venue";
-import { JAZZBAR_TABLES } from "./constants";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import "./JazzTab.scss";
-import { LOC_UPDATE_FREQ_MS } from "settings";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
-interface PropsType {
+import { JAZZBAR_TABLES } from "./constants";
+
+import "./JazzTab.scss";
+
+interface JazzProps {
   setUserList: (value: User[]) => void;
   venue?: Venue;
 }
@@ -39,7 +48,7 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
-const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
+const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   useFirestoreConnect([
     {
       collection: "experiences",
@@ -56,6 +65,8 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   const users = useSelector(partygoersSelector);
 
   const venueToUse = venue ? venue : firestoreVenue;
+
+  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -161,7 +172,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 seatedAtTable={seatedAtTable}
                 setSeatedAtTable={setSeatedAtTable}
                 venueName={venueToUse.name}
-                tables={JAZZBAR_TABLES}
+                tables={jazzbarTables}
               />
             )}
             <div
@@ -263,7 +274,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
             venueName={venueToUse.name}
             TableComponent={TableComponent}
             joinMessage={!venueToUse?.hideVideo ?? true}
-            customTables={JAZZBAR_TABLES}
+            customTables={jazzbarTables}
           />
         </div>
       </div>
