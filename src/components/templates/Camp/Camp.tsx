@@ -1,54 +1,53 @@
 import React, { useState, useCallback, useEffect } from "react";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import { useSelector } from "hooks/useSelector";
-import { LOC_UPDATE_FREQ_MS } from "settings";
+import { useParams } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+
+import { RootState } from "index";
+import { createUrlSafeName } from "api/admin";
 import { IS_BURN } from "secrets";
-import UserList from "components/molecules/UserList";
+
 import { CampRoomData } from "types/CampRoomData";
+import { CampVenue } from "types/CampVenue";
+
+import { useCampPartygoers } from "hooks/useCampPartygoers";
+import { useSelector } from "hooks/useSelector";
+
+import ChatDrawer from "components/organisms/ChatDrawer";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+
+import UserList from "components/molecules/UserList";
 import CountDown from "components/molecules/CountDown";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import BannerMessage from "components/molecules/BannerMessage";
+import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
+
 import { Map } from "./components/Map";
 import { RoomList } from "./components/RoomList";
 import { RoomModal } from "./components/RoomModal";
-import { CampVenue } from "types/CampVenue";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { useParams } from "react-router-dom";
-import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
-import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { createUrlSafeName } from "api/admin";
 
 import "./Camp.scss";
-import BannerMessage from "components/molecules/BannerMessage";
+
+const campVenueSelector = (state: RootState) =>
+  state.firestore.ordered.currentVenue?.[0] as CampVenue;
 
 const Camp: React.FC = () => {
-  useConnectPartyGoers();
+  // TODO: should we make some useCallback'd helpers here? selectRoom, unselectRoom ?
   const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData | undefined>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-  const [nowMs, setNowMs] = useState(new Date().getTime());
 
-  const { partygoers, venue } = useSelector((state) => ({
-    venue: state.firestore.ordered.currentVenue?.[0] as CampVenue,
-    partygoers: state.firestore.ordered.partygoers,
-  }));
+  const venue = useSelector(campVenueSelector);
+  const usersInCamp = useCampPartygoers(venue.name);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
+  const selectRoom = useCallback((campRoom: CampRoomData) => {
+    setSelectedRoom(campRoom);
+    setIsRoomModalOpen(true);
+  }, []);
 
-    return () => clearInterval(interval);
-  }, [setNowMs]);
-
-  const usersInCamp = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer?.lastSeenIn &&
-          partygoer?.lastSeenIn[venue.name] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const closeRoomModal = useCallback(() => {
+    setIsRoomModalOpen(false);
+  }, []);
 
   const attendances = usersInCamp
     ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
@@ -59,23 +58,18 @@ const Camp: React.FC = () => {
       }, {})
     : {};
 
-  const modalHidden = useCallback(() => {
-    setIsRoomModalOpen(false);
-  }, []);
-
   const { roomTitle } = useParams();
-
   useEffect(() => {
-    if (roomTitle) {
-      const campRoom = venue?.rooms.find(
-        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
-      );
-      if (campRoom) {
-        setSelectedRoom(campRoom);
-        setIsRoomModalOpen(true);
-      }
+    if (!roomTitle || !venue) return;
+
+    const campRoom = venue.rooms.find(
+      (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
+    );
+
+    if (campRoom) {
+      selectRoom(campRoom);
     }
-  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
+  }, [roomTitle, selectRoom, venue]);
 
   return (
     <>
@@ -121,8 +115,7 @@ const Camp: React.FC = () => {
           partygoers={usersInCamp}
           attendances={attendances}
           selectedRoom={selectedRoom}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
+          selectRoom={selectRoom}
         />
         <div className="row">
           <div className="col">
@@ -137,7 +130,7 @@ const Camp: React.FC = () => {
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
-          onHide={modalHidden}
+          onHide={closeRoomModal}
           joinButtonText={venue.joinButtonText}
         />
         {(IS_BURN || venue.showChat) && (
@@ -149,9 +142,9 @@ const Camp: React.FC = () => {
             />
           </div>
         )}
-        {IS_BURN && (
+        {venue?.config?.showRangers && (
           <div className="sparkle-fairies">
-            <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+            <SparkleFairiesPopUp />
           </div>
         )}
         <div className="info-drawer-camp">

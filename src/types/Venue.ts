@@ -1,9 +1,12 @@
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
+import { AvatarGridRoom } from "./AvatarGrid";
+import { CampRoomData } from "./CampRoomData";
+import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
+import { RoomData } from "./RoomData";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
-import { AvatarGridRoom } from "./AvatarGrid";
-import { EntranceStepConfig } from "./EntranceStep";
-// import { FormValues } from "pages/Admin/Details/Details.types";
 
 interface Question {
   name: string;
@@ -17,28 +20,9 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
-export interface VenueNew {
-  name: string;
-  config: {
-    landingPageConfig: {
-      subtitle: string;
-      description: string;
-      coverImageUrl: string;
-    };
-  };
-  host: {
-    icon: string;
-  };
-  owners: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
-  showGrid: boolean;
-  columns?: number;
-  id?: string;
-}
+export type AnyRoom = RoomData | CampRoomData;
 
+// @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
   parentId?: string;
   template: VenueTemplate;
@@ -61,6 +45,7 @@ export interface Venue {
       quotations?: Quotation[];
     };
     memberEmails?: string[];
+    showRangers?: boolean;
   };
   host: {
     icon: string;
@@ -78,7 +63,7 @@ export interface Venue {
   radioStations?: string[];
   radioTitle?: string;
   dustStorm?: boolean;
-  activity?: any;
+  activity?: string;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
@@ -96,7 +81,7 @@ export interface Venue {
   showLiveSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
-  rooms?: any[];
+  rooms?: AnyRoom[];
   width: number;
   height: number;
   description?: {
@@ -105,6 +90,31 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
+  showSecretPasswordForm?: boolean;
+  attendeesTitle?: string;
+}
+
+export interface Venue_v2 {
+  name: string;
+  config: {
+    landingPageConfig: {
+      subtitle: string;
+      description: string;
+      coverImageUrl: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners?: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+  showGrid: boolean;
+  columns?: number;
+  id?: string;
+  rooms?: AnyRoom[];
 }
 
 export interface VenuePlacement {
@@ -140,7 +150,7 @@ export const urlFromImage = (
     : defaultValue;
 };
 
-export const createJazzbar = (values: any): Venue => {
+export const createJazzbar = (values: FormValues): Venue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
@@ -158,8 +168,8 @@ export const createJazzbar = (values: any): Venue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your Party Map",
-        description: values.description || "Description of your Party Map",
+        subtitle: values.subtitle || "Subtitle for your venue",
+        description: values.description || "Description of your venue",
         presentation: [],
         checkList: [],
         quotations: [],

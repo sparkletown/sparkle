@@ -22,7 +22,8 @@ import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import VenueWizard from "pages/Admin/Venue/VenueWizard";
+import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
+import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
@@ -51,10 +52,22 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
+
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
+
+        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
+        <Route
+          path="/admin_v2/venue/edit/:venueId"
+          component={VenueWizard_v2}
+        />
+
         <Route path="/admin/venue/:venueId" component={Admin} />
+        <Route path="/admin_v2/venue/:venueId" component={Admin} />
+
         <Route path="/admin" component={Admin} />
+        <Route path="/admin_v2" component={Admin} />
+
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId" component={VenuePage} />

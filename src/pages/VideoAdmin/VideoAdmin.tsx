@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
 import { useVenueId } from "hooks/useVenueId";
+import { currentVenueSelectorData } from "utils/selectors";
 
 const VideoAdmin: React.FC = () => {
   const venueId = useVenueId();
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
 
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const venue = useSelector(currentVenueSelectorData);
 
   useEffect(() => {
     setIframeUrl(venue?.iframeUrl || "");

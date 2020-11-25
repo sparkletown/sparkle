@@ -7,7 +7,7 @@ import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
-import { TICKET_URL } from "settings";
+import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
 
 interface PropsType {
@@ -82,9 +82,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (IS_BURN) await axios.get(CODE_CHECK_URL + data.email);
+      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
       const auth = await signUp(data);
-      if (IS_BURN && auth.user) {
+      if (CODE_CHECK_ENABLED && auth.user) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
         });

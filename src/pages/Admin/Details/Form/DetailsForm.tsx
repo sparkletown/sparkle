@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useState } from "react";
 // API
 import {
   createUrlSafeName,
-  createVenueNew,
-  Input,
-  updateVenueNew,
+  createVenue_v2,
+  VenueInput_v2,
+  updateVenue_v2,
 } from "api/admin";
 
 // Components
@@ -33,7 +33,7 @@ import {
 import { FormValues } from "./DetailsForm.types";
 
 // Validation schemas
-import { venueSchema } from "../ValidationSchema";
+import { validationSchema_v2 } from "../ValidationSchema";
 
 // Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
@@ -54,8 +54,8 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenueNew(vals as Input, user);
-        else await createVenueNew(vals as Input, user);
+        if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
+        else await createVenue_v2(vals as VenueInput_v2, user);
 
         vals.name
           ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
@@ -78,11 +78,11 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: venueSchema,
+    validationSchema: validationSchema_v2,
     validationContext: {
       editing: !!venueId,
     },
-    defaultValues: venueSchema.cast(),
+    defaultValues: validationSchema_v2.cast(),
   });
 
   const values = watch();

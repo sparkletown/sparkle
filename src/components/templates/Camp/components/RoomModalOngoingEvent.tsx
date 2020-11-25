@@ -1,39 +1,36 @@
 import React from "react";
-import { CampRoomData } from "types/CampRoomData";
-import { getCurrentEvent } from "utils/event";
-import { VenueEvent } from "types/VenueEvent";
 
-import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
-import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
-interface PropsType {
+import { CampRoomData } from "types/CampRoomData";
+import { VenueEvent } from "types/VenueEvent";
+
+import { getCurrentEvent } from "utils/event";
+import { isExternalUrl } from "utils/url";
+
+import { useDispatch } from "hooks/useDispatch";
+
+import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
+
+interface RoomModalOngoingEventProps {
   room: CampRoomData;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
   joinButtonText?: string;
 }
 
-export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
+export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
   room,
   roomEvents,
   enterRoom,
   joinButtonText,
 }) => {
+  const dispatch = useDispatch();
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
   const eventToDisplay =
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
-  const whatsOnText = currentEvent ? "What's on now" : "What's on next";
-  const dispatch = useDispatch();
-  const getRoomUrl = (roomUrl: string) => {
-    return roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
-  };
-
-  const isExternalLink = (url: string) =>
-    url.includes("http") &&
-    new URL(window.location.href).host !== new URL(getRoomUrl(url)).host;
 
   return (
     <div className="room-modal-ongoing-event-container">
@@ -45,7 +42,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            {whatsOnText}
+            {currentEvent ? "What's on now" : "What's on next"}
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>
@@ -64,11 +61,11 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
               className="sparkle-icon"
               alt="sparkle-icon"
             />
-            No events scheduled
+            Please check the Live Schedule for events in this room.
           </div>
         </>
       )}
-      {isExternalLink(room.url) ? (
+      {isExternalUrl(room.url) ? (
         <a
           onMouseOver={() => dispatch(retainAttendance(true))}
           onMouseOut={() => dispatch(retainAttendance(false))}
@@ -79,7 +76,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           target="_blank"
           rel="noopener noreferrer"
         >
-          {joinButtonText ?? "Join the room"}
+          {joinButtonText ?? "Enter"}
         </a>
       ) : (
         <a
@@ -90,7 +87,7 @@ export const RoomModalOngoingEvent: React.FunctionComponent<PropsType> = ({
           id={`enter-room-in-ongoing-event-card-${room.title}`}
           href={room.url}
         >
-          {joinButtonText ?? "Join the room"}
+          {joinButtonText ?? "Enter"}
         </a>
       )}
     </div>

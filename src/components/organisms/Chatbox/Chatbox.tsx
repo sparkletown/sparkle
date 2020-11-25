@@ -14,6 +14,8 @@ import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { chatSort } from "components/context/ChatContext";
+import { partygoersSelector, partygoersSelectorData } from "utils/selectors";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -48,8 +50,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const privateChats = useSelector(
     (state) => state.firestore.ordered.privatechats
   );
-  const users = useSelector((state) => state.firestore.data.partygoers);
-  const userArray = useSelector((state) => state.firestore.ordered.partygoers);
+  const users = useSelector(partygoersSelectorData);
+  const userArray = useSelector(partygoersSelector) ?? [];
 
   useFirestoreConnect({
     collection: "privatechats",
@@ -80,7 +82,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
             : true
         )
         .concat()
-        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf()))
+        .sort(chatSort)
         .slice(0, RECENT_MESSAGE_COUNT);
 
     if (user && isInProfileModal && discussionPartner) {

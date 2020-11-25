@@ -1,4 +1,4 @@
-interface Experience {
+export interface Experience {
   bartender: User;
   table: string;
   row?: number;

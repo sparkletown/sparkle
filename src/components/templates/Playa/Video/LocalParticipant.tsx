@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from "react";
+import {
+  faMicrophone,
+  faMicrophoneSlash,
+  faVideo,
+  faVideoSlash,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useCallback } from "react";
 import Participant, { ParticipantProps } from "./Participant";
 
 type LocalParticipantProps = ParticipantProps & {
   leave: () => void;
+  showLeave?: boolean;
+  useFontAwesome?: boolean;
+  showName?: boolean;
 };
 
 const LocalParticipant: React.FC<LocalParticipantProps> = ({
@@ -10,7 +20,10 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
   user,
   setSelectedUserProfile,
   isHost,
+  showLeave = true,
   leave,
+  useFontAwesome,
+  showName,
 }) => {
   const [mic, setMic] = useState(true);
   const [camera, setCamera] = useState(true);
@@ -47,6 +60,48 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     }
   });
 
+  const onMicClick = useCallback(() => setMic(!mic), [mic]);
+
+  const renderMicIcon = () => {
+    if (useFontAwesome) {
+      return (
+        <FontAwesomeIcon
+          onClick={onMicClick}
+          size="lg"
+          icon={!mic ? faMicrophoneSlash : faMicrophone}
+          color={!mic ? "red" : undefined}
+        />
+      );
+    }
+
+    return (
+      <div className="mic" onClick={onMicClick}>
+        <div className={`btn ${mic ? "on" : "off"}`} />
+      </div>
+    );
+  };
+
+  const onCameraClick = useCallback(() => setCamera(!camera), [camera]);
+
+  const renderCameraIcon = () => {
+    if (useFontAwesome) {
+      return (
+        <FontAwesomeIcon
+          onClick={onCameraClick}
+          size="lg"
+          icon={!camera ? faVideoSlash : faVideo}
+          color={!camera ? "red" : undefined}
+        />
+      );
+    }
+
+    return (
+      <div className="camera" onClick={onCameraClick}>
+        <div className={`btn ${camera ? "on" : "off"}`} />
+      </div>
+    );
+  };
+
   return (
     <Participant
       participant={participant}
@@ -54,17 +109,16 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
       setSelectedUserProfile={setSelectedUserProfile}
       isHost={isHost}
       local
+      showName={showName}
     >
-      <div className="leave" onClick={() => leave()}>
-        <div className="btn" />
-      </div>
+      {showLeave && (
+        <div className="leave" onClick={leave}>
+          <div className="btn" />
+        </div>
+      )}
       <div className="av-controls">
-        <div className="mic" onClick={() => setMic(!mic)}>
-          <div className={`btn ${mic ? "on" : "off"}`} />
-        </div>
-        <div className="camera" onClick={() => setCamera(!camera)}>
-          <div className={`btn ${camera ? "on" : "off"}`} />
-        </div>
+        {renderMicIcon()}
+        {renderCameraIcon()}
       </div>
     </Participant>
   );

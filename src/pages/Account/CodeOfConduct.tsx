@@ -10,6 +10,7 @@ import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
 import { useSelector } from "hooks/useSelector";
 import { venueInsideUrl } from "utils/url";
+import { currentVenueSelectorData } from "utils/selectors";
 import { IS_BURN } from "secrets";
 
 interface PropsType {
@@ -55,9 +56,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   useConnectCurrentVenue();
 
   const { user } = useUser();
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
   const history = useHistory();
   const { venueId, returnUrl } = getQueryParameters(location.search);
   const { register, handleSubmit, errors, formState, watch } = useForm<
@@ -102,7 +101,7 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     <div className="page-container code-of-conduct-container">
       <div className="kansas-smittys-logo"></div>
       <div className="login-container">
-        <h2>Final step: agree to our code of conduct</h2>
+        <h2>Final step: agree to our terms</h2>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {codeOfConductQuestions &&
             codeOfConductQuestions.map((q) => (

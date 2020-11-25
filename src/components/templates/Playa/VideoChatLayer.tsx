@@ -7,6 +7,7 @@ import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 import { PROJECT_ID } from "secrets";
 import "./VideoChatLayer.scss";
+import { partygoersSelectorData } from "utils/selectors";
 
 type PropsType = {
   setSelectedUserProfile: (user: WithId<User>) => void;
@@ -19,7 +20,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
-  const partygoers = useSelector((state) => state.firestore.data.partygoers);
+  const partygoers = useSelector(partygoersSelectorData) ?? {};
 
   if (!user || !profile || !profile.video) return <></>;
   const roomOwnerUid = profile.video.inRoomOwnedBy;

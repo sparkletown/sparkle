@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import { MessageList } from "components/molecules/MessageList";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
-import { ChatContext } from "components/context/ChatContext";
+import { ChatContext, chatSort } from "components/context/ChatContext";
 import "./ChatDrawer.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -16,6 +16,7 @@ import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -37,7 +38,7 @@ const ChatDrawer: React.FC<PropsType> = ({
   const { user } = useUser();
   const venueId = useVenueId();
   const { userRoles } = useRoles();
-  const venue = useSelector((state) => state.firestore.data.currentVenue);
+  const venue = useSelector(currentVenueSelectorData);
 
   const chats = useSelector((state) => state.firestore.ordered.venueChats);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
@@ -83,7 +84,7 @@ const ChatDrawer: React.FC<PropsType> = ({
             message.to === roomName &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort((a, b) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf())),
+        .sort(chatSort),
     [chats, roomName, HIDE_BEFORE]
   );
 

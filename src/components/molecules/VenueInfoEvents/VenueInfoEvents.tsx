@@ -33,7 +33,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               <span
                 style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
               >
-                What's next
+                What&apos;s next
               </span>
             </div>
             <div className="description-container">
@@ -45,7 +45,6 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
                         key={event.name + idx}
                         event={event}
                         venue={venue}
-                        joinNowButton={joinNowButton}
                       />
                     ))}
                 </div>
@@ -58,7 +57,9 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
           <>
             {eventsNow.length ? (
               <div className="whatson-container">
-                <div className="whatson-title-container">What's on now</div>
+                <div className="whatson-title-container">
+                  What&apos;s on now
+                </div>
                 <div className="whatson-description-container">
                   {eventsNow.map((event, idx) => (
                     <React.Fragment key={idx}>
