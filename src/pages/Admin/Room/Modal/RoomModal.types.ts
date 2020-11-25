@@ -3,4 +3,5 @@ export interface RoomModalProps {
   templates?: string[];
   venueId: string;
   onSubmitHandler: () => void;
+  onClickOutsideHandler: () => void;
 }
