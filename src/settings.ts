@@ -92,6 +92,9 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
+export const IFRAME_ALLOW =
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
