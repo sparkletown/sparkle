@@ -39,6 +39,8 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
+const noopHandler = () => {};
+
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   useFirestoreConnect([
     {
@@ -77,7 +79,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const [participantCount, setParticipantCount] = useState(0);
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   function createReaction(reaction: ReactionType, user: UserInfo) {
@@ -125,14 +126,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
     reset();
   };
 
-  // Capacity is an even number so the grid works
-  // Add one to account for the video
-  const participantWindows = participantCount + 1;
-  const capacity =
-    participantCount > 0
-      ? participantWindows + (participantWindows % 2)
-      : undefined;
-
   if (!venueToUse) return <>Loading...</>;
 
   return (
@@ -173,7 +166,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 <div
                   className={`${
                     seatedAtTable
-                      ? `participant-container-${capacity} video-participant`
+                      ? `participant-container video-participant`
                       : "full-height-video"
                   }`}
                 >
@@ -243,7 +236,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                   roomName={seatedAtTable}
                   venueName={venueToUse.name}
                   setUserList={setUserList}
-                  setParticipantCount={setParticipantCount}
+                  setParticipantCount={noopHandler}
                   setSeatedAtTable={setSeatedAtTable}
                 />
               )}

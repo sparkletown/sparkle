@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 45%;
+  width: 50%;
   align-self: flex-start;
 }
 
@@ -15,34 +15,8 @@
 }
 
 .participant-container {
-  width: 33%;
+  width: 50%;
   align-self: flex-start;
-}
-
-.participant-container-2 {
-  border: 1px solid red;
-  width: 50%;
-  height: 100%;
-}
-
-.participant-container-4 {
-  width: 50%;
-  height: 50%;
-}
-
-.participant-container-6 {
-  width: 33%;
-  height: 50%;
-}
-
-.participant-container-8 {
-  width: 25%;
-  height: 50%;
-}
-
-.participant-container-10 {
-  width: 33%;
-  height: 33%;
 }
 
 .empty-chair-image {
