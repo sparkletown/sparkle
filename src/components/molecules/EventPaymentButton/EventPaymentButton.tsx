@@ -11,6 +11,10 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueEntranceUrl } from "utils/url";
+import {
+  currentVenueSelectorData,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
 
 interface PropsType {
   event: WithId<VenueEvent>;
@@ -31,10 +35,9 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
-  const { purchaseHistory, venue } = useSelector((state) => ({
-    purchaseHistory: state.firestore.ordered.userPurchaseHistory,
-    venue: state.firestore.data.currentVenue,
-  }));
+
+  const venue = useSelector(currentVenueSelectorData);
+  const purchaseHistory = useSelector(userPurchaseHistorySelector);
 
   const hasUserAlreadyBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, event.id) ||

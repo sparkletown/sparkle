@@ -9,6 +9,7 @@ import { useSelector } from "hooks/useSelector";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
+import { currentVenueSelectorData } from "utils/selectors";
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 import { IS_BURN } from "secrets";
 
@@ -46,11 +47,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
   users = users?.filter((user) => !user.anonMode && user.partyName && user.id); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
   const attendance = users.length + (attendanceBoost ?? 0);
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
 
-  if (!users) return <></>;
+  if (!users || attendance < 1) return <></>;
   return (
     <>
       <div className="userlist-container">

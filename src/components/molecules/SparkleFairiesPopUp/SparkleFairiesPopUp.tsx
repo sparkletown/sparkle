@@ -9,13 +9,7 @@ import {
   REALITY_RANGERS_URL,
 } from "../../../../src/settings";
 
-interface PropsType {
-  setShowEventSchedule: Function;
-}
-
-const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
-  setShowEventSchedule,
-}) => {
+const SparkleFairiesPopUp: React.FunctionComponent = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
@@ -35,10 +29,11 @@ const SparkleFairiesPopUp: React.FunctionComponent<PropsType> = ({
             {PLAYA_INFO_NAME}
           </a>
           <div className="title">Call a Ranger</div>
-          <p className="title-sidebar">It's OK to need help!</p>
           <p className="title-sidebar">
-            Rangers and harm reduction volunteers are available 24/7 to provide
-            support &amp; assistance, if you need it.
+            Need Support or Having Burning Questions?
+          </p>
+          <p className="title-sidebar">
+            Playa Info and Multiverse Rangers are here to Help.
           </p>
           <a
             href={REALITY_RANGERS_URL}

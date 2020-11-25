@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useUser } from "./useUser";
 
-const useConnectUserPurchaseHistory = () => {
+export const useConnectUserPurchaseHistory = () => {
   const { venueId } = useParams();
   const { user } = useUser();
 
@@ -19,4 +19,7 @@ const useConnectUserPurchaseHistory = () => {
   ]);
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default useConnectUserPurchaseHistory;

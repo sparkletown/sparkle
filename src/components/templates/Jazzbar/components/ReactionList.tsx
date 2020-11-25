@@ -7,7 +7,12 @@ import {
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  REACTION_PROFILE_IMAGE_SIZE_LARGE,
+  REACTION_PROFILE_IMAGE_SIZE_SMALL,
+} from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { ChatMessage } from "components/context/ChatContext";
@@ -24,7 +29,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   small = false,
 }) => {
   const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers,
+    usersById: state.firestore.data.partygoers ?? {},
   }));
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -42,7 +47,9 @@ const ReactionList: React.FC<ReactionListProps> = ({
     ),
   ].sort((a, b) => b.created_at - a.created_at);
 
-  const profileImageSize = small ? 40 : 50;
+  const profileImageSize = small
+    ? REACTION_PROFILE_IMAGE_SIZE_SMALL
+    : REACTION_PROFILE_IMAGE_SIZE_LARGE;
   return (
     <>
       <div className={`reaction-list ${small && "small"}`}>

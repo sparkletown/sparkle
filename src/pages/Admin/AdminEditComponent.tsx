@@ -264,7 +264,7 @@ const AdminEditComponent: React.FC = () => {
               can also edit venues/rooms from this panel. The order of the
               right-hand sidebar is:
               <ul>
-                <li>The venue you're currently editing</li>
+                <li>The venue you&apos;re currently editing</li>
                 <li>
                   Self-placed venues, created and drag-and-dropped into place by
                   the placement team.
@@ -278,8 +278,8 @@ const AdminEditComponent: React.FC = () => {
                   saving them.
                 </li>
                 <li>
-                  Unplaced venues, which don't have placement info. (They are
-                  probably meant to be that way)
+                  Unplaced venues, which don&apos;t have placement info. (They
+                  are probably meant to be that way)
                 </li>
               </ul>
             </div>
@@ -517,12 +517,12 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
             {formError && (
               <div className="input-error">
                 <div>One or more errors occurred when saving the form:</div>
-                {Object.keys(errors).map((fieldName) => (
-                  <div>
+                {Object.keys(errors).map((fieldName, index) => (
+                  <div key={index}>
                     <span>Error in {fieldName}:</span>
                     <ErrorMessage
                       errors={errors}
-                      name={fieldName as any}
+                      name={fieldName}
                       as="span"
                       key={fieldName}
                     />

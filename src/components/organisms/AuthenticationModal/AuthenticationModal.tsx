@@ -12,7 +12,7 @@ interface PropsType {
   showAuth: "login" | "register" | "passwordReset";
 }
 
-const AuthenticationModal: React.FunctionComponent<PropsType> = ({
+export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   afterUserIsLoggedIn,
@@ -67,4 +67,7 @@ const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default AuthenticationModal;

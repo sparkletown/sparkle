@@ -12,11 +12,10 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
+import { currentVenueSelectorData } from "utils/selectors";
 
-const ArtPiece = () => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+export const ArtPiece = () => {
+  const venue = useSelector(currentVenueSelectorData);
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
@@ -63,7 +62,7 @@ const ArtPiece = () => {
           </div>
           <div className="chat-pop-up" style={{ zIndex: 100 }}>
             <ChatDrawer
-              title={"Art Piece Chat"}
+              title={`${venue.name ?? "Art Piece"} Chat`}
               roomName={venue.name}
               chatInputPlaceholder="Chat"
               defaultShow={true}
@@ -73,7 +72,7 @@ const ArtPiece = () => {
       </div>
       {IS_BURN && (
         <div className="sparkle-fairies">
-          <SparkleFairiesPopUp setShowEventSchedule={setShowEventSchedule} />
+          <SparkleFairiesPopUp />
         </div>
       )}
       <Modal
@@ -89,4 +88,7 @@ const ArtPiece = () => {
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default ArtPiece;

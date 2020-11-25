@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
+import { currentVenueSelectorData } from "utils/selectors";
 
 const AvatarAdmin: React.FC = () => {
   const [bannerMessage, setBannerMessage] = useState("");
   const [error, setError] = useState<string | null>();
 
-  const currentVenue = useSelector(
-    (state) => state.firestore.data.currentVenue
-  );
+  const currentVenue = useSelector(currentVenueSelectorData);
+
   const FIREBASE_VENUE_ID = "memrisechats";
 
   useEffect(() => {

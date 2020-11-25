@@ -24,3 +24,27 @@ export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
   );
   return venueRoom ? venueRoom.url : venueInsideUrl(venue.id);
 };
+
+export const isExternalUrl = (url: string) =>
+  url.includes("http") &&
+  window.location.host !== new URL(getRoomUrl(url)).host;
+
+// @debt I feel like we could construct this url in a better way
+export const getRoomUrl = (roomUrl: string) =>
+  roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+
+export const openRoomUrl = (url: string) => {
+  openUrl(getRoomUrl(url));
+};
+
+export const openUrl = (url: string) => {
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+export const externalUrlAdditionalProps = {
+  target: "_blank",
+  rel: "noopener noreferrer",
+};
+
+export const getExtraLinkProps = (isExternal: boolean) =>
+  isExternal ? externalUrlAdditionalProps : {};

@@ -4,6 +4,7 @@ import InformationCard from "components/molecules/InformationCard";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface PropsType {
   children: React.ReactNode;
@@ -12,9 +13,7 @@ interface PropsType {
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
 }) => {
-  const { venue } = useSelector((state) => ({
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
@@ -34,7 +33,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                 <>
                   Kansas Smitty’s
                   <br />
-                  It's a band and it's a bar.
+                  It&apos;s a band and it&apos;s a bar.
                 </>
               )}
             </p>
@@ -49,13 +48,13 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             ) : (
               <>
                 <p>
-                  Saturdays at Kansas Smitty's have always been about having a
-                  great time. The band for this evenings performance features
-                  Giacomo Smith on clarinet and alto, Ferg Ireland on double
-                  bass, Joe Webb on piano, Alec Harper on tenor sax and Will
-                  Cleasby on drums.
+                  Saturdays at Kansas Smitty&apos;s have always been about
+                  having a great time. The band for this evenings performance
+                  features Giacomo Smith on clarinet and alto, Ferg Ireland on
+                  double bass, Joe Webb on piano, Alec Harper on tenor sax and
+                  Will Cleasby on drums.
                 </p>
-                <p>Performing tonight at Kansas Smitty's:</p>
+                <p>Performing tonight at Kansas Smitty&apos;s:</p>
                 <ul>
                   <li>Giacomo Smith - alto/clarinet</li>
                   <li>Ferg Ireland - Double Bass</li>
@@ -70,11 +69,12 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
                   https://www.patreon.com/kansassmittys
                 </p>
                 <p>
-                  Kansas Smitty's have just released their new album 'Things
-                  Happened Here' available on all good streaming platforms and
-                  vinyl/CD https://ever-records.lnk.to/ThingsHappenedHere
+                  Kansas Smitty&apos;s have just released their new album
+                  &apos;Things Happened Here&apos; available on all good
+                  streaming platforms and vinyl/CD
+                  https://ever-records.lnk.to/ThingsHappenedHere
                 </p>
-                <p>We'll see you in the bar...</p>
+                <p>We&apos;ll see you in the bar...</p>
               </>
             )}
           </InformationCard>

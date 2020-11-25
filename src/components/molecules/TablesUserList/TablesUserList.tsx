@@ -10,6 +10,7 @@ import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 interface PropsType {
   venueName: string;
@@ -122,7 +123,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       return false;
     }
     // Locked state is in the experience record
-    return !!experience?.tables?.[table]?.locked;
+    return isTruthy(experience?.tables?.[table]?.locked);
   };
 
   const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {

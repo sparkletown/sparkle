@@ -30,6 +30,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -131,10 +132,9 @@ const requiredAuditoriumSize = (occupants: number) => {
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
-  const { venue, partygoers } = useSelector((state) => ({
-    partygoers: state.firestore.ordered.partygoers,
-    venue: state.firestore.data.currentVenue,
-  }));
+  const venue = useSelector(currentVenueSelectorData);
+  const partygoers = useSelector(partygoersSelector);
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -190,7 +190,7 @@ export const Audience: React.FunctionComponent = () => {
   // That way, when the audience size is expanded these people keep their seats
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
-  partygoers.forEach((partygoer) => {
+  partygoers?.forEach((partygoer) => {
     if (
       !venueId ||
       !partygoer?.data ||
@@ -208,31 +208,32 @@ export const Audience: React.FunctionComponent = () => {
     seatedPartygoers++;
   });
 
-  useEffect(() => setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers)), [
-    seatedPartygoers,
-  ]);
+  useEffect(() => {
+    setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers));
+  }, [seatedPartygoers]);
 
-  return useMemo(() => {
-    const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
-    const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
+  const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
+  const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
 
-    const translateRow = (untranslatedRowIndex: number) =>
-      untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
-    const translateColumn = (untranslatedColumnIndex: number) =>
-      untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
-
-    const isSeat = (translatedRow: number, translatedColumn: number) => {
+  const isSeat = useCallback(
+    (translatedRow: number, translatedColumn: number) => {
       const isInFireLaneColumn = translatedColumn === 0;
       if (isInFireLaneColumn) return false;
 
       const isInVideoRow =
         Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 3);
+
       const isInVideoColumn =
         Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 4);
-      const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
-      return !isInVideoCarveOut;
-    };
 
+      const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
+
+      return !isInVideoCarveOut;
+    },
+    [columnsForSizedAuditorium, rowsForSizedAuditorium]
+  );
+
+  return useMemo(() => {
     const takeSeat = (
       translatedRow: number | null,
       translatedColumn: number | null
@@ -285,6 +286,12 @@ export const Audience: React.FunctionComponent = () => {
     const userSeated =
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
+
+    const translateRow = (untranslatedRowIndex: number) =>
+      untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
+
+    const translateColumn = (untranslatedColumnIndex: number) =>
+      untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
     return (
       <>
@@ -367,6 +374,7 @@ export const Audience: React.FunctionComponent = () => {
               )}
             </div>
           </div>
+
           <div className="audience">
             {Array.from(Array(rowsForSizedAuditorium)).map(
               (_, untranslatedRowIndex) => {
@@ -376,7 +384,9 @@ export const Audience: React.FunctionComponent = () => {
                     {Array.from(Array(columnsForSizedAuditorium)).map(
                       (_, untranslatedColumnIndex) => {
                         const column = translateColumn(untranslatedColumnIndex);
+                        const isOnRight = column >= 0;
                         const seat = isSeat(row, column);
+
                         const seatedPartygoer = partygoersBySeat?.[row]?.[
                           column
                         ]
@@ -398,6 +408,9 @@ export const Audience: React.FunctionComponent = () => {
                               <div className="user">
                                 <UserProfilePicture
                                   user={seatedPartygoer}
+                                  reactionPosition={
+                                    isOnRight ? "left" : "right"
+                                  }
                                   avatarClassName={"profile-avatar"}
                                   setSelectedUserProfile={
                                     setSelectedUserProfile
@@ -436,7 +449,6 @@ export const Audience: React.FunctionComponent = () => {
       </>
     );
   }, [
-    auditoriumSize,
     venue,
     profile,
     venueId,
@@ -445,11 +457,14 @@ export const Audience: React.FunctionComponent = () => {
     handleSubmit,
     register,
     isShoutSent,
+    rowsForSizedAuditorium,
     selectedUserProfile,
     user,
     experienceContext,
     reset,
     reactionClicked,
+    columnsForSizedAuditorium,
+    isSeat,
     partygoersBySeat,
   ]);
 };

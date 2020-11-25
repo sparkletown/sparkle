@@ -1,16 +1,38 @@
-import React, { useMemo, useState, useCallback } from "react";
-import { Modal } from "react-bootstrap";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useSelector } from "hooks/useSelector";
-import Fuse from "fuse.js";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
+import { useFirestore } from "react-redux-firebase";
+import { Modal, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
-import { FormControl } from "react-bootstrap";
-import { User } from "types/User";
-import "./VenueOwnerModal.scss";
-import { AnyVenue } from "types/Firestore";
-import { WithId } from "utils/id";
+
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { AnyVenue } from "types/Firestore";
+import { User } from "types/User";
+import { WithId } from "utils/id";
 import { addVenueOwner, removeVenueOwner } from "api/admin";
+
+import "./VenueOwnerModal.scss";
+
+interface PartitionedOwnersOthers {
+  owners: WithId<User>[];
+  others: WithId<User>[];
+}
+const makePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
+  { owners, others }: PartitionedOwnersOthers,
+  user: WithId<User>
+) => {
+  if (ownerIds.includes(user.id)) {
+    return { owners: [...owners, user], others };
+  } else {
+    return { owners, others: [...others, user] };
+  }
+};
+
+const emptyPartition: PartitionedOwnersOthers = {
+  owners: [],
+  others: [],
+};
+
+const makePartyNameFilter = (searchText: string) => (user: WithId<User>) =>
+  user.partyName?.toLowerCase()?.includes(searchText.toLowerCase());
 
 interface VenueOwnersModalProps {
   visible: boolean;
@@ -18,49 +40,62 @@ interface VenueOwnersModalProps {
   onHide?: () => void;
 }
 
-export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = (props) => {
-  const { visible, onHide, venue } = props;
+export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
+  visible,
+  onHide,
+  venue,
+}) => {
+  // Fetch all users the first time this component loads
+  // @debt reading every user is obviously bad.
+  const firestore = useFirestore();
+  useEffect(() => {
+    firestore
+      .collection("users")
+      .get()
+      .then((result) =>
+        result.docs.map<WithId<User>>(
+          (doc) => ({ ...doc.data(), id: doc.id } as WithId<User>) // TODO: be less hacky with types here?
+        )
+      )
+      .then(setAllUsers);
+  }, [firestore]);
 
-  // @debt reading every user into redux is obviously bad.
-  // A better solution is to create an index on partyName and a firebase function to search
-  useFirestoreConnect({
-    collection: "users",
-    storeAs: "allUsers",
-  });
-
-  const allUsers = useSelector((state) => state.firestore.ordered.allUsers);
   const [searchText, setSearchText] = useState("");
-  const debouncedSearch: typeof setSearchText = debounce(
-    (v) => setSearchText(v),
-    500
+
+  const debouncedSearch: typeof setSearchText = useMemo(
+    () => debounce((v) => setSearchText(v), 100),
+    []
   );
 
-  const fuseUsers = useMemo(
-    () =>
-      allUsers
-        ? new Fuse(allUsers, {
-            keys: ["partyName"],
-          })
-        : undefined,
-    [allUsers]
+  const [allUsers, setAllUsers] = useState<WithId<User>[]>([]);
+
+  const isLoading = allUsers.length === 0;
+
+  // Make partition reducer using venue.owners
+  const partitionOwnersFromOthersReducer = useMemo(
+    () => makePartitionOwnersFromOthersReducer(venue.owners ?? []),
+    [venue.owners]
   );
 
+  // Partition owners from others
+  const { owners: venueOwnerUsers, others: otherUsers } = useMemo(
+    () => allUsers.reduce(partitionOwnersFromOthersReducer, emptyPartition),
+    [allUsers, partitionOwnersFromOthersReducer]
+  );
+
+  // Filter others by partyName using searchText
   const filteredUsers = useMemo(
-    () => (searchText ? fuseUsers?.search(searchText) : undefined),
-    [searchText, fuseUsers]
-  );
-
-  const venueOwners = venue.owners ?? [];
-
-  const ownerUsers = useMemo(
     () =>
-      venueOwners
-        .map((id) => allUsers?.find((user) => user.id === id))
-        .filter(Boolean) as Exclude<typeof allUsers, undefined>,
-    [venueOwners, allUsers]
+      searchText !== ""
+        ? otherUsers.filter(makePartyNameFilter(searchText))
+        : undefined,
+    [otherUsers, searchText]
   );
 
-  if (!allUsers) return <>Loading...</>;
+  const isEnterSearchText = filteredUsers === undefined;
+  const hasResults = filteredUsers && filteredUsers.length > 0;
+
+  if (isLoading) return <>Loading...</>;
 
   return (
     <Modal show={visible} onHide={onHide}>
@@ -69,7 +104,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = (props) => {
           <h3>Manage Owners</h3>
           <div className="row-container">
             <h4>Current Venue Owners</h4>
-            {ownerUsers.map((owner) => (
+            {venueOwnerUsers.map((owner) => (
               <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
             ))}
           </div>
@@ -80,23 +115,15 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = (props) => {
             onChange={(e) => debouncedSearch(e.target.value)}
           />
           <div className="row-container">
-            {typeof filteredUsers === "undefined" ? (
+            {hasResults &&
+              (filteredUsers ?? []).map((user) => (
+                <UserRow key={user.id} user={user} venueId={venue.id} />
+              ))}
+            {isEnterSearchText && (
               <div>Enter the users name in the text input above</div>
-            ) : filteredUsers.length === 0 ? (
+            )}
+            {!isEnterSearchText && !hasResults && (
               <div>No results for your search</div>
-            ) : (
-              filteredUsers
-                .filter(
-                  (userItem) =>
-                    !venueOwners.some((id) => id === userItem.item.id)
-                )
-                .map((userItem) => (
-                  <UserRow
-                    key={userItem.item.id}
-                    user={userItem.item}
-                    venueId={venue.id}
-                  />
-                ))
             )}
           </div>
         </div>
@@ -114,10 +141,10 @@ interface UserRowProps {
 const UserRow: React.FC<UserRowProps> = (props) => {
   const { user, isOwner, venueId } = props;
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
-  const onRemoveUserClick = useCallback(async () => {
+  const removeOwner = useCallback(async () => {
     setError(undefined);
     setLoading(true);
     await removeVenueOwner(venueId, user.id);
@@ -125,7 +152,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const onMakeUserClick = useCallback(async () => {
+  const makeOwner = useCallback(async () => {
     setError(undefined);
     setLoading(true);
     await addVenueOwner(venueId, user.id);
@@ -133,32 +160,25 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
+  const userPicture = user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl;
+  const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+
   return (
     <>
       <div className="user-row">
         <div className="info-container">
-          <img
-            src={user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl}
-            alt="profile pic"
-          />
-          {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
+          <img src={userPicture} alt="profile pic" />
+          {userName}
         </div>
-        {isOwner &&
-          (loading ? (
-            <div>Loading...</div>
-          ) : (
-            <button className="btn btn-primary" onClick={onRemoveUserClick}>
-              Remove Owner
-            </button>
-          ))}
-        {!isOwner &&
-          (loading ? (
-            <div>Loading...</div>
-          ) : (
-            <button className="btn btn-primary" onClick={onMakeUserClick}>
-              Make Owner
-            </button>
-          ))}
+        {isLoading && <div>Loading...</div>}
+        {!isLoading && (
+          <button
+            className="btn btn-primary"
+            onClick={isOwner ? removeOwner : makeOwner}
+          >
+            {isOwner ? "Remove Owner" : "Make Owner"}
+          </button>
+        )}
       </div>
       {error && <div>{error}</div>}
     </>

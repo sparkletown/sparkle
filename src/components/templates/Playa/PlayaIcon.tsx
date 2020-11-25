@@ -34,8 +34,8 @@ export const PlayaIconComponent: React.FunctionComponent<PropsType> = ({
     >
       {playaIcon.fire && (
         <div className="fire">
-          {Array.from(Array(50)).map(() => (
-            <div className="particle" />
+          {Array.from(Array(50)).map((_, index) => (
+            <div className="particle" key={index} />
           ))}
         </div>
       )}

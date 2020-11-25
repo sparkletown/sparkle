@@ -1,94 +1,142 @@
+notify-on-fail: &notify-on-fail
+  when:
+    condition: always
+    steps:
+      - slack/notify:
+          event: fail
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "⚠️ Job `${CIRCLE_JOB}` on branch `${CIRCLE_BRANCH}` has failed"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Committer*: ${CIRCLE_USERNAME}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*SHA:* ${CIRCLE_SHA1}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "\n *Mentions*: ${SLACK_PARAM_MENTIONS}"
+                    }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+
 version: 2.1
 orbs:
-  node: circleci/node@1.1.6
+  node: circleci/node@4.1.0
+  slack: circleci/slack@4.1.1
 jobs:
-  build-and-test:
-    executor:
-      name: node/default
+  lint-and-test:
+    executor: node/default
     steps:
       - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run: npm install
-            - run: npm run init
-            - run: npm run lint
-            - run: npm run build # somehow linting rules differ from eslint
-  smoke-test:
-    executor:
-      name: node/default
-    steps:
-      - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run: sudo apt-get update
-            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-            - run: npm install
-            - run: npm run cy:install # cache this instead
-            - run: npm run cy:run
+      - node/install-packages
+      - run: npm run prettier:check
+      - run: npm run eslint:check
+      - run: npm run test
+      - *notify-on-fail
+  #  smoke-test:
+  #    executor:
+  #      name: node/default
+  #    steps:
+  #      - checkout
+  #      - node/with-cache:
+  #          cache-version: v2
+  #          steps:
+  #            - run: sudo apt-get update
+  #            - run: sudo apt-get install libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+  #            - run: npm install
+  #            - run: npm run cy:install # cache this instead
+  #            - run: npm run cy:run
+  #            - *notify-on-fail
   deploy-functions:
-    executor:
-      name: node/default
+    executor: node/default
+    working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
     steps:
-      - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run: cd functions && npm i
-            - run:
-                command: |
-                  if [ $CIRCLE_BRANCH = "staging" ]; then
-                    ENV=staging
-                  fi
-                  if [ $CIRCLE_BRANCH = "master" ]; then
-                    ENV=prod
-                  fi
-                  if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
-                    ENV=sparkleverse
-                  fi
-                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
+      - checkout:
+          path: ~/project # override the path just for checkout
+      - node/install-packages
+      - run:
+          command: |
+            if [ $CIRCLE_BRANCH = "staging" ]; then
+              ENV=staging
+            fi
+            if [ $CIRCLE_BRANCH = "master" ]; then
+              ENV=prod
+            fi
+            if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
+              ENV=sparkleverse
+            fi
 
+            ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
+      - *notify-on-fail
   deploy-hosting:
-    executor:
-      name: node/default
+    executor: node/default
     steps:
       - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run:
-                command: |
-                  if [ $CIRCLE_BRANCH = "staging" ]; then
-                    PREFIX=STAGING_
-                    ENV=staging
-                    TARGET=staging
-                  fi
-                  if [ $CIRCLE_BRANCH = "master" ]; then
-                    PREFIX=PROD_
-                    ENV=prod
-                    TARGET=co-reality-map
-                  fi
-                  if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
-                    PREFIX=SPARKLEVERSE_
-                    ENV=sparkleverse
-                    TARGET=sparkleverse
-                  fi
-                  ./scripts/init-env.sh $PREFIX
-                  npm run build
-                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+      - node/install-packages
+      - run:
+          command: |
+            if [ $CIRCLE_BRANCH = "staging" ]; then
+              PREFIX=STAGING_
+              ENV=staging
+              TARGET=staging
+            fi
+            if [ $CIRCLE_BRANCH = "master" ]; then
+              PREFIX=PROD_
+              ENV=prod
+              TARGET=co-reality-map
+            fi
+            if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
+              PREFIX=SPARKLEVERSE_
+              ENV=sparkleverse
+              TARGET=sparkleverse
+            fi
+
+            ./scripts/init-env.sh $PREFIX
+
+            npm run build
+
+            ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+      - *notify-on-fail
 workflows:
   build-test-deploy:
     jobs:
-      - build-and-test
+      - lint-and-test
       - deploy-functions:
           requires:
-            - build-and-test
+            - lint-and-test
           filters:
             branches:
               only:
@@ -97,18 +145,18 @@ workflows:
                 - sparkleverse
       - deploy-hosting:
           requires:
-            - build-and-test
+            - lint-and-test
           filters:
             branches:
               only:
                 - master
                 - staging
                 - sparkleverse
-      - smoke-test:
-          requires:
-            - deploy-functions
-            - deploy-hosting
-          filters:
-            branches:
-              only:
-                - staging
+#      - smoke-test:
+#          requires:
+#            - deploy-functions
+#            - deploy-hosting
+#          filters:
+#            branches:
+#              only:
+#                - staging

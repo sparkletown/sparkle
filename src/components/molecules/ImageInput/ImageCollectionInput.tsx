@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { FieldError } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import "firebase/functions";
 import firebase from "firebase/app";
 
@@ -9,12 +9,12 @@ interface ImageInputProps {
   imageUrl?: string;
   image?: FileList;
   fieldName: string;
-  register: any;
+  register: ReturnType<typeof useForm>["register"];
   containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
   imageType: string;
-  setValue: any;
+  setValue: ReturnType<typeof useForm>["setValue"];
 }
 
 // eslint-disable-next-line

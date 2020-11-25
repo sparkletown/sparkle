@@ -9,6 +9,7 @@ import ProfilePictureInput from "components/molecules/ProfilePictureInput";
 import { useUser } from "hooks/useUser";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { currentVenueSelectorData } from "utils/selectors";
 
 interface EditProfileFormValuesType {
   partyName: string;
@@ -25,7 +26,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
-    (state) => state.firestore.data.currentVenue?.profile_questions
+    (state) => currentVenueSelectorData(state)?.profile_questions
   );
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
@@ -83,7 +84,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
           )}
           {errors.partyName && errors.partyName.type === "maxLength" && (
             <span className="input-error">
-              Display name is less than 16 characters
+              Display name must be 16 characters or less
             </span>
           )}
           {user && (

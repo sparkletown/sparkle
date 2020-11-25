@@ -1,11 +1,12 @@
 import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
-import { RoomData } from "./RoomData";
+import { PartyMapRoomData } from "./PartyMapRoomData";
 
 export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
 export interface PartyMapVenue extends Venue {
+  id: string;
   template: VenueTemplate.partymap;
   host: {
     url: string;
@@ -26,5 +27,5 @@ export interface PartyMapVenue extends Venue {
   password: string;
   admin_password?: string;
   owners: string[];
-  rooms: RoomData[];
+  rooms: PartyMapRoomData[];
 }
