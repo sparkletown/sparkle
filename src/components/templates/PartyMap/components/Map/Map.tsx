@@ -5,7 +5,6 @@ import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 
-import { makeMatrixReducer } from "utils/reducers";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { WithId } from "utils/id";
@@ -156,7 +155,7 @@ export const Map: React.FC<PropsType> = ({
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
-    partygoers,
+    partygoers: partygoers ?? [],
   });
 
   const enterSelectedRoom = useCallback(() => {
