@@ -10,7 +10,7 @@ const colors = {
   teal: "#20c997",
   cyan: "#3498DB",
   white: "#fff",
-  gray: "#888",
+  gray: "#1a1d24",
   grayDark: "#303030",
   primary: "#375a7f",
   secondary: "#444",
@@ -24,6 +24,7 @@ const colors = {
 
 const dimensions = {
   borderRadius: "28px",
+  topBarHeight: "66px",
 };
 
 export const theme = {

@@ -115,6 +115,7 @@ export interface Venue_v2 {
   columns?: number;
   id?: string;
   rooms?: AnyRoom[];
+  mapBackgroundImageUrl?: string;
 }
 
 export interface VenuePlacement {
