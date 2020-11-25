@@ -9,7 +9,6 @@ import { User } from "types/User";
 
 import { makeCampRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { makeMatrixReducer } from "utils/reducers";
 import { orderedVenuesSelector } from "utils/selectors";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
@@ -20,9 +19,11 @@ import { useKeyboardControls } from "hooks/useKeyboardControls";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
+import { useMapGrid } from "../hooks/useMapGrid";
+import { usePartygoersbySeat } from "../hooks/usePartygoersBySeat";
+import { usePartygoersOverlay } from "../hooks/usePartygoersOverlay";
+
 import { MapRoomOverlay } from "./MapRoomOverlay";
-import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
-import { MapRow } from "components/molecules/MapRow";
 
 import "./Map.scss";
 
@@ -54,8 +55,11 @@ export const Map: React.FC<MapProps> = ({
   const templateColumns = venue.showGrid ? totalColumns : DEFAULT_COLUMNS;
   const templateRows = venue.showGrid ? totalRows : DEFAULT_ROWS;
 
-  const columnsArray = Array.from(Array<JSX.Element>(totalColumns));
-  const rowsArray = Array.from(Array(totalRows));
+  const columnsArray = useMemo(
+    () => Array.from(Array<JSX.Element>(totalColumns)),
+    [totalColumns]
+  );
+  const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
 
   useEffect(() => {
     const img = new Image();
@@ -159,25 +163,10 @@ export const Map: React.FC<MapProps> = ({
     }
   };
 
-  const partygoersBySeat = useMemo(() => {
-    if (!venueId) return [];
-
-    // TODO: this may be why we don't use row 0...? If so, let's change it to use types better and use undefines
-    const selectRow = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId]?.row ?? 0;
-
-    const selectCol = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId]?.column ?? 0;
-
-    const partygoersReducer = makeMatrixReducer(selectRow, selectCol);
-
-    return partygoers?.reduce(partygoersReducer, []);
-  }, [venueId, partygoers]);
-
-  const isSeatTaken = useCallback(
-    (r: number, c: number): boolean => !!partygoersBySeat?.[r]?.[c],
-    [partygoersBySeat]
-  );
+  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+    venueId,
+    partygoers,
+  });
 
   const venues = useSelector(orderedVenuesSelector);
   const enterCampRoom = useCallback(
@@ -208,8 +197,8 @@ export const Map: React.FC<MapProps> = ({
 
   useKeyboardControls({
     venueId,
-    totalRows: totalRows,
-    totalColumns: totalColumns,
+    totalRows,
+    totalColumns,
     isSeatTaken,
     takeSeat,
     enterSelectedRoom,
@@ -224,6 +213,45 @@ export const Map: React.FC<MapProps> = ({
   const deselectUserProfile = useCallback(
     () => setSelectedUserProfile(undefined),
     []
+  );
+
+  const userUid = user?.uid;
+  const showGrid = venue.showGrid;
+
+  const mapGrid = useMapGrid({
+    showGrid,
+    userUid,
+    columnsArray,
+    rowsArray,
+    partygoersBySeat,
+    onSeatClick,
+  });
+
+  const partygoersOverlay = usePartygoersOverlay({
+    showGrid,
+    userUid,
+    venueId,
+    withMiniAvatars: venue.miniAvatars,
+    rows: totalRows,
+    columns: totalColumns,
+    partygoers,
+    setSelectedUserProfile,
+  });
+
+  const roomOverlay = useMemo(
+    () =>
+      venue.rooms.map((room) => (
+        <MapRoomOverlay
+          // TODO: is room.title unique? Is there something better we can use for the key?
+          key={room.title}
+          venue={venue}
+          room={room}
+          attendances={attendances}
+          enterCampRoom={enterCampRoom}
+          selectRoom={selectRoom}
+        />
+      )),
+    [attendances, enterCampRoom, selectRoom, venue]
   );
 
   if (!user || !venue) {
@@ -241,62 +269,9 @@ export const Map: React.FC<MapProps> = ({
         gridTemplateRows: `repeat(${templateRows}, 1fr)`,
       }}
     >
-      {columnsArray.map((_, colIndex) => (
-        <div className="seat-column" key={`column${colIndex}`}>
-          {rowsArray.map((_, rowIndex) => {
-            const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
-            const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
-
-            const seatedPartygoer = partygoersBySeat?.[row]?.[column] ?? null;
-            const hasSeatedPartygoer = !!seatedPartygoer;
-
-            // TODO: our types imply that this shouldn't be able to be null, but it was..
-            const isMe = seatedPartygoer?.id === user.uid;
-
-            return (
-              <MapRow
-                row={row}
-                column={column}
-                seatedPartygoer={seatedPartygoer}
-                key={`row${rowIndex}`}
-                showGrid={venue.showGrid}
-                hasSeatedPartygoer={hasSeatedPartygoer}
-                seatedPartygoerIsMe={isMe}
-                onSeatClick={onSeatClick}
-              />
-            );
-          })}
-
-          {/*@debt this can be undefined because our types are broken so check explicitly*/}
-          {partygoers?.map(
-            (partygoer) =>
-              partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-                <MapPartygoerOverlay
-                  key={partygoer.id}
-                  partygoer={partygoer}
-                  venueId={venue.id}
-                  myUserUid={user.uid}
-                  totalRows={totalRows}
-                  totalColumns={totalColumns}
-                  withMiniAvatars={venue.miniAvatars}
-                  setSelectedUserProfile={setSelectedUserProfile}
-                />
-              )
-          )}
-        </div>
-      ))}
-
-      {venue.rooms.map((room) => (
-        <MapRoomOverlay
-          // TODO: is room.title unique? Is there something better we can use for the key?
-          key={room.title}
-          venue={venue}
-          room={room}
-          attendances={attendances}
-          enterCampRoom={enterCampRoom}
-          selectRoom={selectRoom}
-        />
-      ))}
+      {showGrid && mapGrid}
+      {showGrid && partygoersOverlay}
+      {roomOverlay}
 
       {selectedUserProfile && (
         <UserProfileModal
