@@ -18,13 +18,16 @@ import { useKeyboardControls } from "hooks/useKeyboardControls";
 
 import Sidebar from "components/molecules/Sidebar";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { MapRow } from "components/molecules/MapRow";
-import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
 import { PartyMapRoomOverlay } from "./PartyMapRoomOverlay";
 
 import "./Map.scss";
 import { makeCampRoomHitFilter } from "utils/filter";
 import { hasElements } from "utils/types";
+
+// @debt refactor these hooks into somewhere more sensible
+import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
+import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
+import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -60,7 +63,9 @@ export const Map: React.FC<PropsType> = ({
   const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers: readonly WithId<User>[] | undefined = useSelector(
+    partygoersSelector
+  );
 
   useEffect(() => {
     const img = new Image();
@@ -149,31 +154,16 @@ export const Map: React.FC<PropsType> = ({
     [profile, user, venue.name, venues]
   );
 
-  const partygoersBySeat = useMemo(() => {
-    if (!venueId) return [];
-
-    // TODO: this may be why we don't use row 0...? If so, let's change it to use types better and use undefines
-    const selectRow = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId]?.row ?? 0;
-
-    const selectCol = (partygoer: WithId<User>) =>
-      partygoer?.data?.[venueId]?.column ?? 0;
-
-    const partygoersReducer = makeMatrixReducer(selectRow, selectCol);
-
-    return partygoers?.reduce(partygoersReducer, []);
-  }, [venueId, partygoers]);
+  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+    venueId,
+    partygoers,
+  });
 
   const enterSelectedRoom = useCallback(() => {
     if (!selectedRoom) return;
 
     enterPartyMapRoom(selectedRoom);
   }, [enterPartyMapRoom, selectedRoom]);
-
-  const isSeatTaken = useCallback(
-    (r: number, c: number): boolean => !!partygoersBySeat?.[r]?.[c],
-    [partygoersBySeat]
-  );
 
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer: WithId<User> | null) => {
@@ -203,68 +193,25 @@ export const Map: React.FC<PropsType> = ({
 
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
-  const mapGrid = useMemo(
-    () =>
-      showGrid ? (
-        columnsArray.map((_, colIndex) => {
-          return (
-            <div className="seat-column" key={`column${colIndex}`}>
-              {rowsArray.map((_, rowIndex) => {
-                const column = colIndex + 1;
-                const row = rowIndex + 1;
+  const mapGrid = useMapGrid({
+    showGrid,
+    userUid,
+    columnsArray,
+    rowsArray,
+    partygoersBySeat,
+    onSeatClick,
+  });
 
-                const seatedPartygoer = partygoersBySeat?.[row]?.[column]
-                  ? partygoersBySeat[row][column]
-                  : null;
-
-                const hasSeatedPartygoer = !!seatedPartygoer;
-
-                const isMe = seatedPartygoer?.id === userUid;
-
-                return (
-                  <MapRow
-                    key={`row${rowIndex}`}
-                    row={row}
-                    column={column}
-                    showGrid={showGrid}
-                    seatedPartygoer={seatedPartygoer}
-                    hasSeatedPartygoer={hasSeatedPartygoer}
-                    seatedPartygoerIsMe={isMe}
-                    onSeatClick={onSeatClick}
-                  />
-                );
-              })}
-            </div>
-          );
-        })
-      ) : (
-        <div />
-      ),
-    [columnsArray, onSeatClick, partygoersBySeat, rowsArray, showGrid, userUid]
-  );
-
-  const partygoersOverlay = useMemo(
-    () =>
-      // @debt this can be undefined because our types are broken so check explicitly
-      showGrid
-        ? partygoers?.map(
-            (partygoer) =>
-              partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-                <MapPartygoerOverlay
-                  key={partygoer.id}
-                  partygoer={partygoer}
-                  venueId={venue.id}
-                  myUserUid={userUid ?? ""} // @debt fix this to be less hacky
-                  totalRows={rows}
-                  totalColumns={columns}
-                  withMiniAvatars={venue.miniAvatars}
-                  setSelectedUserProfile={setSelectedUserProfile}
-                />
-              )
-          )
-        : [],
-    [columns, partygoers, rows, userUid, venue.id, venue.miniAvatars, showGrid]
-  );
+  const partygoersOverlay = usePartygoersOverlay({
+    showGrid,
+    userUid,
+    venueId,
+    withMiniAvatars: venue.miniAvatars,
+    rows,
+    columns,
+    partygoers,
+    setSelectedUserProfile,
+  });
 
   const roomOverlay = useMemo(
     () =>
