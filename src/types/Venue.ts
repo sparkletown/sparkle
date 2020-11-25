@@ -83,14 +83,10 @@ export interface VenueConfig {
     backgroundColor?: string;
   };
 
-  jazzbarConfig: VenueJazzbarConfig;
   landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
 
   memberEmails?: string[];
   showRangers?: boolean;
-}
-
-export interface VenueJazzbarConfig {
   tables?: Table[];
 }
 
