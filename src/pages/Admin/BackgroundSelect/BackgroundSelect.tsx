@@ -17,7 +17,10 @@ import { BackgroundSelectProps } from "./BackgroundSelect.types";
 import * as S from "./BackgroundSelect.styles";
 import { useFetchAssetImages } from "hooks/useFetchAssetImages";
 
-const BackgroundSelect: React.FC<BackgroundSelectProps> = ({ venueName }) => {
+const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
+  venueName,
+  mapBackground,
+}) => {
   const { user } = useUser();
   const mapBackgrounds = useFetchAssetImages("mapBackgrounds");
 
@@ -46,27 +49,45 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({ venueName }) => {
   };
 
   return (
-    <S.Wrapper>
+    <S.Wrapper
+      // backgroundUrl={mapBackground}
+      hasImage={!!mapBackground}
+    >
       <Legend text={`${venueName}'s Map`} />
       <Legend
         text="Remove background"
         position="right"
         onClick={() => handleBackgroundRemove()}
       />
-      <FileButton onChange={handleUpload} />
 
-      <h3>Or choose a map</h3>
-      <S.MapBrowserGrid>
-        {mapBackgrounds.length > 0 &&
-          mapBackgrounds.map((item, index) => (
-            <S.MapItem
-              backgroundImage={item}
-              key={index}
-              aspectRatio="1.6/1"
-              onClick={() => handleUpload(item)}
-            />
-          ))}
-      </S.MapBrowserGrid>
+      {!mapBackground && (
+        <>
+          <FileButton onChange={handleUpload} />
+
+          <h3>Or choose a map</h3>
+          <S.MapBrowserGrid>
+            {mapBackgrounds.length > 0 &&
+              mapBackgrounds.map((item, index) => (
+                <S.MapItem
+                  backgroundImage={item}
+                  key={index}
+                  aspectRatio="1.6/1"
+                  onClick={() => handleUpload(item)}
+                />
+              ))}
+          </S.MapBrowserGrid>
+        </>
+      )}
+
+      {mapBackground && (
+        <img
+          src={mapBackground}
+          style={{
+            width: "100%",
+          }}
+          alt="map background"
+        />
+      )}
     </S.Wrapper>
   );
 };

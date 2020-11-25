@@ -16,6 +16,7 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 import * as S from "./VenueDetails.styles";
 import firebase from "firebase";
 import RoomModal from "pages/Admin/Room/Modal";
+import RoomCard from "pages/Admin/Room/Card";
 
 type Owner = {
   id: string;
@@ -25,7 +26,7 @@ type Owner = {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const { name, owners, id } = venue;
+  const { name, owners, id, rooms, mapBackgroundImageUrl } = venue;
   const {
     subtitle,
     description,
@@ -98,7 +99,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       </S.Header>
 
       <S.Main>
-        <BackgroundSelect venueName={name} />
+        <BackgroundSelect
+          venueName={name}
+          mapBackground={mapBackgroundImageUrl}
+        />
 
         <Button onClick={() => toggleRoomModal()}>Add a room</Button>
       </S.Main>
@@ -108,6 +112,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         venueId={id!}
         onSubmitHandler={() => setModalOpen(false)}
       />
+
+      {!!rooms &&
+        rooms.map((room: any) => <RoomCard key={room.id} {...room} />)}
     </S.Container>
   );
 };

@@ -1,16 +1,23 @@
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+type WrapperProps = {
+  backgroundUrl?: string;
+  hasImage?: boolean;
+};
+export const Wrapper = styled.div<WrapperProps>`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 5rem 0 4rem;
+  padding: ${({ hasImage }) => (hasImage ? "0" : "5rem 0 4rem")};
 
   position: relative;
 
   border-radius: 1.8rem;
+  background-size: cover;
   background-color: #1a1d24;
+  background-image: url(${({ backgroundUrl }) => backgroundUrl ?? ""});
+  background-position: center;
 `;
 
 export const MapBrowserGrid = styled.div`
