@@ -4,11 +4,15 @@
   background: $black;
   display: flex;
   justify-content: center;
-}
-
-.participant-container {
   width: 100%;
   align-self: flex-start;
+
+  &.two-across {
+    grid-column: span 3;
+  }
+  &.three-across {
+    grid-column: span 2;
+  }
 }
 
 .empty-chair-image {
