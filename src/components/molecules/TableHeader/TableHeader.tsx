@@ -35,7 +35,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       (user: User) => user.data?.[venueName]?.table === seatedAtTable
     );
 
-  const firestoreUpdate = (doc: string, update: firestore.UpdateData) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const firestoreUpdate = (doc: string, update: any) => {
     const firestore = firebase.firestore();
     firestore
       .doc(doc)
