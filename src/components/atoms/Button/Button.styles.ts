@@ -1,18 +1,17 @@
 import styled from "styled-components";
 
-type AppButtonProps = {
+type ButtonProps = {
   gradient?: boolean;
 };
-
-export const Button = styled.button`
+export const Button = styled.button<ButtonProps>`
   display: inline-block;
   padding: 0.75em 1em;
 
   border-radius: 1.375em;
   border: none;
   background-color: #361f6e;
-  background-image: ${(props: AppButtonProps) =>
-    props.gradient
+  background-image: ${({ gradient }) =>
+    gradient
       ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
       : "none"};
 

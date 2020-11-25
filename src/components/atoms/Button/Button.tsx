@@ -13,6 +13,8 @@ const AppButton: React.FC<ButtonProps> = ({
   text,
   type,
   customStyle,
+  children,
+  gradient,
 }) => {
   if (loading)
     return (
@@ -27,8 +29,9 @@ const AppButton: React.FC<ButtonProps> = ({
       style={customStyle}
       type={type}
       onClick={onClick}
+      gradient={gradient}
     >
-      {text}
+      {children ?? text}
     </S.Button>
   );
 };
