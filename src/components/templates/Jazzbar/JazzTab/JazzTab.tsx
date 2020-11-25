@@ -39,8 +39,6 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
-const noopHandler = () => {};
-
 const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
   useFirestoreConnect([
     {
@@ -236,7 +234,6 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                   roomName={seatedAtTable}
                   venueName={venueToUse.name}
                   setUserList={setUserList}
-                  setParticipantCount={noopHandler}
                   setSeatedAtTable={setSeatedAtTable}
                 />
               )}
