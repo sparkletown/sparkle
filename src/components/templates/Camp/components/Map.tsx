@@ -269,8 +269,8 @@ export const Map: React.FC<MapProps> = ({
         gridTemplateRows: `repeat(${templateRows}, 1fr)`,
       }}
     >
-      {mapGrid}
-      {partygoersOverlay}
+      {showGrid && mapGrid}
+      {showGrid && partygoersOverlay}
       {roomOverlay}
 
       {selectedUserProfile && (

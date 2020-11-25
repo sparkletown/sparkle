@@ -250,8 +250,8 @@ export const Map: React.FC<PropsType> = ({
               gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
           >
-            {mapGrid}
-            {partygoersOverlay}
+            {showGrid && mapGrid}
+            {showGrid && partygoersOverlay}
             {roomOverlay}
           </div>
 
