@@ -31,7 +31,7 @@ interface PropsType {
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
-  users,
+  users: userList,
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
   activity = "partying",
@@ -44,7 +44,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  users = users?.filter((user) => !user.anonMode && user.partyName && user.id); // quick fix to get rid of anonymous users
+  const users = userList?.filter(
+    (user) => !user.anonMode && user.partyName && user.id
+  ); // quick fix to get rid of anonymous users
   const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
   const attendance = users.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
