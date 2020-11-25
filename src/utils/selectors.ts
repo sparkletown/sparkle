@@ -5,7 +5,7 @@ import { RootState } from "index";
 import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
-import { Experience, User } from "types/User";
+import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 
 import { WithId } from "utils/id";
@@ -130,7 +130,7 @@ export const privateChatsSelector = (state: RootState) =>
 export const chatUsersSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
 
-export const experiencesSelector: SparkleSelector<Experience> = (state) =>
+export const experiencesSelector = (state: RootState) =>
   state.firestore.data.experiences;
 
 export const venueSelector = (state: RootState) =>
