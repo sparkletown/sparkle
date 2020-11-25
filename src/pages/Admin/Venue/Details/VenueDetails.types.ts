@@ -1,5 +1,5 @@
-import { VenueNew } from "types/Venue";
+import { Venue_v2 } from "types/Venue";
 
 export interface VenueDetailsProps {
-  venue: VenueNew;
+  venue: Venue_v2;
 }

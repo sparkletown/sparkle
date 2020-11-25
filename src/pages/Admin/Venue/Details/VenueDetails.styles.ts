@@ -1,13 +1,18 @@
 import styled from "styled-components";
 
 import { Container as VenueHeroContainer } from "components/molecules/VenueHero/VenueHero.styles";
+import { Wrapper as BackgroundSelectWrapper } from "pages/Admin/BackgroundSelect/BackgroundSelect.styles";
+import { Button } from "components/atoms/Button/Button.styles";
 
 export const Container = styled.div`
   display: flex;
+  height: calc(100vh - ${(props) => props.theme.dimensions.topBarHeight});
   flex-direction: column;
   padding-right: 15%;
 
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: thin;
 
   background-color: #000000;
 `;
@@ -30,9 +35,22 @@ export const HeaderActions = styled.div`
 `;
 
 export const Main = styled.main`
+  display: flex;
+  flex-wrap: wrap;
   padding-left: 4.4em;
   margin-top: 2rem;
+  justify-content: space-between;
+  align-items: center;
+
+  ${BackgroundSelectWrapper} {
+    margin-bottom: 1rem;
+  }
+
+  ${Button} {
+    padding: 0.75em 2em;
+  }
 `;
+
 // ---------------- ADMIN LIST
 export const AdminList = styled.div`
   display: flex;
@@ -85,4 +103,15 @@ export const AdminPicture = styled.div<AdminPictureProps>`
   background-image: ${({ backgroundImage }) => `url(${backgroundImage})`};
   background-size: cover;
   background-position: center;
+`;
+
+export const RoomWrapper = styled.div`
+  display: grid;
+  margin-top: 2rem;
+  grid-gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+`;
+
+export const RoomCounter = styled.span`
+  font-size: 1.5rem;
 `;

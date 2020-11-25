@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 // Components
 import VenueHero from "components/molecules/VenueHero";
-import { Button } from "components/atoms/Button/Button.styles";
+import Button from "components/atoms/Button";
 
 // Pages
 import BackgroundSelect from "pages/Admin/BackgroundSelect";
@@ -37,23 +37,31 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    async function getOwnersData() {
-      for (const owner of owners) {
-        const user = (
-          await firebase.functions().httpsCallable("venue-getOwnerData")({
-            userId: owner,
-          })
-        ).data;
+    const newOwners: any = [];
 
-        // if (ownersData.filter(i => i.id !== owner)) {
-        setOwnersData((prevState) => [
-          ...prevState,
-          {
-            id: owner,
-            ...user,
-          },
-        ]);
-        // }
+    async function getOwnersData() {
+      if (!!owners) {
+        for (const owner of owners) {
+          // const user = (
+          //   await firebase.functions().httpsCallable("venue-getOwnerData")({
+          //     userId: owner,
+          //   })
+          // ).data;
+
+          const user = await firebase
+            .functions()
+            .httpsCallable("venue-getOwnerData")({ userId: owner });
+          const userData = user.data;
+
+          if (ownersData.filter((i) => i.id !== owner)) {
+            newOwners.push({
+              id: owner,
+              ...userData,
+            });
+          }
+        }
+
+        // setOwnersData(newOwners);
       }
     }
 
@@ -62,7 +70,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     } catch (error) {
       console.error(error);
     }
-  }, [owners]);
+  }, [owners, ownersData]);
 
   const toggleRoomModal = () => setModalOpen(!modalOpen);
 
@@ -104,17 +112,26 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           mapBackground={mapBackgroundImageUrl}
         />
 
-        <Button onClick={() => toggleRoomModal()}>Add a room</Button>
+        <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
+        <Button onClick={() => toggleRoomModal()} gradient>
+          Add a room
+        </Button>
+
+        {!!rooms && (
+          <S.RoomWrapper>
+            {rooms.map((room: any) => (
+              <RoomCard key={room.id} {...room} />
+            ))}
+          </S.RoomWrapper>
+        )}
       </S.Main>
 
       <RoomModal
         isVisible={modalOpen}
         venueId={id!}
         onSubmitHandler={() => setModalOpen(false)}
+        onClickOutsideHandler={() => setModalOpen(false)}
       />
-
-      {!!rooms &&
-        rooms.map((room: any) => <RoomCard key={room.id} {...room} />)}
     </S.Container>
   );
 };
