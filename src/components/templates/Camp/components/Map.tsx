@@ -238,6 +238,22 @@ export const Map: React.FC<MapProps> = ({
     setSelectedUserProfile,
   });
 
+  const roomOverlay = useMemo(
+    () =>
+      venue.rooms.map((room) => (
+        <MapRoomOverlay
+          // TODO: is room.title unique? Is there something better we can use for the key?
+          key={room.title}
+          venue={venue}
+          room={room}
+          attendances={attendances}
+          enterCampRoom={enterCampRoom}
+          selectRoom={selectRoom}
+        />
+      )),
+    [attendances, enterCampRoom, selectRoom, venue]
+  );
+
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -255,18 +271,7 @@ export const Map: React.FC<MapProps> = ({
     >
       {mapGrid}
       {partygoersOverlay}
-
-      {venue.rooms.map((room) => (
-        <MapRoomOverlay
-          // TODO: is room.title unique? Is there something better we can use for the key?
-          key={room.title}
-          venue={venue}
-          room={room}
-          attendances={attendances}
-          enterCampRoom={enterCampRoom}
-          selectRoom={selectRoom}
-        />
-      ))}
+      {roomOverlay}
 
       {selectedUserProfile && (
         <UserProfileModal
