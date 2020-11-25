@@ -4,6 +4,7 @@ import { User } from "types/User";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
+import { experiencesSelector, partygoersSelector } from "utils/selectors";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -19,10 +20,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   tables,
 }) => {
   const { user, profile } = useUser();
-  const { experiences, users } = useSelector((state) => ({
-    experiences: state.firestore.data.experiences,
-    users: state.firestore.ordered.partygoers,
-  }));
+
+  const experiences = useSelector(experiencesSelector);
+  const users = useSelector(partygoersSelector);
 
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
