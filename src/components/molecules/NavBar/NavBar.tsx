@@ -102,7 +102,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         : [],
     [venue]
   );
-  useFirestoreConnect(venueParentQuery);
+  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
 
   const {
     location: { pathname },
