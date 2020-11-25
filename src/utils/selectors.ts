@@ -164,12 +164,12 @@ export const parentVenueEventsSelector: SparkleSelector<
 export const makeSubvenueEventsSelector = (venueId?: string) => (
   state: RootState
 ): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as any)[`subvenueEvents-${venueId}`];
+  (state.firestore.ordered as never)[`subvenueEvents-${venueId}`];
 
 export const makeSiblingVenueEventsSelector = (venueId?: string) => (
   state: RootState
 ): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as any)[`siblingVenueEvents-${venueId}`];
+  (state.firestore.ordered as never)[`siblingVenueEvents-${venueId}`];
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.venues?.playa?.radioStations;
