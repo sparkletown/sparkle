@@ -43,3 +43,10 @@ export const MapItem = styled.div<MapItemProps>`
 
   cursor: pointer;
 `;
+
+export const Image = styled.img.attrs({
+  alt: "Map background",
+})`
+  width: 100%;
+  border-radius: ${(props) => props.theme.dimensions.borderRadius};
+`;

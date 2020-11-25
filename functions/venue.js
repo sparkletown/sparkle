@@ -41,6 +41,14 @@ const PlacementState = {
   Hidden: "HIDDEN",
 };
 
+const checkUserIsAdminOrOwner = async (venueId, uid) => {
+  try {
+    return await checkUserIsOwner(venueId, uid);
+  } catch (e) {
+    return e.toString();
+  }
+};
+
 const createVenueData = (data, context) => {
   if (!VALID_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
@@ -557,6 +565,12 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  } else {
+    updated.mapBackgroundImageUrl = "";
+  }
+
   // updated = {
   //   ...updated,
   //   showGrid: data.showGrid || false,
@@ -693,6 +707,14 @@ exports.getVenueEvents = functions.https.onCall(
     }
   }
 );
+
+exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
+  const user = (
+    await admin.firestore().collection("users").doc(userId).get()
+  ).data();
+
+  return user;
+});
 
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||

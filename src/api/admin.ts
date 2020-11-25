@@ -78,13 +78,14 @@ export type VenueInput = AdvancedVenueInput &
 
 export interface VenueInput_v2 {
   name: string;
-  description: string;
-  subtitle: string;
-  bannerImageFile: FileList;
-  bannerImageUrl: string;
-  logoImageFile: FileList;
-  logoImageUrl: string;
-  rooms: Array<unknown>;
+  description?: string;
+  subtitle?: string;
+  bannerImageFile?: FileList;
+  bannerImageUrl?: string;
+  logoImageFile?: FileList;
+  logoImageUrl?: string;
+  rooms?: Array<unknown>;
+  mapBackgroundImageUrl?: string;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

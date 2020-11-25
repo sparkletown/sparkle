@@ -1,7 +1,7 @@
 import React from "react";
 
 // API
-import { updateVenueNew } from "api/admin";
+import { updateVenue_v2 } from "api/admin";
 
 // Components
 import FileButton from "components/atoms/FileButton";
@@ -27,7 +27,7 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   const handleUpload = (url: string) => {
     if (!user) return;
 
-    return updateVenueNew(
+    return updateVenue_v2(
       {
         name: venueName,
         mapBackgroundImageUrl: url,
@@ -39,7 +39,7 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   const handleBackgroundRemove = () => {
     if (!user) return;
 
-    return updateVenueNew(
+    return updateVenue_v2(
       {
         name: venueName,
         mapBackgroundImageUrl: "",
@@ -54,11 +54,13 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
       hasImage={!!mapBackground}
     >
       <Legend text={`${venueName}'s Map`} />
-      <Legend
-        text="Remove background"
-        position="right"
-        onClick={() => handleBackgroundRemove()}
-      />
+      {!!mapBackground && (
+        <Legend
+          text="Remove background"
+          position="right"
+          onClick={() => handleBackgroundRemove()}
+        />
+      )}
 
       {!mapBackground && (
         <>
@@ -79,15 +81,7 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         </>
       )}
 
-      {mapBackground && (
-        <img
-          src={mapBackground}
-          style={{
-            width: "100%",
-          }}
-          alt="map background"
-        />
-      )}
+      {mapBackground && <S.Image src={mapBackground} />}
     </S.Wrapper>
   );
 };
