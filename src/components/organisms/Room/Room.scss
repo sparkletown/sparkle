@@ -1,13 +1,5 @@
 @import "scss/constants.scss";
 
-.participants-room {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  width: 50%;
-  align-self: flex-start;
-}
-
 .participant-container {
   background: $black;
   display: flex;
@@ -15,7 +7,7 @@
 }
 
 .participant-container {
-  width: 50%;
+  width: 100%;
   align-self: flex-start;
 }
 

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  Fragment,
+} from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
@@ -246,7 +252,7 @@ const Room: React.FC<RoomProps> = ({
   }
 
   return (
-    <div className="participants-room">
+    <Fragment>
       {meComponent}
       {othersComponents}
       {emptyComponents}
@@ -257,7 +263,7 @@ const Room: React.FC<RoomProps> = ({
         onRetry={connectToVideoRoom}
         onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
       />
-    </div>
+    </Fragment>
   );
 };
 
