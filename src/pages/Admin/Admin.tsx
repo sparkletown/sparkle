@@ -68,7 +68,7 @@ const VenueList: React.FC<VenueListProps> = ({
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin/venue/creation" className="btn btn-primary">
+        <Link to="/admin_v2/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -422,10 +422,12 @@ const Admin: React.FC = () => {
       where: [["owners", "array-contains", user?.uid || ""]],
     },
   ]);
+
   const { roles } = useRoles();
   if (!roles) {
     return <>Loading...</>;
   }
+
   if (!IS_BURN && !roles.includes("admin")) {
     return <>Forbidden</>;
   }
