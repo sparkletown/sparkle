@@ -56,11 +56,13 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - node/install-packages
-      - run: npm run prettier:check
-      - run: npm run eslint:check
-      - run: npm run test
-      - *notify-on-fail
+      - node/with-cache:
+          cache-version: v2
+          steps:
+            - run: npm run prettier:check
+            - run: npm run eslint:check
+            - run: npm run test
+            - *notify-on-fail
   #  smoke-test:
   #    executor:
   #      name: node/default
@@ -80,7 +82,6 @@ jobs:
     working_directory: ~/project/functions # ensure our steps (except for checkout) run in this directory
     steps:
       - checkout:
-          path: ~/project # override the path just for checkout
       - node/with-cache:
           cache-version: v2
           steps:
