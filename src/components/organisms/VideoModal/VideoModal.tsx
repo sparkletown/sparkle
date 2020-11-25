@@ -2,6 +2,7 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import "./VideoModal.scss";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { IFRAME_ALLOW } from "settings";
 
 interface PropsType {
   show: boolean;
@@ -40,7 +41,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
             title="art-piece-video"
             src={ConvertToEmbeddableUrl(url, autoplay)}
             frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allow={IFRAME_ALLOW}
             allowFullScreen
           ></iframe>
         </div>
