@@ -36,6 +36,7 @@ export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
         {config.buttons &&
           config.buttons.map((button) => (
             <button
+              key={button.href}
               className={`btn btn-block btn-centered btn-primary ${button.className}`}
               onClick={() =>
                 button.href ? window.open(button.href) && proceed() : proceed()
