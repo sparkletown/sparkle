@@ -81,59 +81,53 @@ jobs:
     steps:
       - checkout:
           path: ~/project # override the path just for checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run: cd functions && npm i
-            - run:
-                command: |
-                  if [ $CIRCLE_BRANCH = "staging" ]; then
-                    ENV=staging
-                  fi
-                  if [ $CIRCLE_BRANCH = "master" ]; then
-                    ENV=prod
-                  fi
-                  if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
-                    ENV=sparkleverse
-                  fi
+      - node/install-packages
+      - run:
+          command: |
+            if [ $CIRCLE_BRANCH = "staging" ]; then
+              ENV=staging
+            fi
+            if [ $CIRCLE_BRANCH = "master" ]; then
+              ENV=prod
+            fi
+            if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
+              ENV=sparkleverse
+            fi
 
-                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
       - *notify-on-fail
   deploy-hosting:
     executor: node/default
     steps:
       - checkout
-      - node/with-cache:
-          cache-version: v2
-          steps:
-            - run:
-                command: |
-                  if [ $CIRCLE_BRANCH = "staging" ]; then
-                    PREFIX=STAGING_
-                    ENV=staging
-                    TARGET=staging
-                  fi
-                  if [ $CIRCLE_BRANCH = "master" ]; then
-                    PREFIX=PROD_
-                    ENV=prod
-                    TARGET=co-reality-map
-                  fi
-                  if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
-                    PREFIX=SPARKLEVERSE_
-                    ENV=sparkleverse
-                    TARGET=sparkleverse
-                  fi
+      - run:
+          command: |
+            if [ $CIRCLE_BRANCH = "staging" ]; then
+              PREFIX=STAGING_
+              ENV=staging
+              TARGET=staging
+            fi
+            if [ $CIRCLE_BRANCH = "master" ]; then
+              PREFIX=PROD_
+              ENV=prod
+              TARGET=co-reality-map
+            fi
+            if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
+              PREFIX=SPARKLEVERSE_
+              ENV=sparkleverse
+              TARGET=sparkleverse
+            fi
 
-                  ./scripts/init-env.sh $PREFIX
+            ./scripts/init-env.sh $PREFIX
 
-                  npm run build
+            npm run build
 
-                  ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-                  ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
+            ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
       - *notify-on-fail
 workflows:
   build-test-deploy:
