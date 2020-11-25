@@ -1,8 +1,6 @@
 import { Venue, urlFromImage } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
-
-// Typings
-// import { FormValues } from "pages/Admin/Details/Details.types";
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 export interface JazzbarVenue extends Venue {
   template: VenueTemplate.jazzbar;
@@ -13,7 +11,7 @@ export interface JazzbarVenue extends Venue {
   };
 }
 
-export const createJazzbar = (values: any): Venue => {
+export const createJazzbar = (values: FormValues): Venue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",

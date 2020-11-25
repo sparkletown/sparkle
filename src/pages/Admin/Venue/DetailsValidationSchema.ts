@@ -1,9 +1,12 @@
-import * as Yup from "yup";
-
 import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
+import * as Yup from "yup";
+import { VenueTemplate } from "types/VenueTemplate";
 import {
+  ZOOM_URL_TEMPLATES,
+  IFRAME_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
@@ -18,30 +21,11 @@ const initialMapIconPlacement: VenueInput["placement"] = {
 
 type Question = VenueInput["profileQuestions"][number];
 
-export interface SchemaShape {
-  name: string;
-  subtitle: string;
-  description: string;
-
-  bannerImageFile: FileList;
-  bannerImageUrl: string;
-
-  logoImageFile: FileList;
-  logoImageUrl: string;
-
-  showGrid: boolean;
-  columns?: number;
-}
-
-const createFileSchema = (
-  name: string,
-  required: boolean,
-  fieldName: string = "Image"
-) =>
+const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>()
     .test(
       name,
-      `${fieldName} is required!`,
+      "Image required",
       (val: FileList) => !required || val.length > 0
     )
     .test(
@@ -63,14 +47,12 @@ const urlIfNoFileValidation = (fieldName: string) =>
         : schema.required("Required")
   );
 
-const mustBeMinimum = (fieldName: string, min: number) =>
-  `${fieldName} must be at least ${min} characters`;
-
-export const validationSchema_v2 = Yup.object()
-  .shape<SchemaShape>({
+export const validationSchema = Yup.object()
+  .shape<VenueInput>({
+    template: Yup.string().required(),
     name: Yup.string()
-      .required("Name is required!")
-      .min(3, ({ min }) => `Name must be at least ${min} characters`)
+      .required("Required")
+      .min(1, "Required")
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -96,41 +78,83 @@ export const validationSchema_v2 = Yup.object()
                 )
             : schema //will be set from the data from the api. Does not need to be unique
       ),
-    subtitle: Yup.string()
-      .required("Subtitle is required!")
-      .min(3, ({ min }) => mustBeMinimum("Subtitle", min)),
-    description: Yup.string()
-      .required("Description is required!")
-      .min(3, ({ min }) => mustBeMinimum("Description", min)),
+    bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
+    logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
-    bannerImageFile: Yup.mixed<FileList>().when("$editing", {
-      is: false,
-      then: createFileSchema("bannerImageUrl", true, "Banner"),
-    }),
-    bannerImageUrl: Yup.string().required("Banner is required!"),
+    showGrid: Yup.bool().notRequired(),
+    columns: Yup.number().notRequired().min(1).max(100),
 
-    logoImageFile: Yup.mixed<FileList>().when("$editing", {
-      is: false,
-      then: createFileSchema("logoImageUrl", true, "Logo"),
-    }),
-    logoImageUrl: Yup.string().required("Logo is required!"),
+    mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
+    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
 
-    showGrid: Yup.boolean().required(),
-    columns: Yup.number().when("showGrid", {
-      is: true,
-      then: Yup.number()
-        .required("Number of columns is required!")
-        .min(1)
-        .positive(),
-      otherwise: Yup.number(),
-    }),
+    mapBackgroundImageFile: Yup.mixed<FileList>().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
+          : schema.notRequired()
+    ),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
+
+    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
+    logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    description: Yup.string().required("Required"),
+    subtitle: Yup.string().required("Required"),
+    zoomUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        ZOOM_URL_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test("zoomUrl", "URL required", (val: string) => val.length > 0)
+          : schema.notRequired()
+    ),
+    iframeUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
+        IFRAME_TEMPLATES.includes(template)
+          ? schema
+              .required("Required")
+              .test(
+                "iframeUrl",
+                "Video URL required",
+                (val: string) => val.length > 0
+              )
+          : schema.notRequired()
+    ),
+
+    width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
+    height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
+
+    placement: Yup.object()
+      .shape({
+        x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH),
+        y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
+      })
+      .default(initialMapIconPlacement),
+
+    // @debt provide some validation error messages for invalid questions
+    // advanced options
+    profileQuestions: Yup.array<Question>()
+      .ensure()
+      .defined()
+      .transform((val: Array<Question>) =>
+        val.filter((s) => !!s.name && !!s.text)
+      ), // ensure questions are not empty strings
+
+    placementRequests: Yup.string().notRequired(),
+    adultContent: Yup.bool().required(),
+    bannerMessage: Yup.string().notRequired(),
+    parentId: Yup.string().notRequired(),
   })
   .required();
-
-export const venueEditSchema = Yup.object()
-  .shape<Partial<SchemaShape>>({})
-  .from("subtitle", "subtitle")
-  .from("config.landingPageConfig.description", "description");
 
 // this is used to transform the api data to conform to the yup schema
 export const editVenueCastSchema = Yup.object()

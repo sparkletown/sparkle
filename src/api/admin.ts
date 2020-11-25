@@ -76,6 +76,17 @@ export type VenueInput = AdvancedVenueInput &
     owners?: string[];
   };
 
+export interface VenueInput_v2 {
+  name: string;
+  description: string;
+  subtitle: string;
+  bannerImageFile: FileList;
+  bannerImageUrl: string;
+  logoImageFile: FileList;
+  logoImageUrl: string;
+  rooms: Array<unknown>;
+}
+
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
   VenueImageUrls;
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
@@ -92,17 +103,6 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
-
-export interface VenueInput_v2 {
-  name: string;
-  description: string;
-  subtitle: string;
-  bannerImageFile: FileList;
-  bannerImageUrl: string;
-  logoImageFile: FileList;
-  logoImageUrl: string;
-  rooms: Array<unknown>;
-}
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();

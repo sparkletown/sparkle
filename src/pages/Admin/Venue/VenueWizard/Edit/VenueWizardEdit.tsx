@@ -8,7 +8,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useFirestore } from "react-redux-firebase";
 
 // Typings
-import { VenueNew } from "types/Venue";
+import { Venue_v2 } from "types/Venue";
 import { VenueWizardEditProps } from "./VenueWizardEdit.types";
 
 // Reducer
@@ -30,7 +30,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
       .get();
 
     if (!venueSnapshot.exists) return;
-    const data = venueSnapshot.data() as VenueNew;
+    const data = venueSnapshot.data() as Venue_v2;
     dispatch({
       type: SET_FORM_VALUES,
       payload: {

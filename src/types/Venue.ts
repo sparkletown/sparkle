@@ -1,3 +1,5 @@
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
 import { AvatarGridRoom } from "./AvatarGrid";
 import { CampRoomData } from "./CampRoomData";
 import { EntranceStepConfig } from "./EntranceStep";
@@ -16,29 +18,6 @@ export enum RoomVisibility {
   hover = "hover",
   count = "count",
   nameCount = "count/name",
-}
-
-export interface Venue_v2 {
-  name: string;
-  config: {
-    landingPageConfig: {
-      subtitle: string;
-      description: string;
-      coverImageUrl: string;
-    };
-  };
-  host: {
-    icon: string;
-  };
-  owners?: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
-  showGrid: boolean;
-  columns?: number;
-  id?: string;
-  rooms?: [];
 }
 
 export type AnyRoom = RoomData | CampRoomData;
@@ -115,6 +94,29 @@ export interface Venue {
   attendeesTitle?: string;
 }
 
+export interface Venue_v2 {
+  name: string;
+  config: {
+    landingPageConfig: {
+      subtitle: string;
+      description: string;
+      coverImageUrl: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners?: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+  showGrid: boolean;
+  columns?: number;
+  id?: string;
+  rooms?: AnyRoom[];
+}
+
 export interface VenuePlacement {
   x: number;
   y: number;
@@ -148,7 +150,7 @@ export const urlFromImage = (
     : defaultValue;
 };
 
-export const createJazzbar = (values: any): Venue => {
+export const createJazzbar = (values: FormValues): Venue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
@@ -166,8 +168,8 @@ export const createJazzbar = (values: any): Venue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your Party Map",
-        description: values.description || "Description of your Party Map",
+        subtitle: values.subtitle || "Subtitle for your venue",
+        description: values.description || "Description of your venue",
         presentation: [],
         checkList: [],
         quotations: [],

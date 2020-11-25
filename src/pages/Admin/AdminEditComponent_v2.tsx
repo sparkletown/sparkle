@@ -20,7 +20,7 @@ import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import {
   editPlacementCastSchema,
   editPlacementSchema,
-} from "./Venue/DetailsValidationSchema";
+} from "pages/Admin/Details/ValidationSchema";
 import * as Yup from "yup";
 import { useForm, FieldErrors, ErrorMessage } from "react-hook-form";
 import { useUser } from "hooks/useUser";
@@ -28,11 +28,13 @@ import { PlacementInput } from "api/admin";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { VenuePlacementState, Venue } from "types/Venue";
 import { ExtractProps } from "types/utility";
-import { SubmitButton } from "./Venue/DetailsForm";
+// import { SubmitButton } from "./Venue/_DetailsForm.tsx.bkp";
 import { AnyVenue } from "types/Firestore";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import { Link } from "react-router-dom";
 import { isCampVenue } from "types/CampVenue";
+
+import SubmitButton from "components/atoms/SubmitButton";
 
 type FormValues = Partial<Yup.InferType<typeof editPlacementCastSchema>>;
 type FormErrors = FieldErrors<Required<FormValues>>;
@@ -400,7 +402,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
   //   [setVenueId]
   // );
 
-  const disable = isSubmitting;
+  const disable: boolean = isSubmitting;
 
   const placementDivRef = useRef<HTMLDivElement>(null);
 
@@ -515,12 +517,12 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
             {formError && (
               <div className="input-error">
                 <div>One or more errors occurred when saving the form:</div>
-                {Object.keys(errors).map((fieldName, index) => (
-                  <div key={index}>
+                {Object.keys(errors).map((fieldName) => (
+                  <div key={fieldName}>
                     <span>Error in {fieldName}:</span>
                     <ErrorMessage
                       errors={errors}
-                      name={fieldName}
+                      name={fieldName as any}
                       as="span"
                       key={fieldName}
                     />
@@ -530,7 +532,7 @@ const PlacementForm: React.FC<PlacementFormProps> = (props) => {
             )}
             <SubmitButton
               editing
-              isSubmitting={isSubmitting}
+              loading={isSubmitting}
               templateType={venue?.template ?? "Venue"}
             />
           </div>

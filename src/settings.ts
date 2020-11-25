@@ -128,6 +128,12 @@ export const PLACEABLE_VENUE_TEMPLATES = [
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
 export interface Template {
+  template: VenueTemplate;
+  name: string;
+  description: Array<string>;
+}
+
+export interface Template_v2 {
   template?: VenueTemplate;
   name: string;
   subtitle?: string;
@@ -177,7 +183,77 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
+  {
+    template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
+    name: "Experience",
+    description: [
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    ],
+  },
+  {
+    template: VenueTemplate.themecamp,
+    name: "Theme Camp",
+    description: [
+      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+    ],
+  },
+  {
+    template: VenueTemplate.artpiece,
+    name: "Art Piece",
+    description: [
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+    ],
+  },
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Music Venue",
+    description: [
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    ],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description: [
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    ],
+  },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Fire Barrel",
+    description: ["Huddle around a fire barrel with your close friends"],
+  },
+];
+
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
+  ...BURN_VENUE_TEMPLATES,
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Jazz Bar",
+    description: ["Create a jazzbar."],
+  },
+
+  {
+    template: VenueTemplate.artcar,
+    name: "Art Car",
+    description: ["Create a space on the Jam that moves around."],
+  },
+  {
+    template: VenueTemplate.performancevenue,
+    name: "Performance Venue",
+    description: [
+      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
+    ],
+  },
+  {
+    template: VenueTemplate.partymap,
+    name: "Party Map",
+    description: [""],
+  },
+];
+
+export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   ...BURN_VENUE_TEMPLATES,
   {
     template: VenueTemplate.jazzbar,

@@ -117,7 +117,7 @@ const createVenueData = (data, context) => {
   return venueData;
 };
 
-const createVenueNew = (data, context) => ({
+const createVenueData_v2 = (data, context) => ({
   name: data.name,
   config: {
     landingPageConfig: {
@@ -278,10 +278,10 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 //
 // To not interfere with the current documents and their structures,
 // new venues will be created with this function
-exports.createVenueNew = functions.https.onCall(async (data, context) => {
+exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueData = createVenueNew(data, context);
+  const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
 
   await admin.firestore().collection("venues").doc(venueId).set(venueData);
@@ -505,70 +505,65 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   await admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
-exports.updateVenueNew = functions.https.onCall(async (data, context) => {
+exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
   await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then((doc) => {
-      if (!doc || !doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} not found`);
-      }
-      const updated = doc.data();
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-      if (data.bannerImageUrl || data.subtitle || data.description) {
-        if (!updated.config) {
-          updated.config = {};
-        }
-        if (!updated.config.landingPageConfig) {
-          updated.config.landingPageConfig = {};
-        }
-      }
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const updated = doc.data();
 
-      if (data.bannerImageUrl) {
-        updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
-      }
-      if (data.subtitle) {
-        updated.config.landingPageConfig.subtitle = data.subtitle;
-      }
-      if (data.description) {
-        updated.config.landingPageConfig.description = data.description;
-      }
-      if (data.primaryColor) {
-        if (!updated.theme) {
-          updated.theme = {};
-        }
-        updated.theme.primaryColor = data.primaryColor;
-      }
-      if (data.logoImageUrl) {
-        if (!updated.host) {
-          updated.host = {};
-        }
-        updated.host.icon = data.logoImageUrl;
-      }
-      if (data.parentId) {
-        updated.parentId = data.parentId;
-      }
+  if (data.bannerImageUrl || data.subtitle || data.description) {
+    if (!updated.config) {
+      updated.config = {};
+    }
+    if (!updated.config.landingPageConfig) {
+      updated.config.landingPageConfig = {};
+    }
+  }
 
-      if (data.showGrid) {
-        updated.showGrid = data.showGrid;
-        updated.columns = data.columns;
-      }
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+  if (data.subtitle) {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+  if (data.description) {
+    updated.config.landingPageConfig.description = data.description;
+  }
+  if (data.primaryColor) {
+    if (!updated.theme) {
+      updated.theme = {};
+    }
+    updated.theme.primaryColor = data.primaryColor;
+  }
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
 
-      // updated = {
-      //   ...updated,
-      //   showGrid: data.showGrid || false,
-      //   columns: data.columns || 1,
-      // }
+  if (data.showGrid) {
+    updated.showGrid = data.showGrid;
+    updated.columns = data.columns;
+  }
 
-      admin.firestore().collection("venues").doc(venueId).update(updated);
-    });
+  // updated = {
+  //   ...updated,
+  //   showGrid: data.showGrid || false,
+  //   columns: data.columns || 1,
+  // }
+
+  admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
