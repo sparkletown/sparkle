@@ -166,7 +166,7 @@ const Jazz: React.FunctionComponent<PropsType> = ({ setUserList, venue }) => {
                 <div
                   className={`${
                     seatedAtTable
-                      ? `participant-container video-participant`
+                      ? "participant-container video-participant"
                       : "full-height-video"
                   }`}
                 >
