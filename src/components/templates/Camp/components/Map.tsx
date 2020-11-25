@@ -241,7 +241,7 @@ export const Map: React.FC<MapProps> = ({
         gridTemplateRows: `repeat(${templateRows}, 1fr)`,
       }}
     >
-      {venue.showGrid ? (
+      {venue.showGrid &&
         columnsArray.map((_, colIndex) => (
           <div className="seat-column" key={`column${colIndex}`}>
             {rowsArray.map((_, rowIndex) => {
@@ -285,10 +285,7 @@ export const Map: React.FC<MapProps> = ({
                 )
             )}
           </div>
-        ))
-      ) : (
-        <div />
-      )}
+        ))}
 
       {venue.rooms.map((room) => (
         <MapRoomOverlay
