@@ -13,6 +13,7 @@ import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
+import { IFRAME_ALLOW } from "settings";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -48,7 +49,7 @@ export const ArtPiece = () => {
             title="art-piece-video"
             src={iframeUrl}
             frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allow={IFRAME_ALLOW}
             allowFullScreen
           ></iframe>
           <div className="video-chat-wrapper">

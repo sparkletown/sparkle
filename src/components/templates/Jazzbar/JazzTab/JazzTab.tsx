@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { LOC_UPDATE_FREQ_MS } from "settings";
+import { IFRAME_ALLOW, LOC_UPDATE_FREQ_MS } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
@@ -192,7 +192,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                         className="youtube-video"
                         src={`${venueToUse.iframeUrl}?autoplay=1`}
                         frameBorder="0"
-                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                        allow={IFRAME_ALLOW}
                       />
                     )}
                     {!venueToUse.iframeUrl && (
