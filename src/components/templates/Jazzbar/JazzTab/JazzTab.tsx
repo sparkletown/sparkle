@@ -66,8 +66,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const venueToUse = venue ? venue : firestoreVenue;
 
-  const jazzbarConfig = venueToUse?.config?.jazzbarConfig;
-  const jazzbarTables = jazzbarConfig?.tables ?? JAZZBAR_TABLES;
+  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
   useEffect(() => {
     const interval = setInterval(() => {
