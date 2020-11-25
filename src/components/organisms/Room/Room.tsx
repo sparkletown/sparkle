@@ -187,7 +187,7 @@ const Room: React.FC<RoomProps> = ({
 
   const profileData = room ? users[room.localParticipant.identity] : undefined;
 
-  let participantContainerClassName = useMemo(() => {
+  const participantContainerClassName = useMemo(() => {
     const attendeeCount = (participants.length ?? 0) + 1; // Include yourself
     if (attendeeCount <= 4) {
       return "two-across";
