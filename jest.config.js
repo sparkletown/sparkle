@@ -23,8 +23,8 @@ module.exports = async () => {
     // testPathIgnorePatterns: ["/node_modules/", "<rootDir>/cypress/.*"],
     // transformIgnorePatterns: ["/node_modules/", "<rootDir>/cypress/.*"],
 
-    transform: {
-      "^.+\\.(ts|tsx)$": "ts-jest",
-    },
+    // transform: {
+    //   "^.+\\.(ts|tsx)$": "ts-jest",
+    // },
   };
 };
