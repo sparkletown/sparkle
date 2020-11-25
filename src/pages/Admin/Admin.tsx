@@ -130,7 +130,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const venueSelector = useCallback(makeVenueSelector(venueId), [venueId]);
+  const venueSelector = useCallback(
+    (state) => makeVenueSelector(venueId)(state),
+    [venueId]
+  );
   const venue = useSelector(venueSelector, shallowEqual);
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);

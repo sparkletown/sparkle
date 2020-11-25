@@ -10,6 +10,7 @@ import {
   partygoersSelector,
   venueEventsSelector,
 } from "utils/selectors";
+import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
@@ -80,10 +81,10 @@ const NavSearchBar = () => {
     <div className="nav-search-links">
       <div className="nav-search-icon" />
       <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
-      {!!searchQuery && (
+      {isTruthy(searchQuery) && (
         <div className="nav-search-close-icon" onClick={clearSearchQuery} />
       )}
-      {!!numberOfSearchResults && (
+      {isTruthy(numberOfSearchResults) && (
         <>
           <div className="nav-search-results">
             <div className="nav-search-result-number">
@@ -147,7 +148,7 @@ const NavSearchBar = () => {
         onHide={() => setSelectedUserProfile(undefined)}
       />
       <RoomModal
-        show={!!selectedRoom}
+        show={isTruthy(selectedRoom)}
         room={selectedRoom}
         onHide={() => setSelectedRoom(undefined)}
       />

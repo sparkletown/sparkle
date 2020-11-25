@@ -36,7 +36,7 @@ function passwordsMatch(submittedPassword, actualPassword) {
   );
 }
 
-exports.checkPassword = functions.https.onCall(async (data, context) => {
+exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()
     .doc(`venues/${data.venue}`)

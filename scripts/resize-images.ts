@@ -79,7 +79,7 @@ const backupFile = async (
   console.log("downloading", backuplocation);
 
   try {
-    const backupDirectoryPath = backuplocation.replace(/[^\/]+$/, "");
+    const backupDirectoryPath = backuplocation.replace(/[^/]+$/, "");
     fs.mkdirSync(backupDirectoryPath, { recursive: true });
 
     if (contentType === "image/gif" || remotePath.endsWith("gif")) {
@@ -163,7 +163,7 @@ const main = async () => {
         console.log(`${file.name} size is ${file.metadata.size} - resizing`);
       }
 
-      const filename = file.name.replace(/^.*[\\\/]/, "");
+      const filename = file.name.replace(/^.*[\\/]/, "");
       const resizedFilePath = `./temp/${filename}`;
 
       if (

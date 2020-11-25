@@ -1,9 +1,12 @@
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
+import { AvatarGridRoom } from "./AvatarGrid";
+import { CampRoomData } from "./CampRoomData";
+import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
+import { RoomData } from "./RoomData";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
-import { AvatarGridRoom } from "./AvatarGrid";
-import { EntranceStepConfig } from "./EntranceStep";
 
 interface Question {
   name: string;
@@ -17,6 +20,9 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
+export type AnyRoom = RoomData | CampRoomData;
+
+// @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
   parentId?: string;
   template: VenueTemplate;
@@ -57,7 +63,7 @@ export interface Venue {
   radioStations?: string[];
   radioTitle?: string;
   dustStorm?: boolean;
-  activity?: any;
+  activity?: string;
   bannerMessage?: string;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
@@ -75,7 +81,7 @@ export interface Venue {
   showLiveSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
-  rooms?: any[];
+  rooms?: AnyRoom[];
   width: number;
   height: number;
   description?: {
@@ -85,6 +91,7 @@ export interface Venue {
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
+  attendeesTitle?: string;
 }
 
 export interface VenuePlacement {

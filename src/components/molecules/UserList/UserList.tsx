@@ -49,7 +49,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const attendance = users.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
-  if (!users) return <></>;
+  if (!users || attendance < 1) return <></>;
   return (
     <>
       <div className="userlist-container">

@@ -1,18 +1,37 @@
-# Sparkle: SparkleTown Platform
+# Sparkle Web App
 
-Codebase for SparkleTown, brought to you by Sparkle.
+Codebase for Sparkle, brought to you by Sparkle.
 
 ## Getting started
 
 ### Frontend
 
+Clone the repo and cd into it
+
 ```
-git clone ...
-cd co-reality-map
+git clone https://github.com/sparkletown/sparkle
+cd sparkle
+```
+
+Now, obtain the `.env` file for the environemnt (eg. staging) and save it (eg. `.env.staging`)
+
+```
+# copy in the .env files
+# symlink the staging .env file
+ln -s .env.staging.local .env
+```
+
+Now you're ready to start the server
+
+```
 npm i
-npm run init # Initialize secrets files with default values
 npm test
 npm start
+```
+
+You won't need to in dev, but you can also test builds:
+
+```
 npm run build
 ```
 
@@ -36,7 +55,9 @@ firebase emulators:start --only functions
 
 ### Stripe
 
-First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials. Contact [chris@cadams.com.au](mailto:chris@cadams.com.au) if you don't.
+Note: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
+
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
 
 ```bash
 brew install stripe/stripe-cli/stripe
@@ -66,7 +87,7 @@ To contribute to the code base, please follow these steps:
 - code
 - create a pull request on staging
 
-Then, to deploy functionalities to production, **merge staging into master**.
+Then, to deploy to production, **merge staging into master**.
 
 > When adding a quick fix to production:
 >
@@ -79,68 +100,10 @@ Then, to deploy functionalities to production, **merge staging into master**.
 
 ## Deploying
 
-tl;dr:
+Deploys are handled by CircleCI.
 
-```
-npm i -g firebase-tools # only need this once
-firebase login # only need this once
-npm run build && firebase deploy
-```
-
-You can do a faster deploy by deploying just hosting:
-
-```
-npm run build && firebase deploy --only hosting
-```
-
-**NOTE:** You may get a warning about deleting the function `checkAdminPassword`; this is a function from [co-reality-admin](https://github.com/co-reality/co-reality-admin) and will be folded into this repo in future. In the meantime please don't delete this function.
-
-## Uploading config for an event
-
-`src/config.js` has the ID of the Firestore document containing the party configuration. For example, if it's "co-reality-5", the Firestore document with the party config is IDed by `config/co-reality-5`.
-
-To upload a new config, use `scripts/upload.sh`:
-
-```
-$ scripts/upload.sh co-reality-5 user@name.com password
-```
-
-This will upload the JSON object exported from `configs/co-reality-5.js` to the Firestore document `config/co-reality-5`.
-
-Watching for changes:
-
-```
-$ brew install fswatch
-$ VENUE=co-reality-5; fswatch -o configs/${VENUE}.js | xargs -n1 -I{} ./scripts/upload.sh ${VENUE} user@name.com password
-```
-
-## Automatic upload of map changes
-
-You can use a quick shell script while editing the map, to speed up the process of seeing your changes on the map:
-
-- Edit `scripts/config-upload.js` to replace the code that prompts for username and password, with the username and password you would type:
-
-```
-read(username)
-read(password)
-```
-
-becomes:
-
-```
-//read(username)
-//read(password)
-const username = 'email@address.com`
-const password = 'password'
-```
-
-- Run the automatic upload script:
-
-```
-$ CONFIG=co-reality-6; fswatch -o configs/${CONFIG}.js| xargs -n1 -I{} ./scripts/upload.sh ${CONFIG}
-```
-
-- Be careful not to commit or push your script change, since it contains your password!
+- Merging to staging will deploy to staging
+- Merging to master will deploy to production
 
 ## Obtaining email addresses from firebase
 

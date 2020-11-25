@@ -5,6 +5,7 @@ import { AnyVenue } from "./Firestore";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+// @debt which of these params are exactly the same as on Venue? Can we simplify this?
 export interface CampVenue extends Venue {
   id: string;
   template: VenueTemplate.themecamp;
@@ -22,8 +23,8 @@ export interface CampVenue extends Venue {
   map_url: string;
   owners: string[];
   rooms: CampRoomData[];
-  activity?: any;
-  showChat?: any;
+  activity?: string;
+  showChat?: boolean;
   joinButtonText?: string;
   start_utc_seconds?: number;
 }
