@@ -246,22 +246,24 @@ export const Map: React.FC<PropsType> = ({
   const partygoersOverlay = useMemo(
     () =>
       // @debt this can be undefined because our types are broken so check explicitly
-      partygoers?.map(
-        (partygoer) =>
-          partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-            <MapPartygoerOverlay
-              key={partygoer.id}
-              partygoer={partygoer}
-              venueId={venue.id}
-              myUserUid={userUid ?? ""} // @debt fix this to be less hacky
-              totalRows={rows}
-              totalColumns={columns}
-              withMiniAvatars={venue.miniAvatars}
-              setSelectedUserProfile={setSelectedUserProfile}
-            />
+      showGrid
+        ? partygoers?.map(
+            (partygoer) =>
+              partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
+                <MapPartygoerOverlay
+                  key={partygoer.id}
+                  partygoer={partygoer}
+                  venueId={venue.id}
+                  myUserUid={userUid ?? ""} // @debt fix this to be less hacky
+                  totalRows={rows}
+                  totalColumns={columns}
+                  withMiniAvatars={venue.miniAvatars}
+                  setSelectedUserProfile={setSelectedUserProfile}
+                />
+              )
           )
-      ),
-    [columns, partygoers, rows, userUid, venue.id, venue.miniAvatars]
+        : [],
+    [columns, partygoers, rows, userUid, venue.id, venue.miniAvatars, showGrid]
   );
 
   const roomOverlay = useMemo(

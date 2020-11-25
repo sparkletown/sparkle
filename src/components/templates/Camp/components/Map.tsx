@@ -241,50 +241,54 @@ export const Map: React.FC<MapProps> = ({
         gridTemplateRows: `repeat(${templateRows}, 1fr)`,
       }}
     >
-      {columnsArray.map((_, colIndex) => (
-        <div className="seat-column" key={`column${colIndex}`}>
-          {rowsArray.map((_, rowIndex) => {
-            const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
-            const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
+      {venue.showGrid ? (
+        columnsArray.map((_, colIndex) => (
+          <div className="seat-column" key={`column${colIndex}`}>
+            {rowsArray.map((_, rowIndex) => {
+              const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
+              const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
 
-            const seatedPartygoer = partygoersBySeat?.[row]?.[column] ?? null;
-            const hasSeatedPartygoer = !!seatedPartygoer;
+              const seatedPartygoer = partygoersBySeat?.[row]?.[column] ?? null;
+              const hasSeatedPartygoer = !!seatedPartygoer;
 
-            // TODO: our types imply that this shouldn't be able to be null, but it was..
-            const isMe = seatedPartygoer?.id === user.uid;
+              // TODO: our types imply that this shouldn't be able to be null, but it was..
+              const isMe = seatedPartygoer?.id === user.uid;
 
-            return (
-              <MapRow
-                row={row}
-                column={column}
-                seatedPartygoer={seatedPartygoer}
-                key={`row${rowIndex}`}
-                showGrid={venue.showGrid}
-                hasSeatedPartygoer={hasSeatedPartygoer}
-                seatedPartygoerIsMe={isMe}
-                onSeatClick={onSeatClick}
-              />
-            );
-          })}
-
-          {/*@debt this can be undefined because our types are broken so check explicitly*/}
-          {partygoers?.map(
-            (partygoer) =>
-              partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-                <MapPartygoerOverlay
-                  key={partygoer.id}
-                  partygoer={partygoer}
-                  venueId={venue.id}
-                  myUserUid={user.uid}
-                  totalRows={totalRows}
-                  totalColumns={totalColumns}
-                  withMiniAvatars={venue.miniAvatars}
-                  setSelectedUserProfile={setSelectedUserProfile}
+              return (
+                <MapRow
+                  row={row}
+                  column={column}
+                  seatedPartygoer={seatedPartygoer}
+                  key={`row${rowIndex}`}
+                  showGrid={venue.showGrid}
+                  hasSeatedPartygoer={hasSeatedPartygoer}
+                  seatedPartygoerIsMe={isMe}
+                  onSeatClick={onSeatClick}
                 />
-              )
-          )}
-        </div>
-      ))}
+              );
+            })}
+
+            {/*@debt this can be undefined because our types are broken so check explicitly*/}
+            {partygoers?.map(
+              (partygoer) =>
+                partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
+                  <MapPartygoerOverlay
+                    key={partygoer.id}
+                    partygoer={partygoer}
+                    venueId={venue.id}
+                    myUserUid={user.uid}
+                    totalRows={totalRows}
+                    totalColumns={totalColumns}
+                    withMiniAvatars={venue.miniAvatars}
+                    setSelectedUserProfile={setSelectedUserProfile}
+                  />
+                )
+            )}
+          </div>
+        ))
+      ) : (
+        <div />
+      )}
 
       {venue.rooms.map((room) => (
         <MapRoomOverlay
