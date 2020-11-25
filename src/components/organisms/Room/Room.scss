@@ -7,9 +7,6 @@
   width: 100%;
   align-self: flex-start;
 
-  &.one-across {
-    grid-column: span 6;
-  }
   &.two-across {
     grid-column: span 3;
   }
