@@ -29,25 +29,35 @@ export const Header = styled.header`
   }
 `;
 
+// -------------------- HEADER ACTIONS
 export const HeaderActions = styled.div`
   display: flex;
+  padding-top: 1rem;
   flex-direction: column;
+
+  ${Button} {
+    margin-bottom: 0.5rem;
+  }
 `;
 
+// -------------------- MAIN CONTENT
 export const Main = styled.main`
   display: flex;
-  flex-wrap: wrap;
-  padding-left: 4.4em;
+  padding: 0 0 4em 4.4em;
   margin-top: 2rem;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
 
   ${BackgroundSelectWrapper} {
+    width: 100%;
     margin-bottom: 1rem;
   }
 
   ${Button} {
     padding: 0.75em 2em;
+
+    white-space: nowrap;
   }
 `;
 

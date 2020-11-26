@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
+import firebase from "firebase";
 
 // Components
 import VenueHero from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
+import AdminEventModal from "pages/Admin/AdminEventModal";
+import RoomModal from "pages/Admin/Room/Modal";
+import RoomCard from "pages/Admin/Room/Card";
 
 // Pages
 import BackgroundSelect from "pages/Admin/BackgroundSelect";
 
 // Hooks
+import { useHistory } from "react-router-dom";
 
 // Typings
 import { VenueDetailsProps } from "./VenueDetails.types";
 
 // Styles
 import * as S from "./VenueDetails.styles";
-import firebase from "firebase";
-import RoomModal from "pages/Admin/Room/Modal";
-import RoomCard from "pages/Admin/Room/Card";
+import EventModal from "pages/Admin/Event";
 
 type Owner = {
   id: string;
@@ -35,6 +38,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const { icon } = venue.host;
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const history = useHistory();
 
   useEffect(() => {
     const newOwners: any = [];
@@ -42,12 +46,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     async function getOwnersData() {
       if (!!owners) {
         for (const owner of owners) {
-          // const user = (
-          //   await firebase.functions().httpsCallable("venue-getOwnerData")({
-          //     userId: owner,
-          //   })
-          // ).data;
-
           const user = await firebase
             .functions()
             .httpsCallable("venue-getOwnerData")({ userId: owner });
@@ -84,6 +82,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           subtitle={subtitle}
           description={description}
           large
+          showEdit
+          editClickHandler={() =>
+            history.push(`/admin_v2/venue/edit/${venue.id}`)
+          }
         />
 
         <S.HeaderActions>
@@ -119,8 +121,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
         {!!rooms && (
           <S.RoomWrapper>
-            {rooms.map((room: any) => (
-              <RoomCard key={room.id} {...room} />
+            {rooms.map((room: any, index) => (
+              <RoomCard key={index} {...room} />
             ))}
           </S.RoomWrapper>
         )}
@@ -132,6 +134,12 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         onSubmitHandler={() => setModalOpen(false)}
         onClickOutsideHandler={() => setModalOpen(false)}
       />
+
+      <EventModal isVisible />
+
+      {/* <AdminEventModal
+
+      /> */}
     </S.Container>
   );
 };

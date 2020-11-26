@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 
 // Typings
 import { RoomModalProps } from "./RoomModal.types";
@@ -9,7 +9,7 @@ import Item from "./Item";
 import { faSquare } from "@fortawesome/free-regular-svg-icons";
 import { faVideo } from "@fortawesome/free-solid-svg-icons";
 import { useUser } from "hooks/useUser";
-import { useClickOutside } from "hooks/useClickOutside";
+import { Modal } from "react-bootstrap";
 
 const templateTypes = [
   {
@@ -32,15 +32,11 @@ const RoomModal: React.FC<RoomModalProps> = ({
 }) => {
   const { user } = useUser();
 
-  const innerWrapperRef = useRef(null);
-
-  useClickOutside(innerWrapperRef, onClickOutsideHandler);
-
   if (!isVisible) return <></>;
 
   return (
-    <S.Wrapper>
-      <S.InnerWrapper ref={innerWrapperRef}>
+    <Modal show={isVisible} onHide={onClickOutsideHandler}>
+      <S.InnerWrapper>
         <S.Title>Pick a room (type?)</S.Title>
 
         {templateTypes.length > 0 &&
@@ -54,7 +50,7 @@ const RoomModal: React.FC<RoomModalProps> = ({
             />
           ))}
       </S.InnerWrapper>
-    </S.Wrapper>
+    </Modal>
   );
 };
 

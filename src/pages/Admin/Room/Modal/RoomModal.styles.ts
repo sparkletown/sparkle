@@ -14,9 +14,7 @@ export const Wrapper = styled.div`
 `;
 
 export const InnerWrapper = styled.div`
-  width: 40%;
   padding: 2rem 4rem;
-  margin: 3rem auto;
 
   border-radius: 28px;
   background-color: #000;
