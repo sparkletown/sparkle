@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
+import { Button } from "components/atoms/Button/Button.styles";
 
+// -------------------- Outer Wrapper
 export const OuterWrapper = styled.div`
   display: flex;
   height: 100vh;
@@ -12,6 +14,7 @@ export const OuterWrapper = styled.div`
   background-color: #1a1d24;
 `;
 
+// -------------------- Container
 type ContainerProps = {
   backgroundImage?: string;
   large?: boolean;
@@ -38,13 +41,20 @@ export const Container = styled.div<ContainerProps>`
   background-color: #000000;
   background-position: center;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.26);
+
+  ${Button} {
+    width: fit-content;
+    align-self: flex-end;
+  }
 `;
 
+// -------------------- Title Wrapper
 export const TitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
+// -------------------- Title
 export const Title = styled.h1`
   font-size: 2.4rem;
   font-style: italic;
@@ -52,12 +62,23 @@ export const Title = styled.h1`
   line-height: 1;
 `;
 
+// -------------------- Subtitle
 export const Subtitle = styled.h2`
   font-size: 1.2rem;
   font-weight: 400;
   line-height: 1;
 `;
 
+// -------------------- Description
+export const Description = styled.p`
+  margin-bottom: 1rem;
+
+  opacity: 0.7;
+
+  font-size: 0.9rem;
+`;
+
+// -------------------- Logo
 type LogoProps = {
   backgroundImage?: string;
 };
@@ -72,12 +93,4 @@ export const Logo = styled.div<LogoProps>`
   background-position: center;
   background-size: cover;
   background-color: #1a1d24;
-`;
-
-export const Description = styled.p`
-  margin-bottom: 1rem;
-
-  opacity: 0.7;
-
-  font-size: 0.9rem;
 `;
