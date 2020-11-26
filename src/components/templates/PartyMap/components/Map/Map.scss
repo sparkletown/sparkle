@@ -8,14 +8,16 @@ $border-radius: 28px;
   display: flex;
   flex-direction: row;
   margin-top: 20;
+  flex: 1;
 
   .party-map-container {
-    width: 80%;
+    flex: 1;
+    overflow: scroll;
 
     .party-map-content {
+      position: relative;
       flex: 1;
       display: flex;
-      margin: 20px auto 20px auto;
     }
   }
 
@@ -53,9 +55,8 @@ $border-radius: 28px;
 }
 
 .party-map-grid-container {
-  position: absolute;
-  width: 80%;
   display: grid;
+  z-index: 2;
 
   &:before {
     content: " ";

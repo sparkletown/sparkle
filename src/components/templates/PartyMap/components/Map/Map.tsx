@@ -38,6 +38,7 @@ interface PropsType {
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
+const HEADER_SIZE = 66;
 
 export const Map: React.FC<PropsType> = ({
   venue,
@@ -52,6 +53,10 @@ export const Map: React.FC<PropsType> = ({
     WithId<User>
   >();
   const [rows, setRows] = useState<number>(0);
+  const [mapSize, setMapSize] = useState<{ width: number; height: number }>({
+    width: 0,
+    height: 0,
+  });
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const currentPosition = profile?.data?.[venue.id];
@@ -74,6 +79,7 @@ export const Map: React.FC<PropsType> = ({
       const calcRows = venue.columns
         ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
         : DEFAULT_ROWS;
+      setMapSize({ width: img.width, height: img.height });
       setRows(calcRows);
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
@@ -233,26 +239,36 @@ export const Map: React.FC<PropsType> = ({
 
   return (
     <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
+      <div
+        className="party-map-container"
+        style={{ height: window.screen.availHeight - HEADER_SIZE }}
+      >
+        <div
+          className="party-map-content"
+          style={{ width: mapSize.width, height: mapSize.height }}
+        >
+          {/* <img
+            width={'100%'}
+            height={'100%'}
             className="party-map-background"
             src={venue.mapBackgroundImageUrl}
             alt=""
-          />
+          /> */}
 
           <div
             className="party-map-grid-container"
             style={{
+              width: mapSize.width,
+              height: mapSize.height,
+              backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
               gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
               gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
           >
             {mapGrid}
             {partygoersOverlay}
-            {roomOverlay}
           </div>
+          {roomOverlay}
 
           {selectedUserProfile && (
             <UserProfileModal
