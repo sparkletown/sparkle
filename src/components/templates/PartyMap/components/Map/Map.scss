@@ -11,6 +11,7 @@ $border-radius: 28px;
   flex: 1;
 
   .party-map-container {
+    height: calc(100vh - #{$navbar-height});
     flex: 1;
     overflow: scroll;
 

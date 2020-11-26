@@ -38,7 +38,6 @@ interface PropsType {
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
-const HEADER_SIZE = 66;
 
 export const Map: React.FC<PropsType> = ({
   venue,
@@ -239,10 +238,7 @@ export const Map: React.FC<PropsType> = ({
 
   return (
     <div className="party-map-content-container">
-      <div
-        className="party-map-container"
-        style={{ height: window.screen.availHeight - HEADER_SIZE }}
-      >
+      <div className="party-map-container">
         <div
           className="party-map-content"
           style={{ width: mapSize.width, height: mapSize.height }}
