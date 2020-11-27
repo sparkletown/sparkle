@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -6,7 +6,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
-import { isExternalUrl } from "utils/url";
+import { getRoomUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -31,6 +31,19 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
+
+  const joinRoom = useCallback(() => {
+    enterRoom();
+    window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
+  }, [enterRoom, room.url]);
+
+  const triggerAttendance = useCallback(() => {
+    dispatch(retainAttendance(true));
+  }, [dispatch]);
+
+  const clearAttendance = useCallback(() => {
+    dispatch(retainAttendance(false));
+  }, [dispatch]);
 
   return (
     <div className="room-modal-ongoing-event-container">
@@ -65,31 +78,15 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           </div>
         </>
       )}
-      {isExternalUrl(room.url) ? (
-        <a
-          onMouseOver={() => dispatch(retainAttendance(true))}
-          onMouseOut={() => dispatch(retainAttendance(false))}
-          className="btn btn-primary room-entry-button"
-          onClick={enterRoom}
-          id={`enter-room-in-ongoing-event-card-${room.title}`}
-          href={room.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {joinButtonText ?? "Enter"}
-        </a>
-      ) : (
-        <a
-          onMouseOver={() => dispatch(retainAttendance(true))}
-          onMouseOut={() => dispatch(retainAttendance(false))}
-          className="btn btn-primary room-entry-button"
-          onClick={enterRoom}
-          id={`enter-room-in-ongoing-event-card-${room.title}`}
-          href={room.url}
-        >
-          {joinButtonText ?? "Enter"}
-        </a>
-      )}
+      <button
+        onMouseOver={triggerAttendance}
+        onMouseOut={clearAttendance}
+        className="btn btn-primary room-entry-button"
+        onClick={joinRoom}
+        id={`enter-room-in-ongoing-event-card-${room.title}`}
+      >
+        {joinButtonText ?? "Enter"}
+      </button>
     </div>
   );
 };

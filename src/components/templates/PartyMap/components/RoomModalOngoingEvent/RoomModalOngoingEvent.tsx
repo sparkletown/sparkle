@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -29,6 +29,19 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
+
+  const joinRoom = useCallback(() => {
+    enterRoom();
+    window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
+  }, [enterRoom, room.url]);
+
+  const triggerAttendance = useCallback(() => {
+    dispatch(retainAttendance(true));
+  }, [dispatch]);
+
+  const clearAttendance = useCallback(() => {
+    dispatch(retainAttendance(false));
+  }, [dispatch]);
 
   return (
     <div className="room-modal-ongoing-event-container">
@@ -63,18 +76,15 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           </div>
         </>
       )}
-      <a
-        onMouseOver={() => dispatch(retainAttendance(true))}
-        onMouseOut={() => dispatch(retainAttendance(false))}
+      <button
+        onMouseOver={triggerAttendance}
+        onMouseOut={clearAttendance}
         className="btn btn-primary room-entry-button"
-        onClick={enterRoom}
+        onClick={joinRoom}
         id={`enter-room-in-ongoing-event-card-${room.title}`}
-        href={getRoomUrl(room.url)}
-        target="_blank"
-        rel="noopener noreferrer"
       >
         {joinButtonText ?? "Enter"}
-      </a>
+      </button>
     </div>
   );
 };
