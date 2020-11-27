@@ -53,6 +53,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-switch": "^5.0.1",
+    "react-test-renderer": "^17.0.1",
     "react-webcam": "^5.2.0",
     "read": "^1.0.7",
     "redux": "^4.0.5",
@@ -83,7 +84,8 @@
     "cy:install": "cypress install",
     "cy:run": "cypress run",
     "firebase": "npx --no-install -- firebase",
-    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions"
+    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions",
+    "generate": "node ./utils/create-component"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -118,11 +120,13 @@
     "@types/react-mic": "^12.4.2",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
+    "@types/react-test-renderer": "^16.9.3",
     "@types/styled-components": "^5.1.4",
     "@types/twilio-video": "^2.0.12",
     "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "colors": "^1.4.0",
     "cypress": "^4.11.0",
     "cypress-file-upload": "^4.0.7",
     "eslint-config-react-app": "^5.2.1",
