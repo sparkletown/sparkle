@@ -84,7 +84,8 @@
     "cy:install": "cypress install",
     "cy:run": "cypress run",
     "firebase": "npx --no-install -- firebase",
-    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions"
+    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions",
+    "generate": "node ./utils/create-component"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -125,6 +126,7 @@
     "@types/yup": "^0.29.3",
     "@typescript-eslint/eslint-plugin": "^3.7.1",
     "@typescript-eslint/parser": "^3.7.1",
+    "colors": "^1.4.0",
     "cypress": "^4.11.0",
     "cypress-file-upload": "^4.0.7",
     "eslint-config-react-app": "^5.2.1",
