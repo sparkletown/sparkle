@@ -288,14 +288,6 @@ export const Map: React.FC<PropsType> = ({
             transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
           }}
         >
-          {/* <img
-            width={'100%'}
-            height={'100%'}
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl}
-            alt=""
-          /> */}
-
           <div
             className="party-map-grid-container"
             style={{
