@@ -27,6 +27,7 @@ import { hasElements } from "utils/types";
 import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
 import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
 import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
+import { ZoomControls } from "../ZoomControls";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -38,6 +39,9 @@ interface PropsType {
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
+const MAX_ZOOM = 2;
+const MIN_ZOOM = 1;
+const ZOOM_INCREMENT = 0.25;
 
 export const Map: React.FC<PropsType> = ({
   venue,
@@ -52,6 +56,7 @@ export const Map: React.FC<PropsType> = ({
     WithId<User>
   >();
   const [rows, setRows] = useState<number>(0);
+  const [zoom, setZoom] = useState<number>(1);
   const [mapSize, setMapSize] = useState<{ width: number; height: number }>({
     width: 0,
     height: 0,
@@ -232,16 +237,36 @@ export const Map: React.FC<PropsType> = ({
       )),
     [attendances, setIsRoomModalOpen, setSelectedRoom, venue]
   );
+
+  const zoomIn = useCallback(() => {
+    setZoom((zoom) => Math.min(zoom + ZOOM_INCREMENT, MAX_ZOOM));
+  }, []);
+
+  const zoomOut = useCallback(() => {
+    setZoom((zoom) => Math.max(zoom - ZOOM_INCREMENT, MIN_ZOOM));
+  }, []);
+
   if (!user || !venue) {
     return <>Loading map...</>;
   }
+
+  const translateX =
+    (((mapSize.width * zoom - (mapSize.width * zoom) / zoom) / zoom) * 2) / 4;
+  const translateY =
+    (((mapSize.height * zoom - (mapSize.height * zoom) / zoom) / zoom) * 2) / 4;
+  const bgRatio = mapSize.width / mapSize.height;
+  console.log(bgRatio);
 
   return (
     <div className="party-map-content-container">
       <div className="party-map-container">
         <div
           className="party-map-content"
-          style={{ width: mapSize.width, height: mapSize.height }}
+          style={{
+            width: mapSize.width,
+            height: mapSize.height,
+            transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
+          }}
         >
           {/* <img
             width={'100%'}
@@ -266,6 +291,24 @@ export const Map: React.FC<PropsType> = ({
           </div>
           {roomOverlay}
 
+          {/* <div style={{display: 'relative'}}>
+            <div className="party-map-zoom-container">
+                <div
+                  className={`party-map-zoom-in ${
+                    zoom >= MAX_ZOOM ? "disabled" : ""
+                  }`}
+                  onClick={zoomIn}
+                ></div>
+                <div
+                  className={`party-map-zoom-out ${
+                    zoom <= MIN_ZOOM ? "disabled" : ""
+                  }`}
+                  onClick={zoomOut}
+                >
+                </div>
+              </div>
+            </div> */}
+
           {selectedUserProfile && (
             <UserProfileModal
               show={isUserProfileSelected}
@@ -273,6 +316,36 @@ export const Map: React.FC<PropsType> = ({
               userProfile={selectedUserProfile}
             />
           )}
+        </div>
+
+        <ZoomControls
+          disableZoomIn={zoom >= MAX_ZOOM}
+          disableZoomOut={zoom <= MIN_ZOOM}
+          onZoomIn={zoomIn}
+          onZoomOut={zoomOut}
+        />
+
+        <div
+          className="map-zoom-preview"
+          style={{
+            backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
+            width: 120,
+            height: 120 / bgRatio,
+          }}
+        >
+          <div className="map-zoom-icon"></div>
+          <div className="map-zoom-position"></div>
+          <div className="map-avatar-position"></div>
+          <div className="map-zoom-rooms">
+            {/* <div className="map-zoom-room map-zoom-room-1" style='background-image:url("./img/map-room-1.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-2" style='background-image:url("./img/map-room-2.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-3" style='background-image:url("./img/map-room-3.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-4" style='background-image:url("./img/map-room-4.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-5" style='background-image:url("./img/map-room-5.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-6" style='background-image:url("./img/map-room-6.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-7" style='background-image:url("./img/map-room-7.png");'>	</div>
+            <div className="map-zoom-room map-zoom-room-8" style='background-image:url("./img/map-room-8.png");'>	</div> */}
+          </div>
         </div>
       </div>
 
