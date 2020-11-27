@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import firebase from "firebase/app";
 
 import { User } from "types/User";
@@ -28,6 +34,7 @@ import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
 import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
 import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
 import { ZoomControls } from "../ZoomControls";
+import { PartyMapPreview } from "../PartyMapPreview";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -61,6 +68,7 @@ export const Map: React.FC<PropsType> = ({
     width: 0,
     height: 0,
   });
+  const [previewExpand, setPreviewExpand] = useState<boolean>(false);
 
   const columns = venue.columns ?? DEFAULT_COLUMNS;
   const currentPosition = profile?.data?.[venue.id];
@@ -254,8 +262,21 @@ export const Map: React.FC<PropsType> = ({
     (((mapSize.width * zoom - (mapSize.width * zoom) / zoom) / zoom) * 2) / 4;
   const translateY =
     (((mapSize.height * zoom - (mapSize.height * zoom) / zoom) / zoom) * 2) / 4;
-  const bgRatio = mapSize.width / mapSize.height;
-  console.log(bgRatio);
+  const bgRatio = mapSize.width ? mapSize.width / mapSize.height : 1;
+
+  const previewAvatarPosition = {
+    x: currentPosition?.row ? (currentPosition?.row / rows) * 100 - 2 : 0,
+    y: currentPosition?.column
+      ? (currentPosition?.column / columns) * 100 - 2
+      : 0,
+  };
+
+  const zoomableMapSize = showGrid
+    ? {
+        width: mapSize.width,
+        height: mapSize.height,
+      }
+    : {};
 
   return (
     <div className="party-map-content-container">
@@ -263,8 +284,7 @@ export const Map: React.FC<PropsType> = ({
         <div
           className="party-map-content"
           style={{
-            width: mapSize.width,
-            height: mapSize.height,
+            ...zoomableMapSize,
             transform: `scale(${zoom}) translate3d(${translateX}px, ${translateY}px, 0)`,
           }}
         >
@@ -279,8 +299,7 @@ export const Map: React.FC<PropsType> = ({
           <div
             className="party-map-grid-container"
             style={{
-              width: mapSize.width,
-              height: mapSize.height,
+              ...zoomableMapSize,
               backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
               gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
               gridTemplateRows: `repeat(${rows}, 1fr)`,
@@ -291,24 +310,6 @@ export const Map: React.FC<PropsType> = ({
           </div>
           {roomOverlay}
 
-          {/* <div style={{display: 'relative'}}>
-            <div className="party-map-zoom-container">
-                <div
-                  className={`party-map-zoom-in ${
-                    zoom >= MAX_ZOOM ? "disabled" : ""
-                  }`}
-                  onClick={zoomIn}
-                ></div>
-                <div
-                  className={`party-map-zoom-out ${
-                    zoom <= MIN_ZOOM ? "disabled" : ""
-                  }`}
-                  onClick={zoomOut}
-                >
-                </div>
-              </div>
-            </div> */}
-
           {selectedUserProfile && (
             <UserProfileModal
               show={isUserProfileSelected}
@@ -318,35 +319,25 @@ export const Map: React.FC<PropsType> = ({
           )}
         </div>
 
-        <ZoomControls
-          disableZoomIn={zoom >= MAX_ZOOM}
-          disableZoomOut={zoom <= MIN_ZOOM}
-          onZoomIn={zoomIn}
-          onZoomOut={zoomOut}
-        />
+        {showGrid && (
+          <Fragment>
+            <ZoomControls
+              disableZoomIn={zoom >= MAX_ZOOM}
+              disableZoomOut={zoom <= MIN_ZOOM}
+              onZoomIn={zoomIn}
+              onZoomOut={zoomOut}
+            />
 
-        <div
-          className="map-zoom-preview"
-          style={{
-            backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
-            width: 120,
-            height: 120 / bgRatio,
-          }}
-        >
-          <div className="map-zoom-icon"></div>
-          <div className="map-zoom-position"></div>
-          <div className="map-avatar-position"></div>
-          <div className="map-zoom-rooms">
-            {/* <div className="map-zoom-room map-zoom-room-1" style='background-image:url("./img/map-room-1.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-2" style='background-image:url("./img/map-room-2.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-3" style='background-image:url("./img/map-room-3.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-4" style='background-image:url("./img/map-room-4.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-5" style='background-image:url("./img/map-room-5.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-6" style='background-image:url("./img/map-room-6.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-7" style='background-image:url("./img/map-room-7.png");'>	</div>
-            <div className="map-zoom-room map-zoom-room-8" style='background-image:url("./img/map-room-8.png");'>	</div> */}
-          </div>
-        </div>
+            <PartyMapPreview
+              expanded={previewExpand}
+              backgroundImage={venue.mapBackgroundImageUrl}
+              backgroundRatio={bgRatio}
+              avatarPosition={previewAvatarPosition}
+              onIconClick={() => setPreviewExpand(!previewExpand)}
+              rooms={venue.rooms}
+            />
+          </Fragment>
+        )}
       </div>
 
       <div className="sidebar">
