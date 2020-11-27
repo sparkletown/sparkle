@@ -187,17 +187,9 @@ const Room: React.FC<RoomProps> = ({
 
   const profileData = room ? users[room.localParticipant.identity] : undefined;
 
-  const participantContainerClassName = useMemo(() => {
-    const attendeeCount = (participants.length ?? 0) + 1; // Include yourself
-    if (attendeeCount <= 4) {
-      return "two-across";
-    }
-    return "three-across";
-  }, [participants.length]);
-
   const meComponent = useMemo(() => {
     return room && profileData ? (
-      <div className={`participant-container ${participantContainerClassName}`}>
+      <div className="participant-container">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -208,13 +200,7 @@ const Room: React.FC<RoomProps> = ({
         />
       </div>
     ) : null;
-  }, [
-    meIsBartender,
-    room,
-    profileData,
-    defaultMute,
-    participantContainerClassName,
-  ]);
+  }, [meIsBartender, room, profileData, defaultMute]);
 
   const othersComponents = useMemo(
     () =>
@@ -228,10 +214,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div
-            key={participant.identity}
-            className={`participant-container ${participantContainerClassName}`}
-          >
+          <div key={participant.identity} className="participant-container">
             <Participant
               key={`${participant.sid}-${index}`}
               participant={participant}
@@ -242,13 +225,7 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [
-      meIsBartender,
-      participants,
-      roomName,
-      users,
-      participantContainerClassName,
-    ]
+    [meIsBartender, participants, roomName, users]
   );
 
   const emptyComponents = useMemo(
@@ -257,7 +234,7 @@ const Room: React.FC<RoomProps> = ({
         ? Array(participants.length % 2).map((e, index) => (
             <div
               key={`empty-participant-${index}`}
-              className={`participant-container ${participantContainerClassName}`}
+              className="participant-container"
             >
               <img
                 className="empty-chair-image"
@@ -267,7 +244,7 @@ const Room: React.FC<RoomProps> = ({
             </div>
           ))
         : [],
-    [hasChairs, participants.length, participantContainerClassName]
+    [hasChairs, participants.length]
   );
 
   if (!token) {
