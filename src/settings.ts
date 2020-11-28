@@ -34,7 +34,7 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const TICKET_URL = "https://sparklever.se/glowforth/";
+export const TICKET_URL = "https://www.eventbrite.co.uk/e/129232464781";
 export const CODE_CHECK_ENABLED = true;
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -91,6 +91,9 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
     animation: "ripple 4s linear infinite",
   },
 };
+
+export const IFRAME_ALLOW =
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
 
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;

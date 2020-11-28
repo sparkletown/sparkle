@@ -5,7 +5,12 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_STYLES } from "settings";
+import {
+  IFRAME_ALLOW,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_NAME,
+  PLAYA_VENUE_STYLES,
+} from "settings";
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 interface AdminVenuePreview {
@@ -45,7 +50,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                 title="art-piece-video"
                 src={ConvertToEmbeddableUrl(venue.iframeUrl)}
                 frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allow={IFRAME_ALLOW}
                 allowFullScreen
               ></iframe>
             </div>

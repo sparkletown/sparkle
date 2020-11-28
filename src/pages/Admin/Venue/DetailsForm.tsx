@@ -623,13 +623,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
-            Enter the ID of the venue you would like for the &quot;back&quot;
-            button
+            Enter the parent venue ID, for the &quot;back&quot; button to go to,
+            and for sharing events in the schedule
           </h4>
           <div style={{ fontSize: "16px" }}>
-            The nav bar can show a &quot;back&quot; button. Enter the venue ID
-            you wish to use. A venue ID is the part of the URL after /in/, so
-            eg. for sparkle.space/in/abcdef you would enter abcdef below
+            The nav bar can show a &quot;back&quot; button if you enter an ID
+            here. Clicking &quot;back&quot; will return the user to the venue
+            whose ID you enter. Additionally, the events you add here will be
+            shown to users while they are on all other venues which share the
+            parent venue ID you enter here, as well as in the parent venue. The
+            value is a venue ID. Enter the venue ID you wish to use. A venue ID
+            is the part of the URL after /in/, so eg. for
+            sparkle.space/in/abcdef you would enter abcdef below
           </div>
           <input
             type="text"

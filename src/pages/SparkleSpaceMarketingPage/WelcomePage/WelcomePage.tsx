@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { PLAYA_VENUE_NAME } from "settings";
+import { IFRAME_ALLOW, PLAYA_VENUE_NAME } from "settings";
 
 const WelcomePage: React.FunctionComponent = () => {
   useFirestoreConnect("marketingemails");
@@ -152,7 +152,7 @@ const WelcomePage: React.FunctionComponent = () => {
             className="video"
             src="https://www.youtube.com/embed/0FvFcO5Oq_k"
             frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allow={IFRAME_ALLOW}
             allowFullScreen
           ></iframe>
         </div>
