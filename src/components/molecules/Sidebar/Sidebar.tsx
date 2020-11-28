@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
 
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 
@@ -18,17 +17,33 @@ enum TABS {
   LIVE_SCHEDULE = 2,
 }
 
+const DOCUMENT_ID = "__name__";
+
+// Maybe move this to  utils?
+const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
+  arr.indexOf(userId) === index;
+
 const Sidebar = () => {
-  const venueId = useVenueId();
-  useFirestoreConnect({
-    collection: "users",
-    where: ["enteredVenueIds", "array-contains", venueId],
-    storeAs: "chatUsers",
-  });
   const [tab, setTab] = useState(0);
   const privateChats = useSelector(privateChatsSelector);
   const chatUsers = useSelector(chatUsersSelector);
   const isEnabled = chatUsers && privateChats;
+
+  const chatUserIds = privateChats
+    ?.flatMap((chat) => [chat.from, chat.to])
+    .filter(filterUniqueKeys);
+
+  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
+
+  const chatUsersQuery = [
+    {
+      collection: "users",
+      where: chatUsersOption,
+      storeAs: "chatUsers",
+    },
+  ];
+
+  useFirestoreConnect(chatUserIds ? chatUsersQuery : undefined);
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);
