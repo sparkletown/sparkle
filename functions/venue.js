@@ -422,12 +422,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.parentId = data.parentId;
   }
 
-  let owners = [context.auth.token.user_id];
-  if (data.owners) {
-    owners = [...owners, ...data.owners];
-    updated.owners = owners;
-  }
-
   if (data.columns) {
     updated.columns = data.columns;
   }
