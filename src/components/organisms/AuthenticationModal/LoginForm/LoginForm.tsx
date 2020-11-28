@@ -130,7 +130,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             type="date"
             ref={register}
           />
-          {errors.date_of_birth && errors.date_of_birth.type === "required" && (
+          {errors?.date_of_birth?.type === "required" && (
             <span className="input-error">Date of birth is required</span>
           )}
         </div>
