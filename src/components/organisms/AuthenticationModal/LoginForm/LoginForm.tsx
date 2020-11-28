@@ -6,6 +6,8 @@ import axios from "axios";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
 import { codeCheckUrl, venueInsideUrl } from "utils/url";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -122,39 +124,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <div className="input-group">
-          <input
-            name="date_of_birth"
-            className="input-block input-centered"
-            type="date"
-            ref={register({ required: true })}
-          />
-          {errors?.date_of_birth?.type === "required" && (
-            <span className="input-error">Date of birth is required</span>
-          )}
-        </div>
-        <div className="input-group">
-          <input
-            name="code"
-            className="input-block input-centered"
-            type="code"
-            placeholder="Ticket Code From Your Email"
-            ref={register({
-              required: true,
-            })}
-          />
-          {errors.code && (
-            <span className="input-error">
-              {errors.code.type === "required" ? (
-                <>
-                  Enter the ticket code from your email. The code is required.
-                </>
-              ) : (
-                errors.code.message
-              )}
-            </span>
-          )}
-        </div>
+        <TicketCodeField register={register} error={errors?.date_of_birth} />
+        <DateOfBirthField register={register} error={errors?.code} />
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
