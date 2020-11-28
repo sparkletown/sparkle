@@ -10,6 +10,7 @@ import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
+import { chatSort } from "components/context/ChatContext";
 
 enum TABS {
   PARTY_CHAT = 0,
@@ -18,6 +19,7 @@ enum TABS {
 }
 
 const DOCUMENT_ID = "__name__";
+const NUM_CHAT_UIDS_TO_LOAD = 100;
 
 // Maybe move this to  utils?
 const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
@@ -30,15 +32,18 @@ const Sidebar = () => {
   const isEnabled = chatUsers && privateChats;
 
   const chatUserIds = privateChats
-    ?.flatMap((chat) => [chat.from, chat.to])
+    ?.sort(chatSort)
+    .slice(0, NUM_CHAT_UIDS_TO_LOAD)
+    .flatMap((chat) => [chat.from, chat.to])
     .filter(filterUniqueKeys);
 
-  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
+  const chatUsersOptions: WhereOptions[] =
+    chatUserIds?.map((uid) => [DOCUMENT_ID, "==", uid]) ?? [];
 
   const chatUsersQuery = [
     {
       collection: "users",
-      where: chatUsersOption,
+      where: chatUsersOptions,
       storeAs: "chatUsers",
     },
   ];
