@@ -31,7 +31,7 @@ interface PropsType {
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
-  users: userList,
+  users: _users,
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
   activity = "partying",
@@ -44,14 +44,16 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  const users = userList?.filter(
+  const usersSanitized = _users?.filter(
     (user) => !user.anonMode && user.partyName && user.id
-  ); // quick fix to get rid of anonymous users
-  const usersToDisplay = isExpanded ? users : users?.slice(0, limit);
-  const attendance = users.length + (attendanceBoost ?? 0);
+  );
+  const usersToDisplay = isExpanded
+    ? usersSanitized
+    : usersSanitized?.slice(0, limit);
+  const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
-  if (!users || attendance < 1) return <></>;
+  if (!usersSanitized || attendance < 1) return <></>;
   return (
     <>
       <div className="userlist-container">
@@ -61,7 +63,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
             {attendance === 1 ? "person" : "people"}{" "}
             {isCamp && IS_BURN ? "in the camp" : activity}
           </p>
-          {!disableSeeAll && users.length > limit && (
+          {!disableSeeAll && usersSanitized.length > limit && (
             <p
               className="clickable-text"
               onClick={() => setIsExpanded(!isExpanded)}

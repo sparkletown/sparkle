@@ -6,7 +6,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
-import { getRoomUrl } from "utils/url";
+import { getRoomUrl, openUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -34,7 +34,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
 
   const joinRoom = useCallback(() => {
     enterRoom();
-    window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
+    openUrl(getRoomUrl(room.url));
   }, [enterRoom, room.url]);
 
   const triggerAttendance = useCallback(() => {

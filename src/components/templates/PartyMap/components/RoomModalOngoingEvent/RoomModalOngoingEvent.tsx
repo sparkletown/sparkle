@@ -32,7 +32,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
 
   const joinRoom = useCallback(() => {
     enterRoom();
-    window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
+    openUrl(getRoomUrl(room.url));
   }, [enterRoom, room.url]);
 
   const triggerAttendance = useCallback(() => {
