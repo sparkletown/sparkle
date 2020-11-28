@@ -120,7 +120,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="form-container">
-      <h2>Create an account!</h2>
       <div className="secondary-action">
         Already have an account?
         <br />
@@ -128,6 +127,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           Login
         </span>
       </div>
+      <h2>Create an account!</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input

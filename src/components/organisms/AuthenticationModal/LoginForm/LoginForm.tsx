@@ -85,7 +85,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   };
   return (
     <div className="form-container">
-      <h2>Log in</h2>
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
@@ -93,6 +92,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           Register instead!
         </span>
       </div>
+      <h2>Log in</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input
