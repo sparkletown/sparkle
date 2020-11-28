@@ -227,6 +227,10 @@ $border-radius: 28px;
           font-size: 0.9rem;
           font-size: 20px;
         }
+        .camp-venue-people-container {
+          display: flex;
+          flex-direction: row;
+        }
         .camp-venue-people {
           position: relative;
           display: block;
