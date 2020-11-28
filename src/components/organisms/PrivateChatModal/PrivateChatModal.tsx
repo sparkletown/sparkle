@@ -59,6 +59,8 @@ const PrivateChatModal: React.FunctionComponent = () => {
     }, {});
 
   const onClickOnSender = (sender: WithId<User>) => {
+    if (!privateChats) return;
+
     const chatsToUpdate = privateChats.filter(
       (chat) => !chat.isRead && chat.from === sender.id
     );

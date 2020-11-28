@@ -19,6 +19,8 @@ export const RoomAttendance: React.FunctionComponent<PropsType> = ({
   const pluralTitle = `${attendance} people in ${roomTitle}`;
   const title = attendance === 1 ? singularTitle : pluralTitle;
 
+  if (attendance === 0) return <></>;
+
   return (
     <div
       className="d-flex room-attendance my-2 positioned"

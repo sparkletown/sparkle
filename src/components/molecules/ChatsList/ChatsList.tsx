@@ -75,6 +75,8 @@ const ChatsList: React.FunctionComponent = () => {
 
   const onClickOnSender = useCallback(
     (sender: WithId<User>) => {
+      if (!privateChats) return;
+
       const chatsToUpdate = privateChats.filter(
         (chat) => !chat.isRead && chat.from === sender.id
       );
@@ -88,9 +90,8 @@ const ChatsList: React.FunctionComponent = () => {
 
   const chatsToDisplay = useMemo(
     () =>
-      privateChats &&
       privateChats
-        .filter(
+        ?.filter(
           (message) =>
             message.deleted !== true &&
             message.type === "private" &&
@@ -98,7 +99,7 @@ const ChatsList: React.FunctionComponent = () => {
               message.from === selectedUser?.id) &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(chatSort),
+        .sort(chatSort) ?? [],
     [privateChats, selectedUser]
   );
 
