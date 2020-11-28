@@ -9,6 +9,8 @@ import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { codeCheckUrl } from "utils/url";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -169,39 +171,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <div className="input-group">
-          <input
-            name="date_of_birth"
-            className="input-block input-centered"
-            type="date"
-            ref={register}
-          />
-          {errors.date_of_birth && errors.date_of_birth.type === "required" && (
-            <span className="input-error">Date of birth is required</span>
-          )}
-        </div>
-        <div className="input-group">
-          <input
-            name="code"
-            className="input-block input-centered"
-            type="code"
-            placeholder="Ticket Code From Your Email"
-            ref={register({
-              required: true,
-            })}
-          />
-          {errors.code && (
-            <span className="input-error">
-              {errors.code.type === "required" ? (
-                <>
-                  Enter the ticket code from your email. The code is required.
-                </>
-              ) : (
-                errors.code.message
-              )}
-            </span>
-          )}
-        </div>
+        <TicketCodeField register={register} error={errors?.date_of_birth} />
+        <DateOfBirthField register={register} error={errors?.code} />
         {IS_BURN &&
           CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>
