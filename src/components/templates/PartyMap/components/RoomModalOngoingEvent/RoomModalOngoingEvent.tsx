@@ -6,7 +6,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
-import { getRoomUrl } from "utils/url";
+import { getRoomUrl, openUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
