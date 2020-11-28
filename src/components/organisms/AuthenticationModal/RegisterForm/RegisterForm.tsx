@@ -3,12 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { codeCheckUrl } from "utils/url";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -85,7 +85,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.code);
+      if (CODE_CHECK_ENABLED) await axios.get(codeCheckUrl(data.code));
       const auth = await signUp(data);
       if (CODE_CHECK_ENABLED && auth.user) {
         updateUserPrivate(auth.user.uid, {

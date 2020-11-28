@@ -2,11 +2,10 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
-import { venueInsideUrl } from "utils/url";
+import { codeCheckUrl, venueInsideUrl } from "utils/url";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -43,7 +42,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.code);
+      if (CODE_CHECK_ENABLED) await axios.get(codeCheckUrl(data.code));
       const auth = await signIn(data);
       if (CODE_CHECK_ENABLED && auth.user) {
         firebase

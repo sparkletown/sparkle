@@ -1,3 +1,4 @@
+import { CODE_CHECK_URL } from "secrets";
 import { CampVenue } from "types/CampVenue";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "./id";
@@ -48,3 +49,5 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
+
+export const codeCheckUrl = (code: string) => CODE_CHECK_URL + code;
