@@ -3,12 +3,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { codeCheckUrl } from "utils/url";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -20,6 +22,8 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
+  code: string;
+  date_of_birth: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -30,6 +34,7 @@ export interface CodeOfConductQuestion {
 
 export interface RegisterData {
   codes_used: string[];
+  date_of_birth: string;
 }
 
 const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
@@ -82,11 +87,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      if (CODE_CHECK_ENABLED) await axios.get(codeCheckUrl(data.code));
       const auth = await signUp(data);
       if (CODE_CHECK_ENABLED && auth.user) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
+          date_of_birth: data.date_of_birth,
         });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
@@ -116,7 +122,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="form-container">
-      <h2>Create an account!</h2>
       <div className="secondary-action">
         Already have an account?
         <br />
@@ -124,6 +129,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           Login
         </span>
       </div>
+      <h2>Create an account!</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input
@@ -165,6 +171,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
+        <TicketCodeField register={register} error={errors?.date_of_birth} />
+        <DateOfBirthField register={register} error={errors?.code} />
         {IS_BURN &&
           CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>

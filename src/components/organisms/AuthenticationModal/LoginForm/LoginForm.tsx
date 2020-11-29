@@ -2,11 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
 import { IS_BURN } from "secrets";
 import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
-import { venueInsideUrl } from "utils/url";
+import { codeCheckUrl, venueInsideUrl } from "utils/url";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -18,6 +19,8 @@ interface PropsType {
 interface LoginFormData {
   email: string;
   password: string;
+  code: string;
+  date_of_birth: string;
 }
 
 const LoginForm: React.FunctionComponent<PropsType> = ({
@@ -41,7 +44,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      if (CODE_CHECK_ENABLED) await axios.get(codeCheckUrl(data.code));
       const auth = await signIn(data);
       if (CODE_CHECK_ENABLED && auth.user) {
         firebase
@@ -54,7 +57,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
                 .firestore()
                 .doc(`userprivate/${auth.user.uid}`)
                 .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.email],
+                  codes_used: [...(doc.data()?.codes_used || []), data.code],
+                  date_of_birth: data.date_of_birth,
                 });
             }
           });
@@ -82,7 +86,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   };
   return (
     <div className="form-container">
-      <h2>Log in</h2>
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
@@ -90,6 +93,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           Register instead!
         </span>
       </div>
+      <h2>Log in</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input
@@ -120,6 +124,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
+        <TicketCodeField register={register} error={errors?.date_of_birth} />
+        <DateOfBirthField register={register} error={errors?.code} />
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
