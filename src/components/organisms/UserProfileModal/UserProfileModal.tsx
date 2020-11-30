@@ -1,15 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,
+  privateChatsSelector,
 } from "utils/selectors";
 
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
-import Chatbox from "../Chatbox";
+import Chatbox from "components/molecules/Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
@@ -25,6 +26,10 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
 import { IS_BURN } from "secrets";
+import {
+  ChatContext,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
 
 type fullUserProfile =
   | { userProfile?: WithId<User> }
@@ -43,6 +48,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   ...rest
 }) => {
   const venue = useSelector(currentVenueSelectorData);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
 
@@ -61,9 +67,28 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     return undefined;
   }, [rest]);
 
+  const chatContext = useContext(ChatContext);
+
+  const submitMessage = useCallback(
+    async (data: { messageToTheBand: string }) => {
+      chatContext &&
+        user &&
+        chatContext.sendPrivateChat(
+          user.uid,
+          fullUserProfile!.id,
+          data.messageToTheBand
+        );
+    },
+    [chatContext, fullUserProfile, user]
+  );
+
   if (!fullUserProfile || !fullUserProfile.id || !user) {
     return <></>;
   }
+
+  const chats: WithId<PrivateChatMessage>[] = privateChats.filter(
+    (chat) => chat.from === fullUserProfile.id || chat.to === fullUserProfile.id
+  );
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -121,7 +146,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           {IS_BURN && <Badges user={fullUserProfile} />}
           {fullUserProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
+              <Chatbox chats={chats} onMessageSubmit={submitMessage} />
             </div>
           )}
         </div>
