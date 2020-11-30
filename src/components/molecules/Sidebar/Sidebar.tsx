@@ -20,7 +20,7 @@ enum TABS {
 }
 
 const DOCUMENT_ID = "__name__";
-const NUM_CHAT_UIDS_TO_LOAD = 100;
+const NUM_CHAT_UIDS_TO_LOAD = 10;
 
 // Maybe move this to  utils?
 const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
@@ -29,22 +29,25 @@ const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
 const Sidebar = () => {
   const [tab, setTab] = useState(0);
   const privateChats = useSelector(privateChatsSelector) ?? [];
-  const chatUsers = useSelector(chatUsersSelector);
+  const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
 
-  const chatUserIds = privateChats
-    .slice(0, NUM_CHAT_UIDS_TO_LOAD)
+  // Create new array because privateChats is read only and cannot be sorted.
+  // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
+  const chats = [...privateChats];
+
+  const chatUserIds = chats
     .sort(chatSort)
     .flatMap((chat) => [chat.from, chat.to])
-    .filter(filterUniqueKeys);
+    .filter(filterUniqueKeys)
+    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
 
-  const chatUsersOptions: WhereOptions[] =
-    chatUserIds?.map((uid) => [DOCUMENT_ID, "==", uid]) ?? [];
+  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatUsersQuery = [
     {
       collection: "users",
-      where: chatUsersOptions,
+      where: chatUsersOption,
       storeAs: "chatUsers",
     },
   ];
