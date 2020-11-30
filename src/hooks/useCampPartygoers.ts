@@ -31,7 +31,9 @@ export const useCampPartygoers = (venueName: string): WithId<User>[] => {
   return useMemo(
     () =>
       partygoers?.filter(
-        (partygoer) => partygoer?.lastSeenIn?.[venueName] > lastSeenThresholdMs
+        (partygoer) =>
+          partygoer?.lastSeenIn?.[venueName] >
+          lastSeenThresholdMs - LOC_UPDATE_FREQ_MS
       ) ?? [],
     [partygoers, venueName, lastSeenThresholdMs]
   );

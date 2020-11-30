@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
 
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 
@@ -11,6 +10,7 @@ import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
+import { chatSort } from "components/context/ChatContext";
 
 enum TABS {
   PARTY_CHAT = 0,
@@ -18,17 +18,37 @@ enum TABS {
   LIVE_SCHEDULE = 2,
 }
 
+const DOCUMENT_ID = "__name__";
+const NUM_CHAT_UIDS_TO_LOAD = 100;
+
+// Maybe move this to  utils?
+const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
+  arr.indexOf(userId) === index;
+
 const Sidebar = () => {
-  const venueId = useVenueId();
-  useFirestoreConnect({
-    collection: "users",
-    where: ["enteredVenueIds", "array-contains", venueId],
-    storeAs: "chatUsers",
-  });
   const [tab, setTab] = useState(0);
   const privateChats = useSelector(privateChatsSelector);
   const chatUsers = useSelector(chatUsersSelector);
   const isEnabled = chatUsers && privateChats;
+
+  const chatUserIds = privateChats
+    ?.sort(chatSort)
+    .slice(0, NUM_CHAT_UIDS_TO_LOAD)
+    .flatMap((chat) => [chat.from, chat.to])
+    .filter(filterUniqueKeys);
+
+  const chatUsersOptions: WhereOptions[] =
+    chatUserIds?.map((uid) => [DOCUMENT_ID, "==", uid]) ?? [];
+
+  const chatUsersQuery = [
+    {
+      collection: "users",
+      where: chatUsersOptions,
+      storeAs: "chatUsers",
+    },
+  ];
+
+  useFirestoreConnect(chatUserIds ? chatUsersQuery : undefined);
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);

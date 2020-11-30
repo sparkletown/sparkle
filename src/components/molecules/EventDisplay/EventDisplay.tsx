@@ -17,13 +17,15 @@ import "./EventDisplay.scss";
 
 interface EventDisplayProps {
   event: firebase.firestore.DocumentData;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
 }
 
 export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
   const { user, profile } = useUser();
 
   const enterEvent = useCallback(() => {
+    if (!venue) return;
+
     const room = venue?.rooms?.find((room) => room.title === event.room);
 
     if (!room) {
@@ -68,7 +70,9 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterEvent}>{event.room ?? "Enter"}</div>
+          <div onClick={enterEvent}>
+            {event.room ?? "Enter"} {venue && `- ${venue.name}`}
+          </div>
         </div>
       </div>
     </div>

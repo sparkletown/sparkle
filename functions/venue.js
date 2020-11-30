@@ -275,7 +275,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
   await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin.firestore().collection("venues").doc(venueId).get();
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
@@ -420,12 +420,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.parentId) {
     updated.parentId = data.parentId;
-  }
-
-  let owners = [context.auth.token.user_id];
-  if (data.owners) {
-    owners = [...owners, ...data.owners];
-    updated.owners = owners;
   }
 
   if (data.columns) {
