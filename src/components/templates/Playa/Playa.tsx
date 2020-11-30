@@ -55,7 +55,7 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import BannerMessage from "components/molecules/BannerMessage";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -880,7 +880,8 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
-        <BannerMessage venue={venue} />
+        <AnnouncementMessage message={venue?.bannerMessage} />
+
         {atEdge && (
           <div className="playa-banner">
             <>

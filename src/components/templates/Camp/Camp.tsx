@@ -19,7 +19,7 @@ import UserList from "components/molecules/UserList";
 import CountDown from "components/molecules/CountDown";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
-import BannerMessage from "components/molecules/BannerMessage";
+import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 import { InfoDrawer } from "components/molecules/InfoDrawer/InfoDrawer";
 
 import { Map } from "./components/Map";
@@ -73,7 +73,8 @@ const Camp: React.FC = () => {
 
   return (
     <>
-      <BannerMessage venue={venue} />
+      <AnnouncementMessage message={venue?.bannerMessage} />
+
       <div className="camp-container">
         <div className="row">
           {usersInCamp && (

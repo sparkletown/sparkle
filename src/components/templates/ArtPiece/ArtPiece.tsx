@@ -11,9 +11,9 @@ import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -26,7 +26,7 @@ export const ArtPiece = () => {
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
   return (
     <WithNavigationBar>
-      <BannerMessage venue={venue} />
+      <AnnouncementMessage message={venue?.bannerMessage} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
           venueLogoPath={venue?.host.icon ?? ""}
