@@ -213,7 +213,7 @@ const VenuePage = () => {
       user?.uid,
       venue?.id
     );
-  }, [profile?.enteredVenueIds, user, venue]);
+  }, [profile, user, venue]);
 
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;

@@ -1,18 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { venueChatUsersSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
-
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
 
 import {
   PrivateChatMessage,
