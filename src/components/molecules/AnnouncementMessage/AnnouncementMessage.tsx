@@ -2,14 +2,15 @@ import React, { FC, useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-import "./AnnouncementMessage.scss";
 import { getLinkFromText } from "utils/getLinkFromText";
+
+import "./AnnouncementMessage.scss";
 
 type AnnouncementMessageProps = {
   message?: string;
 };
 
-const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
+export const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
   message = "",
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
@@ -24,18 +25,19 @@ const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
     }
   }, [message]);
 
+  if (!isVisible || !message) return null;
+
   return (
-    <>
-      {isVisible && message && (
-        <div className={"announcement-container"}>
-          {getLinkFromText(message)}
-          <span className="close-button" onClick={hideAnnouncement}>
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
-        </div>
-      )}
-    </>
+    <div className={"announcement-container"}>
+      {getLinkFromText(message)}
+      <span className="close-button" onClick={hideAnnouncement}>
+        <FontAwesomeIcon icon={faTimesCircle} />
+      </span>
+    </div>
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default AnnouncementMessage;
