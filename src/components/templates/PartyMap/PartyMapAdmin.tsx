@@ -30,19 +30,24 @@ const partyMapVenueSelector = (state: RootState) =>
 export const PartyMapAdmin: React.FC = () => {
   const currentVenue = useSelector(partyMapVenueSelector);
   const venueId = currentVenue.id;
+  const existingBannerMessage = currentVenue?.bannerMessage ?? "";
 
   const [error, setError] = useState<string | null>();
-  const [bannerMessage, setBannerMessage] = useState(
-    currentVenue?.bannerMessage
+
+  // TODO: do we need to useState for this? It will cause a re-render on every keypress (only in this component probably.. but still).
+  //  Can we useRef() passed to the input field itself or similar instead?
+  const [newBannerMessage, setNewBannerMessage] = useState(
+    existingBannerMessage
   );
+
   useEffect(() => {
-    setBannerMessage(currentVenue?.bannerMessage || "");
-  }, [currentVenue?.bannerMessage]);
+    setNewBannerMessage(existingBannerMessage);
+  }, [existingBannerMessage]);
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setError(null);
-      setBannerMessage(e.target.value);
+      setNewBannerMessage(e.target.value);
     },
     []
   );
@@ -53,8 +58,8 @@ export const PartyMapAdmin: React.FC = () => {
   );
 
   const saveBanner = useCallback(() => {
-    updateBannerInFirestore(bannerMessage);
-  }, [updateBannerInFirestore, bannerMessage]);
+    updateBannerInFirestore(newBannerMessage);
+  }, [updateBannerInFirestore, newBannerMessage]);
 
   const clearBanner = useCallback(() => updateBannerInFirestore(""), [
     updateBannerInFirestore,
@@ -69,7 +74,7 @@ export const PartyMapAdmin: React.FC = () => {
         <label htmlFor="bannerMessage">Banner Message:</label>
         <input
           type="text"
-          value={bannerMessage}
+          value={newBannerMessage}
           onChange={handleInputChange}
           placeholder="Banner message"
         />

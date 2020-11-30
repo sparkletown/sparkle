@@ -302,6 +302,7 @@ $border-radius: 28px;
     width: 100%;
   }
 }
+
 .room {
   &:hover {
     // Disable temporary the background for zillowville, maybe add this as an option from the admin panel
@@ -326,12 +327,14 @@ $border-radius: 28px;
   left: 0px;
   z-index: 2;
 }
+
 .info-drawer-camp {
   z-index: 2;
   position: fixed;
   top: 40px;
   left: 0px;
 }
+
 .chat-pop-up {
   position: fixed;
   right: 0px;

@@ -23,6 +23,7 @@ const partyMapVenueSelector = (state: RootState) =>
 export const PartyMap: React.FC = () => {
   const currentVenue = useSelector(partyMapVenueSelector);
 
+  // TODO: can we just make this a boolean that is set from isTruthy(selectedRoom)?
   const [isRoomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<
     PartyMapRoomData | undefined
@@ -33,11 +34,14 @@ export const PartyMap: React.FC = () => {
     setRoomModalOpen(true);
   }, []);
 
-  // TODO: can we pass this down to Map instead of setSelectedRoom?
-  // const unselectRoom = useCallback((room: PartyMapRoomData) => {
-  //   setSelectedRoom(undefined);
-  //   setRoomModalOpen(false);
-  // }, []);
+  const unselectRoom = useCallback(() => {
+    // TODO: should we rework this so we only unselect if it matches? To prevent race conditions?
+    // setRoomClicked((prevRoomClicked) =>
+    //   prevRoomClicked === room.title ? undefined : room.title
+    // );
+    setSelectedRoom(undefined);
+    setRoomModalOpen(false);
+  }, []);
 
   // TODO: can we get rid of this in favour of unselectRoom?
   const closeRoomModal = useCallback(() => {
@@ -62,19 +66,21 @@ export const PartyMap: React.FC = () => {
   }, [currentRoom, selectRoom]);
 
   // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
-  const usersInCamp = useCampPartygoers(currentVenue.name);
+  const usersInVenue = useCampPartygoers(currentVenue.name);
+
+  // TODO: Need a better name for this.. What is it actually doing?
   const attendances = useMemo(() => {
-    if (!usersInCamp) return {};
+    if (!usersInVenue) return {};
 
     // TODO: is this counting logic correct?
-    return usersInCamp.reduce<Record<string, number>>((acc, value) => {
+    return usersInVenue.reduce<Record<string, number>>((acc, value) => {
       Object.keys(value.lastSeenIn).forEach((lastSeenInKey) => {
         acc[lastSeenInKey] = (acc[lastSeenInKey] ?? 0) + 1;
       });
 
       return acc;
     }, {});
-  }, [usersInCamp]);
+  }, [usersInVenue]);
 
   // TODO: do we need this?
   // const [showEventSchedule, setShowEventSchedule] = useState(false);
@@ -125,18 +131,12 @@ export const PartyMap: React.FC = () => {
 
         <Map
           venue={currentVenue}
+          partygoers={usersInVenue}
           attendances={attendances}
           selectedRoom={selectedRoom}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setRoomModalOpen}
+          selectRoom={selectRoom}
+          unselectRoom={unselectRoom}
         />
-        {/*<Map*/}
-        {/*    venue={currentVenue}*/}
-        {/*    partygoers={usersInCamp}*/}
-        {/*    attendances={attendances}*/}
-        {/*    selectedRoom={selectedRoom}*/}
-        {/*    selectRoom={selectRoom}*/}
-        {/*/>*/}
 
         {/* TODO: should this still be here on the partymap? */}
         {/*<div className="row">*/}
@@ -154,13 +154,8 @@ export const PartyMap: React.FC = () => {
           show={isRoomModalOpen}
           room={selectedRoom}
           onHide={closeRoomModal}
+          // joinButtonText={currentVenue.joinButtonText} // TODO: this existed on Camp, is it just a deficiency in our types that it doesn't exist on  PartyMapVenue?
         />
-        {/*<RoomModal*/}
-        {/*  show={isRoomModalOpen}*/}
-        {/*  room={selectedRoom}*/}
-        {/*  onHide={closeRoomModal}*/}
-        {/*  joinButtonText={currentVenue.joinButtonText}*/}
-        {/*/>*/}
 
         {/* TODO: should this still be here on the partymap? */}
         {/*{(IS_BURN || currentVenue.showChat) && (*/}

@@ -15,6 +15,7 @@ import { useSelector } from "./useSelector";
  * @param venueName venueName to filter partygoers by
  */
 export const useCampPartygoers = (venueName: string): WithId<User>[] => {
+  // TODO: rename this something more meaningful. venue/room/etc Partygoers? What does it actually check?
   useConnectPartyGoers();
   const partygoers = useSelector(partygoersSelector);
 

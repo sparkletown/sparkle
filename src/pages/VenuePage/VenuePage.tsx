@@ -45,7 +45,6 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
-import { CampRouter } from "components/templates/Camp/Router";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
@@ -301,14 +300,12 @@ const VenuePage = () => {
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
       break;
+    case VenueTemplate.themecamp:
     case VenueTemplate.partymap:
       template = <PartyMapRouter />;
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
-      break;
-    case VenueTemplate.themecamp:
-      template = <CampRouter />;
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:

@@ -1,10 +1,12 @@
 import React, { useMemo } from "react";
 
 import { User } from "types/User";
-import { WithId } from "utils/id";
 import { ReactHook } from "types/utility";
 
-import { MapPartygoerOverlay } from "../../../molecules/MapPartygoerOverlay";
+import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
+
+import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
 
 interface UsePartygoersOverlay {
   showGrid?: boolean;
@@ -35,37 +37,35 @@ export const usePartygoersOverlay: ReactHook<
   partygoers,
   setSelectedUserProfile,
 }) => {
-  return useMemo(
-    () =>
-      // @debt this can be undefined because our types are broken so check explicitly
-      showGrid ? (
-        partygoers?.map(
-          (partygoer) =>
-            partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-              <MapPartygoerOverlay
-                key={partygoer.id}
-                partygoer={partygoer}
-                venueId={venueId}
-                myUserUid={userUid ?? ""} // @debt fix this to be less hacky
-                totalRows={rows}
-                totalColumns={columns}
-                withMiniAvatars={withMiniAvatars}
-                setSelectedUserProfile={setSelectedUserProfile}
-              />
-            )
-        )
-      ) : (
-        <div />
-      ),
-    [
-      showGrid,
-      partygoers,
-      venueId,
-      userUid,
-      rows,
-      columns,
-      withMiniAvatars,
-      setSelectedUserProfile,
-    ]
-  );
+  return useMemo(() => {
+    // @debt partygoers can be undefined because our types are broken so check explicitly
+    if (!showGrid || !partygoers || !userUid) return <div />;
+
+    // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
+    const filteredPartygoers = partygoers.filter(
+      (partygoer) => partygoer && isTruthy(partygoer.id)
+    );
+
+    return filteredPartygoers.map((partygoer) => (
+      <MapPartygoerOverlay
+        key={partygoer.id}
+        partygoer={partygoer}
+        venueId={venueId}
+        myUserUid={userUid}
+        totalRows={rows}
+        totalColumns={columns}
+        withMiniAvatars={withMiniAvatars}
+        setSelectedUserProfile={setSelectedUserProfile}
+      />
+    ));
+  }, [
+    showGrid,
+    partygoers,
+    venueId,
+    userUid,
+    rows,
+    columns,
+    withMiniAvatars,
+    setSelectedUserProfile,
+  ]);
 };
