@@ -12,9 +12,10 @@ import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
 
-import "./PartyMap.scss";
 import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import "./PartyMap.scss";
 
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
