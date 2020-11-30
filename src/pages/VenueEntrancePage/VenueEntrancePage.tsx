@@ -44,7 +44,6 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     !venue.entrance.length ||
     venue.entrance.length < parseInt(step)
   ) {
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, user?.uid, venueId);
     return <Redirect to={venueInsideUrl(venueId)} />;
   }
 
