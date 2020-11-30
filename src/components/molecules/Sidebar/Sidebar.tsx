@@ -4,6 +4,7 @@ import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { hasElements } from "utils/types";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -27,13 +28,13 @@ const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
 
 const Sidebar = () => {
   const [tab, setTab] = useState(0);
-  const privateChats = useSelector(privateChatsSelector);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector);
   const isEnabled = chatUsers && privateChats;
 
   const chatUserIds = privateChats
-    ?.sort(chatSort)
     .slice(0, NUM_CHAT_UIDS_TO_LOAD)
+    .sort(chatSort)
     .flatMap((chat) => [chat.from, chat.to])
     .filter(filterUniqueKeys);
 
@@ -48,7 +49,7 @@ const Sidebar = () => {
     },
   ];
 
-  useFirestoreConnect(chatUserIds ? chatUsersQuery : undefined);
+  useFirestoreConnect(hasElements(chatUserIds) ? chatUsersQuery : undefined);
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);
