@@ -124,8 +124,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <TicketCodeField register={register} error={errors?.date_of_birth} />
-        <DateOfBirthField register={register} error={errors?.code} />
+        <TicketCodeField register={register} error={errors?.code} />
+        <DateOfBirthField register={register} error={errors?.date_of_birth} />
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
