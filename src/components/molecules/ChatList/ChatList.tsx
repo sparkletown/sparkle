@@ -1,12 +1,18 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
+import {
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { chatUsersSelector } from "utils/selectors";
+import { venueChatUsersSelector } from "utils/selectors";
+import { hasElements } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
 
 import {
   PrivateChatMessage,
@@ -16,7 +22,6 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
-import { hasElements } from "utils/types";
 
 interface ChatListProps {
   messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
@@ -31,7 +36,17 @@ const ChatList: React.FC<ChatListProps> = ({
   emptyListMessage,
   deleteMessage,
 }) => {
-  const usersById = useSelector(chatUsersSelector);
+  const usersById = useSelector(venueChatUsersSelector) ?? {};
+  const venueId = useVenueId();
+  const venueChatUsersQuery = useMemo<ReduxFirestoreQuerySetting>(
+    () => ({
+      collection: "users",
+      where: ["enteredVenueIds", "array-contains", venueId],
+      storeAs: "venueChatUsers",
+    }),
+    [venueId]
+  );
+  useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

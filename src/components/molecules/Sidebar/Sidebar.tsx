@@ -4,6 +4,7 @@ import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { hasElements } from "utils/types";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -19,7 +20,7 @@ enum TABS {
 }
 
 const DOCUMENT_ID = "__name__";
-const NUM_CHAT_UIDS_TO_LOAD = 100;
+const NUM_CHAT_UIDS_TO_LOAD = 10;
 
 // Maybe move this to  utils?
 const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
@@ -27,28 +28,31 @@ const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
 
 const Sidebar = () => {
   const [tab, setTab] = useState(0);
-  const privateChats = useSelector(privateChatsSelector);
-  const chatUsers = useSelector(chatUsersSelector);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
+  const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
 
-  const chatUserIds = privateChats
-    ?.sort(chatSort)
-    .slice(0, NUM_CHAT_UIDS_TO_LOAD)
-    .flatMap((chat) => [chat.from, chat.to])
-    .filter(filterUniqueKeys);
+  // Create new array because privateChats is read only and cannot be sorted.
+  // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
+  const chats = [...privateChats];
 
-  const chatUsersOptions: WhereOptions[] =
-    chatUserIds?.map((uid) => [DOCUMENT_ID, "==", uid]) ?? [];
+  const chatUserIds = chats
+    .sort(chatSort)
+    .flatMap((chat) => [chat.from, chat.to])
+    .filter(filterUniqueKeys)
+    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+
+  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatUsersQuery = [
     {
       collection: "users",
-      where: chatUsersOptions,
+      where: chatUsersOption,
       storeAs: "chatUsers",
     },
   ];
 
-  useFirestoreConnect(chatUserIds ? chatUsersQuery : undefined);
+  useFirestoreConnect(hasElements(chatUserIds) ? chatUsersQuery : undefined);
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);

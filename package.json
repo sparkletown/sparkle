@@ -83,7 +83,8 @@
     "cy:install": "cypress install",
     "cy:run": "cypress run",
     "firebase": "npx --no-install -- firebase",
-    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions"
+    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions",
+    "browserslist:update-db": "npx browserslist@latest --update-db"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
