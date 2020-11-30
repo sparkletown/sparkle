@@ -16,7 +16,7 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { createJazzbar, VenuePlacementState } from "types/Venue";
+import { createJazzbar } from "types/Venue";
 import * as Yup from "yup";
 import {
   editVenueCastSchema,
@@ -29,18 +29,12 @@ import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
   HAS_ROOMS_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -93,23 +87,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
   const [formError, setFormError] = useState(false);
 
-  //register the icon position data
-  useEffect(() => {
-    register("placement");
-  }, [register]);
-
-  const placementDivRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
-    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
-
-    placementDivRef.current?.scrollTo(
-      (state?.detailsPage?.venue.placement?.x ?? 0) - clientWidth / 2,
-      (state?.detailsPage?.venue.placement?.y ?? 0) - clientHeight / 2
-    );
-  }, [state]);
-
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
       if (!user) return;
@@ -136,45 +113,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     return values.mapIconImageUrl;
   }, [values.mapIconImageFile, values.mapIconImageUrl]);
 
-  const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
-  );
-
-  const onBoxMove: ExtractProps<
-    typeof PlayaContainer
-  >["onChange"] = useCallback(
-    (val) => {
-      if (!(iconPositionFieldName in val)) return;
-      const iconPos = val[iconPositionFieldName];
-      setValue("placement", {
-        x: iconPos.left,
-        y: iconPos.top,
-      });
-    },
-    [setValue]
-  );
-
   if (!state.templatePage) {
     previous && previous();
     return null;
   }
-
-  const isAdminPlaced =
-    state.detailsPage?.venue?.placement?.state ===
-    VenuePlacementState.AdminPlaced;
-  const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
   return (
     <div className="page">
@@ -200,61 +142,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           </div>
         </div>
       </div>
-      {IS_BURN && (
-        <div className="page-side preview" style={{ paddingBottom: "20px" }}>
-          <h4
-            className="italic"
-            style={{ textAlign: "center", fontSize: "22px" }}
-          >
-            Position your venue on the {PLAYA_VENUE_NAME}
-          </h4>
-          {isAdminPlaced ? (
-            <p className="warning">
-              Your venue has been placed by our placement team and cannot be
-              moved.{" "}
-              {placementAddress && (
-                <>
-                  The placement team wrote your address as: {placementAddress}
-                </>
-              )}
-            </p>
-          ) : (
-            <p>
-              First upload or select the icon you would like to appear on the
-              {PLAYA_VENUE_NAME}, then drag it around to position it. The
-              placement team from SparkleVerse will place your camp later, after
-              which you will need to reach out if you want it moved.
-            </p>
-          )}
-          <div
-            className="playa"
-            ref={placementDivRef}
-            style={{ width: "100%", height: 1000, overflow: "scroll" }}
-          >
-            <PlayaContainer
-              rounded
-              interactive={!isAdminPlaced}
-              resizable={false}
-              coordinatesBoundary={{
-                width: PLAYA_WIDTH,
-                height: PLAYA_HEIGHT,
-              }}
-              onChange={onBoxMove}
-              snapToGrid={false}
-              iconsMap={iconsMap ?? {}}
-              backgroundImage={PLAYA_IMAGE}
-              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venueId={venueId}
-              otherIconsStyle={{ opacity: 0.4 }}
-              containerStyle={{
-                width: PLAYA_WIDTH,
-                height: PLAYA_HEIGHT,
-              }}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };
@@ -535,29 +422,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             )}
           </>
         )}
-        <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
-            Placement Requests
-          </h4>
-          <div style={{ fontSize: "16px" }}>
-            SparkleVerse&apos;s placement team will put your venue in an
-            appropriate location before the burn. If you wish to be placed
-            somewhere specific, or give suggestions for the team, please write
-            that here.
-          </div>
-          <textarea
-            disabled={disable}
-            name="placementRequests"
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder="On the Esplanade!"
-          />
-          {errors.placementRequests && (
-            <span className="input-error">
-              {errors.placementRequests.message}
-            </span>
-          )}
-        </div>
         <div className="toggle-room">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Show live schedule

@@ -1,7 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
-import { VenuePlacement } from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
 
 export interface EventInput {
@@ -59,8 +58,6 @@ export type VenueInput = AdvancedVenueInput &
     iframeUrl?: string;
     template: string;
     rooms?: Array<CampRoomData>;
-    placement?: Omit<VenuePlacement, "state">;
-    placementRequests?: string;
     adultContent: boolean;
     showGrid?: boolean;
     columns?: number;
@@ -75,16 +72,6 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
   VenueImageUrls;
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
-
-export type PlacementInput = {
-  mapIconImageFile?: FileList;
-  mapIconImageUrl?: string;
-  addressText?: string;
-  notes?: string;
-  placement?: Omit<VenuePlacement, "state">;
-  width: number;
-  height: number;
-};
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();

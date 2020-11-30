@@ -2,7 +2,6 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
 const VenueTemplate = {
@@ -14,8 +13,6 @@ const VenueTemplate = {
   artpiece: "artpiece",
   artcar: "artcar",
   performancevenue: "performancevenue",
-  preplaya: "preplaya",
-  playa: "playa",
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
@@ -34,12 +31,6 @@ const VALID_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
 ];
-
-const PlacementState = {
-  SelfPlaced: "SELF_PLACED",
-  AdminPlaced: "ADMIN_PLACED",
-  Hidden: "HIDDEN",
-};
 
 const createVenueData = (data, context) => {
   if (!VALID_TEMPLATES.includes(data.template)) {
@@ -77,7 +68,6 @@ const createVenueData = (data, context) => {
     owners,
     profile_questions: data.profileQuestions,
     mapIconImageUrl: data.mapIconImageUrl,
-    placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
     parentId: data.parentId,
@@ -103,10 +93,6 @@ const createVenueData = (data, context) => {
     case VenueTemplate.zoomroom:
     case VenueTemplate.artcar:
       venueData.zoomUrl = data.zoomUrl;
-      break;
-
-    case VenueTemplate.playa:
-      venueData.roomVisibility = data.roomVisibility;
       break;
 
     default:
@@ -295,50 +281,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
 });
 
 exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
-  checkAuth(context);
-
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-
-  const doc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-  }
-  const updated = doc.data();
-  updated.dustStorm = !updated.dustStorm;
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .update(updated);
-
-  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-  // Fetch the doc again, in case anything changed meanwhile.
-  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-  if (updated.dustStorm) {
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    await wait(50 * 1000);
-    const doc = await admin
-      .firestore()
-      .collection("venues")
-      .doc(PLAYA_VENUE_ID)
-      .get();
-
-    if (doc && doc.exists) {
-      const updated = doc.data();
-      updated.dustStorm = false;
-      admin
-        .firestore()
-        .collection("venues")
-        .doc(PLAYA_VENUE_ID)
-        .update(updated);
-    }
-  }
+  throw new HttpsError("not-found", "deprecated");
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
@@ -402,18 +345,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (
-    !data.placement.state ||
-    data.placement.state === PlacementState.SelfPlaced
-  ) {
-    updated.placement = {
-      ...data.placement,
-      state: PlacementState.SelfPlaced,
-    };
-  } else if (data.placementRequests) {
-    updated.placementRequests = data.placementRequests;
-  }
-
   if (data.bannerMessage) {
     updated.bannerMessage = data.bannerMessage;
   }
@@ -471,54 +402,11 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
-  updated.placement = {
-    x: dataOrUpdateKey(data.placement, updated.placement, "x"),
-    y: dataOrUpdateKey(data.placement, updated.placement, "y"),
-    state: PlacementState.AdminPlaced,
-  };
-
-  updated.width = data.width;
-  updated.height = data.height;
-
-  const addressText = dataOrUpdateKey(
-    data.placement,
-    updated.placement,
-    "addressText"
-  );
-  const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
-
-  if (addressText) {
-    updated.placement.addressText = addressText;
-  }
-  if (notes) {
-    updated.placement.notes = notes;
-  }
-
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  throw new HttpsError("not-found", "deprecated");
 });
 
 exports.adminHideVenue = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.placement.state = PlacementState.Hidden;
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  throw new HttpsError("not-found", "deprecated");
 });
 
 exports.adminUpdateBannerMessage = functions.https.onCall(

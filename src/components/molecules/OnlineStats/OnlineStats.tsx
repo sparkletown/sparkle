@@ -18,8 +18,6 @@ import { getRandomInt } from "../../../utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
-import { playaAddress } from "utils/address";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 interface PotLuckButtonProps {
@@ -219,15 +217,6 @@ const OnlineStats: React.FC = () => {
                                 {attendance > 0 && (
                                   <span className="venue-people">
                                     <b>{attendance}</b> people in this room
-                                  </span>
-                                )}
-                                {ENABLE_PLAYA_ADDRESS && venue.placement && (
-                                  <span className="venue-address">
-                                    Address:{" "}
-                                    {playaAddress(
-                                      venue.placement.x,
-                                      venue.placement.y
-                                    )}
                                   </span>
                                 )}
                                 <span className="venue-subtitle">

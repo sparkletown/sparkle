@@ -23,15 +23,6 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 
-import {
-  PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_VENUE_NAME,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-} from "settings";
 import { IS_BURN } from "secrets";
 
 import { isVenueWithRooms } from "types/CampVenue";
@@ -42,12 +33,7 @@ import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
-import {
-  canHaveSubvenues,
-  canBeDeleted,
-  canHaveEvents,
-  canHavePlacement,
-} from "utils/venue";
+import { canHaveSubvenues } from "utils/venue";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useSelector } from "hooks/useSelector";
@@ -58,11 +44,9 @@ import AuthenticationModal from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import AdminEditComponent from "./AdminEditComponent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
@@ -156,10 +140,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
     return [
       { url: matchUrl, label: "Venue Info" },
       canHaveEvents(venue) && { url: `${matchUrl}/events`, label: "Events" },
-      canHavePlacement(venue) && {
-        url: `${matchUrl}/placement`,
-        label: "Placement & Editing",
-      },
     ].filter(isTruthyFilter);
   }, [matchUrl, venue]);
 
@@ -191,9 +171,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
               editedEvent={editedEvent}
               setEditedEvent={setEditedEvent}
             />
-          </Route>
-          <Route path={`${matchUrl}/placement`}>
-            <AdminEditComponent />
           </Route>
           <Route path={`${matchUrl}/Appearance`}>
             <>Appearance Component</>
@@ -243,17 +220,6 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
   ]);
   const history = useHistory();
   const match = useRouteMatch();
-  const placementDivRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
-    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
-
-    placementDivRef.current?.scrollTo(
-      (venue.placement?.x ?? 0) - clientWidth / 2,
-      (venue.placement?.y ?? 0) - clientHeight / 2
-    );
-  }, [venue]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
@@ -269,63 +235,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
       <div className="page-container-adminpanel-content">
         {/* after delete venue becomes {id: string} */}
         {venue.name && (
-          <>
-            <AdminVenuePreview
-              venue={venue}
-              containerStyle={{ marginTop: 20 }}
-            />
-            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
-              <>
-                <h4
-                  className="italic"
-                  style={{ fontSize: "30px", textAlign: "center" }}
-                >
-                  How your experience appears on the {PLAYA_VENUE_NAME}
-                </h4>
-                <div className="container venue-entrance-experience-container">
-                  <div
-                    className="playa-container"
-                    ref={placementDivRef}
-                    style={{ width: "100%", height: 1000, overflow: "scroll" }}
-                  >
-                    <PlayaContainer
-                      rounded
-                      interactive={false}
-                      resizable={false}
-                      iconsMap={
-                        venue.placement && venue.mapIconImageUrl
-                          ? {
-                              icon: {
-                                width: PLAYA_VENUE_SIZE,
-                                height: PLAYA_VENUE_SIZE,
-                                top: venue.placement.y,
-                                left: venue.placement.x,
-                                url: venue.mapIconImageUrl,
-                              },
-                            }
-                          : {}
-                      }
-                      coordinatesBoundary={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-                      draggableIconImageStyle={
-                        PLAYA_VENUE_STYLES.draggableIconImage
-                      }
-                      containerStyle={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      venueId={venue.id}
-                      otherIconsStyle={{ opacity: 0.4 }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-          </>
+          <AdminVenuePreview venue={venue} containerStyle={{ marginTop: 20 }} />
         )}
       </div>
       <div className="page-container-adminpanel-actions">

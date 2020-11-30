@@ -1,12 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import {
-  ALL_VENUE_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_ICON_SIDE_PERCENTAGE,
-  PLAYA_VENUE_STYLES,
-  HAS_ROOMS_TEMPLATES,
-} from "settings";
+import { ALL_VENUE_TEMPLATES, HAS_ROOMS_TEMPLATES } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { Venue } from "types/Venue";

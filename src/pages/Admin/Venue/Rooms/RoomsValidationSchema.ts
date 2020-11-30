@@ -1,9 +1,9 @@
 import { RoomInput } from "api/admin";
 import "firebase/functions";
 import * as Yup from "yup";
-import { PLAYA_ICON_SIDE_PERCENTAGE } from "settings";
+import { DEFAULT_ROOM_SIZE_PERCENTAGE } from "settings";
 
-const INITIAL_PERCENTAGE_POS = 50 - PLAYA_ICON_SIDE_PERCENTAGE / 2;
+const INITIAL_PERCENTAGE_POS = 50 - DEFAULT_ROOM_SIZE_PERCENTAGE / 2;
 
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>().test(

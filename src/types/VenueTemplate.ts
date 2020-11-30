@@ -7,8 +7,6 @@ export enum VenueTemplate {
   artpiece = "artpiece",
   artcar = "artcar",
   performancevenue = "performancevenue",
-  preplaya = "preplaya",
-  playa = "playa",
   audience = "audience",
   avatargrid = "avatargrid",
   conversationspace = "conversationspace",

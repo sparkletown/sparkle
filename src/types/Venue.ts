@@ -39,10 +39,8 @@ export interface Venue {
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
-  placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
-  placementRequests?: string;
   radioStations?: string[];
   radioTitle?: string;
   dustStorm?: boolean;
@@ -100,19 +98,6 @@ export interface VenueLandingPageConfig {
   iframeUrl?: string;
   joinButtonText?: string;
   quotations?: Quotation[];
-}
-
-export interface VenuePlacement {
-  x: number;
-  y: number;
-  addressText?: string;
-  state?: VenuePlacementState;
-}
-
-export enum VenuePlacementState {
-  SelfPlaced = "SELF_PLACED",
-  AdminPlaced = "ADMIN_PLACED",
-  Hidden = "HIDDEN",
 }
 
 export interface PlayaIcon {
