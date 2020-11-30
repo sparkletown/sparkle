@@ -21,66 +21,179 @@ const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
-  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
+  const currentVenue = useSelector(partyMapVenueSelector);
+
+  const [isRoomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<
     PartyMapRoomData | undefined
   >();
 
-  const venue = useSelector(partyMapVenueSelector);
-  const usersInCamp = useCampPartygoers(venue.name);
-
-  const attendances = useMemo(
-    () =>
-      usersInCamp
-        ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-            Object.keys(value.lastSeenIn).forEach((key) => {
-              acc[key] = (acc[key] || 0) + 1;
-            });
-            return acc;
-          }, {})
-        : {},
-    [usersInCamp]
-  );
-
-  const modalHidden = useCallback(() => {
-    setIsRoomModalOpen(false);
+  const selectRoom = useCallback((room: PartyMapRoomData) => {
+    setSelectedRoom(room);
+    setRoomModalOpen(true);
   }, []);
 
+  // TODO: can we pass this down to Map instead of setSelectedRoom?
+  // const unselectRoom = useCallback((room: PartyMapRoomData) => {
+  //   setSelectedRoom(undefined);
+  //   setRoomModalOpen(false);
+  // }, []);
+
+  // TODO: can we get rid of this in favour of unselectRoom?
+  const closeRoomModal = useCallback(() => {
+    setRoomModalOpen(false);
+  }, []);
+
+  // Find current room from url
   const { roomTitle } = useParams();
+  const currentRoom = useMemo(() => {
+    if (!currentVenue || !roomTitle) return;
+
+    return currentVenue.rooms.find(
+      (venueRoom) =>
+        createUrlSafeName(venueRoom.title) === createUrlSafeName(roomTitle)
+    );
+  }, [currentVenue, roomTitle]);
 
   useEffect(() => {
-    if (roomTitle) {
-      const partyRoom = venue?.rooms.find(
-        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
-      );
-      if (partyRoom) {
-        setSelectedRoom(partyRoom);
-        setIsRoomModalOpen(true);
-      }
+    if (currentRoom) {
+      selectRoom(currentRoom);
     }
-  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
+  }, [currentRoom, selectRoom]);
+
+  // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
+  const usersInCamp = useCampPartygoers(currentVenue.name);
+  const attendances = useMemo(() => {
+    if (!usersInCamp) return {};
+
+    // TODO: is this counting logic correct?
+    return usersInCamp.reduce<Record<string, number>>((acc, value) => {
+      Object.keys(value.lastSeenIn).forEach((lastSeenInKey) => {
+        acc[lastSeenInKey] = (acc[lastSeenInKey] ?? 0) + 1;
+      });
+
+      return acc;
+    }, {});
+  }, [usersInCamp]);
+
+  // TODO: do we need this?
+  // const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   return (
     <>
       <div className="party-venue-container">
+        <AnnouncementMessage message={currentVenue.bannerMessage} />
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*{usersInCamp && (*/}
+        {/*  <div className="row">*/}
+        {/*    <div className="col">*/}
+        {/*      <UserList*/}
+        {/*        users={usersInCamp}*/}
+        {/*        imageSize={50}*/}
+        {/*        disableSeeAll={false}*/}
+        {/*        isCamp={true}*/}
+        {/*        activity={currentVenue.activity ?? "partying"}*/}
+        {/*      />*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*)}*/}
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*<div className="row">*/}
+        {/*  <div className="col">*/}
+        {/*    <div className="starting-indication">*/}
+        {/*      {venue.description?.text}{" "}*/}
+        {/*      {venue.description?.program_url && (*/}
+        {/*          <a*/}
+        {/*              href={venue.description.program_url}*/}
+        {/*              target="_blank"*/}
+        {/*              rel="noopener noreferrer"*/}
+        {/*          >*/}
+        {/*            Event Program here*/}
+        {/*          </a>*/}
+        {/*      )}*/}
+        {/*    </div>*/}
+        {/*    {venue.start_utc_seconds && (*/}
+        {/*        <CountDown*/}
+        {/*            startUtcSeconds={venue.start_utc_seconds}*/}
+        {/*            textBeforeCountdown="Party begins in"*/}
+        {/*        />*/}
+        {/*    )}*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+
         <Map
-          venue={venue}
+          venue={currentVenue}
           attendances={attendances}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
+          setIsRoomModalOpen={setRoomModalOpen}
         />
+        {/*<Map*/}
+        {/*    venue={currentVenue}*/}
+        {/*    partygoers={usersInCamp}*/}
+        {/*    attendances={attendances}*/}
+        {/*    selectedRoom={selectedRoom}*/}
+        {/*    selectRoom={selectRoom}*/}
+        {/*/>*/}
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*<div className="row">*/}
+        {/*  <div className="col">*/}
+        {/*    <RoomList*/}
+        {/*        rooms={venue.rooms}*/}
+        {/*        attendances={attendances}*/}
+        {/*        setSelectedRoom={setSelectedRoom}*/}
+        {/*        setIsRoomModalOpen={setIsRoomModalOpen}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
+
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
-          onHide={modalHidden}
+          onHide={closeRoomModal}
         />
-        <AnnouncementMessage message={venue.bannerMessage} />
-        {venue?.config?.showRangers && (
+        {/*<RoomModal*/}
+        {/*  show={isRoomModalOpen}*/}
+        {/*  room={selectedRoom}*/}
+        {/*  onHide={closeRoomModal}*/}
+        {/*  joinButtonText={currentVenue.joinButtonText}*/}
+        {/*/>*/}
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*{(IS_BURN || currentVenue.showChat) && (*/}
+        {/*    <div className="chat-pop-up" style={{ zIndex: 100 }}>*/}
+        {/*      <ChatDrawer*/}
+        {/*          roomName={currentVenue.name}*/}
+        {/*          title={`${currentVenue.name} Chat`}*/}
+        {/*          chatInputPlaceholder="Chat"*/}
+        {/*      />*/}
+        {/*    </div>*/}
+        {/*)}*/}
+
+        {currentVenue?.config?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
           </div>
         )}
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*<div className="info-drawer-camp">*/}
+        {/*  <InfoDrawer venue={currentVenue} />*/}
+        {/*</div>*/}
+
+        {/* TODO: should this still be here on the partymap? */}
+        {/*<Modal*/}
+        {/*    show={showEventSchedule}*/}
+        {/*    onHide={() => setShowEventSchedule(false)}*/}
+        {/*    dialogClassName="custom-dialog"*/}
+        {/*>*/}
+        {/*  <Modal.Body>*/}
+        {/*    <SchedulePageModal />*/}
+        {/*  </Modal.Body>*/}
+        {/*</Modal>*/}
       </div>
     </>
   );
