@@ -75,6 +75,10 @@ export interface Venue {
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
+  requiresTicketCode?: boolean;
+  requiresDateOfBirth?: boolean;
+  requiresEmailVerification?: boolean;
+  ticketUrl?: string;
 }
 
 export interface VenueConfig {
