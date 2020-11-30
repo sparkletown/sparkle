@@ -171,8 +171,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <TicketCodeField register={register} error={errors?.date_of_birth} />
-        <DateOfBirthField register={register} error={errors?.code} />
+        <TicketCodeField register={register} error={errors?.code} />
+        <DateOfBirthField register={register} error={errors?.date_of_birth} />
         {IS_BURN &&
           CODE_OF_CONDUCT_QUESTIONS.map((q) => (
             <div className="input-group" key={q.name}>
