@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
