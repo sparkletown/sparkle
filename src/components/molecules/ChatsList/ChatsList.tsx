@@ -42,7 +42,7 @@ const noopHandler = () => {};
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const privateChats = useSelector(privateChatsSelector);
-  const chatUsers = useSelector(chatUsersSelector);
+  const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
@@ -138,17 +138,21 @@ const ChatsList: React.FunctionComponent = () => {
         <div className="private-chat-user">
           Chatting with: {selectedUser.partyName}
         </div>
-        <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
+        <ChatBox
+          usersById={chatUsers}
+          chats={chatsToDisplay}
+          onMessageSubmit={submitMessage}
+        />
       </Fragment>
     );
   }
 
   return (
     <Fragment>
+      <UserSearchBar onSelect={setSelectedUser} />
       {hasPrivateChats && (
         <div className="private-container show">
           <div className="private-messages-list">
-            <UserSearchBar onSelect={setSelectedUser} />
             {discussions.map((userId: string) => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =

@@ -24,6 +24,7 @@ import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
 
 interface ChatListProps {
+  usersById: Record<string, User>;
   messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
   emptyListMessage?: string;
   allowDelete?: boolean;
@@ -31,22 +32,12 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({
+  usersById,
   messages,
   allowDelete,
   emptyListMessage,
   deleteMessage,
 }) => {
-  const usersById = useSelector(venueChatUsersSelector) ?? {};
-  const venueId = useVenueId();
-  const venueChatUsersQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "users",
-      where: ["enteredVenueIds", "array-contains", venueId],
-      storeAs: "venueChatUsers",
-    }),
-    [venueId]
-  );
-  useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -58,7 +49,7 @@ const ChatList: React.FC<ChatListProps> = ({
   >();
 
   const showUserProfile = useCallback(
-    (message) => {
+    (message: RestrictedChatMessage | PrivateChatMessage) => {
       if (!usersById) {
         return;
       }
