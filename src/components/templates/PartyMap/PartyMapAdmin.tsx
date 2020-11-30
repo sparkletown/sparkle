@@ -1,9 +1,11 @@
-import React, { useState, useEffect, FC, useCallback } from "react";
-import { useSelector } from "hooks/useSelector";
-import firebase from "firebase/app";
-import { PartyMapVenue } from "types/PartyMapVenue";
-import { RootState } from "index";
+import React, { useState, useEffect, useCallback } from "react";
 
+import { RootState } from "index";
+import firebase from "firebase/app";
+
+import { PartyMapVenue } from "types/PartyMapVenue";
+
+import { useSelector } from "hooks/useSelector";
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
