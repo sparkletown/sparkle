@@ -5,8 +5,6 @@ import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import { updateUserPrivate } from "pages/Account/helpers";
-import { IS_BURN } from "secrets";
-import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { codeCheckUrl } from "utils/url";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
@@ -37,24 +35,6 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
-const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
-  {
-    name: "termsAndConditions",
-    text: "I agree to SparkleVerse's Terms and Conditions",
-    link: "https://sparklever.se/terms-and-conditions",
-  },
-  {
-    name: "commonDecency",
-    text:
-      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
-  },
-  {
-    name: "regionalBurn",
-    text:
-      "I understand this is an Australian Regional Burn guided by the Ten Principles of Burning Man",
-  },
-];
-
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   displayPasswordResetForm,
@@ -62,20 +42,17 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector((state) => state.firestore.ordered.currentVenue);
+  const venue = useSelector(
+    (state) => state.firestore.ordered.currentVenue?.[0]
+  );
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    setError,
-    watch,
-  } = useForm<RegisterFormData>({
+  const { register, handleSubmit, errors, formState, setError } = useForm<
+    RegisterFormData
+  >({
     mode: "onChange",
   });
 
@@ -83,13 +60,16 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     return <>Loading...</>;
   }
 
-  const venueId = venue[0]?.id;
-
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(codeCheckUrl(data.code));
+      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
+      if (venue.requiresEmailVerification)
+        await axios.get(codeCheckUrl(data.email));
       const auth = await signUp(data);
-      if (CODE_CHECK_ENABLED && auth.user) {
+      if (
+        auth.user &&
+        (venue.requiresTicketCode || venue.requiresEmailVerification)
+      ) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
           date_of_birth: data.date_of_birth,
@@ -98,15 +78,15 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
       const accountProfileUrl = `/account/profile${
-        venueId ? `?venueId=${venueId}` : ""
+        venue.id ? `?venueId=${venue.id}` : ""
       }`;
-      history.push(IS_BURN ? "/enter/step2" : accountProfileUrl);
+      history.push(accountProfileUrl);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -171,36 +151,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
-        <TicketCodeField register={register} error={errors?.code} />
-        <DateOfBirthField register={register} error={errors?.date_of_birth} />
-        {IS_BURN &&
-          CODE_OF_CONDUCT_QUESTIONS.map((q) => (
-            <div className="input-group" key={q.name}>
-              <label
-                htmlFor={q.name}
-                className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
-              >
-                {q.link && (
-                  <a href={q.link} target="_blank" rel="noopener noreferrer">
-                    {q.text}
-                  </a>
-                )}
-                {!q.link && q.text}
-              </label>
-              <input
-                type="checkbox"
-                name={q.name}
-                id={q.name}
-                ref={register({
-                  required: true,
-                })}
-              />
-              {/* @ts-ignore @debt questions should be typed if possible */}
-              {q.name in errors && errors[q.name].type === "required" && (
-                <span className="input-error">Required</span>
-              )}
-            </div>
-          ))}
+        {venue.requiresTicketCode && (
+          <TicketCodeField register={register} error={errors?.code} />
+        )}
+        {venue.requiresDateOfBirth && (
+          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        )}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
