@@ -5,30 +5,32 @@ import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 
-import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentTimeInUnixEpoch } from "utils/time";
-import { WithId } from "utils/id";
-import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
+import { enterRoom } from "utils/useLocationUpdateEffect";
+import { hasElements } from "utils/types";
+import { makeCampRoomHitFilter } from "utils/filter";
 import { openRoomUrl } from "utils/url";
+import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 
-import Sidebar from "components/molecules/Sidebar";
+// @debt refactor these hooks into somewhere more sensible
+import { useMapGrid } from "components/templates/Camp/hooks/useMapGrid";
+import { usePartygoersbySeat } from "components/templates/Camp/hooks/usePartygoersBySeat";
+import { usePartygoersOverlay } from "components/templates/Camp/hooks/usePartygoersOverlay";
+
 import UserProfileModal from "components/organisms/UserProfileModal";
+
+import Sidebar from "components/molecules/Sidebar";
+
 import { PartyMapRoomOverlay } from "./PartyMapRoomOverlay";
 
 import "./Map.scss";
-import { makeCampRoomHitFilter } from "utils/filter";
-import { hasElements } from "utils/types";
 
-// @debt refactor these hooks into somewhere more sensible
-import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
-import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
-import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
-
-interface PropsType {
+interface MapProps {
   venue: PartyMapVenue;
   attendances: { [location: string]: number };
   selectedRoom: PartyMapRoomData | undefined;
@@ -39,7 +41,7 @@ interface PropsType {
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-export const Map: React.FC<PropsType> = ({
+export const Map: React.FC<MapProps> = ({
   venue,
   attendances,
   selectedRoom,
