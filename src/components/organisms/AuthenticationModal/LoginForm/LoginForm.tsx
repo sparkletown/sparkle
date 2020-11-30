@@ -6,6 +6,7 @@ import { codeCheckUrl } from "utils/url";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { useSelector } from "hooks/useSelector";
+import { venueSelector } from "utils/selectors";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -29,9 +30,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
 
-  const venue = useSelector(
-    (state) => state.firestore.ordered.currentVenue?.[0]
-  );
+  const venue = useSelector(venueSelector);
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({

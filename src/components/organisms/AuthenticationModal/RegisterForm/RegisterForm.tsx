@@ -9,6 +9,7 @@ import { useSelector } from "hooks/useSelector";
 import { codeCheckUrl } from "utils/url";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+import { venueSelector } from "utils/selectors";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -42,9 +43,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector(
-    (state) => state.firestore.ordered.currentVenue?.[0]
-  );
+  const venue = useSelector(venueSelector);
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
