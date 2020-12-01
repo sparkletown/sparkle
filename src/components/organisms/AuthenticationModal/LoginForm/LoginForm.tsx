@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
-import { IS_BURN } from "secrets";
-import { CODE_CHECK_ENABLED, DEFAULT_VENUE, TICKET_URL } from "settings";
-import { venueInsideUrl } from "utils/url";
+import { codeCheckUrl } from "utils/url";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { useSelector } from "hooks/useSelector";
+import { venueSelector } from "utils/selectors";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -18,6 +18,8 @@ interface PropsType {
 interface LoginFormData {
   email: string;
   password: string;
+  code: string;
+  date_of_birth: string;
 }
 
 const LoginForm: React.FunctionComponent<PropsType> = ({
@@ -28,7 +30,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
 
-  const history = useHistory();
+  const venue = useSelector(venueSelector);
   const { register, handleSubmit, errors, formState, setError } = useForm<
     LoginFormData
   >({
@@ -41,9 +43,14 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: LoginFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
+      if (venue.requiresEmailVerification)
+        await axios.get(codeCheckUrl(data.email));
       const auth = await signIn(data);
-      if (CODE_CHECK_ENABLED && auth.user) {
+      if (
+        auth.user &&
+        (venue.requiresTicketCode || venue.requiresEmailVerification)
+      ) {
         firebase
           .firestore()
           .doc(`userprivate/${auth.user.uid}`)
@@ -54,20 +61,20 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
                 .firestore()
                 .doc(`userprivate/${auth.user.uid}`)
                 .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.email],
+                  codes_used: [...(doc.data()?.codes_used || []), data.code],
+                  date_of_birth: data.date_of_birth,
                 });
             }
           });
       }
       afterUserIsLoggedIn && afterUserIsLoggedIn();
       closeAuthenticationModal();
-      if (IS_BURN) history.push(venueInsideUrl(DEFAULT_VENUE));
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -82,7 +89,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   };
   return (
     <div className="form-container">
-      <h2>Log in</h2>
       <div className="secondary-action">
         {`Don't have an account yet?`}
         <br />
@@ -90,6 +96,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           Register instead!
         </span>
       </div>
+      <h2>Log in</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input
@@ -120,6 +127,12 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
+        {venue.requiresTicketCode && (
+          <TicketCodeField register={register} error={errors?.code} />
+        )}
+        {venue.requiresDateOfBirth && (
+          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        )}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"

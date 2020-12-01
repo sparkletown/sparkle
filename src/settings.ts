@@ -34,8 +34,6 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const TICKET_URL = "https://sparklever.se/glowforth/";
-export const CODE_CHECK_ENABLED = true;
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const HOMEPAGE_URL = "https://sparklespaces.com/";
 

@@ -52,7 +52,9 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterLiveEvent}>{event.room ?? "Enter"}</div>
+          <div onClick={enterLiveEvent}>
+            {event.room ?? "Enter"} {venue && `- ${venue.name}`}
+          </div>
         </div>
       </div>
     </div>

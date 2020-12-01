@@ -55,7 +55,7 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             name={name}
             type="file"
             ref={ref}
-            accept="image/x-png,image/gif,image/jpeg"
+            accept="image/png,image/x-png,image/gif,image/jpeg"
             className="default-input"
           />
           {remoteUrlInputName && (
