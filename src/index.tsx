@@ -23,7 +23,14 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
-import { BUGSNAG_API_KEY, STRIPE_PUBLISHABLE_KEY } from "secrets";
+import {
+  BUGSNAG_API_KEY,
+  BUILD_BRANCH,
+  BUILD_PULL_REQUESTS,
+  BUILD_SHA1,
+  BUILD_TAG,
+  STRIPE_PUBLISHABLE_KEY,
+} from "secrets";
 
 import "bootstrap";
 import "scss/global.scss";
@@ -45,9 +52,51 @@ import { User } from "types/User";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
 
+const DEVELOPMENT = "development";
+const STAGING = "staging";
+const PRODUCTION = "production";
+const SPARKLEVERSE = "sparkleverse";
+
+const releaseStage = () => {
+  if (
+    window.location.host.includes("localhost") ||
+    process.env.NODE_ENV === DEVELOPMENT
+  ) {
+    return DEVELOPMENT;
+  }
+
+  if (
+    window.location.host.includes(STAGING) ||
+    BUILD_BRANCH?.includes(STAGING)
+  ) {
+    return STAGING;
+  }
+
+  if (BUILD_BRANCH?.includes("master")) {
+    return PRODUCTION;
+  }
+
+  if (BUILD_BRANCH?.includes(SPARKLEVERSE)) {
+    return SPARKLEVERSE;
+  }
+
+  return process.env.NODE_ENV;
+};
+
 Bugsnag.start({
   apiKey: BUGSNAG_API_KEY ?? "",
   plugins: [new BugsnagPluginReact()],
+  appType: "client",
+  appVersion: BUILD_SHA1,
+  enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE], // don't track errors in development/test
+  releaseStage: releaseStage(),
+  maxEvents: 25,
+  metadata: {
+    BUILD_SHA1,
+    BUILD_TAG,
+    BUILD_BRANCH,
+    BUILD_PULL_REQUESTS,
+  },
 });
 
 const BugsnagErrorBoundary = Bugsnag?.getPlugin("react")?.createErrorBoundary(
