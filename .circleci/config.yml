@@ -111,16 +111,19 @@ jobs:
               PREFIX=STAGING_
               ENV=staging
               TARGET=staging
+              RELEASE_STAGE=staging
             fi
             if [ $CIRCLE_BRANCH = "master" ]; then
               PREFIX=PROD_
               ENV=prod
               TARGET=co-reality-map
+              RELEASE_STAGE=production
             fi
             if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
               PREFIX=SPARKLEVERSE_
               ENV=sparkleverse
               TARGET=sparkleverse
+              RELEASE_STAGE=sparkleverse
             fi
 
             ./scripts/init-env.sh $PREFIX
@@ -129,6 +132,26 @@ jobs:
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+
+            # Notify Bugsnag that the application has been deployed
+            curl https://build.bugsnag.com/ \
+              --header "Content-Type: application/json" \
+              --data '{
+                "apiKey": "${REACT_APP_BUGSNAG_API_KEY}",
+                "appVersion": "${CIRCLE_SHA1}",
+                "releaseStage": "${RELEASE_STAGE}",
+                "builderName": "${CIRCLE_USERNAME}",
+                "sourceControl": {
+                  "provider": "github",
+                  "repository": "${CIRCLE_REPOSITORY_URL}",
+                  "revision": "${CIRCLE_SHA1}"
+                },
+                "metadata": {
+                  "pullRequest": "${CIRCLE_PULL_REQUESTS}",
+                  "ciBuildUrl: "${CIRCLE_BUILD_URL}",
+                  "ciBuildNum "${CIRCLE_BUILD_NUM}"
+                }
+              }'
       - *notify-on-fail
 workflows:
   build-test-deploy:
