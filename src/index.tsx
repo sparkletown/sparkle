@@ -1,6 +1,9 @@
 import "./wdyr";
 
 import React from "react";
+import Bugsnag from "@bugsnag/js";
+import BugsnagPluginReact from "@bugsnag/plugin-react";
+
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
@@ -20,7 +23,7 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
-import { STRIPE_PUBLISHABLE_KEY } from "secrets";
+import { BUGSNAG_API_KEY, STRIPE_PUBLISHABLE_KEY } from "secrets";
 
 import "bootstrap";
 import "scss/global.scss";
@@ -41,6 +44,19 @@ import { User } from "types/User";
 
 import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
+
+Bugsnag.start({
+  apiKey: BUGSNAG_API_KEY ?? "",
+  plugins: [new BugsnagPluginReact()],
+});
+
+const BugsnagErrorBoundary = Bugsnag?.getPlugin("react")?.createErrorBoundary(
+  React
+);
+
+if (!BugsnagErrorBoundary) {
+  throw new Error("failed to create BugsnagErrorBoundary");
+}
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -95,19 +111,21 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 };
 
 render(
-  <ThemeProvider theme={{}}>
-    <Elements stripe={stripePromise}>
-      <DndProvider backend={HTML5Backend}>
-        <Provider store={store}>
-          <ReactReduxFirebaseProvider {...rrfProps}>
-            <AuthIsLoaded>
-              <AppRouter />
-            </AuthIsLoaded>
-          </ReactReduxFirebaseProvider>
-        </Provider>
-      </DndProvider>
-    </Elements>
-  </ThemeProvider>,
+  <BugsnagErrorBoundary>
+    <ThemeProvider theme={{}}>
+      <Elements stripe={stripePromise}>
+        <DndProvider backend={HTML5Backend}>
+          <Provider store={store}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+              <AuthIsLoaded>
+                <AppRouter />
+              </AuthIsLoaded>
+            </ReactReduxFirebaseProvider>
+          </Provider>
+        </DndProvider>
+      </Elements>
+    </ThemeProvider>
+  </BugsnagErrorBoundary>,
   document.getElementById("root")
 );
 
