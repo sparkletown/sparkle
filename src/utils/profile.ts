@@ -1,11 +1,11 @@
 import firebase from "firebase/app";
 
 export const updateProfileEnteredVenueIds = async (
-  prevEnteredVenueIds: string[] | undefined,
+  prevEnteredVenueIds: readonly string[] | undefined,
   userId: string | undefined,
   venueId: string
 ) => {
-  const enteredVenueIds = prevEnteredVenueIds ?? [];
+  const enteredVenueIds = prevEnteredVenueIds ? [...prevEnteredVenueIds] : [];
   if (!enteredVenueIds.includes(venueId)) {
     enteredVenueIds.push(venueId);
     await firebase

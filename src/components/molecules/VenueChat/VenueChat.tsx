@@ -33,14 +33,11 @@ interface ChatOutDataType {
 const VenueChat: FC = () => {
   const venueId = useVenueId();
   const usersById = useSelector(venueChatUsersSelector) ?? {};
-  const venueChatUsersQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "users",
-      where: ["enteredVenueIds", "array-contains", venueId],
-      storeAs: "venueChatUsers",
-    }),
-    [venueId]
-  );
+  const venueChatUsersQuery: ReduxFirestoreQuerySetting = {
+    collection: "users",
+    where: ["enteredVenueIds", "array-contains", venueId],
+    storeAs: "venueChatUsers",
+  };
   useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const { userRoles } = useRoles();
   const { user } = useUser();
