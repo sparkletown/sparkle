@@ -2,6 +2,7 @@
 
 .navbar-margin {
   padding-top: $navbar-height;
+  padding-bottom: $navbar-height;
 }
 .navbar-margin.fullscreen {
   display: flex;
@@ -9,4 +10,30 @@
   height: 100vh;
   overflow: hidden;
   flex-flow: column;
+}
+
+.footer-wrapper {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  position: fixed;
+  height: 66px;
+  bottom: 0;
+  left: 0;
+  z-index: 300;
+  width: 100%;
+  background-color: black;
+
+  .terms-and-conditions {
+    padding-left: 30px;
+    text-decoration: none;
+  }
+
+  .powered-by {
+    text-decoration: none;
+  }
+
+  .footer-separator {
+    padding: 0 30px 0 30px;
+  }
 }
