@@ -9,3 +9,17 @@ export const BUGSNAG_API_KEY = process.env.REACT_APP_BUGSNAG_API_KEY;
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const CODE_CHECK_URL = process.env.REACT_APP_CODE_CHECK_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
+
+// Build environment data from CI
+export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
+
+export const BUILD_TAG = process.env.REACT_APP_BUILD_TAG || undefined;
+
+export const BUILD_REPOSITORY_URL =
+  process.env.REACT_APP_BUILD_REPOSITORY_URL || undefined;
+
+export const BUILD_PULL_REQUESTS = (
+  process.env.REACT_APP_BUILD_PULL_REQUESTS || ""
+)
+  .split(",")
+  .filter((s) => !!s);
