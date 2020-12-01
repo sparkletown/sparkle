@@ -30,7 +30,7 @@ export const VenuePartygoers = () => {
   const numberOfPartygoers = currentVenuePartygoers.length;
 
   return (
-    <div className="attendees-container">
+    <div className="venue-partygoers-container">
       {numberOfPartygoers} {attendeesTitle} online
     </div>
   );

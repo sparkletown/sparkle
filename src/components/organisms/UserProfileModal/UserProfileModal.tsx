@@ -31,63 +31,45 @@ import {
   PrivateChatMessage,
 } from "components/context/ChatContext";
 
-type fullUserProfile =
-  | { userProfile?: WithId<User> }
-  | { userProfile?: User; userProfileId?: string };
-
 type PropTypes = {
   show: boolean;
   onHide: () => void;
   zIndex?: number;
-} & fullUserProfile;
+  userProfile?: WithId<User>;
+};
 
 const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   show,
   onHide,
   zIndex,
-  ...rest
+  userProfile,
 }) => {
   const venue = useSelector(currentVenueSelectorData);
   const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
 
-  const fullUserProfile = useMemo(() => {
-    if (undefined === rest.userProfile) {
-      return undefined;
-    }
-
-    if ("id" in rest.userProfile) {
-      return rest.userProfile;
-    }
-
-    if ("userProfileId" in rest && rest.userProfileId) {
-      return { ...rest.userProfile, id: rest.userProfileId };
-    }
-    return undefined;
-  }, [rest]);
-
   const chatContext = useContext(ChatContext);
 
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      chatContext &&
-        user &&
-        chatContext.sendPrivateChat(
-          user.uid,
-          fullUserProfile!.id,
-          data.messageToTheBand
-        );
+      if (!chatContext || !user || !userProfile) return;
+
+      chatContext.sendPrivateChat(
+        user.uid,
+        userProfile?.id,
+        data.messageToTheBand
+      );
     },
-    [chatContext, fullUserProfile, user]
+    [chatContext, userProfile, user]
   );
 
-  if (!fullUserProfile || !fullUserProfile.id || !user) {
+  if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
 
   const chats: WithId<PrivateChatMessage>[] = privateChats.filter(
-    (chat) => chat.from === fullUserProfile.id || chat.to === fullUserProfile.id
+    (chat) => chat.from === userProfile.id || chat.to === userProfile.id
   );
 
   // REVISIT: remove the hack to cast to any below
@@ -99,7 +81,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             <div className="profile-basics">
               <div className="profile-pic">
                 <img
-                  src={fullUserProfile.pictureUrl || "/default-profile-pic.png"}
+                  src={userProfile.pictureUrl || "/default-profile-pic.png"}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -107,8 +89,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                       "/avatars/" +
                       RANDOM_AVATARS[
                         Math.floor(
-                          fullUserProfile.id.charCodeAt(0) %
-                            RANDOM_AVATARS.length
+                          userProfile.id.charCodeAt(0) % RANDOM_AVATARS.length
                         )
                       ];
                   }}
@@ -116,7 +97,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
               <div className="profile-text">
                 <h2 className="italic">
-                  {fullUserProfile.partyName || "Captain Party"}
+                  {userProfile.partyName || "Captain Party"}
                 </h2>
               </div>
             </div>
@@ -128,7 +109,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                     {/*
                     // @debt typing - need to support known User interface with unknown question keys
                     // @ts-ignore */}
-                    {fullUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {userProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </React.Fragment>
@@ -138,13 +119,13 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={fullUserProfile} />
+                  <SuspectedLocation user={userProfile} />
                 </h6>
               </div>
             )}
           </div>
-          {IS_BURN && <Badges user={fullUserProfile} />}
-          {fullUserProfile.id !== user.uid && (
+          {IS_BURN && <Badges user={userProfile} />}
+          {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox chats={chats} onMessageSubmit={submitMessage} />
             </div>

@@ -14,9 +14,11 @@ $page-max-width: 1240px;
 
 $sand: #937c63;
 
+$header-z-index: 5;
+
 .navbar.navbar_playa {
   position: fixed;
-  z-index: 301;
+  z-index: $header-z-index;
   top: 0;
   left: 0;
   width: 100%;
