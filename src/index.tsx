@@ -42,7 +42,7 @@ import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
 
 Bugsnag.start({
