@@ -64,13 +64,16 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     [chatContext, userProfile, user]
   );
 
+  const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
+    if (!userProfile || !userProfile.id) return [];
+    return privateChats.filter(
+      (chat) => chat.from === userProfile.id || chat.to === userProfile.id
+    );
+  }, [privateChats, userProfile]);
+
   if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
-
-  const chats: WithId<PrivateChatMessage>[] = privateChats.filter(
-    (chat) => chat.from === userProfile.id || chat.to === userProfile.id
-  );
 
   // REVISIT: remove the hack to cast to any below
   return (
