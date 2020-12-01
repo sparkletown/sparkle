@@ -35,7 +35,6 @@ const Sidebar = () => {
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
   const unreadMessages = filterUnreadPrivateChats(privateChats, user);
-  console.log(unreadMessages);
   const hasUnreadMessages = !!unreadMessages.length;
 
   // Create new array because privateChats is read only and cannot be sorted.
