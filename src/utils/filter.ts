@@ -1,7 +1,7 @@
 import { chatSort, PrivateChatMessage } from "components/context/ChatContext";
+import { FirebaseReducer } from "react-redux-firebase";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 import { CampRoomData } from "types/CampRoomData";
-import { User } from "types/User";
 import { WithId } from "./id";
 
 import { isWithinBounds } from "./isWithinBounds";
@@ -73,12 +73,14 @@ export const makeCampRoomHitFilter = ({
 };
 
 export const filterUnreadPrivateChats = (
-  chats: WithId<PrivateChatMessage>[]
+  chats: WithId<PrivateChatMessage>[],
+  user: FirebaseReducer.AuthState | undefined
 ) => {
   return (
     chats
       ?.filter(
         (message) =>
+          message.from !== user?.uid &&
           message.deleted !== true &&
           message.type === "private" &&
           message.ts_utc.seconds > HIDE_BEFORE &&

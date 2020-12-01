@@ -13,6 +13,7 @@ import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
 import { chatSort } from "components/context/ChatContext";
+import { useUser } from "hooks/useUser";
 
 enum TABS {
   PARTY_CHAT = 0,
@@ -28,12 +29,14 @@ const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
   arr.indexOf(userId) === index;
 
 const Sidebar = () => {
+  const { user } = useUser();
   const [tab, setTab] = useState(0);
   const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
-  const unreadMessages = filterUnreadPrivateChats(privateChats);
-  const numberOfUnreadMessages = unreadMessages.length;
+  const unreadMessages = filterUnreadPrivateChats(privateChats, user);
+  console.log(unreadMessages);
+  const hasUnreadMessages = !!unreadMessages.length;
 
   // Create new array because privateChats is read only and cannot be sorted.
   // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
@@ -86,14 +89,11 @@ const Sidebar = () => {
         </div>
         <div
           className={`sidebar-tab sidebar-tab_private ${
-            tab === TABS.PRIVATE_CHAT && "active"
-          }`}
+            hasUnreadMessages && "notification"
+          } ${tab === TABS.PRIVATE_CHAT && "active"}`}
           onClick={selectPrivateChatTab}
         >
-          <div>Messages</div>
-          {!!numberOfUnreadMessages && (
-            <div className="unread-messages">{numberOfUnreadMessages}</div>
-          )}
+          Messages
         </div>
 
         <div

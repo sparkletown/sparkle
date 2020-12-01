@@ -34,6 +34,14 @@ $primary: #005ee5;
         width: 100%;
         .private-message-author {
           opacity: 0.7;
+          font-size: 0.9rem;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
+          &.unread {
+            opacity: 1;
+          }
         }
         .private-message-last {
           font-size: 0.9rem;
@@ -41,8 +49,25 @@ $primary: #005ee5;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
+
+          &.unread {
+            opacity: 1;
+          }
         }
       }
+
+      .private-message-time {
+        font-size: 0.9rem;
+        opacity: 0.4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &.unread {
+          opacity: 1;
+        }
+      }
+
       .private-message-status {
         width: 80px;
         align-items: flex-start;
