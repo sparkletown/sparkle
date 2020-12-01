@@ -15,6 +15,7 @@ import { User } from "types/User";
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -154,7 +155,7 @@ const ChatsList: React.FunctionComponent = () => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =
                 discussionPartnerWithLastMessageExchanged?.[userId];
-              const isUnreadMessage = !lastMessageExchanged.isRead;
+              const isUnreadMessage = !isTruthy(lastMessageExchanged.isRead);
               const profileName = sender.anonMode
                 ? DEFAULT_PARTY_NAME
                 : sender.partyName;
@@ -193,7 +194,7 @@ const ChatsList: React.FunctionComponent = () => {
                       }`}
                     >
                       {formatDistanceToNow(
-                        new Date(lastMessageExchanged.ts_utc.toDate())
+                        lastMessageExchanged.ts_utc.toDate()
                       )}
                     </div>
                   )}

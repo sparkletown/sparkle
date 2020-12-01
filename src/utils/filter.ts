@@ -1,9 +1,12 @@
-import { chatSort, PrivateChatMessage } from "components/context/ChatContext";
 import { FirebaseReducer } from "react-redux-firebase";
-import { VENUE_CHAT_AGE_DAYS } from "settings";
-import { CampRoomData } from "types/CampRoomData";
-import { WithId } from "./id";
 
+import { VENUE_CHAT_AGE_DAYS } from "settings";
+
+import { CampRoomData } from "types/CampRoomData";
+
+import { chatSort, PrivateChatMessage } from "components/context/ChatContext";
+
+import { WithId } from "./id";
 import { isWithinBounds } from "./isWithinBounds";
 import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
 
@@ -73,19 +76,19 @@ export const makeCampRoomHitFilter = ({
 };
 
 export const filterUnreadPrivateChats = (
-  chats: WithId<PrivateChatMessage>[],
-  user: FirebaseReducer.AuthState | undefined
+  chats: readonly WithId<PrivateChatMessage>[],
+  user?: FirebaseReducer.AuthState
 ) => {
-  return (
-    chats
-      ?.filter(
-        (message) =>
-          message.from !== user?.uid &&
-          message.deleted !== true &&
-          message.type === "private" &&
-          message.ts_utc.seconds > HIDE_BEFORE &&
-          message.isRead === false
-      )
-      .sort(chatSort) ?? []
-  );
+  if (!chats) return [];
+
+  return chats
+    ?.filter(
+      (message) =>
+        message.from !== user?.uid &&
+        message.deleted !== true &&
+        message.type === "private" &&
+        message.ts_utc.seconds > HIDE_BEFORE &&
+        message.isRead === false
+    )
+    .sort(chatSort);
 };

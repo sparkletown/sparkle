@@ -5,7 +5,7 @@ import { useSelector } from "hooks/useSelector";
 
 import { filterUnreadPrivateChats } from "utils/filter";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
-import { hasElements } from "utils/types";
+import { hasElements, isTruthy } from "utils/types";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -35,7 +35,7 @@ const Sidebar = () => {
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
   const unreadMessages = filterUnreadPrivateChats(privateChats, user);
-  const hasUnreadMessages = !!unreadMessages.length;
+  const hasUnreadMessages = isTruthy(unreadMessages.length);
 
   // Create new array because privateChats is read only and cannot be sorted.
   // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
