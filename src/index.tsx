@@ -147,6 +147,18 @@ if (BUGSNAG_API_KEY) {
       BUILD_BRANCH,
       BUILD_PULL_REQUESTS,
     },
+    onError: (event) => {
+      const { currentUser } = firebase.auth();
+
+      if (!currentUser) return;
+
+      // Add user context to help locate related errors for support
+      event.setUser(
+        currentUser.uid,
+        currentUser.email || undefined,
+        currentUser.displayName || undefined
+      );
+    },
   });
 }
 
