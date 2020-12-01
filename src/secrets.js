@@ -12,8 +12,8 @@ export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
-
 export const BUILD_TAG = process.env.REACT_APP_BUILD_TAG || undefined;
+export const BUILD_BRANCH = process.env.REACT_APP_BUILD_BRANCH || undefined;
 
 export const BUILD_REPOSITORY_URL =
   process.env.REACT_APP_BUILD_REPOSITORY_URL || undefined;
