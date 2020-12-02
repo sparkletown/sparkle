@@ -79,6 +79,7 @@ export interface Venue {
   requiresDateOfBirth?: boolean;
   requiresEmailVerification?: boolean;
   ticketUrl?: string;
+  showRangers?: boolean;
 }
 
 export interface VenueConfig {

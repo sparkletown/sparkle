@@ -274,6 +274,11 @@ interface DetailsFormLeftProps {
   formError: boolean;
 }
 
+const backgroundTextByVenue: Record<string, string> = {
+  [VenueTemplate.themecamp]: "Theme Camp",
+  [VenueTemplate.partymap]: "Party Map",
+};
+
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
   const {
     editing,
@@ -446,7 +451,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
             <>
               <h4 className="italic" style={{ fontSize: "20px" }}>
-                {`Choose the background for your Theme Camp`}
+                {`Choose the background for your ${
+                  backgroundTextByVenue[templateID] ?? "Experience"
+                }`}
               </h4>
               <ImageCollectionInput
                 collectionPath={"assets/mapBackgrounds"}
@@ -572,6 +579,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
+
         {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
             <h4 className="italic" style={{ fontSize: "20px" }}>
@@ -588,6 +596,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
+
+        <div className="toggle-room">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Show Rangers support
+          </h4>
+          <label id="showRangers" className="switch">
+            <input
+              type="checkbox"
+              id="showRangers"
+              name="showRangers"
+              ref={register}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid && (
