@@ -6,7 +6,7 @@ import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
-export const PartyMapAdmin: React.FC = () => {
+export const BannerAdmin: React.FC = () => {
   const currentVenue = useSelector(currentVenueSelector);
   const venueId = currentVenue.id;
   const existingBannerMessage = currentVenue?.bannerMessage ?? "";
