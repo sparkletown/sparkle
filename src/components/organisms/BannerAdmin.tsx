@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useRef } from "react";
 
-import { makeUpdateBanner } from "api/partyMapAdmin";
+import { makeUpdateBanner } from "api/bannerAdmin";
 
 import { currentVenueSelector } from "utils/selectors";
 
