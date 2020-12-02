@@ -13,12 +13,14 @@ import {
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
+import { User } from "types/User";
 
 interface ChatOutDataType {
   messageToTheBand: string;
 }
 
 interface ChatboxProps {
+  usersById: Record<string, User>;
   chats: WithId<PrivateChatMessage | RestrictedChatMessage>[];
   onMessageSubmit: (data: ChatOutDataType) => void;
   allowDelete?: boolean;
@@ -26,6 +28,7 @@ interface ChatboxProps {
 }
 
 const ChatBox: React.FC<ChatboxProps> = ({
+  usersById,
   allowDelete,
   chats,
   onMessageSubmit,
@@ -69,6 +72,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
     <div className="chat-container show">
       {chats && (
         <ChatList
+          usersById={usersById}
           messages={chats}
           emptyListMessage={emptyListMessage}
           allowDelete={allowDelete}
