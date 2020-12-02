@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
@@ -80,25 +79,11 @@ const AvatarGrid = () => {
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      if (!user || !profile || !venueId) return;
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row,
-            column,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid: user?.uid,
+        profileData: profile?.data,
+      })(row, column);
     },
     [profile, user, venueId]
   );

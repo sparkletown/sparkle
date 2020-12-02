@@ -233,29 +233,12 @@ export const Audience: React.FunctionComponent = () => {
   );
 
   return useMemo(() => {
-    const takeSeat = (
-      translatedRow: number | null,
-      translatedColumn: number | null
-    ) => {
-      if (!user || !profile || !venueId) return;
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row: translatedRow,
-            column: translatedColumn,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+    const takeSeat = (row: number | null, column: number | null) => {
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid: user?.uid,
+        profileData: profile?.data,
+      })(row, column);
     };
 
     const leaveSeat = () => {
