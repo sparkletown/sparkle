@@ -139,6 +139,8 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
     (attendances[`${venue.name}/${room.title}`] ?? 0) +
     (room.attendanceBoost ?? 0);
 
+  if (!room.isEnabled) return null;
+
   return (
     <div
       className={`room position-absolute ${isSelectedRoom && "isUnderneath"}`}
