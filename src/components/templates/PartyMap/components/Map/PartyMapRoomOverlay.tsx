@@ -4,7 +4,7 @@ import { retainAttendance } from "store/actions/Attendance";
 
 import { Attendances } from "types/Attendances";
 import { PartyMapVenue } from "types/PartyMapVenue";
-import { PartyMapRoomData, PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 import { RoomVisibility } from "types/Venue";
 
 import { isTruthy } from "utils/types";
