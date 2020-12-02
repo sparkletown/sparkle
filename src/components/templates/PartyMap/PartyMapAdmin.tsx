@@ -1,34 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 
-import { RootState } from "index";
-import firebase from "firebase/app";
+import { makeUpdateBanner } from "api/partyMapAdmin";
 
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
-// TODO: we should move this to a common helper location
-const makeUpdateBanner = (
-  venueId: string,
-  onError: (errorMsg: string) => void
-) => (message?: string) => {
-  const params = {
-    venueId,
-    bannerMessage: message ? message : "",
-  };
-
-  firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateBannerMessage")(params)
-    .catch((e) => onError(e.toString()));
-};
-
-// TODO: can this ever be undefined?
-const partyMapVenueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
-
 export const PartyMapAdmin: React.FC = () => {
-  const currentVenue = useSelector(partyMapVenueSelector);
+  const currentVenue = useSelector(currentVenueSelector);
   const venueId = currentVenue.id;
   const existingBannerMessage = currentVenue?.bannerMessage ?? "";
 
