@@ -65,6 +65,18 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
     dispatch(retainAttendance(false));
   }, [dispatch]);
 
+  const showRoomTitleAlways =
+    !venue.roomVisibility ||
+    venue.roomVisibility === RoomVisibility.nameCount ||
+    venue.roomVisibility === RoomVisibility.count;
+
+  const showRoomTitleWhenHovered =
+    venue.roomVisibility === RoomVisibility.hover &&
+    roomHovered?.title === room.title;
+
+  const showRoomTitle =
+    showRoomTitleAlways || (showRoomTitleWhenHovered && isRoomHovered);
+
   // TODO: this is being spread here because the below code modifies it with .push()/etc
   // const rooms = [...venue.rooms];
 
@@ -102,20 +114,6 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   //   room,
   // ]);
 
-  // TODO: what is a better semantic name for this?
-  const shouldShowHovered =
-    venue.roomVisibility === RoomVisibility.hover &&
-    isRoomHovered &&
-    roomHovered?.title === room.title;
-
-  // TODO: what is a better semantic name for this?
-  const shouldShow1 =
-    !venue.roomVisibility || venue.roomVisibility === RoomVisibility.nameCount;
-
-  // TODO: what is a better semantic name for this?
-  const shouldShow2 =
-    shouldShow1 || venue.roomVisibility === RoomVisibility.count;
-
   const containerStyles = useMemo(
     () => ({
       left: `${room.x_percent}%`,
@@ -152,7 +150,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
       </div>
 
       {/* TODO: rename these classes something other than camp-venue-*? */}
-      {shouldShowHovered && (
+      {showRoomTitle && (
         <div className="camp-venue-text">
           <div className="camp-venue-maininfo">
             <div className="party-map-venue-title">{room.title}</div>
@@ -160,18 +158,6 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
           </div>
         </div>
       )}
-
-      <div className={`camp-venue-text`}>
-        {shouldShow2 && (
-          <div className="camp-venue-maininfo">
-            {/* TODO: the definition of shouldShow2 seems to use shouldShow1, so there's probably no point to this check? */}
-            {shouldShow1 && (
-              <div className="party-map-venue-title">{room.title}</div>
-            )}
-            <RoomAttendance venue={venue} room={room} />
-          </div>
-        )}
-      </div>
 
       {/* TODO: this was in Camp MapRoomOverlay, do we need it still?*/}
       {/*<div className="camp-venue-secondinfo">*/}
