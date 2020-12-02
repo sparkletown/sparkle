@@ -3,29 +3,26 @@ import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-// Components
+import { AvatarGridRoom } from "types/AvatarGrid";
+import { User } from "types/User";
+
+import { makeUpdateUserGridLocation } from "api/profile";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { WithId } from "utils/id";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentTimeInUnixEpoch } from "utils/time";
+
 import { RoomModal } from "./RoomModal";
 import Announcement from "./Announcement";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
-// Utils | Settings | Constants
-import { WithId } from "utils/id";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
-
-// Typings
-import { AvatarGridRoom } from "types/AvatarGrid";
-import { User } from "types/User";
-
-// Styles
 import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
