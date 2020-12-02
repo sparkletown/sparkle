@@ -31,6 +31,8 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
 
+  if (!room.isEnabled) return <></>;
+
   return (
     <div
       className="card card_room"
