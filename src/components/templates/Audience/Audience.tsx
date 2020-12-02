@@ -5,37 +5,36 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import firebase, { UserInfo } from "firebase/app";
+import { useForm } from "react-hook-form";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-// Components
+import firebase, { UserInfo } from "firebase/app";
+import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
+
+import { User } from "types/User";
+
+import { makeUpdateUserGridLocation } from "api/profile";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
+import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
 import {
   EmojiReactionType,
   ExperienceContext,
   Reactions,
   TextReactionType,
 } from "components/context/ExperienceContext";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
-import { useForm } from "react-hook-form";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
-// Utils | Settings | Constants
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
-import { WithId } from "utils/id";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-
-// Typings
-import { User } from "types/User";
-
-// Styles
 import "./Audience.scss";
 
 type ReactionType =
