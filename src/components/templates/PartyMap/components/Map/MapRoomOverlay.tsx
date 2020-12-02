@@ -76,20 +76,6 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   const showRoomTitle =
     showRoomTitleAlways || (showRoomTitleWhenHovered && isRoomHovered);
 
-  // TODO: this is being spread here because the below code modifies it with .push()/etc
-  // const rooms = [...venue.rooms];
-
-  // TODO: what is the intent/purpose of this?
-  // TODO: how do we implement this nicely, and where?
-  // TODO: reinstate this functionality
-  // if (roomHovered) {
-  //   const idx = rooms.findIndex((room) => room.title === roomHovered.title);
-  //   if (idx !== -1) {
-  //     const chosenRoom = rooms.splice(idx, 1);
-  //     rooms.push(chosenRoom[0]);
-  //   }
-  // }
-
   // TODO: what is a better semantic name for this?
   // const onJoinRoom: React.MouseEventHandler = useCallback(
   //   (e) => {
