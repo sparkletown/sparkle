@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 $side-padding: 30px;
 $primary: #005ee5;
 $black: #000000;
@@ -14,11 +16,9 @@ $page-max-width: 1240px;
 
 $sand: #937c63;
 
-$header-z-index: 5;
-
 .navbar.navbar_playa {
   position: fixed;
-  z-index: $header-z-index;
+  z-index: z(header);
   top: 0;
   left: 0;
   width: 100%;

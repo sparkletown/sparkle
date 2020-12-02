@@ -2,7 +2,7 @@
 
 .announcement-container {
   display: block;
-  z-index: 3;
+  z-index: z(announcement);
   position: absolute;
   background: $primary;
   top: 66px;
