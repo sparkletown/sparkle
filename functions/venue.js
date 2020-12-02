@@ -1,3 +1,4 @@
+require("colors");
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
@@ -560,7 +561,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.parentId = data.parentId;
   }
 
-  if (data.showGrid) {
+  if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
     updated.columns = data.columns;
   }
@@ -569,6 +570,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   } else {
     updated.mapBackgroundImageUrl = "";
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
   }
 
   // updated = {
