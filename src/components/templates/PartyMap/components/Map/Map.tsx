@@ -26,7 +26,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import Sidebar from "components/molecules/Sidebar";
 
-import { MapRoomOverlay } from "./MapRoomOverlay";
+import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
 
@@ -258,7 +258,7 @@ export const Map: React.FC<MapProps> = ({
   const roomOverlay = useMemo(
     () =>
       venue.rooms.map((room) => (
-        <MapRoomOverlay
+        <MapRoom
           // TODO: is room.title unique? Is there something better we can use for the key?
           key={room.title}
           venue={venue}

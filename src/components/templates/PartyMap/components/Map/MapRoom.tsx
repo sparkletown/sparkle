@@ -13,16 +13,16 @@ import { useDispatch } from "hooks/useDispatch";
 
 import RoomAttendance from "../RoomAttendance";
 
-import "./MapRoomOverlay.scss";
+import "./MapRoom.scss";
 
-interface MapRoomOverlayProps {
+interface MapRoomProps {
   venue: PartyMapVenue;
   room: PartyMapRoomData;
   isSelected: boolean;
   selectRoom: () => void;
 }
 
-export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
+export const MapRoom: React.FC<MapRoomProps> = ({
   venue,
   room,
   isSelected,
