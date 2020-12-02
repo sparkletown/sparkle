@@ -37,21 +37,9 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   // const isRoomExternal = isExternalUrl(room.url);
   // const currentRoomUrl = getRoomUrl(room.url);
 
-  // TODO: do we still need this?
-  // const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
-  // TODO: do we need the whole room object? Can we just roll this logic into whatever is setting roomClicked, then rename above to isRoomClicked?
-  // const isThisRoomClicked = roomClicked === room.title;
-
-  // TODO: I think this may be intended to toggle 'clicked' for a room, do we need to separately keep track of 'clicked'? Or is it the same as selecting the room?
   // TODO: what is a better semantic name for this?
   const onClick1 = useCallback(() => {
-    // if (!IS_BURN) {
     selectRoom(room);
-    // } else {
-    // setRoomClicked((prevRoomClicked) =>
-    //   prevRoomClicked === room.title ? undefined : room.title
-    // );
-    // }
   }, [room, selectRoom]);
 
   // TODO: this was used in place of onClick1 in PartyMap Map before I merged them, is it correct? Or is the onClick1 definition above?
@@ -148,8 +136,6 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
       onMouseEnter={handleRoomHovered}
       onMouseLeave={handleRoomUnhovered}
     >
-      {/* TODO: this is what Camp's version had: <div className={`camp-venue ${isThisRoomClicked ? "clicked" : ""}`}>*/}
-      {/*<div className={`camp-venue ${isSelectedRoom ? "clicked" : ""}`}>*/}
       {/* TODO: is this needed here anymore? */}
       {/*<div className={`grid-room-btn ${isSelectedRoom && "isUnderneath"}`}>*/}
       {/*  <div*/}
