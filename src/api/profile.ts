@@ -14,7 +14,10 @@ export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
   profileData,
-}: MakeUpdateUserGridLocationProps) => (row?: number, column?: number) => {
+}: MakeUpdateUserGridLocationProps) => (
+  row: number | null,
+  column: number | null
+) => {
   if (!userUid || !venueId || !profileData) return;
 
   const doc = `users/${userUid}`;
