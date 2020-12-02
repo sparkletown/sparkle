@@ -109,6 +109,11 @@ export function getHoursAgoInSeconds(hours) {
   return new Date().getTime() / 1000 - hours * 60 * 60;
 }
 
+/**
+ * @deprecated this doesn't get the current time, it is a static const
+ * @see getCurrentTimeInUTCSeconds
+ * @debt cleanup all places that are using this
+ */
 export const currentTimeInUnixEpoch = new Date().getTime() / 1000;
 
 export function getDaysAgoInSeconds(days) {
