@@ -13,9 +13,6 @@ export const MovementKeys = {
   enter: ["enter"],
 };
 
-// TODO: this doesnt seem to be used, can we remove it?
-// export const MOVEMENT_INTERVAL = 350;
-
 interface UseKeyboardControlsProps {
   venueId: string;
   totalRows: number;
@@ -23,7 +20,6 @@ interface UseKeyboardControlsProps {
   isSeatTaken: (row: number, column: number) => boolean;
   takeSeat: (row: number | null, column: number | null) => void;
   enterSelectedRoom: () => void;
-  onMove?: () => void; // TODO: this doesnt seem to be needed anymore, can we remove it?
 }
 
 // TODO: use e.preventDefault() or return false or similar in the keyboard handlers (check mousetrap docs) so we don't scroll on arrow key presses
@@ -36,7 +32,6 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   isSeatTaken,
   takeSeat,
   enterSelectedRoom,
-  onMove,
 }) => {
   const { profile } = useUser();
   const { row, column } = profile?.data?.[venueId] ?? {};
@@ -66,8 +61,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
     if (row - 1 < 1 || isSeatTaken(row - 1, column)) return;
 
     takeSeat(row - 1, column);
-    onMove && onMove(); // TODO: do we need this here anymore?
-  }, [row, column, isSeatTaken, takeSeat, onMove]);
+  }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.up,
@@ -84,8 +78,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
     if (row + 1 > totalRows || isSeatTaken(row + 1, column)) return;
 
     takeSeat(row + 1, column);
-    onMove && onMove(); // TODO: do we need this here anymore?
-  }, [row, column, totalRows, isSeatTaken, takeSeat, onMove]);
+  }, [row, column, totalRows, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.down,
@@ -102,8 +95,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
     if (column - 1 < 1 || isSeatTaken(row, column - 1)) return;
 
     takeSeat(row, column - 1);
-    onMove && onMove(); // TODO: do we need this here anymore?
-  }, [row, column, isSeatTaken, takeSeat, onMove]);
+  }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.left,
@@ -120,8 +112,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
     if (column + 1 > totalColumns || isSeatTaken(row, column + 1)) return;
 
     takeSeat(row, column + 1);
-    onMove && onMove(); // TODO: do we need this here anymore?
-  }, [row, column, totalColumns, isSeatTaken, takeSeat, onMove]);
+  }, [row, column, totalColumns, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.right,
