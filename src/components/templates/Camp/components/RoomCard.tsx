@@ -4,10 +4,10 @@ import { formatUtcSeconds } from "utils/time";
 import { useSelector } from "hooks/useSelector";
 import { getCurrentEvent } from "utils/event";
 import "components/templates/PartyMap/components/RoomCard/RoomCard.scss";
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 interface PropsType {
-  room: CampRoomData;
+  room: PartyMapRoomData;
   attendance?: number;
   onClick: () => void;
 }

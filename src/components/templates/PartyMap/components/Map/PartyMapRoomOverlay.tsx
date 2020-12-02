@@ -4,7 +4,7 @@ import { retainAttendance } from "store/actions/Attendance";
 
 import { Attendances } from "types/Attendances";
 import { PartyMapVenue } from "types/PartyMapVenue";
-import { CampRoomData, PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoomData, PartyMapRoomData } from "types/RoomData";
 import { RoomVisibility } from "types/Venue";
 
 import { isTruthy } from "utils/types";
@@ -22,7 +22,7 @@ interface PartyMapRoomOverlayProps {
   venue: PartyMapVenue;
   attendances: Attendances;
   selectedRoom?: PartyMapRoomData;
-  selectRoom: (room: CampRoomData) => void;
+  selectRoom: (room: PartyMapRoomData) => void;
   unselectRoom: () => void;
 }
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
 import { isVenueWithRooms } from "types/CampVenue";
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 import { canHaveSubvenues } from "utils/venue";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
@@ -38,7 +38,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         </div>
       </div>
       {rooms &&
-        rooms.map((room: CampRoomData, idx: number) => (
+        rooms.map((room: PartyMapRoomData, idx: number) => (
           <AdminVenueRoomDetails
             key={idx}
             index={idx}

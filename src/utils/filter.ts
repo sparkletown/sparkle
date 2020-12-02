@@ -1,4 +1,4 @@
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { isWithinBounds } from "./isWithinBounds";
 
@@ -47,7 +47,7 @@ export const makeCampRoomHitFilter = ({
   column,
   totalRows,
   totalColumns,
-}: RoomHitFilterProps) => (room: CampRoomData) => {
+}: RoomHitFilterProps) => (room: PartyMapRoomData) => {
   const checkPercentRow = (row / totalRows) * 100;
   const checkPercentColumn = (column / totalColumns) * 100;
 

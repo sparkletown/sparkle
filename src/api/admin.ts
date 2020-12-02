@@ -3,7 +3,7 @@ import _ from "lodash";
 import firebase, { UserInfo } from "firebase/app";
 
 import { VenueEvent } from "types/VenueEvent";
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 import { VenuePlacement } from "types/Venue";
 
 export interface EventInput {
@@ -43,7 +43,7 @@ type RoomImageUrlKeys = "image_url";
 type VenueImageUrls = Partial<Record<VenueImageUrlKeys, string>>;
 type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
-export type RoomInput = Omit<CampRoomData, "image_url"> & {
+export type RoomInput = Omit<PartyMapRoomData, "image_url"> & {
   image_url?: string;
   image_file?: FileList;
 };
@@ -60,7 +60,7 @@ export type VenueInput = AdvancedVenueInput &
     zoomUrl?: string;
     iframeUrl?: string;
     template: string;
-    rooms?: Array<CampRoomData>;
+    rooms?: Array<PartyMapRoomData>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
     adultContent: boolean;

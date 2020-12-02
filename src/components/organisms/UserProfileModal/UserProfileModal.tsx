@@ -7,7 +7,7 @@ import {
   orderedVenuesSelector,
 } from "utils/selectors";
 
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { useUser } from "hooks/useUser";
 
@@ -248,7 +248,7 @@ const findVenueAndRoomByName = (
   };
 };
 
-const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
+const getLocationLink = (venue: WithId<AnyVenue>, room?: PartyMapRoomData) => {
   if (venue.name === PLAYA_VENUE_NAME) {
     return venueInsideUrl(venue.id);
   }

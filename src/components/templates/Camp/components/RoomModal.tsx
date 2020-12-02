@@ -11,7 +11,7 @@ import {
 } from "utils/selectors";
 import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
 
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -26,7 +26,7 @@ import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
-  room: CampRoomData | undefined;
+  room: PartyMapRoomData | undefined;
   joinButtonText?: string;
 }
 

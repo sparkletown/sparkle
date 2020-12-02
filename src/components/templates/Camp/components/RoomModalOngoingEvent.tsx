@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";
@@ -13,7 +13,7 @@ import { useDispatch } from "hooks/useDispatch";
 import "../../../templates/PartyMap/components/RoomModalOngoingEvent/RoomModalOngoingEvent.scss";
 
 interface RoomModalOngoingEventProps {
-  room: CampRoomData;
+  room: PartyMapRoomData;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
   joinButtonText?: string;

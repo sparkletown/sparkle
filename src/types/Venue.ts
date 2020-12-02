@@ -3,7 +3,7 @@ import { FormValues } from "pages/Admin/Venue/DetailsForm";
 import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { CampRoomData, RoomData } from "./RoomData";
+import { PartyMapRoomData, RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
@@ -20,7 +20,7 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
-export type AnyRoom = RoomData | CampRoomData;
+export type AnyRoom = RoomData | PartyMapRoomData;
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {

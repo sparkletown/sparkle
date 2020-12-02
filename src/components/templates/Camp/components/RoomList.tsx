@@ -1,6 +1,6 @@
 import React from "react";
 
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import RoomCard from "./RoomCard";
 
@@ -9,9 +9,9 @@ import { useSelector } from "hooks/useSelector";
 import { currentVenueSelector } from "utils/selectors";
 
 interface PropsType {
-  rooms: CampRoomData[];
+  rooms: PartyMapRoomData[];
   attendances: Record<string, number>;
-  setSelectedRoom: (value: CampRoomData) => void;
+  setSelectedRoom: (value: PartyMapRoomData) => void;
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
@@ -23,7 +23,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
 }) => {
   const venue = useSelector(currentVenueSelector);
 
-  const openModal = (room: CampRoomData) => {
+  const openModal = (room: PartyMapRoomData) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
   };

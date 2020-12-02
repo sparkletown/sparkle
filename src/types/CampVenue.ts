@@ -3,7 +3,7 @@ import { VenueTemplate } from "./VenueTemplate";
 import { AnyVenue } from "./Firestore";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { HAS_ROOMS_TEMPLATES } from "settings";
-import { CampRoomData } from "./RoomData";
+import { PartyMapRoomData } from "./RoomData";
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
 export interface CampVenue extends Venue {
@@ -22,7 +22,7 @@ export interface CampVenue extends Venue {
   name: string;
   map_url: string;
   owners: string[];
-  rooms: CampRoomData[];
+  rooms: PartyMapRoomData[];
   activity?: string;
   showChat?: boolean;
   joinButtonText?: string;

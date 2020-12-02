@@ -2,7 +2,7 @@ import React from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
 import { Venue } from "types/Venue";
-import { CampRoomData } from "types/RoomData";
+import { PartyMapRoomData } from "types/RoomData";
 import { WithId } from "utils/id";
 import "./Admin.scss";
 import { RoomInput, upsertRoom } from "api/admin";
@@ -13,7 +13,7 @@ import VenueEventDetails from "./VenueEventDetails";
 interface Props {
   index: number;
   venue: WithId<Venue>;
-  room: CampRoomData;
+  room: PartyMapRoomData;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
