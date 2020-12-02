@@ -17,7 +17,7 @@ import {
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -65,7 +65,7 @@ export const RoomModal: React.FC<PropsType> = ({
   const enter = () => {
     room &&
       user &&
-      enterRoom(
+      trackRoomEntered(
         user,
         { [`${venueName}/${room.title}`]: currentTimeInUnixEpoch },
         profile?.lastSeenIn

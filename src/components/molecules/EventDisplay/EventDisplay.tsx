@@ -9,7 +9,7 @@ import {
 } from "utils/time";
 import { WithId } from "utils/id";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";
 
@@ -33,7 +33,7 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
       return;
     }
 
-    enterRoom(
+    trackRoomEntered(
       user!,
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
       profile?.lastSeenIn

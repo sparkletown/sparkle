@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { PartyMapRoomData } from "types/RoomData";
 
 import { getCurrentEvent } from "utils/event";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import {
   currentVenueSelector,
   orderedVenuesSelector,
@@ -55,7 +55,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       : {};
     room &&
       user &&
-      enterRoom(
+      trackRoomEntered(
         user,
         {
           [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch,

@@ -17,7 +17,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 import { currentTimeInUnixEpoch } from "utils/time";
 
@@ -51,7 +51,7 @@ const AvatarGrid = () => {
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
       if (room && user) {
-        enterRoom(
+        trackRoomEntered(
           user,
           { [`${venue?.name}/${room.title}`]: currentTimeInUnixEpoch },
           profile?.lastSeenIn

@@ -4,7 +4,7 @@ import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 
 import { currentTimeInUnixEpoch, formatHourAndMinute } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 
@@ -25,7 +25,7 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
       return;
     }
 
-    enterRoom(
+    trackRoomEntered(
       user!,
       { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
       profile?.lastSeenIn

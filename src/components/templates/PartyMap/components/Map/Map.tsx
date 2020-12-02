@@ -6,7 +6,7 @@ import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
 
 import { currentTimeInUnixEpoch } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { hasElements, isTruthy } from "utils/types";
 import { makeCampRoomHitFilter } from "utils/filter";
 import { openRoomUrl } from "utils/url";
@@ -194,7 +194,7 @@ export const Map: React.FC<MapProps> = ({
         ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
       };
 
-      enterRoom(user, roomName, profile?.lastSeenIn);
+      trackRoomEntered(user, roomName, profile?.lastSeenIn);
 
       // TODO: this is how it was here before I merged Camp's Map. Which is correct?
       openRoomUrl(room.url);

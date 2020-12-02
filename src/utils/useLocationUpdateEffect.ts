@@ -33,7 +33,7 @@ export const updateLocationData = (
 };
 
 // get Profile from the firebase
-export const enterRoom = (
+export const trackRoomEntered = (
   user: UserInfo,
   roomName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
