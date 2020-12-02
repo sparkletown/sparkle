@@ -1,21 +1,16 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FirebaseReducer } from "react-redux-firebase";
 
-import { User } from "types/User";
+import { User, UserExperienceData } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { currentTimeInUnixEpoch } from "utils/time";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { hasElements, isTruthy } from "utils/types";
 import { makeRoomHitFilter } from "utils/filter";
-import { openRoomUrl } from "utils/url";
-import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 
 // @debt refactor these hooks into somewhere more sensible
@@ -35,29 +30,32 @@ export const DEFAULT_COLUMNS = 40;
 export const DEFAULT_ROWS = 25;
 
 interface MapProps {
+  user: FirebaseReducer.AuthState;
+  profileData: UserExperienceData;
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
   selectedRoom: PartyMapRoomData | undefined;
   selectRoom: (room: PartyMapRoomData) => void;
   unselectRoom: () => void;
+  enterSelectedRoom: () => void;
 }
 
 export const Map: React.FC<MapProps> = ({
+  user,
+  profileData,
   venue,
   partygoers,
   selectedRoom,
   selectRoom,
   unselectRoom,
+  enterSelectedRoom,
 }) => {
-  const { user, profile } = useUser();
-
   const venueId = venue.id;
+  const userUid = user?.uid;
+  const showGrid = venue.showGrid;
 
   const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
   const [totalRows, setTotalRows] = useState<number>(0);
-
-  // const templateColumns = venue.showGrid ? totalColumns : DEFAULT_COLUMNS;
-  // const templateRows = venue.showGrid ? totalRows : DEFAULT_ROWS;
 
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
@@ -84,15 +82,14 @@ export const Map: React.FC<MapProps> = ({
       makeUpdateUserGridLocation({
         venueId,
         userUid: user?.uid,
-        profileData: profile?.data,
+        profileData,
       })(row, column);
     },
-    [profile, user, venueId]
+    [profileData, user, venueId]
   );
 
-  const currentPosition = profile?.data?.[venue.id];
+  const currentPosition = profileData?.[venue.id];
 
-  // TODO: can we get rid of this in favour of just using roomsHit?
   const checkForRoomHit = useCallback(
     (row: number, column: number) => {
       const roomHitFilter = makeRoomHitFilter({
@@ -102,17 +99,11 @@ export const Map: React.FC<MapProps> = ({
         totalColumns: totalColumns,
       });
 
-      // TODO: this will run through all of the rooms, but the logic looks like we want to stop at the first
-      //   if so, could use .find() instead?
-      venue.rooms.filter(roomHitFilter).forEach((room) => {
-        selectRoom(room);
-      });
-
-      // TODO: MISS
-      //   if (selectedRoom) {
-      //     unselectRoom() ?
-      //     //setSelectedRoom(undefined);
-      //   }
+      // Only select the first room if we hit multiple (eg. overlapping)
+      const roomHit = venue.rooms.find(roomHitFilter);
+      if (roomHit) {
+        selectRoom(roomHit);
+      }
     },
     [selectRoom, totalColumns, totalRows, venue.rooms]
   );
@@ -122,7 +113,6 @@ export const Map: React.FC<MapProps> = ({
 
     const { row, column } = currentPosition;
 
-    //TODO: Move filter ouside and change name to something generic
     const roomHitFilter = makeRoomHitFilter({
       row,
       column,
@@ -134,21 +124,21 @@ export const Map: React.FC<MapProps> = ({
   }, [currentPosition, totalRows, totalColumns, venue.rooms]);
 
   useEffect(() => {
-    // TODO: we probably only want to call this once.. so could make it .find(), would only hit multiple if rooms overlap
-    hasElements(roomsHit)
-      ? roomsHit.forEach((room) => {
-          selectRoom(room);
-        })
-      : unselectRoom();
+    if (hasElements(roomsHit)) {
+      // Only select the first room if we hit multiple (eg. overlapping)
+      roomsHit.slice(0, 1).forEach((room) => {
+        selectRoom(room);
+      });
+    } else {
+      unselectRoom();
+    }
   }, [roomsHit, selectRoom, unselectRoom]);
 
-  // TODO: make this take WithId<User> | undefined instead of null?
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
         takeSeat(row, column);
       } else {
-        // TODO: do we need to do this here? I think our roomsHit/useEffect logic might catch/handle it anyway?
         checkForRoomHit(row, column);
       }
     },
@@ -159,37 +149,6 @@ export const Map: React.FC<MapProps> = ({
     venueId,
     partygoers: partygoers ?? [], // TODO: we shouldn't have to handle undefined here.. but this may be an issue with our types
   });
-
-  const venues = useSelector(orderedVenuesSelector);
-  const enterPartyMapRoom = useCallback(
-    (room: PartyMapRoomData) => {
-      if (!room || !user) return;
-
-      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
-      const roomVenue = venues?.find((venue) =>
-        room.url.endsWith(`/${venue.id}`)
-      );
-
-      // TODO: note that currentTimeInUnixEpoch is a const set once when app loads, not the actual current time. Is that correct?
-      const roomName = {
-        [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
-        ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
-      };
-
-      trackRoomEntered(user, roomName, profile?.lastSeenIn);
-
-      // TODO: this is how it was here before I merged Camp's Map. Which is correct?
-      openRoomUrl(room.url);
-    },
-    [profile, user, venue, venues]
-  );
-
-  // TODO: can we move this into PartyMap or similar?
-  const enterSelectedRoom = useCallback(() => {
-    if (!selectedRoom) return;
-
-    enterPartyMapRoom(selectedRoom);
-  }, [enterPartyMapRoom, selectedRoom]);
 
   useKeyboardControls({
     venueId,
@@ -204,17 +163,12 @@ export const Map: React.FC<MapProps> = ({
     WithId<User>
   >();
 
-  // TODO: do we want a 'selectUserProfile' here?
-
   const deselectUserProfile = useCallback(
     () => setSelectedUserProfile(undefined),
     []
   );
 
   const isUserProfileSelected = isTruthy(selectedUserProfile);
-
-  const userUid = user?.uid;
-  const showGrid = venue.showGrid;
 
   const mapGrid = useMapGrid({
     showGrid,
@@ -239,10 +193,9 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms.map((room) => (
+      venue.rooms.map((room, index) => (
         <MapRoom
-          // TODO: is room.title unique? Is there something better we can use for the key?
-          key={room.title}
+          key={index}
           venue={venue}
           room={room}
           isSelected={room === selectedRoom}
@@ -252,27 +205,22 @@ export const Map: React.FC<MapProps> = ({
     [selectRoom, selectedRoom, venue]
   );
 
+  const gridContainerStyles = useMemo(
+    () => ({
+      gridTemplateColumns: `repeat(${totalColumns}, calc(100% / ${totalColumns}))`,
+      gridTemplateRows: `repeat(${totalRows}, 1fr)`,
+    }),
+    [totalColumns, totalRows]
+  );
+
   if (!user || !venue) {
     return <>Loading map...</>;
   }
-
-  // TODO: this was the old way we were adding the map background, now we're using img below. Is that what we want?
-  // <div
-  //     className="camp-grid-container"
-  //     style={{
-  //       backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
-  //       backgroundSize: "cover",
-  //       display: "grid",
-  //       gridTemplateColumns: `repeat(${templateColumns}, calc(100% / ${templateColumns}))`,
-  //       gridTemplateRows: `repeat(${templateRows}, 1fr)`,
-  //     }}
-  // >
 
   return (
     <div className="party-map-content-container">
       <div className="party-map-container">
         <div className="party-map-content">
-          {/* TODO: do we want to use img here? see above code snippet from the old Camp Map template */}
           <img
             width="100%"
             className="party-map-background"
@@ -280,27 +228,17 @@ export const Map: React.FC<MapProps> = ({
             alt=""
           />
 
-          {/* TODO: this wrapping div wasn't present in the Camp Map component. How does it change what we're doing in mapGrid? */}
-          <div
-            className="party-map-grid-container"
-            // TODO: extract this into a memo'd const so it doesn't cause re-renders
-            style={{
-              gridTemplateColumns: `repeat(${totalColumns}, calc(100% / ${totalColumns}))`,
-              gridTemplateRows: `repeat(${totalRows}, 1fr)`,
-            }}
-          >
+          <div className="party-map-grid-container" style={gridContainerStyles}>
             {mapGrid}
             {partygoersOverlay}
             {roomOverlay}
           </div>
 
-          {isUserProfileSelected && (
-            <UserProfileModal
-              onHide={deselectUserProfile}
-              show={isUserProfileSelected} // TODO: do we need this param here if we're checking it before rendering anyway?
-              userProfile={selectedUserProfile}
-            />
-          )}
+          <UserProfileModal
+            userProfile={selectedUserProfile}
+            show={isUserProfileSelected}
+            onHide={deselectUserProfile}
+          />
         </div>
       </div>
 

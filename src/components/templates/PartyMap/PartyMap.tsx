@@ -9,6 +9,12 @@ import { PartyMapRoomData } from "types/RoomData";
 
 import { useVenueRecentPartygoers } from "hooks/useVenueRecentPartygoers";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import { orderedVenuesSelector } from "utils/selectors";
+import { getCurrentTimeInUTCSeconds } from "utils/time";
+import { openRoomUrl } from "utils/url";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 import { Map, RoomModal } from "./components";
 
@@ -21,7 +27,9 @@ const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
+  const { user, profile } = useUser();
   const currentVenue = useSelector(partyMapVenueSelector);
+  const venues = useSelector(orderedVenuesSelector);
 
   // TODO: can we just make this a boolean that is set from isTruthy(selectedRoom)?
   const [isRoomModalOpen, setRoomModalOpen] = useState(false);
@@ -35,18 +43,38 @@ export const PartyMap: React.FC = () => {
   }, []);
 
   const unselectRoom = useCallback(() => {
-    // TODO: should we rework this so we only unselect if it matches? To prevent race conditions?
-    // setRoomClicked((prevRoomClicked) =>
-    //   prevRoomClicked === room.title ? undefined : room.title
-    // );
     setSelectedRoom(undefined);
     setRoomModalOpen(false);
   }, []);
 
-  // TODO: can we get rid of this in favour of unselectRoom?
-  const closeRoomModal = useCallback(() => {
-    setRoomModalOpen(false);
-  }, []);
+  // TODO: extract this into a reusable hook/similar
+  const enterRoom = useCallback(
+    (room: PartyMapRoomData) => {
+      if (!room || !user) return;
+
+      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
+      const roomVenue = venues?.find((venue) =>
+        room.url.endsWith(`/${venue.id}`)
+      );
+
+      const nowInUTCSeconds = getCurrentTimeInUTCSeconds();
+
+      const roomName = {
+        [`${currentVenue.name}/${room.title}`]: nowInUTCSeconds,
+        ...(roomVenue ? { [currentVenue.name]: nowInUTCSeconds } : {}),
+      };
+
+      trackRoomEntered(user, roomName, profile?.lastSeenIn);
+      openRoomUrl(room.url);
+    },
+    [profile, user, currentVenue, venues]
+  );
+
+  const enterSelectedRoom = useCallback(() => {
+    if (!selectedRoom) return;
+
+    enterRoom(selectedRoom);
+  }, [enterRoom, selectedRoom]);
 
   // Find current room from url
   const { roomTitle } = useParams();
@@ -70,6 +98,8 @@ export const PartyMap: React.FC = () => {
 
   // TODO: do we need this?
   // const [showEventSchedule, setShowEventSchedule] = useState(false);
+
+  if (!user || !profile?.data) return <>Loading..</>;
 
   return (
     <>
@@ -116,11 +146,14 @@ export const PartyMap: React.FC = () => {
         {/*</div>*/}
 
         <Map
+          user={user}
+          profileData={profile.data}
           venue={currentVenue}
           partygoers={usersInVenue}
           selectedRoom={selectedRoom}
           selectRoom={selectRoom}
           unselectRoom={unselectRoom}
+          enterSelectedRoom={enterSelectedRoom}
         />
 
         {/* TODO: should this still be here on the partymap? */}
@@ -138,8 +171,7 @@ export const PartyMap: React.FC = () => {
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
-          onHide={closeRoomModal}
-          // joinButtonText={currentVenue.joinButtonText} // TODO: this existed on Camp, is it just a deficiency in our types that it doesn't exist on  PartyMapVenue?
+          onHide={unselectRoom}
         />
 
         {/* TODO: should this still be here on the partymap? */}
