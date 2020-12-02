@@ -111,7 +111,10 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
 ];
 
-export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+export const BACKGROUND_IMG_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
 
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,

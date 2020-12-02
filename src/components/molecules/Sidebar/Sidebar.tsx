@@ -3,8 +3,9 @@ import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
 
+import { filterUnreadPrivateChats } from "utils/filter";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
-import { hasElements } from "utils/types";
+import { hasElements, isTruthy } from "utils/types";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -12,6 +13,7 @@ import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
 import { chatSort } from "components/context/ChatContext";
+import { useUser } from "hooks/useUser";
 
 enum TABS {
   PARTY_CHAT = 0,
@@ -27,10 +29,13 @@ const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
   arr.indexOf(userId) === index;
 
 const Sidebar = () => {
+  const { user } = useUser();
   const [tab, setTab] = useState(0);
   const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const isEnabled = chatUsers && privateChats;
+  const unreadMessages = filterUnreadPrivateChats(privateChats, user);
+  const hasUnreadMessages = isTruthy(unreadMessages.length);
 
   // Create new array because privateChats is read only and cannot be sorted.
   // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
@@ -83,12 +88,13 @@ const Sidebar = () => {
         </div>
         <div
           className={`sidebar-tab sidebar-tab_private ${
-            tab === TABS.PRIVATE_CHAT && "active"
-          }`}
+            hasUnreadMessages && "notification"
+          } ${tab === TABS.PRIVATE_CHAT && "active"}`}
           onClick={selectPrivateChatTab}
         >
           Messages
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_schedule ${
             tab === TABS.LIVE_SCHEDULE && "active"

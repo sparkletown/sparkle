@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { isEmpty } from "lodash";
+import { formatDistanceToNow } from "date-fns";
 
 import { DEFAULT_PARTY_NAME, VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -14,6 +15,7 @@ import { User } from "types/User";
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -42,7 +44,7 @@ const noopHandler = () => {};
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const privateChats = useSelector(privateChatsSelector);
-  const chatUsers = useSelector(chatUsersSelector);
+  const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
@@ -138,25 +140,29 @@ const ChatsList: React.FunctionComponent = () => {
         <div className="private-chat-user">
           Chatting with: {selectedUser.partyName}
         </div>
-        <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
+        <ChatBox
+          usersById={chatUsers}
+          chats={chatsToDisplay}
+          onMessageSubmit={submitMessage}
+        />
       </Fragment>
     );
   }
 
   return (
     <Fragment>
+      <UserSearchBar onSelect={setSelectedUser} />
       {hasPrivateChats && (
         <div className="private-container show">
           <div className="private-messages-list">
-            <UserSearchBar onSelect={setSelectedUser} />
             {discussions.map((userId: string) => {
               const sender = { ...chatUsers![userId], id: userId };
               const lastMessageExchanged =
                 discussionPartnerWithLastMessageExchanged?.[userId];
+              const isUnreadMessage = !isTruthy(lastMessageExchanged.isRead);
               const profileName = sender.anonMode
                 ? DEFAULT_PARTY_NAME
                 : sender.partyName;
-
               return (
                 <div
                   key={userId}
@@ -170,15 +176,32 @@ const ChatsList: React.FunctionComponent = () => {
                     setSelectedUserProfile={noopHandler}
                   />
                   <div className="private-message-content">
-                    <div className="private-message-author">{profileName}</div>
-                    <div className="private-message-last">
+                    <div
+                      className={`private-message-author ${
+                        isUnreadMessage && "unread"
+                      }`}
+                    >
+                      {profileName}
+                    </div>
+                    <div
+                      className={`private-message-last ${
+                        isUnreadMessage && "unread"
+                      }`}
+                    >
                       {lastMessageExchanged.text}
                     </div>
                   </div>
-                  {lastMessageExchanged.from !== user?.uid &&
-                    !lastMessageExchanged.isRead && (
-                      <div className="not-read-indicator" />
-                    )}
+                  {lastMessageExchanged.from !== user?.uid && (
+                    <div
+                      className={`private-message-time ${
+                        isUnreadMessage && "unread"
+                      }`}
+                    >
+                      {formatDistanceToNow(
+                        lastMessageExchanged.ts_utc.toDate()
+                      )}
+                    </div>
+                  )}
                 </div>
               );
             })}
