@@ -68,7 +68,7 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
   const width = room.width_percent;
   const height = room.height_percent;
 
-  if (!room.isEnabled) return <></>;
+  if (!room.isEnabled) return null;
 
   return (
     <div

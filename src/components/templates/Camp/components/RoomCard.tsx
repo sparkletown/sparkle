@@ -21,7 +21,7 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     (state) => state.firestore.ordered.venueEvents
   );
 
-  if (!venueEvents) return <></>;
+  if (!venueEvents || !room.isEnabled) return null;
 
   const roomEvents = venueEvents.filter((event) => event.room === room.title);
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
@@ -30,8 +30,6 @@ const RoomCard: React.FunctionComponent<PropsType> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
-
-  if (!room.isEnabled) return <></>;
 
   return (
     <div
