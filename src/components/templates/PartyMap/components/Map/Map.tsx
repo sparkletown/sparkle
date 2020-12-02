@@ -9,7 +9,7 @@ import { makeUpdateUserGridLocation } from "api/profile";
 import { currentTimeInUnixEpoch } from "utils/time";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { hasElements, isTruthy } from "utils/types";
-import { makeCampRoomHitFilter } from "utils/filter";
+import { makeRoomHitFilter } from "utils/filter";
 import { openRoomUrl } from "utils/url";
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
@@ -95,7 +95,7 @@ export const Map: React.FC<MapProps> = ({
   // TODO: can we get rid of this in favour of just using roomsHit?
   const checkForRoomHit = useCallback(
     (row: number, column: number) => {
-      const roomHitFilter = makeCampRoomHitFilter({
+      const roomHitFilter = makeRoomHitFilter({
         row,
         column,
         totalRows,
@@ -123,7 +123,7 @@ export const Map: React.FC<MapProps> = ({
     const { row, column } = currentPosition;
 
     //TODO: Move filter ouside and change name to something generic
-    const roomHitFilter = makeCampRoomHitFilter({
+    const roomHitFilter = makeRoomHitFilter({
       row,
       column,
       totalRows,
