@@ -13,7 +13,7 @@ import { useDispatch } from "hooks/useDispatch";
 
 import RoomAttendance from "../RoomAttendance";
 
-interface PartyMapRoomOverlayProps {
+interface MapRoomOverlayProps {
   // Passed down from Map component
   room: PartyMapRoomData;
   enterRoom: (room: PartyMapRoomData) => void;
@@ -26,7 +26,7 @@ interface PartyMapRoomOverlayProps {
   unselectRoom: () => void;
 }
 
-export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
+export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   room,
   venue,
   attendances,
