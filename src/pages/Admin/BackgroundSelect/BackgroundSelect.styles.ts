@@ -13,7 +13,6 @@ export const Wrapper = styled.div<WrapperProps>`
 
   position: relative;
 
-  border-radius: 1.8rem;
   background-size: cover;
   background-color: #1a1d24;
   background-image: url(${({ backgroundUrl }) => backgroundUrl ?? ""});
@@ -48,5 +47,4 @@ export const Image = styled.img.attrs({
   alt: "Map background",
 })`
   width: 100%;
-  border-radius: ${(props) => props.theme.dimensions.borderRadius};
 `;

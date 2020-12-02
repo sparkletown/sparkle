@@ -5,7 +5,6 @@ import { updateVenue_v2 } from "api/admin";
 
 // Components
 import FileButton from "components/atoms/FileButton";
-import Legend from "components/atoms/Legend";
 
 // Hooks
 import { useUser } from "hooks/useUser";
@@ -36,32 +35,8 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     );
   };
 
-  const handleBackgroundRemove = () => {
-    if (!user) return;
-
-    return updateVenue_v2(
-      {
-        name: venueName,
-        mapBackgroundImageUrl: "",
-      },
-      user
-    );
-  };
-
   return (
-    <S.Wrapper
-      // backgroundUrl={mapBackground}
-      hasImage={!!mapBackground}
-    >
-      <Legend text={`${venueName}'s Map`} />
-      {!!mapBackground && (
-        <Legend
-          text="Remove background"
-          position="right"
-          onClick={() => handleBackgroundRemove()}
-        />
-      )}
-
+    <S.Wrapper hasImage={!!mapBackground}>
       {!mapBackground && (
         <>
           <FileButton onChange={handleUpload} />
