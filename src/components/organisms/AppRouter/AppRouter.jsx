@@ -20,9 +20,10 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
-import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
+import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
+import { VersionPage } from "pages/VersionPage/VersionPage";
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
@@ -58,6 +59,7 @@ const AppRouter = () => {
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId" component={VenuePage} />
+        <Route path="/version" component={VersionPage} />
         <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"
