@@ -218,7 +218,7 @@ $border-radius: 28px;
   }
 }
 
-.room.isUnderneath {
+.room.selected-room {
   background-color: rgba($white, 0.8);
   box-shadow: inset 0 0 0 0 $white, 0 0 30px 30px rgba($white, 0.8);
 }

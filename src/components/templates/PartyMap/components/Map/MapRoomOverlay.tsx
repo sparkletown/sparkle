@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -111,7 +112,9 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
 
   return (
     <div
-      className={`room position-absolute ${isSelectedRoom && "isUnderneath"}`}
+      className={classNames("room position-absolute", {
+        "room-selected": isSelectedRoom,
+      })}
       style={containerStyles}
       // TODO: is this unique? Do we even need a key here since we're not directly inside a loop?
       // key={room.title}
