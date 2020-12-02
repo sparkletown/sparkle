@@ -96,7 +96,7 @@ $primary: #005ee5;
 
 .private-messages-empty {
   width: 100%;
-  height: calc(100% - 180px);
+  height: calc(100% - #{$chat-input-height + $footer-height});
   flex-grow: 1;
   display: flex;
   align-items: center;

@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
 .sidebar-container .schedule-container {
-  height: calc(100% - 180px);
+  height: calc(100% - #{$chat-input-height + $footer-height});
   flex-direction: column;
   display: none;
   overflow-y: scroll;
