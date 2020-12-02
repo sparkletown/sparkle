@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import firebase from "firebase/app";
 
-import { Attendances } from "types/Attendances";
 import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
@@ -37,7 +36,6 @@ export const DEFAULT_ROWS = 25;
 interface MapProps {
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
-  attendances: Attendances;
   selectedRoom: PartyMapRoomData | undefined;
   selectRoom: (room: PartyMapRoomData) => void;
   unselectRoom: () => void;
@@ -46,7 +44,6 @@ interface MapProps {
 export const Map: React.FC<MapProps> = ({
   venue,
   partygoers,
-  attendances,
   selectedRoom,
   selectRoom,
   unselectRoom,
@@ -267,14 +264,13 @@ export const Map: React.FC<MapProps> = ({
           key={room.title}
           venue={venue}
           room={room}
-          attendances={attendances}
           enterRoom={enterPartyMapRoom}
           selectRoom={selectRoom}
           unselectRoom={unselectRoom}
           // // onEnterRoom={enterPartyMapRoom}
         />
       )),
-    [attendances, enterPartyMapRoom, selectRoom, unselectRoom, venue]
+    [enterPartyMapRoom, selectRoom, unselectRoom, venue]
   );
 
   if (!user || !venue) {

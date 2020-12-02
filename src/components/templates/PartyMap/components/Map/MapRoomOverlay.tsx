@@ -20,7 +20,6 @@ interface MapRoomOverlayProps {
 
   // Passed down from Camp component (via Map component)
   venue: PartyMapVenue;
-  attendances: Attendances;
   selectedRoom?: PartyMapRoomData;
   selectRoom: (room: PartyMapRoomData) => void;
   unselectRoom: () => void;
@@ -29,19 +28,11 @@ interface MapRoomOverlayProps {
 export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   room,
   venue,
-  attendances,
   selectedRoom,
   selectRoom,
   unselectRoom,
 }) => {
   const isSelectedRoom = room === selectedRoom;
-
-  // TODO: can we cleanup/de-dupe these attendance/attendees things?
-  const attendees =
-    (attendances[`${venue.name}/${room.title}`] ?? 0) +
-    (room.attendanceBoost ?? 0);
-  const hasAttendance = attendances[`${venue.name}/${room.title}`];
-  const hasAttendees = attendees > 0;
 
   // const isRoomExternal = isExternalUrl(room.url);
   // const currentRoomUrl = getRoomUrl(room.url);
@@ -135,8 +126,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
 
   // TODO: what is a better semantic name for this?
   const shouldShow2 =
-    shouldShow1 ||
-    (venue.roomVisibility === RoomVisibility.count && hasAttendance);
+    shouldShow1 || venue.roomVisibility === RoomVisibility.count;
 
   const containerStyles = useMemo(
     () => ({
@@ -176,7 +166,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
       </div>
 
       {/* TODO: rename these classes something other than camp-venue-*? */}
-      {shouldShowHovered && hasAttendees && (
+      {shouldShowHovered && (
         <div className="camp-venue-text">
           <div className="camp-venue-maininfo">
             <div className="party-map-venue-title">{room.title}</div>

@@ -68,20 +68,6 @@ export const PartyMap: React.FC = () => {
   // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
   const usersInVenue = useVenueRecentPartygoers(currentVenue.name);
 
-  // TODO: Need a better name for this.. What is it actually doing?
-  const attendances = useMemo(() => {
-    if (!usersInVenue) return {};
-
-    // TODO: is this counting logic correct?
-    return usersInVenue.reduce<Record<string, number>>((acc, value) => {
-      Object.keys(value.lastSeenIn).forEach((lastSeenInKey) => {
-        acc[lastSeenInKey] = (acc[lastSeenInKey] ?? 0) + 1;
-      });
-
-      return acc;
-    }, {});
-  }, [usersInVenue]);
-
   // TODO: do we need this?
   // const [showEventSchedule, setShowEventSchedule] = useState(false);
 
@@ -132,7 +118,6 @@ export const PartyMap: React.FC = () => {
         <Map
           venue={currentVenue}
           partygoers={usersInVenue}
-          attendances={attendances}
           selectedRoom={selectedRoom}
           selectRoom={selectRoom}
           unselectRoom={unselectRoom}
