@@ -2,8 +2,6 @@ import React from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 
-import { CampRoomData } from "types/CampRoomData";
-
 import { getCurrentEvent } from "utils/event";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import {
@@ -12,6 +10,8 @@ import {
   partygoersSelector,
 } from "utils/selectors";
 import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
+
+import { CampRoomData } from "types/RoomData";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";

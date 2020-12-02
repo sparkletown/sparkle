@@ -1,9 +1,9 @@
 import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
-import { CampRoomData } from "./CampRoomData";
 import { AnyVenue } from "./Firestore";
 import { PartyMapVenue } from "./PartyMapVenue";
 import { HAS_ROOMS_TEMPLATES } from "settings";
+import { CampRoomData } from "./RoomData";
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
 export interface CampVenue extends Venue {

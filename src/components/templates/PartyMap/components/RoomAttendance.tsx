@@ -1,7 +1,7 @@
 import React from "react";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { partygoersSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";

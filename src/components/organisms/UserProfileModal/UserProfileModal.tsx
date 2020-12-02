@@ -1,10 +1,13 @@
 import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
+
+import { CampRoomData } from "types/RoomData";
 
 import { useUser } from "hooks/useUser";
 
@@ -15,7 +18,7 @@ import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
-import { Link } from "react-router-dom";
+
 import {
   ENABLE_SUSPECTED_LOCATION,
   PLAYA_VENUE_NAME,
@@ -23,7 +26,6 @@ import {
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
-import { CampRoomData } from "types/CampRoomData";
 import { IS_BURN } from "secrets";
 
 type fullUserProfile =

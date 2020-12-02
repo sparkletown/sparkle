@@ -1,9 +1,10 @@
 import React from "react";
 
-import { CampRoomData } from "types/CampRoomData";
+import { CampRoomData } from "types/RoomData";
+
 import RoomCard from "./RoomCard";
 
-import "../../../templates/PartyMap/components/RoomList/RoomList.scss";
+import "components/templates/PartyMap/components/RoomList/RoomList.scss";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelector } from "utils/selectors";
 

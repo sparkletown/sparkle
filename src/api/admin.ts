@@ -1,8 +1,10 @@
-import firebase, { UserInfo } from "firebase/app";
 import _ from "lodash";
+
+import firebase, { UserInfo } from "firebase/app";
+
 import { VenueEvent } from "types/VenueEvent";
+import { CampRoomData } from "types/RoomData";
 import { VenuePlacement } from "types/Venue";
-import { CampRoomData } from "types/CampRoomData";
 
 export interface EventInput {
   name: string;

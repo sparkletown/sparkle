@@ -3,9 +3,8 @@ import React, { useCallback, useMemo, useState } from "react";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Attendances } from "types/Attendances";
-import { CampRoomData } from "types/CampRoomData";
-import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { CampRoomData, PartyMapRoomData } from "types/RoomData";
 import { RoomVisibility } from "types/Venue";
 
 import { isTruthy } from "utils/types";

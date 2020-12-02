@@ -1,10 +1,9 @@
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 import { AvatarGridRoom } from "./AvatarGrid";
-import { CampRoomData } from "./CampRoomData";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { RoomData } from "./RoomData";
+import { CampRoomData, RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";

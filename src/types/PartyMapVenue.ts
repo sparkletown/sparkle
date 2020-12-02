@@ -1,6 +1,6 @@
 import { Venue } from "./Venue";
 import { VenueTemplate } from "./VenueTemplate";
-import { PartyMapRoomData } from "./PartyMapRoomData";
+import { PartyMapRoomData } from "./RoomData";
 
 export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;

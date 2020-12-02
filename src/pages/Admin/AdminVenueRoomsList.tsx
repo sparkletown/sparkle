@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
 import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
 import { isVenueWithRooms } from "types/CampVenue";
+import { CampRoomData } from "types/RoomData";
 import { canHaveSubvenues } from "utils/venue";
 import { Venue } from "types/Venue";
 import { WithId } from "utils/id";

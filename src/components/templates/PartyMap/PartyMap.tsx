@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { RootState } from "index";
 import { createUrlSafeName } from "api/admin";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { useVenueRecentPartygoers } from "hooks/useVenueRecentPartygoers";
 import { useSelector } from "hooks/useSelector";

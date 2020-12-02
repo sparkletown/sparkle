@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { getCurrentEvent } from "utils/event";
 import { enterRoom } from "utils/useLocationUpdateEffect";

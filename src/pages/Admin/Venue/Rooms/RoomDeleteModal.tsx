@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from "react";
-import firebase from "firebase/app";
+import { useHistory } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import { CampRoomData } from "types/CampRoomData";
+
+import firebase from "firebase/app";
+
+import { CampRoomData } from "types/RoomData";
 
 import "./RoomDeleteModal.scss";
-import { useHistory } from "react-router-dom";
 
 interface PropsType {
   venueId: string;

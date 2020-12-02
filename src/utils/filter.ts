@@ -1,4 +1,4 @@
-import { CampRoomData } from "types/CampRoomData";
+import { CampRoomData } from "types/RoomData";
 
 import { isWithinBounds } from "./isWithinBounds";
 

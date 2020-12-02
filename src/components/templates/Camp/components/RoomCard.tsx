@@ -1,10 +1,10 @@
 import React from "react";
 import { RoomAttendance } from "./RoomAttendance";
 import { formatUtcSeconds } from "utils/time";
-import { CampRoomData } from "types/CampRoomData";
 import { useSelector } from "hooks/useSelector";
 import { getCurrentEvent } from "utils/event";
-import "../../../templates/PartyMap/components/RoomCard/RoomCard.scss";
+import "components/templates/PartyMap/components/RoomCard/RoomCard.scss";
+import { CampRoomData } from "types/RoomData";
 
 interface PropsType {
   room: CampRoomData;

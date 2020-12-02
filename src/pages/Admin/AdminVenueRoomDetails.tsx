@@ -1,14 +1,14 @@
 import React from "react";
-import { CampRoomData } from "types/CampRoomData";
+import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
 import { Venue } from "types/Venue";
+import { CampRoomData } from "types/RoomData";
 import { WithId } from "utils/id";
 import "./Admin.scss";
 import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import VenueEventDetails from "./VenueEventDetails";
-import { useFirestoreConnect } from "react-redux-firebase";
 
 interface Props {
   index: number;

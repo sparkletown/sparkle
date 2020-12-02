@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { CampRoomData } from "types/CampRoomData";
+import { CampRoomData } from "types/RoomData";
 import { VenueEvent } from "types/VenueEvent";
 
 import { getCurrentEvent } from "utils/event";

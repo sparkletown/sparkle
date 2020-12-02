@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import { Attendances } from "types/Attendances";
 import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
-import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { PartyMapRoomData } from "types/RoomData";
 
 import { currentTimeInUnixEpoch } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";

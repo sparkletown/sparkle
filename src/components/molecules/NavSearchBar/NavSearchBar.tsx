@@ -1,8 +1,8 @@
+import React, { useCallback, useEffect, useState } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
+import { CampRoomData } from "types/RoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 import {
