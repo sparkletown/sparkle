@@ -252,6 +252,7 @@ const VenuePage = () => {
     );
   }
 
+  console.log(venue, venueId);
   if (!venue || !venueId) {
     return <LoadingPage />;
   }
@@ -297,10 +298,12 @@ const VenuePage = () => {
     }
   }
 
-  if (profile === undefined) {
+  console.log(" profile", profile, user);
+  if (user === undefined) {
     return <LoadingPage />;
   }
 
+  console.log("profile", profile);
   if (!(profile?.partyName && profile?.pictureUrl)) {
     history.push(
       `/account/profile?returnUrl=${window.location.pathname}${window.location.search}`
