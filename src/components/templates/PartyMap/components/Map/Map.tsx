@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import firebase from "firebase/app";
 
 import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
+
+import { makeUpdateUserGridLocation } from "api/profile";
 
 import { currentTimeInUnixEpoch } from "utils/time";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
@@ -78,32 +79,13 @@ export const Map: React.FC<MapProps> = ({
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
-  // TODO: refactor this outside of the component itself?
-  // TODO: use firestore from useFirestore hook rather than import
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      if (!user || !profile || !venueId) return;
-
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row,
-            column,
-          },
-        },
-      };
-
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid: user?.uid,
+        profileData: profile?.data,
+      })(row, column);
     },
     [profile, user, venueId]
   );
