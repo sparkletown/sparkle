@@ -7,7 +7,7 @@ import { createUrlSafeName } from "api/admin";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
-import { useCampPartygoers } from "hooks/useCampPartygoers";
+import { useVenueRecentPartygoers } from "hooks/useVenueRecentPartygoers";
 import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
@@ -66,7 +66,7 @@ export const PartyMap: React.FC = () => {
   }, [currentRoom, selectRoom]);
 
   // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
-  const usersInVenue = useCampPartygoers(currentVenue.name);
+  const usersInVenue = useVenueRecentPartygoers(currentVenue.name);
 
   // TODO: Need a better name for this.. What is it actually doing?
   const attendances = useMemo(() => {
