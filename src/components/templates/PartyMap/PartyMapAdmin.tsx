@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 
 import { makeUpdateBanner } from "api/partyMapAdmin";
 
@@ -11,60 +11,73 @@ export const PartyMapAdmin: React.FC = () => {
   const venueId = currentVenue.id;
   const existingBannerMessage = currentVenue?.bannerMessage ?? "";
 
+  const inputFieldRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>();
 
-  // TODO: do we need to useState for this? It will cause a re-render on every keypress (only in this component probably.. but still).
-  //  Can we useRef() passed to the input field itself or similar instead?
-  const [newBannerMessage, setNewBannerMessage] = useState(
-    existingBannerMessage
-  );
-
-  useEffect(() => {
-    setNewBannerMessage(existingBannerMessage);
-  }, [existingBannerMessage]);
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setError(null);
-      setNewBannerMessage(e.target.value);
-    },
-    []
-  );
+  const handleInputChange = useCallback(() => {
+    setError(null);
+  }, []);
 
   const updateBannerInFirestore = useCallback(
-    makeUpdateBanner(venueId, (errorMsg) => setError(errorMsg)),
-    []
+    (msg?: string) => {
+      makeUpdateBanner(venueId, (errorMsg) => setError(errorMsg))(msg);
+    },
+    [venueId]
   );
 
   const saveBanner = useCallback(() => {
-    updateBannerInFirestore(newBannerMessage);
-  }, [updateBannerInFirestore, newBannerMessage]);
+    if (!inputFieldRef.current) return;
+
+    updateBannerInFirestore(inputFieldRef.current.value);
+
+    return false;
+  }, [updateBannerInFirestore]);
 
   const clearBanner = useCallback(() => updateBannerInFirestore(""), [
     updateBannerInFirestore,
   ]);
 
   return (
-    <>
+    <div className="container">
+      <h3>Banner Admin</h3>
+
       <div className="row">
-        <h4>Banner Admin</h4>
+        <div className="col">
+          <form>
+            <div className="form-group">
+              <label htmlFor="bannerMessage">Banner Message</label>
+
+              <input
+                ref={inputFieldRef}
+                type="text"
+                defaultValue={existingBannerMessage}
+                onChange={handleInputChange}
+                placeholder="Enter banner message here..."
+              />
+
+              {error && <span className="error">{error}</span>}
+            </div>
+
+            <div className="form-inline justify-content-between">
+              <button
+                className="btn btn-danger"
+                type="reset"
+                onClick={clearBanner}
+              >
+                Clear Banner
+              </button>
+
+              <button
+                className="btn btn-primary"
+                type="submit"
+                onClick={saveBanner}
+              >
+                Save Banner
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-      <div className="edit-banner">
-        <label htmlFor="bannerMessage">Banner Message:</label>
-        <input
-          type="text"
-          value={newBannerMessage}
-          onChange={handleInputChange}
-          placeholder="Banner message"
-        />
-        {error && <span className="error">{error}</span>}
-        <button className="btn btn-primary" type="submit" onClick={saveBanner}>
-          Set Banner
-        </button>
-        <button className="btn btn-danger" type="submit" onClick={clearBanner}>
-          Remove
-        </button>
-      </div>
-    </>
+    </div>
   );
 };
