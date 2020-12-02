@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Attendances } from "types/Attendances";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
 import { RoomVisibility } from "types/Venue";
