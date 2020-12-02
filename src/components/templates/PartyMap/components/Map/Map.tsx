@@ -18,9 +18,9 @@ import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 
 // @debt refactor these hooks into somewhere more sensible
-import { useMapGrid } from "components/templates/Camp/hooks/useMapGrid";
-import { usePartygoersbySeat } from "components/templates/Camp/hooks/usePartygoersBySeat";
-import { usePartygoersOverlay } from "components/templates/Camp/hooks/usePartygoersOverlay";
+import { useMapGrid } from "./hooks/useMapGrid";
+import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
+import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
