@@ -198,7 +198,6 @@ export const Map: React.FC<MapProps> = ({
 
       // TODO: this is how it was here before I merged Camp's Map. Which is correct?
       openRoomUrl(room.url);
-      //     enterRoom(user, roomName, profile?.lastSeenIn);
     },
     [profile, user, venue, venues]
   );
@@ -264,13 +263,11 @@ export const Map: React.FC<MapProps> = ({
           key={room.title}
           venue={venue}
           room={room}
-          enterRoom={enterPartyMapRoom}
-          selectRoom={selectRoom}
-          unselectRoom={unselectRoom}
-          // // onEnterRoom={enterPartyMapRoom}
+          isSelected={room === selectedRoom}
+          selectRoom={() => selectRoom(room)}
         />
       )),
-    [enterPartyMapRoom, selectRoom, unselectRoom, venue]
+    [selectRoom, selectedRoom, venue]
   );
 
   if (!user || !venue) {
