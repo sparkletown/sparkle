@@ -142,7 +142,7 @@ const Camp: React.FC = () => {
             />
           </div>
         )}
-        {venue?.config?.showRangers && (
+        {venue?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
           </div>

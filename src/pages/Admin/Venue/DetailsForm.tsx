@@ -579,6 +579,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
+
         {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
             <h4 className="italic" style={{ fontSize: "20px" }}>
@@ -595,6 +596,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
+
+        <div className="toggle-room">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Show Rangers support
+          </h4>
+          <label id="showRangers" className="switch">
+            <input
+              type="checkbox"
+              id="showRangers"
+              name="showRangers"
+              ref={register}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid && (
