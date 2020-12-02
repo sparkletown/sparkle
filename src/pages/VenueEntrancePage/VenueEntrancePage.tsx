@@ -6,17 +6,17 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 import React from "react";
-import { useFirebase } from "react-redux-firebase";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { EntranceStepTemplate } from "types/EntranceStep";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import { currentVenueSelectorData } from "utils/selectors";
+import { useVenueId } from "hooks/useVenueId";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
-  const firebase = useFirebase();
   const history = useHistory();
-  const { step, venueId } = useParams();
+  const { step } = useParams();
+  const venueId = useVenueId();
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
 
@@ -42,14 +42,6 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     !venue.entrance.length ||
     venue.entrance.length < parseInt(step)
   ) {
-    const enteredVenueIds = profile.enteredVenueIds ?? [];
-    if (!enteredVenueIds.includes(venueId)) {
-      enteredVenueIds.push(venueId);
-      (async () =>
-        await firebase.firestore().collection("users").doc(user.uid).update({
-          enteredVenueIds,
-        }))();
-    }
     return <Redirect to={venueInsideUrl(venueId)} />;
   }
 
