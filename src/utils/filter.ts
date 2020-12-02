@@ -25,7 +25,7 @@ import { isWithinBounds } from "./isWithinBounds";
 export const isTruthyFilter = <T>(item?: T | false): item is T => !!item;
 
 /**
- * @see makeCampRoomHitFilter
+ * @see makeRoomHitFilter
  */
 export type RoomHitFilterProps = {
   row: number;
@@ -35,14 +35,14 @@ export type RoomHitFilterProps = {
 };
 
 /**
- * Make a CampRoomData[] filter for rooms 'hit' by the supplied row/column.
+ * Make a PartyMapRoomData[] filter for rooms 'hit' by the supplied row/column.
  *
  * @param row
  * @param column
  * @param totalRows
  * @param totalColumns
  */
-export const makeCampRoomHitFilter = ({
+export const makeRoomHitFilter = ({
   row,
   column,
   totalRows,
