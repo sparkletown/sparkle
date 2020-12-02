@@ -80,6 +80,7 @@ const createVenueData = (data, context) => {
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
+    showRangers: data.showRangers || false,
     parentId: data.parentId,
   };
 
@@ -436,6 +437,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
   }
 
   switch (updated.template) {
