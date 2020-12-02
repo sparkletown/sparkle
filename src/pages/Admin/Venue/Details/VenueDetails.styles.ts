@@ -49,11 +49,6 @@ export const Main = styled.main`
   justify-content: space-between;
   align-items: center;
 
-  ${BackgroundSelectWrapper} {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-
   ${Button} {
     padding: 0.75em 2em;
 
@@ -124,4 +119,52 @@ export const RoomWrapper = styled.div`
 
 export const RoomCounter = styled.span`
   font-size: 1.5rem;
+`;
+
+export const RoomActions = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const InputContainer = styled.div`
+  display: flex;
+  width: 100%;
+  margin: 1rem 0;
+  align-items: center;
+
+  position: relative;
+
+  input {
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+export const GridSwitchWrapper = styled.div`
+  display: flex;
+
+  h4 {
+    margin: 0 0.5em 0 0;
+  }
+
+  label {
+    margin-bottom: 0;
+  }
+`;
+
+export const GridInputWrapper = styled.div`
+  display: flex;
+  margin-left: 1rem;
+  flex: 1 0 auto;
+  align-items: center;
+
+  label {
+    margin-right: 1rem;
+    margin-bottom: 0;
+
+    white-space: nowrap;
+  }
 `;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import firebase from "firebase";
 
 // Components
@@ -8,11 +8,8 @@ import AdminEventModal from "pages/Admin/AdminEventModal";
 import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
 
-// Pages
-import BackgroundSelect from "pages/Admin/BackgroundSelect";
-
 // Hooks
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 
 // Typings
 import { VenueDetailsProps } from "./VenueDetails.types";
@@ -20,6 +17,11 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 // Styles
 import * as S from "./VenueDetails.styles";
 import EventModal from "pages/Admin/Event";
+import MapPreview from "pages/Admin/MapPreview";
+import ToggleSwitch from "components/atoms/ToggleSwitch";
+import { updateVenue_v2 } from "api/admin";
+import { useUser } from "hooks/useUser";
+import { Form } from "react-bootstrap";
 
 type Owner = {
   id: string;
@@ -29,13 +31,22 @@ type Owner = {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const { name, owners, id, rooms, mapBackgroundImageUrl } = venue;
+  const {
+    name,
+    owners,
+    id: venueId,
+    rooms,
+    mapBackgroundImageUrl,
+    showGrid,
+  } = venue;
   const {
     subtitle,
     description,
     coverImageUrl,
   } = venue.config.landingPageConfig;
   const { icon } = venue.host;
+
+  const { user } = useUser();
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -70,7 +81,71 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     }
   }, [owners, ownersData]);
 
+  if (!user) return null;
+
   const toggleRoomModal = () => setModalOpen(!modalOpen);
+
+  const handleShowGridToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const venueData = {
+      ...venue,
+      showGrid: e.target.checked,
+    };
+
+    updateVenue_v2(venueData, user);
+  };
+
+  const handleRoomVisibilityChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const venueData = {
+      name,
+      roomVisibility: e.target.value,
+    };
+
+    updateVenue_v2(venueData, user);
+  };
+
+  const renderShowGrid = () => (
+    <S.InputContainer>
+      <S.GridSwitchWrapper>
+        <h4>Show grid</h4>
+
+        <ToggleSwitch
+          name="showGrid"
+          isChecked={showGrid}
+          onChange={handleShowGridToggle}
+        />
+      </S.GridSwitchWrapper>
+
+      {showGrid && (
+        <S.GridInputWrapper>
+          <label htmlFor="grid_columns">Number of columns:</label>
+          <input
+            name="columns"
+            id="grid_columns"
+            placeholder="Number of grid columns"
+            type="number"
+          />
+        </S.GridInputWrapper>
+      )}
+    </S.InputContainer>
+  );
+
+  const renderRoomVisibility = () => (
+    <Form style={{ width: "50%", margin: "1rem 0 0" }}>
+      <Form.Group controlId="roomVisibilityControlGroup">
+        <Form.Label>
+          Choose how you&apos;d like your rooms to appear on the map
+        </Form.Label>
+
+        <Form.Control as="select" custom onChange={handleRoomVisibilityChange}>
+          <option value="hover">Hover</option>
+          <option value="count">Count</option>
+          <option value="count/name">Count and names</option>
+        </Form.Control>
+      </Form.Group>
+    </Form>
+  );
 
   return (
     <S.Container>
@@ -89,7 +164,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         />
 
         <S.HeaderActions>
-          <Button gradient>Go to your space</Button>
+          <Button gradient linkTo={`/in/${venue.id}`} isLink>
+            Go to your space
+          </Button>
           <Button>Preview landing page</Button>
 
           <S.AdminList>
@@ -109,19 +186,29 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       </S.Header>
 
       <S.Main>
-        <BackgroundSelect
+        {renderShowGrid()}
+        <MapPreview
+          venueId={venueId}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
+          rooms={rooms}
         />
 
-        <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
-        <Button onClick={() => toggleRoomModal()} gradient>
-          Add a room
-        </Button>
+        {!!mapBackgroundImageUrl && (
+          <>
+            <S.RoomActions>
+              <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
+              <Button onClick={() => toggleRoomModal()} gradient>
+                Add a room
+              </Button>
+            </S.RoomActions>
+            {renderRoomVisibility()}
+          </>
+        )}
 
-        {!!rooms && (
+        {!!rooms && !!mapBackgroundImageUrl && (
           <S.RoomWrapper>
-            {rooms.map((room: any, index) => (
+            {rooms.map((room: any, index: number) => (
               <RoomCard key={index} {...room} />
             ))}
           </S.RoomWrapper>
@@ -130,16 +217,12 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <RoomModal
         isVisible={modalOpen}
-        venueId={id!}
+        venueId={venueId!}
         onSubmitHandler={() => setModalOpen(false)}
         onClickOutsideHandler={() => setModalOpen(false)}
       />
 
-      <EventModal isVisible />
-
-      {/* <AdminEventModal
-
-      /> */}
+      <EventModal isVisible={false} />
     </S.Container>
   );
 };
