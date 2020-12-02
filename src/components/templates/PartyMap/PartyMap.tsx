@@ -75,7 +75,7 @@ export const PartyMap: React.FC = () => {
           onHide={modalHidden}
         />
         <AnnouncementMessage message={venue.bannerMessage} />
-        {venue?.config?.showRangers && (
+        {venue?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
           </div>

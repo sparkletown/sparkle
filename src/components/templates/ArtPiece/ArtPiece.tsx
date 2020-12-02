@@ -71,7 +71,7 @@ export const ArtPiece = () => {
           </div>
         </div>
       </div>
-      {IS_BURN && (
+      {venue?.showRangers && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>
