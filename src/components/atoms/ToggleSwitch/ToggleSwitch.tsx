@@ -10,6 +10,7 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
   name,
   forwardRef,
   isChecked = false,
+  onChange,
 }) => {
   const [checked, setChecked] = useState<boolean>(false);
 
@@ -17,12 +18,20 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
     setChecked(isChecked);
   }, [isChecked]);
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onChange) {
+      onChange(e);
+    }
+
+    return setChecked(e.target.checked);
+  };
+
   return (
     <S.Label>
       <S.Input
         name={name}
         ref={forwardRef}
-        onChange={(e) => setChecked(e.target.checked)}
+        onChange={(e) => handleOnChange(e)}
         checked={checked}
       />
 
