@@ -1,34 +1,33 @@
 import { RoomEventData } from "./RoomEventData";
 
-export interface RoomData {
-  name?: string;
-  title: string;
-  subtitle: string;
+export interface BaseRoomData {
   about: string;
-  image: string;
-  on_list: boolean;
-  template?: string;
-  on_map: boolean;
-  button_text?: string;
+  subtitle: string;
+  title: string;
+  url: string;
+}
+
+export interface RoomData extends BaseRoomData {
   attendance_x?: string;
   attendance_y?: string;
-  url: string;
-  path: string;
+  button_text?: string;
   events: RoomEventData;
   external_url: string;
+  image: string;
+  name?: string;
+  on_list: boolean;
+  on_map: boolean;
+  path: string;
+  template?: string;
 }
 
 // @debt should this extend from RoomData?
-export interface PartyMapRoomData {
+export interface PartyMapRoomData extends BaseRoomData {
+  attendanceBoost?: number;
+  height_percent: number;
+  image_url: string;
+  isEnabled: boolean;
+  width_percent: number;
   x_percent: number;
   y_percent: number;
-  width_percent: number;
-  height_percent: number;
-  title: string;
-  subtitle: string;
-  about: string;
-  image_url: string;
-  url: string;
-  isEnabled: boolean;
-  attendanceBoost?: number;
 }
