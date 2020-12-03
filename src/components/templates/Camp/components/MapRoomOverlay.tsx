@@ -42,8 +42,8 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
   const isSelectedRoom = room === selectedRoom;
   const hasAttendance = attendances[`${venue.name}/${room.title}`];
 
-  const isRoomExternal = isExternalUrl(room.url);
-  const currentRoomUrl = getRoomUrl(room.url);
+  // const isRoomExternal = isExternalUrl(room.url);
+  // const currentRoomUrl = getRoomUrl(room.url);
 
   const [roomClicked, setRoomClicked] = useState<string | undefined>(undefined);
 
@@ -97,23 +97,20 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
     (e) => {
       e.stopPropagation();
 
-      if (isExternalUrl(room.url)) {
-        openRoomUrl(room.url);
-      } else {
-        window.location.href = getRoomUrl(room.url);
-      }
-
       enterCampRoom(room);
+      // openRoomUrl(room.url);
+      // @debt use the helpers properly, we want this to always open in a new url
+      window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
     },
     [enterCampRoom, room]
   );
 
   // TODO: should this also openRoomUrl as above? If so, let's use the same function for it.. if not, why?
   // TODO: what is a better semantic name for this?
-  const onClick3 = useCallback(() => enterCampRoom(room), [
-    enterCampRoom,
-    room,
-  ]);
+  // const onClick3 = useCallback(() => enterCampRoom(room), [
+  //   enterCampRoom,
+  //   room,
+  // ]);
 
   // TODO: what is a better semantic name for this?
   const shouldShowHovered =
@@ -196,14 +193,14 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
 
             <div className="camp-venue-actions">
               {/* TODO: extract this into a generalised link component that handles internal/external correctly? */}
-              <a
+              <button
                 className="btn btn-block btn-small btn-primary"
-                onClick={onClick3}
-                href={currentRoomUrl}
-                {...getExtraLinkProps(isRoomExternal)}
+                onClick={onJoinRoom}
+                // href={currentRoomUrl}
+                // {...getExtraLinkProps(isRoomExternal)}
               >
                 {venue.joinButtonText ?? "Enter"}
-              </a>
+              </button>
             </div>
           </div>
         </div>
