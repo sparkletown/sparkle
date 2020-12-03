@@ -75,6 +75,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     return <></>;
   }
 
+  const usersById = { [userProfile.id]: userProfile };
+
   // REVISIT: remove the hack to cast to any below
   return (
     <Modal show={show} onHide={onHide} style={zIndex && { zIndex }}>
@@ -130,7 +132,11 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           {IS_BURN && <Badges user={userProfile} />}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox chats={chats} onMessageSubmit={submitMessage} />
+              <Chatbox
+                usersById={usersById}
+                chats={chats}
+                onMessageSubmit={submitMessage}
+              />
             </div>
           )}
         </div>

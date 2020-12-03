@@ -17,7 +17,7 @@ import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
   rooms: CampRoomData[];
-  users: WithId<User>[];
+  users: readonly WithId<User>[];
   events: VenueEvent[];
 }
 
