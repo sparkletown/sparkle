@@ -11,6 +11,7 @@ import { EntranceStepTemplate } from "types/EntranceStep";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
+import Login from "pages/Account/Login";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -25,15 +26,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (!user || !profile) {
-    return (
-      <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
-      </WithNavigationBar>
-    );
+    return <Login />;
   }
 
   if (

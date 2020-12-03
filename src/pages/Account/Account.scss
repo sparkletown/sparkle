@@ -87,17 +87,35 @@ $page-max-width: 1240px;
   }
 }
 
-.login-container {
-  max-width: $login-max-width;
-  margin: 0 auto;
-  padding: $side-padding;
-  background-color: $black;
-  box-shadow: $large-shadow;
-  text-align: center;
-  border-radius: $border-radius;
+.auth-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  background-color: #1a1d24;
 
-  .form {
-    margin-top: 2rem;
+  .logo-container {
+    width: $login-max-width / 2;
+    padding-bottom: 50px;
+  }
+
+  .auth-form-container {
+    .form-container {
+      display: inline-table;
+      flex: 0;
+      width: $login-max-width;
+      margin: 0 auto;
+      padding: $side-padding;
+      background-color: $black;
+      box-shadow: $large-shadow;
+      text-align: center;
+      border-radius: $border-radius;
+
+      .form {
+        margin-top: 2rem;
+      }
+    }
   }
 }
 

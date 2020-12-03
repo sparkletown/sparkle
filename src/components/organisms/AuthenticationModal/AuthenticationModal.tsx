@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 import "./AuthenticationModal.scss";
+import { InitialForm } from "./InitialForm";
 import LoginForm from "./LoginForm";
 import PasswordResetForm from "./PasswordResetForm";
 import RegisterForm from "./RegisterForm";
@@ -9,7 +10,7 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   afterUserIsLoggedIn?: () => void;
-  showAuth: "login" | "register" | "passwordReset";
+  showAuth: "login" | "register" | "passwordReset" | "initial";
 }
 
 export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
@@ -38,8 +39,18 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal show={show} onHide={closeAuthenticationModal}>
+    <Modal
+      show={show}
+      onHide={closeAuthenticationModal}
+      backdropClassName="authentication-modal-backdrop"
+    >
       <div className="authentication-modal-container">
+        {formToDisplay === "initial" && (
+          <InitialForm
+            displayLoginForm={displayLoginForm}
+            displayRegisterForm={displayRegisterForm}
+          />
+        )}
         {formToDisplay === "register" && (
           <RegisterForm
             displayLoginForm={displayLoginForm}

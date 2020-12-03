@@ -117,11 +117,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   return (
     <div className="form-container">
       <div className="secondary-action">
-        Already have an account?
-        <br />
-        <span className="link" onClick={displayLoginForm}>
-          Login
-        </span>
+        <div>First, create your account</div>
+        <div>This will give you access to all sorts of events in Sparkle</div>
       </div>
 
       <h2>Create an account!</h2>
@@ -196,10 +193,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       </form>
 
       <div className="secondary-action">
-        {`Forgot your password?`}
+        Already have an account?
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
-          Reset your password
+        <span className="link" onClick={displayLoginForm}>
+          Login
         </span>
       </div>
     </div>

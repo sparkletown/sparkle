@@ -242,11 +242,7 @@ const VenuePage = () => {
   if (!user) {
     return (
       <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
+        <AuthenticationModal show={true} onHide={() => {}} showAuth="initial" />
       </WithNavigationBar>
     );
   }
@@ -255,8 +251,8 @@ const VenuePage = () => {
     return <LoadingPage />;
   }
 
-  const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+  const hasEntrance = isTruthy(venue?.entrance);
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
