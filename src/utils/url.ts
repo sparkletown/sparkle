@@ -1,4 +1,5 @@
 import { CODE_CHECK_URL } from "secrets";
+import { VALID_URL_PROTOCOLS } from "settings";
 import { CampVenue } from "types/CampVenue";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "./id";
@@ -39,11 +40,15 @@ export const openRoomUrl = (url: string) => {
 };
 
 export const openUrl = (url: string) => {
-  if (!isExternalUrl(url)) {
-    window.open(url, "_blank", "noopener,noreferrer");
-  } else {
-    window.location.href = url;
-  }
+  isValidUrl(url)
+    ? window.open(url, "_blank", "noopener,noreferrer")
+    : console.error(
+        `Invalid URL ${url} on page ${window.location.href}; ignoring`
+      );
+};
+
+export const isValidUrl = (url: string) => {
+  return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
 };
 
 export const externalUrlAdditionalProps = {
