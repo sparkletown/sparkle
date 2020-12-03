@@ -1,15 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,
+  privateChatsSelector,
 } from "utils/selectors";
 
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
-import Chatbox from "../Chatbox";
+import Chatbox from "components/molecules/Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
@@ -25,45 +26,56 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
 import { IS_BURN } from "secrets";
-
-type fullUserProfile =
-  | { userProfile?: WithId<User> }
-  | { userProfile?: User; userProfileId?: string };
+import {
+  ChatContext,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
 
 type PropTypes = {
   show: boolean;
   onHide: () => void;
   zIndex?: number;
-} & fullUserProfile;
+  userProfile?: WithId<User>;
+};
 
 const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   show,
   onHide,
   zIndex,
-  ...rest
+  userProfile,
 }) => {
   const venue = useSelector(currentVenueSelectorData);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
 
-  const fullUserProfile = useMemo(() => {
-    if (undefined === rest.userProfile) {
-      return undefined;
-    }
+  const chatContext = useContext(ChatContext);
 
-    if ("id" in rest.userProfile) {
-      return rest.userProfile;
-    }
+  const submitMessage = useCallback(
+    async (data: { messageToTheBand: string }) => {
+      if (!chatContext || !user || !userProfile) return;
 
-    if ("userProfileId" in rest && rest.userProfileId) {
-      return { ...rest.userProfile, id: rest.userProfileId };
-    }
-    return undefined;
-  }, [rest]);
+      chatContext.sendPrivateChat(
+        user.uid,
+        userProfile?.id,
+        data.messageToTheBand
+      );
+    },
+    [chatContext, userProfile, user]
+  );
 
-  if (!fullUserProfile || !fullUserProfile.id || !user) {
+  const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
+    if (!userProfile || !userProfile.id) return [];
+    return privateChats.filter(
+      (chat) => chat.from === userProfile.id || chat.to === userProfile.id
+    );
+  }, [privateChats, userProfile]);
+
+  if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
+
+  const usersById = { [userProfile.id]: userProfile };
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -74,7 +86,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             <div className="profile-basics">
               <div className="profile-pic">
                 <img
-                  src={fullUserProfile.pictureUrl || "/default-profile-pic.png"}
+                  src={userProfile.pictureUrl || "/default-profile-pic.png"}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -82,8 +94,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                       "/avatars/" +
                       RANDOM_AVATARS[
                         Math.floor(
-                          fullUserProfile.id.charCodeAt(0) %
-                            RANDOM_AVATARS.length
+                          userProfile.id.charCodeAt(0) % RANDOM_AVATARS.length
                         )
                       ];
                   }}
@@ -91,7 +102,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
               <div className="profile-text">
                 <h2 className="italic">
-                  {fullUserProfile.partyName || "Captain Party"}
+                  {userProfile.partyName || "Captain Party"}
                 </h2>
               </div>
             </div>
@@ -103,7 +114,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                     {/*
                     // @debt typing - need to support known User interface with unknown question keys
                     // @ts-ignore */}
-                    {fullUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
+                    {userProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
                       "I haven't edited my profile to tell you yet"}
                   </h6>
                 </React.Fragment>
@@ -113,15 +124,19 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={fullUserProfile} />
+                  <SuspectedLocation user={userProfile} />
                 </h6>
               </div>
             )}
           </div>
-          {IS_BURN && <Badges user={fullUserProfile} />}
-          {fullUserProfile.id !== user.uid && (
+          {IS_BURN && <Badges user={userProfile} />}
+          {userProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox isInProfileModal discussionPartner={fullUserProfile} />
+              <Chatbox
+                usersById={usersById}
+                chats={chats}
+                onMessageSubmit={submitMessage}
+              />
             </div>
           )}
         </div>
