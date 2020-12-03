@@ -62,6 +62,8 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
+import { updateProfileEnteredVenueIds } from "utils/profile";
+import { isTruthy } from "utils/types";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -200,6 +202,20 @@ const VenuePage = () => {
     };
   }, [prevLocations, user, venueName]);
 
+  useEffect(() => {
+    if (
+      profile?.enteredVenueIds &&
+      profile?.enteredVenueIds.includes(venue?.id)
+    )
+      return;
+    if (!venue || !user) return;
+    updateProfileEnteredVenueIds(
+      profile?.enteredVenueIds,
+      user?.uid,
+      venue?.id
+    );
+  }, [profile, user, venue]);
+
   const venueIdFromParams = getQueryParameters(window.location.search)
     ?.venueId as string;
 
@@ -241,7 +257,8 @@ const VenuePage = () => {
     return <LoadingPage />;
   }
 
-  if (profile?.enteredVenueIds && !profile.enteredVenueIds?.includes(venueId)) {
+  const hasEntrance = isTruthy(venue?.entrance);
+  if (hasEntrance) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 

@@ -28,7 +28,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { REACTION_TIMEOUT } from "settings";
+import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
@@ -306,7 +306,7 @@ export const Audience: React.FunctionComponent = () => {
                 src={iframeUrl}
                 title="Video"
                 frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                allow={IFRAME_ALLOW}
                 allowFullScreen
               />
             </div>

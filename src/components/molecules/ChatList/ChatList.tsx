@@ -4,9 +4,7 @@ import { Modal } from "react-bootstrap";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { chatUsersSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { hasElements } from "utils/types";
 
 import {
   PrivateChatMessage,
@@ -16,9 +14,9 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
-import { hasElements } from "utils/types";
 
 interface ChatListProps {
+  usersById: Record<string, User>;
   messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
   emptyListMessage?: string;
   allowDelete?: boolean;
@@ -26,12 +24,12 @@ interface ChatListProps {
 }
 
 const ChatList: React.FC<ChatListProps> = ({
+  usersById,
   messages,
   allowDelete,
   emptyListMessage,
   deleteMessage,
 }) => {
-  const usersById = useSelector(chatUsersSelector);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -43,7 +41,7 @@ const ChatList: React.FC<ChatListProps> = ({
   >();
 
   const showUserProfile = useCallback(
-    (message) => {
+    (message: RestrictedChatMessage | PrivateChatMessage) => {
       if (!usersById) {
         return;
       }

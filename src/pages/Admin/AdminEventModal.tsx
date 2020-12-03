@@ -1,12 +1,19 @@
 import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { VenueEvent } from "types/VenueEvent";
-import dayjs from "dayjs";
 import * as Yup from "yup";
+import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+
+import { VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
+
 import { createEvent, EventInput, updateEvent } from "api/admin";
+
 import { WithId } from "utils/id";
+
+import { HAS_ROOMS_TEMPLATES } from "settings";
+
 dayjs.extend(isSameOrAfter);
 
 interface PropsType {
@@ -14,7 +21,7 @@ interface PropsType {
   onHide: () => void;
   venueId: string;
   event?: WithId<VenueEvent>;
-  template?: string;
+  template?: VenueTemplate;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: Function;
   roomName?: string;
@@ -94,7 +101,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         collective_price: 0,
         host: data.host,
       };
-      if (template === "themecamp") formEvent.room = data.room;
+      if (template && HAS_ROOMS_TEMPLATES.includes(template))
+        formEvent.room = data.room;
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
@@ -191,7 +199,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.host.message}</span>
             )}
           </div>
-          {template === "themecamp" && (
+          {template && HAS_ROOMS_TEMPLATES.includes(template) && (
             <div className="input-group">
               <label htmlFor="room">Room your event is in</label>
               <input
@@ -214,7 +222,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
               value={event ? "Update" : "Create"}
               disabled={formState.isSubmitting}
             />
-            {template === "themecamp" && event && (
+            {template && HAS_ROOMS_TEMPLATES.includes(template) && event && (
               <input
                 className="btn btn-primary btn-danger btn-small"
                 type="submit"

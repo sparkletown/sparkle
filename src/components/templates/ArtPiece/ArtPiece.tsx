@@ -9,10 +9,10 @@ import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
+import { IFRAME_ALLOW } from "settings";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -28,7 +28,7 @@ export const ArtPiece = () => {
       <BannerMessage venue={venue} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
-          venueLogoPath={venue?.host.icon ?? ""}
+          venueLogoPath={venue?.host?.icon ?? ""}
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
@@ -48,7 +48,7 @@ export const ArtPiece = () => {
             title="art-piece-video"
             src={iframeUrl}
             frameBorder="0"
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allow={IFRAME_ALLOW}
             allowFullScreen
           ></iframe>
           <div className="video-chat-wrapper">
@@ -70,7 +70,7 @@ export const ArtPiece = () => {
           </div>
         </div>
       </div>
-      {IS_BURN && (
+      {venue?.showRangers && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>

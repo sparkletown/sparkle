@@ -40,10 +40,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedVenuesById: Record<
+  const relatedVenuesById: Partial<Record<
     string,
     WithId<AnyVenue>
-  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
+  >> = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
@@ -116,7 +116,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const hasParentVenue = !!parentVenue;
 
   const partyinfoImage = hasParentVenue
-    ? parentVenue?.host.icon
+    ? parentVenue?.host?.icon
     : currentVenue?.host?.icon;
 
   const titleText = hasParentVenue ? parentVenue?.name : currentVenue?.name;

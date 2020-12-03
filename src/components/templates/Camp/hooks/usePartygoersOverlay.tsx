@@ -17,7 +17,10 @@ interface UsePartygoersOverlay {
   setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
-export type UsePartygoersReturn = ("" | JSX.Element)[] | undefined;
+export type UsePartygoersReturn =
+  | ("" | JSX.Element)[]
+  | JSX.Element
+  | undefined;
 
 export const usePartygoersOverlay: ReactHook<
   UsePartygoersOverlay,
@@ -35,23 +38,25 @@ export const usePartygoersOverlay: ReactHook<
   return useMemo(
     () =>
       // @debt this can be undefined because our types are broken so check explicitly
-      showGrid
-        ? partygoers?.map(
-            (partygoer) =>
-              partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-                <MapPartygoerOverlay
-                  key={partygoer.id}
-                  partygoer={partygoer}
-                  venueId={venueId}
-                  myUserUid={userUid ?? ""} // @debt fix this to be less hacky
-                  totalRows={rows}
-                  totalColumns={columns}
-                  withMiniAvatars={withMiniAvatars}
-                  setSelectedUserProfile={setSelectedUserProfile}
-                />
-              )
-          )
-        : [],
+      showGrid ? (
+        partygoers?.map(
+          (partygoer) =>
+            partygoer?.id && ( // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
+              <MapPartygoerOverlay
+                key={partygoer.id}
+                partygoer={partygoer}
+                venueId={venueId}
+                myUserUid={userUid ?? ""} // @debt fix this to be less hacky
+                totalRows={rows}
+                totalColumns={columns}
+                withMiniAvatars={withMiniAvatars}
+                setSelectedUserProfile={setSelectedUserProfile}
+              />
+            )
+        )
+      ) : (
+        <div />
+      ),
     [
       showGrid,
       partygoers,

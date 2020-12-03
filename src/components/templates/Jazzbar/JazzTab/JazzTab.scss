@@ -224,8 +224,8 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
-    grid-column: 1 / span 3;
-    grid-row: 1 / span 2;
+    grid-column: 1 / span 6;
+    grid-row: 1 / span 3;
 
     .reaction {
       font-size: 44px;
@@ -286,7 +286,7 @@
 
 .participants-container {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   grid-gap: 1rem;
 }
 

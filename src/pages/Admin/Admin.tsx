@@ -99,7 +99,7 @@ const VenueList: React.FC<VenueListProps> = ({
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venue.rooms.map((room, idx) => (
+                {venue.rooms?.map((room, idx) => (
                   <li
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}

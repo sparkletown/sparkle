@@ -15,8 +15,10 @@
   }
 
   .video-chat-wrapper {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    margin: 1rem 0;
+    grid-template-columns: repeat(15, 1fr);
+    grid-gap: 1rem;
   }
   .title-sidebar {
     font-size: 22px;

@@ -274,6 +274,11 @@ interface DetailsFormLeftProps {
   formError: boolean;
 }
 
+const backgroundTextByVenue: Record<string, string> = {
+  [VenueTemplate.themecamp]: "Theme Camp",
+  [VenueTemplate.partymap]: "Party Map",
+};
+
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
   const {
     editing,
@@ -446,7 +451,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
             <>
               <h4 className="italic" style={{ fontSize: "20px" }}>
-                {`Choose the background for your Theme Camp`}
+                {`Choose the background for your ${
+                  backgroundTextByVenue[templateID] ?? "Experience"
+                }`}
               </h4>
               <ImageCollectionInput
                 collectionPath={"assets/mapBackgrounds"}
@@ -572,6 +579,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             <span className="slider round"></span>
           </label>
         </div>
+
         {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
             <h4 className="italic" style={{ fontSize: "20px" }}>
@@ -588,6 +596,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </label>
           </div>
         )}
+
+        <div className="toggle-room">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Show Rangers support
+          </h4>
+          <label id="showRangers" className="switch">
+            <input
+              type="checkbox"
+              id="showRangers"
+              name="showRangers"
+              ref={register}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid && (
@@ -623,13 +647,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         <div className="input-container">
           <h4 className="italic" style={{ fontSize: "20px" }}>
-            Enter the ID of the venue you would like for the &quot;back&quot;
-            button
+            Enter the parent venue ID, for the &quot;back&quot; button to go to,
+            and for sharing events in the schedule
           </h4>
           <div style={{ fontSize: "16px" }}>
-            The nav bar can show a &quot;back&quot; button. Enter the venue ID
-            you wish to use. A venue ID is the part of the URL after /in/, so
-            eg. for sparkle.space/in/abcdef you would enter abcdef below
+            The nav bar can show a &quot;back&quot; button if you enter an ID
+            here. Clicking &quot;back&quot; will return the user to the venue
+            whose ID you enter. Additionally, the events you add here will be
+            shown to users while they are on all other venues which share the
+            parent venue ID you enter here, as well as in the parent venue. The
+            value is a venue ID. Enter the venue ID you wish to use. A venue ID
+            is the part of the URL after /in/, so eg. for
+            sparkle.space/in/abcdef you would enter abcdef below
           </div>
           <input
             type="text"

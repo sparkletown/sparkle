@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@bugsnag/js": "^7.5.1",
+    "@bugsnag/plugin-react": "^7.3.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.13.0",
@@ -83,7 +85,8 @@
     "cy:install": "cypress install",
     "cy:run": "cypress run",
     "firebase": "npx --no-install -- firebase",
-    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions"
+    "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions",
+    "browserslist:update-db": "npx browserslist@latest --update-db"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -126,7 +129,7 @@
     "cypress": "^4.11.0",
     "cypress-file-upload": "^4.0.7",
     "eslint-config-react-app": "^5.2.1",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",

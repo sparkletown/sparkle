@@ -90,7 +90,7 @@ export const Map: React.FC<PropsType> = ({
       totalColumns: columns,
     });
 
-    return venue.rooms.filter(roomHitFilter);
+    return venue.rooms?.filter(roomHitFilter);
   }, [currentPosition, rows, columns, venue.rooms]);
 
   const detectRoomsOnMove = useCallback(() => {
@@ -102,7 +102,7 @@ export const Map: React.FC<PropsType> = ({
       }
     }
 
-    roomsHit.forEach((room) => {
+    roomsHit?.forEach((room) => {
       setSelectedRoom(room);
       setIsRoomModalOpen(true);
     });
@@ -214,7 +214,7 @@ export const Map: React.FC<PropsType> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms.map((room) => (
+      venue.rooms?.map((room) => (
         <PartyMapRoomOverlay
           key={room.title}
           venue={venue}
@@ -249,8 +249,8 @@ export const Map: React.FC<PropsType> = ({
               gridTemplateRows: `repeat(${rows}, 1fr)`,
             }}
           >
-            {showGrid && mapGrid}
-            {showGrid && partygoersOverlay}
+            {mapGrid}
+            {partygoersOverlay}
             {roomOverlay}
           </div>
 

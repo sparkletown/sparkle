@@ -30,7 +30,7 @@ export interface Venue {
   name: string;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
-  host: {
+  host?: {
     icon: string;
   };
   profile_questions: Question[];
@@ -75,6 +75,11 @@ export interface Venue {
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
+  requiresTicketCode?: boolean;
+  requiresDateOfBirth?: boolean;
+  requiresEmailVerification?: boolean;
+  ticketUrl?: string;
+  showRangers?: boolean;
 }
 
 export interface VenueConfig {

@@ -25,7 +25,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
   return (
     <div className="rooms-list-container">
       <div className="room-stats">
-        <div className="rooms-counter">{rooms.length} Rooms</div>
+        <div className="rooms-counter">{rooms?.length ?? 0} Rooms</div>
         <div className="add-room-button">
           {canHaveSubvenues(venue) && (
             <Link
