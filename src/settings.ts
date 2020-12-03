@@ -9,9 +9,32 @@ import {
 } from "./secrets";
 import { CSSProperties } from "react";
 
+export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
+export const SPARKLE_TERMS_AND_CONDITIONS_URL =
+  "https://sparklespaces.com/terms-of-use/";
+export const SPARKLE_PRIVACY_POLICY =
+  "https://sparklespaces.com/privacy-policy/";
+
+export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
+export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
+  "https://sparklever.se/terms-and-conditions";
+export const SPARKLEVERSE_PRIVACY_POLICY =
+  "https://sparklever.se/privacy-policy/";
+
+export const HOMEPAGE_URL = IS_BURN
+  ? SPARKLEVERSE_HOMEPAGE_URL
+  : SPARKLE_HOMEPAGE_URL;
+
+export const TERMS_AND_CONDITIONS_URL = IS_BURN
+  ? SPARKLEVERSE_TERMS_AND_CONDITIONS_URL
+  : SPARKLE_TERMS_AND_CONDITIONS_URL;
+
+export const PRIVACY_POLICY = IS_BURN
+  ? SPARKLEVERSE_PRIVACY_POLICY
+  : SPARKLE_PRIVACY_POLICY;
+
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
-export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const MEMRISE_LOGO_URL = "/memrise-logo.png";
@@ -35,9 +58,6 @@ export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
-export const HOMEPAGE_URL = "https://sparklespaces.com/";
-export const TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
