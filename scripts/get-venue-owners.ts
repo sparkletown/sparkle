@@ -29,10 +29,10 @@ admin.initializeApp({
 
 (async () => {
   const { users, pageToken } = await admin.auth().listUsers(1000);
-  
+
   const allUsers = [...users];
   let nextPageToken = pageToken;
-  
+
   while (nextPageToken) {
     const { users, pageToken } = await admin
       .auth()
