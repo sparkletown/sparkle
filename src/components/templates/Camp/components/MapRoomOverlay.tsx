@@ -2,12 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import { IS_BURN } from "secrets";
 import { retainAttendance } from "store/actions/Attendance";
-import {
-  getExtraLinkProps,
-  getRoomUrl,
-  isExternalUrl,
-  openRoomUrl,
-} from "utils/url";
+import { getRoomUrl } from "utils/url";
 
 import { Attendances } from "types/Attendances";
 import { CampRoomData } from "types/CampRoomData";
