@@ -1,0 +1,26 @@
+@import "scss/constants";
+
+.footer-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  position: fixed;
+  height: $footer-height;
+  bottom: 0;
+  left: 0;
+  z-index: z(footer);
+  width: 100%;
+  background-color: $black;
+  padding-left: 30px;
+  padding-right: 30px;
+
+  & > * {
+    padding: 0 0.5em;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
