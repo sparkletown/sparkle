@@ -28,7 +28,7 @@ export const ArtPiece = () => {
       <BannerMessage venue={venue} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
-          venueLogoPath={venue?.host.icon ?? ""}
+          venueLogoPath={venue?.host?.icon ?? ""}
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >

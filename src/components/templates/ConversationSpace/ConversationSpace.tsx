@@ -45,7 +45,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
   return (
     <>
       <InformationLeftColumn
-        venueLogoPath={venue?.host.icon ?? ""}
+        venueLogoPath={venue?.host?.icon ?? ""}
         isLeftColumnExpanded={isLeftColumnExpanded}
         setIsLeftColumnExpanded={setIsLeftColumnExpanded}
       >
