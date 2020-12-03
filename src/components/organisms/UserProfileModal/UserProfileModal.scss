@@ -37,6 +37,7 @@ $modal-max-width: 540px;
   .private-chat-container {
     .chat-container {
       height: 300px;
+      overflow-wrap: break-word;
     }
   }
 
