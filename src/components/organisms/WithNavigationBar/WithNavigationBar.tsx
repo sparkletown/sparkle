@@ -1,5 +1,8 @@
 import React from "react";
+
 import NavBar from "components/molecules/NavBar";
+import { Footer } from "components/molecules/Footer";
+
 import "./WithNavigationBar.scss";
 
 interface PropsType {
@@ -18,6 +21,7 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
     <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
       {children}
     </div>
+    <Footer />
   </>
 );
 
