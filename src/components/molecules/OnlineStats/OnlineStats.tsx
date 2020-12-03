@@ -210,7 +210,7 @@ const OnlineStats: React.FC = () => {
                                 <div className="img-container">
                                   <img
                                     className="venue-icon"
-                                    src={venue.host.icon}
+                                    src={venue.host?.icon}
                                     alt={venue.name}
                                     title={venue.name}
                                   />
@@ -256,7 +256,7 @@ const OnlineStats: React.FC = () => {
                           <div className="img-container">
                             <img
                               className="venue-icon"
-                              src={venue.host.icon}
+                              src={venue.host?.icon}
                               alt={venue.name}
                               title={venue.name}
                             />

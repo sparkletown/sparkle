@@ -36,6 +36,8 @@ export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const HOMEPAGE_URL = "https://sparklespaces.com/";
+export const TERMS_AND_CONDITIONS_URL =
+  "https://sparklever.se/terms-and-conditions";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -109,7 +111,10 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
 ];
 
-export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+export const BACKGROUND_IMG_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
 
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,

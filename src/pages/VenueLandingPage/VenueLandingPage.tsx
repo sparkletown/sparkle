@@ -140,7 +140,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img className="host-icon" src={venue.host.icon} alt="host" />
+              <img className="host-icon" src={venue.host?.icon} alt="host" />
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">
