@@ -10,7 +10,13 @@ import "./Footer.scss";
 
 export const Footer = () => (
   <div className="footer-wrapper">
-    <a href={TERMS_AND_CONDITIONS_URL}>Terms of Use</a>
+    <a
+      href={TERMS_AND_CONDITIONS_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Terms of Use
+    </a>
 
     <div>|</div>
 
@@ -19,7 +25,12 @@ export const Footer = () => (
     <div>|</div>
 
     <div>
-      <a className="powered-by" href={HOMEPAGE_URL}>
+      <a
+        className="powered-by"
+        href={HOMEPAGE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Made with{" "}
         <span role="img" aria-label="heart">
           ❤️

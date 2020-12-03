@@ -39,11 +39,7 @@ export const openRoomUrl = (url: string) => {
 };
 
 export const openUrl = (url: string) => {
-  if (!isExternalUrl(url)) {
-    window.open(url, "_blank", "noopener,noreferrer");
-  } else {
-    window.location.href = url;
-  }
+  window.open(url, "_blank", "noopener,noreferrer");
 };
 
 export const externalUrlAdditionalProps = {

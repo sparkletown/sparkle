@@ -97,12 +97,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
     (e) => {
       e.stopPropagation();
 
-      if (isExternalUrl(room.url)) {
-        openRoomUrl(room.url);
-      } else {
-        window.location.href = getRoomUrl(room.url);
-      }
-
+      openRoomUrl(room.url);
       enterCampRoom(room);
     },
     [enterCampRoom, room]
