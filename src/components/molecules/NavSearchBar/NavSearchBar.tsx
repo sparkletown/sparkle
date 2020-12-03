@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
+import { WithId } from "utils/id";
 import {
   currentVenueSelectorData,
   partygoersSelector,
@@ -16,7 +17,7 @@ import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
   rooms: CampRoomData[];
-  users: User[];
+  users: readonly WithId<User>[];
   events: VenueEvent[];
 }
 
@@ -27,7 +28,9 @@ const NavSearchBar = () => {
     users: [],
     events: [],
   });
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
   const venue = useSelector(currentVenueSelectorData);
