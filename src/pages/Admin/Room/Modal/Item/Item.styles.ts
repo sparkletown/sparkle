@@ -40,21 +40,32 @@ export const Description = styled.p`
 
 export const TitleWrapper = styled.div`
   padding: 0 1rem;
+  grid-area: title;
 
   text-align: left;
 `;
 
 export const Header = styled.div`
-  display: flex;
+  display: grid;
   padding: 1em;
-  justify-content: space-between;
+  grid-template-columns: 1fr 5fr 1fr;
+  grid-template-areas: "icon title plus";
   align-items: center;
 
   svg {
+    display: flex;
+    justify-self: end;
+
     font-size: 3rem;
 
     cursor: pointer;
   }
+`;
+
+export const ItemIcon = styled.img`
+  width: 100%;
+  grid-area: icon;
+  align-self: start;
 `;
 
 export const InputWrapper = styled.div`
@@ -62,4 +73,5 @@ export const InputWrapper = styled.div`
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
   align-items: flex-start;
+  flex-direction: column;
 `;

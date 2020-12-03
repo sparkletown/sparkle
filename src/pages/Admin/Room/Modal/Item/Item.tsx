@@ -1,25 +1,45 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 // import { RoomModalItemProps } from './Item.types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import * as S from "./Item.styles";
 import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faChevronCircleDown,
+  faChevronCircleUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
 import { createRoom } from "api/admin";
+import ToggleSwitch from "components/atoms/ToggleSwitch";
+import { CustomInputsType } from "settings";
 
 const RoomModalItem: React.FC<any> = ({
   name,
-  description,
   icon,
+  description,
   venueId,
   user,
   onSubmitHandler,
+  template,
+  editValues,
+  customInputs,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const toggleIsOpen = () => setIsOpen(!isOpen);
+
+  const initialRender = useRef(true);
+
+  useEffect(() => {
+    if (initialRender.current && editValues) {
+      setIsOpen(true);
+    }
+  }, [editValues]);
+
+  useEffect(() => {
+    initialRender.current = false;
+  });
 
   const {
     register,
@@ -27,7 +47,12 @@ const RoomModalItem: React.FC<any> = ({
     handleSubmit,
     setValue,
     formState: { isSubmitting },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: editValues ? editValues.title : "",
+      description: editValues ? editValues.description : "",
+    },
+  });
 
   const values = watch();
 
@@ -35,13 +60,17 @@ const RoomModalItem: React.FC<any> = ({
     if (!user || !venueId) return;
 
     try {
-      await createRoom(values, venueId, user);
+      const valuesWithTemplate = {
+        ...values,
+        template,
+      };
+      await createRoom(valuesWithTemplate, venueId, user);
 
       onSubmitHandler();
     } catch (err) {
       console.error(err);
     }
-  }, [onSubmitHandler, user, values, venueId]);
+  }, [onSubmitHandler, template, user, values, venueId]);
 
   const handleOnChange = (val: string) => setValue("image_url", val, false);
 
@@ -64,14 +93,6 @@ const RoomModalItem: React.FC<any> = ({
     </S.InputWrapper>
   );
 
-  const renderZoomUrlInput = () => (
-    <S.InputWrapper>
-      <span>The Zoom url</span>
-
-      <input type="text" ref={register} name="zoom_url" />
-    </S.InputWrapper>
-  );
-
   const renderLogoInput = () => (
     <S.InputWrapper>
       <span>How you want the room to appear on the map</span>
@@ -82,14 +103,36 @@ const RoomModalItem: React.FC<any> = ({
         forwardRef={register}
         small
         nameWithUnderscore
+        imgUrl={editValues ? editValues.image_url : ""}
       />
+    </S.InputWrapper>
+  );
+
+  const renderImageSizes = () => (
+    <S.InputWrapper>
+      <span>Lock aspect ratio</span>
+      <ToggleSwitch name="lock_aspect_ratio" />
+
+      <span>Width (%):</span>
+      <input ref={register} name="width_percent" type="number" />
+
+      <span>Height (%):</span>
+      <input ref={register} name="height_percent" type="number" />
+    </S.InputWrapper>
+  );
+
+  const renderCustomInput = (input: CustomInputsType) => (
+    <S.InputWrapper key={input.name}>
+      <span>{input.title}</span>
+
+      <input type="text" name={input.name} ref={register} />
     </S.InputWrapper>
   );
 
   return (
     <S.Wrapper isOpen={isOpen}>
       <S.Header>
-        <FontAwesomeIcon icon={icon} style={{ gridArea: "icon" }} />
+        <S.ItemIcon src={icon} alt="venue thumb" />
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
@@ -97,24 +140,28 @@ const RoomModalItem: React.FC<any> = ({
         </S.TitleWrapper>
 
         <FontAwesomeIcon
-          icon={faPlusCircle}
+          icon={isOpen ? faChevronCircleUp : faChevronCircleDown}
           onClick={() => toggleIsOpen()}
           style={{ gridArea: "plus" }}
         />
       </S.Header>
 
       <S.InnerWrapper>
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          onChange={() => console.log("Changing: ", values)}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           {renderNameInput()}
           {renderDescriptionInput()}
 
-          {renderZoomUrlInput()}
-          {renderLogoInput()}
+          {customInputs &&
+            customInputs.map((input: CustomInputsType) =>
+              renderCustomInput(input)
+            )}
 
-          <Button type="submit">Add the room</Button>
+          {renderLogoInput()}
+          {/* {renderImageSizes()} */}
+
+          <Button type="submit" disabled={isSubmitting}>
+            Add the room
+          </Button>
         </form>
       </S.InnerWrapper>
     </S.Wrapper>

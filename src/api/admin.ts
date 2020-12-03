@@ -330,10 +330,8 @@ const createFirestoreRoomInput = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: urlRoomName,
     ...imageInputData,
   };
-
   return firestoreRoomInput;
 };
 

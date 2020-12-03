@@ -42,7 +42,7 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent_v2";
+import AdminEditComponent from "./AdminEditComponent";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
@@ -68,7 +68,7 @@ const VenueList: React.FC<VenueListProps> = ({
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin_v2/venue/creation" className="btn btn-primary">
+        <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
