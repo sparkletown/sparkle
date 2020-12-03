@@ -5,6 +5,7 @@ import firebase from "firebase";
 import VenueHero from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
+import RoomEdit from "pages/Admin/Room/Edit";
 import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
 
@@ -22,6 +23,7 @@ import ToggleSwitch from "components/atoms/ToggleSwitch";
 import { updateVenue_v2 } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { Form } from "react-bootstrap";
+import { RoomData_v2 } from "types/CampRoomData";
 
 type Owner = {
   id: string;
@@ -49,6 +51,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const { user } = useUser();
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  // EDITING ROOM
+  const [editingRoom, setEditingRoom] = useState<RoomData_v2 | null>(null);
+
   const history = useHistory();
 
   useEffect(() => {
@@ -147,6 +153,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     </Form>
   );
 
+  const handleEditRoom = (room: RoomData_v2) => {
+    setEditingRoom(room);
+  };
+
   return (
     <S.Container>
       <S.Header>
@@ -186,7 +196,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       </S.Header>
 
       <S.Main>
-        {renderShowGrid()}
         <MapPreview
           venueId={venueId}
           venueName={name}
@@ -202,17 +211,23 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
                 Add a room
               </Button>
             </S.RoomActions>
-            {renderRoomVisibility()}
           </>
         )}
 
         {!!rooms && !!mapBackgroundImageUrl && (
           <S.RoomWrapper>
             {rooms.map((room: any, index: number) => (
-              <RoomCard key={index} {...room} />
+              <RoomCard
+                key={index}
+                {...room}
+                editHandler={() => handleEditRoom(room)}
+              />
             ))}
           </S.RoomWrapper>
         )}
+
+        {renderShowGrid()}
+        {renderRoomVisibility()}
       </S.Main>
 
       <RoomModal
@@ -221,6 +236,14 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         onSubmitHandler={() => setModalOpen(false)}
         onClickOutsideHandler={() => setModalOpen(false)}
       />
+
+      {editingRoom && (
+        <RoomEdit
+          isVisible={!!editingRoom}
+          onClickOutsideHandler={() => setEditingRoom(null)}
+          room={editingRoom}
+        />
+      )}
 
       <EventModal isVisible={false} />
     </S.Container>

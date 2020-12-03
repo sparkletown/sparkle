@@ -5,7 +5,12 @@ import { RoomCardProps } from "./RoomCard.types";
 import * as S from "./RoomCard.styles";
 import Button from "components/atoms/Button";
 
-const RoomCard: React.FC<any> = ({ title, description, image_url }) => {
+const RoomCard: React.FC<any> = ({
+  title,
+  description,
+  image_url,
+  editHandler,
+}) => {
   return (
     <S.Wrapper>
       <S.Header>
@@ -19,7 +24,7 @@ const RoomCard: React.FC<any> = ({ title, description, image_url }) => {
         </S.TitleWrapper>
 
         <S.ButtonWrapper>
-          <Button text="Edit room" />
+          <Button text="Edit room" onClick={() => editHandler()} />
         </S.ButtonWrapper>
       </S.Header>
 
