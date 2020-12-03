@@ -25,12 +25,7 @@ export const Footer = () => (
     <div>|</div>
 
     <div>
-      <a
-        className="powered-by"
-        href={HOMEPAGE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={HOMEPAGE_URL} target="_blank" rel="noopener noreferrer">
         Made with{" "}
         <span role="img" aria-label="heart">
           ❤️
