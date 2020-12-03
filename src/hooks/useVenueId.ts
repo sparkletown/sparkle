@@ -8,6 +8,14 @@ type VenueRoute = {
 export const useVenueId: () => string | undefined = () => {
   const history = useHistory();
   let match = matchPath<VenueRoute>(history.location.pathname, {
+    path: "/e/:step/:venueId",
+  });
+
+  if (match && match.params.venueId) {
+    return match.params.venueId;
+  }
+
+  match = matchPath<VenueRoute>(history.location.pathname, {
     path: "/in/:venueId",
   });
 
