@@ -92,8 +92,8 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
     (e) => {
       e.stopPropagation();
 
-      openRoomUrl(room.url);
       enterCampRoom(room);
+      openRoomUrl(room.url);
     },
     [enterCampRoom, room]
   );
