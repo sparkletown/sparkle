@@ -1,9 +1,12 @@
-# For Github User
-# github_username: "slack_member_id"
+# See https://github.com/abeyuya/actions-mention-to-slack#example-usage
 
+# GitHub -> Slack Users
 thecadams: U016T2173B8
 IvanBuljovcic: U01FPLZ0Y8Y
 denisdimitrov: U01F6153AFN
 0xdevalias: U01EC2DTD8F
-# For Github Team
-# github_teamname: "slack_member_id"
+
+# Github Teams -> Slack Groups
+sparkletown/developers: S01G22SV2KD
+sparkletown/tech-leads: S01GRRLFM88
+sparkletown/security: S01G81JCJS0
