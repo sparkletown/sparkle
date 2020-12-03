@@ -1,6 +1,6 @@
 # Scripts: Scripts for variosu Sparkly things
 
-Most script shave usage instructions.
+Most scripts have usage instructions.
 
 However some of these scripts require a file called `prodAccountKey.json`.
 
