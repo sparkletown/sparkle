@@ -28,11 +28,11 @@ admin.initializeApp({
 });
 
 (async () => {
-  const allUsers: admin.auth.UserRecord[] = [];
-  let nextPageToken: string | undefined;
   const { users, pageToken } = await admin.auth().listUsers(1000);
-  allUsers.push(...users);
-  nextPageToken = pageToken;
+  
+  const allUsers = [...users];
+  let nextPageToken = pageToken;
+  
   while (nextPageToken) {
     const { users, pageToken } = await admin
       .auth()
