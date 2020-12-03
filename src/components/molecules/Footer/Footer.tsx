@@ -6,22 +6,21 @@ import "./Footer.scss";
 
 export const Footer = () => (
   <div className="footer-wrapper">
-    <a className="terms-and-conditions" href={TERMS_AND_CONDITIONS_URL}>
-      Terms & Conditions
-    </a>
-    <div className="footer-separator">|</div>
+    <a href={TERMS_AND_CONDITIONS_URL}>Terms of Use</a>
+
+    <div>|</div>
+
     <div>
-      Made with{" "}
-      <span role="img" aria-label="heart">
-        ❤️
-      </span>
       <a className="powered-by" href={HOMEPAGE_URL}>
-        powered by Sparkle
+        Made with{" "}
+        <span role="img" aria-label="heart">
+          ❤️
+        </span>{" "}
+        Powered by Sparkle{" "}
+        <span role="img" aria-label="sparkle">
+          ✨
+        </span>
       </a>
-      <span role="img" aria-label="sparkle">
-        ✨
-      </span>
     </div>
-    <div></div>
   </div>
 );
