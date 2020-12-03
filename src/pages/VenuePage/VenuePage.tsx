@@ -298,7 +298,7 @@ const VenuePage = () => {
     }
   }
 
-  if (profile === undefined) {
+  if (!user) {
     return <LoadingPage />;
   }
 
