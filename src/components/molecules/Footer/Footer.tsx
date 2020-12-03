@@ -2,6 +2,8 @@ import React from "react";
 
 import { HOMEPAGE_URL, TERMS_AND_CONDITIONS_URL } from "settings";
 
+import "./Footer.scss";
+
 export const Footer = () => (
   <div className="footer-wrapper">
     <a className="terms-and-conditions" href={TERMS_AND_CONDITIONS_URL}>
