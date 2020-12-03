@@ -258,7 +258,8 @@ const VenuePage = () => {
   }
 
   const hasEntrance = isTruthy(venue?.entrance);
-  if (hasEntrance) {
+  const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+  if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 

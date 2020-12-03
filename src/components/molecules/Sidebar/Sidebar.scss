@@ -6,7 +6,7 @@ $dark: #19181a;
 
 .sidebar-container {
   position: fixed;
-  z-index: 90;
+  z-index: z(sidebar);
   right: 0;
   top: 60px;
   width: 360px;
