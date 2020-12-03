@@ -45,12 +45,7 @@ admin.initializeApp({
     doc.data().codes_used.map((c) => codesUsed.push(c));
   });
 
-  const emailsWhoLoggedIn = [];
-  codes.forEach((code) => {
-    if (codesUsed.includes(code)) {
-      emailsWhoLoggedIn.push(code);
-    }
-  });
+  const emailsWhoLoggedIn = codes.filter(code => codesUsed.includes(code));
 
   console.log(
     `Email addresses of users who logged in (total ${emailsWhoLoggedIn.length}):`
