@@ -30,7 +30,7 @@ export interface Venue {
   name: string;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
-  host: {
+  host?: {
     icon: string;
   };
   profile_questions: Question[];

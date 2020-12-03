@@ -8,24 +8,24 @@ export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
 export interface PartyMapVenue extends Venue {
   id: string;
   template: VenueTemplate.partymap;
-  host: {
+  host?: {
     url: string;
     icon: string;
     name: string;
   };
-  description: {
+  description?: {
     text: string;
     program_url?: string;
   };
-  start_utc_seconds: number;
-  duration_hours: number;
-  entrance_hosted_hours: number;
-  party_name: string;
-  unhosted_entry_video_url: string;
-  map_url: string;
-  map_viewbox: string;
-  password: string;
+  start_utc_seconds?: number;
+  duration_hours?: number;
+  entrance_hosted_hours?: number;
+  party_name?: string;
+  unhosted_entry_video_url?: string;
+  map_url?: string;
+  map_viewbox?: string;
+  password?: string;
   admin_password?: string;
-  owners: string[];
-  rooms: PartyMapRoomData[];
+  owners?: string[];
+  rooms?: PartyMapRoomData[];
 }

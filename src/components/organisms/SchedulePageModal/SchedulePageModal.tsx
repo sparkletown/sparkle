@@ -116,7 +116,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const hasParentVenue = !!parentVenue;
 
   const partyinfoImage = hasParentVenue
-    ? parentVenue?.host.icon
+    ? parentVenue?.host?.icon
     : currentVenue?.host?.icon;
 
   const titleText = hasParentVenue ? parentVenue?.name : currentVenue?.name;
