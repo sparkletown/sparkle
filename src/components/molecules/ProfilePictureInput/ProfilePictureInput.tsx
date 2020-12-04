@@ -20,6 +20,13 @@ interface PropsType {
   register: any;
 }
 
+const sparkleAvatars = [
+  "default-profile-pic-1.png",
+  "default-profile-pic-2.png",
+  "default-profile-pic-3.png",
+  "default-profile-pic-4.png",
+];
+
 const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   setValue,
   user,
@@ -58,6 +65,21 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const updateProfileAvatar = async (image: string) => {
+    // here image is url/location of image
+    const blob = `/avatars/${image}`;
+    const file = new File([blob], "profile-avatar.png", { type: "png" });
+    console.log(file, blob);
+    // const storageRef = firebase.storage().ref();
+    // // TODO: add rule to forbid other users to edit a user's image
+    // const profilePictureRef = storageRef.child(
+    //   `/users/${user.uid}/${file.name}`
+    // );
+    // const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
+    // const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
+    // setValue("pictureUrl", pictureUrlRef, true);
+  };
+
   return (
     <div className="profile-picture-upload-form">
       <div
@@ -86,7 +108,18 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>This will be your public avatar that others will see</small>
+      <small>Or pick one from our Sparkle profile pics</small>
+      <div>
+        {sparkleAvatars.map((avatar, index) => (
+          <img
+            key={`default-avatar-${index}`}
+            src={`/avatars/${avatar}`}
+            onClick={() => updateProfileAvatar(avatar)}
+            className="profile-icon profile-picture-preview"
+            alt="your profile"
+          />
+        ))}
+      </div>
       <input
         type="hidden"
         name="pictureUrl"

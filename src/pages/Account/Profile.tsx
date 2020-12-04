@@ -54,17 +54,12 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="page-container-onboarding">
       <div className="login-container">
-        <h2>Well done! Now create your profile</h2>
-        <p>
-          {IS_BURN ? (
-            <>
-              This will give you access to the {PLAYA_VENUE_NAME} and all the
-              fun venues!
-            </>
-          ) : (
-            <>This will be your public profile in the party</>
-          )}
-        </p>
+        <h2 className="login-welcome-title">
+          Well done! Now create your profile
+        </h2>
+        <div className="login-welcome-subtitle">
+          {`Don't fret, you'll be able to edit it at any time later`}
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input
@@ -100,7 +95,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Create profile"
+            value="Create my profile"
             disabled={!formState.isValid}
           />
         </form>

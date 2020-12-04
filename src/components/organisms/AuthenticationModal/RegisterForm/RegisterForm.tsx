@@ -10,6 +10,8 @@ import { codeCheckUrl } from "utils/url";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { venueSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
+import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -37,6 +39,12 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
+const sparkleTermsAndConditions = {
+  name: `I agree to Sparkle's terms and conditions`,
+  text: `I agree to Sparkle's terms and conditions`,
+  link: SPARKLE_TERMS_AND_CONDITIONS_URL,
+};
+
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   displayPasswordResetForm,
@@ -57,6 +65,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     formState,
     setError,
     clearError,
+    watch,
   } = useForm<RegisterFormData>({
     mode: "onChange",
   });
@@ -114,20 +123,16 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
+  const termsAndConditions = venue.termsAndConditions;
+
   return (
     <div className="form-container">
-      <div className="secondary-action">
-        <div>First, create your account</div>
+      <div>
+        <div className="register-form-title">First, create your account</div>
         <div>This will give you access to all sorts of events in Sparkle</div>
       </div>
-
-      <h2>Create an account!</h2>
-
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        onChange={clearBackendErrors}
-        className="form"
-      >
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group">
           <input
             name="email"
@@ -179,11 +184,73 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
         )}
-
-        {errors.backend && (
-          <span className="input-error">{errors.backend.message}</span>
-        )}
-
+        <div className="input-group" key={sparkleTermsAndConditions.name}>
+          <label
+            htmlFor={sparkleTermsAndConditions.name}
+            className={`checkbox ${
+              watch(sparkleTermsAndConditions.name) && "checkbox-checked"
+            }`}
+          >
+            {sparkleTermsAndConditions.link && (
+              <a
+                href={sparkleTermsAndConditions.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {sparkleTermsAndConditions.text}
+              </a>
+            )}
+            {!sparkleTermsAndConditions.link && sparkleTermsAndConditions.text}
+          </label>
+          <input
+            type="checkbox"
+            name={sparkleTermsAndConditions.name}
+            id={sparkleTermsAndConditions.name}
+            ref={register({
+              required: true,
+            })}
+          />
+          {/* @ts-ignore @debt term should be typed if possible */}
+          {errors?.[sparkleTermsAndConditions.name].type === "required" && (
+            <span className="input-error">Required</span>
+          )}
+        </div>
+        {hasTermsAndConditions &&
+          termsAndConditions.map((term) => {
+            return (
+              <div className="input-group" key={term.name}>
+                <label
+                  htmlFor={term.name}
+                  className={`checkbox ${
+                    watch(term.name) && "checkbox-checked"
+                  }`}
+                >
+                  {term.link && (
+                    <a
+                      href={term.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {term.text}
+                    </a>
+                  )}
+                  {!term.link && term.text}
+                </label>
+                <input
+                  type="checkbox"
+                  name={term.name}
+                  id={term.name}
+                  ref={register({
+                    required: true,
+                  })}
+                />
+                {/* @ts-ignore @debt term should be typed if possible */}
+                {errors?.[term.name].type === "required" && (
+                  <span className="input-error">Required</span>
+                )}
+              </div>
+            );
+          })}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
