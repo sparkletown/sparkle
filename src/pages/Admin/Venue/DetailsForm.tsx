@@ -664,6 +664,51 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </div>
         )}
 
+        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
+          <>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of seats columns
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={25}
+                min={5}
+                name="auditoriumColumns"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder="Number of seats columns"
+              />
+              {errors.auditoriumColumns ? (
+                <span className="input-error">
+                  {errors.auditoriumColumns.message}
+                </span>
+              ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of seats rows
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={19}
+                name="auditoriumRows"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder="Number of seats rows"
+                min={5}
+              />
+              {errors.auditoriumRows ? (
+                <span className="input-error">
+                  {errors.auditoriumRows.message}
+                </span>
+              ) : null}
+            </div>
+          </>
+        )}
+
         <div className="toggle-room">
           <h4 className="italic" style={{ fontSize: "20px" }}>
             Show Rangers support
