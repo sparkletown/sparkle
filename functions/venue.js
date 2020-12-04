@@ -82,6 +82,8 @@ const createVenueData = (data, context) => {
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
+    attendeesTitle: data.attendeesTitle || "partygoers",
+    chatTitle: data.chatTitle || "Party",
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -450,6 +452,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
   }
 
   switch (updated.template) {

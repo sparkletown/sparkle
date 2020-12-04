@@ -103,6 +103,12 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
+    attendeesTitle: Yup.string().min(
+      3,
+      "Title must be a minimum of 3 characters"
+    ),
+    chatTitle: Yup.string().min(3, "Title must be a minimum of 3 characters"),
+
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     description: Yup.string().required("Required"),
@@ -169,6 +175,8 @@ export const editVenueCastSchema = Yup.object()
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("columns", "columns")
+  .from("attendeesTitle", "attendeesTitle")
+  .from("chatTitle", "chatTitle")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
