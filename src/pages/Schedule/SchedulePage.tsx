@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useMemo } from "react";
+import Bugsnag from "@bugsnag/js";
+import React, { useState, useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import firebase from "firebase/app";
 import { OnlineStatsData } from "types/OnlineStatsData";
@@ -8,6 +9,7 @@ import "./SchedulePage.scss";
 import { Link } from "react-router-dom";
 import { DEFAULT_VENUE } from "settings";
 import { venueInsideUrl } from "utils/url";
+import { useInterval } from "hooks/useInterval";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -26,27 +28,18 @@ const DAYS_AHEAD = 100;
 
 export const SchedulePage = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
-  const [, setLoaded] = useState(false);
 
-  useEffect(() => {
-    const getOnlineStats = firebase
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
-          setLoaded(true);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
+      .httpsCallable("stats-getOnlineStats")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
+
+        setOpenVenues(openVenues);
+      })
+      .catch(Bugsnag.notify);
+  }, 5 * 60 * 1000);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
