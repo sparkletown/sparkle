@@ -131,7 +131,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          <Badges user={userProfile} venue={venue} />
+          <Badges user={userProfile} currentVenue={venue} />
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox
@@ -147,9 +147,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   );
 };
 
-const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
+const Badges: React.FC<{ user: WithId<User>; currentVenue: WithId<Venue> }> = ({
   user,
-  venue,
+  currentVenue,
 }) => {
   useFirestoreConnect([
     {
@@ -165,7 +165,7 @@ const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
   const venues = useSelector(orderedVenuesSelector);
 
   const { relatedVenues } = useConnectRelatedVenues({
-    venueId: venue.id,
+    venueId: currentVenue.id,
     withEvents: false,
   });
   const relatedVenueIds = relatedVenues.map((venue) => venue.id);
@@ -182,9 +182,10 @@ const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
   const venuesVisited = useMemo(() => {
     if (!visits) return undefined;
     return visits.filter(
-      (visit) => visit.id === venue.id || relatedVenueIds.includes(visit.id)
+      (visit) =>
+        currentVenue.id === visit.id || relatedVenueIds.includes(visit.id)
     ).length;
-  }, [visits, venue, relatedVenueIds]);
+  }, [visits, currentVenue, relatedVenueIds]);
 
   const badges = useMemo(() => {
     if (!visits || !venues) return [];
@@ -192,7 +193,11 @@ const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
       .filter((visit) => visit.id !== PLAYA_VENUE_NAME) // no badge for the Playa. Also does not have a logo
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-        if (!venue) return undefined;
+        if (
+          !venue ||
+          (currentVenue.id !== venue.id && !relatedVenueIds.includes(venue.id))
+        )
+          return undefined;
 
         if (room) {
           return {
@@ -210,7 +215,7 @@ const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
         };
       })
       .filter((b) => b !== undefined);
-  }, [visits, venues]);
+  }, [visits, venues, currentVenue, relatedVenueIds]);
 
   if (!visits) {
     return <>Visit venues to collect badges!</>;
@@ -221,7 +226,7 @@ const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
       <div className="visits">
         <div className="visit-item">
           <span className="visit-item__value">{playaTime} hrs</span>
-          <span className="visit-item__label">spent in SparkleVerse</span>
+          <span className="visit-item__label">time spent in Sparkle</span>
         </div>
         <div className="separator"></div>
         <div className="visit-item">
