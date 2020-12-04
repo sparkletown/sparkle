@@ -151,19 +151,9 @@ export const dateEventTimeFormat = (date) => {
   return hh + ":" + mm;
 };
 
-export const getCurrentTimeInUTCSeconds = () => {
-  const date = new Date();
-  return (
-    Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      date.getUTCHours(),
-      date.getUTCMinutes(),
-      date.getUTCSeconds()
-    ) / 1000
-  );
-};
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
+//   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
+export const getCurrentTimeInUTCSeconds = () => Date.now() / 1000;
 
 export const roundToNearestHour = (seconds) => {
   const oneHour = 60 * 60;
