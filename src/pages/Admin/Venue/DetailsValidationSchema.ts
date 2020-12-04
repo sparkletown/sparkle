@@ -103,11 +103,8 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    attendeesTitle: Yup.string().min(
-      3,
-      "Title must be a minimum of 3 characters"
-    ),
-    chatTitle: Yup.string().min(3, "Title must be a minimum of 3 characters"),
+    attendeesTitle: Yup.string().notRequired(),
+    chatTitle: Yup.string().notRequired(),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
@@ -159,6 +156,13 @@ export const validationSchema = Yup.object()
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
+    showReactions: Yup.bool().notRequired(),
+    auditoriumColumns: Yup.number()
+      .notRequired()
+      .min(5, "Columns must be at least 5"),
+    auditoriumRows: Yup.number()
+      .notRequired()
+      .min(5, "Rows must be at least 5"),
   })
   .required();
 
@@ -174,6 +178,7 @@ export const editVenueCastSchema = Yup.object()
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
+  .from("showReactions", "showReactions")
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")
   .from("chatTitle", "chatTitle")
@@ -184,6 +189,8 @@ export const editVenueCastSchema = Yup.object()
 
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
+  .from("auditoriumColumns", "auditoriumColumns")
+  .from("auditoriumRows", "auditoriumRows")
   .from("mapIconImageUrl", "mapIconImageUrl");
 
 export const editPlacementCastSchema = Yup.object()

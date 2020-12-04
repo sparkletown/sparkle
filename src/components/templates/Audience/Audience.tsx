@@ -116,14 +116,20 @@ const MIN_ROWS = 19;
 
 // But it takes up the same amount of space.
 
-const capacity = (auditoriumSize: number) =>
-  (MIN_COLUMNS - 1 + auditoriumSize * 2) *
-  (MIN_ROWS + auditoriumSize * 2) *
-  0.75;
+const capacity = (
+  auditoriumSize: number,
+  minColumns: number,
+  minRows: number
+) =>
+  (minColumns - 1 + auditoriumSize * 2) * (minRows + auditoriumSize * 2) * 0.75;
 // Never let the auditorium get more than 80% full
-const requiredAuditoriumSize = (occupants: number) => {
+const requiredAuditoriumSize = (
+  occupants: number,
+  minColumns: number,
+  minRows: number
+) => {
   let size = 0;
-  while (size < 10 && capacity(size) * 0.8 < occupants) {
+  while (size < 10 && capacity(size, minColumns, minRows) * 0.8 < occupants) {
     size++;
   }
   return size;
@@ -134,6 +140,9 @@ export const Audience: React.FunctionComponent = () => {
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);
+
+  const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
+  const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -209,11 +218,13 @@ export const Audience: React.FunctionComponent = () => {
   });
 
   useEffect(() => {
-    setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers));
-  }, [seatedPartygoers]);
+    setAuditoriumSize(
+      requiredAuditoriumSize(seatedPartygoers, minColumns, minRows)
+    );
+  }, [minColumns, minRows, seatedPartygoers]);
 
-  const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
-  const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
+  const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
+  const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
   const isSeat = useCallback(
     (translatedRow: number, translatedColumn: number) => {

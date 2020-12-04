@@ -82,6 +82,8 @@ export interface Venue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
 }
 
 export interface VenueConfig {
