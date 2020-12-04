@@ -70,6 +70,8 @@ export type VenueInput = AdvancedVenueInput &
     parentId?: string;
     owners?: string[];
     showRangers?: boolean;
+    chatTitle?: string;
+    attendeesTitle?: string;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

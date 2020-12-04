@@ -499,6 +499,49 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             )}
           </>
         )}
+
+        {/* ATTENDEES (multiple) TITLE */}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Title of your venues attendees
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            For example: guests, attendees, partygoers.
+          </div>
+          <input
+            type="text"
+            disabled={disable}
+            name="attendeesTitle"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="Attendees title"
+          />
+          {errors.attendeesTitle && (
+            <span className="input-error">{errors.attendeesTitle.message}</span>
+          )}
+        </div>
+
+        {/* EVENT CHAT TITLE */}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Your venue type label
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            For example: Party, Event, Meeting
+          </div>
+          <input
+            type="text"
+            disabled={disable}
+            name="chatTitle"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="Event label"
+          />
+          {errors.chatTitle && (
+            <span className="input-error">{errors.chatTitle.message}</span>
+          )}
+        </div>
+
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
