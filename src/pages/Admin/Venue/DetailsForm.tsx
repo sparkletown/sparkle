@@ -39,6 +39,7 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
+  HAS_REACTIONS_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -596,6 +597,23 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 type="checkbox"
                 id={"showGrid"}
                 name={"showGrid"}
+                ref={register}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
+
+        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
+          <div className="toggle-room">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Show reactions
+            </h4>
+            <label id="showReactions" className="switch">
+              <input
+                type="checkbox"
+                id="showReactions"
+                name="showReactions"
                 ref={register}
               />
               <span className="slider round"></span>
