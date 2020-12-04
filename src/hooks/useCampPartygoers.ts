@@ -6,7 +6,7 @@ import { partygoersSelector } from "utils/selectors";
 
 import { useConnectPartyGoers } from "./useConnectPartyGoers";
 import { useSelector } from "./useSelector";
-import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
+import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 
 /**
  * Hook to retrieve a list of partygoers who were in venueName
@@ -18,13 +18,13 @@ export const useCampPartygoers = (venueName: string): WithId<User>[] => {
   useConnectPartyGoers();
   const partygoers = useSelector(partygoersSelector) ?? [];
 
-  const userLastSeenLimit = useUserLastSeenLimit();
+  const lastSeenThreshold = useUserLastSeenThreshold();
 
   return useMemo(
     () =>
       partygoers.filter(
-        (partygoer) => partygoer?.lastSeenIn?.[venueName] > userLastSeenLimit
+        (partygoer) => partygoer?.lastSeenIn?.[venueName] > lastSeenThreshold
       ),
-    [partygoers, userLastSeenLimit, venueName]
+    [partygoers, lastSeenThreshold, venueName]
   );
 };

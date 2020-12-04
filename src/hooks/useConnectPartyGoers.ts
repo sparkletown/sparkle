@@ -3,15 +3,15 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { partygoersSelector } from "utils/selectors";
 
 import { useSelector } from "./useSelector";
-import { useUserLastSeenLimit } from "./useUserLastSeenLimit";
+import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 
 export const useConnectPartyGoers = () => {
-  const userLastSeenLimit = useUserLastSeenLimit();
+  const lastSeenThreshold = useUserLastSeenThreshold();
 
   useFirestoreConnect([
     {
       collection: "users",
-      where: [["lastSeenAt", ">", userLastSeenLimit]],
+      where: [["lastSeenAt", ">", lastSeenThreshold]],
       storeAs: "partygoers",
     },
   ]);
