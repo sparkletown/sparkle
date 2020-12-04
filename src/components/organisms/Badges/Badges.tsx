@@ -98,7 +98,7 @@ export const Badges: React.FC<{
           </span>
           <span className="visit-item__label">Time spent in Sparkle</span>
         </div>
-        <div className="separator"></div>
+        <div className="separator" />
         <div className="visit-item">
           <span className="visit-item__value">
             {relevantVisits?.length ?? 0}
