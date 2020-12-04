@@ -187,7 +187,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         <div className="input-group" key={sparkleTermsAndConditions.name}>
           <label
             htmlFor={sparkleTermsAndConditions.name}
-            className={`checkbox ${
+            className={`checkbox input-info ${
               watch(sparkleTermsAndConditions.name) && "checkbox-checked"
             }`}
           >
@@ -211,15 +211,14 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             })}
           />
           {/* @ts-ignore @debt term should be typed if possible */}
-          {errors?.[sparkleTermsAndConditions.name].type === "required" && (
+          {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
             <span className="input-error">Required</span>
           )}
         </div>
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             /* @ts-ignore @debt term should be typed if possible */
-            const required =
-              term.name in errors && errors[term.name].type === "required";
+            const required = errors?.[term.name]?.type === "required";
             return (
               <div className="input-group" key={term.name}>
                 <label
