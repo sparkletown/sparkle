@@ -243,6 +243,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.avatargrid,
 ];
 
+export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.audience,
+];
+
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
