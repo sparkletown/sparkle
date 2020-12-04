@@ -293,6 +293,61 @@ export const Audience: React.FunctionComponent = () => {
     const translateColumn = (untranslatedColumnIndex: number) =>
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
+    const renderReactionsContainer = () => (
+      <>
+        <div className="emoji-container">
+          {burningReactions.map((reaction) => (
+            <button
+              key={reaction.name}
+              className="reaction"
+              onClick={() => user && reactionClicked(user, reaction.type)}
+              id={`send-reaction-${reaction.type}`}
+            >
+              <span role="img" aria-label={reaction.ariaLabel}>
+                {reaction.text}
+              </span>
+            </button>
+          ))}
+          <div
+            className="mute-button"
+            onClick={() => setIsAudioEffectDisabled((state) => !state)}
+          >
+            <FontAwesomeIcon
+              className="reaction"
+              icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
+            />
+          </div>
+          <button className="leave-seat-button" onClick={leaveSeat}>
+            Leave Seat
+          </button>
+        </div>
+        <div className="shout-container">
+          <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+            <input
+              name="text"
+              className="text"
+              placeholder="Shout out to the crowd"
+              ref={register({ required: true })}
+              disabled={isShoutSent}
+            />
+            <input
+              className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
+              type="submit"
+              id={`send-shout-out-${venue.name}`}
+              value={isShoutSent ? "Sent!" : "Send"}
+              disabled={isShoutSent}
+            />
+          </form>
+        </div>
+      </>
+    );
+
+    const renderInstructions = () => (
+      <div className="instructions">
+        Welcome! Click on an empty seat to claim it!
+      </div>
+    );
+
     return (
       <>
         <div
@@ -310,69 +365,13 @@ export const Audience: React.FunctionComponent = () => {
                 allowFullScreen
               />
             </div>
-            <div className={`reaction-container ${userSeated ? "seated" : ""}`}>
-              {userSeated ? (
-                <>
-                  <div className="emoji-container">
-                    {burningReactions.map((reaction) => (
-                      <button
-                        key={reaction.name}
-                        className="reaction"
-                        onClick={() =>
-                          user && reactionClicked(user, reaction.type)
-                        }
-                        id={`send-reaction-${reaction.type}`}
-                      >
-                        <span role="img" aria-label={reaction.ariaLabel}>
-                          {reaction.text}
-                        </span>
-                      </button>
-                    ))}
-                    <div
-                      className="mute-button"
-                      onClick={() =>
-                        setIsAudioEffectDisabled((state) => !state)
-                      }
-                    >
-                      <FontAwesomeIcon
-                        className="reaction"
-                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-                      />
-                    </div>
-                    <button className="leave-seat-button" onClick={leaveSeat}>
-                      Leave Seat
-                    </button>
-                  </div>
-                  <div className="shout-container">
-                    <form
-                      onSubmit={handleSubmit(onSubmit)}
-                      className="shout-form"
-                    >
-                      <input
-                        name="text"
-                        className="text"
-                        placeholder="Shout out to the crowd"
-                        ref={register({ required: true })}
-                        disabled={isShoutSent}
-                      />
-                      <input
-                        className={`shout-button ${
-                          isShoutSent ? "btn-success" : ""
-                        } `}
-                        type="submit"
-                        id={`send-shout-out-${venue.name}`}
-                        value={isShoutSent ? "Sent!" : "Send"}
-                        disabled={isShoutSent}
-                      />
-                    </form>
-                  </div>
-                </>
-              ) : (
-                <div className="instructions">
-                  Welcome! Click on an empty seat to claim it!
-                </div>
-              )}
-            </div>
+            {venue.showReactions && (
+              <div
+                className={`reaction-container ${userSeated ? "seated" : ""}`}
+              >
+                {userSeated ? renderReactionsContainer() : renderInstructions()}
+              </div>
+            )}
           </div>
 
           <div className="audience">

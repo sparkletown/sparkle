@@ -80,6 +80,7 @@ export interface Venue {
   requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
+  showReactions?: boolean;
 }
 
 export interface VenueConfig {
