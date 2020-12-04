@@ -47,8 +47,12 @@ export const openUrl = (url: string) => {
       );
 };
 
-export const isValidUrl = (url: string) => {
-  return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+export const isValidUrl = (url: string): boolean => {
+  try {
+    return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+  } catch (e) {
+    return false;
+  }
 };
 
 export const externalUrlAdditionalProps = {
