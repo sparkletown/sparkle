@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IS_BURN } from "secrets";
 
 import "./loading.scss";
