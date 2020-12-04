@@ -25,6 +25,7 @@ import { ExtractProps } from "types/utility";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import RoomDeleteModal from "./RoomDeleteModal";
+import Login from "pages/Account/Login";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -71,11 +72,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue) return null;
 
   if (!user) {
-    return (
-      <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
-      </WithNavigationBar>
-    );
+    return <Login formType="login" />;
   }
 
   return (

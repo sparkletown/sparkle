@@ -54,6 +54,10 @@ $page-max-width: 1240px;
   background-color: $dark;
   flex-direction: column;
   flex: 1;
+
+  .login-container {
+    align-self: center;
+  }
 }
 .page-container-onboarding {
   max-height: 100%;

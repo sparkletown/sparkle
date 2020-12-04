@@ -65,6 +65,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import Login from "pages/Account/Login";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -240,11 +241,7 @@ const VenuePage = () => {
   );
 
   if (!user) {
-    return (
-      <WithNavigationBar>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="initial" />
-      </WithNavigationBar>
-    );
+    return <Login formType="initial" />;
   }
 
   if (!venue || !venueId) {

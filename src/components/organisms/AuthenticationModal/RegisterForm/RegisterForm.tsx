@@ -217,6 +217,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         </div>
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
+            /* @ts-ignore @debt term should be typed if possible */
+            const required =
+              term.name in errors && errors[term.name].type === "required";
             return (
               <div className="input-group" key={term.name}>
                 <label
@@ -244,10 +247,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
                     required: true,
                   })}
                 />
-                {/* @ts-ignore @debt term should be typed if possible */}
-                {errors?.[term.name].type === "required" && (
-                  <span className="input-error">Required</span>
-                )}
+                {required && <span className="input-error">Required</span>}
               </div>
             );
           })}

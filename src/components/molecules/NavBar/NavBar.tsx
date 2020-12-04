@@ -42,6 +42,7 @@ import {
 } from "utils/selectors";
 
 import { NavBarLogin } from "./NavBarLogin";
+import Login from "pages/Account/Login";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -201,9 +202,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               <VenuePartygoers />
             </div>
 
-            {!user && (
-              <NavBarLogin openAuthenticationModal={openAuthenticationModal} />
-            )}
+            {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
@@ -276,12 +275,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
           </div>
         </div>
       </header>
-
-      <AuthenticationModal
-        show={isAuthenticationModalOpen}
-        onHide={closeAuthenticationModal}
-        showAuth="login"
-      />
 
       <SchedulePageModal isVisible={isEventScheduleVisible} />
 

@@ -14,6 +14,7 @@ import {
   useParams,
   useRouteMatch,
   useHistory,
+  Redirect,
 } from "react-router-dom";
 import {
   ReduxFirestoreQuerySetting,
@@ -31,6 +32,7 @@ import {
   PLAYA_VENUE_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  DEFAULT_VENUE,
 } from "settings";
 import { IS_BURN } from "secrets";
 
@@ -449,10 +451,13 @@ const Admin: React.FC = () => {
   if (isAdminUserLoading) return <>Loading...</>;
   if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
 
+  if (!user) {
+    return <Redirect to={`/in/${DEFAULT_VENUE}`} />;
+  }
+
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
