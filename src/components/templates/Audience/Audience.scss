@@ -35,6 +35,11 @@ $light: #ffffff;
         border-radius: 15px;
         box-shadow: 2px 2px 20px $light;
       }
+
+      .aspect-16-9 {
+        min-height: 112.5%;
+        margin-top: -6.5%;
+      }
     }
 
     .reaction-container {
