@@ -58,7 +58,10 @@ export const isValidUrl = (url: string): boolean => {
   try {
     return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
   } catch (e) {
-    return false;
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
   }
 };
 
