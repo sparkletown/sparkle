@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import Bugsnag from "@bugsnag/js";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import {
   ALL_VENUE_TEMPLATES,
@@ -136,7 +137,13 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
         setFormError(true);
-        console.error(e);
+        Bugsnag.notify(e, (event) => {
+          event.addMetadata("Admin::RoomsForm::onSubmit", {
+            venueId,
+            vals,
+            editingRoomIndex,
+          });
+        });
       }
     },
     [user, history, venueId, editingRoomIndex]

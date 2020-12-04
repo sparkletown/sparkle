@@ -162,16 +162,10 @@ if (BUGSNAG_API_KEY) {
   });
 }
 
-// The `(BUGSNAG_API_KEY ? .. : undefined) ?? React.Fragment` below ensures
-// this statement always returns a value.
-//
-// `BUGSNAG_API_KEY ? .. : undefined` is capable of being undefined if `..` is
-// undefined. The typing prevents it being included in the render call contents
-// below.
-const BugsnagErrorBoundary =
-  (BUGSNAG_API_KEY
-    ? Bugsnag?.getPlugin("react")?.createErrorBoundary(React)
-    : undefined) ?? React.Fragment;
+// When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
+const BugsnagErrorBoundary = BUGSNAG_API_KEY
+  ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
+  : React.Fragment;
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
