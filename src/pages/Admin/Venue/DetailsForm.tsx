@@ -1,3 +1,4 @@
+import Bugsnag from "@bugsnag/js";
 import {
   createUrlSafeName,
   createVenue,
@@ -123,7 +124,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
-        console.error(e);
+        Bugsnag.notify(e, (event) => {
+          event.addMetadata("Admin::Venue::DetailsForm::onSubmit", {
+            venueId,
+            vals,
+          });
+        });
       }
     },
     [user, venueId, history]
