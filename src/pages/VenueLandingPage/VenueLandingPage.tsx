@@ -123,6 +123,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   };
 
   const hasSecretForm = isTruthy(venue.showSecretPasswordForm);
+  const showCountdown =
+    (venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000;
 
   return (
     <WithNavigationBar>
@@ -159,14 +161,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           )}
           {!hasSecretForm &&
             (!futureOrOngoingVenueEvents ||
-              futureOrOngoingVenueEvents.length === 0) && (
+              futureOrOngoingVenueEvents.length) && (
               <button
                 className="btn btn-primary btn-block btn-centered"
                 onClick={onJoinClick}
               >
                 Join the event
-                {(venue?.start_utc_seconds ?? 0) >
-                  new Date().getTime() / 1000 && (
+                {showCountdown && (
                   <span className="countdown">
                     Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
                   </span>
