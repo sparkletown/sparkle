@@ -14,6 +14,7 @@ import {
   DUST_STORM_TEXT_1,
   DUST_STORM_TEXT_2,
 } from "settings";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
@@ -65,7 +66,7 @@ export const DustStorm = () => {
         setOpenVenues(openVenues);
       })
       .catch(Bugsnag.notify);
-  }, 5 * 60 * 1000);
+  }, FIVE_MINUTES_MS);
 
   return (
     <div className="duststorm-container show">

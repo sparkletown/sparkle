@@ -23,6 +23,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -87,7 +88,7 @@ const OnlineStats: React.FC = () => {
         setLoaded(true);
       })
       .catch(Bugsnag.notify);
-  }, 5 * 60 * 1000);
+  }, FIVE_MINUTES_MS);
 
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];

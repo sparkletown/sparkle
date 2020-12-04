@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import { DEFAULT_VENUE } from "settings";
 import { venueInsideUrl } from "utils/url";
 import { useInterval } from "hooks/useInterval";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -39,7 +40,7 @@ export const SchedulePage = () => {
         setOpenVenues(openVenues);
       })
       .catch(Bugsnag.notify);
-  }, 5 * 60 * 1000);
+  }, FIVE_MINUTES_MS);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
