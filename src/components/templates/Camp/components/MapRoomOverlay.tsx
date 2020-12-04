@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import { IS_BURN } from "secrets";
 import { retainAttendance } from "store/actions/Attendance";
-import { getRoomUrl } from "utils/url";
+import { openRoomUrl } from "utils/url";
 
 import { Attendances } from "types/Attendances";
 import { CampRoomData } from "types/CampRoomData";
@@ -93,9 +93,7 @@ export const MapRoomOverlay: React.FC<MapRoomOverlayProps> = ({
       e.stopPropagation();
 
       enterCampRoom(room);
-      // openRoomUrl(room.url);
-      // @debt use the helpers properly, we want this to always open in a new url
-      window.open(getRoomUrl(room.url), "_blank", "noopener,noreferrer");
+      openRoomUrl(room.url);
     },
     [enterCampRoom, room]
   );

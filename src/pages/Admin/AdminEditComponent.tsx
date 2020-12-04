@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import Bugsnag from "@bugsnag/js";
 import firebase, { UserInfo } from "firebase/app";
 import {
   PLAYA_VENUE_SIZE,
@@ -176,7 +177,7 @@ const AdminEditComponent: React.FC = () => {
         setVenueId(undefined);
       } catch (e) {
         setFormError(true);
-        console.error(e);
+        Bugsnag.notify(e);
       }
     },
     [user, venue]

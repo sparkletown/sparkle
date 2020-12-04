@@ -5,12 +5,15 @@ import {
   PRIVACY_POLICY,
   TERMS_AND_CONDITIONS_URL,
 } from "settings";
+import { getExtraLinkProps } from "utils/url";
 
 import "./Footer.scss";
 
 export const Footer = () => (
   <div className="footer-wrapper">
-    <a href={TERMS_AND_CONDITIONS_URL}>Terms of Use</a>
+    <a href={TERMS_AND_CONDITIONS_URL} {...getExtraLinkProps(true)}>
+      Terms of Use
+    </a>
 
     <div>|</div>
 
@@ -19,7 +22,7 @@ export const Footer = () => (
     <div>|</div>
 
     <div>
-      <a className="powered-by" href={HOMEPAGE_URL}>
+      <a href={HOMEPAGE_URL} {...getExtraLinkProps(true)}>
         Made with{" "}
         <span role="img" aria-label="heart">
           ❤️
