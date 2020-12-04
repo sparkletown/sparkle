@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { getHoursAgoInSeconds } from "utils/time";
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
-const calcLastSeenLimit = () => getHoursAgoInSeconds(3);
+const calcDefaultLimit = () => getHoursAgoInSeconds(3);
 
-export const useUserLastSeenLimit = () => {
+export const useUserLastSeenLimit = (calcLastSeenLimit = calcDefaultLimit) => {
   const [userLastSeenLimit, setUserLastSeenLimit] = useState(
     calcLastSeenLimit()
   );
@@ -15,7 +15,7 @@ export const useUserLastSeenLimit = () => {
     }, FIVE_MINUTES_MS);
 
     return () => clearInterval(id);
-  }, []);
+  }, [calcLastSeenLimit]);
 
   return userLastSeenLimit;
 };
