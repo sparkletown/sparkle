@@ -19,7 +19,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { WithId } from "utils/id";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -53,7 +53,9 @@ const AvatarGrid = () => {
       if (room && user) {
         enterRoom(
           user,
-          { [`${venue?.name}/${room.title}`]: currentTimeInUnixEpoch },
+          {
+            [`${venue?.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds(),
+          },
           profile?.lastSeenIn
         );
         window.open(room.url);

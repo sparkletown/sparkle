@@ -10,7 +10,7 @@ import { User } from "types/User";
 import { makeCampRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 
 import { useSelector } from "hooks/useSelector";
@@ -178,9 +178,11 @@ export const Map: React.FC<MapProps> = ({
         room.url.endsWith(`/${venue.id}`)
       );
 
+      const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
       const roomName = {
-        [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
-        ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
+        [`${venue.name}/${room.title}`]: nowInEpochSeconds,
+        ...(roomVenue ? { [venue.name]: nowInEpochSeconds } : {}),
       };
 
       enterRoom(user, roomName, profile?.lastSeenIn);

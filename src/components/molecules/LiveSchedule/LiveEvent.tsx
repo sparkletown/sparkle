@@ -3,7 +3,10 @@ import React, { FC, useCallback } from "react";
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 
-import { currentTimeInUnixEpoch, formatHourAndMinute } from "utils/time";
+import {
+  getCurrentTimeInUnixEpochSeconds,
+  formatHourAndMinute,
+} from "utils/time";
 import { enterRoom } from "utils/useLocationUpdateEffect";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
@@ -27,7 +30,7 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
 
     enterRoom(
       user!,
-      { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+      { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
       profile?.lastSeenIn
     );
     openRoomUrl(room.url);

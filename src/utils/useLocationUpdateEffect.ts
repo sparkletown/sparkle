@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
-import { currentTimeInUnixEpoch } from "./time";
+import { getCurrentTimeInUnixEpochSeconds } from "./time";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 
@@ -15,13 +15,16 @@ export const updateLocationData = (
   const prevRoomName =
     lastSeenIn &&
     Object.keys(lastSeenIn).find((lastSeen) => lastSeen.includes("/"));
+
   if (lastSeenIn && prevRoomName) {
     delete lastSeenIn[prevRoomName];
   }
+
   const roomVenue =
     roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
+
   updateUserProfile(user.uid, {
-    lastSeenAt: currentTimeInUnixEpoch,
+    lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
     lastSeenIn:
       !roomName && !lastSeenIn
         ? null

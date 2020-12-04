@@ -12,7 +12,7 @@ import { useUser } from "hooks/useUser";
 // Utils | Settings | Constants
 import { isEventLive } from "utils/event";
 import {
-  currentTimeInUnixEpoch,
+  getCurrentTimeInUnixEpochSeconds,
   formatUtcSeconds,
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
@@ -67,7 +67,7 @@ export const RoomModal: React.FC<PropsType> = ({
       user &&
       enterRoom(
         user,
-        { [`${venueName}/${room.title}`]: currentTimeInUnixEpoch },
+        { [`${venueName}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
         profile?.lastSeenIn
       );
   };

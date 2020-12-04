@@ -10,7 +10,10 @@ import {
   orderedVenuesSelector,
   partygoersSelector,
 } from "utils/selectors";
-import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import {
+  getCurrentTimeInUnixEpochSeconds,
+  ONE_MINUTE_IN_SECONDS,
+} from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -50,15 +53,17 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
     const roomVenue = venues?.find((venue) =>
       room.url.endsWith(`/${venue.id}`)
     );
-    const venueRoom = roomVenue
-      ? { [roomVenue.name]: currentTimeInUnixEpoch }
-      : {};
+
+    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
+    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+
     room &&
       user &&
       enterRoom(
         user,
         {
-          [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch,
+          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
           ...venueRoom,
         },
         profile?.lastSeenIn
@@ -72,7 +77,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          currentTimeInUnixEpoch
+          nowInEpochSeconds
     );
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 

@@ -5,7 +5,7 @@ import { AnyVenue } from "types/Firestore";
 import {
   formatHourAndMinute,
   getCurrentTimeInUTCSeconds,
-  currentTimeInUnixEpoch,
+  getCurrentTimeInUnixEpochSeconds,
 } from "utils/time";
 import { WithId } from "utils/id";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
@@ -35,7 +35,7 @@ export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
 
     enterRoom(
       user!,
-      { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
+      { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
       profile?.lastSeenIn
     );
     openRoomUrl(room.url);
