@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getHoursAgoInSeconds } from "utils/time";
+import { useInterval } from "./useInterval";
 
 const FIVE_MINUTES_MS = 5 * 60 * 1000;
 const calcDefaultThreshold = () => getHoursAgoInSeconds(3);
@@ -9,13 +10,9 @@ export const useUserLastSeenThreshold = (
 ) => {
   const [threshold, setThreshold] = useState(calcThreshold());
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      setThreshold(calcThreshold());
-    }, FIVE_MINUTES_MS);
-
-    return () => clearInterval(id);
-  }, [calcThreshold]);
+  useInterval(() => {
+    setThreshold(calcThreshold());
+  }, FIVE_MINUTES_MS);
 
   return threshold;
 };
