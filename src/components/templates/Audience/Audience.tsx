@@ -434,9 +434,9 @@ export const Audience: React.FunctionComponent = () => {
           </div>
           <div className="chat-container">
             <ChatDrawer
-              title={`${venue.name ?? "Audience"} Chat`}
+              title={`${venue.name ?? "Auditorium"} Q&A`}
               roomName={venue.name}
-              chatInputPlaceholder="Chat"
+              chatInputPlaceholder="Ask a question"
               defaultShow={true}
             />
           </div>
