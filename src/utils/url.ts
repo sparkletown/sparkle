@@ -1,3 +1,4 @@
+import Bugsnag from "@bugsnag/js";
 import { CODE_CHECK_URL } from "secrets";
 import { VALID_URL_PROTOCOLS } from "settings";
 import { CampVenue } from "types/CampVenue";
@@ -40,15 +41,28 @@ export const openRoomUrl = (url: string) => {
 };
 
 export const openUrl = (url: string) => {
-  isValidUrl(url)
-    ? window.open(url, "_blank", "noopener,noreferrer")
-    : console.error(
-        `Invalid URL ${url} on page ${window.location.href}; ignoring`
-      );
+  if (!isValidUrl(url)) {
+    Bugsnag.notify(
+      new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
+      (event) => {
+        event.addMetadata("utils/url::openUrl", { url });
+      }
+    );
+    return;
+  }
+
+  window.open(url, "_blank", "noopener,noreferrer");
 };
 
-export const isValidUrl = (url: string) => {
-  return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+export const isValidUrl = (url: string): boolean => {
+  try {
+    return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
 };
 
 export const externalUrlAdditionalProps = {
