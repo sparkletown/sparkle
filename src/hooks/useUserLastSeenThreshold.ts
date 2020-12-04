@@ -1,8 +1,9 @@
 import { useState } from "react";
+
+import { LOC_UPDATE_FREQ_MS } from "settings";
 import { getHoursAgoInSeconds } from "utils/time";
 import { useInterval } from "./useInterval";
 
-const FIVE_MINUTES_MS = 5 * 60 * 1000;
 const calcDefaultThreshold = () => getHoursAgoInSeconds(3);
 
 export const useUserLastSeenThreshold = (
@@ -12,7 +13,7 @@ export const useUserLastSeenThreshold = (
 
   useInterval(() => {
     setThreshold(calcThreshold());
-  }, FIVE_MINUTES_MS);
+  }, LOC_UPDATE_FREQ_MS);
 
   return threshold;
 };

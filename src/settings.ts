@@ -8,6 +8,7 @@ import {
   IS_BURN,
 } from "./secrets";
 import { CSSProperties } from "react";
+import { FIVE_MINUTES_MS } from "./utils/time";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -67,7 +68,7 @@ export const DUST_STORM_TEXT_2 =
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
 // How often to update location for counting
-export const LOC_UPDATE_FREQ_MS = 5 * 60 * 1000;
+export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
