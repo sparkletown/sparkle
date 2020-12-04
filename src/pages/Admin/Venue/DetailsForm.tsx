@@ -39,6 +39,7 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
+  HAS_REACTIONS_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -499,6 +500,49 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             )}
           </>
         )}
+
+        {/* ATTENDEES (multiple) TITLE */}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Title of your venues attendees
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            For example: guests, attendees, partygoers.
+          </div>
+          <input
+            type="text"
+            disabled={disable}
+            name="attendeesTitle"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="Attendees title"
+          />
+          {errors.attendeesTitle && (
+            <span className="input-error">{errors.attendeesTitle.message}</span>
+          )}
+        </div>
+
+        {/* EVENT CHAT TITLE */}
+        <div className="input-container">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Your venue type label
+          </h4>
+          <div style={{ fontSize: "16px" }}>
+            For example: Party, Event, Meeting
+          </div>
+          <input
+            type="text"
+            disabled={disable}
+            name="chatTitle"
+            ref={register}
+            className="wide-input-block input-centered align-left"
+            placeholder="Event label"
+          />
+          {errors.chatTitle && (
+            <span className="input-error">{errors.chatTitle.message}</span>
+          )}
+        </div>
+
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
@@ -601,6 +645,68 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               <span className="slider round"></span>
             </label>
           </div>
+        )}
+
+        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
+          <div className="toggle-room">
+            <h4 className="italic" style={{ fontSize: "20px" }}>
+              Show reactions
+            </h4>
+            <label id="showReactions" className="switch">
+              <input
+                type="checkbox"
+                id="showReactions"
+                name="showReactions"
+                ref={register}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
+
+        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
+          <>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of seats columns
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={25}
+                min={5}
+                name="auditoriumColumns"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder="Number of seats columns"
+              />
+              {errors.auditoriumColumns ? (
+                <span className="input-error">
+                  {errors.auditoriumColumns.message}
+                </span>
+              ) : null}
+            </div>
+            <div className="input-container">
+              <h4 className="italic" style={{ fontSize: "20px" }}>
+                Number of seats rows
+              </h4>
+              <input
+                disabled={disable}
+                defaultValue={19}
+                name="auditoriumRows"
+                type="number"
+                ref={register}
+                className="align-left"
+                placeholder="Number of seats rows"
+                min={5}
+              />
+              {errors.auditoriumRows ? (
+                <span className="input-error">
+                  {errors.auditoriumRows.message}
+                </span>
+              ) : null}
+            </div>
+          </>
         )}
 
         <div className="toggle-room">
