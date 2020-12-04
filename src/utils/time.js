@@ -109,7 +109,14 @@ export function getHoursAgoInSeconds(hours) {
   return new Date().getTime() / 1000 - hours * 60 * 60;
 }
 
-export const currentTimeInUnixEpoch = new Date().getTime() / 1000;
+/**
+ * @deprecated this is a const that is never updated
+ * @debt get rid of this and update everything that used it
+ * @see getCurrentTimeInUnixEpochSeconds
+ */
+export const currentTimeInUnixEpoch = getCurrentTimeInUnixEpochSeconds();
+
+export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
 
 export function getDaysAgoInSeconds(days) {
   return getHoursAgoInSeconds(days * 24);
