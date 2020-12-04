@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
+  currentVenueSelector,
   currentVenueSelectorData,
   orderedVenuesSelector,
   privateChatsSelector,
@@ -25,11 +26,12 @@ import {
 import { useFirestoreConnect } from "react-redux-firebase";
 import { AnyVenue } from "types/Firestore";
 import { CampRoomData } from "types/CampRoomData";
-import { IS_BURN } from "secrets";
 import {
   ChatContext,
   PrivateChatMessage,
 } from "components/context/ChatContext";
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { Venue } from "types/Venue";
 
 type PropTypes = {
   show: boolean;
@@ -44,7 +46,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   zIndex,
   userProfile,
 }) => {
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
   const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
@@ -129,7 +131,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {IS_BURN && <Badges user={userProfile} />}
+          <Badges user={userProfile} venue={venue} />
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox
@@ -145,7 +147,10 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   );
 };
 
-const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
+const Badges: React.FC<{ user: WithId<User>; venue: WithId<Venue> }> = ({
+  user,
+  venue,
+}) => {
   useFirestoreConnect([
     {
       collection: "users",
@@ -159,6 +164,12 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
   );
   const venues = useSelector(orderedVenuesSelector);
 
+  const { relatedVenues } = useConnectRelatedVenues({
+    venueId: venue.id,
+    withEvents: false,
+  });
+  const relatedVenueIds = relatedVenues.map((venue) => venue.id);
+
   const playaTime = useMemo(() => {
     if (!visits) return undefined;
 
@@ -167,10 +178,13 @@ const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
     return playaHours > 1 ? `${playaHours}` : "< 1";
   }, [visits]);
 
+  // Only show visits to related venues
   const venuesVisited = useMemo(() => {
     if (!visits) return undefined;
-    return visits.filter((visit) => visit.id !== PLAYA_VENUE_NAME).length; // Playa does not count
-  }, [visits]);
+    return visits.filter(
+      (visit) => visit.id === venue.id || relatedVenueIds.includes(visit.id)
+    ).length;
+  }, [visits, venue, relatedVenueIds]);
 
   const badges = useMemo(() => {
     if (!visits || !venues) return [];
