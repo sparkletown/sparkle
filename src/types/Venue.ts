@@ -21,7 +21,7 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
-export type AnyRoom = RoomData | CampRoomData;
+export type AnyRoom = RoomData | CampRoomData | AvatarGridRoom;
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {

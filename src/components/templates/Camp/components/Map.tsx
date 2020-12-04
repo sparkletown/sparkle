@@ -169,6 +169,8 @@ export const Map: React.FC<MapProps> = ({
   });
 
   const venues = useSelector(orderedVenuesSelector);
+
+  // @debt refactor this to use openRoomWithCounting (though this is getting deleted soon so might not matter)
   const enterCampRoom = useCallback(
     (room: CampRoomData) => {
       if (!room || !user) return;

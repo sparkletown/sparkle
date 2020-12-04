@@ -1,8 +1,15 @@
 import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
+import { AnyRoom } from "types/Venue";
+import { AnyVenue } from "types/Firestore";
+import { User } from "types/User";
+import { VenueEvent } from "types/VenueEvent";
+
 import { updateUserProfile } from "pages/Account/helpers";
+import { WithId } from "./id";
 import { getCurrentTimeInUnixEpochSeconds } from "./time";
+import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 
@@ -36,6 +43,7 @@ export const updateLocationData = (
 };
 
 // get Profile from the firebase
+// @debt rename this trackRoomEntered
 export const enterRoom = (
   user: UserInfo,
   roomName: { [key: string]: number },
@@ -44,12 +52,84 @@ export const enterRoom = (
   updateLocationData(user, roomName, lastSeenIn);
 };
 
+export interface TrackRoomEnteredNGProps {
+  user: UserInfo;
+  venueName: string;
+  roomTitle: string;
+  lastSeenIn?: Record<string, number>;
+}
+
+export const trackRoomEnteredNG = ({
+  user,
+  venueName,
+  roomTitle,
+  lastSeenIn,
+}: TrackRoomEnteredNGProps) => {
+  enterRoom(
+    user,
+    { [`${venueName}/${roomTitle}`]: getCurrentTimeInUnixEpochSeconds() },
+    lastSeenIn
+  );
+};
+
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
     lastSeenAt: 0,
     lastSeenIn: {},
     room: null,
   });
+};
+
+export interface EnterRoomWithCounting {
+  user?: UserInfo;
+  profile?: User;
+  venue: WithId<AnyVenue>;
+  room?: AnyRoom;
+}
+
+export const openRoomWithCounting = ({
+  user,
+  profile,
+  venue,
+  room,
+}: EnterRoomWithCounting) => {
+  if (!room) {
+    // TODO: @debt this isn't going to update counting at the moment
+    openUrl(venueInsideUrl(venue.id));
+    return;
+  }
+
+  if (user) {
+    // Track room counting
+    trackRoomEnteredNG({
+      user,
+      venueName: venue.name,
+      roomTitle: room.title,
+      lastSeenIn: profile?.lastSeenIn,
+    });
+  }
+
+  openRoomUrl(room.url);
+};
+
+export interface EnterEventRoomWithCounting {
+  user?: UserInfo;
+  profile?: User;
+  venue?: WithId<AnyVenue>;
+  event: VenueEvent;
+}
+
+export const openEventRoomWithCounting = ({
+  user,
+  profile,
+  venue,
+  event,
+}: EnterEventRoomWithCounting) => {
+  if (!venue) return;
+
+  const room = venue?.rooms?.find((room) => room.title === event.room);
+
+  openRoomWithCounting({ user, profile, venue, room });
 };
 
 export const useLocationUpdateEffect = (

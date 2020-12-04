@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 // Components
 import { Modal } from "react-bootstrap";
@@ -12,12 +12,11 @@ import { useUser } from "hooks/useUser";
 // Utils | Settings | Constants
 import { isEventLive } from "utils/event";
 import {
-  getCurrentTimeInUnixEpochSeconds,
   formatUtcSeconds,
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -56,21 +55,15 @@ export const RoomModal: React.FC<PropsType> = ({
 
   const dispatch = useDispatch();
 
+  const venueName = venue.name;
+
+  const enter = useCallback(() => {
+    openRoomWithCounting({ user, profile, venue, room });
+  }, [room, profile, user, venue]);
+
   if (!room) {
     return <></>;
   }
-
-  const venueName = venue.name;
-
-  const enter = () => {
-    room &&
-      user &&
-      enterRoom(
-        user,
-        { [`${venueName}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
-        profile?.lastSeenIn
-      );
-  };
 
   const roomEvents =
     venueEvents &&

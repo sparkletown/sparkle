@@ -17,9 +17,8 @@ import { useVenueId } from "hooks/useVenueId";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { currentVenueSelector, partygoersSelector } from "utils/selectors";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -35,7 +34,7 @@ const AvatarGrid = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
 
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
   const partygoers = useSelector(partygoersSelector);
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
@@ -50,16 +49,7 @@ const AvatarGrid = () => {
 
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
-      if (room && user) {
-        enterRoom(
-          user,
-          {
-            [`${venue?.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds(),
-          },
-          profile?.lastSeenIn
-        );
-        window.open(room.url);
-      }
+      openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]
   );

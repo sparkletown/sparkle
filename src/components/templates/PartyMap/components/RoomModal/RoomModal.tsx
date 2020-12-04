@@ -49,6 +49,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       )
     : [];
 
+  // TODO: @debt refactor this to use openRoomWithCounting
   const enter = () => {
     const roomVenue = venues?.find((venue) =>
       room.url.endsWith(`/${venue.id}`)
@@ -77,7 +78,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          nowInEpochSeconds
+          getCurrentTimeInUnixEpochSeconds()
     );
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 

@@ -133,6 +133,7 @@ export const Map: React.FC<PropsType> = ({
     [profile, user, venueId]
   );
 
+  // TODO: @debt refactor this to use openRoomWithCounting
   const enterPartyMapRoom = useCallback(
     (room: PartyMapRoomData) => {
       if (!room || !user) return;
