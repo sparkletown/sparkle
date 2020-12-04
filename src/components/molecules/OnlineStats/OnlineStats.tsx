@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
@@ -12,9 +13,10 @@ import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
+import { useInterval } from "hooks/useInterval";
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "../../../utils/getRandomInt";
+import { getRandomInt } from "utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
@@ -74,26 +76,18 @@ const OnlineStats: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector) ?? [];
 
-  useEffect(() => {
-    const getOnlineStats = firebase
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
+      .httpsCallable("stats-getOnlineStats")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
 
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
-          setLoaded(true);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
+        setOpenVenues(openVenues);
+        setLoaded(true);
+      })
+      .catch(Bugsnag.notify);
+  }, 5 * 60 * 1000);
 
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];

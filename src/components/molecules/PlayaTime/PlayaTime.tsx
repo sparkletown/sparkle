@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -7,6 +7,7 @@ import "./PlayaTime.scss";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CURRENT_TIME_IN_LOCATION } from "settings";
+import { useInterval } from "hooks/useInterval";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -21,15 +22,10 @@ dayjs.updateLocale("en", {
 const PlayaTime: React.FC = () => {
   const [currentTime, setCurrentTime] = useState("");
 
-  useEffect(() => {
-    const updateTime = () => {
-      const pt = dayjs().tz("Australia/Sydney");
-      setCurrentTime(pt.format("h:mm a"));
-    };
-    updateTime();
-    const id = setInterval(updateTime, 1000);
-    return () => clearInterval(id);
-  }, []);
+  useInterval(() => {
+    const pt = dayjs().tz("Australia/Sydney");
+    setCurrentTime(pt.format("h:mm a"));
+  }, 1000);
 
   return (
     <div className="playa_time-container">
