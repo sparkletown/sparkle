@@ -170,27 +170,24 @@ const Badges: React.FC<{ user: WithId<User>; currentVenue: WithId<Venue> }> = ({
   });
   const relatedVenueIds = relatedVenues.map((venue) => venue.id);
 
-  const playaTime = useMemo(() => {
-    if (!visits) return undefined;
+  const visitHours = useMemo(() => {
+    if (!visits) return 0;
 
-    const playaSeconds = visits.reduce((acc, v) => acc + v.timeSpent, 0);
-    const playaHours = Math.floor(playaSeconds / (60 * 60));
-    return playaHours > 1 ? `${playaHours}` : "< 1";
-  }, [visits]);
-
-  // Only show visits to related venues
-  const venuesVisited = useMemo(() => {
-    if (!visits) return undefined;
-    return visits.filter(
-      (visit) =>
-        currentVenue.id === visit.id || relatedVenueIds.includes(visit.id)
-    ).length;
+    const visitSeconds = visits
+      .filter((v) => v.id === currentVenue.id || relatedVenueIds.includes(v.id))
+      .reduce((acc, v) => acc + v.timeSpent, 0);
+    return Math.floor(visitSeconds / (60 * 60));
   }, [visits, currentVenue, relatedVenueIds]);
 
+  // Only show visits to related venues
+  const relevantVisits = visits?.filter(
+    (visit) =>
+      currentVenue.id === visit.id || relatedVenueIds.includes(visit.id)
+  );
+
   const badges = useMemo(() => {
-    if (!visits || !venues) return [];
-    return visits
-      .filter((visit) => visit.id !== PLAYA_VENUE_NAME) // no badge for the Playa. Also does not have a logo
+    if (!relevantVisits || !venues) return [];
+    return relevantVisits
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
         if (
@@ -215,9 +212,9 @@ const Badges: React.FC<{ user: WithId<User>; currentVenue: WithId<Venue> }> = ({
         };
       })
       .filter((b) => b !== undefined);
-  }, [visits, venues, currentVenue, relatedVenueIds]);
+  }, [relevantVisits, venues, currentVenue, relatedVenueIds]);
 
-  if (!visits) {
+  if (!relevantVisits) {
     return <>Visit venues to collect badges!</>;
   }
 
@@ -225,17 +222,21 @@ const Badges: React.FC<{ user: WithId<User>; currentVenue: WithId<Venue> }> = ({
     <>
       <div className="visits">
         <div className="visit-item">
-          <span className="visit-item__value">{playaTime} hrs</span>
-          <span className="visit-item__label">time spent in Sparkle</span>
+          <span className="visit-item__value">
+            {visitHours > 1 ? `${visitHours}` : "< 1"} hrs
+          </span>
+          <span className="visit-item__label">Time spent in Sparkle</span>
         </div>
         <div className="separator"></div>
         <div className="visit-item">
-          <span className="visit-item__value">{venuesVisited}</span>
-          <span className="visit-item__label">venues visited</span>
+          <span className="visit-item__value">
+            {relevantVisits?.length ?? 0}
+          </span>
+          <span className="visit-item__label">Venues visited</span>
         </div>
       </div>
       <div className="badges-container">
-        <div className="badges-title">{badges.length} badges</div>
+        <div className="badges-title">{badges.length} Badges</div>
         <ul className="badge-list">
           {badges.map(
             (b) =>
