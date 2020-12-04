@@ -88,6 +88,14 @@ const createVenueData = (data, context) => {
 
   if (data.template === VenueTemplate.audience) {
     venueData.showReactions = data.showReactions;
+
+    if (data.auditoriumColumns) {
+      venueData.auditoriumColumns = data.auditoriumColumns;
+    }
+
+    if (data.auditoriumRows) {
+      venueData.auditoriumRows = data.auditoriumRows;
+    }
   }
 
   switch (data.template) {
@@ -460,6 +468,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.chatTitle) {
     updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
   }
 
   switch (updated.template) {
