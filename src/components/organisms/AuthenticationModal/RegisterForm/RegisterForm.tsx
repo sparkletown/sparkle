@@ -23,6 +23,7 @@ interface RegisterFormData {
   password: string;
   code: string;
   date_of_birth: string;
+  backend?: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -49,11 +50,20 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    RegisterFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+    clearError,
+  } = useForm<RegisterFormData>({
     mode: "onChange",
   });
+
+  const clearBackendErrors = () => {
+    clearError("backend");
+  };
 
   if (!venue) {
     return <>Loading...</>;
@@ -64,6 +74,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
       if (venue.requiresEmailVerification)
         await axios.get(codeCheckUrl(data.email));
+
       const auth = await signUp(data);
       if (
         auth.user &&
@@ -74,11 +85,15 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           date_of_birth: data.date_of_birth,
         });
       }
+
       afterUserIsLoggedIn && afterUserIsLoggedIn();
+
       closeAuthenticationModal();
+
       const accountProfileUrl = `/account/profile${
         venue.id ? `?venueId=${venue.id}` : ""
       }`;
+
       history.push(accountProfileUrl);
     } catch (error) {
       if (error.response?.status === 404) {
@@ -94,7 +109,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("email", "firebase", error.message);
+        setError("backend", "firebase", error.message);
       }
     }
   };
@@ -108,8 +123,14 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           Login
         </span>
       </div>
+
       <h2>Create an account!</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onChange={clearBackendErrors}
+        className="form"
+      >
         <div className="input-group">
           <input
             name="email"
@@ -125,6 +146,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.email.message}</span>
             )}
         </div>
+
         <div className="input-group">
           <input
             name="password"
@@ -133,10 +155,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             placeholder="Password"
             ref={register({
               required: true,
-              // minLength: 8,
-              pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/,
+              pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/,
             })}
           />
+
           <span
             className={`input-${
               errors.password && errors.password.type === "pattern"
@@ -144,18 +166,27 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
                 : "info"
             }`}
           >
-            Password must contain letters and numbers
+            Password must contain letters, numbers, and be at least 6 characters
+            long
           </span>
+
           {errors.password && errors.password.type === "required" && (
             <span className="input-error">Password is required</span>
           )}
         </div>
+
         {venue.requiresTicketCode && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
+
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
         )}
+
+        {errors.backend && (
+          <span className="input-error">{errors.backend.message}</span>
+        )}
+
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
@@ -163,6 +194,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
+
       <div className="secondary-action">
         {`Forgot your password?`}
         <br />
