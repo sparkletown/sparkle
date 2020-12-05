@@ -37,6 +37,7 @@ import { User } from "types/User";
 
 // Styles
 import "./Audience.scss";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -304,6 +305,10 @@ export const Audience: React.FunctionComponent = () => {
     const translateColumn = (untranslatedColumnIndex: number) =>
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
+    const videoFrameClasses = `frame ${
+      venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
+    }`;
+
     const renderReactionsContainer = () => (
       <>
         <div className="emoji-container">
@@ -368,7 +373,7 @@ export const Audience: React.FunctionComponent = () => {
           <div className="video-container">
             <div className="video">
               <iframe
-                className="frame"
+                className={videoFrameClasses}
                 src={iframeUrl}
                 title="Video"
                 frameBorder="0"
