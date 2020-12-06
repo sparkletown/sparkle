@@ -1,7 +1,7 @@
 import admin from "firebase-admin";
 import serviceAccount from "./prodAccountKey.json";
 import "firebase/firestore";
-import { Table } from "types/Table";
+import { Table } from "../src/types/Table";
 
 const generateTables: (props: {
   num: number;
