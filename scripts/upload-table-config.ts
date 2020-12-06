@@ -7,15 +7,21 @@ const generateTables: (props: {
   num: number;
   capacity: number;
   startFrom?: number;
-  cols?: number;
-}) => Table[] = ({ num, capacity, startFrom, cols }) =>
-  Array.from(Array(num)).map((_, idx) => ({
-    capacity,
-    title: `Table ${idx + (startFrom ?? 0) + 1}`,
-    reference: `Table ${idx + (startFrom ?? 0) + 1}`,
-    rows: 2,
-    columns: cols ?? 3,
-  }));
+  rows?: number;
+  columns?: number;
+  titlePrefix? string;
+}) => Table[] = ({ num, capacity, startFrom = 0, rows = 2, columns = 3, titlePrefix = "Table" }) =>
+  Array.from(Array(num)).map((_, idx) => {
+    const tableNumber = startFrom + 1 + idx;
+    
+    return {
+      title: `${titlePrefix} ${tableNumber}`,
+      reference: `${titlePrefix} ${tableNumber}`,
+      capacity,
+      rows,
+      columns,
+    }
+  });
 
 const TABLES: Table[] = [
   ...generateTables({ num: 5, capacity: 6 }),
