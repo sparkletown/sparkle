@@ -82,7 +82,22 @@ const createVenueData = (data, context) => {
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
+    attendeesTitle: data.attendeesTitle || "partygoers",
+    chatTitle: data.chatTitle || "Party",
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
   };
+
+  if (data.template === VenueTemplate.audience) {
+    venueData.showReactions = data.showReactions;
+
+    if (data.auditoriumColumns) {
+      venueData.auditoriumColumns = data.auditoriumColumns;
+    }
+
+    if (data.auditoriumRows) {
+      venueData.auditoriumRows = data.auditoriumRows;
+    }
+  }
 
   switch (data.template) {
     case VenueTemplate.jazzbar:
@@ -113,6 +128,7 @@ const createVenueData = (data, context) => {
     default:
       break;
   }
+
   return venueData;
 };
 
@@ -442,6 +458,28 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:

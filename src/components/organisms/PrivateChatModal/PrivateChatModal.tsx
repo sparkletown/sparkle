@@ -126,7 +126,9 @@ const PrivateChatModal: React.FunctionComponent = () => {
                       <div className="sender-last-message">
                         {lastMessageExchanged.text}
                       </div>
-                      <div>{formatUtcSeconds(lastMessageExchanged.ts_utc)}</div>
+                      <div>
+                        {formatUtcSeconds(lastMessageExchanged.ts_utc.seconds)}
+                      </div>
                     </div>
                     {lastMessageExchanged.from !== user?.uid &&
                       !lastMessageExchanged.isRead && (

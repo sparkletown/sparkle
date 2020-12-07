@@ -1,15 +1,15 @@
 import React from "react";
-import firebase from "firebase/app";
 import "./VenueInfoEvents.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
+import { VenueEvent } from "types/VenueEvent";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
 import "../EventDisplay/EventDisplay.scss";
 import { PLAYA_VENUE_NAME } from "settings";
 
 interface PropsType {
-  eventsNow: firebase.firestore.DocumentData[];
+  eventsNow: VenueEvent[];
   venue: WithId<AnyVenue>;
   showButton: boolean;
   futureEvents?: boolean;

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 import "./SecretPasswordForm.scss";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { venueEntranceUrl } from "utils/url";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
@@ -14,9 +13,6 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const [error, setError] = useState();
   const [password, setPassword] = useState();
   const [message, setMessage] = useState();
-  const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
-    false
-  );
 
   function passwordChanged(e) {
     setPassword(e.target.value);
@@ -33,7 +29,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");
-        setIsAuthenticationModalOpen(true);
+        history.push(venueEntranceUrl(venueId));
       })
       .catch(() => {
         setInvalidPassword(true);
@@ -70,12 +66,6 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           {error && <small className="error-message">An error occured</small>}
         </div>
       </form>
-      <AuthenticationModal
-        show={isAuthenticationModalOpen}
-        onHide={() => setIsAuthenticationModalOpen(false)}
-        afterUserIsLoggedIn={() => history.push(venueEntranceUrl(venueId))}
-        showAuth="register"
-      />
     </>
   );
 };
