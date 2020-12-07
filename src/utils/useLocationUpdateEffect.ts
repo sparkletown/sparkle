@@ -80,10 +80,13 @@ export const leaveRoom = (user: UserInfo) => {
   });
 };
 
-export interface EnterRoomWithCounting {
+export interface BaseEnterRoomWithCountingProps {
   user?: UserInfo;
   profile?: User;
   venue: WithId<AnyVenue>;
+}
+
+export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
   room?: AnyRoom;
 }
 
@@ -112,10 +115,8 @@ export const openRoomWithCounting = ({
   openRoomUrl(room.url);
 };
 
-export interface EnterEventRoomWithCounting {
-  user?: UserInfo;
-  profile?: User;
-  venue?: WithId<AnyVenue>;
+export interface EnterEventRoomWithCounting
+  extends BaseEnterRoomWithCountingProps {
   event: VenueEvent;
 }
 
