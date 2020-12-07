@@ -121,7 +121,12 @@ export const openRoomWithCounting = ({
   room,
 }: EnterRoomWithCounting) => {
   if (!room) {
-    // TODO: @debt this isn't going to update counting at the moment
+    trackVenueEntered({
+      user,
+      venueName: venue.name,
+      lastSeenIn: profile?.lastSeenIn,
+    });
+
     openUrl(venueInsideUrl(venue.id));
     return;
   }
