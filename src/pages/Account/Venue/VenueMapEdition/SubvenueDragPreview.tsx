@@ -2,7 +2,7 @@ import React, { useMemo, CSSProperties } from "react";
 
 export interface PropsType {
   url: string;
-  containerStyle: CSSProperties;
+  containerStyle?: CSSProperties;
   imageStyle: CSSProperties;
 }
 

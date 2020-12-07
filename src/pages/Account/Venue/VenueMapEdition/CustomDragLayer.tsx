@@ -75,10 +75,6 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
               ...iconSize,
               borderRadius: rounded ? "50%" : "none",
             }}
-            containerStyle={{
-              borderRadius: "50%",
-              animation: "ripple 4s linear infinite",
-            }}
           />
         );
       default:
