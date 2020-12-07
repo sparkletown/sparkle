@@ -6,11 +6,18 @@ import LoginForm from "./LoginForm";
 import PasswordResetForm from "./PasswordResetForm";
 import RegisterForm from "./RegisterForm";
 
+export enum AuthOptions {
+  login = "login",
+  register = "register",
+  passwordReset = "passwordReset",
+  initial = "initial",
+}
+
 interface PropsType {
   show: boolean;
   onHide: () => void;
   afterUserIsLoggedIn?: () => void;
-  showAuth: "login" | "register" | "passwordReset" | "initial";
+  showAuth: AuthOptions;
 }
 
 export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
@@ -22,15 +29,15 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   const [formToDisplay, setFormToDisplay] = useState(showAuth);
 
   const displayLoginForm = () => {
-    setFormToDisplay("login");
+    setFormToDisplay(AuthOptions.login);
   };
 
   const displayRegisterForm = () => {
-    setFormToDisplay("register");
+    setFormToDisplay(AuthOptions.register);
   };
 
   const displayPasswordResetForm = () => {
-    setFormToDisplay("passwordReset");
+    setFormToDisplay(AuthOptions.passwordReset);
   };
 
   const closeAuthenticationModal = () => {

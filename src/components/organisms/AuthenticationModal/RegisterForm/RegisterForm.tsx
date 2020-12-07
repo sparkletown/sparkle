@@ -110,7 +110,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       history.push(accountProfileUrl);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        console.log(error);
         setShowLoginModal(true);
       }
       if (error.response?.status === 404) {

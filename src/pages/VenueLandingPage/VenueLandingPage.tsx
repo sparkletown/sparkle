@@ -30,6 +30,7 @@ import {
 } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
 import { isTruthy } from "utils/types";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -347,7 +348,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
-        showAuth="register"
+        showAuth={AuthOptions.register}
       />
     </WithNavigationBar>
   );

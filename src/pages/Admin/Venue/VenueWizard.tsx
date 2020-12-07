@@ -9,6 +9,7 @@ import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
+import { venueInsideUrl } from "utils/url";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -135,7 +136,7 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return <Redirect to={`/in/${DEFAULT_VENUE}`} />;
+    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
   return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;

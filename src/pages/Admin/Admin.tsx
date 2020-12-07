@@ -451,7 +451,7 @@ const Admin: React.FC = () => {
   if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
 
   if (!user) {
-    return <Redirect to={`/in/${DEFAULT_VENUE}`} />;
+    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
   return (
