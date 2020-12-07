@@ -21,7 +21,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import {
@@ -42,7 +41,6 @@ import {
 } from "utils/selectors";
 
 import { NavBarLogin } from "./NavBarLogin";
-import Login from "pages/Account/Login";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -111,17 +109,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
-
-  // Authentication Modal
-  const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
-    false
-  );
-  const openAuthenticationModal = useCallback(() => {
-    setIsAuthenticationModalOpen(true);
-  }, []);
-  const closeAuthenticationModal = useCallback(() => {
-    setIsAuthenticationModalOpen(false);
-  }, []);
 
   const sound = useMemo(
     () =>

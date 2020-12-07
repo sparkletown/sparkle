@@ -52,7 +52,6 @@ import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
-import { AuthenticationModal } from "components/organisms/AuthenticationModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";

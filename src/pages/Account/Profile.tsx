@@ -9,7 +9,7 @@ import { RouterLocation } from "types/RouterLocation";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
+import { DEFAULT_VENUE } from "settings";
 import { useVenueId } from "hooks/useVenueId";
 
 export interface ProfileFormData {

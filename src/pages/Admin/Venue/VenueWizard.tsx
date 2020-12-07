@@ -8,9 +8,7 @@ import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
-import Login from "pages/Account/Login";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;

@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
@@ -12,6 +12,7 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -54,6 +55,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const history = useHistory();
   const venue = useSelector(venueSelector);
 
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
@@ -66,6 +69,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     setError,
     clearError,
     watch,
+    getValues,
   } = useForm<RegisterFormData>({
     mode: "onChange",
   });
@@ -105,6 +109,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
       history.push(accountProfileUrl);
     } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        console.log(error);
+        setShowLoginModal(true);
+      }
       if (error.response?.status === 404) {
         setError(
           "email",
@@ -126,8 +134,20 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
   const termsAndConditions = venue.termsAndConditions;
 
+  const signIn = async () => {
+    const { email, password } = getValues();
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+  };
+
   return (
     <div className="form-container">
+      {showLoginModal && (
+        <ConfirmationModal
+          header={"This account already exists."}
+          message="Would you like to login with the same credentials?"
+          onConfirm={signIn}
+        />
+      )}
       <div>
         <div className="register-form-title">First, create your account</div>
         <div>This will give you access to all sorts of events in Sparkle</div>

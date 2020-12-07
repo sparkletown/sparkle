@@ -22,7 +22,6 @@ import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import RoomDeleteModal from "./RoomDeleteModal";
 import Login from "pages/Account/Login";

@@ -56,7 +56,6 @@ import { useSelector } from "hooks/useSelector";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import AdminDeleteEvent from "./AdminDeleteEvent";
