@@ -42,12 +42,12 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const initialRender = useRef<boolean>(true);
 
   useEffect(() => {
-    initialRender.current = false;
-  });
-
-  useEffect(() => {
     if (initialRender && imgUrl) setImageUrl(imgUrl);
   }, [imgUrl]);
+
+  useEffect(() => {
+    initialRender.current = false;
+  }, []);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;

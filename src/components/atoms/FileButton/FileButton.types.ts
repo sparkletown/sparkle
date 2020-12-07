@@ -1,5 +1,5 @@
 export interface FileButtonProps {
   text?: string;
   recommendedSize?: string;
-  onChange: (url: string) => void;
+  onChange: (url: string, file: FileList) => void;
 }

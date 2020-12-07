@@ -16,7 +16,7 @@ const FileButton: React.FC<FileButtonProps> = ({
 
     const url = URL.createObjectURL(files[0]);
 
-    onChange(url);
+    onChange(url, files);
   };
 
   return (
