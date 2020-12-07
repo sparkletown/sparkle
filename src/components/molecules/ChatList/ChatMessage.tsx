@@ -74,7 +74,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
         />
         <div className="chat-message-pseudo">
           {profileName}{" "}
-          <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
+          <span className="timestamp">
+            {formatUtcSeconds(message.ts_utc.seconds)}
+          </span>
         </div>
         {allowDelete && (
           <div className="chat-message-delete" onClick={deleteMessage}></div>

@@ -21,7 +21,7 @@ import {
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  currentTimeInUnixEpoch,
+  getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -100,10 +100,12 @@ const VenuePage = () => {
 
   const updateUserLocation = useCallback(() => {
     if (!user || !venueName || (venueName && prevLocations[venueName])) return;
+
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: currentTimeInUnixEpoch,
+      [venueName]: getCurrentTimeInUnixEpochSeconds(),
     };
+
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
       lastSeenAt: new Date().getTime(),
