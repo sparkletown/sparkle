@@ -34,7 +34,10 @@ export const isExternalUrl = (url: string) => {
     const currentHost = window.location.host;
     return currentHost !== urlHost;
   } catch (error) {
-    Bugsnag.notify(error);
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils::url::isExternalUrl", { url });
+    });
     return false;
   }
 };
