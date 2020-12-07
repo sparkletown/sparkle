@@ -1,28 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
 
 import * as S from "./RoomEdit.styles";
 import { CustomInputsType, RoomTemplate, ROOM_TEMPLATES } from "settings";
+import { Button } from "react-bootstrap";
+import { EditRoomProps } from "./RoomEdit.types";
 
-const EditRoom: React.FC<any> = (props) => {
-  const { isVisible, onClickOutsideHandler, room } = props;
-
-  const [selectedTemplate, setSelectedTemplate] = useState<string>("");
+const EditRoom: React.FC<EditRoomProps> = ({
+  isVisible,
+  onClickOutsideHandler,
+  room,
+  submitHandler,
+  deleteHandler,
+}) => {
+  const [selectedTemplate, setSelectedTemplate] = useState<string>(
+    room.template!
+  );
   const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | null>(null);
-
-  const initialRender = useRef<boolean>(true);
-
-  useEffect(() => {
-    if (initialRender) {
-      setSelectedTemplate(room.template);
-    }
-  }, [room.template]);
-
-  useEffect(() => {
-    initialRender.current = false;
-  });
 
   useEffect(() => {
     const template = ROOM_TEMPLATES.find(
@@ -36,13 +32,16 @@ const EditRoom: React.FC<any> = (props) => {
     watch,
     handleSubmit,
     setValue,
-    formState: { isSubmitting },
+    formState: { isSubmitting, dirty },
   } = useForm({
     defaultValues: {
       title: room.title,
       description: room.description,
+      tempalte: room.template,
     },
   });
+
+  const values = watch();
 
   const handleImageChange = (val: string) => setValue("image_url", val, false);
 
@@ -103,6 +102,8 @@ const EditRoom: React.FC<any> = (props) => {
         <Form.Control
           as="select"
           custom
+          name="tempalte"
+          ref={register}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setSelectedTemplate(e.target.value)
           }
@@ -115,6 +116,8 @@ const EditRoom: React.FC<any> = (props) => {
     );
   };
 
+  const onSubmit = () => submitHandler(values, room.roomIndex!);
+
   return (
     <Modal show={isVisible} onHide={onClickOutsideHandler}>
       <Modal.Header>
@@ -122,7 +125,7 @@ const EditRoom: React.FC<any> = (props) => {
       </Modal.Header>
 
       <Modal.Body>
-        <Form>
+        <Form onSubmit={handleSubmit(onSubmit)}>
           {renderNameInput()}
           {renderDescriptionInput()}
           {renderLogoInput()}
@@ -130,6 +133,14 @@ const EditRoom: React.FC<any> = (props) => {
           {roomTemplate?.customInputs?.map((input) => renderCustomInput(input))}
 
           {renderTemplateSelect()}
+
+          <Button type="submit" disabled={isSubmitting || !dirty}>
+            Save
+          </Button>
+
+          <Button variant="danger" onClick={deleteHandler}>
+            Delete room
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>
