@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
@@ -10,6 +10,9 @@ import { codeCheckUrl } from "utils/url";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { venueSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
+import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -37,6 +40,12 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
+const sparkleTermsAndConditions = {
+  name: `I agree to Sparkle's terms and conditions`,
+  text: `I agree to Sparkle's terms and conditions`,
+  link: SPARKLE_TERMS_AND_CONDITIONS_URL,
+};
+
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   displayPasswordResetForm,
@@ -45,6 +54,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 }) => {
   const history = useHistory();
   const venue = useSelector(venueSelector);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -57,6 +68,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     formState,
     setError,
     clearError,
+    watch,
+    getValues,
   } = useForm<RegisterFormData>({
     mode: "onChange",
   });
@@ -96,6 +109,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
       history.push(accountProfileUrl);
     } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setShowLoginModal(true);
+      }
       if (error.response?.status === 404) {
         setError(
           "email",
@@ -114,18 +130,27 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
+  const termsAndConditions = venue.termsAndConditions;
+
+  const signIn = async () => {
+    const { email, password } = getValues();
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+  };
+
   return (
     <div className="form-container">
-      <div className="secondary-action">
-        Already have an account?
-        <br />
-        <span className="link" onClick={displayLoginForm}>
-          Login
-        </span>
+      {showLoginModal && (
+        <ConfirmationModal
+          header={"This account already exists."}
+          message="Would you like to login with the same credentials?"
+          onConfirm={signIn}
+        />
+      )}
+      <div>
+        <div className="register-form-title">First, create your account</div>
+        <div>This will give you access to all sorts of events in Sparkle</div>
       </div>
-
-      <h2>Create an account!</h2>
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         onChange={clearBackendErrors}
@@ -187,6 +212,72 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <span className="input-error">{errors.backend.message}</span>
         )}
 
+        <div className="input-group" key={sparkleTermsAndConditions.name}>
+          <label
+            htmlFor={sparkleTermsAndConditions.name}
+            className={`checkbox input-info ${
+              watch(sparkleTermsAndConditions.name) && "checkbox-checked"
+            }`}
+          >
+            {sparkleTermsAndConditions.link && (
+              <a
+                href={sparkleTermsAndConditions.link}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {sparkleTermsAndConditions.text}
+              </a>
+            )}
+            {!sparkleTermsAndConditions.link && sparkleTermsAndConditions.text}
+          </label>
+          <input
+            type="checkbox"
+            name={sparkleTermsAndConditions.name}
+            id={sparkleTermsAndConditions.name}
+            ref={register({
+              required: true,
+            })}
+          />
+          {/* @ts-ignore @debt term should be typed if possible */}
+          {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
+            <span className="input-error">Required</span>
+          )}
+        </div>
+        {hasTermsAndConditions &&
+          termsAndConditions.map((term) => {
+            /* @ts-ignore @debt term should be typed if possible */
+            const required = errors?.[term.name]?.type === "required";
+            return (
+              <div className="input-group" key={term.name}>
+                <label
+                  htmlFor={term.name}
+                  className={`checkbox ${
+                    watch(term.name) && "checkbox-checked"
+                  }`}
+                >
+                  {term.link && (
+                    <a
+                      href={term.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {term.text}
+                    </a>
+                  )}
+                  {!term.link && term.text}
+                </label>
+                <input
+                  type="checkbox"
+                  name={term.name}
+                  id={term.name}
+                  ref={register({
+                    required: true,
+                  })}
+                />
+                {required && <span className="input-error">Required</span>}
+              </div>
+            );
+          })}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
@@ -196,10 +287,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       </form>
 
       <div className="secondary-action">
-        {`Forgot your password?`}
+        Already have an account?
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
-          Reset your password
+        <span className="link" onClick={displayLoginForm}>
+          Login
         </span>
       </div>
     </div>

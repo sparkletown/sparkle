@@ -44,7 +44,7 @@ import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
@@ -362,7 +362,7 @@ const Playa = () => {
     user &&
       updateLocationData(
         user,
-        { [PLAYA_VENUE_NAME]: currentTimeInUnixEpoch },
+        { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
         profile?.lastSeenIn
       );
   }, [setShowModal, user, profile]);

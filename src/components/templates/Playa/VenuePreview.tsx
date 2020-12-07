@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
+import { VenueEvent } from "types/VenueEvent";
 import "./VenuePreview.scss";
 import {
   BURN_VENUE_TEMPLATES,
@@ -124,12 +125,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
 
   const { urlLink, targetLink } = getLink(venue);
 
-  const [eventsNow, setEventsNow] = useState<firebase.firestore.DocumentData[]>(
-    []
-  );
-  const [eventsFuture, setEventsFuture] = useState<
-    firebase.firestore.DocumentData[]
-  >([]);
+  const [eventsNow, setEventsNow] = useState<VenueEvent[]>([]);
+  const [eventsFuture, setEventsFuture] = useState<VenueEvent[]>([]);
+
   useEffect(() => {
     firebase
       .firestore()
@@ -143,7 +141,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
               event.start_utc_seconds < nowSeconds &&
               event.start_utc_seconds + event.duration_minutes * 60 > nowSeconds
           );
-        setEventsNow(currentEvents);
+
+        // TODO: is this type cast correct?
+        setEventsNow(currentEvents as VenueEvent[]);
       });
   }, [venue]);
 
@@ -157,7 +157,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           .map((doc) => doc.data())
           .filter((event) => event.start_utc_seconds > nowSeconds)
           .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
-        setEventsFuture(futureEvents);
+
+        // TODO: is this type cast correct?
+        setEventsFuture(futureEvents as VenueEvent[]);
       });
   }, [venue]);
 
