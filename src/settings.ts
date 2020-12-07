@@ -113,7 +113,7 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
-export const VALID_URL_PROTOCOLS = ["http", "https"];
+export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
@@ -242,6 +242,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.avatargrid,
+];
+
+export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.audience,
 ];
 
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [

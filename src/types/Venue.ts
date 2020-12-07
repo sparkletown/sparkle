@@ -8,6 +8,7 @@ import { RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
+import { VideoAspectRatio } from "./VideoAspectRatio";
 
 interface Question {
   name: string;
@@ -80,6 +81,11 @@ export interface Venue {
   requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
+  chatTitle?: string;
+  showReactions?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  videoAspect?: VideoAspectRatio;
 }
 
 export interface VenueConfig {
