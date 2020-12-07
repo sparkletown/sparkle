@@ -724,6 +724,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </label>
         </div>
 
+        <div className="toggle-room">
+          <h4 className="italic toggle-room-header">
+            Require date of birth on register
+          </h4>
+          <label id="requiresDateOfBirth" className="switch">
+            <input
+              type="checkbox"
+              id="requiresDateOfBirth"
+              name="requiresDateOfBirth"
+              ref={register}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid && (
