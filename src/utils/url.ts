@@ -29,8 +29,7 @@ export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
 };
 
 export const isExternalUrl = (url: string) =>
-  url.includes("http") &&
-  window.location.host !== new URL(getRoomUrl(url)).host;
+  window.location.host !== new URL(url).host;
 
 // @debt I feel like we could construct this url in a better way
 export const getRoomUrl = (roomUrl: string) =>
@@ -55,7 +54,11 @@ export const openUrl = (url: string) => {
     // return;
   }
 
-  window.open(url, "_blank", "noopener,noreferrer");
+  if (isExternalUrl(url)) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  } else {
+    window.location.href = url;
+  }
 };
 
 export const isValidUrl = (url: string): boolean => {
