@@ -131,6 +131,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                 usersById={usersById}
                 chats={chats}
                 onMessageSubmit={submitMessage}
+                showSenderImage={false}
               />
             </div>
           )}
