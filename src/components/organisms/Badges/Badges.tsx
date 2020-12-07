@@ -10,13 +10,17 @@ import { useSelector } from "hooks/useSelector";
 import { PLAYA_VENUE_NAME } from "settings";
 
 import { CampRoomData } from "types/CampRoomData";
-import { isCampVenue } from "types/CampVenue";
+import { isVenueWithRooms } from "types/CampVenue";
 import { AnyVenue } from "types/Firestore";
 import { Venue } from "types/Venue";
 
 import { WithId } from "utils/id";
-import { orderedVenuesSelector } from "utils/selectors";
+import {
+  orderedVenuesSelector,
+  userModalVisitsSelector,
+} from "utils/selectors";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
+import { notEmpty } from "utils/types";
 
 export const Badges: React.FC<{
   user: WithId<User>;
@@ -30,9 +34,7 @@ export const Badges: React.FC<{
       storeAs: "userModalVisits",
     },
   ]);
-  const visits = useSelector(
-    (state) => state.firestore.ordered.userModalVisits
-  );
+  const visits = useSelector(userModalVisitsSelector);
   const venues = useSelector(orderedVenuesSelector);
 
   const { relatedVenues } = useConnectRelatedVenues({
@@ -85,6 +87,22 @@ export const Badges: React.FC<{
       .filter((b) => b !== undefined);
   }, [relevantVisits, venues, currentVenue, relatedVenueIds]);
 
+  const badgeList = useMemo(
+    () =>
+      badges.filter(notEmpty).map((b) => (
+        <li className="badge-list-item" key={b.label}>
+          <Link to={getLocationLink(b.venue, b.room)}>
+            <img
+              className="badge-list-item-image"
+              src={b.image}
+              alt={`${b.label} badge`}
+            />
+          </Link>
+        </li>
+      )),
+    [badges]
+  );
+
   if (!relevantVisits) {
     return <>Visit venues to collect badges!</>;
   }
@@ -108,23 +126,7 @@ export const Badges: React.FC<{
       </div>
       <div className="badges-container">
         <div className="badges-title">{badges.length} Badges</div>
-        <ul className="badge-list">
-          {badges.map(
-            (b) =>
-              b && (
-                <li className="badge-list-item" key={b.label}>
-                  <Link to={getLocationLink(b.venue, b.room)}>
-                    <img
-                      className="badge-list-item-image"
-                      src={b.image}
-                      alt={`${b.label} badge`}
-                    />
-                  </Link>
-                </li>
-              )
-            // label missing on hover - similar to playa
-          )}
-        </ul>
+        <ul className="badge-list">{badgeList}</ul>
       </div>
     </>
   );
@@ -137,7 +139,7 @@ const findVenueAndRoomByName = (
   const venue = venues.find(
     (v) =>
       v.name === nameOrRoomTitle ||
-      (isCampVenue(v) && v.rooms.find((r) => r.title === nameOrRoomTitle))
+      (isVenueWithRooms(v) && v.rooms?.find((r) => r.title === nameOrRoomTitle))
   );
 
   if (!venue) return {};
@@ -147,8 +149,8 @@ const findVenueAndRoomByName = (
   return {
     venue,
     room:
-      isCampVenue(venue) &&
-      venue.rooms.find((r) => r.title === nameOrRoomTitle),
+      isVenueWithRooms(venue) &&
+      venue.rooms?.find((r) => r.title === nameOrRoomTitle),
   };
 };
 
