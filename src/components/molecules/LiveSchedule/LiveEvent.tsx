@@ -3,9 +3,8 @@ import React, { FC, useCallback } from "react";
 import { Venue } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 
-import { currentTimeInUnixEpoch, formatHourAndMinute } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
-import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
+import { formatHourAndMinute } from "utils/time";
+import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
 import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
@@ -17,20 +16,9 @@ interface LiveEventProps {
 
 export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
   const { user, profile } = useUser();
+
   const enterLiveEvent = useCallback(() => {
-    const room = venue?.rooms?.find((room) => room.title === event.room);
-
-    if (!room) {
-      openUrl(venueInsideUrl(venue.id));
-      return;
-    }
-
-    enterRoom(
-      user!,
-      { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
-      profile?.lastSeenIn
-    );
-    openRoomUrl(room.url);
+    openEventRoomWithCounting({ user, profile, venue, event });
   }, [event, profile, user, venue]);
 
   return (
