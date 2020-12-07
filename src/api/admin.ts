@@ -2,8 +2,9 @@ import firebase, { UserInfo } from "firebase/app";
 import _ from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";
-import { CampRoomData, RoomData_v2 } from "types/CampRoomData";
+import { CampRoomData } from "types/CampRoomData";
 import { VenueTemplate } from "types/VenueTemplate";
+import { RoomData_v2 } from "types/RoomData";
 
 export interface EventInput {
   name: string;

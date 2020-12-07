@@ -22,7 +22,7 @@ import ToggleSwitch from "components/atoms/ToggleSwitch";
 import { updateRoom, updateVenue_v2 } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { Form } from "react-bootstrap";
-import { RoomData_v2 } from "types/CampRoomData";
+import { RoomData_v2 } from "types/RoomData";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { isEqual } from "lodash";
 import RoomDeleteModal from "../Rooms/RoomDeleteModal";

@@ -1,4 +1,4 @@
-import { RoomData_v2 } from "types/CampRoomData";
+import { RoomData_v2 } from "types/RoomData";
 
 export interface RoomModalProps {
   isVisible: boolean;
