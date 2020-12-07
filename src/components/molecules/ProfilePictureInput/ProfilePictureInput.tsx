@@ -3,10 +3,12 @@ import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 import {
+  ACCEPTED_IMAGE_TYPES,
   GIF_RESIZER_URL,
   MAX_IMAGE_FILE_SIZE_BYTES,
   MAX_IMAGE_FILE_SIZE_TEXT,
 } from "settings";
+import { resizeFile } from "utils/image";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
@@ -41,12 +43,19 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
-    const file = e.target.files[0];
-    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-      setError(
-        `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`
-      );
+    let file = e.target.files[0];
+    // When file selection is cancelled, undefined is returned.
+    // Suggestion: create a guard function to avoid if / return.
+    if (!file) return;
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setError("Unsupported file, please try with another one.");
       return;
+    }
+    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+      // New file is with a maximum of 300px width and height, is it possible for the new file to be bigger than 2mb?
+      const resizedImage = await resizeFile(e.target.files[0]);
+      const fileName = file.name;
+      file = new File([resizedImage], fileName);
     }
     const storageRef = firebase.storage().ref();
     // TODO: add rule to forbid other users to edit a user's image
@@ -75,6 +84,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         id="profile-picture-input"
         name="profilePicture"
         onChange={handleFileChange}
+        accept={ACCEPTED_IMAGE_TYPES}
         className="profile-picture-input"
         ref={uploadRef}
       />
