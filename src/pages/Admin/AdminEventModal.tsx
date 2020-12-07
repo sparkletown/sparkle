@@ -9,7 +9,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 import { WithId } from "utils/id";
 dayjs.extend(isSameOrAfter);
 
-interface PropsType {
+interface AdminEventModalProps {
   show: boolean;
   onHide: () => void;
   venueId: string;
@@ -48,7 +48,7 @@ const validationSchema = Yup.object().shape<EventInput>({
   room: Yup.string(),
 });
 
-const AdminEventModal: React.FunctionComponent<PropsType> = ({
+const AdminEventModal: React.FunctionComponent<AdminEventModalProps> = ({
   show,
   onHide,
   venueId,
@@ -93,8 +93,9 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         price: 0,
         collective_price: 0,
         host: data.host,
+        room: roomName,
       };
-      if (template === "themecamp") formEvent.room = data.room;
+
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
@@ -102,7 +103,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId, template]
+    [event, onHide, roomName, venueId]
   );
 
   return (

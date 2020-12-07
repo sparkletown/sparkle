@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import firebase from "firebase";
 
 // Components
@@ -17,19 +17,26 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 
 // Styles
 import * as S from "./VenueDetails.styles";
-import EventModal from "pages/Admin/Event";
 import MapPreview from "pages/Admin/MapPreview";
 import ToggleSwitch from "components/atoms/ToggleSwitch";
-import { updateVenue_v2 } from "api/admin";
+import { updateRoom, updateVenue_v2 } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { Form } from "react-bootstrap";
 import { RoomData_v2 } from "types/CampRoomData";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { isEqual } from "lodash";
+import RoomDeleteModal from "../Rooms/RoomDeleteModal";
+import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 type Owner = {
   id: string;
   data: any;
   partyName: string;
   pictureUrl: string;
+};
+
+type EditRoomType = RoomData_v2 & {
+  roomIndex: number;
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
@@ -52,10 +59,25 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  // EDITING ROOM
-  const [editingRoom, setEditingRoom] = useState<RoomData_v2 | null>(null);
+  const [editingRoom, setEditingRoom] = useState<EditRoomType | null>(null);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [eventRoom, setEventRoom] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showOwnersModal, setShowOwnersModal] = useState(false);
 
   const history = useHistory();
+
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      doc: venueId,
+      subcollections: [{ collection: "events" }],
+      orderBy: ["start_utc_seconds", "asc"],
+      storeAs: "events",
+    },
+  ]);
+
+  const ownersRef = useRef([]);
 
   useEffect(() => {
     const newOwners: any = [];
@@ -68,7 +90,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
             .httpsCallable("venue-getOwnerData")({ userId: owner });
           const userData = user.data;
 
-          if (ownersData.filter((i) => i.id !== owner)) {
+          if (ownersRef.current.filter((i: Owner) => i.id !== owner)) {
             newOwners.push({
               id: owner,
               ...userData,
@@ -76,7 +98,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           }
         }
 
-        // setOwnersData(newOwners);
+        if (!isEqual(ownersData, newOwners)) {
+          setOwnersData(newOwners);
+        }
       }
     }
 
@@ -153,8 +177,28 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     </Form>
   );
 
-  const handleEditRoom = (room: RoomData_v2) => {
-    setEditingRoom(room);
+  const handleEditRoom = (room: RoomData_v2, index: number) => {
+    setEditingRoom({
+      ...room,
+      roomIndex: index,
+    });
+  };
+
+  const handleRoomEvent = (roomName: string) => {
+    setEventRoom(roomName);
+    setShowEventModal(true);
+  };
+
+  const handleEditRoomSave = (values: RoomData_v2, index: number) => {
+    const newData = {
+      ...values,
+      x_percent: editingRoom?.x_percent,
+      y_percent: editingRoom?.y_percent,
+      width_percent: editingRoom?.width_percent,
+      height_percent: editingRoom?.height_percent,
+    };
+
+    updateRoom(newData, venueId!, user, index);
   };
 
   return (
@@ -174,15 +218,20 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         />
 
         <S.HeaderActions>
-          <Button gradient linkTo={`/in/${venue.id}`} isLink>
+          <Link
+            to={`/in/${venue.id}`}
+            className="btn btn-primary"
+            style={{ marginBottom: "0.5em" }}
+            target="_blank"
+          >
             Go to your space
-          </Button>
+          </Link>
           <Button>Preview landing page</Button>
 
           <S.AdminList>
             <S.AdminListTitle>Party admins</S.AdminListTitle>
 
-            {ownersData &&
+            {ownersData.length > 0 &&
               ownersData.map((owner: Owner) => (
                 <S.AdminItem key={owner.id}>
                   <S.AdminPicture backgroundImage={owner.pictureUrl} />
@@ -190,14 +239,16 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
                 </S.AdminItem>
               ))}
 
-            <span>Invite admin s</span>
+            <Button onClick={() => setShowOwnersModal(true)}>
+              Invite an admin
+            </Button>
           </S.AdminList>
         </S.HeaderActions>
       </S.Header>
 
       <S.Main>
         <MapPreview
-          venueId={venueId}
+          venueId={venueId!}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
           rooms={rooms}
@@ -218,16 +269,17 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           <S.RoomWrapper>
             {rooms.map((room: any, index: number) => (
               <RoomCard
-                key={index}
+                key={room.title}
                 {...room}
-                editHandler={() => handleEditRoom(room)}
+                editHandler={() => handleEditRoom(room, index)}
+                onEventHandler={handleRoomEvent}
               />
             ))}
           </S.RoomWrapper>
         )}
 
-        {renderShowGrid()}
-        {renderRoomVisibility()}
+        {!!mapBackgroundImageUrl && renderShowGrid()}
+        {!!mapBackgroundImageUrl && renderRoomVisibility()}
       </S.Main>
 
       <RoomModal
@@ -242,10 +294,39 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           isVisible={!!editingRoom}
           onClickOutsideHandler={() => setEditingRoom(null)}
           room={editingRoom}
+          submitHandler={handleEditRoomSave}
+          deleteHandler={() => setShowDeleteModal(true)}
         />
       )}
 
-      <EventModal isVisible={false} />
+      {editingRoom && (
+        <RoomDeleteModal
+          show={showDeleteModal}
+          onHide={() => setShowDeleteModal(false)}
+          venueId={venueId!}
+          room={editingRoom}
+          onDeleteRedirect={`/admin_v2/venue/${venueId}`}
+          onDelete={() => {
+            setShowDeleteModal(false);
+            setEditingRoom(null);
+          }}
+        />
+      )}
+
+      <VenueOwnersModal
+        visible={showOwnersModal}
+        onHide={() => setShowOwnersModal(false)}
+        venue={venue}
+      />
+
+      <AdminEventModal
+        show={showEventModal}
+        venueId={venueId!}
+        onHide={() => setShowEventModal(false)}
+        setEditedEvent={() => {}}
+        setShowDeleteEventModal={() => {}}
+        roomName={eventRoom}
+      />
     </S.Container>
   );
 };
