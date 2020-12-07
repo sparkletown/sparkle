@@ -7,7 +7,7 @@ import { VenueEvent } from "types/VenueEvent";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
-import { currentTimeInUnixEpoch } from "./time";
+import { getCurrentTimeInUnixEpochSeconds } from "./time";
 
 const LOCATION_INCREMENT_SECONDS = 10;
 const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
