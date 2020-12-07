@@ -11,7 +11,7 @@ import { makeCampRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector } from "utils/selectors";
 import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { enterLocation } from "utils/useLocationUpdateEffect";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -187,7 +187,7 @@ export const Map: React.FC<MapProps> = ({
         ...(roomVenue ? { [venue.name]: nowInEpochSeconds } : {}),
       };
 
-      enterRoom(user, roomName, profile?.lastSeenIn);
+      enterLocation(user, roomName, profile?.lastSeenIn);
     },
     [profile, user, venue, venues]
   );

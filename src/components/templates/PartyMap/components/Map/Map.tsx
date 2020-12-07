@@ -5,7 +5,7 @@ import { User } from "types/User";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { enterLocation } from "utils/useLocationUpdateEffect";
 import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
@@ -151,7 +151,7 @@ export const Map: React.FC<PropsType> = ({
       };
 
       openRoomUrl(room.url);
-      enterRoom(user, roomName, profile?.lastSeenIn);
+      enterLocation(user, roomName, profile?.lastSeenIn);
     },
     [profile, user, venue.name, venues]
   );

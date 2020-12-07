@@ -15,10 +15,10 @@ const LOCATION_INCREMENT_SECONDS = 10;
 
 export const updateLocationData = (
   user: UserInfo,
-  roomName: { [key: string]: number },
+  locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
-  const room = roomName ?? {};
+  const location = locationName ?? {};
   const prevRoomName =
     lastSeenIn &&
     Object.keys(lastSeenIn).find((lastSeen) => lastSeen.includes("/"));
@@ -28,28 +28,30 @@ export const updateLocationData = (
   }
 
   const roomVenue =
-    roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
+    locationName && Object.keys(locationName).length
+      ? Object.keys(locationName)[0]
+      : null;
 
   updateUserProfile(user.uid, {
     lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
     lastSeenIn:
-      !roomName && !lastSeenIn
+      !locationName && !lastSeenIn
         ? null
         : lastSeenIn
-        ? { ...lastSeenIn, ...room }
-        : room,
-    room: !roomName && !lastSeenIn ? null : roomVenue,
+        ? { ...lastSeenIn, ...location }
+        : location,
+    room: !locationName && !lastSeenIn ? null : roomVenue,
   });
 };
 
 // get Profile from the firebase
 // @debt rename this trackRoomEntered
-export const enterRoom = (
+export const enterLocation = (
   user: UserInfo,
-  roomName: { [key: string]: number },
+  locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
-  updateLocationData(user, roomName, lastSeenIn);
+  updateLocationData(user, locationName, lastSeenIn);
 };
 
 export interface TrackRoomEnteredNGProps {
@@ -65,7 +67,7 @@ export const trackRoomEnteredNG = ({
   roomTitle,
   lastSeenIn,
 }: TrackRoomEnteredNGProps) => {
-  enterRoom(
+  enterLocation(
     user,
     { [`${venueName}/${roomTitle}`]: getCurrentTimeInUnixEpochSeconds() },
     lastSeenIn

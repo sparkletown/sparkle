@@ -5,7 +5,7 @@ import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
 
 import { getCurrentEvent } from "utils/event";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { enterLocation } from "utils/useLocationUpdateEffect";
 import {
   currentVenueSelector,
   orderedVenuesSelector,
@@ -72,7 +72,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
     room &&
       user &&
-      enterRoom(
+      enterLocation(
         user,
         {
           [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
