@@ -52,7 +52,6 @@ import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
-import { AuthenticationModal } from "components/organisms/AuthenticationModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
@@ -65,6 +64,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import Login from "pages/Account/Login";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -240,15 +240,7 @@ const VenuePage = () => {
   );
 
   if (!user) {
-    return (
-      <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
-      </WithNavigationBar>
-    );
+    return <Login formType="initial" />;
   }
 
   if (!venue || !venueId) {
@@ -257,6 +249,7 @@ const VenuePage = () => {
 
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
@@ -298,14 +291,12 @@ const VenuePage = () => {
     }
   }
 
-  if (profile === undefined) {
+  if (!user) {
     return <LoadingPage />;
   }
 
   if (!(profile?.partyName && profile?.pictureUrl)) {
-    history.push(
-      `/account/profile?returnUrl=${window.location.pathname}${window.location.search}`
-    );
+    history.push(`/account/profile?venueId=${venueId}`);
   }
 
   let template;
