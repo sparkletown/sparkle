@@ -6,8 +6,13 @@ import { useEffect, useRef } from "react";
  * Note: You don't need to memoise/useCallback the handler as we store it with
  * a ref internally.
  *
+ * Note: If `intervalInMs` is `null` or `undefined`, this hook will do nothing
+ * (essentially becomes a noop). You can use this as a way to add a 'conditional 
+ * element' to without conditionally calling the hook itself.
+ *
  * @param handler the function to be called every tick of the interval
- * @param intervalInMs the interval time in milliseconds
+ * @param intervalInMs the interval time in milliseconds. If falsy, the hook
+ * will not set the interval, and will essentially be a noop.
  */
 export const useInterval = (handler: () => void, intervalInMs?: number) => {
   // Store the handler as the initial default value
