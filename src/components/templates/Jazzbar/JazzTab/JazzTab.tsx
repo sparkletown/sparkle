@@ -30,6 +30,7 @@ import UserList from "components/molecules/UserList";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useInterval } from "hooks/useInterval";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -57,7 +58,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     },
   ]);
 
-  const [nowMs, setNowMs] = useState(new Date().getTime());
+  const [nowMs, setNowMs] = useState(Date.now());
+
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
 
   const { user } = useUser();
 
@@ -67,14 +72,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const venueToUse = venue ? venue : firestoreVenue;
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
-
-    return () => clearInterval(interval);
-  }, [setNowMs]);
 
   const venueUsers = users
     ? users.filter(

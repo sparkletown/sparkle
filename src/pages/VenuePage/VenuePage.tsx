@@ -33,6 +33,7 @@ import { venueEntranceUrl } from "utils/url";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
+import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -110,14 +111,9 @@ const VenuePage = () => {
     });
   }, [prevLocations, user, venueName]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateUserLocation();
-    }, LOC_UPDATE_FREQ_MS);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [updateUserLocation]);
+  useInterval(() => {
+    updateUserLocation();
+  }, LOC_UPDATE_FREQ_MS);
 
   const event = currentEvent?.[0];
 
