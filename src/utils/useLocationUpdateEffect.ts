@@ -76,6 +76,26 @@ export const trackRoomEnteredNG = ({
   );
 };
 
+export interface TrackVenueEnteredProps {
+  user?: UserInfo;
+  venueName: string;
+  lastSeenIn?: Record<string, number>;
+}
+
+export const trackVenueEntered = ({
+  user,
+  venueName,
+  lastSeenIn,
+}: TrackVenueEnteredProps) => {
+  if (!user) return;
+
+  enterLocation(
+    user,
+    { [venueName]: getCurrentTimeInUnixEpochSeconds() },
+    lastSeenIn
+  );
+};
+
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
     lastSeenAt: 0,
