@@ -7,23 +7,29 @@ import Button from "components/atoms/Button";
 import { useSelector } from "hooks/useSelector";
 import VenueEventDetails from "pages/Admin/VenueEventDetails";
 import { Card } from "react-bootstrap";
+import { useUser } from "hooks/useUser";
+import { updateRoom } from "api/admin";
+import ToggleSwitch from "components/atoms/ToggleSwitch";
 
 const RoomCard: React.FC<RoomCardProps> = ({
-  title,
-  description,
-  image_url,
+  room,
+  roomIndex,
+  venueId,
   editHandler,
   onEventHandler,
 }) => {
+  const { user } = useUser();
   const events = useSelector((state) => state.firestore.ordered.events);
   const filteredEvents =
     events &&
     events.filter((e) => {
-      if (e.room === title) {
+      if (e.room === room.title) {
         return e;
       }
       return null;
     });
+
+  if (!user) return null;
 
   const renderFilteredEvents = () => {
     return filteredEvents?.map((venueEvent) => (
@@ -38,20 +44,51 @@ const RoomCard: React.FC<RoomCardProps> = ({
     ));
   };
 
+  const handleRoomVisibilityChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const roomData = {
+      ...room,
+      isEnabled: e.target.checked,
+    };
+
+    updateRoom(roomData, venueId, user, roomIndex);
+  };
+
   return (
     <S.Wrapper>
       <S.Header>
         <S.Banner>
-          <img src={image_url} alt="Room banner" />
+          <img src={room.image_url} alt="Room banner" />
         </S.Banner>
 
         <S.TitleWrapper>
-          <S.Title>{title}</S.Title>
-          <S.Description>{description}</S.Description>
+          <S.Title>{room.title}</S.Title>
+          <S.Description>{room.description}</S.Description>
         </S.TitleWrapper>
 
         <S.ButtonWrapper>
           <Button text="Edit room" onClick={() => editHandler()} />
+
+          {/* Temporary div/toggle, this will be select element once the isEnabled is reworked */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: "1rem",
+            }}
+          >
+            <span style={{ fontSize: "0.8rem" }}>
+              Room {room.isEnabled ? "Enabled" : "Disabled"}
+            </span>
+            <ToggleSwitch
+              name="showGrid"
+              isChecked={room.isEnabled}
+              onChange={handleRoomVisibilityChange}
+            />
+          </div>
         </S.ButtonWrapper>
       </S.Header>
 
@@ -61,7 +98,10 @@ const RoomCard: React.FC<RoomCardProps> = ({
       ) : (
         renderFilteredEvents()
       )}
-      <Button text="Add an event" onClick={() => onEventHandler(title)} />
+      <Button
+        text="Add an event"
+        onClick={() => onEventHandler(room!.title!)}
+      />
     </S.Wrapper>
   );
 };

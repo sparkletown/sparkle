@@ -1,7 +1,9 @@
+import { RoomData_v2 } from "types/RoomData";
+
 export interface RoomCardProps {
-  title: string;
-  description?: string;
-  image_url: string;
   editHandler: () => void;
   onEventHandler: (title: string) => void;
+  room: RoomData_v2;
+  venueId: string;
+  roomIndex: number;
 }

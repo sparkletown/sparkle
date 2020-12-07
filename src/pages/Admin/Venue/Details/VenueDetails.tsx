@@ -270,9 +270,11 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
             {rooms.map((room: any, index: number) => (
               <RoomCard
                 key={room.title}
-                {...room}
+                room={room}
+                venueId={venueId!}
                 editHandler={() => handleEditRoom(room, index)}
                 onEventHandler={handleRoomEvent}
+                roomIndex={index}
               />
             ))}
           </S.RoomWrapper>
