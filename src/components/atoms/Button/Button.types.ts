@@ -1,11 +1,23 @@
 import { CSSProperties } from "react";
 
-export interface ButtonProps {
+type ButtonAsLink = {
+  isLink: true;
+  linkTo: string;
+};
+
+type NotLink = {
+  isLink?: false;
+  linkTo?: never;
+};
+
+type LinkProps = ButtonAsLink | NotLink;
+
+export type ButtonProps = LinkProps & {
   customClass?: string;
+  customStyle?: CSSProperties;
+  gradient?: boolean;
   loading?: boolean;
   onClick?: () => void;
   text?: string;
-  customStyle?: CSSProperties;
-  gradient?: boolean;
   type?: "button" | "reset" | "submit";
-}
+};
