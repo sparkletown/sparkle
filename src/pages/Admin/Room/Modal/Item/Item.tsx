@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-// import { RoomModalItemProps } from './Item.types';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import * as S from "./Item.styles";
@@ -11,10 +10,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
 import { createRoom } from "api/admin";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
 import { CustomInputsType } from "settings";
+import { RoomModalItemProps } from "./Item.types";
 
-const RoomModalItem: React.FC<any> = ({
+const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
   icon,
   description,
@@ -39,7 +38,7 @@ const RoomModalItem: React.FC<any> = ({
 
   useEffect(() => {
     initialRender.current = false;
-  });
+  }, []);
 
   const {
     register,
@@ -108,19 +107,6 @@ const RoomModalItem: React.FC<any> = ({
     </S.InputWrapper>
   );
 
-  const renderImageSizes = () => (
-    <S.InputWrapper>
-      <span>Lock aspect ratio</span>
-      <ToggleSwitch name="lock_aspect_ratio" />
-
-      <span>Width (%):</span>
-      <input ref={register} name="width_percent" type="number" />
-
-      <span>Height (%):</span>
-      <input ref={register} name="height_percent" type="number" />
-    </S.InputWrapper>
-  );
-
   const renderCustomInput = (input: CustomInputsType) => (
     <S.InputWrapper key={input.name}>
       <span>{input.title}</span>
@@ -157,7 +143,6 @@ const RoomModalItem: React.FC<any> = ({
             )}
 
           {renderLogoInput()}
-          {/* {renderImageSizes()} */}
 
           <Button type="submit" disabled={isSubmitting}>
             Add the room

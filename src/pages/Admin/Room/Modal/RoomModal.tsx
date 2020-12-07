@@ -18,7 +18,7 @@ const RoomModal: React.FC<RoomModalProps> = ({
 }) => {
   const { user } = useUser();
 
-  if (!isVisible) return <></>;
+  if (!isVisible || !user) return null;
 
   return (
     <Modal show={isVisible} onHide={onClickOutsideHandler} size="lg">
