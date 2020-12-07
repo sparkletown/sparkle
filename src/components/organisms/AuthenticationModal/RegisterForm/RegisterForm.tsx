@@ -151,7 +151,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         <div className="register-form-title">First, create your account</div>
         <div>This will give you access to all sorts of events in Sparkle</div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onChange={clearBackendErrors}
+        className="form"
+      >
         <div className="input-group">
           <input
             name="email"
@@ -203,6 +207,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
         )}
+
+        {errors.backend && (
+          <span className="input-error">{errors.backend.message}</span>
+        )}
+
         <div className="input-group" key={sparkleTermsAndConditions.name}>
           <label
             htmlFor={sparkleTermsAndConditions.name}
