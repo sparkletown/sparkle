@@ -131,15 +131,13 @@ export const openRoomWithCounting = ({
     return;
   }
 
-  if (user) {
-    // Track room counting
-    trackRoomEnteredNG({
-      user,
-      venueName: venue.name,
-      roomTitle: room.title,
-      lastSeenIn: profile?.lastSeenIn,
-    });
-  }
+  // Track room counting
+  trackRoomEnteredNG({
+    user,
+    venueName: venue.name,
+    roomTitle: room.title,
+    lastSeenIn: profile?.lastSeenIn,
+  });
 
   openRoomUrl(room.url);
 };
