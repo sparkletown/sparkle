@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 type ButtonProps = {
-  gradient?: boolean;
+  hasGradient?: boolean;
 };
 export const Button = styled.button<ButtonProps>`
   display: inline-block;
@@ -10,8 +10,8 @@ export const Button = styled.button<ButtonProps>`
   border-radius: 1.375em;
   border: none;
   background-color: #361f6e;
-  background-image: ${({ gradient }) =>
-    gradient
+  background-image: ${({ hasGradient }) =>
+    hasGradient
       ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
       : "none"};
 

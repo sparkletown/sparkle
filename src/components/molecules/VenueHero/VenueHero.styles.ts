@@ -44,7 +44,10 @@ export const Container = styled.div<ContainerProps>`
 
   ${Button} {
     width: fit-content;
+    padding: 0.5em 1em;
     align-self: flex-end;
+
+    font-size: 0.8rem;
   }
 `;
 

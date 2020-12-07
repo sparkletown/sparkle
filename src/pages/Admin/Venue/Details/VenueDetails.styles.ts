@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 import { Container as VenueHeroContainer } from "components/molecules/VenueHero/VenueHero.styles";
-import { Wrapper as BackgroundSelectWrapper } from "pages/Admin/BackgroundSelect/BackgroundSelect.styles";
 import { Button } from "components/atoms/Button/Button.styles";
 
 export const Container = styled.div`
@@ -66,6 +65,15 @@ export const AdminList = styled.div`
   border-radius: 28px;
 
   background-color: #1a1d24;
+
+  ${Button} {
+    display: block;
+    width: 100%;
+    padding: 0.5em 0;
+    margin-top: 0.8em;
+
+    font-size: 0.8rem;
+  }
 `;
 
 // ---------------- ADMIN LIST - TITLE
