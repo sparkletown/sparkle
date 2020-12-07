@@ -28,8 +28,16 @@ export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
   return venueRoom ? venueRoom.url : venueInsideUrl(venue.id);
 };
 
-export const isExternalUrl = (url: string) =>
-  window.location.host !== new URL(url).host;
+export const isExternalUrl = (url: string) => {
+  try {
+    const urlHost = new URL(url).host;
+    const currentHost = window.location.host;
+    return currentHost !== urlHost;
+  } catch (error) {
+    Bugsnag.notify(error);
+    return false;
+  }
+};
 
 // @debt I feel like we could construct this url in a better way
 export const getRoomUrl = (roomUrl: string) =>
