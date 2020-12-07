@@ -2,13 +2,12 @@ import React, { useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import {
-  ACCEPTED_IMAGE_TYPES,
-  GIF_RESIZER_URL,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  MAX_IMAGE_FILE_SIZE_TEXT,
-} from "settings";
+
+import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+
 import { resizeFile } from "utils/image";
+
+import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
@@ -21,6 +20,13 @@ interface PropsType {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: any;
 }
+
+const sparkleAvatars = [
+  "default-profile-pic-1.png",
+  "default-profile-pic-2.png",
+  "default-profile-pic-3.png",
+  "default-profile-pic-4.png",
+];
 
 const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   setValue,
@@ -67,6 +73,27 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const uploadDefaultAvatar = async (avatar: string) => {
+    const defaultAvatar = await fetch(`/avatars/${avatar}`);
+
+    if (!defaultAvatar) return;
+
+    const imageBlob = await defaultAvatar.blob();
+
+    if (!imageBlob) return;
+
+    const file = new File([imageBlob], avatar, { type: imageBlob.type });
+
+    const storageRef = firebase.storage().ref();
+    // TODO: add rule to forbid other users to edit a user's image
+    const profilePictureRef = storageRef.child(
+      `/users/${user.uid}/${file.name}`
+    );
+    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
+    const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
+    setValue("pictureUrl", pictureUrlRef, true);
+  };
+
   return (
     <div className="profile-picture-upload-form">
       <div
@@ -96,8 +123,25 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
+      <small>Or pick one from our Sparkle profile pics</small>
+      <div className="default-avatars-container">
+        {sparkleAvatars.map((avatar, index) => {
+          return (
+            <div
+              key={`${avatar}-${index}`}
+              className="profile-picture-preview-container"
+              onClick={() => uploadDefaultAvatar(avatar)}
+            >
+              <img
+                src={`/avatars/${avatar}`}
+                className="profile-icon profile-picture-preview"
+                alt="your profile"
+              />
+            </div>
+          );
+        })}
+      </div>
       <input
-        type="hidden"
         name="pictureUrl"
         className="profile-picture-input"
         ref={register({
