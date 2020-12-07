@@ -590,12 +590,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
-  // updated = {
-  //   ...updated,
-  //   showGrid: data.showGrid || false,
-  //   columns: data.columns || 1,
-  // }
-
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 

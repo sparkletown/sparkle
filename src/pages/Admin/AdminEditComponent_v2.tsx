@@ -13,6 +13,7 @@ import {
   JAM_IMAGE,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  HAS_ROOMS_TEMPLATES,
 } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
@@ -32,7 +33,6 @@ import { ExtractProps } from "types/utility";
 import { AnyVenue } from "types/Firestore";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import { Link } from "react-router-dom";
-import { isCampVenue } from "types/CampVenue";
 
 import SubmitButton from "components/atoms/SubmitButton";
 
@@ -221,11 +221,11 @@ const AdminEditComponent: React.FC = () => {
             >
               Edit Venue
             </Link>
-            {isCampVenue(venue) && (
+            {HAS_ROOMS_TEMPLATES.includes(venue.template) && (
               <div style={{ marginTop: 10 }}>
                 <h5>Venue Rooms</h5>
                 <div className="edit-rooms-container">
-                  {venue.rooms.map((room, idx) => (
+                  {venue.rooms?.map((room, idx) => (
                     <div key={`${room.title}-${idx}`} style={{ margin: 10 }}>
                       <Link
                         className="btn btn-secondary"

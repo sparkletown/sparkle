@@ -28,7 +28,6 @@ import "./Admin.scss";
 import AdminEventModal from "./AdminEventModal";
 import { venueInsideUrl } from "utils/url";
 import { AdminVenuePreview } from "./AdminVenuePreview";
-import { isCampVenue } from "types/CampVenue";
 import { useQuery } from "hooks/useQuery";
 import { VenueTemplate } from "types/VenueTemplate";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
@@ -41,6 +40,7 @@ import {
   PLAYA_VENUE_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  HAS_ROOMS_TEMPLATES,
 } from "settings";
 import AdminEditComponent from "./AdminEditComponent_v2";
 import { VenueOwnersModal } from "./VenueOwnersModal";
@@ -48,6 +48,7 @@ import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
 import EventsComponent from "./EventsComponent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import { orderedVenuesSelector } from "utils/selectors";
 
 dayjs.extend(advancedFormat);
 
@@ -60,7 +61,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;
 
@@ -81,18 +82,20 @@ const VenueList: React.FC<VenueListProps> = ({
             }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
-            {isCampVenue(venue) && (
+            {HAS_ROOMS_TEMPLATES.includes(venue.template) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venue.rooms.map((room, idx) => (
-                  <li
-                    key={idx}
-                    className={`${idx === roomIndex ? "selected" : ""}`}
-                  >
-                    <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
-                      {room.title}
-                    </Link>
-                  </li>
-                ))}
+                {venue.rooms &&
+                  venue.rooms?.length > 0 &&
+                  venue.rooms?.map((room, idx) => (
+                    <li
+                      key={idx}
+                      className={`${idx === roomIndex ? "selected" : ""}`}
+                    >
+                      <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                        {room.title}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             )}
           </li>
@@ -337,14 +340,15 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                 Add a Room
               </Link>
             )}
-            {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
-              <Link
-                to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
-                className="btn btn-block"
-              >
-                Edit Room
-              </Link>
-            )}
+            {HAS_ROOMS_TEMPLATES.includes(venue.template) &&
+              typeof roomIndex !== "undefined" && (
+                <Link
+                  to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+                  className="btn btn-block"
+                >
+                  Edit Room
+                </Link>
+              )}
             {canBeDeleted(venue) && (
               <button
                 role="link"

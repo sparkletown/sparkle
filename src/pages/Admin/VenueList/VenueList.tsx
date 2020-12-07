@@ -7,7 +7,7 @@ import { useSelector } from "hooks/useSelector";
 // Typings
 import { VenueListProps } from "./VenueList.types";
 import { canHaveSubvenues } from "utils/venue";
-import { isCampVenue } from "types/CampVenue";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
@@ -34,18 +34,20 @@ const VenueList: React.FC<VenueListProps> = ({
             }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
-            {isCampVenue(venue) && (
+            {HAS_ROOMS_TEMPLATES.includes(venue.template) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venue.rooms.map((room, idx) => (
-                  <li
-                    key={idx}
-                    className={`${idx === roomIndex ? "selected" : ""}`}
-                  >
-                    <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
-                      {room.title}
-                    </Link>
-                  </li>
-                ))}
+                {venue.rooms &&
+                  venue.rooms?.length > 0 &&
+                  venue.rooms?.map((room, idx) => (
+                    <li
+                      key={idx}
+                      className={`${idx === roomIndex ? "selected" : ""}`}
+                    >
+                      <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                        {room.title}
+                      </Link>
+                    </li>
+                  ))}
               </ul>
             )}
           </li>

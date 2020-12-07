@@ -41,12 +41,12 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const initialRender = useRef<boolean>(true);
 
   useEffect(() => {
-    initialRender.current = false;
-  });
-
-  useEffect(() => {
     if (initialRender && imgUrl) setImageUrl(imgUrl);
   }, [imgUrl]);
+
+  useEffect(() => {
+    initialRender.current = false;
+  }, []);
 
   return (
     <>
@@ -57,7 +57,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         as="label"
       >
         <input
-          accept="image/x-png,image/gif,image/jpeg"
+          accept="image/png,image/x-png,image/gif,image/jpeg"
           className={customClass}
           hidden
           id={name}

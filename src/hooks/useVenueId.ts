@@ -27,5 +27,13 @@ export const useVenueId: () => string | undefined = () => {
     path: "/v/:venueId",
   });
 
+  if (match && match.params.venueId) {
+    return match.params.venueId;
+  }
+
+  match = matchPath<VenueRoute>(history.location.pathname, {
+    path: "/admin_v2/venue/edit/:venueId",
+  });
+
   return match?.params?.venueId;
 };
