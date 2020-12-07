@@ -174,6 +174,9 @@ export const makeSiblingVenueEventsSelector = (venueId?: string) => (
 ): WithId<VenueEvent>[] | undefined =>
   (state.firestore.ordered as never)[`siblingVenueEvents-${venueId}`];
 
+export const userModalVisitsSelector = (state: RootState) =>
+  state.firestore.ordered.userModalVisits;
+
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.venues?.playa?.radioStations;
 

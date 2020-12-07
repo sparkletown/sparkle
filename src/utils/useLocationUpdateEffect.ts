@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 import { AnyRoom } from "types/Venue";
@@ -7,11 +6,11 @@ import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 
 import { updateUserProfile } from "pages/Account/helpers";
-import { WithId } from "./id";
-import { getCurrentTimeInUnixEpochSeconds } from "./time";
-import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
+import { useInterval } from "hooks/useInterval";
+import { currentTimeInUnixEpoch } from "./time";
 
 const LOCATION_INCREMENT_SECONDS = 10;
+const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 export const updateLocationData = (
   user: UserInfo,
@@ -162,24 +161,26 @@ export const useLocationUpdateEffect = (
   user: UserInfo | undefined,
   roomName: string
 ) => {
-  useEffect(() => {
-    // Time spent is currently counted multiple time if multiple tabs are open
-    if (!user || !roomName) return;
+  const shouldUseInterval = user && roomName;
 
-    const firestore = firebase.firestore();
-    const doc = `users/${user.uid}/visits/${roomName}`;
-    const increment = firebase.firestore.FieldValue.increment(
-      LOCATION_INCREMENT_SECONDS
-    );
+  useInterval(
+    () => {
+      // Time spent is currently counted multiple time if multiple tabs are open
+      if (!user || !roomName) return;
 
-    const intervalId = setInterval(() => {
+      const firestore = firebase.firestore();
+      const doc = `users/${user.uid}/visits/${roomName}`;
+      const increment = firebase.firestore.FieldValue.increment(
+        LOCATION_INCREMENT_SECONDS
+      );
+
       return firestore
         .doc(doc)
         .update({ timeSpent: increment })
         .catch(() => {
           firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
-    }, LOCATION_INCREMENT_SECONDS * 1000);
-    return () => clearInterval(intervalId);
-  }, [user, roomName]);
+    },
+    shouldUseInterval ? LOCATION_INCREMENT_MS : undefined
+  );
 };
