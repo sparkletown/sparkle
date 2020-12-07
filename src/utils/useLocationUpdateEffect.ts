@@ -126,8 +126,6 @@ export const openEventRoomWithCounting = ({
   venue,
   event,
 }: EnterEventRoomWithCounting) => {
-  if (!venue) return;
-
   const room = venue?.rooms?.find((room) => room.title === event.room);
 
   openRoomWithCounting({ user, profile, venue, room });
