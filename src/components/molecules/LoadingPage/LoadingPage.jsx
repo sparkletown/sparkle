@@ -32,7 +32,7 @@ export const LoadingPage = () => {
     () => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     },
-    IS_BURN ? 1000 : false
+    IS_BURN ? 1000 : undefined
   );
 
   return (
