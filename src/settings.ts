@@ -283,6 +283,99 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
 ];
 
+export type CustomInputsType = {
+  name: string;
+  title: string;
+  type: "text" | "textarea" | "number" | "switch";
+  // ? Maybe add a field for specific regex patterns
+  // ? if we want the field to be a zoom url
+  // ? it must include `zoom.com/`
+};
+export type RoomTemplate = {
+  template: VenueTemplate;
+  name: string;
+  description: string;
+  icon: string;
+  url?: string;
+  customInputs?: CustomInputsType[];
+};
+export const ROOM_TEMPLATES: RoomTemplate[] = [
+  {
+    template: VenueTemplate.artpiece,
+    name: "Art Piece",
+    description:
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+    icon: "/venues/pickspace-thumbnail_art.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description:
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.zoomroom,
+    name: "Experience",
+    description:
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    icon: "/venues/pickspace-thumbnail_zoom.png",
+  },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Burn Barrel (Campfire?)",
+    description: "Huddle around a fire barrel with your close friends",
+    icon: "/rooms/room-icon-fire.png",
+  },
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Music Bar",
+    description:
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    icon: "/rooms/room-icon-musicbar.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.partymap,
+    name: "Partymap",
+    description:
+      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+    icon: "/venues/pickspace-thumbnail_camp.png",
+    customInputs: [
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+];
+
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
