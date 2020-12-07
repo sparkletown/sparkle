@@ -30,9 +30,7 @@ export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
 
 export const isExternalUrl = (url: string) => {
   try {
-    const urlHost = new URL(url).host;
-    const currentHost = window.location.host;
-    return currentHost !== urlHost;
+    return new URL(url).host !== window.location.host;
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";
