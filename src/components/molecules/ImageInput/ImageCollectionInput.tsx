@@ -108,7 +108,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           disabled={disabled}
           type="file"
           onChange={handleFileChange}
-          accept="image/x-png,image/gif,image/jpeg"
+          accept="image/png,image/x-png,image/gif,image/jpeg"
           className="default-input"
           ref={register}
         />

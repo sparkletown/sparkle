@@ -8,6 +8,7 @@ import { VenueEvent } from "types/VenueEvent";
 import { formatDate, formatDateToWeekday } from "utils/time";
 import { WithId, WithVenueId } from "utils/id";
 import { itemsToObjectByIdReducer } from "utils/reducers";
+import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
@@ -39,20 +40,21 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedVenuesById: Record<
+  const relatedVenuesById: Partial<Record<
     string,
     WithId<AnyVenue>
-  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
+  >> = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
-    const hasEvents = relatedVenueEvents.length > 0;
+    const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
+    const hasEvents = liveAndFutureEvents.length > 0;
 
     const nowDay = startOfDay(new Date());
 
     const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
-      const todaysEvents = relatedVenueEvents
+      const todaysEvents = liveAndFutureEvents
         .filter((event) => {
           return isWithinInterval(day, {
             start: startOfDay(new Date(event.start_utc_seconds * 1000)),
@@ -114,7 +116,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const hasParentVenue = !!parentVenue;
 
   const partyinfoImage = hasParentVenue
-    ? parentVenue?.host.icon
+    ? parentVenue?.host?.icon
     : currentVenue?.host?.icon;
 
   const titleText = hasParentVenue ? parentVenue?.name : currentVenue?.name;

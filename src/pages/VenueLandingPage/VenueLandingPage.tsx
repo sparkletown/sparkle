@@ -28,6 +28,7 @@ import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
 } from "utils/selectors";
+import { IFRAME_ALLOW } from "settings";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -139,7 +140,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img className="host-icon" src={venue.host.icon} alt="host" />
+              <img className="host-icon" src={venue.host?.icon} alt="host" />
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">
@@ -202,7 +203,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 className="youtube-video"
                 src={venue.config?.landingPageConfig.iframeUrl}
                 frameBorder="0"
-                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"
+                allow={IFRAME_ALLOW}
               />
             )}
             {venue.config?.landingPageConfig.quotations &&

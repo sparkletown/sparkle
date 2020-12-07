@@ -9,9 +9,32 @@ import {
 } from "./secrets";
 import { CSSProperties } from "react";
 
+export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
+export const SPARKLE_TERMS_AND_CONDITIONS_URL =
+  "https://sparklespaces.com/terms-of-use/";
+export const SPARKLE_PRIVACY_POLICY =
+  "https://sparklespaces.com/privacy-policy/";
+
+export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
+export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
+  "https://sparklever.se/terms-and-conditions";
+export const SPARKLEVERSE_PRIVACY_POLICY =
+  "https://sparklever.se/privacy-policy/";
+
+export const HOMEPAGE_URL = IS_BURN
+  ? SPARKLEVERSE_HOMEPAGE_URL
+  : SPARKLE_HOMEPAGE_URL;
+
+export const TERMS_AND_CONDITIONS_URL = IS_BURN
+  ? SPARKLEVERSE_TERMS_AND_CONDITIONS_URL
+  : SPARKLE_TERMS_AND_CONDITIONS_URL;
+
+export const PRIVACY_POLICY = IS_BURN
+  ? SPARKLEVERSE_PRIVACY_POLICY
+  : SPARKLE_PRIVACY_POLICY;
+
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_PARTY_NAME = "Anon";
-export const SPARKLEVERSE_MARKETING_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
 export const MEMRISE_LOGO_URL = "/memrise-logo.png";
@@ -34,10 +57,7 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const TICKET_URL = "https://sparklever.se/glowforth/";
-export const CODE_CHECK_ENABLED = true;
 export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
-export const HOMEPAGE_URL = "https://sparklespaces.com/";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -92,6 +112,11 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
+export const VALID_URL_PROTOCOLS = ["http:", "https:"];
+
+export const IFRAME_ALLOW =
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
@@ -108,7 +133,10 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
 ];
 
-export const BACKGROUND_IMG_TEMPLATES = [VenueTemplate.themecamp];
+export const BACKGROUND_IMG_TEMPLATES = [
+  VenueTemplate.themecamp,
+  VenueTemplate.partymap,
+];
 
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
@@ -290,6 +318,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.avatargrid,
+];
+
+export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
+  VenueTemplate.audience,
 ];
 
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [

@@ -67,6 +67,7 @@ export interface FirestoreData {
   venueChats: Record<string, RestrictedChatMessage> | null;
   venueEvents: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
+  venueChatUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -84,7 +85,7 @@ export interface FirestoreOrdered {
   parentVenueEvents?: Array<WithId<VenueEvent>>;
   partygoers?: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;
-  privatechats: Array<WithId<PrivateChatMessage>>;
+  privatechats?: Array<WithId<PrivateChatMessage>>;
   reactions: Array<WithId<Reaction>>;
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
@@ -98,4 +99,5 @@ export interface FirestoreOrdered {
   venueChats: Array<WithId<RestrictedChatMessage>>;
   venueEvents: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
+  venueChatUsers?: Array<WithId<User>>;
 }

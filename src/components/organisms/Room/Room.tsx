@@ -1,5 +1,12 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  Fragment,
+} from "react";
 import { useFirebase } from "react-redux-firebase";
+import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
@@ -124,9 +131,21 @@ const Room: React.FC<RoomProps> = ({
     const participantDisconnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
         if (!prevParticipants.find((p) => p === participant)) {
-          // Remove when root issue foudn and fixed
-          console.error("Could not find disconnnected participant:");
-          console.error(participant);
+          // @debt Remove when root issue found and fixed
+          console.error(
+            "Could not find disconnnected participant:",
+            participant
+          );
+          Bugsnag.notify(
+            new Error("Could not find disconnnected participant"),
+            (event) => {
+              const { identity, sid } = participant;
+              event.addMetadata("Room::participantDisconnected", {
+                identity,
+                sid,
+              });
+            }
+          );
         }
         return prevParticipants.filter((p) => p !== participant);
       });
@@ -181,9 +200,17 @@ const Room: React.FC<RoomProps> = ({
 
   const profileData = room ? users[room.localParticipant.identity] : undefined;
 
+  const participantContainerClassName = useMemo(() => {
+    const attendeeCount = (participants.length ?? 0) + 1; // Include yourself
+    if (attendeeCount <= 4) {
+      return "two-across";
+    }
+    return "three-across";
+  }, [participants.length]);
+
   const meComponent = useMemo(() => {
     return room && profileData ? (
-      <div className="participant-container">
+      <div className={`participant-container ${participantContainerClassName}`}>
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -194,7 +221,13 @@ const Room: React.FC<RoomProps> = ({
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute]);
+  }, [
+    meIsBartender,
+    room,
+    profileData,
+    defaultMute,
+    participantContainerClassName,
+  ]);
 
   const othersComponents = useMemo(
     () =>
@@ -208,7 +241,10 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="participant-container">
+          <div
+            key={participant.identity}
+            className={`participant-container ${participantContainerClassName}`}
+          >
             <Participant
               key={`${participant.sid}-${index}`}
               participant={participant}
@@ -219,7 +255,13 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [meIsBartender, participants, roomName, users]
+    [
+      meIsBartender,
+      participants,
+      roomName,
+      users,
+      participantContainerClassName,
+    ]
   );
 
   const emptyComponents = useMemo(
@@ -228,7 +270,7 @@ const Room: React.FC<RoomProps> = ({
         ? Array(participants.length % 2).map((e, index) => (
             <div
               key={`empty-participant-${index}`}
-              className="participant-container"
+              className={`participant-container ${participantContainerClassName}`}
             >
               <img
                 className="empty-chair-image"
@@ -238,7 +280,7 @@ const Room: React.FC<RoomProps> = ({
             </div>
           ))
         : [],
-    [hasChairs, participants.length]
+    [hasChairs, participants.length, participantContainerClassName]
   );
 
   if (!token) {
@@ -246,7 +288,7 @@ const Room: React.FC<RoomProps> = ({
   }
 
   return (
-    <div className="participants-room">
+    <Fragment>
       {meComponent}
       {othersComponents}
       {emptyComponents}
@@ -257,7 +299,7 @@ const Room: React.FC<RoomProps> = ({
         onRetry={connectToVideoRoom}
         onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
       />
-    </div>
+    </Fragment>
   );
 };
 

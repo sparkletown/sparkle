@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import { venueInsideUrl } from "utils/url";
+import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -44,7 +44,7 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
     afterSelect();
 
     // there is a bug in useConnectCurrentVenue that does not update correctly on url change
-    window.location.href = venueInsideUrl(randomVenue.id);
+    openUrl(venueInsideUrl(randomVenue.id));
   }, [venues, afterSelect]);
   if (!venues) {
     return <></>;
@@ -210,7 +210,7 @@ const OnlineStats: React.FC = () => {
                                 <div className="img-container">
                                   <img
                                     className="venue-icon"
-                                    src={venue.host.icon}
+                                    src={venue.host?.icon}
                                     alt={venue.name}
                                     title={venue.name}
                                   />
@@ -256,7 +256,7 @@ const OnlineStats: React.FC = () => {
                           <div className="img-container">
                             <img
                               className="venue-icon"
-                              src={venue.host.icon}
+                              src={venue.host?.icon}
                               alt={venue.name}
                               title={venue.name}
                             />

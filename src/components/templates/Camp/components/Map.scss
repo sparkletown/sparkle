@@ -3,6 +3,11 @@ $sand: #937c63;
 $white: #ffffff;
 $border-radius: 28px;
 
+.camp-grid-container > *:first-child {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
+}
+
 .camp-grid-container {
   position: relative;
   left: 0;
@@ -222,6 +227,10 @@ $border-radius: 28px;
           font-size: 0.9rem;
           font-size: 20px;
         }
+        .camp-venue-people-container {
+          display: flex;
+          flex-direction: row;
+        }
         .camp-venue-people {
           position: relative;
           display: block;
@@ -276,11 +285,6 @@ $border-radius: 28px;
 
 .me {
   box-shadow: 0 0 20px 5px rgba($white, 0.1);
-}
-
-.grid-container > *:first-child {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
 }
 
 .map-container {

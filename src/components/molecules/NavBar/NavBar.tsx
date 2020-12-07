@@ -98,7 +98,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     }),
     [venueParentId]
   );
-  useFirestoreConnect(venueParentQuery);
+  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
 
   const {
     location: { pathname },
@@ -149,9 +149,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   }, [radioFirstPlayStateLoaded]);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
-  const showEventSchedule = useCallback(() => {
-    setEventScheduleVisible(true);
-  }, []);
+  const toggleEventSchedule = useCallback(() => {
+    setEventScheduleVisible(!isEventScheduleVisible);
+  }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback(() => {
     setEventScheduleVisible(false);
   }, []);
@@ -190,7 +190,12 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               >
                 <div />
               </div>
-              <div className="nav-party-logo" onClick={showEventSchedule}>
+              <div
+                className={`nav-party-logo ${
+                  isEventScheduleVisible && "clicked"
+                }`}
+                onClick={toggleEventSchedule}
+              >
                 {navbarTitle} Schedule
               </div>
               <VenuePartygoers />

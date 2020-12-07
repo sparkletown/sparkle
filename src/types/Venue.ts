@@ -5,8 +5,10 @@ import { CampRoomData } from "./CampRoomData";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
 import { RoomData } from "./RoomData";
+import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
+import { VideoAspectRatio } from "./VideoAspectRatio";
 
 interface Question {
   name: string;
@@ -28,26 +30,8 @@ export interface Venue {
   template: VenueTemplate;
   name: string;
   entrance?: EntranceStepConfig[];
-  config?: {
-    theme: {
-      primaryColor: string;
-      backgroundColor?: string;
-    };
-    landingPageConfig: {
-      coverImageUrl: string;
-      subtitle: string;
-      description?: string;
-      presentation: string[];
-      bannerImageUrl?: string;
-      checkList: string[];
-      iframeUrl?: string;
-      joinButtonText?: string;
-      quotations?: Quotation[];
-    };
-    memberEmails?: string[];
-    showRangers?: boolean;
-  };
-  host: {
+  config?: VenueConfig;
+  host?: {
     icon: string;
   };
   profile_questions: Question[];
@@ -92,6 +76,41 @@ export interface Venue {
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
+  requiresTicketCode?: boolean;
+  requiresDateOfBirth?: boolean;
+  requiresEmailVerification?: boolean;
+  ticketUrl?: string;
+  showRangers?: boolean;
+  chatTitle?: string;
+  showReactions?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  videoAspect?: VideoAspectRatio;
+}
+
+export interface VenueConfig {
+  theme: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+
+  landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
+
+  memberEmails?: string[];
+  showRangers?: boolean;
+  tables?: Table[];
+}
+
+export interface VenueLandingPageConfig {
+  coverImageUrl: string;
+  subtitle: string;
+  description?: string;
+  presentation: string[];
+  bannerImageUrl?: string;
+  checkList: string[];
+  iframeUrl?: string;
+  joinButtonText?: string;
+  quotations?: Quotation[];
 }
 
 export interface Venue_v2 {

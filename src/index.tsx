@@ -1,6 +1,9 @@
 import "./wdyr";
 
 import React from "react";
+import Bugsnag from "@bugsnag/js";
+import BugsnagPluginReact from "@bugsnag/plugin-react";
+
 import { render } from "react-dom";
 import { Provider } from "react-redux";
 
@@ -19,7 +22,14 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
-import { STRIPE_PUBLISHABLE_KEY } from "secrets";
+import {
+  BUGSNAG_API_KEY,
+  BUILD_BRANCH,
+  BUILD_PULL_REQUESTS,
+  BUILD_SHA1,
+  BUILD_TAG,
+  STRIPE_PUBLISHABLE_KEY,
+} from "secrets";
 
 import "bootstrap";
 import "scss/global.scss";
@@ -38,7 +48,7 @@ import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import { LoadingPage } from "../src/components/molecules/LoadingPage/LoadingPage";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
 import { ThemeProvider } from "styled-components";
 
@@ -86,6 +96,77 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
+if (BUGSNAG_API_KEY) {
+  const DEVELOPMENT = "development";
+  const TEST = "test";
+  const STAGING = "staging";
+  const PRODUCTION = "production";
+  const SPARKLEVERSE = "sparkleverse";
+
+  const releaseStage = () => {
+    if (
+      window.location.host.includes("localhost") ||
+      process.env.NODE_ENV === DEVELOPMENT
+    ) {
+      return DEVELOPMENT;
+    }
+
+    if (process.env.NODE_ENV === TEST) {
+      return TEST;
+    }
+
+    if (
+      window.location.host.includes(STAGING) ||
+      BUILD_BRANCH?.includes(STAGING)
+    ) {
+      return STAGING;
+    }
+
+    if (BUILD_BRANCH?.includes("master")) {
+      return PRODUCTION;
+    }
+
+    if (BUILD_BRANCH?.includes(SPARKLEVERSE)) {
+      return SPARKLEVERSE;
+    }
+
+    return process.env.NODE_ENV;
+  };
+
+  Bugsnag.start({
+    apiKey: BUGSNAG_API_KEY,
+    plugins: [new BugsnagPluginReact()],
+    appType: "client",
+    appVersion: BUILD_SHA1,
+    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE], // don't track errors in development/test
+    releaseStage: releaseStage(),
+    maxEvents: 25,
+    metadata: {
+      BUILD_SHA1,
+      BUILD_TAG,
+      BUILD_BRANCH,
+      BUILD_PULL_REQUESTS,
+    },
+    onError: (event) => {
+      const { currentUser } = firebase.auth();
+
+      if (!currentUser) return;
+
+      // Add user context to help locate related errors for support
+      event.setUser(
+        currentUser.uid,
+        currentUser.email || undefined,
+        currentUser.displayName || undefined
+      );
+    },
+  });
+}
+
+// When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
+const BugsnagErrorBoundary = BUGSNAG_API_KEY
+  ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
+  : React.Fragment;
+
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
@@ -95,19 +176,21 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 };
 
 render(
-  <ThemeProvider theme={{}}>
-    <Elements stripe={stripePromise}>
-      <DndProvider backend={HTML5Backend}>
-        <Provider store={store}>
-          <ReactReduxFirebaseProvider {...rrfProps}>
-            <AuthIsLoaded>
-              <AppRouter />
-            </AuthIsLoaded>
-          </ReactReduxFirebaseProvider>
-        </Provider>
-      </DndProvider>
-    </Elements>
-  </ThemeProvider>,
+  <BugsnagErrorBoundary>
+    <ThemeProvider theme={{}}>
+      <Elements stripe={stripePromise}>
+        <DndProvider backend={HTML5Backend}>
+          <Provider store={store}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+              <AuthIsLoaded>
+                <AppRouter />
+              </AuthIsLoaded>
+            </ReactReduxFirebaseProvider>
+          </Provider>
+        </DndProvider>
+      </Elements>
+    </ThemeProvider>
+  </BugsnagErrorBoundary>,
   document.getElementById("root")
 );
 

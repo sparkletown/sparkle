@@ -173,6 +173,7 @@
   .call-out-band-container {
     display: flex;
     align-items: center;
+    flex-direction: column;
     justify-content: space-around;
     border-radius: 0 0 22px 22px;
     padding-top: 4px;
@@ -183,6 +184,8 @@
     display: flex;
     justify-content: space-evenly;
     margin-right: 10px;
+    max-width: 100%;
+    min-width: 90%;
 
     .reaction {
       padding: 0 8px;
@@ -221,6 +224,10 @@
   .video-participant {
     display: flex;
     flex-direction: column;
+    height: 100%;
+    width: 100%;
+    grid-column: 1 / span 6;
+    grid-row: 1 / span 3;
 
     .reaction {
       font-size: 44px;
@@ -232,6 +239,7 @@
     }
     .iframe-container {
       width: 100%;
+      min-height: 300px;
     }
   }
 }
@@ -280,8 +288,9 @@
 /************************************************/
 
 .participants-container {
-  display: flex;
-  height: calc(100vh - 118px);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-gap: 1rem;
 }
 
 .seated-area {

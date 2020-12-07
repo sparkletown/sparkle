@@ -1,3 +1,6 @@
+import Bugsnag from "@bugsnag/js";
+import { CODE_CHECK_URL } from "secrets";
+import { VALID_URL_PROTOCOLS } from "settings";
 import { CampVenue } from "types/CampVenue";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "./id";
@@ -38,7 +41,32 @@ export const openRoomUrl = (url: string) => {
 };
 
 export const openUrl = (url: string) => {
+  if (!isValidUrl(url)) {
+    Bugsnag.notify(
+      // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
+      new Error(
+        `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
+      ),
+      (event) => {
+        event.addMetadata("utils/url::openUrl", { url });
+      }
+    );
+    // @debt keep the checking in place so we can debug further, but don't block attempts to open
+    // return;
+  }
+
   window.open(url, "_blank", "noopener,noreferrer");
+};
+
+export const isValidUrl = (url: string): boolean => {
+  try {
+    return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
 };
 
 export const externalUrlAdditionalProps = {
@@ -48,3 +76,5 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
+
+export const codeCheckUrl = (code: string) => CODE_CHECK_URL + code;

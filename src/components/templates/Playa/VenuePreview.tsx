@@ -200,7 +200,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           <div className="title-container">
             <img
               className="host-icon"
-              src={venue.host.icon}
+              src={venue.host?.icon}
               alt={`${venue.name} host`}
             />
             <div className="title-text">

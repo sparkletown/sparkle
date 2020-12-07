@@ -81,8 +81,23 @@ const createVenueData = (data, context) => {
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
+    showRangers: data.showRangers || false,
     parentId: data.parentId,
+    attendeesTitle: data.attendeesTitle || "partygoers",
+    chatTitle: data.chatTitle || "Party",
   };
+
+  if (data.template === VenueTemplate.audience) {
+    venueData.showReactions = data.showReactions;
+
+    if (data.auditoriumColumns) {
+      venueData.auditoriumColumns = data.auditoriumColumns;
+    }
+
+    if (data.auditoriumRows) {
+      venueData.auditoriumRows = data.auditoriumRows;
+    }
+  }
 
   switch (data.template) {
     case VenueTemplate.jazzbar:
@@ -313,7 +328,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
   await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin.firestore().collection("venues").doc(venueId).get();
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
@@ -460,12 +475,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.parentId = data.parentId;
   }
 
-  let owners = [context.auth.token.user_id];
-  if (data.owners) {
-    owners = [...owners, ...data.owners];
-    updated.owners = owners;
-  }
-
   if (data.columns) {
     updated.columns = data.columns;
   }
@@ -480,6 +489,30 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
   }
 
   switch (updated.template) {

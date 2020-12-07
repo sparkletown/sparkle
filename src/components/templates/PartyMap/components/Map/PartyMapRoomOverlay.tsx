@@ -68,6 +68,8 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
   const width = room.width_percent;
   const height = room.height_percent;
 
+  if (!room.isEnabled) return null;
+
   return (
     <div
       className={`room position-absolute ${isSelectedRoom && "isUnderneath"}`}
@@ -97,20 +99,22 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
             </div>
           )}
 
-        <div className={`camp-venue-text`}>
-          {(!venue.roomVisibility ||
-            venue.roomVisibility === RoomVisibility.nameCount ||
-            (venue.roomVisibility === RoomVisibility.count &&
-              hasAttendance)) && (
-            <div className="camp-venue-maininfo">
-              {(!venue.roomVisibility ||
-                venue.roomVisibility === RoomVisibility.nameCount) && (
-                <div className="party-map-venue-title">{room.title}</div>
-              )}
-              <RoomAttendance venue={venue} room={room} />
-            </div>
-          )}
-        </div>
+        {hasAttendance && (
+          <div className={`camp-venue-text`}>
+            {(!venue.roomVisibility ||
+              venue.roomVisibility === RoomVisibility.nameCount ||
+              (venue.roomVisibility === RoomVisibility.count &&
+                hasAttendance)) && (
+              <div className="camp-venue-maininfo">
+                {(!venue.roomVisibility ||
+                  venue.roomVisibility === RoomVisibility.nameCount) && (
+                  <div className="party-map-venue-title">{room.title}</div>
+                )}
+                <RoomAttendance venue={venue} room={room} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

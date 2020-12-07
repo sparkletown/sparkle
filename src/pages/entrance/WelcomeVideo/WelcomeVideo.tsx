@@ -1,4 +1,5 @@
 import React from "react";
+import { IFRAME_ALLOW } from "settings";
 import { EntranceStepConfig } from "types/EntranceStep";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import "./WelcomeVideo.scss";
@@ -30,7 +31,7 @@ export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
           title="art-piece-video"
           src={ConvertToEmbeddableUrl(config.videoUrl, config.autoplay)}
           frameBorder="0"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allow={IFRAME_ALLOW}
           allowFullScreen
         ></iframe>
         {config.buttons &&
