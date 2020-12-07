@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { User } from "types/User";
@@ -90,25 +90,35 @@ const ChatList: React.FC<ChatListProps> = ({
 
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
 
-  // Last (newest) message goes first
-  const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
+  const renderMessages = useMemo(() => {
+    // Last (newest) message goes first
+    const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
+
+    return sortedMessages.map((message, index) => (
+      <ChatMessage
+        key={`${message.from}-${message.ts_utc.seconds}`}
+        usersById={usersById}
+        message={message}
+        allowDelete={allowDelete ?? false}
+        onDeleteClick={toggleDeleteModal}
+        onAvatarClick={showUserProfile}
+        showSenderImage={showSenderImage}
+      />
+    ));
+  }, [
+    allowDelete,
+    messages,
+    showSenderImage,
+    showUserProfile,
+    toggleDeleteModal,
+    usersById,
+  ]);
 
   return (
     <>
       {hasMessages && (
         <div className="chat-messages-container">
-          {usersById &&
-            sortedMessages.map((message, index) => (
-              <ChatMessage
-                key={`chat-message-${index}`}
-                usersById={usersById}
-                message={message}
-                allowDelete={allowDelete ?? false}
-                onDeleteClick={toggleDeleteModal}
-                onAvatarClick={showUserProfile}
-                showSenderImage={showSenderImage}
-              />
-            ))}
+          {usersById && renderMessages}
         </div>
       )}
       {!hasMessages && (

@@ -53,7 +53,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   if (!user || !profile) return null;
 
   const sender = { ...usersById[message.from], id: message.from };
-  const isMe = message.from === user?.uid;
+  const isMe = message.from === user.uid;
 
   const getProfileImage = (): string => {
     if (isMe) {
@@ -101,7 +101,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
             <div className="chat-message-pseudo">
               {getProfileName()}{" "}
               <span className="timestamp">
-                {formatUtcSeconds(message.ts_utc)}
+                {formatUtcSeconds(message.ts_utc.seconds)}
               </span>
             </div>
           </>
