@@ -21,7 +21,7 @@ import {
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  currentTimeInUnixEpoch,
+  getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -33,6 +33,7 @@ import { venueEntranceUrl } from "utils/url";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
+import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -99,10 +100,12 @@ const VenuePage = () => {
 
   const updateUserLocation = useCallback(() => {
     if (!user || !venueName || (venueName && prevLocations[venueName])) return;
+
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: currentTimeInUnixEpoch,
+      [venueName]: getCurrentTimeInUnixEpochSeconds(),
     };
+
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
       lastSeenAt: new Date().getTime(),
@@ -110,14 +113,9 @@ const VenuePage = () => {
     });
   }, [prevLocations, user, venueName]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      updateUserLocation();
-    }, LOC_UPDATE_FREQ_MS);
-    return () => {
-      clearInterval(interval);
-    };
-  }, [updateUserLocation]);
+  useInterval(() => {
+    updateUserLocation();
+  }, LOC_UPDATE_FREQ_MS);
 
   const event = currentEvent?.[0];
 
