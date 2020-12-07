@@ -39,10 +39,10 @@ export const LoadingPage = () => {
     <div className="loading-screen">
       <div className="loading-content">
         <div className="burningman-loading-container">
-          <span className="loading-sparkle-1"></span>
-          <span className="loading-sparkle-2"></span>
+          <span className="loading-sparkle-1" />
+          <span className="loading-sparkle-2" />
           <div className="burningman-loading">
-            <div className="burningman-loading-anim"></div>
+            <div className="burningman-loading-anim" />
           </div>
         </div>
         <span className={`loading-randomquote ${quote && "show"}`}>
