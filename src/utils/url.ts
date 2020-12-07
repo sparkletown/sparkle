@@ -65,6 +65,7 @@ export const openUrl = (url: string) => {
   if (isExternalUrl(url)) {
     window.open(url, "_blank", "noopener,noreferrer");
   } else {
+    // @debt Possibly use react router here with window.location.pathname.
     window.location.href = url;
   }
 };
