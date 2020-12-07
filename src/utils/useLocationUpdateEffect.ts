@@ -55,7 +55,7 @@ export const enterLocation = (
 };
 
 export interface TrackRoomEnteredNGProps {
-  user: UserInfo;
+  user?: UserInfo;
   venueName: string;
   roomTitle: string;
   lastSeenIn?: Record<string, number>;
@@ -67,6 +67,8 @@ export const trackRoomEnteredNG = ({
   roomTitle,
   lastSeenIn,
 }: TrackRoomEnteredNGProps) => {
+  if (!user) return;
+
   enterLocation(
     user,
     { [`${venueName}/${roomTitle}`]: getCurrentTimeInUnixEpochSeconds() },
