@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
  * a ref internally.
  *
  * Note: If `intervalInMs` is `null` or `undefined`, this hook will do nothing
- * (essentially becomes a noop). You can use this as a way to add a 'conditional 
+ * (essentially becomes a noop). You can use this as a way to add a 'conditional
  * element' to without conditionally calling the hook itself.
  *
  * @param handler the function to be called every tick of the interval
