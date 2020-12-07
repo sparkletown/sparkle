@@ -94,9 +94,9 @@ const ChatList: React.FC<ChatListProps> = ({
     // Last (newest) message goes first
     const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
 
-    return sortedMessages.map((message, index) => (
+    return sortedMessages.map((message) => (
       <ChatMessage
-        key={`${message.from}-${message.ts_utc.seconds}`}
+        key={`${message.from}-${message.ts_utc.seconds}-${message.ts_utc.nanoseconds}`}
         usersById={usersById}
         message={message}
         allowDelete={allowDelete ?? false}
