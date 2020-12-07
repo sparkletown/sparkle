@@ -1,8 +1,10 @@
 import { format } from "date-fns";
 
 export const ONE_MINUTE_IN_SECONDS = 60;
-const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
-const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
+export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
+export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
+
+export const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
 const formatMeasurementInString = (value, measureUnit) =>
   value > 0
