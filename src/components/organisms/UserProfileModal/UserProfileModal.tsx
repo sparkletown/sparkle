@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
+  currentVenueSelector,
   currentVenueSelectorData,
   orderedVenuesSelector,
   privateChatsSelector,
@@ -17,19 +18,13 @@ import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
-import {
-  ENABLE_SUSPECTED_LOCATION,
-  PLAYA_VENUE_NAME,
-  RANDOM_AVATARS,
-} from "settings";
+import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { AnyVenue } from "types/Firestore";
-import { CampRoomData } from "types/CampRoomData";
-import { IS_BURN } from "secrets";
 import {
   ChatContext,
   PrivateChatMessage,
 } from "components/context/ChatContext";
+import { Badges } from "../Badges";
 
 type PropTypes = {
   show: boolean;
@@ -44,7 +39,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   zIndex,
   userProfile,
 }) => {
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
   const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
@@ -129,7 +124,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {IS_BURN && <Badges user={userProfile} />}
+          <Badges user={userProfile} currentVenue={venue} />
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox
@@ -143,134 +138,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
       </Modal.Body>
     </Modal>
   );
-};
-
-const Badges: React.FC<{ user: WithId<User> }> = ({ user }) => {
-  useFirestoreConnect([
-    {
-      collection: "users",
-      doc: user.id,
-      subcollections: [{ collection: "visits" }],
-      storeAs: "userModalVisits",
-    },
-  ]);
-  const visits = useSelector(
-    (state) => state.firestore.ordered.userModalVisits
-  );
-  const venues = useSelector(orderedVenuesSelector);
-
-  const playaTime = useMemo(() => {
-    if (!visits) return undefined;
-
-    const playaSeconds = visits.reduce((acc, v) => acc + v.timeSpent, 0);
-    const playaHours = Math.floor(playaSeconds / (60 * 60));
-    return playaHours > 1 ? `${playaHours}` : "< 1";
-  }, [visits]);
-
-  const venuesVisited = useMemo(() => {
-    if (!visits) return undefined;
-    return visits.filter((visit) => visit.id !== PLAYA_VENUE_NAME).length; // Playa does not count
-  }, [visits]);
-
-  const badges = useMemo(() => {
-    if (!visits || !venues) return [];
-    return visits
-      .filter((visit) => visit.id !== PLAYA_VENUE_NAME) // no badge for the Playa. Also does not have a logo
-      .map((visit) => {
-        const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-        if (!venue) return undefined;
-
-        if (room) {
-          return {
-            venue,
-            room,
-            image: room.image_url,
-            label: room.title,
-          };
-        }
-
-        return {
-          venue,
-          image: venue.mapIconImageUrl,
-          label: venue.name,
-        };
-      })
-      .filter((b) => b !== undefined);
-  }, [visits, venues]);
-
-  if (!visits) {
-    return <>Visit venues to collect badges!</>;
-  }
-
-  return (
-    <>
-      <div className="visits">
-        <div className="visit-item">
-          <span className="visit-item__value">{playaTime} hrs</span>
-          <span className="visit-item__label">spent in SparkleVerse</span>
-        </div>
-        <div className="separator"></div>
-        <div className="visit-item">
-          <span className="visit-item__value">{venuesVisited}</span>
-          <span className="visit-item__label">venues visited</span>
-        </div>
-      </div>
-      <div className="badges-container">
-        <div className="badges-title">{badges.length} badges</div>
-        <ul className="badge-list">
-          {badges.map(
-            (b) =>
-              b && (
-                <li className="badge-list-item" key={b.label}>
-                  <Link to={getLocationLink(b.venue, b.room)}>
-                    <img
-                      className="badge-list-item-image"
-                      src={b.image}
-                      alt={`${b.label} badge`}
-                    />
-                  </Link>
-                </li>
-              )
-            // label missing on hover - similar to playa
-          )}
-        </ul>
-      </div>
-    </>
-  );
-};
-
-const findVenueAndRoomByName = (
-  nameOrRoomTitle: string,
-  venues: Array<WithId<AnyVenue>>
-) => {
-  const venue = venues.find(
-    (v) =>
-      v.name === nameOrRoomTitle ||
-      (isCampVenue(v) && v.rooms.find((r) => r.title === nameOrRoomTitle))
-  );
-
-  if (!venue) return {};
-
-  if (venue.name === nameOrRoomTitle) return { venue };
-
-  return {
-    venue,
-    room:
-      isCampVenue(venue) &&
-      venue.rooms.find((r) => r.title === nameOrRoomTitle),
-  };
-};
-
-const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
-  if (venue.name === PLAYA_VENUE_NAME) {
-    return venueInsideUrl(venue.id);
-  }
-
-  if (room) {
-    return venuePreviewUrl(venue.id, room.title);
-  }
-
-  return venueInsideUrl(venue.id);
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
