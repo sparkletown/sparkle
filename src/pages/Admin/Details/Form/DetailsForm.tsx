@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 
 // API
 import {
@@ -9,13 +9,11 @@ import {
 } from "api/admin";
 
 // Components
-import SubmitButton from "components/atoms/SubmitButton/SubmitButton";
 import ImageInput from "components/atoms/ImageInput";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
 
 // Hooks
 import { useHistory } from "react-router-dom";
-import { ErrorMessage, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useUser } from "hooks/useUser";
 
 // Utils | Settings | Constants | Helpers
@@ -41,11 +39,11 @@ import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 
 // Stylings
 import * as S from "./DetailsForm.styles";
+import { Button } from "react-bootstrap";
 
 const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   const { venueId, dispatch, editData } = props;
 
-  const [formError, setFormError] = useState(false);
   const history = useHistory();
   const { user } = useUser();
 
@@ -61,7 +59,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
           ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
-        setFormError(true);
         console.error(e);
       }
     },
@@ -70,7 +67,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
 
   const {
     watch,
-    formState,
+    formState: { isSubmitting, dirty },
     register,
     setValue,
     errors,
@@ -86,7 +83,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   });
 
   const values = watch();
-  const { isSubmitting } = formState;
 
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -210,32 +206,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     </S.InputContainer>
   );
 
-  const renderShowGrid = () => (
-    <S.InputContainer>
-      <h4>Show grid</h4>
-
-      <ToggleSwitch
-        name="showGrid"
-        forwardRef={register}
-        isChecked={editData?.showGrid}
-      />
-
-      {values.showGrid && (
-        <div>
-          <label htmlFor="grid_columns">Number of columns:</label>
-          <input
-            disabled={disable}
-            name="columns"
-            ref={register}
-            id="grid_columns"
-            placeholder="Number of grid columns"
-            type="number"
-          />
-        </div>
-      )}
-    </S.InputContainer>
-  );
-
   const handleOnChange = () => {
     return dispatch({
       type: SET_FORM_VALUES,
@@ -271,33 +241,13 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         {renderDescription()}
         {renderBannerUpload()}
         {renderLogoUpload()}
-        {renderShowGrid()}
       </S.FormInnerWrapper>
 
       <S.FormFooter>
-        <SubmitButton
-          editing={!!venueId}
-          loading={isSubmitting}
-          templateType="Venue"
-        />
+        <Button disabled={isSubmitting || !dirty} type="submit">
+          {!!editData ? "Update Venue" : "Create Venue"}
+        </Button>
       </S.FormFooter>
-
-      {formError && (
-        <div className="input-error">
-          <div>One or more errors occurred when saving the form:</div>
-          {Object.keys(errors).map((fieldName) => (
-            <div key={fieldName}>
-              <span>Error in {fieldName}:</span>
-              <ErrorMessage
-                errors={errors}
-                name={fieldName as string}
-                as="span"
-                key={fieldName}
-              />
-            </div>
-          ))}
-        </div>
-      )}
     </S.Form>
   );
 };
