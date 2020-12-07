@@ -25,8 +25,8 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
     setIsVisible(false);
   }, []);
 
-  const confirm = useCallback(async () => {
-    await onConfirm();
+  const confirm = useCallback(() => {
+    onConfirm();
     hide();
   }, [onConfirm, hide]);
 
