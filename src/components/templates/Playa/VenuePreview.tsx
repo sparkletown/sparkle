@@ -13,8 +13,9 @@ import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import firebase from "firebase/app";
-import "../../molecules/OnlineStats/OnlineStats.scss";
-import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
+import "components/molecules/OnlineStats/OnlineStats.scss";
+import { useInterval } from "hooks/useInterval";
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
@@ -55,19 +56,15 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const [nowMs, setNowMs] = useState(new Date().getTime());
+  const [nowMs, setNowMs] = useState(Date.now());
+
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
 
   const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
-
-    return () => clearInterval(interval);
-  }, [setNowMs]);
 
   const usersInVenue = partygoers
     ? partygoers.filter(
