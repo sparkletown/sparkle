@@ -21,7 +21,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import {
@@ -111,17 +110,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  // Authentication Modal
-  const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
-    false
-  );
-  const openAuthenticationModal = useCallback(() => {
-    setIsAuthenticationModalOpen(true);
-  }, []);
-  const closeAuthenticationModal = useCallback(() => {
-    setIsAuthenticationModalOpen(false);
-  }, []);
-
   const sound = useMemo(
     () =>
       radioStations && radioStations.length
@@ -149,9 +137,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   }, [radioFirstPlayStateLoaded]);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
-  const showEventSchedule = useCallback(() => {
-    setEventScheduleVisible(true);
-  }, []);
+  const toggleEventSchedule = useCallback(() => {
+    setEventScheduleVisible(!isEventScheduleVisible);
+  }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback(() => {
     setEventScheduleVisible(false);
   }, []);
@@ -190,15 +178,18 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               >
                 <div />
               </div>
-              <div className="nav-party-logo" onClick={showEventSchedule}>
+              <div
+                className={`nav-party-logo ${
+                  isEventScheduleVisible && "clicked"
+                }`}
+                onClick={toggleEventSchedule}
+              >
                 {navbarTitle} Schedule
               </div>
               <VenuePartygoers />
             </div>
 
-            {!user && (
-              <NavBarLogin openAuthenticationModal={openAuthenticationModal} />
-            )}
+            {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
@@ -271,12 +262,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
           </div>
         </div>
       </header>
-
-      <AuthenticationModal
-        show={isAuthenticationModalOpen}
-        onHide={closeAuthenticationModal}
-        showAuth="login"
-      />
 
       <SchedulePageModal isVisible={isEventScheduleVisible} />
 

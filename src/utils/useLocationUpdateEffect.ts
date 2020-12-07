@@ -1,44 +1,101 @@
-import { useEffect } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
+import { AnyRoom } from "types/Venue";
+import { AnyVenue } from "types/Firestore";
+import { User } from "types/User";
+import { VenueEvent } from "types/VenueEvent";
+
 import { updateUserProfile } from "pages/Account/helpers";
-import { currentTimeInUnixEpoch } from "./time";
+import { useInterval } from "hooks/useInterval";
+
+import { WithId } from "./id";
+import { getCurrentTimeInUnixEpochSeconds } from "./time";
+import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 
 const LOCATION_INCREMENT_SECONDS = 10;
+const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 export const updateLocationData = (
   user: UserInfo,
-  roomName: { [key: string]: number },
+  locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
-  const room = roomName ?? {};
+  const location = locationName ?? {};
   const prevRoomName =
     lastSeenIn &&
     Object.keys(lastSeenIn).find((lastSeen) => lastSeen.includes("/"));
+
   if (lastSeenIn && prevRoomName) {
     delete lastSeenIn[prevRoomName];
   }
+
   const roomVenue =
-    roomName && Object.keys(roomName).length ? Object.keys(roomName)[0] : null;
+    locationName && Object.keys(locationName).length
+      ? Object.keys(locationName)[0]
+      : null;
+
   updateUserProfile(user.uid, {
-    lastSeenAt: currentTimeInUnixEpoch,
+    lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
     lastSeenIn:
-      !roomName && !lastSeenIn
+      !locationName && !lastSeenIn
         ? null
         : lastSeenIn
-        ? { ...lastSeenIn, ...room }
-        : room,
-    room: !roomName && !lastSeenIn ? null : roomVenue,
+        ? { ...lastSeenIn, ...location }
+        : location,
+    room: !locationName && !lastSeenIn ? null : roomVenue,
   });
 };
 
 // get Profile from the firebase
-export const enterRoom = (
+// @debt rename this trackRoomEntered
+export const enterLocation = (
   user: UserInfo,
-  roomName: { [key: string]: number },
+  locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
 ) => {
-  updateLocationData(user, roomName, lastSeenIn);
+  updateLocationData(user, locationName, lastSeenIn);
+};
+
+export interface TrackRoomEnteredNGProps {
+  user?: UserInfo;
+  venue: AnyVenue;
+  room: AnyRoom;
+  lastSeenIn?: Record<string, number>;
+}
+
+export const trackRoomEnteredNG = ({
+  user,
+  venue,
+  room,
+  lastSeenIn,
+}: TrackRoomEnteredNGProps) => {
+  if (!user) return;
+
+  enterLocation(
+    user,
+    { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
+    lastSeenIn
+  );
+};
+
+export interface TrackVenueEnteredProps {
+  user?: UserInfo;
+  venue: AnyVenue;
+  lastSeenIn?: Record<string, number>;
+}
+
+export const trackVenueEntered = ({
+  user,
+  venue,
+  lastSeenIn,
+}: TrackVenueEnteredProps) => {
+  if (!user) return;
+
+  enterLocation(
+    user,
+    { [venue.name]: getCurrentTimeInUnixEpochSeconds() },
+    lastSeenIn
+  );
 };
 
 export const leaveRoom = (user: UserInfo) => {
@@ -49,28 +106,84 @@ export const leaveRoom = (user: UserInfo) => {
   });
 };
 
+export interface BaseEnterRoomWithCountingProps {
+  user?: UserInfo;
+  profile?: User;
+  venue: WithId<AnyVenue>;
+}
+
+export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
+  room?: AnyRoom;
+}
+
+export const openRoomWithCounting = ({
+  user,
+  profile,
+  venue,
+  room,
+}: EnterRoomWithCounting) => {
+  if (!room) {
+    trackVenueEntered({
+      user,
+      venue,
+      lastSeenIn: profile?.lastSeenIn,
+    });
+
+    openUrl(venueInsideUrl(venue.id));
+    return;
+  }
+
+  // Track room counting
+  trackRoomEnteredNG({
+    user,
+    venue,
+    room,
+    lastSeenIn: profile?.lastSeenIn,
+  });
+
+  openRoomUrl(room.url);
+};
+
+export interface EnterEventRoomWithCounting
+  extends BaseEnterRoomWithCountingProps {
+  event: VenueEvent;
+}
+
+export const openEventRoomWithCounting = ({
+  user,
+  profile,
+  venue,
+  event,
+}: EnterEventRoomWithCounting) => {
+  const room = venue?.rooms?.find((room) => room.title === event.room);
+
+  openRoomWithCounting({ user, profile, venue, room });
+};
+
 export const useLocationUpdateEffect = (
   user: UserInfo | undefined,
   roomName: string
 ) => {
-  useEffect(() => {
-    // Time spent is currently counted multiple time if multiple tabs are open
-    if (!user || !roomName) return;
+  const shouldUseInterval = user && roomName;
 
-    const firestore = firebase.firestore();
-    const doc = `users/${user.uid}/visits/${roomName}`;
-    const increment = firebase.firestore.FieldValue.increment(
-      LOCATION_INCREMENT_SECONDS
-    );
+  useInterval(
+    () => {
+      // Time spent is currently counted multiple time if multiple tabs are open
+      if (!user || !roomName) return;
 
-    const intervalId = setInterval(() => {
+      const firestore = firebase.firestore();
+      const doc = `users/${user.uid}/visits/${roomName}`;
+      const increment = firebase.firestore.FieldValue.increment(
+        LOCATION_INCREMENT_SECONDS
+      );
+
       return firestore
         .doc(doc)
         .update({ timeSpent: increment })
         .catch(() => {
           firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
-    }, LOCATION_INCREMENT_SECONDS * 1000);
-    return () => clearInterval(intervalId);
-  }, [user, roomName]);
+    },
+    shouldUseInterval ? LOCATION_INCREMENT_MS : undefined
+  );
 };

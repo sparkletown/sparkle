@@ -13,6 +13,7 @@ import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -23,12 +24,17 @@ export const ArtPiece = () => {
   if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
+
+  const aspectContainerClasses = `aspect-container ${
+    venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
+  }`;
+
   return (
     <WithNavigationBar>
       <BannerMessage venue={venue} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
-          venueLogoPath={venue?.host.icon ?? ""}
+          venueLogoPath={venue?.host?.icon ?? ""}
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
@@ -43,14 +49,16 @@ export const ArtPiece = () => {
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
-          <iframe
-            className="youtube-video"
-            title="art-piece-video"
-            src={iframeUrl}
-            frameBorder="0"
-            allow={IFRAME_ALLOW}
-            allowFullScreen
-          ></iframe>
+          <div className={aspectContainerClasses}>
+            <iframe
+              className="youtube-video"
+              title="art-piece-video"
+              src={iframeUrl}
+              frameBorder="0"
+              allow={IFRAME_ALLOW}
+              allowFullScreen
+            ></iframe>
+          </div>
           <div className="video-chat-wrapper">
             <Room
               venueName={venue.name}

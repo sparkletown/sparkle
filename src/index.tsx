@@ -162,8 +162,10 @@ if (BUGSNAG_API_KEY) {
   });
 }
 
-const BugsnagErrorBoundary =
-  Bugsnag?.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment;
+// When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
+const BugsnagErrorBoundary = BUGSNAG_API_KEY
+  ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
+  : React.Fragment;
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,

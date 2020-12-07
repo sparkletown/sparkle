@@ -15,7 +15,7 @@ interface PropsType {
 export const RoomCard: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   room,
-  attendance,
+  attendance, // @debt this param seems unused, lets remove it
   onClick,
 }) => {
   const currentEvent = room.events && getCurrentEvent(room, startUtcSeconds);
@@ -31,9 +31,9 @@ export const RoomCard: React.FunctionComponent<PropsType> = ({
       id={`room-card-${room.title}`}
     >
       <div className="card-animation card-animation_music">
-        <span className="icon-1"></span>
-        <span className="icon-2"></span>
-        <span className="icon-3"></span>
+        <span className="icon-1" />
+        <span className="icon-2" />
+        <span className="icon-3" />
       </div>
       {room.image && (
         <img
@@ -43,12 +43,17 @@ export const RoomCard: React.FunctionComponent<PropsType> = ({
         />
       )}
       <h5 className="italic">{room.title}</h5>
-      <div className="room-attendance-container"></div>
+      {/* @debt room-attendance-container isn't wrapping anything, can we remove? */}
+      <div className="room-attendance-container" />
       <div className="card_room-now">
-        <h6 className="primary">{eventToDisplay.name}</h6>
-        <p className="small primary">by {eventToDisplay.host}</p>
+        <h6 className="primary">{eventToDisplay ? eventToDisplay.name : ""}</h6>
         <p className="small primary">
-          {formatMinute(eventToDisplay.start_minute, startUtcSeconds)}
+          by {eventToDisplay ? eventToDisplay.host : ""}
+        </p>
+        <p className="small primary">
+          {eventToDisplay
+            ? formatMinute(eventToDisplay.start_minute, startUtcSeconds)
+            : ""}
         </p>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import { venueInsideUrl } from "utils/url";
+import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -12,15 +13,17 @@ import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import VenueInfoEvents from "../VenueInfoEvents/VenueInfoEvents";
+import { useInterval } from "hooks/useInterval";
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "../../../utils/getRandomInt";
+import { getRandomInt } from "utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -44,7 +47,7 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
     afterSelect();
 
     // there is a bug in useConnectCurrentVenue that does not update correctly on url change
-    window.location.href = venueInsideUrl(randomVenue.id);
+    openUrl(venueInsideUrl(randomVenue.id));
   }, [venues, afterSelect]);
   if (!venues) {
     return <></>;
@@ -74,26 +77,18 @@ const OnlineStats: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector) ?? [];
 
-  useEffect(() => {
-    const getOnlineStats = firebase
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
+      .httpsCallable("stats-getOnlineStats")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
 
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
-          setLoaded(true);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
+        setOpenVenues(openVenues);
+        setLoaded(true);
+      })
+      .catch(Bugsnag.notify);
+  }, FIVE_MINUTES_MS);
 
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
@@ -210,7 +205,7 @@ const OnlineStats: React.FC = () => {
                                 <div className="img-container">
                                   <img
                                     className="venue-icon"
-                                    src={venue.host.icon}
+                                    src={venue.host?.icon}
                                     alt={venue.name}
                                     title={venue.name}
                                   />
@@ -256,7 +251,7 @@ const OnlineStats: React.FC = () => {
                           <div className="img-container">
                             <img
                               className="venue-icon"
-                              src={venue.host.icon}
+                              src={venue.host?.icon}
                               alt={venue.name}
                               title={venue.name}
                             />
