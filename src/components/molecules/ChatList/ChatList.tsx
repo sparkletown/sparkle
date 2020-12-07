@@ -14,6 +14,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
+import { sortBy } from "lodash";
 
 interface ChatListProps {
   usersById: Record<string, User>;
@@ -21,6 +22,7 @@ interface ChatListProps {
   emptyListMessage?: string;
   allowDelete?: boolean;
   deleteMessage: (id: string) => Promise<void>;
+  showSenderImage?: boolean;
 }
 
 const ChatList: React.FC<ChatListProps> = ({
@@ -29,6 +31,7 @@ const ChatList: React.FC<ChatListProps> = ({
   allowDelete,
   emptyListMessage,
   deleteMessage,
+  showSenderImage,
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -84,13 +87,18 @@ const ChatList: React.FC<ChatListProps> = ({
   const hideDeleteModal = useCallback(() => setShowDeleteModal(false), []);
 
   const hasMessages = hasElements(messages);
+
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
+
+  // Last (newest) message goes first
+  const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
+
   return (
     <>
       {hasMessages && (
         <div className="chat-messages-container">
           {usersById &&
-            messages.map((message, index) => (
+            sortedMessages.map((message, index) => (
               <ChatMessage
                 key={`chat-message-${index}`}
                 usersById={usersById}
@@ -98,6 +106,7 @@ const ChatList: React.FC<ChatListProps> = ({
                 allowDelete={allowDelete ?? false}
                 onDeleteClick={toggleDeleteModal}
                 onAvatarClick={showUserProfile}
+                showSenderImage={showSenderImage}
               />
             ))}
         </div>

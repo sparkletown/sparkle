@@ -25,6 +25,7 @@ interface ChatboxProps {
   onMessageSubmit: (data: ChatOutDataType) => void;
   allowDelete?: boolean;
   emptyListMessage?: string;
+  showSenderImage?: boolean;
 }
 
 const ChatBox: React.FC<ChatboxProps> = ({
@@ -33,6 +34,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
   chats,
   onMessageSubmit,
   emptyListMessage,
+  showSenderImage,
 }) => {
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
@@ -77,6 +79,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
           emptyListMessage={emptyListMessage}
           allowDelete={allowDelete}
           deleteMessage={deleteMessage}
+          showSenderImage={showSenderImage}
         />
       )}
       <form className="chat-form" onSubmit={handleSubmit(submitChatMessage)}>

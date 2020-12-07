@@ -29,6 +29,7 @@ interface ChatMessageProps {
   onDeleteClick: (
     message: WithId<RestrictedChatMessage | PrivateChatMessage>
   ) => void;
+  showSenderImage?: boolean;
 }
 
 export const ChatMessage: FC<ChatMessageProps> = ({
@@ -37,15 +38,9 @@ export const ChatMessage: FC<ChatMessageProps> = ({
   allowDelete,
   onAvatarClick,
   onDeleteClick,
+  showSenderImage = true,
 }) => {
-  const { user } = useUser();
-
-  const sender = { ...usersById[message.from], id: message.from };
-  const isMe = sender.id === user?.uid;
-  const profileImage = sender.anonMode
-    ? DEFAULT_PROFILE_IMAGE
-    : sender.pictureUrl;
-  const profileName = sender.anonMode ? DEFAULT_PARTY_NAME : sender.partyName;
+  const { user, profile } = useUser();
 
   const showMessage = useCallback(() => {
     onAvatarClick(message);
@@ -55,33 +50,66 @@ export const ChatMessage: FC<ChatMessageProps> = ({
     onDeleteClick(message);
   }, [message, onDeleteClick]);
 
-  return message.from in usersById ? (
+  if (!user || !profile) return null;
+
+  const sender = { ...usersById[message.from], id: message.from };
+  const isMe = message.from === user?.uid;
+
+  const getProfileImage = (): string => {
+    if (isMe) {
+      return profile.pictureUrl || "";
+    }
+
+    if (sender.anonMode) {
+      return DEFAULT_PROFILE_IMAGE;
+    }
+
+    return sender.pictureUrl || "";
+  };
+
+  const getProfileName = (): string => {
+    if (isMe) {
+      return profile.partyName || "";
+    }
+
+    if (sender.anonMode) {
+      return DEFAULT_PARTY_NAME;
+    }
+
+    return sender.partyName || "";
+  };
+
+  return (
     <div
       className={`message chat-message ${isMe ? "chat-message_own" : ""}`}
       key={`${message.from}-${message.ts_utc}`}
     >
       <div className="chat-message-bubble">{getLinkFromText(message.text)}</div>
       <div className="chat-message-author">
-        <img
-          onClick={showMessage}
-          key={`${message.from}-messaging-the-band`}
-          className="chat-message-avatar"
-          src={profileImage}
-          title={profileName}
-          alt={`${profileName} profile`}
-          width={PROFILE_IMAGE_SIZE}
-          height={PROFILE_IMAGE_SIZE}
-        />
-        <div className="chat-message-pseudo">
-          {profileName}{" "}
-          <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
-        </div>
+        {showSenderImage && (
+          <>
+            <img
+              onClick={showMessage}
+              key={`${message.from}-messaging-the-band`}
+              className="chat-message-avatar"
+              src={getProfileImage()}
+              title={getProfileName()}
+              alt={`${getProfileName()} profile`}
+              width={PROFILE_IMAGE_SIZE}
+              height={PROFILE_IMAGE_SIZE}
+            />
+            <div className="chat-message-pseudo">
+              {getProfileName()}{" "}
+              <span className="timestamp">
+                {formatUtcSeconds(message.ts_utc)}
+              </span>
+            </div>
+          </>
+        )}
         {allowDelete && (
           <div className="chat-message-delete" onClick={deleteMessage}></div>
         )}
       </div>
     </div>
-  ) : (
-    <></>
   );
 };
