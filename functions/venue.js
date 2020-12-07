@@ -74,7 +74,6 @@ const createVenueData = (data, context) => {
         description: data.description,
       },
     },
-
     presentation: [],
     quotations: [],
     theme: {
@@ -90,7 +89,9 @@ const createVenueData = (data, context) => {
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
+    showRangers: data.showRangers || false,
     parentId: data.parentId,
+    bannerMessage: data.bannerMessage,
   };
 
   switch (data.template) {
@@ -122,7 +123,6 @@ const createVenueData = (data, context) => {
     default:
       break;
   }
-
   return venueData;
 };
 
@@ -144,6 +144,8 @@ const createVenueData_v2 = (data, context) => ({
   owners: [context.auth.token.user_id],
   showGrid: data.showGrid || false,
   columns: data.columns || 1,
+  template: VenueTemplate.partymap,
+  rooms: [],
 });
 
 const getVenueId = (name) => {
@@ -321,12 +323,14 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, room } = data;
+
   await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin.firestore().collection("venues").doc(venueId).get();
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
+
   const docData = doc.data();
   const rooms = docData.rooms;
 
@@ -469,12 +473,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.parentId = data.parentId;
   }
 
-  let owners = [context.auth.token.user_id];
-  if (data.owners) {
-    owners = [...owners, ...data.owners];
-    updated.owners = owners;
-  }
-
   if (data.columns) {
     updated.columns = data.columns;
   }
@@ -489,6 +487,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
   }
 
   switch (updated.template) {

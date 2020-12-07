@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 
-// import { MapPreviewProps } from "./MapPreview.types";
+import { MapPreviewProps } from "./MapPreview.types";
 
 import * as S from "./MapPreview.styles";
 import BackgroundSelect from "../BackgroundSelect";
@@ -16,8 +16,12 @@ import {
 import _ from "lodash";
 import Legend from "components/atoms/Legend";
 
-const MapPreview: React.FC<any> = (props) => {
-  const { venueName, mapBackground, rooms, venueId } = props;
+const MapPreview: React.FC<MapPreviewProps> = ({
+  venueName,
+  mapBackground,
+  rooms,
+  venueId,
+}) => {
   const { user } = useUser();
   const [editing, setEditing] = useState<boolean>(false);
 
@@ -25,7 +29,7 @@ const MapPreview: React.FC<any> = (props) => {
 
   if (!user) return <></>;
 
-  const iconsMap = rooms?.map((room: any, index: number) => ({
+  const iconsMap = rooms!.map((room, index: number) => ({
     width: room.width_percent,
     height: room.height_percent,
     top: room.y_percent,
@@ -45,7 +49,7 @@ const MapPreview: React.FC<any> = (props) => {
 
     roomArr.forEach(async (r, index) => {
       const room = {
-        ...rooms[index],
+        ...rooms![index],
         x_percent: r.left,
         y_percent: r.top,
         width_percent: r.width,
@@ -99,7 +103,7 @@ const MapPreview: React.FC<any> = (props) => {
 
         {mapBackground &&
           !editing &&
-          rooms.map((room: any) => (
+          rooms?.map((room) => (
             <div
               key={room.title}
               style={{
@@ -129,13 +133,14 @@ const MapPreview: React.FC<any> = (props) => {
             onChange={handleOnChange}
             backgroundImage={mapBackground}
             otherIcons={{}}
+            // @ts-ignore
             iconsMap={iconsMap}
             coordinatesBoundary={{
               width: 100,
               height: 100,
             }}
             otherIconsStyle={{ opacity: 0.4 }}
-            lockAspectRatio
+            // lockAspectRatio
           />
         )}
 

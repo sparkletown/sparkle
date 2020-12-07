@@ -37,9 +37,12 @@ type VenueImageUrlKeys =
   | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
 
-type ImageFileKeys = "bannerImageFile" | "logoImageFile";
+type ImageFileKeys =
+  | "bannerImageFile"
+  | "logoImageFile"
+  | "mapBackgroundImageFile";
 
-type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl";
+type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapBackgroundImageUrl";
 
 type RoomImageFileKeys = "image_file";
 type RoomImageUrlKeys = "image_url";
@@ -91,6 +94,7 @@ export interface VenueInput_v2 {
   logoImageFile?: FileList;
   logoImageUrl?: string;
   rooms?: Array<unknown>;
+  mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
   showGrid?: boolean;
   roomVisibility?: "hover" | "count" | "count/name" | string; // this should be strict typed to the string values
@@ -118,6 +122,9 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
+
+// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
+const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -219,6 +226,10 @@ const createFirestoreVenueInput_v2 = async (
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
     },
+    {
+      fileKey: "mapBackgroundImageFile",
+      urlKey: "mapBackgroundImageUrl",
+    },
   ];
 
   let imageInputData = {};
@@ -229,11 +240,8 @@ const createFirestoreVenueInput_v2 = async (
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
 
-    // add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-    const randomPrefix = Math.random().toString();
-
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -266,6 +274,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
 };
 
 export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
+  console.log("CREATE VENUE", input);
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue_v2")(
     firestoreVenueInput
@@ -429,11 +438,11 @@ export const updateRoom = async (
 };
 
 export const createRoom = async (
-  input: any,
+  input: RoomData_v2,
   venueId: string,
   user: UserInfo
 ) => {
-  const firestoreVenueInput = await createFirestoreRoomInput(
+  const firestoreVenueInput = await createFirestoreRoomInput_v2(
     input,
     venueId,
     user

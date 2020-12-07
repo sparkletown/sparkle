@@ -23,8 +23,19 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   const { user } = useUser();
   const mapBackgrounds = useFetchAssetImages("mapBackgrounds");
 
-  const handleUpload = (url: string) => {
+  const handleUpload = (url: string, file?: FileList) => {
     if (!user) return;
+
+    if (file && file.length) {
+      return updateVenue_v2(
+        {
+          name: venueName,
+          mapBackgroundImageFile: file,
+          mapBackgroundImageUrl: url,
+        },
+        user
+      );
+    }
 
     return updateVenue_v2(
       {

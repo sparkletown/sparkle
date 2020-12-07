@@ -1,3 +1,8 @@
+import { RoomData_v2 } from "types/CampRoomData";
+
 export interface MapPreviewProps {
-  foo?: any;
+  venueName: string;
+  mapBackground?: string;
+  rooms?: RoomData_v2[];
+  venueId: string;
 }
