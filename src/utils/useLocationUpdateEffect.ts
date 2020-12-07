@@ -56,42 +56,42 @@ export const enterLocation = (
 
 export interface TrackRoomEnteredNGProps {
   user?: UserInfo;
-  venueName: string;
-  roomTitle: string;
+  venue: AnyVenue;
+  room: AnyRoom;
   lastSeenIn?: Record<string, number>;
 }
 
 export const trackRoomEnteredNG = ({
   user,
-  venueName,
-  roomTitle,
+  venue,
+  room,
   lastSeenIn,
 }: TrackRoomEnteredNGProps) => {
   if (!user) return;
 
   enterLocation(
     user,
-    { [`${venueName}/${roomTitle}`]: getCurrentTimeInUnixEpochSeconds() },
+    { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
     lastSeenIn
   );
 };
 
 export interface TrackVenueEnteredProps {
   user?: UserInfo;
-  venueName: string;
+  venue: AnyVenue;
   lastSeenIn?: Record<string, number>;
 }
 
 export const trackVenueEntered = ({
   user,
-  venueName,
+  venue,
   lastSeenIn,
 }: TrackVenueEnteredProps) => {
   if (!user) return;
 
   enterLocation(
     user,
-    { [venueName]: getCurrentTimeInUnixEpochSeconds() },
+    { [venue.name]: getCurrentTimeInUnixEpochSeconds() },
     lastSeenIn
   );
 };
@@ -123,7 +123,7 @@ export const openRoomWithCounting = ({
   if (!room) {
     trackVenueEntered({
       user,
-      venueName: venue.name,
+      venue,
       lastSeenIn: profile?.lastSeenIn,
     });
 
@@ -134,8 +134,8 @@ export const openRoomWithCounting = ({
   // Track room counting
   trackRoomEnteredNG({
     user,
-    venueName: venue.name,
-    roomTitle: room.title,
+    venue,
+    room,
     lastSeenIn: profile?.lastSeenIn,
   });
 
