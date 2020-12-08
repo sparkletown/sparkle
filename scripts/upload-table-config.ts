@@ -68,8 +68,12 @@ const newTables: Table[] = [
 
 const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
 
-(async () => {
-  const doc = await admin.firestore().doc(`venues/${venueId}`).get();
+const db = admin.firestore();
+
+db.runTransaction(async (transaction) => {
+  const docRef = db.doc(`venues/${venueId}`);
+
+  const doc = await transaction.get(docRef);
   const venue = doc.data() as Venue;
   if (!doc.exists || !venue) {
     console.error(`${venueId} venue does not exist`);
@@ -92,8 +96,15 @@ const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
   saveToBackupFile(oldTables, `venue-${venueId}-oldTables`);
   saveToBackupFile(newTables, `venue-${venueId}-newTables`);
 
-  venue.config.tables = newTables;
-  await admin.firestore().doc(`venues/${venueId}`).set(venue);
-
-  process.exit(0);
-})();
+  return transaction.update(docRef, {
+    "config.tables": newTables,
+  });
+})
+  .then(() => {
+    console.log("Transaction successfully committed!");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.log("Transaction failed: ", error);
+    process.exit(1);
+  });
