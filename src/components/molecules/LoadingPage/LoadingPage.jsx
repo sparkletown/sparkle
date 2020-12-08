@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { IS_BURN } from "secrets";
 
 import "./loading.scss";
+import { useInterval } from "hooks/useInterval";
 
 const quotes = IS_BURN
   ? [
@@ -27,25 +28,21 @@ const quotes = IS_BURN
 export const LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
 
-  useEffect(() => {
-    if (!IS_BURN) return;
-    setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    const id = setInterval(() => {
+  useInterval(
+    () => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    }, 1000);
-    return () => {
-      clearInterval(id);
-    };
-  }, [setQuote]);
+    },
+    IS_BURN ? 1000 : undefined
+  );
 
   return (
     <div className="loading-screen">
       <div className="loading-content">
         <div className="burningman-loading-container">
-          <span className="loading-sparkle-1"></span>
-          <span className="loading-sparkle-2"></span>
+          <span className="loading-sparkle-1" />
+          <span className="loading-sparkle-2" />
           <div className="burningman-loading">
-            <div className="burningman-loading-anim"></div>
+            <div className="burningman-loading-anim" />
           </div>
         </div>
         <span className={`loading-randomquote ${quote && "show"}`}>

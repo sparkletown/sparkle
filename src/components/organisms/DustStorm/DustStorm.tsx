@@ -1,17 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import Bugsnag from "@bugsnag/js";
+import React, { useState, useCallback } from "react";
 import "./DustStorm.scss";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/Firestore";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
-import { OnlineStatsData } from "../../../../src/types/OnlineStatsData";
-import { getRandomInt } from "../../../utils/getRandomInt";
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { useInterval } from "hooks/useInterval";
+import { getRandomInt } from "utils/getRandomInt";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
   DUST_STORM_TEXT_1,
   DUST_STORM_TEXT_2,
 } from "settings";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
@@ -53,24 +56,17 @@ export const DustStorm = () => {
     []
   );
 
-  useEffect(() => {
-    const getOnlineStats = firebase
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
+      .httpsCallable("stats-getOnlineStats")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
+
+        setOpenVenues(openVenues);
+      })
+      .catch(Bugsnag.notify);
+  }, FIVE_MINUTES_MS);
 
   return (
     <div className="duststorm-container show">

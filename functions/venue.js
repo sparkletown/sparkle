@@ -84,6 +84,7 @@ const createVenueData = (data, context) => {
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -477,6 +478,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
   }
+
+  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:

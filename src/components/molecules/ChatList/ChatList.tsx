@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { User } from "types/User";
@@ -14,6 +14,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
+import { sortBy } from "lodash";
 
 interface ChatListProps {
   usersById: Record<string, User>;
@@ -21,6 +22,7 @@ interface ChatListProps {
   emptyListMessage?: string;
   allowDelete?: boolean;
   deleteMessage: (id: string) => Promise<void>;
+  showSenderImage?: boolean;
 }
 
 const ChatList: React.FC<ChatListProps> = ({
@@ -29,6 +31,7 @@ const ChatList: React.FC<ChatListProps> = ({
   allowDelete,
   emptyListMessage,
   deleteMessage,
+  showSenderImage,
 }) => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -84,22 +87,38 @@ const ChatList: React.FC<ChatListProps> = ({
   const hideDeleteModal = useCallback(() => setShowDeleteModal(false), []);
 
   const hasMessages = hasElements(messages);
+
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
+
+  const renderMessages = useMemo(() => {
+    // Last (newest) message goes first
+    const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
+
+    return sortedMessages.map((message) => (
+      <ChatMessage
+        key={`${message.from}-${message.ts_utc.seconds}-${message.ts_utc.nanoseconds}`}
+        usersById={usersById}
+        message={message}
+        allowDelete={allowDelete ?? false}
+        onDeleteClick={toggleDeleteModal}
+        onAvatarClick={showUserProfile}
+        showSenderImage={showSenderImage}
+      />
+    ));
+  }, [
+    allowDelete,
+    messages,
+    showSenderImage,
+    showUserProfile,
+    toggleDeleteModal,
+    usersById,
+  ]);
+
   return (
     <>
       {hasMessages && (
         <div className="chat-messages-container">
-          {usersById &&
-            messages.map((message, index) => (
-              <ChatMessage
-                key={`chat-message-${index}`}
-                usersById={usersById}
-                message={message}
-                allowDelete={allowDelete ?? false}
-                onDeleteClick={toggleDeleteModal}
-                onAvatarClick={showUserProfile}
-              />
-            ))}
+          {usersById && renderMessages}
         </div>
       )}
       {!hasMessages && (

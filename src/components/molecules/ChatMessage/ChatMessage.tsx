@@ -86,7 +86,7 @@ const ChatMessageComponent: React.FunctionComponent<PropsType> = ({
         <div
           className={`chat-timestamp ${sender === "you" ? "right-side" : ""}`}
         >
-          {formatUtcSeconds(chat.ts_utc)}
+          {formatUtcSeconds(chat.ts_utc.seconds)}
         </div>
       </div>
     </div>
