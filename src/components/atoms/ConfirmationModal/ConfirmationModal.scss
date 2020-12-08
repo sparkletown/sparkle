@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .confirmation-modal {
   .confirm-message {
     padding: 10px 0 30px 0;
@@ -12,6 +14,10 @@
     }
 
     .cancel-button {
+      background-image: none;
+      background-color: $black;
+      border: solid $white 1px;
+      border-color: $white;
       width: 50%;
     }
   }
