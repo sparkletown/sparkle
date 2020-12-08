@@ -143,7 +143,7 @@ jobs:
                 "builderName": "${CIRCLE_USERNAME}",
                 "sourceControl": {
                   "provider": "github",
-                  "repository": "${CIRCLE_REPOSITORY_URL}",
+                  "repository": "https://github.com/sparkletown/sparkle",
                   "revision": "${CIRCLE_SHA1}"
                 },
                 "metadata": {
