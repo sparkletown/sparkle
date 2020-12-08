@@ -45,7 +45,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}`;
+    const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
+      returnUrl ? "&returnUrl=" + returnUrl : ""
+    }`;
     const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
