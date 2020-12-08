@@ -29,6 +29,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     venueName ??
     getQueryParameters(window.location.search)?.venueId?.toString() ??
     DEFAULT_VENUE;
+  const { returnUrl } = getQueryParameters(window.location.search);
 
   const {
     register,
@@ -44,8 +45,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`;
-    const nextUrl = venueId ? accountQuestionsUrl : `/${DEFAULT_VENUE}`;
+    const accountQuestionsUrl = `/account/questions?venueId=${venueId}`;
+    const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
