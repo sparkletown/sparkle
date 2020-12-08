@@ -295,7 +295,7 @@ const VenuePage = () => {
     return <LoadingPage />;
   }
 
-  if (!(profile?.partyName && profile?.pictureUrl)) {
+  if (profile && !(profile?.partyName && profile?.pictureUrl)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 

@@ -46,6 +46,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     await updateUserProfile(user.uid, data);
     const accountQuestionsUrl = `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`;
     const nextUrl = venueId ? accountQuestionsUrl : `/${DEFAULT_VENUE}`;
+    console.log('1',nextUrl)
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
