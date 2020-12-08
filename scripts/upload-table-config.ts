@@ -1,3 +1,5 @@
+#!/usr/bin/env node --experimental-json-modules --loader ts-node/esm
+
 import admin from "firebase-admin";
 import serviceAccount from "./prodAccountKey.json";
 import "firebase/firestore";
