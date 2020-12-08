@@ -23,10 +23,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import {
-  RadioModal,
-  RadioModalPropsType,
-} from "components/organisms/RadioModal/RadioModal";
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -65,14 +62,6 @@ const GiftPopover = (
   <Popover id="gift-popover">
     <Popover.Content>
       <GiftTicketModal />
-    </Popover.Content>
-  </Popover>
-);
-
-const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
-  <Popover id="radio-popover">
-    <Popover.Content>
-      <RadioModal {...props} />
     </Popover.Content>
   </Popover>
 );
@@ -118,7 +107,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     [radioStations]
   );
 
-  const { volume, setVolume } = useRadio(sound);
+  const [isRadioPlaying, setIsRadioPlaying] = useState(false);
+  const { volume, setVolume } = useRadio(isRadioPlaying, sound);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -221,14 +211,20 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {IS_BURN && (
+                {venue?.playRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={
-                      <RadioPopover
-                        {...{ volume, setVolume, title: venue?.radioTitle }}
-                      />
+                      <Popover id="radio-popover">
+                        <Popover.Content>
+                          <RadioModal
+                            {...{ volume, setVolume, title: venue?.radioTitle }}
+                            onEnableHandler={() => setIsRadioPlaying(true)}
+                            isRadioPlaying={isRadioPlaying}
+                          />
+                        </Popover.Content>
+                      </Popover>
                     }
                     rootClose={true}
                     defaultShow={showRadioOverlay}
