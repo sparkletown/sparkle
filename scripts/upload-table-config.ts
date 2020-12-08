@@ -1,9 +1,38 @@
 #!/usr/bin/env node --experimental-json-modules --loader ts-node/esm
 
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+
 import { Table } from "../src/types/Table";
+import { Venue } from "../src/types/Venue";
+
+import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers.js";
+
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Upload table config
+
+Usage: node ${scriptName} PROJECT_ID VENUE_ID
+
+Example: node ${scriptName} co-reality-map myvenue
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId, venueId] = process.argv.slice(2);
+if (!projectId || !venueId) {
+  usage();
+}
+
+const saveToBackupFile = makeSaveToBackupFile(
+  `${projectId}-upload-table-config`
+);
+
+initFirebaseAdminApp(projectId);
 
 const generateTables: (props: {
   num: number;
@@ -32,48 +61,38 @@ const generateTables: (props: {
     };
   });
 
-const TABLES: Table[] = [
+const newTables: Table[] = [
   ...generateTables({ num: 5, capacity: 6 }),
   ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
 ];
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Upload table config
-
-Usage: node ${process.argv[1]} PROJECT_ID VENUE_ID
-
-Example: node ${process.argv[1]} co-reality-map myvenue
-`);
-  process.exit(1);
-}
-
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
-  usage();
-}
-
-const projectId = argv[0];
-const venueId = argv[1];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
 
 (async () => {
   const doc = await admin.firestore().doc(`venues/${venueId}`).get();
-  if (!doc.exists) {
-    console.error("doc does not exist");
+  const venue = doc.data() as Venue;
+  if (!doc.exists || !venue) {
+    console.error(`${venueId} venue does not exist`);
     process.exit(1);
   }
-  const venue = doc.data();
 
-  console.log(`venue ${venueId} in project ${projectId}:`);
-  console.log(venue);
+  if (!venue.config) {
+    console.error(`${venueId} venue.config does not exist`);
+    process.exit(1);
+  }
 
-  venue.config.tables = TABLES;
+  const oldTables = venue?.config?.tables || [];
+
+  // Show the existing tables data
+  console.log("Old Tables:\n", oldTables.map(asSingleTablePerLine));
+  console.log("New Tables:\n", newTables.map(asSingleTablePerLine));
+
+  // Save a backup of the current venue config just in case
+  saveToBackupFile(venue, `venue-${venueId}`);
+  saveToBackupFile(oldTables, `venue-${venueId}-oldTables`);
+  saveToBackupFile(newTables, `venue-${venueId}-newTables`);
+
+  venue.config.tables = newTables;
   await admin.firestore().doc(`venues/${venueId}`).set(venue);
 
   process.exit(0);
