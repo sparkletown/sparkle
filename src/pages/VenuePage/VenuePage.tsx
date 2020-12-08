@@ -62,7 +62,7 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
-import { updateProfileEnteredVenueIds } from "utils/profile";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
 
@@ -295,7 +295,7 @@ const VenuePage = () => {
     return <LoadingPage />;
   }
 
-  if (profile && !(profile?.partyName && profile?.pictureUrl)) {
+  if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
