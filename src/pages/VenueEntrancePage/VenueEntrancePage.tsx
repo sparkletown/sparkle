@@ -23,10 +23,6 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     return <LoadingPage />;
   }
 
-  if (!user || !profile) {
-    return <Login />;
-  }
-
   if (
     !(parseInt(step) > 0) ||
     !venue.entrance ||
@@ -34,6 +30,10 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     venue.entrance.length < parseInt(step)
   ) {
     return <Redirect to={venueInsideUrl(venueId)} />;
+  }
+
+  if (!user || !profile) {
+    return <Login />;
   }
 
   const proceed = () => {
