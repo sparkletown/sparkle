@@ -4,7 +4,6 @@ import { useFirebase } from "react-redux-firebase";
 import axios from "axios";
 import { codeCheckUrl } from "utils/url";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { useSelector } from "hooks/useSelector";
 import { venueSelector } from "utils/selectors";
 
@@ -41,7 +40,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     clearError,
   } = useForm<LoginFormData>({
     mode: "onChange",
-    reValidateMode: 'onChange'
+    reValidateMode: "onChange",
   });
 
   const clearBackendErrors = () => {

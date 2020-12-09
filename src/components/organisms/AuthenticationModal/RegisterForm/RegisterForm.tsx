@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
-import * as Yup from "yup";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
@@ -18,8 +17,6 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { validationSchema } from "pages/Admin/Venue/DetailsValidationSchema";
-import { isDate, parse, differenceInYears, parseISO } from "date-fns";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -53,17 +50,6 @@ const sparkleTermsAndConditions = {
   link: SPARKLE_TERMS_AND_CONDITIONS_URL,
 };
 
-export const testSchema = Yup.object().shape({
-  date_of_birth: Yup.string().test(
-    "DOB",
-    "You need to be at least 18 years of age.",
-    value => {
-      const yearsDifference = differenceInYears(new Date(), parseISO(value))
-      return yearsDifference >= 18 && yearsDifference <= 100
-    }
-  )
-});
-
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   displayPasswordResetForm,
@@ -90,7 +76,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     getValues,
   } = useForm<RegisterFormData>({
     mode: "onChange",
-    reValidateMode: 'onChange',
+    reValidateMode: "onChange",
   });
 
   const clearBackendErrors = () => {
