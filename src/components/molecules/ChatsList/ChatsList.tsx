@@ -133,6 +133,7 @@ const ChatsList: React.FunctionComponent = () => {
     );
   }, [discussionPartnerWithLastMessageExchanged]);
 
+  const userUid = user?.uid;
   const privateMessageList = useMemo(() => {
     if (!selectedUser) return null;
 
@@ -173,7 +174,7 @@ const ChatsList: React.FunctionComponent = () => {
             </div>
           </div>
 
-          {lastMessageExchanged.from !== user?.uid && (
+          {lastMessageExchanged.from !== userUid && (
             <div
               className={`private-message-time ${isUnreadMessage && "unread"}`}
             >
@@ -189,7 +190,7 @@ const ChatsList: React.FunctionComponent = () => {
     discussions,
     onClickOnSender,
     selectedUser,
-    user?.uid,
+    userUid,
   ]);
 
   if (selectedUser) {
