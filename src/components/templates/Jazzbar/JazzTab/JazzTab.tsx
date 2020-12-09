@@ -239,7 +239,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               )}
               {seatedAtTable && (
                 <Room
-                  roomName={seatedAtTable}
+                  roomName={`${venueToUse.name}-${seatedAtTable}`}
                   venueName={venueToUse.name}
                   setUserList={setUserList}
                   setSeatedAtTable={setSeatedAtTable}
