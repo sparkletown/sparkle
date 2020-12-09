@@ -309,8 +309,6 @@ export const Audience: React.FunctionComponent = () => {
       venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
     }`;
 
-    console.log(venue.videoAspect)
-
     const renderReactionsContainer = () => (
       <>
         <div className="emoji-container">
