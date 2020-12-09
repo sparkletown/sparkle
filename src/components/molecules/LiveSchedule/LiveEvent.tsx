@@ -23,7 +23,7 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
     }
   }, [event, profile, user, venue]);
 
-  if (!event) return <></>;
+  if (!event) return null;
 
   return (
     <div className="schedule-event-container schedule-event-container_live">

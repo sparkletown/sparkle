@@ -43,7 +43,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     mode: "onChange",
   });
 
-  if (!venue) return <></>;
+  if (!venue) return null;
 
   const clearBackendErrors = () => {
     clearError("backend");
