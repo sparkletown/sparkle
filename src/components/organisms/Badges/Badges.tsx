@@ -41,7 +41,7 @@ export const Badges: React.FC<{
     venueId: currentVenue.id,
     withEvents: false,
   });
-  const relatedVenueIds = relatedVenues.map((venue) => venue.id);
+  const relatedVenueIds = relatedVenues.map((venue) => venue.name);
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
@@ -55,7 +55,7 @@ export const Badges: React.FC<{
   // Only show visits to related venues
   const relevantVisits = visits?.filter(
     (visit) =>
-      currentVenue.id === visit.id || relatedVenueIds.includes(visit.id)
+      currentVenue.name === visit.id || relatedVenueIds.includes(visit.id)
   );
 
   const badges = useMemo(() => {
