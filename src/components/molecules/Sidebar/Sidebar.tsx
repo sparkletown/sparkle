@@ -85,9 +85,10 @@ const Sidebar = () => {
   return (
     <div className="sidebar-container">
       <div className="sidebar-slide-btn">
-        <div className="slide-btn-arrow-icon"></div>
-        <div className="slide-btn-chat-icon"></div>
+        <div className="slide-btn-arrow-icon" />
+        <div className="slide-btn-chat-icon" />
       </div>
+
       <div className="sidebar-tabs">
         <div
           className={`sidebar-tab sidebar-tab_chat ${
@@ -97,6 +98,7 @@ const Sidebar = () => {
         >
           {chatTitle} Chat
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_private ${
             hasUnreadMessages && "notification"
