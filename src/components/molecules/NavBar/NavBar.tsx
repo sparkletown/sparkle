@@ -5,16 +5,23 @@ import {
 } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-import NavSearchBar from "components/molecules/NavSearchBar";
 
 import firebase from "firebase/app";
 
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
+
 import { venueInsideUrl } from "utils/url";
+import {
+  currentVenueSelectorData,
+  parentVenueSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 
 import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
@@ -29,18 +36,14 @@ import {
 } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
+import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
-import { VenuePartygoers } from "../VenuePartygoers";
+import { VenuePartygoers } from "components/molecules/VenuePartygoers";
+
+import { NavBarLogin } from "./NavBarLogin";
 
 import "./NavBar.scss";
 import "./playa.scss";
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  radioStationsSelector,
-} from "utils/selectors";
-
-import { NavBarLogin } from "./NavBarLogin";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
