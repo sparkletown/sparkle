@@ -181,6 +181,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   if (!venueId || !venue) return null;
 
+  const isVenueUsingPartyMap = venue.template === "partymap";
+
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
 
@@ -244,21 +246,23 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ChatPopover}
-                  rootClose={true}
-                >
-                  <span className="private-chat-icon">
-                    {numberOfUnreadMessages > 0 && (
-                      <div className="notification-card">
-                        {numberOfUnreadMessages}
-                      </div>
-                    )}
-                    <div className="navbar-link-message" />
-                  </span>
-                </OverlayTrigger>
+                {!isVenueUsingPartyMap && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={ChatPopover}
+                    rootClose={true}
+                  >
+                    <span className="private-chat-icon">
+                      {numberOfUnreadMessages > 0 && (
+                        <div className="notification-card">
+                          {numberOfUnreadMessages}
+                        </div>
+                      )}
+                      <div className="navbar-link-message" />
+                    </span>
+                  </OverlayTrigger>
+                )}
 
                 {IS_BURN && (
                   <OverlayTrigger
