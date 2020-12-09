@@ -7,6 +7,7 @@ import { Quotation } from "./Quotation";
 import { RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { VenueAccessType } from "./VenueAcccess";
 import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -35,6 +36,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
+  access?: VenueAccessType[];
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
   host?: {

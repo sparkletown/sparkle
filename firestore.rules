@@ -61,6 +61,12 @@ service cloud.firestore {
         allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
           isUpdateRestrictedToField(request, 'deleted');
       }
+      match /accessmethods/{method} {
+        allow read, write: if false;
+      }
+      match /accessgranted/{userId} {
+        allow read, write: if false;
+      }
     }
     match /customers/{userId} {
       allow read: if false;
