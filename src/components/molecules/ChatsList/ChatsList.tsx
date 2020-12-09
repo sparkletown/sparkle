@@ -27,7 +27,7 @@ import {
 } from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
-import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
 import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
