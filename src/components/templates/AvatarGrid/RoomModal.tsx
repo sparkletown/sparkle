@@ -55,10 +55,12 @@ export const RoomModal: React.FC<PropsType> = ({
 
   const dispatch = useDispatch();
 
-  const venueName = venue.name;
+  const venueName = venue?.name;
 
   const enter = useCallback(() => {
-    openRoomWithCounting({ user, profile, venue, room });
+    if (venue) {
+      openRoomWithCounting({ user, profile, venue, room });
+    }
   }, [room, profile, user, venue]);
 
   if (!room) {
