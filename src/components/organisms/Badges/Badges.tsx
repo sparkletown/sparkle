@@ -34,6 +34,7 @@ export const Badges: React.FC<{
       storeAs: "userModalVisits",
     },
   ]);
+  useFirestoreConnect("venues");
   const visits = useSelector(userModalVisitsSelector);
   const venues = useSelector(orderedVenuesSelector);
 
@@ -41,21 +42,23 @@ export const Badges: React.FC<{
     venueId: currentVenue.id,
     withEvents: false,
   });
-  const relatedVenueIds = relatedVenues.map((venue) => venue.name);
+  const relatedVenueNames = relatedVenues.map((venue) => venue.name);
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
 
     const visitSeconds = visits
-      .filter((v) => v.id === currentVenue.id || relatedVenueIds.includes(v.id))
+      .filter(
+        (v) => v.id === currentVenue.id || relatedVenueNames.includes(v.id)
+      )
       .reduce((acc, v) => acc + v.timeSpent, 0);
     return Math.floor(visitSeconds / (60 * 60));
-  }, [visits, currentVenue, relatedVenueIds]);
+  }, [visits, currentVenue, relatedVenueNames]);
 
   // Only show visits to related venues
   const relevantVisits = visits?.filter(
     (visit) =>
-      currentVenue.name === visit.id || relatedVenueIds.includes(visit.id)
+      currentVenue.name === visit.id || relatedVenueNames.includes(visit.id)
   );
 
   const badges = useMemo(() => {
@@ -65,7 +68,8 @@ export const Badges: React.FC<{
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
         if (
           !venue ||
-          (currentVenue.id !== venue.id && !relatedVenueIds.includes(venue.id))
+          (currentVenue.id !== venue.id &&
+            !relatedVenueNames.includes(venue.id))
         )
           return undefined;
 
@@ -85,7 +89,7 @@ export const Badges: React.FC<{
         };
       })
       .filter((b) => b !== undefined);
-  }, [relevantVisits, venues, currentVenue, relatedVenueIds]);
+  }, [relevantVisits, venues, currentVenue, relatedVenueNames]);
 
   const badgeList = useMemo(
     () =>

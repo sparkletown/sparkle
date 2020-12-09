@@ -239,11 +239,6 @@ const VenuePage = () => {
       : undefined
   );
 
-  useFirestoreConnect({
-    collection: "venues",
-    storeAs: "venues",
-  });
-
   if (!user) {
     return <Login formType="initial" />;
   }
