@@ -124,6 +124,9 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
+export const venueChatsSelector = (state: RootState) =>
+  state.firestore.ordered.venueChats;
+
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
 
