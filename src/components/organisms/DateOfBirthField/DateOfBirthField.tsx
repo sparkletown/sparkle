@@ -12,6 +12,7 @@ export const DateOfBirthField: React.FC<FormFieldProps> = ({
       type="date"
       ref={register({ required: true })}
     />
+    <small className="input-info">You need to be 18 years old to attend this event. Please confirm your age.</small>
     {error && (
       <span className="input-error">
         {error.type === "required" ? (

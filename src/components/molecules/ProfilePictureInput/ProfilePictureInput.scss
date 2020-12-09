@@ -1,4 +1,10 @@
 .default-avatars-container {
   display: flex;
   flex-direction: row;
+
+  .profile-picture-preview {
+    width: 40px;
+    height: 40px;
+    border: 0px solid;
+  }
 }

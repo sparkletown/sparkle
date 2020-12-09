@@ -41,6 +41,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     clearError,
   } = useForm<LoginFormData>({
     mode: "onChange",
+    reValidateMode: 'onChange'
   });
 
   const clearBackendErrors = () => {
@@ -152,10 +153,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
 
         {venue.requiresTicketCode && (
           <TicketCodeField register={register} error={errors?.code} />
-        )}
-
-        {venue.requiresDateOfBirth && (
-          <DateOfBirthField register={register} error={errors?.date_of_birth} />
         )}
 
         {errors.backend && (
