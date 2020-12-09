@@ -211,7 +211,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {venue?.playRadio && (
+                {venue?.showRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
