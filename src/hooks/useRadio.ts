@@ -32,11 +32,5 @@ export const useRadio = (playRadio: boolean, audio?: HTMLAudioElement) => {
     }
   }, [volume, audio, playRadio]);
 
-  useEffect(() => {
-    if (playRadio) {
-      audio?.play();
-    }
-  }, [audio, playRadio]);
-
   return { volume, setVolume };
 };
