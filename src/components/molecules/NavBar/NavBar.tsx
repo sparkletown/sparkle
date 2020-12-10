@@ -183,6 +183,11 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const [showRadioPopover, setShowRadioPopover] = useState(false);
 
+  const toggleShowRadioPopover = useCallback(
+    () => setShowRadioPopover((prevState) => !prevState),
+    []
+  );
+
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -209,7 +214,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     <S.RadioTrigger>
       <div
         className={`profile-icon navbar-link-radio ${volume === 0 && "off"}`}
-        onClick={() => setShowRadioPopover((prevState) => !prevState)}
+        onClick={toggleShowRadioPopover}
       />
       {renderRadioPopover()}
     </S.RadioTrigger>
