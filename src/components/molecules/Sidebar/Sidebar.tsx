@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
 
 import { useSelector } from "hooks/useSelector";
@@ -52,11 +52,15 @@ const Sidebar = () => {
   // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
   const chats = [...privateChats];
 
-  const chatUserIds = chats
-    .sort(chatSort)
-    .flatMap((chat) => [chat.from, chat.to])
-    .filter(filterUniqueKeys)
-    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+  const chatUserIds = useMemo(
+    () =>
+      chats
+        .sort(chatSort)
+        .flatMap((chat) => [chat.from, chat.to])
+        .filter(filterUniqueKeys)
+        .slice(0, NUM_CHAT_UIDS_TO_LOAD),
+    [chats]
+  );
 
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 

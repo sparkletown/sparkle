@@ -94,7 +94,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
                 <div className="participants-container">
                   <Room
                     venueName={venue.name}
-                    roomName={seatedAtTable}
+                    roomName={`${venue.name}-${seatedAtTable}`}
                     setUserList={() => {}}
                   />
                 </div>
