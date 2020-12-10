@@ -3,6 +3,7 @@ import "./wdyr";
 import React from "react";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
+import LogRocket from "logrocket";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -29,6 +30,7 @@ import {
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
+  LOGROCKET_APP_ID,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 
@@ -160,6 +162,10 @@ if (BUGSNAG_API_KEY) {
       );
     },
   });
+}
+
+if (LOGROCKET_APP_ID) {
+  LogRocket.init(LOGROCKET_APP_ID);
 }
 
 // When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
