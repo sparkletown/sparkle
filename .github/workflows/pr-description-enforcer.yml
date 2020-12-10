@@ -1,0 +1,16 @@
+# This workflow will enforce description on pull requests.
+#   https://github.com/derkinderfietsen/pr-description-enforcer
+
+name: 'PR Description Enforcer'
+on:
+  pull_request_target:
+    types: [opened, edited, reopened]
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: sparkletown/pr-description-enforcer@v1
+      with:
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
