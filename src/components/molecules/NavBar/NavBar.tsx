@@ -13,7 +13,15 @@ import firebase from "firebase/app";
 
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
+
+import {
+  currentVenueSelectorData,
+  parentVenueSelector,
+  radioStationsSelector,
+} from "utils/selectors";
+import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
 
 import { useRadio } from "hooks/useRadio";
@@ -23,24 +31,17 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import {
-  RadioModal,
-  RadioModalPropsType,
-} from "components/organisms/RadioModal/RadioModal";
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import UpcomingTickets from "components/molecules/UpcomingTickets";
-import { VenuePartygoers } from "../VenuePartygoers";
-
-import "./NavBar.scss";
-import "./playa.scss";
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  radioStationsSelector,
-} from "utils/selectors";
+import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { NavBarLogin } from "./NavBarLogin";
+
+import "./NavBar.scss";
+import * as S from "./Navbar.styles";
+import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -65,14 +66,6 @@ const GiftPopover = (
   <Popover id="gift-popover">
     <Popover.Content>
       <GiftTicketModal />
-    </Popover.Content>
-  </Popover>
-);
-
-const RadioPopover: React.FC<RadioModalPropsType> = (props) => (
-  <Popover id="radio-popover">
-    <Popover.Content>
-      <RadioModal {...props} />
     </Popover.Content>
   </Popover>
 );
@@ -110,15 +103,20 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
+  const hasRadioStations = radioStations && radioStations.length;
+  const isSoundCloud =
+    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+
   const sound = useMemo(
     () =>
-      radioStations && radioStations.length
+      radioStations && hasElements(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
-    [radioStations]
+    [isSoundCloud, radioStations]
   );
 
-  const { volume, setVolume } = useRadio(sound);
+  const [isRadioPlaying, setIsRadioPlaying] = useState(false);
+  const { volume, setVolume } = useRadio(isRadioPlaying, sound);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -156,12 +154,26 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     window.location.href = venueLink;
   }, [redirectionUrl, venueId]);
 
+  const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
+
+  const [showRadioPopover, setShowRadioPopover] = useState(false);
+
+  const toggleShowRadioPopover = useCallback(
+    () => setShowRadioPopover((prevState) => !prevState),
+    []
+  );
+
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
 
   const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
+
+  const radioStation = !!hasRadioStations && radioStations![0];
+
+  const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
+  const showSoundCloudRadio = (venue?.showRadio && isSoundCloud) ?? false;
 
   return (
     <>
@@ -221,14 +233,24 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {IS_BURN && (
+                {showNormalRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={
-                      <RadioPopover
-                        {...{ volume, setVolume, title: venue?.radioTitle }}
-                      />
+                      <Popover id="radio-popover">
+                        <Popover.Content>
+                          <RadioModal
+                            {...{
+                              volume,
+                              setVolume,
+                              title: venue?.radioTitle,
+                            }}
+                            onEnableHandler={handleRadioEnable}
+                            isRadioPlaying={isRadioPlaying}
+                          />
+                        </Popover.Content>
+                      </Popover>
                     }
                     rootClose={true}
                     defaultShow={showRadioOverlay}
@@ -239,6 +261,27 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       }`}
                     />
                   </OverlayTrigger>
+                )}
+
+                {showSoundCloudRadio && (
+                  <S.RadioTrigger>
+                    <div
+                      className={`profile-icon navbar-link-radio ${
+                        volume === 0 && "off"
+                      }`}
+                      onClick={toggleShowRadioPopover}
+                    />
+
+                    <S.RadioWrapper showRadioPopover={showRadioPopover}>
+                      <iframe
+                        title="venueRadio"
+                        id="sound-cloud-player"
+                        scrolling="no"
+                        allow="autoplay"
+                        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+                      />
+                    </S.RadioWrapper>
+                  </S.RadioTrigger>
                 )}
 
                 <OverlayTrigger

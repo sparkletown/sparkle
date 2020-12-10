@@ -81,6 +81,10 @@ $border-radius: 28px;
   height: $navbar-height;
   padding: 0 15px;
   background-color: $dark;
+
+  #sound-cloud-player {
+    border: none;
+  }
 }
 
 .custom-dialog {
