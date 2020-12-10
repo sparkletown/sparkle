@@ -87,7 +87,11 @@ const store = createStore(
   rootReducer,
   initialState,
   composeWithDevTools(
-    applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
+    applyMiddleware(
+      thunkMiddleware,
+      trackingMiddleware(analytics),
+      LogRocket.reduxMiddleware() // logrocket needs to be last
+    )
   )
 );
 
