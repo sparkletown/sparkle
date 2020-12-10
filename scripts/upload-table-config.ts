@@ -1,11 +1,11 @@
-#!/usr/bin/env node --experimental-json-modules --loader ts-node/esm
+#!/usr/bin/env node -r esm -r ts-node/register
 
 import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
 import { Venue } from "../src/types/Venue";
 
-import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers.js";
+import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers";
 
 const usage = () => {
   const scriptName = process.argv[1];
