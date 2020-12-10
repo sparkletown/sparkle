@@ -13,7 +13,7 @@ import { Venue } from "types/Venue";
 
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { notEmpty } from "utils/types";
+import { isTruthy, notEmpty } from "utils/types";
 
 import { BadgeImage } from "./BadgeImage";
 
@@ -23,23 +23,14 @@ export const Badges: React.FC<{
 }> = ({ user, currentVenue }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const firestore = useFirestore();
 
   const fetchAllVenues = useCallback(async () => {
-    const venuesSnapshot = await firestore.collection("venues").get();
-
     const userSnapshot = await firestore.collection("users").doc(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
 
-    const venues =
-      venuesSnapshot.docs.map(
-        (venueSnapshot) =>
-          ({ ...venueSnapshot.data(), id: venueSnapshot.id } as WithId<
-            AnyVenue
-          >)
-      ) ?? [];
     const visits =
       visitsSnapshot.docs.map(
         (visitSnapshot) =>
@@ -48,13 +39,36 @@ export const Badges: React.FC<{
           >)
       ) ?? [];
 
+    const venuesRequests = visits.map((visit) =>
+      firestore.collection("venues").where("name", "==", visit.id).get()
+    );
+
+    const venues: WithId<AnyVenue>[] = [];
+    const hasVenuesRequests = isTruthy(venuesRequests);
+
+    // If there are no venues visited avoid sending the request.
+    if (hasVenuesRequests) {
+      const requestSnapshots = await Promise.all(venuesRequests);
+
+      // Promise all returns arrays as response. That's why there is so much depth.
+      // TODO: Same logic can be used for the private chats as well.
+      requestSnapshots.forEach((venuesSnapshot) =>
+        venuesSnapshot.docs.forEach((venueSnapshot) =>
+          venues.push({
+            ...venueSnapshot.data(),
+            id: venueSnapshot.id,
+          } as WithId<AnyVenue>)
+        )
+      );
+    }
+
     setVenues(venues);
     setVisits(visits);
-    setLoading(false);
+    setIsLoading(false);
   }, [firestore, user.id]);
 
   useEffect(() => {
-    setLoading(true);
+    setIsLoading(true);
     fetchAllVenues();
   }, [fetchAllVenues]);
 
@@ -104,14 +118,14 @@ export const Badges: React.FC<{
       badges.filter(notEmpty).map((badge) => (
         <li className="badge-list-item" key={badge.label}>
           <Link to={getLocationLink(badge.venue, badge.room)}>
-            <BadgeImage image={badge.image} label={badge.label} />
+            <BadgeImage image={badge.image} />
           </Link>
         </li>
       )),
     [badges]
   );
 
-  if (loading) {
+  if (isLoading) {
     return <div className="visits">Loading...</div>;
   }
 

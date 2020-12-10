@@ -5,7 +5,7 @@ const defaultAvatar = "/icons/sparkle-nav-logo.png";
 export const BadgeImage: React.FC<{
   image?: string;
   label: string;
-}> = ({ image, label }) => {
+}> = ({ image }) => {
   const imageRef = useRef<HTMLImageElement>(null);
 
   const changeBadgeImage = useCallback(() => {
@@ -18,8 +18,8 @@ export const BadgeImage: React.FC<{
     <img
       className="badge-list-item-image"
       ref={imageRef}
-      src={image ?? defaultAvatar}
-      alt={`${label} badge`}
+      src={image}
+      alt={""}
       onError={changeBadgeImage}
     />
   );
