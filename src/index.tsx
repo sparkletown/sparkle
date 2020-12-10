@@ -24,6 +24,13 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 import {
   BUGSNAG_API_KEY,
   BUILD_BRANCH,
@@ -33,26 +40,23 @@ import {
   LOGROCKET_APP_ID,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
-
-import "bootstrap";
-import "scss/global.scss";
-
-import AppRouter from "components/organisms/AppRouter";
+import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
+import { useSelector } from "hooks/useSelector";
+
+import AppRouter from "components/organisms/AppRouter";
+
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { FIREBASE_CONFIG } from "settings";
+
+import "bootstrap";
+import "scss/global.scss";
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
