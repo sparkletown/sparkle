@@ -11,7 +11,6 @@ import { VenueEvent } from "types/VenueEvent";
 import { isTruthyFilter } from "utils/filter";
 import { WithId, withVenueId, WithVenueId } from "utils/id";
 import {
-  emptyArraySelector,
   makeSubvenueEventsSelector,
   maybeArraySelector,
   parentVenueEventsSelector,
@@ -32,14 +31,14 @@ const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
   withVenueId(event, venueId);
 
 const venueEventsSelectorToEventsWithVenueIds = (
-  venues: WithId<AnyVenue>[]
+  venues?: WithId<AnyVenue>[]
 ) => (state: RootState) =>
-  venues.flatMap(
+  venues?.flatMap(
     (venue) =>
       makeSubvenueEventsSelector(venue.id)(state)?.map(
         toEventsWithVenueIds(venue.id)
       ) ?? []
-  );
+  ) ?? [];
 
 interface UseConnectRelatedVenuesProps {
   venueId?: string;
@@ -71,8 +70,7 @@ export const useConnectRelatedVenues: ReactHook<
   const parentEventsWithVenueIdsSelector: SparkleSelector<
     WithVenueId<VenueEvent>[]
   > = useMemo(() => {
-    if (!withEvents || !parentId)
-      return emptyArraySelector as SparkleSelector<WithVenueId<VenueEvent>[]>;
+    if (!withEvents || !parentId) return () => [];
 
     return (state: RootState) =>
       parentVenueEventsSelector(state)?.map(toEventsWithVenueIds(parentId)) ??
@@ -82,8 +80,7 @@ export const useConnectRelatedVenues: ReactHook<
   const venueEventsWithVenueIdsSelector: SparkleSelector<
     WithVenueId<VenueEvent>[]
   > = useMemo(() => {
-    if (!withEvents || !venueId)
-      return emptyArraySelector as SparkleSelector<WithVenueId<VenueEvent>[]>;
+    if (!withEvents || !venueId) return () => [];
 
     return (state: RootState) =>
       venueEventsSelector(state)?.map(toEventsWithVenueIds(venueId)) ?? [];
