@@ -54,6 +54,14 @@ import { User } from "types/User";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
 
+if (LOGROCKET_APP_ID) {
+  LogRocket.init(LOGROCKET_APP_ID);
+
+  Bugsnag.addOnError((event) => {
+    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
+  });
+}
+
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const rrfConfig = {
@@ -165,14 +173,6 @@ if (BUGSNAG_API_KEY) {
         currentUser.displayName || undefined
       );
     },
-  });
-}
-
-if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID);
-
-  Bugsnag.addOnError((event) => {
-    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
   });
 }
 
