@@ -15,7 +15,7 @@ import {
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { ChatMessage } from "components/context/ChatContext";
+import { ChatMessage } from "store/actions/Chat";
 
 interface ReactionListProps {
   reactions: Reaction[];

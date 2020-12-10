@@ -1,10 +1,7 @@
 import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
-import {
-  RestrictedChatMessage,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
+import { RestrictedChatMessage, PrivateChatMessage } from "store/actions/Chat";
 import { Reaction } from "components/context/ExperienceContext";
 
 import { CampVenue } from "./CampVenue";

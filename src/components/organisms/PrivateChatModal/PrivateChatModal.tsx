@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // Components
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { PrivateChatMessage } from "components/context/ChatContext";
+import { PrivateChatMessage } from "store/actions/Chat";
 import Chatbox from "components/organisms/Chatbox";
 import PrivateRecipientSearchInput from "components/molecules/PrivateRecipientSearchInput";
 import UserProfilePicture from "components/molecules/UserProfilePicture";

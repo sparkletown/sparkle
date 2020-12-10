@@ -6,10 +6,7 @@ import { WithId } from "utils/id";
 
 import { useVenueId } from "hooks/useVenueId";
 
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";

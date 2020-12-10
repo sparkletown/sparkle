@@ -27,7 +27,8 @@ service cloud.firestore {
       allow read,write: if request.auth.uid == userId;
     }
     match /chatsv3/{chatId} {
-      allow write, read: if request.auth.uid != null;
+      allow read: if request.auth.uid != null;
+      allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
     }
     match /privatechats/{userId}/{restOfPath=**} {
       allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;

@@ -17,7 +17,7 @@ import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
-import { chatSort } from "components/context/ChatContext";
+import { chatSort } from "utils/chat";
 import { useUser } from "hooks/useUser";
 
 enum TABS {
