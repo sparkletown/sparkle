@@ -55,7 +55,9 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import { FIREBASE_CONFIG } from "settings";
 
 if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID);
+  LogRocket.init(LOGROCKET_APP_ID, {
+    release: BUILD_SHA1,
+  });
 
   Bugsnag.addOnError((event) => {
     event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
