@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Button } from "react-bootstrap";
 import { PLAYA_VENUE_NAME } from "settings";
 import "./RadioModal.scss";
@@ -18,14 +18,10 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
   onEnableHandler,
   isRadioPlaying,
 }) => {
-  const handleEnableButtonClick = () => {
+  const handleEnableButtonClick = useCallback(() => {
     onEnableHandler();
-    // Volume is randomized because if it is set to the same number as before
-    // the radio will not start playing
-    const volume = 20 + Math.random(); // i.e. 20 + 0.3
-
     setVolume(volume);
-  };
+  }, [onEnableHandler, setVolume, volume]);
 
   const renderEnableRadioButton = () => (
     <Button onClick={() => handleEnableButtonClick()}>Enable radio</Button>

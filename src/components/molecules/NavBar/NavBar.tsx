@@ -146,6 +146,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     window.location.href = venueLink;
   }, [redirectionUrl, venueId]);
 
+  const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
+
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -220,7 +222,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                         <Popover.Content>
                           <RadioModal
                             {...{ volume, setVolume, title: venue?.radioTitle }}
-                            onEnableHandler={() => setIsRadioPlaying(true)}
+                            onEnableHandler={handleRadioEnable}
                             isRadioPlaying={isRadioPlaying}
                           />
                         </Popover.Content>
