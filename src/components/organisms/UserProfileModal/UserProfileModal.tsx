@@ -73,7 +73,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   const usersById = { [userProfile.id]: userProfile };
 
-  const hasBadges = isTruthy(venue?.showBadges);
+  const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -127,7 +127,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {hasBadges && <Badges user={userProfile} currentVenue={venue} />}
+          {showBadges && <Badges user={userProfile} currentVenue={venue} />}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox

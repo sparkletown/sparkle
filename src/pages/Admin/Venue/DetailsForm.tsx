@@ -327,7 +327,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </p>
         {!editing ? (
           <div className="input-container">
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header">
               Name your {templateType}
             </h4>
             <input
@@ -347,7 +347,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </div>
         ) : (
           <div className="input-container">
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header">
               Your {templateType}: {values.name}
             </h4>
             <input
@@ -362,7 +362,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </div>
         )}
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             The venue tagline
           </h4>
           <input
@@ -377,7 +377,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         </div>
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             Long description
           </h4>
           <textarea
@@ -409,7 +409,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             Upload a banner photo
           </h4>
           <ImageInput
@@ -423,7 +423,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             Upload a square logo
           </h4>
           <ImageInput
@@ -439,7 +439,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
         </div>
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             {`Choose how you'd like your venue to appear on the map`}
           </h4>
           <ImageCollectionInput
@@ -457,7 +457,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           />
           {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
             <>
-              <h4 className="italic" style={{ fontSize: "20px" }}>
+              <h4 className="italic input-header" >
                 {`Choose the background for your ${
                   backgroundTextByVenue[templateID] ?? "Experience"
                 }`}
@@ -482,7 +482,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </div>
         {templateID && BANNER_MESSAGE_TEMPLATES.includes(templateID) && (
           <>
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header" >
               Show an announcement in the venue (or leave blank for none)
             </h4>
             <input
@@ -503,7 +503,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
         {/* ATTENDEES (multiple) TITLE */}
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             Title of your venues attendees
           </h4>
           <div style={{ fontSize: "16px" }}>
@@ -524,7 +524,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
         {/* EVENT CHAT TITLE */}
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header" >
             Your venue type label
           </h4>
           <div style={{ fontSize: "16px" }}>
@@ -547,7 +547,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && (
               <div className="input-container">
-                <h4 className="italic" style={{ fontSize: "20px" }}>
+                <h4 className="italic input-header">
                   URL
                 </h4>
                 <div style={{ fontSize: "16px" }}>
@@ -593,7 +593,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </>
         )}
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             Placement Requests
           </h4>
           <div style={{ fontSize: "16px" }}>
@@ -616,7 +616,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           )}
         </div>
         <div className="toggle-room">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             Show live schedule
           </h4>
           <label id={"showLiveSchedule"} className="switch">
@@ -632,7 +632,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
         {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header" >
               Show grid layout
             </h4>
             <label id={"showGrid"} className="switch">
@@ -648,7 +648,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         )}
 
         <div className="toggle-room">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             Show badges
           </h4>
           <label id={"showBadges"} className="switch">
@@ -664,7 +664,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
 
         {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header">
               Show reactions
             </h4>
             <label id="showReactions" className="switch">
@@ -682,7 +682,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
           <>
             <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
+              <h4 className="italic input-header">
                 Number of seats columns
               </h4>
               <input
@@ -702,7 +702,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
               ) : null}
             </div>
             <div className="input-container">
-              <h4 className="italic" style={{ fontSize: "20px" }}>
+              <h4 className="italic input-header">
                 Number of seats rows
               </h4>
               <input
@@ -725,7 +725,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         )}
 
         <div className="toggle-room">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             Show Rangers support
           </h4>
           <label id="showRangers" className="switch">
@@ -740,7 +740,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </div>
 
         <div className="toggle-room">
-          <h4 className="italic toggle-room-header">
+          <h4 className="italic input-header">
             Require date of birth on register
           </h4>
           <label id="requiresDateOfBirth" className="switch">
@@ -759,7 +759,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           values.showGrid && (
             <>
               <div className="input-container">
-                <h4 className="italic" style={{ fontSize: "20px" }}>
+                <h4 className="italic input-header">
                   Number of columns
                 </h4>
                 <input
@@ -776,7 +776,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
                 ) : null}
               </div>
               <div className="input-container">
-                <h4 className="italic" style={{ fontSize: "20px" }}>
+                <h4 className="italic input-header">
                   Number of rows
                 </h4>
                 <div>
@@ -788,7 +788,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
             </>
           )}
         <div className="input-container">
-          <h4 className="italic" style={{ fontSize: "20px" }}>
+          <h4 className="italic input-header">
             Enter the parent venue ID, for the &quot;back&quot; button to go to,
             and for sharing events in the schedule
           </h4>
@@ -816,7 +816,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         </div>
         {templateID && HAS_ROOMS_TEMPLATES.includes(templateID) && (
           <>
-            <h4 className="italic" style={{ fontSize: "20px" }}>
+            <h4 className="italic input-header">
               Choose how you&apos;d like your rooms to appear on the map
             </h4>
             <div className="input-container">

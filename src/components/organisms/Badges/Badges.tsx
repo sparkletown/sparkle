@@ -22,14 +22,17 @@ import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { notEmpty } from "utils/types";
 
+import {BadgeImage} from './BadgeImage'
+
 export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<Venue>;
 }> = ({ user, currentVenue }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const imgRef: RefObject<HTMLImageElement[]> = useRef([]);
+  const badgeImgRefs: RefObject<HTMLImageElement[]> = useRef([]);
 
   const firestore = useFirestore();
 
@@ -56,13 +59,15 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
+    setLoading(false)
   }, [firestore, user.id]);
 
   useEffect(() => {
+    setLoading(true)
     fetchAllVenues();
   }, [fetchAllVenues]);
 
-  const venueNames = venues.map((venue) => venue.name);
+  const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues])
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
@@ -112,26 +117,16 @@ export const Badges: React.FC<{
       badges.filter(notEmpty).map((b, index) => (
         <li className="badge-list-item" key={b.label}>
           <Link to={getLocationLink(b.venue, b.room)}>
-            <img
-              className="badge-list-item-image"
-              ref={(ref) => {
-                if (ref && imgRef.current) {
-                  imgRef.current.push(ref);
-                }
-              }}
-              src={b.image}
-              alt={`${b.label} badge`}
-              onError={() => {
-                if (!imgRef.current?.[index]) return;
-
-                imgRef.current[index].src = "/icons/sparkle-nav-logo.png";
-              }}
-            />
+            <BadgeImage badgeImgRefs={badgeImgRefs} image={b.image} label={b.label} index={index} />
           </Link>
         </li>
       )),
-    [badges, imgRef]
+    [badges, badgeImgRefs]
   );
+
+  if (loading) {
+    return <div className="visits">Loading...</div>
+  }
 
   if (!relevantVisits) {
     return <>Visit venues to collect badges!</>;
