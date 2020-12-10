@@ -4,7 +4,6 @@ const defaultAvatar = "/icons/sparkle-nav-logo.png";
 
 export const BadgeImage: React.FC<{
   image?: string;
-  label: string;
 }> = ({ image }) => {
   const imageRef = useRef<HTMLImageElement>(null);
 
