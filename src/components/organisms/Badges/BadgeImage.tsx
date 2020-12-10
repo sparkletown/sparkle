@@ -15,19 +15,19 @@ export const BadgeImage: React.FC<{
     if (!badgeImgRefs.current?.[index]) return;
 
     badgeImgRefs.current[index].src = defaultAvatar;
-    }, [badgeImgRefs, index])
+  }, [badgeImgRefs, index])
 
   return (
-      <img
-              className="badge-list-item-image"
-              ref={(ref) => {
-                if (ref && badgeImgRefs.current) {
-                  badgeImgRefs.current.push(ref);
-                }
-              }}
-              src={image ?? defaultAvatar}
-              alt={`${label} badge`}
-              onError={changeBadgeImage}
-            />
+    <img
+      className="badge-list-item-image"
+      ref={(ref) => {
+        if (ref && badgeImgRefs.current) {
+          badgeImgRefs.current.push(ref);
+        }
+      }}
+      src={image ?? defaultAvatar}
+      alt={`${label} badge`}
+      onError={changeBadgeImage}
+    />
   );
 };

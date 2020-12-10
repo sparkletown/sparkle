@@ -22,7 +22,7 @@ import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { notEmpty } from "utils/types";
 
-import {BadgeImage} from './BadgeImage'
+import { BadgeImage } from './BadgeImage'
 
 export const Badges: React.FC<{
   user: WithId<User>;
