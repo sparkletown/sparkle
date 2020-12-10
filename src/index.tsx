@@ -170,6 +170,10 @@ if (BUGSNAG_API_KEY) {
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID);
+
+  Bugsnag.addOnError((event) => {
+    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
+  });
 }
 
 // When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
