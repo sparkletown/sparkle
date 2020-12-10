@@ -3,7 +3,10 @@ import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
+} from "settings";
 
 import { resizeFile } from "utils/image";
 
@@ -57,8 +60,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       setError("Unsupported file, please try with another one.");
       return;
     }
-    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-      // New file is with a maximum of 300px width and height, is it possible for the new file to be bigger than 2mb?
+    if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
       const resizedImage = await resizeFile(e.target.files[0]);
       const fileName = file.name;
       file = new File([resizedImage], fileName);
