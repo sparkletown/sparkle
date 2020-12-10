@@ -19,6 +19,7 @@ const VenueTemplate = {
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
+  conversationspace: "conversationspace",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -33,6 +34,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
+  VenueTemplate.conversationspace,
 ];
 
 const PlacementState = {
