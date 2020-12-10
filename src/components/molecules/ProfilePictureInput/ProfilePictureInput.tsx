@@ -74,24 +74,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   };
 
   const uploadDefaultAvatar = async (avatar: string) => {
-    const defaultAvatar = await fetch(`/avatars/${avatar}`);
-
-    if (!defaultAvatar) return;
-
-    const imageBlob = await defaultAvatar.blob();
-
-    if (!imageBlob) return;
-
-    const file = new File([imageBlob], avatar, { type: imageBlob.type });
-
-    const storageRef = firebase.storage().ref();
-    // TODO: add rule to forbid other users to edit a user's image
-    const profilePictureRef = storageRef.child(
-      `/users/${user.uid}/${file.name}`
-    );
-    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
-    const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
-    setValue("pictureUrl", pictureUrlRef, true);
+    setValue("pictureUrl", process.env.PUBLIC_URL + `/avatars/${avatar}`, true);
   };
 
   return (
