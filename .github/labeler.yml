@@ -4,3 +4,4 @@ dependencies:
 - ./**/package.json
 - ./**/package-lock.json
 - ./**/yarn.lock
+- yarn.lock
