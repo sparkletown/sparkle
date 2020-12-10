@@ -3,7 +3,7 @@ import {
   MessageToTheBandReaction,
   Reaction,
   ReactionsTextMap,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 

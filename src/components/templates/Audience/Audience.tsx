@@ -1,19 +1,12 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 // Components
 import {
   EmojiReactionType,
-  ExperienceContext,
   Reactions,
   TextReactionType,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -22,6 +15,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useForm } from "react-hook-form";
+import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -38,6 +32,7 @@ import { User } from "types/User";
 // Styles
 import "./Audience.scss";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { addReaction, ADD_REACTION } from "store/actions/Reactions";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -162,7 +157,8 @@ export const Audience: React.FunctionComponent = () => {
       );
   }, [venueId]);
 
-  const experienceContext = useContext(ExperienceContext);
+  const dispatch = useDispatch();
+
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
     created_at: new Date().getTime(),
     created_by: user.uid,
@@ -170,11 +166,16 @@ export const Audience: React.FunctionComponent = () => {
   });
   const reactionClicked = useCallback(
     (user: UserInfo, reaction: EmojiReactionType) => {
-      experienceContext &&
-        experienceContext.addReaction(createReaction({ reaction }, user));
+      dispatch(
+        addReaction({
+          type: ADD_REACTION,
+          venueId,
+          reaction: createReaction({ reaction }, user),
+        })
+      );
       setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
     },
-    [experienceContext]
+    [venueId, dispatch]
   );
 
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -277,13 +278,16 @@ export const Audience: React.FunctionComponent = () => {
 
     const onSubmit = async (data: ChatOutDataType) => {
       setIsShoutSent(true);
-      experienceContext &&
-        user &&
-        experienceContext.addReaction(
-          createReaction(
-            { reaction: "messageToTheBand", text: data.text },
-            user
-          )
+      user &&
+        dispatch(
+          addReaction({
+            type: ADD_REACTION,
+            venueId,
+            reaction: createReaction(
+              { reaction: "messageToTheBand", text: data.text },
+              user
+            ),
+          })
         );
       reset();
     };
@@ -475,11 +479,11 @@ export const Audience: React.FunctionComponent = () => {
     rowsForSizedAuditorium,
     selectedUserProfile,
     user,
-    experienceContext,
     reset,
     reactionClicked,
     columnsForSizedAuditorium,
     isSeat,
     partygoersBySeat,
+    dispatch,
   ]);
 };
