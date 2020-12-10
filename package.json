@@ -71,7 +71,7 @@
     "twilio-video": "^2.9.0",
     "ws": "^7.3.1",
     "xhr2": "^0.2.0",
-    "yup": "^0.29.2"
+    "yup": "^0.32.6"
   },
   "scripts": {
     "start": "react-scripts start",
