@@ -25,6 +25,7 @@ import {
   PrivateChatMessage,
 } from "components/context/ChatContext";
 import { Badges } from "../Badges";
+import { isTruthy } from "utils/types";
 
 type PropTypes = {
   show: boolean;
@@ -71,6 +72,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   }
 
   const usersById = { [userProfile.id]: userProfile };
+
+  const hasBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -124,7 +127,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          <Badges user={userProfile} currentVenue={venue} />
+          {hasBadges && <Badges user={userProfile} currentVenue={venue} />}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox

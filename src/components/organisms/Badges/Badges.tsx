@@ -1,24 +1,24 @@
-import React, { useMemo } from "react";
+import React, {
+  RefObject,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { User } from "@bugsnag/js";
 
 import { Link } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
-
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useSelector } from "hooks/useSelector";
+import { useFirestore } from "react-redux-firebase";
 
 import { PLAYA_VENUE_NAME } from "settings";
 
 import { CampRoomData } from "types/CampRoomData";
 import { isVenueWithRooms } from "types/CampVenue";
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue, UserVisit } from "types/Firestore";
 import { Venue } from "types/Venue";
 
 import { WithId } from "utils/id";
-import {
-  orderedVenuesSelector,
-  userModalVisitsSelector,
-} from "utils/selectors";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { notEmpty } from "utils/types";
 
@@ -26,39 +26,56 @@ export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<Venue>;
 }> = ({ user, currentVenue }) => {
-  useFirestoreConnect([
-    {
-      collection: "users",
-      doc: user.id,
-      subcollections: [{ collection: "visits" }],
-      storeAs: "userModalVisits",
-    },
-  ]);
-  useFirestoreConnect("venues");
-  const visits = useSelector(userModalVisitsSelector);
-  const venues = useSelector(orderedVenuesSelector);
+  const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
+  const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
 
-  const { relatedVenues } = useConnectRelatedVenues({
-    venueId: currentVenue.id,
-    withEvents: false,
-  });
-  const relatedVenueNames = relatedVenues.map((venue) => venue.name);
+  const imgRef: RefObject<HTMLImageElement[]> = useRef([]);
+
+  const firestore = useFirestore();
+
+  const fetchAllVenues = useCallback(async () => {
+    const venuesSnapshot = await firestore.collection("venues").get();
+
+    const userSnapshot = await firestore.collection("users").doc(user.id).get();
+    const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
+
+    const venues =
+      venuesSnapshot.docs.map(
+        (venueSnapshot) =>
+          ({ ...venueSnapshot.data(), id: venueSnapshot.id } as WithId<
+            AnyVenue
+          >)
+      ) ?? [];
+    const visits =
+      visitsSnapshot.docs.map(
+        (visitSnapshot) =>
+          ({ ...visitSnapshot.data(), id: visitSnapshot.id } as WithId<
+            UserVisit
+          >)
+      ) ?? [];
+
+    setVenues(venues);
+    setVisits(visits);
+  }, [firestore, user.id]);
+
+  useEffect(() => {
+    fetchAllVenues();
+  }, [fetchAllVenues]);
+
+  const venueNames = venues.map((venue) => venue.name);
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
 
     const visitSeconds = visits
-      .filter(
-        (v) => v.id === currentVenue.id || relatedVenueNames.includes(v.id)
-      )
+      .filter((v) => v.id === currentVenue.id || venueNames.includes(v.id))
       .reduce((acc, v) => acc + v.timeSpent, 0);
     return Math.floor(visitSeconds / (60 * 60));
-  }, [visits, currentVenue, relatedVenueNames]);
+  }, [visits, currentVenue, venueNames]);
 
   // Only show visits to related venues
   const relevantVisits = visits?.filter(
-    (visit) =>
-      currentVenue.name === visit.id || relatedVenueNames.includes(visit.id)
+    (visit) => currentVenue.name === visit.id || venueNames.includes(visit.id)
   );
 
   const badges = useMemo(() => {
@@ -68,8 +85,7 @@ export const Badges: React.FC<{
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
         if (
           !venue ||
-          (currentVenue.id !== venue.id &&
-            !relatedVenueNames.includes(venue.id))
+          (currentVenue.id !== venue.id && !venueNames.includes(venue.id))
         )
           return undefined;
 
@@ -84,27 +100,37 @@ export const Badges: React.FC<{
 
         return {
           venue,
-          image: venue.mapIconImageUrl,
+          image: venue?.host?.icon,
           label: venue.name,
         };
       })
       .filter((b) => b !== undefined);
-  }, [relevantVisits, venues, currentVenue, relatedVenueNames]);
+  }, [relevantVisits, venues, currentVenue, venueNames]);
 
   const badgeList = useMemo(
     () =>
-      badges.filter(notEmpty).map((b) => (
+      badges.filter(notEmpty).map((b, index) => (
         <li className="badge-list-item" key={b.label}>
           <Link to={getLocationLink(b.venue, b.room)}>
             <img
               className="badge-list-item-image"
+              ref={(ref) => {
+                if (ref && imgRef.current) {
+                  imgRef.current.push(ref);
+                }
+              }}
               src={b.image}
               alt={`${b.label} badge`}
+              onError={() => {
+                if (!imgRef.current?.[index]) return;
+
+                imgRef.current[index].src = "/icons/sparkle-nav-logo.png";
+              }}
             />
           </Link>
         </li>
       )),
-    [badges]
+    [badges, imgRef]
   );
 
   if (!relevantVisits) {

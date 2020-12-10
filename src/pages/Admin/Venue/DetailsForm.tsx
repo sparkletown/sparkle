@@ -647,6 +647,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </div>
         )}
 
+        <div className="toggle-room">
+          <h4 className="italic" style={{ fontSize: "20px" }}>
+            Show badges
+          </h4>
+          <label id={"showBadges"} className="switch">
+            <input
+              type="checkbox"
+              id={"showBadges"}
+              name={"showBadges"}
+              ref={register}
+            />
+            <span className="slider round"></span>
+          </label>
+        </div>
+
         {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
           <div className="toggle-room">
             <h4 className="italic" style={{ fontSize: "20px" }}>
