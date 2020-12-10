@@ -1,6 +1,6 @@
 import "./wdyr";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
@@ -50,6 +50,7 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import { useSelector } from "hooks/useSelector";
+import { authSelector } from "utils/selectors";
 
 import AppRouter from "components/organisms/AppRouter";
 
@@ -190,8 +191,19 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const auth = useSelector((state) => state.firebase.auth);
+  const auth = useSelector(authSelector);
+
+  useEffect(() => {
+    if (!auth || !auth.uid) return;
+
+    LogRocket.identify(auth.uid, {
+      displayName: auth.displayName || "N/A",
+      email: auth.email || "N/A",
+    });
+  }, [auth]);
+
   if (!isLoaded(auth)) return <LoadingPage />;
+
   return <>{children}</>;
 };
 
