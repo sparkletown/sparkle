@@ -138,8 +138,10 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   // Append script to <body>
   useEffect(() => {
-    loadScript("https://w.soundcloud.com/player/api.js");
-  }, []);
+    if (isSoundCloud) {
+      loadScript("https://w.soundcloud.com/player/api.js");
+    }
+  }, [isSoundCloud]);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
