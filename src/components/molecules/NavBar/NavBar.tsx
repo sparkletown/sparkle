@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useMemo,
-  useRef,
-  useCallback,
-  useEffect,
-} from "react";
+import React, { useState, useMemo, useRef, useCallback } from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
@@ -19,7 +13,15 @@ import firebase from "firebase/app";
 
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
+
+import {
+  currentVenueSelectorData,
+  parentVenueSelector,
+  radioStationsSelector,
+} from "utils/selectors";
+import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
 
 import { useRadio } from "hooks/useRadio";
@@ -33,19 +35,13 @@ import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import UpcomingTickets from "components/molecules/UpcomingTickets";
-import { VenuePartygoers } from "../VenuePartygoers";
-
-import "./NavBar.scss";
-import "./playa.scss";
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  radioStationsSelector,
-} from "utils/selectors";
+import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { NavBarLogin } from "./NavBarLogin";
 
+import "./NavBar.scss";
 import * as S from "./Navbar.styles";
+import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -73,18 +69,6 @@ const GiftPopover = (
     </Popover.Content>
   </Popover>
 );
-
-// TODO: Get rid of this as soon as humanly possible.
-// TODO: Look into properly setting up SoundClouds' API,
-// possibly without the need to append script
-const loadScript = (src: string) => {
-  const tag = document.createElement("script");
-  tag.async = false;
-  tag.src = src;
-
-  const body = document.getElementsByTagName("body")[0];
-  body.appendChild(tag);
-};
 
 interface NavBarPropsType {
   redirectionUrl?: string;
@@ -125,7 +109,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const sound = useMemo(
     () =>
-      radioStations && radioStations.length && !isSoundCloud
+      radioStations && hasElements(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
     [isSoundCloud, radioStations]
@@ -133,15 +117,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
-
-  const soundcloudIframeRef = useRef<HTMLIFrameElement>(null);
-
-  // Append script to <body>
-  useEffect(() => {
-    if (isSoundCloud) {
-      loadScript("https://w.soundcloud.com/player/api.js");
-    }
-  }, [isSoundCloud]);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -195,36 +170,10 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
 
-  const renderSoundCloudIframe = () => {
-    const radioStation = !!hasRadioStations && radioStations![0];
+  const radioStation = !!hasRadioStations && radioStations![0];
 
-    return (
-      <iframe
-        title="venueRadio"
-        ref={soundcloudIframeRef}
-        id="sound-cloud-player"
-        scrolling="no"
-        allow="autoplay"
-        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
-      />
-    );
-  };
-
-  const renderRadioTrigger = () => (
-    <S.RadioTrigger>
-      <div
-        className={`profile-icon navbar-link-radio ${volume === 0 && "off"}`}
-        onClick={toggleShowRadioPopover}
-      />
-      {renderRadioPopover()}
-    </S.RadioTrigger>
-  );
-
-  const renderRadioPopover = () => (
-    <S.RadioWrapper showRadioPopover={showRadioPopover}>
-      {renderSoundCloudIframe()}
-    </S.RadioWrapper>
-  );
+  const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
+  const showSoundCloudRadio = (venue?.showRadio && isSoundCloud) ?? false;
 
   return (
     <>
@@ -284,7 +233,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {venue?.showRadio && !isSoundCloud ? (
+                {showNormalRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
@@ -312,8 +261,27 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       }`}
                     />
                   </OverlayTrigger>
-                ) : (
-                  renderRadioTrigger()
+                )}
+
+                {showSoundCloudRadio && (
+                  <S.RadioTrigger>
+                    <div
+                      className={`profile-icon navbar-link-radio ${
+                        volume === 0 && "off"
+                      }`}
+                      onClick={toggleShowRadioPopover}
+                    />
+
+                    <S.RadioWrapper showRadioPopover={showRadioPopover}>
+                      <iframe
+                        title="venueRadio"
+                        id="sound-cloud-player"
+                        scrolling="no"
+                        allow="autoplay"
+                        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+                      />
+                    </S.RadioWrapper>
+                  </S.RadioTrigger>
                 )}
 
                 <OverlayTrigger
