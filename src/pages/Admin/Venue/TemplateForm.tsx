@@ -35,7 +35,8 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
-  [VenueTemplate.conversationspace]: undefined,
+  [VenueTemplate.conversationspace]:
+    "/venues/pickspace-thumbnail_conversation.png",
   [VenueTemplate.firebarrel]: undefined,
 };
 
