@@ -1,41 +1,45 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Get venue details. Prints venue name, type and other details.
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Get venue details. Prints venue name, type and other details.
 
-Usage: node ${process.argv[1]} PROJECT_ID
+Usage: node ${scriptName} PROJECT_ID
 
-Example: node ${process.argv[1]} co-reality-map
-`);
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
   process.exit(1);
-}
+};
 
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
+const [projectId] = process.argv.slice(2);
+if (!projectId) {
   usage();
 }
 
-const projectId = argv[0];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const allUsers: admin.auth.UserRecord[] = [];
+
   let nextPageToken: string;
   const { users, pageToken } = await admin.auth().listUsers(1000);
+
   allUsers.push(...users);
   nextPageToken = pageToken;
+
   while (nextPageToken) {
     const { users, pageToken } = await admin
       .auth()
       .listUsers(1000, nextPageToken);
+
     allUsers.push(...users);
     nextPageToken = pageToken;
   }
@@ -54,7 +58,9 @@ admin.initializeApp({
       .map((heading) => `"${heading}"`)
       .join(",")
   );
+
   const firestoreVenues = await admin.firestore().collection("venues").get();
+
   firestoreVenues.docs.forEach((doc) => {
     const venueId = doc.id;
     const venueName = doc.data().name;
@@ -91,5 +97,6 @@ admin.initializeApp({
         .join(",")
     );
   });
+
   process.exit(0);
 })();

@@ -1,31 +1,30 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Print venue owners' email addresses
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Print venue owners' email addresses
 
-Usage: node ${process.argv[1]} PROJECT_ID VENUE_ID
+Usage: node ${scriptName} PROJECT_ID VENUE_ID
 
-Example: node ${process.argv[1]} co-reality-map myvenue
-`);
+Example: node ${scriptName} co-reality-map myvenue
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
   process.exit(1);
-}
+};
 
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
+const [projectId, venueId] = process.argv.slice(2);
+if (!projectId || !venueId) {
   usage();
 }
 
-const projectId = argv[0];
-const venueId = argv[1];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const { users, pageToken } = await admin.auth().listUsers(1000);
@@ -48,6 +47,7 @@ admin.initializeApp({
       (doc.id === venueId ||
         (doc.data().parentId && doc.data().parentId === venueId))
   );
+
   venues.forEach((doc) => {
     if (!doc.exists) return;
 
