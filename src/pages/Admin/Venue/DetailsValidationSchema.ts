@@ -12,6 +12,7 @@ import {
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  MAX_IMAGE_FILE_SIZE_TEXT,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -30,7 +31,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
