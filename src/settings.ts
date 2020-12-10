@@ -167,6 +167,11 @@ export interface Template {
 
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
+    template: VenueTemplate.conversationspace,
+    name: "Conversation Space",
+    description: ["A room of tables in which to talk and make merry."],
+  },
+  {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
