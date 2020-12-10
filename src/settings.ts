@@ -76,6 +76,7 @@ export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
+export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
