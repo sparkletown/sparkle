@@ -61,7 +61,6 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       return;
     }
     if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
-      // New file is with a maximum of 300px width and height, is it possible for the new file to be bigger than 2mb?
       const resizedImage = await resizeFile(e.target.files[0]);
       const fileName = file.name;
       file = new File([resizedImage], fileName);
