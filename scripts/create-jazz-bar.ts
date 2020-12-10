@@ -1,34 +1,55 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+
 import { JazzbarVenue } from "../src/types/JazzbarVenue";
 import { VenueTemplate } from "../src/types/VenueTemplate";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Create jazz bar
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-Usage: node ${process.argv[1]} PROJECT_ID VENUE_NAME IFRAME_URL LOGO_IMAGE_URL PROFILE_QUESTIONS CODE_OF_CONDUCT_QUESTIONS
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Create jazz bar
 
-Example: node ${process.argv[1]} co-reality-map jazzyjeff https://youtube.com/embed/abc /logo.png "question1?,question2?" "I will seek out the fun,I will add to the fun"
-`);
+Usage: node ${scriptName} PROJECT_ID VENUE_NAME IFRAME_URL LOGO_IMAGE_URL PROFILE_QUESTIONS CODE_OF_CONDUCT_QUESTIONS
+
+Example: node ${scriptName} co-reality-map jazzyjeff https://youtube.com/embed/abc /logo.png "question1?,question2?" "I will seek out the fun,I will add to the fun"
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
   process.exit(1);
-}
+};
 
-const argv = process.argv.slice(2);
-if (argv.length < 6) {
+const [
+  projectId,
+  name,
+  iframeUrl,
+  logoImageUrl,
+  iconUrl,
+  _profileQuestions,
+  _codeofConductQuestions,
+] = process.argv.slice(2);
+
+if (
+  !projectId ||
+  !name ||
+  !iframeUrl ||
+  !logoImageUrl ||
+  !iconUrl ||
+  !_profileQuestions ||
+  !_codeofConductQuestions
+) {
   usage();
 }
 
-const projectId = argv[0];
-const name = argv[1];
-const iframeUrl = argv[2];
-const logoImageUrl = argv[3];
-const iconUrl = argv[4];
-const profile_questions = argv[5]
+const profile_questions = _profileQuestions
   .split(",")
   .map((q, index) => ({ name: index.toString(), text: q.trim() }));
-const code_of_conduct_questions = argv[6]
+
+const code_of_conduct_questions = _codeofConductQuestions
   .split(",")
   .map((q, index) => ({ name: index.toString(), text: q.trim() }));
 
@@ -46,11 +67,7 @@ const jazzbar: JazzbarVenue = {
 
 const venueId = name.replace(/\W/g, "").toLowerCase();
 
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 admin
   .firestore()

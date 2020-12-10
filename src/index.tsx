@@ -23,7 +23,7 @@ import {
   isLoaded,
   FirebaseReducer,
 } from "react-redux-firebase";
-import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
