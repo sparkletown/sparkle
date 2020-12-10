@@ -124,6 +124,9 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
+export const venueChatsSelector = (state: RootState) =>
+  state.firestore.ordered.venueChats;
+
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
 
@@ -137,8 +140,9 @@ export const experiencesSelector = (state: RootState) =>
   state.firestore.data.experiences;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue &&
-  state.firestore.ordered.currentVenue[0];
+  state.firestore.ordered.currentVenue
+    ? state.firestore.ordered.currentVenue[0]
+    : undefined;
 
 export const parentVenueOrderedSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
