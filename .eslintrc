@@ -24,6 +24,10 @@
         "name": "react-redux",
         "importNames": ["useSelector", "useDispatch"],
         "message": "Import typed version from hooks/{useSelector|useDispatch}"
+      },
+      {
+        "name": "firebase",
+        "message": "Use firebase/app instead"
       }
     ],
     "react/prop-types": "off",

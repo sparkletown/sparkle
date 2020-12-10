@@ -10,16 +10,20 @@ import { WithId } from "utils/id";
 import { useUser } from "hooks/useUser";
 
 interface LiveEventProps {
-  venue: WithId<Venue>;
-  event: VenueEvent;
+  venue?: WithId<Venue>;
+  event?: VenueEvent;
 }
 
 export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
   const { user, profile } = useUser();
 
   const enterLiveEvent = useCallback(() => {
-    openEventRoomWithCounting({ user, profile, venue, event });
+    if (venue && event) {
+      openEventRoomWithCounting({ user, profile, venue, event });
+    }
   }, [event, profile, user, venue]);
+
+  if (!event) return null;
 
   return (
     <div className="schedule-event-container schedule-event-container_live">
