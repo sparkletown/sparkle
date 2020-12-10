@@ -43,6 +43,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     mode: "onChange",
   });
 
+  if (!venue) return null;
+
   const clearBackendErrors = () => {
     clearError("backend");
   };
@@ -52,6 +54,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   };
 
   const onSubmit = async (data: LoginFormData) => {
+    if (!venue) return;
     try {
       if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
       if (venue.requiresEmailVerification)
