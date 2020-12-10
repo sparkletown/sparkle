@@ -44,11 +44,11 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
           {hasHeader && <h2 className="confirm-header">{header}</h2>}
           <div className="confirm-message">{message}</div>
           <div className="confirmation-buttons">
-            <Button className="confirm-button" onClick={confirm}>
-              Yes
-            </Button>
             <Button className="cancel-button" onClick={cancel}>
               No
+            </Button>
+            <Button className="confirm-button" onClick={confirm}>
+              Yes
             </Button>
           </div>
         </div>

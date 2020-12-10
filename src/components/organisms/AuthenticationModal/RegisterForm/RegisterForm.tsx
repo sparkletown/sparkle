@@ -1,17 +1,21 @@
-import firebase from "firebase/app";
 import React, { useState } from "react";
+import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
-import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
-import { updateUserPrivate } from "pages/Account/helpers";
-import { useSelector } from "hooks/useSelector";
+
+import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+
 import { codeCheckUrl } from "utils/url";
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
-import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+
+import { useSelector } from "hooks/useSelector";
+
+import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
+import { updateUserPrivate } from "pages/Account/helpers";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
@@ -72,6 +76,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     getValues,
   } = useForm<RegisterFormData>({
     mode: "onChange",
+    reValidateMode: "onChange",
   });
 
   const clearBackendErrors = () => {
@@ -84,6 +89,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
+      setShowLoginModal(false);
       if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
       if (venue.requiresEmailVerification)
         await axios.get(codeCheckUrl(data.email));

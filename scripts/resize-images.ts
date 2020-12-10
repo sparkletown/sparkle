@@ -1,9 +1,11 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 /*
   To run:
 
   -
     - ensure accountKey has the correct service account data from firebase
-    - ensure APP_PREFIX is set to co-reality-staging or co-reality-map
+    - ensure projectId is set to co-reality-staging or co-reality-map
     - set BACKUP to true to backup all images from firebase (in logical directory structure)
     - set BACKUP to false to set resize all images to width COMPRESSION_WIDTH_PX and auto height
     - tsconfig.json should contain
@@ -30,25 +32,48 @@
 */
 
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
 import { uuid } from "uuidv4";
 import jimp from "jimp";
 import fs from "fs";
 import { GifUtil } from "gifwrap";
 import p from "phin";
 
-// Project ID.
-const APP_PREFIX = "co-reality-staging";
+import { initFirebaseAdminApp } from "./lib/helpers";
+
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Backup or resize images (see code comments for further usage)
+
+Usage: node ${scriptName} PROJECT_ID
+
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId] = process.argv.slice(2);
+if (!projectId) {
+  usage();
+}
+
 // Max filesize permitted.
 const MAX_SIZE_BYTES = 400 * 1024;
+
 // If true, backup files. If false, run.
 const BACKUP = false;
+
 // Add entries here by hand to selectively process problem files.
 // By default (with this list empty) script will process all files.
-const SELECTIVELY_PROCESS_FILE_NAME_PARTS = [
+const SELECTIVELY_PROCESS_FILE_NAME_PARTS: string[] = [
   // "BIGFILE.png",
   // "HUGE_ANIMATED_GIF.gif",
 ];
+
 const ACCEPTED_MIME_TYPES = [
   "image/png",
   "image/jpg",
@@ -58,11 +83,7 @@ const ACCEPTED_MIME_TYPES = [
   "image/gif",
 ];
 
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${APP_PREFIX}.firebaseio.com`,
-  storageBucket: `${APP_PREFIX}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 const backupFile = async (
   remotePath: string,
