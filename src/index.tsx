@@ -1,8 +1,9 @@
 import "./wdyr";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
+import LogRocket from "logrocket";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -23,34 +24,50 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 import {
   BUGSNAG_API_KEY,
   BUILD_BRANCH,
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
+  LOGROCKET_APP_ID,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
-
-import "bootstrap";
-import "scss/global.scss";
-
-import AppRouter from "components/organisms/AppRouter";
+import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
 import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "hooks/useSelector";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
+import { useSelector } from "hooks/useSelector";
+import { authSelector } from "utils/selectors";
+
+import AppRouter from "components/organisms/AppRouter";
+
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { FIREBASE_CONFIG } from "settings";
+
+import "bootstrap";
+import "scss/global.scss";
+
+if (LOGROCKET_APP_ID) {
+  LogRocket.init(LOGROCKET_APP_ID, {
+    release: BUILD_SHA1,
+  });
+
+  Bugsnag.addOnError((event) => {
+    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
+  });
+}
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -85,7 +102,11 @@ const store = createStore(
   rootReducer,
   initialState,
   composeWithDevTools(
-    applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
+    applyMiddleware(
+      thunkMiddleware,
+      trackingMiddleware(analytics),
+      LogRocket.reduxMiddleware() // logrocket needs to be last
+    )
   )
 );
 
@@ -172,8 +193,19 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const auth = useSelector((state) => state.firebase.auth);
+  const auth = useSelector(authSelector);
+
+  useEffect(() => {
+    if (!auth || !auth.uid) return;
+
+    LogRocket.identify(auth.uid, {
+      displayName: auth.displayName || "N/A",
+      email: auth.email || "N/A",
+    });
+  }, [auth]);
+
   if (!isLoaded(auth)) return <LoadingPage />;
+
   return <>{children}</>;
 };
 
