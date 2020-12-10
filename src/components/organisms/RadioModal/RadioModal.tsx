@@ -23,10 +23,6 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
     setVolume(volume);
   }, [onEnableHandler, setVolume, volume]);
 
-  const renderEnableRadioButton = () => (
-    <Button onClick={() => handleEnableButtonClick()}>Enable radio</Button>
-  );
-
   const renderRadioBody = () => (
     <>
       <div className="title-radio">{title ?? `${PLAYA_VENUE_NAME} Radio`}</div>
@@ -53,7 +49,9 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
 
   return (
     <div className="radio-modal-container">
-      {!isRadioPlaying && renderEnableRadioButton()}
+      {!isRadioPlaying && (
+        <Button onClick={() => handleEnableButtonClick()}>Enable radio</Button>
+      )}
 
       {isRadioPlaying && renderRadioBody()}
     </div>

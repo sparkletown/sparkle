@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
@@ -39,6 +45,8 @@ import {
 
 import { NavBarLogin } from "./NavBarLogin";
 
+import * as S from "./Navbar.styles";
+
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
@@ -65,6 +73,18 @@ const GiftPopover = (
     </Popover.Content>
   </Popover>
 );
+
+// TODO: Get rid of this as soon as humanly possible.
+// TODO: Look into properly setting up SoundClouds' API,
+// possibly without the need to append script
+const loadScript = (src: string) => {
+  const tag = document.createElement("script");
+  tag.async = false;
+  tag.src = src;
+
+  const body = document.getElementsByTagName("body")[0];
+  body.appendChild(tag);
+};
 
 interface NavBarPropsType {
   redirectionUrl?: string;
@@ -99,16 +119,27 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
+  const hasRadioStations = radioStations && radioStations.length;
+  const isSoundCloud =
+    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+
   const sound = useMemo(
     () =>
-      radioStations && radioStations.length
+      radioStations && radioStations.length && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
-    [radioStations]
+    [isSoundCloud, radioStations]
   );
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+
+  const soundcloudIframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Append script to <body>
+  useEffect(() => {
+    loadScript("https://w.soundcloud.com/player/api.js");
+  }, []);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -148,12 +179,45 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
+  const [showRadioPopover, setShowRadioPopover] = useState(false);
+
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
 
   const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
+
+  const renderSoundCloudIframe = () => {
+    const radioStation = !!hasRadioStations && radioStations![0];
+
+    return (
+      <iframe
+        title="venueRadio"
+        ref={soundcloudIframeRef}
+        id="sound-cloud-player"
+        scrolling="no"
+        allow="autoplay"
+        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+      />
+    );
+  };
+
+  const renderRadioTrigger = () => (
+    <S.RadioTrigger>
+      <div
+        className={`profile-icon navbar-link-radio ${volume === 0 && "off"}`}
+        onClick={() => setShowRadioPopover((prevState) => !prevState)}
+      />
+      {renderRadioPopover()}
+    </S.RadioTrigger>
+  );
+
+  const renderRadioPopover = () => (
+    <S.RadioWrapper showRadioPopover={showRadioPopover}>
+      {renderSoundCloudIframe()}
+    </S.RadioWrapper>
+  );
 
   return (
     <>
@@ -213,7 +277,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {venue?.showRadio && (
+                {venue?.showRadio && !isSoundCloud ? (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
@@ -221,7 +285,11 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       <Popover id="radio-popover">
                         <Popover.Content>
                           <RadioModal
-                            {...{ volume, setVolume, title: venue?.radioTitle }}
+                            {...{
+                              volume,
+                              setVolume,
+                              title: venue?.radioTitle,
+                            }}
                             onEnableHandler={handleRadioEnable}
                             isRadioPlaying={isRadioPlaying}
                           />
@@ -237,6 +305,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                       }`}
                     />
                   </OverlayTrigger>
+                ) : (
+                  renderRadioTrigger()
                 )}
 
                 <OverlayTrigger
