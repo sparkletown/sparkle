@@ -14,7 +14,7 @@ export const InitialForm: FC<InitialFormProps> = ({
   return (
     <div className="initial-form">
       <div
-        className="create-account-button btn btn-primary btn-block btn-centered"
+        className="btn btn-primary btn-block btn-centered create-account-button"
         onClick={displayRegisterForm}
       >
         Create your account
