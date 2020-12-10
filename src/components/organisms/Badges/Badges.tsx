@@ -1,11 +1,4 @@
-import React, {
-  RefObject,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "@bugsnag/js";
 
 import { Link } from "react-router-dom";
@@ -22,7 +15,7 @@ import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { notEmpty } from "utils/types";
 
-import { BadgeImage } from './BadgeImage'
+import { BadgeImage } from "./BadgeImage";
 
 export const Badges: React.FC<{
   user: WithId<User>;
@@ -31,8 +24,6 @@ export const Badges: React.FC<{
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-
-  const badgeImgRefs: RefObject<HTMLImageElement[]> = useRef([]);
 
   const firestore = useFirestore();
 
@@ -59,15 +50,15 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
-    setLoading(false)
+    setLoading(false);
   }, [firestore, user.id]);
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     fetchAllVenues();
   }, [fetchAllVenues]);
 
-  const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues])
+  const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues]);
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
@@ -78,7 +69,7 @@ export const Badges: React.FC<{
     return Math.floor(visitSeconds / (60 * 60));
   }, [visits, currentVenue, venueNames]);
 
-  // Only show visits to related venues
+  // Only show visits for existing venues
   const relevantVisits = visits?.filter(
     (visit) => currentVenue.name === visit.id || venueNames.includes(visit.id)
   );
@@ -88,11 +79,7 @@ export const Badges: React.FC<{
     return relevantVisits
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-        if (
-          !venue ||
-          (currentVenue.id !== venue.id && !venueNames.includes(venue.id))
-        )
-          return undefined;
+        if (!venue) return undefined;
 
         if (room) {
           return {
@@ -110,22 +97,22 @@ export const Badges: React.FC<{
         };
       })
       .filter((b) => b !== undefined);
-  }, [relevantVisits, venues, currentVenue, venueNames]);
+  }, [relevantVisits, venues]);
 
   const badgeList = useMemo(
     () =>
-      badges.filter(notEmpty).map((b, index) => (
-        <li className="badge-list-item" key={b.label}>
-          <Link to={getLocationLink(b.venue, b.room)}>
-            <BadgeImage badgeImgRefs={badgeImgRefs} image={b.image} label={b.label} index={index} />
+      badges.filter(notEmpty).map((badge) => (
+        <li className="badge-list-item" key={badge.label}>
+          <Link to={getLocationLink(badge.venue, badge.room)}>
+            <BadgeImage image={badge.image} label={badge.label} />
           </Link>
         </li>
       )),
-    [badges, badgeImgRefs]
+    [badges]
   );
 
   if (loading) {
-    return <div className="visits">Loading...</div>
+    return <div className="visits">Loading...</div>;
   }
 
   if (!relevantVisits) {
