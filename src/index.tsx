@@ -14,7 +14,6 @@ import thunkMiddleware from "redux-thunk";
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import "firebase/analytics";
 import "firebase/auth";
 import "firebase/functions";
 import {
@@ -43,7 +42,6 @@ import {
 import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
 
 import { Firestore } from "types/Firestore";
@@ -77,7 +75,6 @@ const rrfConfig = {
 };
 
 firebase.initializeApp(FIREBASE_CONFIG);
-const analytics = firebase.analytics();
 firebase.auth();
 firebase.firestore();
 
@@ -104,7 +101,6 @@ const store = createStore(
   composeWithDevTools(
     applyMiddleware(
       thunkMiddleware,
-      trackingMiddleware(analytics),
       LogRocket.reduxMiddleware() // logrocket needs to be last
     )
   )
