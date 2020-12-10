@@ -1,7 +1,7 @@
 # https://github.com/technote-space/assign-author
 name: Assign author
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
 
 jobs:
