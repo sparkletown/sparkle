@@ -1,7 +1,38 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+
 import { Table } from "../src/types/Table";
+import { Venue } from "../src/types/Venue";
+
+import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers";
+
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Upload table config
+
+Usage: node ${scriptName} PROJECT_ID VENUE_ID
+
+Example: node ${scriptName} co-reality-map myvenue
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId, venueId] = process.argv.slice(2);
+if (!projectId || !venueId) {
+  usage();
+}
+
+const saveToBackupFile = makeSaveToBackupFile(
+  `${projectId}-upload-table-config`
+);
+
+initFirebaseAdminApp(projectId);
 
 const generateTables: (props: {
   num: number;
@@ -30,49 +61,50 @@ const generateTables: (props: {
     };
   });
 
-const TABLES: Table[] = [
+const newTables: Table[] = [
   ...generateTables({ num: 5, capacity: 6 }),
   ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
 ];
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Upload table config
+const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
 
-Usage: node ${process.argv[1]} PROJECT_ID VENUE_ID
+const db = admin.firestore();
 
-Example: node ${process.argv[1]} co-reality-map myvenue
-`);
-  process.exit(1);
-}
+db.runTransaction(async (transaction) => {
+  const docRef = db.doc(`venues/${venueId}`);
 
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
-  usage();
-}
-
-const projectId = argv[0];
-const venueId = argv[1];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
-
-(async () => {
-  const doc = await admin.firestore().doc(`venues/${venueId}`).get();
-  if (!doc.exists) {
-    console.error("doc does not exist");
+  const doc = await transaction.get(docRef);
+  const venue = doc.data() as Venue;
+  if (!doc.exists || !venue) {
+    console.error(`${venueId} venue does not exist`);
     process.exit(1);
   }
-  const venue = doc.data();
 
-  console.log(`venue ${venueId} in project ${projectId}:`);
-  console.log(venue);
+  if (!venue.config) {
+    console.error(`${venueId} venue.config does not exist`);
+    process.exit(1);
+  }
 
-  venue.config.tables = TABLES;
-  await admin.firestore().doc(`venues/${venueId}`).set(venue);
+  const oldTables = venue?.config?.tables || [];
 
-  process.exit(0);
-})();
+  // Show the existing tables data
+  console.log("Old Tables:\n", oldTables.map(asSingleTablePerLine));
+  console.log("New Tables:\n", newTables.map(asSingleTablePerLine));
+
+  // Save a backup of the current venue config just in case
+  saveToBackupFile(venue, `venue-${venueId}`);
+  saveToBackupFile(oldTables, `venue-${venueId}-oldTables`);
+  saveToBackupFile(newTables, `venue-${venueId}-newTables`);
+
+  return transaction.update(docRef, {
+    "config.tables": newTables,
+  });
+})
+  .then(() => {
+    console.log("Transaction successfully committed!");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.log("Transaction failed: ", error);
+    process.exit(1);
+  });
