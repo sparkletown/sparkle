@@ -11,10 +11,6 @@ import {
   sendPrivateChat,
   sendRoomChat,
   sendTableChat,
-  SEND_GLOBAL_CHAT,
-  SEND_PRIVATE_CHAT,
-  SEND_ROOM_CHAT,
-  SEND_TABLE_CHAT,
 } from "store/actions/Chat";
 
 // Prevent spamming the chatbox
@@ -60,7 +56,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           discussionPartner &&
           dispatch(
             sendPrivateChat({
-              type: SEND_PRIVATE_CHAT,
               from: currentUserUID,
               to: discussionPartner.id,
               text,
@@ -72,7 +67,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           venueId &&
           dispatch(
             sendGlobalChat({
-              type: SEND_GLOBAL_CHAT,
               venueId,
               from: currentUserUID,
               text,
@@ -85,7 +79,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           venueId &&
           dispatch(
             sendRoomChat({
-              type: SEND_ROOM_CHAT,
               venueId,
               from: currentUserUID,
               to: room,
@@ -99,7 +92,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
           venueId &&
           dispatch(
             sendTableChat({
-              type: SEND_TABLE_CHAT,
               venueId,
               from: currentUserUID,
               to: table,

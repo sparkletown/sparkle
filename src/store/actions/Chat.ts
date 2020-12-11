@@ -6,30 +6,31 @@ export const SEND_ROOM_CHAT: string = "SEND_ROOM_CHAT";
 export const SEND_PRIVATE_CHAT: string = "SEND_PRIVATE_CHAT";
 export const SEND_TABLE_CHAT: string = "SEND_TABLE_CHAT";
 
-interface BaseSendChatAction {
+interface BaseSendChatFields {
   venueId: string;
   text: string;
   from: string;
 }
-
-interface BaseSendChatToAction extends BaseSendChatAction {
+interface BaseSendChatToFields extends BaseSendChatFields {
   to: string;
 }
 
-interface SendGlobalChatAction extends BaseSendChatAction {
+interface SendGlobalChatFields extends BaseSendChatFields {}
+interface SendPrivateChatFields extends Omit<BaseSendChatToFields, "venueId"> {}
+interface SendRoomChatFields extends BaseSendChatToFields {}
+interface SendTableChatFields extends BaseSendChatToFields {}
+
+interface SendGlobalChatAction extends SendGlobalChatFields {
   type: typeof SEND_GLOBAL_CHAT;
 }
-
-interface SendRoomChatAction extends BaseSendChatToAction {
+interface SendPrivateChatAction extends SendPrivateChatFields {
+  type: typeof SEND_PRIVATE_CHAT;
+}
+interface SendRoomChatAction extends SendRoomChatFields {
   type: typeof SEND_ROOM_CHAT;
 }
-
-interface SendTableChatAction extends BaseSendChatToAction {
+interface SendTableChatAction extends SendTableChatFields {
   type: typeof SEND_TABLE_CHAT;
-}
-
-interface SendPrivateChatAction extends Omit<BaseSendChatToAction, "venueId"> {
-  type: typeof SEND_PRIVATE_CHAT;
 }
 
 enum ChatMessageType {
@@ -46,7 +47,7 @@ type BuildMessageInput = {
 };
 
 type BuildMessageToInput = {
-  type: ChatMessageType.Room | ChatMessageType.Table | ChatMessageType.Private;
+  type: ChatMessageType.Private | ChatMessageType.Room | ChatMessageType.Table;
   text: string;
   from: string;
   to: string;
@@ -78,8 +79,8 @@ export type PrivateChatMessage = NonGlobalChatMessage & {
 
 export type ChatMessage =
   | GlobalChatMessage
-  | RestrictedChatMessage
-  | PrivateChatMessage;
+  | PrivateChatMessage
+  | RestrictedChatMessage;
 
 const collectionName = (venueId: string) => `venues/${venueId}/chats`;
 
@@ -103,37 +104,23 @@ const buildMessage = (
   }
 };
 
-export const sendGlobalChat = createAsyncThunk<void, SendGlobalChatAction>(
+const saveMessage = async (venueId: string, message: ChatMessage) =>
+  await firebase
+    .firestore()
+    .collection(collectionName(venueId))
+    .add(buildMessage(message));
+
+export const sendGlobalChat = createAsyncThunk<void, SendGlobalChatFields>(
   SEND_GLOBAL_CHAT,
   async ({ venueId, text, from }) => {
-    await firebase
-      .firestore()
-      .collection(collectionName(venueId))
-      .add(buildMessage({ type: ChatMessageType.Global, text, from }));
+    await saveMessage(
+      venueId,
+      buildMessage({ type: ChatMessageType.Global, text, from })
+    );
   }
 );
 
-export const sendRoomChat = createAsyncThunk<void, SendRoomChatAction>(
-  SEND_ROOM_CHAT,
-  async ({ venueId, text, from, to }) => {
-    await firebase
-      .firestore()
-      .collection(collectionName(venueId))
-      .add(buildMessage({ type: ChatMessageType.Room, text, from, to }));
-  }
-);
-
-export const sendTableChat = createAsyncThunk<void, SendTableChatAction>(
-  SEND_TABLE_CHAT,
-  async ({ venueId, text, from, to }) => {
-    await firebase
-      .firestore()
-      .collection(collectionName(venueId))
-      .add(buildMessage({ type: ChatMessageType.Table, text, from, to }));
-  }
-);
-
-export const sendPrivateChat = createAsyncThunk<void, SendPrivateChatAction>(
+export const sendPrivateChat = createAsyncThunk<void, SendPrivateChatFields>(
   SEND_PRIVATE_CHAT,
   async ({ text, from, to }) => {
     for (const messageUser of [from, to]) {
@@ -147,8 +134,28 @@ export const sendPrivateChat = createAsyncThunk<void, SendPrivateChatAction>(
   }
 );
 
+export const sendRoomChat = createAsyncThunk<void, SendRoomChatFields>(
+  SEND_ROOM_CHAT,
+  async ({ venueId, text, from, to }) => {
+    await saveMessage(
+      venueId,
+      buildMessage({ type: ChatMessageType.Room, text, from, to })
+    );
+  }
+);
+
+export const sendTableChat = createAsyncThunk<void, SendTableChatFields>(
+  SEND_TABLE_CHAT,
+  async ({ venueId, text, from, to }) => {
+    await saveMessage(
+      venueId,
+      buildMessage({ type: ChatMessageType.Table, text, from, to })
+    );
+  }
+);
+
 export type ChatActions =
   | SendGlobalChatAction
+  | SendPrivateChatAction
   | SendRoomChatAction
-  | SendTableChatAction
-  | SendPrivateChatAction;
+  | SendTableChatAction;

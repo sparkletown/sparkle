@@ -15,11 +15,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useDispatch } from "hooks/useDispatch";
 
-import {
-  PrivateChatMessage,
-  sendPrivateChat,
-  SEND_PRIVATE_CHAT,
-} from "store/actions/Chat";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
@@ -107,7 +103,6 @@ const ChatsList: React.FunctionComponent = () => {
       user &&
         dispatch(
           sendPrivateChat({
-            type: SEND_PRIVATE_CHAT,
             from: user.uid,
             to: selectedUser!.id,
             text: data.messageToTheBand,

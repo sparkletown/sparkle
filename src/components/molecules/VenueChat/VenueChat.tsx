@@ -23,7 +23,7 @@ import { chatSort } from "utils/chat";
 import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
-import { sendRoomChat, SEND_ROOM_CHAT } from "store/actions/Chat";
+import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -62,7 +62,6 @@ const VenueChat: FC = () => {
         venueId &&
         dispatch(
           sendRoomChat({
-            type: SEND_ROOM_CHAT,
             venueId,
             from: user.uid,
             to: venueId,

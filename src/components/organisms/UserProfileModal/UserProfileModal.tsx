@@ -20,11 +20,7 @@ import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
-import {
-  PrivateChatMessage,
-  sendPrivateChat,
-  SEND_PRIVATE_CHAT,
-} from "store/actions/Chat";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";
 
@@ -54,7 +50,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
       dispatch(
         sendPrivateChat({
-          type: SEND_PRIVATE_CHAT,
           from: user.uid,
           to: userProfile?.id,
           text: data.messageToTheBand,

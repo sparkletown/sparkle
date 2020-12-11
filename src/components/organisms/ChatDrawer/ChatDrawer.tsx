@@ -18,7 +18,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 import { currentVenueSelectorData } from "utils/selectors";
-import { sendRoomChat, SEND_ROOM_CHAT } from "store/actions/Chat";
+import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -66,7 +66,6 @@ const ChatDrawer: React.FC<PropsType> = ({
       venueId &&
       dispatch(
         sendRoomChat({
-          type: SEND_ROOM_CHAT,
           venueId,
           from: user.uid,
           to: roomName,
