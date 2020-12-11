@@ -5,12 +5,7 @@ import { useMemo } from "react";
 // https://stackoverflow.com/questions/32203420/check-if-mixpanel-library-has-been-loaded
 const isLoaded = () => mixpanel.hasOwnProperty("get_distinct_id");
 
-const noopTrack: (
-  event_name: string,
-  properties?: Dict,
-  optionsOrCallback?: RequestOptions | Callback,
-  callback?: Callback
-) => void = () => {};
+const noopTrack: typeof mixpanel.track = () => {};
 
 export const useMixpanel = () => {
   const mixpanelMemo = useMemo(
