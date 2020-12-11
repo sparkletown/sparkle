@@ -78,7 +78,7 @@ const createVenueData = (data, context) => {
     code_of_conduct_questions: [],
     owners,
     profile_questions: data.profileQuestions,
-    mapIconImageUrl: data.mapIconImageUrl,
+    // mapIconImageUrl: data.mapIconImageUrl,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
@@ -413,9 +413,9 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.profileQuestions = data.profileQuestions;
   }
 
-  if (data.mapIconImageUrl) {
-    updated.mapIconImageUrl = data.mapIconImageUrl;
-  }
+  // if (data.mapIconImageUrl) {
+    // updated.mapIconImageUrl = data.mapIconImageUrl;
+  // }
 
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
@@ -529,7 +529,7 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const updated = doc.data();
-  updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
+  // updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
   updated.placement = {
     x: dataOrUpdateKey(data.placement, updated.placement, "x"),
     y: dataOrUpdateKey(data.placement, updated.placement, "y"),

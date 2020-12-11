@@ -104,8 +104,8 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    attendeesTitle: Yup.string().notRequired(),
-    chatTitle: Yup.string().notRequired(),
+    attendeesTitle: Yup.string().notRequired().default('Guests'),
+    chatTitle: Yup.string().notRequired().default('Party'),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
