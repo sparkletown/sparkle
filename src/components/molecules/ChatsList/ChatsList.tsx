@@ -65,25 +65,21 @@ const ChatsList: React.FunctionComponent = () => {
 
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
-  const chatUsersQuery = [
-    {
-      collection: "users",
-      where: chatUsersOption,
-      storeAs: "chatUsers",
-    },
-  ];
-
-  const chatQuery = useCallback(() => {
-    if (!chatUsers || !Object.entries(chatUsers).length) {
+  const chatQuery = useMemo(() => {
+    if (!chatUsers) {
       if (hasElements(chatUserIds)) {
-        return chatUsersQuery;
+        return {
+          collection: "users",
+          where: chatUsersOption,
+          storeAs: "chatUsers",
+        };
       }
       return undefined;
     }
     return undefined;
-  }, [chatUserIds, chatUsers, chatUsersQuery]);
+  }, [chatUserIds, chatUsers, chatUsersOption]);
 
-  useFirestoreConnect(chatQuery());
+  useFirestoreConnect(chatQuery);
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {
