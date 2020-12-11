@@ -94,7 +94,7 @@ jobs:
               ENV=sparkleverse
             fi
             if [ $CIRCLE_BRANCH = "sparkle1" ]; then
-              ENV=sparkle1
+              ENV=sparkle-1
             fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
