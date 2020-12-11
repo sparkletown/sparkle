@@ -100,14 +100,14 @@ const ChatsList: React.FunctionComponent = () => {
 
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      user &&
-        dispatch(
-          sendPrivateChat({
-            from: user.uid,
-            to: selectedUser!.id,
-            text: data.messageToTheBand,
-          })
-        );
+      if (!user) return;
+      return dispatch(
+        sendPrivateChat({
+          from: user.uid,
+          to: selectedUser!.id,
+          text: data.messageToTheBand,
+        })
+      );
     },
     [selectedUser, user, dispatch]
   );

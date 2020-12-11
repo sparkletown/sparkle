@@ -52,52 +52,42 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     if (!currentUserUID) return;
     switch (type) {
       case "private":
-        return (
-          discussionPartner &&
-          dispatch(
-            sendPrivateChat({
-              from: currentUserUID,
-              to: discussionPartner.id,
-              text,
-            })
-          )
+        if (!discussionPartner) return;
+        return dispatch(
+          sendPrivateChat({
+            from: currentUserUID,
+            to: discussionPartner.id,
+            text,
+          })
         );
       case "global":
-        return (
-          venueId &&
-          dispatch(
-            sendGlobalChat({
-              venueId,
-              from: currentUserUID,
-              text,
-            })
-          )
+        if (!venueId) return;
+        return dispatch(
+          sendGlobalChat({
+            venueId,
+            from: currentUserUID,
+            text,
+          })
         );
       case "room":
-        return (
-          room &&
-          venueId &&
-          dispatch(
-            sendRoomChat({
-              venueId,
-              from: currentUserUID,
-              to: room,
-              text,
-            })
-          )
+        if (!room || !venueId) return;
+        return dispatch(
+          sendRoomChat({
+            venueId,
+            from: currentUserUID,
+            to: room,
+            text,
+          })
         );
       case "table":
-        return (
-          table &&
-          venueId &&
-          dispatch(
-            sendTableChat({
-              venueId,
-              from: currentUserUID,
-              to: table,
-              text,
-            })
-          )
+        if (!table || !venueId) return;
+        return dispatch(
+          sendTableChat({
+            venueId,
+            from: currentUserUID,
+            to: table,
+            text,
+          })
         );
       default:
         return;
