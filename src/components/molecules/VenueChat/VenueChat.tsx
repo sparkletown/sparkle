@@ -13,7 +13,7 @@ import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import {
   currentVenueSelectorData,
   venueChatsSelector,
-  venueUsersDataSelector,
+  venueUsersSelectorData,
 } from "utils/selectors";
 
 import useRoles from "hooks/useRoles";
@@ -35,7 +35,7 @@ const VenueChat: FC = () => {
   useConnectVenueUsers();
 
   const venueId = useVenueId();
-  const venueUsers = useSelector(venueUsersDataSelector) ?? {};
+  const venueUsers = useSelector(venueUsersSelectorData) ?? {};
   const { userRoles } = useRoles();
   const { user } = useUser();
 

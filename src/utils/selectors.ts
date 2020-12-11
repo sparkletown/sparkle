@@ -136,7 +136,7 @@ export const chatUsersSelector = (state: RootState) =>
 export const venueUsersSelector = (state: RootState) =>
   state.firestore.ordered.venueUsers;
 
-export const venueUsersDataSelector = (state: RootState) =>
+export const venueUsersSelectorData = (state: RootState) =>
   state.firestore.data.venueUsers;
 
 export const experiencesSelector = (state: RootState) =>
