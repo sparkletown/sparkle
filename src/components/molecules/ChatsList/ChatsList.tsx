@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { isEmpty } from "lodash";
 import { formatDistanceToNow } from "date-fns";
 
@@ -18,10 +24,12 @@ import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useDispatch } from "hooks/useDispatch";
 
-import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
-import { chatSort } from "utils/chat";
+import {
+  ChatContext,
+  chatSort,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
@@ -42,7 +50,6 @@ const noopHandler = () => {};
 
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
-  const dispatch = useDispatch();
   const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
@@ -59,18 +66,15 @@ const ChatsList: React.FunctionComponent = () => {
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatQuery = useMemo(() => {
-    if (!chatUsers) {
-      if (hasElements(chatUserIds)) {
-        return {
-          collection: "users",
-          where: chatUsersOption,
-          storeAs: "chatUsers",
-        };
-      }
-      return undefined;
-    }
-    return undefined;
-  }, [chatUserIds, chatUsers, chatUsersOption]);
+    if (!hasElements(chatUserIds)) return undefined;
+    return [
+      {
+        collection: "users",
+        where: chatUsersOption,
+        storeAs: "chatUsers",
+      },
+    ];
+  }, [chatUserIds, chatUsersOption]);
 
   useFirestoreConnect(chatQuery);
 
@@ -131,18 +135,18 @@ const ChatsList: React.FunctionComponent = () => {
     [privateChats, selectedUser]
   );
 
+  const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      if (!user) return;
-      return dispatch(
-        sendPrivateChat({
-          from: user.uid,
-          to: selectedUser!.id,
-          text: data.messageToTheBand,
-        })
-      );
+      chatContext &&
+        user &&
+        chatContext.sendPrivateChat(
+          user.uid,
+          selectedUser!.id,
+          data.messageToTheBand
+        );
     },
-    [selectedUser, user, dispatch]
+    [chatContext, selectedUser, user]
   );
 
   const hideUserChat = useCallback(() => setSelectedUser(undefined), []);
@@ -161,8 +165,6 @@ const ChatsList: React.FunctionComponent = () => {
 
   const userUid = user?.uid;
   const privateMessageList = useMemo(() => {
-    if (!selectedUser) return null;
-
     return discussions.map((userId: string) => {
       const sender = { ...chatUsers![userId], id: userId };
       const lastMessageExchanged =
@@ -215,7 +217,6 @@ const ChatsList: React.FunctionComponent = () => {
     discussionPartnerWithLastMessageExchanged,
     discussions,
     onClickOnSender,
-    selectedUser,
     userUid,
   ]);
 
