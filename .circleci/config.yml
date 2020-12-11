@@ -130,7 +130,7 @@ jobs:
             fi
             if [ $CIRCLE_BRANCH = "sparkle1" ]; then
               PREFIX=SPARKLE1_
-              ENV=sparkle1
+              ENV=sparkle-1
               TARGET=sparkle-1
               RELEASE_STAGE=sparkle1
             fi
