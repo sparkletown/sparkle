@@ -67,7 +67,7 @@ export interface FirestoreData {
   venueChats: Record<string, RestrictedChatMessage> | null;
   venueEvents: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
-  venueChatUsers?: Record<string, User>;
+  venueUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -99,5 +99,5 @@ export interface FirestoreOrdered {
   venueChats: Array<WithId<RestrictedChatMessage>>;
   venueEvents: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
-  venueChatUsers?: Array<WithId<User>>;
+  venueUsers?: Array<WithId<User>>;
 }
