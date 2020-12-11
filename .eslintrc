@@ -28,6 +28,11 @@
       {
         "name": "firebase",
         "message": "Use firebase/app instead"
+      },
+      {
+        "name": "lodash",
+        "importNames": ["default"],
+        "message": "Avoid importing all of lodash; import only what you need"
       }
     ],
     "react/prop-types": "off",

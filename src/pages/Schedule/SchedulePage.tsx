@@ -3,7 +3,7 @@ import React, { useState, useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import firebase from "firebase/app";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import _ from "lodash";
+import { range } from "lodash";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import "./SchedulePage.scss";
 import { Link } from "react-router-dom";
@@ -55,7 +55,7 @@ export const SchedulePage = () => {
       []
     );
 
-    const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
+    const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
       return {

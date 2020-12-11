@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import _ from "lodash";
+import { chunk } from "lodash";
 import { User } from "@bugsnag/js";
 
 import { Link } from "react-router-dom";
@@ -40,7 +40,7 @@ export const Badges: React.FC<{
           >)
       ) ?? [];
 
-    const venuesRequests = _.chunk(visits, 10).map((visitChunk) =>
+    const venuesRequests = chunk(visits, 10).map((visitChunk) =>
       firestore
         .collection("venues")
         .where(
