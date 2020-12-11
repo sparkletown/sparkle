@@ -457,6 +457,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showGrid = data.showGrid;
   }
 
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }

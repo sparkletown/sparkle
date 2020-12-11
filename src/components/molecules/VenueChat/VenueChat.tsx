@@ -96,6 +96,7 @@ const VenueChat: FC = () => {
       chats={chatsToDisplay}
       onMessageSubmit={submitMessage}
       emptyListMessage="Be the first to publish in the chat"
+      isVenueChat
     />
   );
 };

@@ -24,7 +24,7 @@ interface Experience {
   tables: Record<string, Table>;
 }
 
-interface UserVisit {
+export interface UserVisit {
   timeSpent: number;
 }
 

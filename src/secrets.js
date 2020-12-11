@@ -7,6 +7,8 @@ export const STRIPE_PUBLISHABLE_KEY =
   process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY;
 export const BUGSNAG_API_KEY = process.env.REACT_APP_BUGSNAG_API_KEY;
 export const LOGROCKET_APP_ID = process.env.REACT_APP_LOGROCKET_APP_ID;
+export const MIXPANEL_PROJECT_TOKEN =
+  process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;
 
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const CODE_CHECK_URL = process.env.REACT_APP_CODE_CHECK_URL;
