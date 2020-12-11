@@ -242,10 +242,10 @@ const VenuePage = () => {
   );
 
   const venueTemplate = venue.template;
-  
+
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
-      mixpanel.track()("VenuePage loaded", {
+      mixpanel.track("VenuePage loaded", {
         venueId,
         template: venueTemplate,
       });
