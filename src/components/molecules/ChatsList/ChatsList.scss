@@ -31,7 +31,7 @@ $primary: #005ee5;
         background-size: cover;
       }
       .private-message-content {
-        width: 100%;
+        flex: 1 0 auto;
         .private-message-author {
           opacity: 0.7;
           font-size: 0.9rem;

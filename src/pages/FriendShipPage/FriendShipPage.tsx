@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Chatbox from "components/organisms/Chatbox";
+import ChatBox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
 import TablesUserList from "components/molecules/TablesUserList";
 import "./FriendShipPage.scss";
@@ -40,7 +40,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                 </div>
               </div>
               <div className="col-4">
-                <Chatbox room="friendship" />
+                <ChatBox room="friendship" />
               </div>
             </div>
           )}
@@ -80,7 +80,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
         {seatedAtTable && (
           <div className="centered-row">
             <div className="col-6">
-              <Chatbox room="friendship" />
+              <ChatBox room="friendship" />
             </div>
           </div>
         )}

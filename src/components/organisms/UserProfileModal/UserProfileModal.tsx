@@ -11,7 +11,7 @@ import {
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
-import Chatbox from "components/molecules/Chatbox";
+import ChatBox from "components/molecules/Chatbox";
 import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
@@ -71,8 +71,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     return <></>;
   }
 
-  const usersById = { [userProfile.id]: userProfile };
-
   const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
@@ -130,8 +128,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           {showBadges && <Badges user={userProfile} currentVenue={venue} />}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
-              <Chatbox
-                usersById={usersById}
+              <ChatBox
                 chats={chats}
                 onMessageSubmit={submitMessage}
                 showSenderImage={false}

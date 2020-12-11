@@ -5,20 +5,23 @@ import {
 } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-import NavSearchBar from "components/molecules/NavSearchBar";
 
 import firebase from "firebase/app";
 
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
+import { isChatValid } from "validation";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import {
   currentVenueSelectorData,
   parentVenueSelector,
+  privateChatsSelector,
   radioStationsSelector,
 } from "utils/selectors";
 import { hasElements } from "utils/types";
@@ -34,6 +37,8 @@ import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
+import ChatsList from "components/molecules/ChatsList";
+import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
@@ -50,6 +55,14 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
+
+const ChatPopover = (
+  <Popover id="popover-basic">
+    <Popover.Content>
+      <ChatsList />
     </Popover.Content>
   </Popover>
 );
@@ -78,6 +91,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
+  const privateChats = useSelector(privateChatsSelector);
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
@@ -91,6 +105,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     [venueParentId]
   );
   useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
+
+  const numberOfUnreadMessages = useMemo(() => {
+    if (!user || !privateChats) return 0;
+
+    return privateChats
+      .filter(isChatValid)
+      .filter((chat) => chat.to === user.uid && !chat.isRead).length;
+  }, [privateChats, user]);
 
   const {
     location: { pathname },
@@ -165,6 +187,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   if (!venueId || !venue) return null;
 
+  const isVenueUsingPartyMap = venue.template === VenueTemplate.partymap;
+
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
 
@@ -233,6 +257,23 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
+                {!isVenueUsingPartyMap && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={ChatPopover}
+                    rootClose={true}
+                  >
+                    <span className="private-chat-icon">
+                      {numberOfUnreadMessages > 0 && (
+                        <div className="notification-card">
+                          {numberOfUnreadMessages}
+                        </div>
+                      )}
+                      <div className="navbar-link-message" />
+                    </span>
+                  </OverlayTrigger>
+                )}
                 {showNormalRadio && (
                   <OverlayTrigger
                     trigger="click"

@@ -2,14 +2,19 @@ import React, { Fragment, useCallback, useMemo, useState } from "react";
 import { isEmpty } from "lodash";
 import { formatDistanceToNow } from "date-fns";
 
-import { DEFAULT_PARTY_NAME, VENUE_CHAT_AGE_DAYS } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  NUM_CHAT_UIDS_TO_LOAD,
+  VENUE_CHAT_AGE_DAYS,
+  DOCUMENT_ID,
+} from "settings";
 
 import { User } from "types/User";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
-import { isTruthy } from "utils/types";
+import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -19,10 +24,12 @@ import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
-import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
 import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
+import { WhereOptions, useFirestoreConnect } from "react-redux-firebase";
+import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -36,10 +43,36 @@ const noopHandler = () => {};
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
-  const privateChats = useSelector(privateChatsSelector);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
+
+  const chats = [...privateChats];
+
+  const chatUserIds = chats
+    .sort(chatSort)
+    .flatMap((chat) => [chat.from, chat.to])
+    .filter(filterUniqueKeys)
+    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+
+  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
+
+  const chatQuery = useMemo(() => {
+    if (!chatUsers) {
+      if (hasElements(chatUserIds)) {
+        return {
+          collection: "users",
+          where: chatUsersOption,
+          storeAs: "chatUsers",
+        };
+      }
+      return undefined;
+    }
+    return undefined;
+  }, [chatUserIds, chatUsers, chatUsersOption]);
+
+  useFirestoreConnect(chatQuery);
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {
@@ -193,11 +226,7 @@ const ChatsList: React.FunctionComponent = () => {
         <div className="private-chat-user">
           Chatting with: {selectedUser.partyName}
         </div>
-        <ChatBox
-          usersById={chatUsers}
-          chats={chatsToDisplay}
-          onMessageSubmit={submitMessage}
-        />
+        <ChatBox chats={chatsToDisplay} onMessageSubmit={submitMessage} />
       </Fragment>
     );
   }
