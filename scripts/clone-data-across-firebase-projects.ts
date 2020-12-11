@@ -89,7 +89,6 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
   wantedSourceVenues.forEach((venue) => {
     const { id, ...venueData } = venue;
     const destVenueRef = destApp.firestore().collection("venues").doc(id);
-    console.log(id, destVenueRef);
 
     destAppBatch.set(destVenueRef, venueData);
 
