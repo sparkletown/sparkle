@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
 import { isEmpty } from "lodash";
 import { formatDistanceToNow } from "date-fns";
 
@@ -13,10 +19,12 @@ import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useDispatch } from "hooks/useDispatch";
 
-import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
-import { chatSort } from "utils/chat";
+import {
+  ChatContext,
+  chatSort,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
@@ -35,7 +43,6 @@ const noopHandler = () => {};
 
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
-  const dispatch = useDispatch();
   const privateChats = useSelector(privateChatsSelector);
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
@@ -98,18 +105,18 @@ const ChatsList: React.FunctionComponent = () => {
     [privateChats, selectedUser]
   );
 
+  const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      if (!user) return;
-      return dispatch(
-        sendPrivateChat({
-          from: user.uid,
-          to: selectedUser!.id,
-          text: data.messageToTheBand,
-        })
-      );
+      chatContext &&
+        user &&
+        chatContext.sendPrivateChat(
+          user.uid,
+          selectedUser!.id,
+          data.messageToTheBand
+        );
     },
-    [selectedUser, user, dispatch]
+    [chatContext, selectedUser, user]
   );
 
   const hideUserChat = useCallback(() => setSelectedUser(undefined), []);

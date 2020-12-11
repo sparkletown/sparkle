@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
@@ -20,9 +20,11 @@ import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
-import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
+import {
+  ChatContext,
+  PrivateChatMessage,
+} from "components/context/ChatContext";
 import { Badges } from "../Badges";
-import { useDispatch } from "hooks/useDispatch";
 import { isTruthy } from "utils/types";
 
 type PropTypes = {
@@ -43,21 +45,19 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   const { user } = useUser();
 
-  const dispatch = useDispatch();
+  const chatContext = useContext(ChatContext);
 
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      if (!user || !userProfile) return;
+      if (!chatContext || !user || !userProfile) return;
 
-      dispatch(
-        sendPrivateChat({
-          from: user.uid,
-          to: userProfile?.id,
-          text: data.messageToTheBand,
-        })
+      chatContext.sendPrivateChat(
+        user.uid,
+        userProfile?.id,
+        data.messageToTheBand
       );
     },
-    [userProfile, user, dispatch]
+    [chatContext, userProfile, user]
   );
 
   const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
