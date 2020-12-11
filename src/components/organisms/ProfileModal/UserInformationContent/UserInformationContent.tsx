@@ -39,28 +39,28 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     history.push(IS_BURN ? "/enter" : venueId ? venueLandingUrl(venueId) : "/");
   };
 
-  if (!user) return null;
-
   const toggleKidsMode = () => {
-    if (profile) {
+    if (user && profile) {
       profile.kidsMode = !profile?.kidsMode;
       updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
     }
   };
 
   const toggleAnonMode = () => {
-    if (profile) {
+    if (user && profile) {
       profile.anonMode = !profile?.anonMode;
       updateUserProfile(user.uid, { anonMode: profile.anonMode });
     }
   };
 
   const toggleMirrorVideo = () => {
-    if (profile) {
+    if (user && profile) {
       profile.mirrorVideo = !profile?.mirrorVideo;
       updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
     }
   };
+
+  if (!user) return null;
 
   return (
     <>
