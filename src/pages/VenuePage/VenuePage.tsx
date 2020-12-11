@@ -301,8 +301,9 @@ const VenuePage = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  mixpanel.track("Page load", { venueId: venue.id, template: venue.template });
-
+useEffect(() => {
+  mixpanel.track("VenuePage loaded", { venueId: venue.id, template: venue.template });
+}, []) 
   let template;
   let fullscreen = false;
   switch (venue.template) {
