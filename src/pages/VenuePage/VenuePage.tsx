@@ -34,6 +34,7 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
+import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -73,6 +74,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
 const VenuePage = () => {
   const venueId = useVenueId();
   const firestore = useFirestore();
+  const mixpanel = useMixpanel();
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
@@ -239,6 +241,16 @@ const VenuePage = () => {
       : undefined
   );
 
+  const venueTemplate = venue.template;
+
+  useEffect(() => {
+    if (user && profile && venueId && venueTemplate) {
+      mixpanel.track("VenuePage loaded", {
+        venueId,
+        template: venueTemplate,
+      });
+    }
+  }, [user, profile, venueId, venueTemplate, mixpanel]);
   if (!user) {
     return <Login formType="initial" />;
   }
