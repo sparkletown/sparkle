@@ -20,10 +20,12 @@ export const makeSaveToBackupFile = (filenamePrefix: string) => (
   console.log(`Saved backup (type='${type}') to ${backupFilename}`);
 };
 
-export const initFirebaseAdminApp = (projectId: string) => {
-  admin.initializeApp({
-    credential: admin.credential.cert((serviceAccount as unknown) as string),
-    databaseURL: `https://${projectId}.firebaseio.com`,
-    storageBucket: `${projectId}.appspot.com`,
-  });
-};
+export const initFirebaseAdminApp = (projectId: string, appName?: string) =>
+  admin.initializeApp(
+    {
+      credential: admin.credential.cert((serviceAccount as unknown) as string),
+      databaseURL: `https://${projectId}.firebaseio.com`,
+      storageBucket: `${projectId}.appspot.com`,
+    },
+    appName
+  );
