@@ -78,6 +78,9 @@ export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const GIF_IMAGE_WIDTH_PX = 300;
 
+export const DOCUMENT_ID = "__name__";
+export const NUM_CHAT_UIDS_TO_LOAD = 10;
+
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;

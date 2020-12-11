@@ -13,31 +13,36 @@ import {
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
-import { User } from "types/User";
+import { chatUsersSelector, venueChatUsersSelector } from "utils/selectors";
+import { useSelector } from "hooks/useSelector";
 
 interface ChatOutDataType {
   messageToTheBand: string;
 }
 
 interface ChatboxProps {
-  usersById: Record<string, User>;
   chats: WithId<PrivateChatMessage | RestrictedChatMessage>[];
   onMessageSubmit: (data: ChatOutDataType) => void;
   allowDelete?: boolean;
   emptyListMessage?: string;
   showSenderImage?: boolean;
+  isVenueChat?: boolean;
 }
 
 const ChatBox: React.FC<ChatboxProps> = ({
-  usersById,
   allowDelete,
   chats,
   onMessageSubmit,
   emptyListMessage,
   showSenderImage,
+  isVenueChat,
 }) => {
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
+  const venueChatUsers = useSelector(venueChatUsersSelector) ?? {};
+  const privateChatUsers = useSelector(chatUsersSelector) ?? {};
+
+  const usersById = isVenueChat ? venueChatUsers : privateChatUsers;
 
   useEffect(() => {
     if (isMessageToTheBarSent) {

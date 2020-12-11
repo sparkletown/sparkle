@@ -14,7 +14,6 @@ import {
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
-import { venueChatUsersSelector } from "utils/selectors";
 
 import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
@@ -32,7 +31,6 @@ interface ChatOutDataType {
 
 const VenueChat: FC = () => {
   const venueId = useVenueId();
-  const usersById = useSelector(venueChatUsersSelector) ?? {};
   const venueChatUsersQuery: ReduxFirestoreQuerySetting = {
     collection: "users",
     where: ["enteredVenueIds", "array-contains", venueId],
@@ -95,11 +93,11 @@ const VenueChat: FC = () => {
 
   return (
     <ChatBox
-      usersById={usersById}
       allowDelete={allowDelete}
       chats={chatsToDisplay}
       onMessageSubmit={submitMessage}
       emptyListMessage="Be the first to publish in the chat"
+      isVenueChat
     />
   );
 };
