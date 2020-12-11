@@ -13,6 +13,7 @@ import {
   venueChatUsersSelector,
 } from "utils/selectors";
 
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
@@ -41,6 +42,7 @@ const VenueChat: FC = () => {
   const { userRoles } = useRoles();
   const { user } = useUser();
 
+  useConnectVenueChats();
   const chats = useSelector(venueChatsSelector);
   const venue = useSelector(currentVenueSelectorData);
 

@@ -15,7 +15,13 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
-import { partygoersSelector, partygoersSelectorData } from "utils/selectors";
+import {
+  partygoersSelector,
+  partygoersSelectorData,
+  privateChatsSelector,
+  venueChatsSelector,
+} from "utils/selectors";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -46,10 +52,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const chats = useSelector((state) => state.firestore.ordered.venueChats);
-  const privateChats = useSelector(
-    (state) => state.firestore.ordered.privatechats
-  );
+  useConnectVenueChats();
+  const chats = useSelector(venueChatsSelector);
+  const privateChats = useSelector(privateChatsSelector);
   const users = useSelector(partygoersSelectorData);
   const userArray = useSelector(partygoersSelector) ?? [];
 

@@ -5,6 +5,7 @@ import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
 import { chatSort } from "utils/chat";
 import "./ChatDrawer.scss";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +18,7 @@ import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
 import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
@@ -42,7 +43,8 @@ const ChatDrawer: React.FC<PropsType> = ({
   const { userRoles } = useRoles();
   const venue = useSelector(currentVenueSelectorData);
 
-  const chats = useSelector((state) => state.firestore.ordered.venueChats);
+  useConnectVenueChats();
+  const chats = useSelector(venueChatsSelector);
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
   const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(defaultShow);
 

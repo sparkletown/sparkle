@@ -5,6 +5,7 @@ import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { useSelector } from "hooks/useSelector";
 import { MessageToTheBandReaction } from "utils/reactions";
 import { WithId } from "utils/id";
@@ -12,6 +13,7 @@ import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
+  useConnectVenueChats();
 
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);
