@@ -32,7 +32,7 @@ import { User } from "types/User";
 // Styles
 import "./Audience.scss";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
-import { addReaction, ADD_REACTION } from "store/actions/Reactions";
+import { addReaction } from "store/actions/Reactions";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -168,7 +168,6 @@ export const Audience: React.FunctionComponent = () => {
     (user: UserInfo, reaction: EmojiReactionType) => {
       dispatch(
         addReaction({
-          type: ADD_REACTION,
           venueId,
           reaction: createReaction({ reaction }, user),
         })
@@ -281,7 +280,6 @@ export const Audience: React.FunctionComponent = () => {
       user &&
         dispatch(
           addReaction({
-            type: ADD_REACTION,
             venueId,
             reaction: createReaction(
               { reaction: "messageToTheBand", text: data.text },

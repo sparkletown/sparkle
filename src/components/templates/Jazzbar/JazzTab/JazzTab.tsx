@@ -33,7 +33,7 @@ import { useUser } from "hooks/useUser";
 import { useInterval } from "hooks/useInterval";
 import { useVenueId } from "hooks/useVenueId";
 
-import { addReaction, ADD_REACTION } from "store/actions/Reactions";
+import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -102,7 +102,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     dispatch(
       addReaction({
-        type: ADD_REACTION,
         venueId,
         reaction: createReaction({ reaction }, user),
       })
@@ -133,7 +132,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     user &&
       dispatch(
         addReaction({
-          type: ADD_REACTION,
           venueId,
           reaction: createReaction(
             { reaction: "messageToTheBand", text: data.messageToTheBand },
