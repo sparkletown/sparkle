@@ -199,9 +199,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                       <>
                         {chatboxMessageType === "global" ? "Everybody" : ""}
                         {chatboxMessageType === "room"
-                          ? room === "jazz"
-                            ? "Chat to the band"
-                            : `This Room: ${room}`
+                          ? `This room: ${room}`
                           : ""}
                       </>
                     )}
