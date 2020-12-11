@@ -5,6 +5,10 @@
     box-shadow: inset 0 0 0 3px $primary !important;
     background-color: $primary !important;
     color: white !important;
+
+    &:hover {
+      background-color: darken($color: $primary, $amount: 20%) !important;
+    }
   }
 
   .buttons-separator {
@@ -15,5 +19,9 @@
   .login-button {
     box-shadow: inset 0 0 0 3px $primary !important;
     color: white !important;
+
+    &:hover {
+      background-color: darken($color: $primary, $amount: 20%);
+    }
   }
 }

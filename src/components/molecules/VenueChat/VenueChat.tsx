@@ -1,11 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useState,
-  useMemo,
-  FC,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useMemo, FC, useCallback } from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
@@ -14,16 +7,19 @@ import {
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
+import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
 
+import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
-import { ChatContext, chatSort } from "components/context/ChatContext";
+import { chatSort } from "utils/chat";
 import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
+import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -39,10 +35,9 @@ const VenueChat: FC = () => {
   useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const { userRoles } = useRoles();
   const { user } = useUser();
-  const { chats, venue } = useSelector((state) => ({
-    chats: state.firestore.ordered.venueChats,
-    venue: state.firestore.data.currentVenue,
-  }));
+
+  const chats = useSelector(venueChatsSelector);
+  const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
@@ -54,15 +49,22 @@ const VenueChat: FC = () => {
     }
   }, [isMessageToTheBarSent]);
 
-  const chatContext = useContext(ChatContext);
+  const dispatch = useDispatch();
 
   const submitMessage = useCallback(
     async (data: ChatOutDataType) => {
-      chatContext &&
-        user &&
-        chatContext.sendRoomChat(user.uid, venueId!, data.messageToTheBand);
+      user &&
+        venueId &&
+        dispatch(
+          sendRoomChat({
+            venueId,
+            from: user.uid,
+            to: venueId,
+            text: data.messageToTheBand,
+          })
+        );
     },
-    [chatContext, user, venueId]
+    [user, venueId, dispatch]
   );
 
   const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);

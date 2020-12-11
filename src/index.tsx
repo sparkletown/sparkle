@@ -1,8 +1,11 @@
 import "./wdyr";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
+import LogRocket from "logrocket";
+// eslint-disable-next-line no-restricted-imports
+import mixpanel from "mixpanel-browser";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -22,35 +25,51 @@ import {
   isLoaded,
   FirebaseReducer,
 } from "react-redux-firebase";
-import { composeWithDevTools } from "redux-devtools-extension/developmentOnly";
+import { composeWithDevTools } from "redux-devtools-extension";
+
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+
 import {
   BUGSNAG_API_KEY,
   BUILD_BRANCH,
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
+  LOGROCKET_APP_ID,
+  MIXPANEL_PROJECT_TOKEN,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
+import { FIREBASE_CONFIG } from "settings";
+
+import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+import * as serviceWorker from "./serviceWorker";
+
+import { Firestore } from "types/Firestore";
+import { User } from "types/User";
+
+import { useSelector } from "hooks/useSelector";
+import { authSelector } from "utils/selectors";
+
+import AppRouter from "components/organisms/AppRouter";
+
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "bootstrap";
 import "scss/global.scss";
 
-import AppRouter from "components/organisms/AppRouter";
+if (LOGROCKET_APP_ID) {
+  LogRocket.init(LOGROCKET_APP_ID, {
+    release: BUILD_SHA1,
+  });
 
-import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-import trackingMiddleware from "./middleware/tracking";
-import * as serviceWorker from "./serviceWorker";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "hooks/useSelector";
-import { Firestore } from "types/Firestore";
-import { User } from "types/User";
-
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { FIREBASE_CONFIG } from "settings";
+  Bugsnag.addOnError((event) => {
+    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
+  });
+}
 
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
@@ -60,7 +79,7 @@ const rrfConfig = {
 };
 
 firebase.initializeApp(FIREBASE_CONFIG);
-const analytics = firebase.analytics();
+firebase.analytics();
 firebase.auth();
 firebase.firestore();
 
@@ -85,9 +104,14 @@ const store = createStore(
   rootReducer,
   initialState,
   composeWithDevTools(
-    applyMiddleware(thunkMiddleware, trackingMiddleware(analytics))
+    applyMiddleware(
+      thunkMiddleware,
+      LogRocket.reduxMiddleware() // logrocket needs to be last
+    )
   )
 );
+
+export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {
   firebase,
@@ -167,11 +191,35 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
+if (MIXPANEL_PROJECT_TOKEN) {
+  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
+}
+
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
-  const auth = useSelector((state) => state.firebase.auth);
+  const auth = useSelector(authSelector);
+
+  useEffect(() => {
+    if (!auth || !auth.uid) return;
+
+    const displayName = auth.displayName || "N/A";
+    const email = auth.email || "N/A";
+
+    if (LOGROCKET_APP_ID) {
+      LogRocket.identify(auth.uid, {
+        displayName,
+        email,
+      });
+    }
+
+    if (MIXPANEL_PROJECT_TOKEN) {
+      mixpanel.identify(email);
+    }
+  }, [auth]);
+
   if (!isLoaded(auth)) return <LoadingPage />;
+
   return <>{children}</>;
 };
 

@@ -28,6 +28,15 @@
       {
         "name": "firebase",
         "message": "Use firebase/app instead"
+      },
+      {
+        "name": "lodash",
+        "importNames": ["default"],
+        "message": "Avoid importing all of lodash; import only what you need"
+      },
+      {
+        "name": "mixpanel-browser",
+        "message": "Import safe version from hooks/useMixpanel instead"
       }
     ],
     "react/prop-types": "off",

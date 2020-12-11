@@ -1,14 +1,3 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
-
-// Utils | Settings | Constants
-import { REACTION_TIMEOUT } from "settings";
-
-type ExperienceContextType = {
-  reactions: Reaction[];
-  addReaction: (newReaction: Reaction) => void;
-};
-
 export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
@@ -108,57 +97,3 @@ export interface MessageToTheBandReaction extends BaseReaction {
 }
 
 export type Reaction = EmojiReaction | MessageToTheBandReaction;
-
-export const ExperienceContext = React.createContext<
-  ExperienceContextType | undefined
->(undefined);
-
-interface ExperienceContextWrapperProps {
-  venueName: string;
-}
-
-export const ExperienceContextWrapper: React.FC<React.PropsWithChildren<
-  ExperienceContextWrapperProps
->> = ({ venueName, children }) => {
-  const [reactions, setReactions] = useState<Reaction[]>([]);
-  const firebase = useFirebase();
-
-  useEffect(() => {
-    firebase
-      .firestore()
-      .collection(`experiences/${venueName}/reactions`)
-      .where("created_at", ">", new Date().getTime())
-      .onSnapshot(function (snapshot) {
-        snapshot.docChanges().forEach(function (change) {
-          if (change.type === "added") {
-            const newReaction = change.doc.data() as Reaction;
-            setReactions((prevReactions) => [...prevReactions, newReaction]);
-
-            setTimeout(() => {
-              setReactions((prevReactions) => {
-                return prevReactions.filter((r) => r !== newReaction);
-              });
-            }, REACTION_TIMEOUT);
-          }
-        });
-      });
-  }, [firebase, setReactions, venueName]);
-
-  const addReaction = useCallback(
-    (newReaction: Reaction) => {
-      firebase
-        .firestore()
-        .collection(`experiences/${venueName}/reactions`)
-        .add(newReaction);
-    },
-    [firebase, venueName]
-  );
-
-  const store = { reactions, addReaction };
-
-  return (
-    <ExperienceContext.Provider value={store}>
-      {children}
-    </ExperienceContext.Provider>
-  );
-};

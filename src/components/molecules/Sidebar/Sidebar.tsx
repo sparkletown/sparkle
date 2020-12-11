@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 import { filterUnreadPrivateChats } from "utils/filter";
 import {
@@ -16,7 +17,6 @@ import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
-import { useUser } from "hooks/useUser";
 
 enum TABS {
   PARTY_CHAT = 0,

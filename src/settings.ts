@@ -35,6 +35,7 @@ export const PRIVACY_POLICY = IS_BURN
   : SPARKLE_PRIVACY_POLICY;
 
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
+export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const SPARKLE_LOGO_URL = "/sparkle-header.png";
@@ -76,6 +77,7 @@ export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
+export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
 export const DOCUMENT_ID = "__name__";
@@ -169,6 +171,11 @@ export interface Template {
 }
 
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
+  {
+    template: VenueTemplate.conversationspace,
+    name: "Conversation Space",
+    description: ["A room of tables in which to talk and make merry."],
+  },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",

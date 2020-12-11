@@ -1,30 +1,31 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Get event details. Prints each event start and end time among other details.
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-Usage: node ${process.argv[1]} PROJECT_ID
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Get event details. Prints each event start and end time among other details.
 
-Example: node ${process.argv[1]} co-reality-map
-`);
+Usage: node ${scriptName} PROJECT_ID
+
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
   process.exit(1);
-}
+};
 
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
+const [projectId] = process.argv.slice(2);
+if (!projectId) {
   usage();
 }
 
-const projectId = argv[0];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   console.log(
@@ -42,7 +43,9 @@ admin.initializeApp({
       .map((heading) => `"${heading}"`)
       .join(",")
   );
+
   const firestoreVenues = await admin.firestore().collection("venues").get();
+
   firestoreVenues.docs.forEach((doc) => {
     (async () => {
       const venueId = doc.id;
@@ -53,6 +56,7 @@ admin.initializeApp({
         .doc(venueId)
         .collection("events")
         .get();
+
       events.forEach((eventDoc) => {
         const eventName = eventDoc.data().name;
         const eventHost = eventDoc.data().host;

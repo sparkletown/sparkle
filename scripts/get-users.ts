@@ -1,38 +1,41 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
-import "firebase/firestore";
+import { initFirebaseAdminApp } from "./lib/helpers";
+
 import validCodes from "./validCodes.json";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Get user details. Prints each user's email address, last seen time in milliseconds since epoch, and codes used.
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Get user details. Prints each user's email address, last seen time in milliseconds since epoch, and codes used.
 
-Usage: node ${process.argv[1]} PROJECT_ID
+Usage: node ${scriptName} PROJECT_ID
 
-Example: node ${process.argv[1]} co-reality-map
-`);
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
   process.exit(1);
-}
+};
 
-const argv = process.argv.slice(2);
-if (argv.length < 1) {
+const [projectId] = process.argv.slice(2);
+if (!projectId) {
   usage();
 }
 
-const projectId = argv[0];
-
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const allUsers: admin.auth.UserRecord[] = [];
-  let nextPageToken: string;
+  let nextPageToken: string | undefined;
   const { users, pageToken } = await admin.auth().listUsers(1000);
+
   allUsers.push(...users);
   nextPageToken = pageToken;
+
   while (nextPageToken) {
     const { users, pageToken } = await admin
       .auth()
@@ -59,7 +62,9 @@ admin.initializeApp({
       .map((heading) => `"${heading}"`)
       .join(",")
   );
+
   const firestoreUsers = await admin.firestore().collection("users").get();
+
   firestoreUsers.docs.forEach((doc) => {
     const user = allUsers.find((u) => u.uid === doc.id);
     const partyName = doc.data().partyName;
@@ -78,6 +83,7 @@ admin.initializeApp({
     const validDistincCodesUsed = validCodesUsed.filter(
       (v, i, a) => a.indexOf(v) === i
     );
+
     console.log(
       [
         user?.email ?? doc.id,
@@ -97,5 +103,6 @@ admin.initializeApp({
         .join(",")
     );
   });
+
   process.exit(0);
 })();

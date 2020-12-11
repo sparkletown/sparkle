@@ -128,7 +128,7 @@ jobs:
 
             ./scripts/init-env.sh $PREFIX
 
-            npm run build
+            npm run build -- --profile
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"

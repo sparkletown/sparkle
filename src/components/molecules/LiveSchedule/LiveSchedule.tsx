@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 
 import { VenueEvent } from "types/VenueEvent";
 
@@ -25,11 +25,11 @@ const LiveSchedule: FC = () => {
     withEvents: true,
   });
 
-  const relatedVenueFor = (event: WithVenueId<VenueEvent>) => {
-    return (
-      relatedVenues.find((venue) => venue.id === event.venueId) ?? currentVenue
-    );
-  };
+  const relatedVenueFor = useCallback(
+    (event: WithVenueId<VenueEvent>) =>
+      relatedVenues.find((venue) => venue.id === event.venueId) ?? currentVenue,
+    [currentVenue, relatedVenues]
+  );
 
   const events = useMemo(() => {
     return relatedVenueEvents && relatedVenueEvents.length
@@ -39,21 +39,25 @@ const LiveSchedule: FC = () => {
 
   const hasEvents = hasElements(events);
 
+  const renderedEvents = useMemo(() => {
+    if (!hasEvents) return null;
+
+    return events.map((event, index) => (
+      <LiveEvent
+        key={`live-event-${index}`}
+        venue={relatedVenueFor(event)}
+        event={event}
+      />
+    ));
+  }, [events, hasEvents, relatedVenueFor]);
+
   if (!hasEvents) {
     return <div className="schedule-event-empty">No live events for now</div>;
   }
 
   return (
     <div className="schedule-container show">
-      <div className="schedule-day-container">
-        {events.map((event, index) => (
-          <LiveEvent
-            key={`live-event-${index}`}
-            venue={relatedVenueFor(event)}
-            event={event}
-          />
-        ))}
-      </div>
+      <div className="schedule-day-container">{renderedEvents}</div>
     </div>
   );
 };

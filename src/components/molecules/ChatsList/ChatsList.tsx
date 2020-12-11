@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import React, { Fragment, useCallback, useMemo, useState } from "react";
 import { isEmpty } from "lodash";
 import { formatDistanceToNow } from "date-fns";
 
@@ -24,12 +18,10 @@ import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
 
-import {
-  ChatContext,
-  chatSort,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
+import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
@@ -50,6 +42,7 @@ const noopHandler = () => {};
 
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
+  const dispatch = useDispatch();
   const privateChats = useSelector(privateChatsSelector) ?? [];
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
@@ -138,18 +131,18 @@ const ChatsList: React.FunctionComponent = () => {
     [privateChats, selectedUser]
   );
 
-  const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      chatContext &&
-        user &&
-        chatContext.sendPrivateChat(
-          user.uid,
-          selectedUser!.id,
-          data.messageToTheBand
-        );
+      if (!user) return;
+      return dispatch(
+        sendPrivateChat({
+          from: user.uid,
+          to: selectedUser!.id,
+          text: data.messageToTheBand,
+        })
+      );
     },
-    [chatContext, selectedUser, user]
+    [selectedUser, user, dispatch]
   );
 
   const hideUserChat = useCallback(() => setSelectedUser(undefined), []);
@@ -165,6 +158,66 @@ const ChatsList: React.FunctionComponent = () => {
         )
     );
   }, [discussionPartnerWithLastMessageExchanged]);
+
+  const userUid = user?.uid;
+  const privateMessageList = useMemo(() => {
+    if (!selectedUser) return null;
+
+    return discussions.map((userId: string) => {
+      const sender = { ...chatUsers![userId], id: userId };
+      const lastMessageExchanged =
+        discussionPartnerWithLastMessageExchanged?.[userId];
+      const isUnreadMessage = !isTruthy(lastMessageExchanged.isRead);
+      const profileName = sender.anonMode
+        ? DEFAULT_PARTY_NAME
+        : sender.partyName;
+
+      return (
+        <div
+          key={userId}
+          className="private-message-item"
+          onClick={() => onClickOnSender(sender)}
+          id="private-chat-modal-select-private-recipient"
+        >
+          <UserProfilePicture
+            avatarClassName="private-message-author-pic"
+            user={sender}
+            setSelectedUserProfile={noopHandler}
+          />
+
+          <div className="private-message-content">
+            <div
+              className={`private-message-author ${
+                isUnreadMessage && "unread"
+              }`}
+            >
+              {profileName}
+            </div>
+            <div
+              className={`private-message-last ${isUnreadMessage && "unread"}`}
+            >
+              {lastMessageExchanged.text}
+            </div>
+          </div>
+
+          {lastMessageExchanged.from !== userUid && (
+            <div
+              className={`private-message-time ${isUnreadMessage && "unread"}`}
+            >
+              {formatDistanceToNow(lastMessageExchanged.ts_utc.toDate())}
+            </div>
+          )}
+        </div>
+      );
+    });
+  }, [
+    chatUsers,
+    discussionPartnerWithLastMessageExchanged,
+    discussions,
+    onClickOnSender,
+    selectedUser,
+    userUid,
+  ]);
 
   if (selectedUser) {
     return (
@@ -183,58 +236,7 @@ const ChatsList: React.FunctionComponent = () => {
       <UserSearchBar onSelect={setSelectedUser} />
       {hasPrivateChats && (
         <div className="private-container show">
-          <div className="private-messages-list">
-            {discussions.map((userId: string) => {
-              const sender = { ...chatUsers![userId], id: userId };
-              const lastMessageExchanged =
-                discussionPartnerWithLastMessageExchanged?.[userId];
-              const isUnreadMessage = !isTruthy(lastMessageExchanged.isRead);
-              const profileName = sender.anonMode
-                ? DEFAULT_PARTY_NAME
-                : sender.partyName;
-              return (
-                <div
-                  key={userId}
-                  className="private-message-item"
-                  onClick={() => onClickOnSender(sender)}
-                  id="private-chat-modal-select-private-recipient"
-                >
-                  <UserProfilePicture
-                    avatarClassName="private-message-author-pic"
-                    user={sender}
-                    setSelectedUserProfile={noopHandler}
-                  />
-                  <div className="private-message-content">
-                    <div
-                      className={`private-message-author ${
-                        isUnreadMessage && "unread"
-                      }`}
-                    >
-                      {profileName}
-                    </div>
-                    <div
-                      className={`private-message-last ${
-                        isUnreadMessage && "unread"
-                      }`}
-                    >
-                      {lastMessageExchanged.text}
-                    </div>
-                  </div>
-                  {lastMessageExchanged.from !== user?.uid && (
-                    <div
-                      className={`private-message-time ${
-                        isUnreadMessage && "unread"
-                      }`}
-                    >
-                      {formatDistanceToNow(
-                        lastMessageExchanged.ts_utc.toDate()
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
+          <div className="private-messages-list">{privateMessageList}</div>
         </div>
       )}
       {!hasPrivateChats && (

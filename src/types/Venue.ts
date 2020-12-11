@@ -93,6 +93,8 @@ export interface Venue {
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
+  showRadio?: boolean;
+  showBadges?: boolean;
 }
 
 export interface VenueConfig {

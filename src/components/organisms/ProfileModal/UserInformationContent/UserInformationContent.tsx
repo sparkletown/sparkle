@@ -1,16 +1,20 @@
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React from "react";
+import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
+import { Badges } from "components/organisms/Badges";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
 import { useVenueId } from "hooks/useVenueId";
 import { venueLandingUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
+import {
+  currentVenueSelector,
+  currentVenueSelectorData,
+} from "utils/selectors";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -23,47 +27,51 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsPasswordEditMode,
   hideModal,
 }) => {
-  const { user, profile } = useUser();
+  const { user, profile, userWithId } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
   );
   const venueId = useVenueId();
+  const venue = useSelector(currentVenueSelector);
 
   const history = useHistory();
   const firebase = useFirebase();
-  const logout = () => {
-    firebase.auth().signOut();
+
+  const logout = useCallback(async () => {
+    await firebase.auth().signOut();
+
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
     history.push(IS_BURN ? "/enter" : venueId ? venueLandingUrl(venueId) : "/");
-  };
+  }, [firebase, hideModal, history, venueId]);
 
-  if (!user) return <></>;
-
-  const toggleKidsMode = () => {
-    if (profile) {
+  const toggleKidsMode = useCallback(async () => {
+    if (user && profile) {
       profile.kidsMode = !profile?.kidsMode;
-      updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
+      await updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
     }
-  };
+  }, [profile, user]);
 
-  const toggleAnonMode = () => {
-    if (profile) {
+  const toggleAnonMode = useCallback(async () => {
+    if (user && profile) {
       profile.anonMode = !profile?.anonMode;
-      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+      await updateUserProfile(user.uid, { anonMode: profile.anonMode });
     }
-  };
+  }, [profile, user]);
 
-  const toggleMirrorVideo = () => {
-    if (profile) {
+  const toggleMirrorVideo = useCallback(async () => {
+    if (user && profile) {
       profile.mirrorVideo = !profile?.mirrorVideo;
-      updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
+      await updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
     }
-  };
+  }, [profile, user]);
+
+  if (!user || !userWithId) return null;
 
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
+
       <div className="user-information">
         <img
           className="profile-icon profile-modal-avatar"
@@ -79,6 +87,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           <div className="ellipsis-text">{user.email}</div>
         </div>
       </div>
+
       {profileQuestions &&
         profileQuestions.map((question: QuestionType) => (
           <div key={question.name} className="question-section">
@@ -92,6 +101,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
+
       {IS_BURN && (
         <>
           <label
@@ -122,12 +132,16 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           />
         </>
       )}
+
+      {venue?.showBadges && <Badges user={userWithId} currentVenue={venue} />}
+
       <label
         htmlFor="chk-mirrorVideo"
         className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
       >
         Mirror my video
       </label>
+
       <input
         type="checkbox"
         name="mirrorVideo"
@@ -135,18 +149,21 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         defaultChecked={profile?.mirrorVideo || false}
         onClick={() => toggleMirrorVideo()}
       />
+
       <input
         className="btn button btn-primary"
         value="Edit profile"
         onClick={() => setIsEditMode(true)}
         type="button"
       />
+
       <input
         className="btn button"
         value="Change password"
         type="button"
         onClick={() => setIsPasswordEditMode(true)}
       />
+
       <input
         className="btn button"
         value="Log out"

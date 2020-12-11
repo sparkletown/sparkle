@@ -19,6 +19,7 @@ const VenueTemplate = {
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
+  conversationspace: "conversationspace",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -33,6 +34,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
+  VenueTemplate.conversationspace,
 ];
 
 const PlacementState = {
@@ -453,6 +455,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showRangers === "boolean") {

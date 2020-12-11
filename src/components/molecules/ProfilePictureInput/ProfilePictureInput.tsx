@@ -3,7 +3,10 @@ import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
+} from "settings";
 
 import { resizeFile } from "utils/image";
 
@@ -57,8 +60,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       setError("Unsupported file, please try with another one.");
       return;
     }
-    if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-      // New file is with a maximum of 300px width and height, is it possible for the new file to be bigger than 2mb?
+    if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
       const resizedImage = await resizeFile(e.target.files[0]);
       const fileName = file.name;
       file = new File([resizedImage], fileName);
@@ -74,24 +76,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   };
 
   const uploadDefaultAvatar = async (avatar: string) => {
-    const defaultAvatar = await fetch(`/avatars/${avatar}`);
-
-    if (!defaultAvatar) return;
-
-    const imageBlob = await defaultAvatar.blob();
-
-    if (!imageBlob) return;
-
-    const file = new File([imageBlob], avatar, { type: imageBlob.type });
-
-    const storageRef = firebase.storage().ref();
-    // TODO: add rule to forbid other users to edit a user's image
-    const profilePictureRef = storageRef.child(
-      `/users/${user.uid}/${file.name}`
-    );
-    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
-    const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
-    setValue("pictureUrl", pictureUrlRef, true);
+    setValue("pictureUrl", process.env.PUBLIC_URL + `/avatars/${avatar}`, true);
   };
 
   return (
