@@ -93,6 +93,9 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
               ENV=sparkleverse
             fi
+            if [ $CIRCLE_BRANCH = "sparkle1" ]; then
+              ENV=sparkle1
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -124,6 +127,12 @@ jobs:
               ENV=sparkleverse
               TARGET=sparkleverse
               RELEASE_STAGE=sparkleverse
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle1" ]; then
+              PREFIX=SPARKLE1_
+              ENV=prod
+              TARGET=sparkle1
+              RELEASE_STAGE=production
             fi
 
             ./scripts/init-env.sh $PREFIX
