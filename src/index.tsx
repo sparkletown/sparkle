@@ -4,6 +4,8 @@ import React, { useEffect } from "react";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
+// eslint-disable-next-line no-restricted-imports
+import mixpanel from "mixpanel-browser";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -38,12 +40,12 @@ import {
   BUILD_SHA1,
   BUILD_TAG,
   LOGROCKET_APP_ID,
+  MIXPANEL_PROJECT_TOKEN,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-import trackingMiddleware from "./middleware/tracking";
 import * as serviceWorker from "./serviceWorker";
 
 import { Firestore } from "types/Firestore";
@@ -77,7 +79,7 @@ const rrfConfig = {
 };
 
 firebase.initializeApp(FIREBASE_CONFIG);
-const analytics = firebase.analytics();
+firebase.analytics();
 firebase.auth();
 firebase.firestore();
 
@@ -104,7 +106,6 @@ const store = createStore(
   composeWithDevTools(
     applyMiddleware(
       thunkMiddleware,
-      trackingMiddleware(analytics),
       LogRocket.reduxMiddleware() // logrocket needs to be last
     )
   )
@@ -188,6 +189,10 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
+if (MIXPANEL_PROJECT_TOKEN) {
+  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
+}
+
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
@@ -196,10 +201,19 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   useEffect(() => {
     if (!auth || !auth.uid) return;
 
-    LogRocket.identify(auth.uid, {
-      displayName: auth.displayName || "N/A",
-      email: auth.email || "N/A",
-    });
+    const displayName = auth.displayName || "N/A";
+    const email = auth.email || "N/A";
+
+    if (LOGROCKET_APP_ID) {
+      LogRocket.identify(auth.uid, {
+        displayName,
+        email,
+      });
+    }
+
+    if (MIXPANEL_PROJECT_TOKEN) {
+      mixpanel.identify(email);
+    }
   }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;

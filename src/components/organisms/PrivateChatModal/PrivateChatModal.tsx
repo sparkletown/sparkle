@@ -15,7 +15,7 @@ import { useUser } from "hooks/useUser";
 // Utils | Settings | Constants
 import { DEFAULT_PARTY_NAME } from "settings";
 import { formatUtcSeconds } from "utils/time";
-import { setPrivateChatMessageIsRead } from "./helpers";
+import { setPrivateChatMessageIsRead } from "../../molecules/ChatsList/helpers";
 import { WithId } from "utils/id";
 
 // Typings

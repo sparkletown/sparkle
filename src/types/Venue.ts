@@ -94,6 +94,7 @@ export interface Venue {
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
+  showBadges?: boolean;
 }
 
 export interface VenueConfig {

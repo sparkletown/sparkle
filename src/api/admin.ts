@@ -1,5 +1,5 @@
 import firebase, { UserInfo } from "firebase/app";
-import _ from "lodash";
+import { omit } from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
@@ -156,7 +156,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   }
 
   const firestoreVenueInput: FirestoreVenueInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
@@ -205,7 +205,7 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
