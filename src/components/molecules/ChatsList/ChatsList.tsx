@@ -66,18 +66,15 @@ const ChatsList: React.FunctionComponent = () => {
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatQuery = useMemo(() => {
-    if (!chatUsers) {
-      if (hasElements(chatUserIds)) {
-        return {
-          collection: "users",
-          where: chatUsersOption,
-          storeAs: "chatUsers",
-        };
-      }
-      return undefined;
-    }
-    return undefined;
-  }, [chatUserIds, chatUsers, chatUsersOption]);
+    if (!hasElements(chatUserIds)) return;
+    return [
+      {
+        collection: "users",
+        where: chatUsersOption,
+        storeAs: "chatUsers",
+      },
+    ];
+  }, [chatUserIds, chatUsersOption]);
 
   useFirestoreConnect(chatQuery);
 
@@ -168,8 +165,6 @@ const ChatsList: React.FunctionComponent = () => {
 
   const userUid = user?.uid;
   const privateMessageList = useMemo(() => {
-    if (!selectedUser) return null;
-
     return discussions.map((userId: string) => {
       const sender = { ...chatUsers![userId], id: userId };
       const lastMessageExchanged =
@@ -222,7 +217,6 @@ const ChatsList: React.FunctionComponent = () => {
     discussionPartnerWithLastMessageExchanged,
     discussions,
     onClickOnSender,
-    selectedUser,
     userUid,
   ]);
 
