@@ -127,7 +127,7 @@ export const Badges: React.FC<{
       badges.filter(notEmpty).map((badge) => (
         <li className="badge-list-item" key={badge.label}>
           <Link to={getLocationLink(badge.venue, badge.room)}>
-            <BadgeImage image={badge.image} />
+            <BadgeImage image={badge.image} name={badge.venue.name} />
           </Link>
         </li>
       )),
