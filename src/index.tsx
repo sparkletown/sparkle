@@ -165,7 +165,7 @@ if (BUGSNAG_API_KEY) {
     plugins: [new BugsnagPluginReact()],
     appType: "client",
     appVersion: BUILD_SHA1,
-    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE], // don't track errors in development/test
+    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE, SPARKLE1], // don't track errors in development/test
     releaseStage: releaseStage(),
     maxEvents: 25,
     metadata: {
