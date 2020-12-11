@@ -2,18 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { chunk } from "lodash";
 import { User } from "@bugsnag/js";
 
-import { Link } from "react-router-dom";
 import { useFirestore } from "react-redux-firebase";
 
-import { DEFAULT_AVATAR_IMAGE, PLAYA_VENUE_NAME } from "settings";
+import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { CampRoomData } from "types/CampRoomData";
 import { isVenueWithRooms } from "types/CampVenue";
 import { AnyVenue, UserVisit } from "types/Firestore";
 import { Venue } from "types/Venue";
 
 import { WithId } from "utils/id";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isTruthy, notEmpty } from "utils/types";
 
 import { BadgeImage } from "./BadgeImage";
@@ -126,9 +123,7 @@ export const Badges: React.FC<{
     () =>
       badges.filter(notEmpty).map((badge) => (
         <li className="badge-list-item" key={badge.label}>
-          <Link to={getLocationLink(badge.venue, badge.room)}>
-            <BadgeImage image={badge.image} name={badge.venue.name} />
-          </Link>
+          <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>
       )),
     [badges]
@@ -187,16 +182,4 @@ const findVenueAndRoomByName = (
       isVenueWithRooms(venue) &&
       venue.rooms?.find((r) => r.title === nameOrRoomTitle),
   };
-};
-
-const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
-  if (venue.name === PLAYA_VENUE_NAME) {
-    return venueInsideUrl(venue.id);
-  }
-
-  if (room) {
-    return venuePreviewUrl(venue.id, room.title);
-  }
-
-  return venueInsideUrl(venue.id);
 };
