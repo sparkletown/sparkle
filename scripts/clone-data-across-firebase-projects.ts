@@ -1,7 +1,28 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { resolve } from "path";
+
 import { AnyVenue } from "../src/types/Firestore";
+
 import { initFirebaseAdminApp } from "./lib/helpers";
+
+// ---------------------------------------------------------
+// Configuration (this is the bit you should edit)
+// ---------------------------------------------------------
+
+const SOURCE_PROJECT_ID = "co-reality-map";
+const DEST_PROJECT_ID = "co-reality-staging";
+
+const SOURCE_CREDENTIAL_FILE =
+  "co-reality-map-firebase-adminsdk-47j7x-530045073b.json";
+const DEST_CREDENTIAL_FILE =
+  "co-reality-staging-firebase-adminsdk-yy5cq-5fd568c2f4.json";
+
+const VENUES_TO_CLONE = ["wayspace"];
+
+// ---------------------------------------------------------
+// HERE THERE BE DRAGONS (edit below here at your own risk)
+// ---------------------------------------------------------
 
 const CONFIRM_VALUE = "i-have-edited-the-script-and-am-sure";
 
@@ -26,13 +47,15 @@ if (confirmationCheck !== CONFIRM_VALUE) {
   usage();
 }
 
-const SOURCE_PROJECT_ID = "co-reality-map";
-const DEST_PROJECT_ID = "co-reality-staging";
+const sourceApp = initFirebaseAdminApp(SOURCE_PROJECT_ID, {
+  appName: "sourceApp",
+  credentialPath: resolve(__dirname, SOURCE_CREDENTIAL_FILE),
+});
 
-const VENUES_TO_CLONE = ["wayspace"];
-
-const sourceApp = initFirebaseAdminApp(SOURCE_PROJECT_ID, "sourceApp");
-const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, "destApp");
+const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
+  appName: "destApp",
+  credentialPath: resolve(__dirname, DEST_CREDENTIAL_FILE),
+});
 
 // TODO: do we need to copy roles across?
 // TODO: venues (owners will need to be changed)
@@ -65,10 +88,7 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, "destApp");
 
   wantedSourceVenues.forEach((venue) => {
     const { id, ...venueData } = venue;
-    const destVenueRef = destApp
-      .firestore()
-      .collection("venues")
-      .doc(`devaliastest${id}`);
+    const destVenueRef = destApp.firestore().collection("venues").doc(id);
     console.log(id, destVenueRef);
 
     destAppBatch.set(destVenueRef, venueData);
