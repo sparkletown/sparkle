@@ -175,6 +175,7 @@ workflows:
                 - master
                 - staging
                 - sparkleverse
+                - sparkle1
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -184,6 +185,7 @@ workflows:
                 - master
                 - staging
                 - sparkleverse
+                - sparkle1
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
