@@ -244,7 +244,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                       ref={registerBandMessage({ required: true })}
                       isMessageToTheBandSent={isMessageToTheBandSent}
-                      placeholder="Shout out to the band"
+                      placeholder="Shout out..."
                     />
                   </div>
                 </div>
