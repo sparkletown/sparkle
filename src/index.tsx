@@ -124,6 +124,7 @@ if (BUGSNAG_API_KEY) {
   const STAGING = "staging";
   const PRODUCTION = "production";
   const SPARKLEVERSE = "sparkleverse";
+  const SPARKLE1 = "sparkle1";
 
   const releaseStage = () => {
     if (
@@ -152,6 +153,10 @@ if (BUGSNAG_API_KEY) {
       return SPARKLEVERSE;
     }
 
+    if (BUILD_BRANCH?.includes(SPARKLE1)) {
+      return SPARKLE1;
+    }
+
     return process.env.NODE_ENV;
   };
 
@@ -160,7 +165,7 @@ if (BUGSNAG_API_KEY) {
     plugins: [new BugsnagPluginReact()],
     appType: "client",
     appVersion: BUILD_SHA1,
-    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE], // don't track errors in development/test
+    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE, SPARKLE1], // don't track errors in development/test
     releaseStage: releaseStage(),
     maxEvents: 25,
     metadata: {

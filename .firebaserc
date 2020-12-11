@@ -39,6 +39,13 @@
           "sparkle-verse"
         ]
       }
+    },
+    "sparkle1": {
+      "hosting": {
+        "sparkle-1": [
+          "sparkle1"
+        ]
+      }
     }
   }
 }
