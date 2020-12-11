@@ -9,7 +9,7 @@ export const AudienceRouter: React.FunctionComponent = () => {
   return (
     <Switch>
       <Route path={`${match.url}/admin`} component={VideoAdmin} />
-      <Route path={`${match.url}/`} render={() => <Audience />} />
+      <Route path={`${match.url}/`} component={Audience} />
     </Switch>
   );
 };
