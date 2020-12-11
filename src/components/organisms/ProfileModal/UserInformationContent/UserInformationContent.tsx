@@ -31,6 +31,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
   const history = useHistory();
   const firebase = useFirebase();
+
   const logout = () => {
     firebase.auth().signOut();
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
@@ -38,7 +39,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     history.push(IS_BURN ? "/enter" : venueId ? venueLandingUrl(venueId) : "/");
   };
 
-  if (!user) return <></>;
+  if (!user) return null;
 
   const toggleKidsMode = () => {
     if (profile) {
@@ -64,6 +65,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
+
       <div className="user-information">
         <img
           className="profile-icon profile-modal-avatar"
@@ -79,6 +81,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           <div className="ellipsis-text">{user.email}</div>
         </div>
       </div>
+
       {profileQuestions &&
         profileQuestions.map((question: QuestionType) => (
           <div key={question.name} className="question-section">
@@ -92,6 +95,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
         ))}
+
       {IS_BURN && (
         <>
           <label
@@ -122,12 +126,14 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           />
         </>
       )}
+
       <label
         htmlFor="chk-mirrorVideo"
         className={`checkbox ${profile?.mirrorVideo && "checkbox-checked"}`}
       >
         Mirror my video
       </label>
+
       <input
         type="checkbox"
         name="mirrorVideo"
@@ -135,18 +141,21 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         defaultChecked={profile?.mirrorVideo || false}
         onClick={() => toggleMirrorVideo()}
       />
+
       <input
         className="btn button btn-primary"
         value="Edit profile"
         onClick={() => setIsEditMode(true)}
         type="button"
       />
+
       <input
         className="btn button"
         value="Change password"
         type="button"
         onClick={() => setIsPasswordEditMode(true)}
       />
+
       <input
         className="btn button"
         value="Log out"
