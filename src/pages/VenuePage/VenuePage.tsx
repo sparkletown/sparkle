@@ -39,8 +39,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { ChatContextWrapper } from "components/context/ChatContext";
-
 import { FriendShipPage } from "pages/FriendShipPage";
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -372,9 +370,7 @@ const VenuePage = () => {
   }
 
   return (
-    <ChatContextWrapper>
-      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
-    </ChatContextWrapper>
+    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
   );
 };
 
