@@ -13,7 +13,7 @@ export const useReactions = (venueId?: string) => {
     firebase
       .firestore()
       .collection(`experiences/${venueId}/reactions`)
-      .where("created_at", ">", new Date().getTime())
+      .where("created_at", ">", Date.now())
       .onSnapshot((snapshot) => {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
