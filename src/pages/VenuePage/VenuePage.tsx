@@ -96,6 +96,8 @@ const VenuePage = () => {
   const retainAttendance = useSelector(shouldRetainAttendanceSelector);
 
   const venueName = venue?.name ?? "";
+  const venueTemplate = venue?.template;
+
   const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
 
   const updateUserLocation = useCallback(() => {
@@ -239,8 +241,6 @@ const VenuePage = () => {
       : undefined
   );
 
-  const venueTemplate = venue.template;
-
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
       mixpanel.track("VenuePage loaded", {
@@ -249,6 +249,7 @@ const VenuePage = () => {
       });
     }
   }, [user, profile, venueId, venueTemplate, mixpanel]);
+
   if (!user) {
     return <Login formType="initial" />;
   }
