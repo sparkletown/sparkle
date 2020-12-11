@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import _ from "lodash";
 import { User } from "@bugsnag/js";
 
 import { Link } from "react-router-dom";
@@ -31,7 +32,7 @@ export const Badges: React.FC<{
     const userSnapshot = await firestore.collection("users").doc(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
 
-    const visits =
+    const visits: WithId<UserVisit>[] =
       visitsSnapshot.docs.map(
         (visitSnapshot) =>
           ({ ...visitSnapshot.data(), id: visitSnapshot.id } as WithId<
@@ -39,11 +40,18 @@ export const Badges: React.FC<{
           >)
       ) ?? [];
 
-    const venuesRequests = visits.map((visit) =>
-      firestore.collection("venues").where("name", "==", visit.id).get()
+    const venuesRequests = _.chunk(visits, 10).map((visitChunk) =>
+      firestore
+        .collection("venues")
+        .where(
+          "name",
+          "in",
+          visitChunk.map((visit) => visit.id)
+        )
+        .get()
     );
 
-    const venues: WithId<AnyVenue>[] = [];
+    let venues: WithId<AnyVenue>[] = [];
     const hasVenuesRequests = isTruthy(venuesRequests);
 
     // If there are no venues visited avoid sending the request.
@@ -52,12 +60,13 @@ export const Badges: React.FC<{
 
       // Promise all returns arrays as response. That's why there is so much depth.
       // TODO: Same logic can be used for the private chats as well.
-      requestSnapshots.forEach((venuesSnapshot) =>
-        venuesSnapshot.docs.forEach((venueSnapshot) =>
-          venues.push({
-            ...venueSnapshot.data(),
-            id: venueSnapshot.id,
-          } as WithId<AnyVenue>)
+      venues = requestSnapshots.flatMap((venuesSnapshot) =>
+        venuesSnapshot.docs.map(
+          (venueSnapshot) =>
+            ({
+              ...venueSnapshot.data(),
+              id: venueSnapshot.id,
+            } as WithId<AnyVenue>)
         )
       );
     }

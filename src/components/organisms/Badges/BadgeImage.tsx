@@ -17,8 +17,8 @@ export const BadgeImage: React.FC<{
     <img
       className="badge-list-item-image"
       ref={imageRef}
-      src={image}
-      alt={""}
+      src={image ?? defaultAvatar}
+      alt="Badge"
       onError={changeBadgeImage}
     />
   );
