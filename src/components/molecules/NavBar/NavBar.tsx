@@ -47,6 +47,7 @@ import { NavBarLogin } from "./NavBarLogin";
 
 import "./NavBar.scss";
 import "./playa.scss";
+import { VenueTemplate } from "types/VenueTemplate";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -181,7 +182,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   if (!venueId || !venue) return null;
 
-  const isVenueUsingPartyMap = venue.template === "partymap";
+  const isVenueUsingPartyMap = venue.template === VenueTemplate.partymap;
 
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
