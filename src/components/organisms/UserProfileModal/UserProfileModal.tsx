@@ -23,6 +23,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";
+import { isTruthy } from "utils/types";
 
 type PropTypes = {
   show: boolean;
@@ -71,6 +72,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   }
 
   const usersById = { [userProfile.id]: userProfile };
+
+  const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -124,7 +127,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          <Badges user={userProfile} currentVenue={venue} />
+          {showBadges && <Badges user={userProfile} currentVenue={venue} />}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <Chatbox

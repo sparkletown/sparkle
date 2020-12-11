@@ -1,6 +1,6 @@
 import React, { useState, useMemo, FC } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
-import _ from "lodash";
+import { range } from "lodash";
 
 import { AnyVenue } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -51,7 +51,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
     const nowDay = startOfDay(new Date());
 
-    const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
+    const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
       const todaysEvents = liveAndFutureEvents
