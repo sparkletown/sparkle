@@ -241,15 +241,16 @@ const VenuePage = () => {
       : undefined
   );
 
+  const venueTemplate = venue.template;
+  
   useEffect(() => {
-    if (user && profile && venue && venueId) {
+    if (user && profile && venueId && venueTemplate) {
       mixpanel.track()("VenuePage loaded", {
-        venueId: venue.id,
-        template: venue.template,
+        venueId,
+        template: venueTemplate,
       });
     }
-  }, [user, profile, venue, venueId, mixpanel]);
-
+  }, [user, profile, venueId, venueTemplate, mixpanel]);
   if (!user) {
     return <Login formType="initial" />;
   }
