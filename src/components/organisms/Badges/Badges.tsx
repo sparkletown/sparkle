@@ -15,6 +15,8 @@ import { isTruthy, notEmpty } from "utils/types";
 
 import { BadgeImage } from "./BadgeImage";
 
+import "./Badges.scss";
+
 export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<Venue>;
@@ -138,7 +140,7 @@ export const Badges: React.FC<{
   }
 
   return (
-    <>
+    <div className="badges-component">
       <div className="visits">
         <div className="visit-item">
           <span className="visit-item__value">
@@ -146,7 +148,9 @@ export const Badges: React.FC<{
           </span>
           <span className="visit-item__label">Time spent in Sparkle</span>
         </div>
-        <div className="separator" />
+
+        <div className="visit-separator" />
+
         <div className="visit-item">
           <span className="visit-item__value">
             {relevantVisits?.length ?? 0}
@@ -154,11 +158,12 @@ export const Badges: React.FC<{
           <span className="visit-item__label">Venues visited</span>
         </div>
       </div>
+
       <div className="badges-container">
         <div className="badges-title">{badges.length} Badges</div>
         <ul className="badge-list">{badgeList}</ul>
       </div>
-    </>
+    </div>
   );
 };
 
