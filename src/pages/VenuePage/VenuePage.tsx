@@ -241,6 +241,15 @@ const VenuePage = () => {
       : undefined
   );
 
+  useEffect(() => {
+    if (user && profile && venue && venueId) {
+      mixpanel.track()("VenuePage loaded", {
+        venueId: venue.id,
+        template: venue.template,
+      });
+    }
+  }, [user, profile, venue, venueId, mixpanel]);
+
   if (!user) {
     return <Login formType="initial" />;
   }
@@ -301,9 +310,6 @@ const VenuePage = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-useEffect(() => {
-  mixpanel.track("VenuePage loaded", { venueId: venue.id, template: venue.template });
-}, []) 
   let template;
   let fullscreen = false;
   switch (venue.template) {
