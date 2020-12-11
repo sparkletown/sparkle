@@ -66,7 +66,7 @@ const ChatsList: React.FunctionComponent = () => {
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatQuery = useMemo(() => {
-    if (!hasElements(chatUserIds)) return;
+    if (!hasElements(chatUserIds)) return undefined;
     return [
       {
         collection: "users",
