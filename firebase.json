@@ -52,7 +52,7 @@
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
     },
     {
-      "target": "sparkle1",
+      "target": "sparkle-1",
       "public": "build",
       "rewrites": [
         {
