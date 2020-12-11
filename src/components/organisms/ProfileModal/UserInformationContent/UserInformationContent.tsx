@@ -1,6 +1,6 @@
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import React from "react";
+import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
@@ -37,33 +37,34 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const history = useHistory();
   const firebase = useFirebase();
 
-  const logout = () => {
-    firebase.auth().signOut();
+  const logout = useCallback(async () => {
+    await firebase.auth().signOut();
+
     // we need to hide the modal because if we already are on the Entrance Page, history.push has no effect
     hideModal();
     history.push(IS_BURN ? "/enter" : venueId ? venueLandingUrl(venueId) : "/");
-  };
+  }, [firebase, hideModal, history, venueId]);
 
-  const toggleKidsMode = () => {
+  const toggleKidsMode = useCallback(async () => {
     if (user && profile) {
       profile.kidsMode = !profile?.kidsMode;
-      updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
+      await updateUserProfile(user.uid, { kidsMode: profile.kidsMode });
     }
-  };
+  }, [profile, user]);
 
-  const toggleAnonMode = () => {
+  const toggleAnonMode = useCallback(async () => {
     if (user && profile) {
       profile.anonMode = !profile?.anonMode;
-      updateUserProfile(user.uid, { anonMode: profile.anonMode });
+      await updateUserProfile(user.uid, { anonMode: profile.anonMode });
     }
-  };
+  }, [profile, user]);
 
-  const toggleMirrorVideo = () => {
+  const toggleMirrorVideo = useCallback(async () => {
     if (user && profile) {
       profile.mirrorVideo = !profile?.mirrorVideo;
-      updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
+      await updateUserProfile(user.uid, { mirrorVideo: profile.mirrorVideo });
     }
-  };
+  }, [profile, user]);
 
   if (!user || !userWithId) return null;
 
