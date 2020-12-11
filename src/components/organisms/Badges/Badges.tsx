@@ -5,7 +5,7 @@ import { User } from "@bugsnag/js";
 import { Link } from "react-router-dom";
 import { useFirestore } from "react-redux-firebase";
 
-import { PLAYA_VENUE_NAME } from "settings";
+import { DEFAULT_AVATAR_IMAGE, PLAYA_VENUE_NAME } from "settings";
 
 import { CampRoomData } from "types/CampRoomData";
 import { isVenueWithRooms } from "types/CampVenue";
@@ -115,7 +115,7 @@ export const Badges: React.FC<{
 
         return {
           venue,
-          image: venue?.host?.icon,
+          image: venue?.host?.icon ?? DEFAULT_AVATAR_IMAGE,
           label: venue.name,
         };
       })

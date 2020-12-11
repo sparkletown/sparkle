@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from "react";
-
-const defaultAvatar = "/icons/sparkle-nav-logo.png";
+import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 export const BadgeImage: React.FC<{
   image?: string;
@@ -11,14 +10,14 @@ export const BadgeImage: React.FC<{
   const changeBadgeImage = useCallback(() => {
     if (!imageRef.current) return;
 
-    imageRef.current.src = defaultAvatar;
+    imageRef.current.src = DEFAULT_AVATAR_IMAGE;
   }, []);
 
   return (
     <img
       className="badge-list-item-image"
       ref={imageRef}
-      src={image ?? defaultAvatar}
+      src={image ?? DEFAULT_AVATAR_IMAGE}
       alt={`${name} Badge`}
       onError={changeBadgeImage}
     />
