@@ -13,12 +13,15 @@ export const BadgeImage: React.FC<{
     imageRef.current.src = DEFAULT_AVATAR_IMAGE;
   }, []);
 
+  const badgeLabel = `${name} Badge`;
+
   return (
     <img
       className="badge-list-item-image"
       ref={imageRef}
       src={image ?? DEFAULT_AVATAR_IMAGE}
-      alt={`${name} Badge`}
+      title={badgeLabel}
+      alt={badgeLabel}
       onError={changeBadgeImage}
     />
   );
