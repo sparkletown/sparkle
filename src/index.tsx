@@ -124,6 +124,7 @@ if (BUGSNAG_API_KEY) {
   const STAGING = "staging";
   const PRODUCTION = "production";
   const SPARKLEVERSE = "sparkleverse";
+  const SPARKLE1 = "sparkle1";
 
   const releaseStage = () => {
     if (
@@ -150,6 +151,10 @@ if (BUGSNAG_API_KEY) {
 
     if (BUILD_BRANCH?.includes(SPARKLEVERSE)) {
       return SPARKLEVERSE;
+    }
+
+    if (BUILD_BRANCH?.includes(SPARKLE1)) {
+      return SPARKLE1;
     }
 
     return process.env.NODE_ENV;

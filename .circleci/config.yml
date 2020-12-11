@@ -130,9 +130,9 @@ jobs:
             fi
             if [ $CIRCLE_BRANCH = "sparkle1" ]; then
               PREFIX=SPARKLE1_
-              ENV=prod
+              ENV=sparkle1
               TARGET=sparkle1
-              RELEASE_STAGE=production
+              RELEASE_STAGE=sparkle1
             fi
 
             ./scripts/init-env.sh $PREFIX
