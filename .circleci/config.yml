@@ -116,7 +116,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "master" ]; then
               PREFIX=PROD_
               ENV=prod
-              TARGET=co-reality-map
+              TARGETS=co-reality-map,sparkle1,sparkle2,sparkle3
               RELEASE_STAGE=production
             fi
             if [ $CIRCLE_BRANCH = "sparkleverse" ]; then
@@ -131,7 +131,18 @@ jobs:
             npm run build -- --profile
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-            ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+
+            if [ ! -z "$TARGET" ]; then
+              ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+            fi
+
+            if [ ! -z "$TARGETS" ]; then
+              # Split $TARGETS by "," in the below for-loop
+              export IFS=","
+              for TARGET in $TARGETS; do
+                ./node_modules/.bin/firebase deploy --only hosting:$TARGET --token "$FIREBASE_TOKEN"
+              done
+            fi
 
             # Notify Bugsnag that the application has been deployed
             curl https://build.bugsnag.com/ \
