@@ -10,11 +10,7 @@ import React, {
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
-import {
-  currentVenueSelectorData,
-  venueChatsSelector,
-  venueUsersSelectorData,
-} from "utils/selectors";
+import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
 
 import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
@@ -35,7 +31,6 @@ const VenueChat: FC = () => {
   useConnectVenueUsers();
 
   const venueId = useVenueId();
-  const venueUsers = useSelector(venueUsersSelectorData) ?? {};
   const { userRoles } = useRoles();
   const { user } = useUser();
 
@@ -91,7 +86,6 @@ const VenueChat: FC = () => {
 
   return (
     <ChatBox
-      usersById={venueUsers}
       allowDelete={allowDelete}
       chats={chatsToDisplay}
       onMessageSubmit={submitMessage}
