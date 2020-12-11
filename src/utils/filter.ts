@@ -4,8 +4,7 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { CampRoomData } from "types/CampRoomData";
 
-import { chatSort } from "utils/chat";
-import { PrivateChatMessage } from "store/actions/Chat";
+import { chatSort, PrivateChatMessage } from "components/context/ChatContext";
 
 import { WithId } from "./id";
 import { isWithinBounds } from "./isWithinBounds";

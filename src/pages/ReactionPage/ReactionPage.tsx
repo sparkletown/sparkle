@@ -6,7 +6,7 @@ import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 import { useSelector } from "hooks/useSelector";
-import { MessageToTheBandReaction } from "utils/reactions";
+import { MessageToTheBandReaction } from "components/context/ExperienceContext";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
