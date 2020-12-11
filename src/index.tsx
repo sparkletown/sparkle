@@ -204,10 +204,13 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
     const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
 
-    LogRocket.identify(auth.uid, {
-      displayName,
-      email,
-    });
+    if (LOGROCKET_APP_ID) {
+      LogRocket.identify(auth.uid, {
+        displayName,
+        email,
+      });
+    }
+
     if (MIXPANEL_PROJECT_TOKEN) {
       mixpanel.identify(email);
     }
