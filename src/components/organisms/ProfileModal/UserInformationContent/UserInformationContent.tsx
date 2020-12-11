@@ -6,11 +6,15 @@ import { useHistory } from "react-router-dom";
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
+import { Badges } from "components/organisms/Badges";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
 import { useVenueId } from "hooks/useVenueId";
 import { venueLandingUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
+import {
+  currentVenueSelector,
+  currentVenueSelectorData,
+} from "utils/selectors";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -23,11 +27,12 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsPasswordEditMode,
   hideModal,
 }) => {
-  const { user, profile } = useUser();
+  const { user, profile, userWithId } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
   );
   const venueId = useVenueId();
+  const venue = useSelector(currentVenueSelector);
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -60,7 +65,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  if (!user) return null;
+  if (!user || !userWithId) return null;
 
   return (
     <>
@@ -126,6 +131,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           />
         </>
       )}
+
+      {venue?.showBadges && <Badges user={userWithId} currentVenue={venue} />}
 
       <label
         htmlFor="chk-mirrorVideo"
