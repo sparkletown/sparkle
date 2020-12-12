@@ -85,7 +85,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const venueUsers = useMemo(() => {
     if (!users) return [];
 
-    users.filter(
+    return users.filter(
       (user) =>
         !!user.lastSeenIn &&
         user.lastSeenIn[venueToUse?.name ?? ""] >
