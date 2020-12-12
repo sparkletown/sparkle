@@ -80,7 +80,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
 
-  // TODO: we've memoed this, but also maybe we can use the useCampPartygoers hook that does this sort of thing already?
+  // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
+  const venueToUseName = venueToUse?.name;
   const users = useSelector(partygoersSelector);
   const venueUsers = useMemo(() => {
     if (!users) return [];
@@ -88,10 +89,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     return users.filter(
       (user) =>
         !!user.lastSeenIn &&
-        user.lastSeenIn[venueToUse?.name ?? ""] >
+        user.lastSeenIn[venueToUseName ?? ""] >
           (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
     );
-  }, [nowMs, users, venueToUse?.name]);
+  }, [nowMs, users, venueToUseName]);
 
   const experienceContext = useContext(ExperienceContext);
 
