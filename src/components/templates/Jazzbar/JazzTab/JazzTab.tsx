@@ -58,13 +58,15 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useFirestoreConnect([
-    {
-      collection: "experiences",
-      doc: venue?.name,
-      storeAs: "experiences",
-    },
-  ]);
+  useFirestoreConnect(
+    venue?.name
+      ? {
+          collection: "experiences",
+          doc: venue.name,
+          storeAs: "experiences",
+        }
+      : undefined
+  );
 
   const { user } = useUser();
 
