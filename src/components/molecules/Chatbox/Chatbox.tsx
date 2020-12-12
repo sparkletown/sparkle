@@ -29,7 +29,7 @@ interface ChatboxProps {
   isVenueChat?: boolean;
 }
 
-// TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
+// @debt TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
 const ChatBox: React.FC<ChatboxProps> = ({
   allowDelete,
   chats,
