@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -49,6 +49,14 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
+const createReaction = (reaction: ReactionType, user: UserInfo) => {
+  return {
+    created_at: Date.now(),
+    created_by: user.uid,
+    ...reaction,
+  };
+};
+
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   useFirestoreConnect([
     {
@@ -58,42 +66,37 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     },
   ]);
 
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
   const { user } = useUser();
 
   const firestoreVenue = useSelector(currentVenueSelectorData);
-  const users = useSelector(partygoersSelector);
 
   const venueToUse = venue ? venue : firestoreVenue;
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  const venueUsers = users
-    ? users.filter(
-        (user) =>
-          !!user.lastSeenIn &&
-          user.lastSeenIn[venueToUse?.name ?? ""] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  // TODO: this will break memo on venueUsers (below) every 5min, does that matter?
+  const [nowMs, setNowMs] = useState(Date.now());
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
+
+  // TODO: we've memoed this, but also maybe we can use the useCampPartygoers hook that does this sort of thing already?
+  const users = useSelector(partygoersSelector);
+  const venueUsers = useMemo(() => {
+    if (!users) return [];
+
+    users.filter(
+      (user) =>
+        !!user.lastSeenIn &&
+        user.lastSeenIn[venueToUse?.name ?? ""] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+    );
+  }, [nowMs, users, venueToUse?.name]);
 
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-
-  function createReaction(reaction: ReactionType, user: UserInfo) {
-    return {
-      created_at: new Date().getTime(),
-      created_by: user.uid,
-      ...reaction,
-    };
-  }
 
   const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     experienceContext &&
