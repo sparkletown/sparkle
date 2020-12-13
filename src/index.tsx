@@ -123,7 +123,19 @@ if (BUGSNAG_API_KEY) {
   const TEST = "test";
   const STAGING = "staging";
   const PRODUCTION = "production";
-  const SPARKLE_ENVS = ["sparkleverse", "sparkle1", "sparkle2"];
+  const SPARKLE_ENVS = [
+    "sparkleverse",
+    "sparkle1",
+    "sparkle2",
+    "sparkle3",
+    "sparkle4",
+    "sparkle5",
+    "sparkle6",
+    "sparkle7",
+    "sparkle8",
+    "sparkle9",
+    "sparkle10",
+  ];
 
   const releaseStage = () => {
     if (
