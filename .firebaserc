@@ -5,7 +5,7 @@
     "prod": "co-reality-map",
     "sparkleverse": "sparkle-verse",
     "sparkle1": "sparkle-1",
-    "sparkle2": "sparkle-2"
+    "sparkle2": "sparkle-2a"
   },
   "targets": {
     "co-reality-map": {
@@ -49,7 +49,7 @@
         ]
       }
     },
-    "sparkle-2": {
+    "sparkle-2a": {
       "hosting": {
         "sparkle-2": [
           "sparkle-2a"
