@@ -96,6 +96,33 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle1" ]; then
               ENV=sparkle-1
             fi
+            if [ $CIRCLE_BRANCH = "sparkle2" ]; then
+              ENV=sparkle-2a
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle3" ]; then
+              ENV=sparkle-3
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle4" ]; then
+              ENV=sparkle-4
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle5" ]; then
+              ENV=sparkle-5
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle6" ]; then
+              ENV=sparkle-6
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+              ENV=sparkle-7
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle8" ]; then
+              ENV=sparkle-8
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle9" ]; then
+              ENV=sparkle-9
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle10" ]; then
+              ENV=sparkle-10
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -133,6 +160,60 @@ jobs:
               ENV=sparkle-1
               TARGET=sparkle-1
               RELEASE_STAGE=sparkle1
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle2" ]; then
+              PREFIX=SPARKLE2_
+              ENV=sparkle-2a
+              TARGET=sparkle-2a
+              RELEASE_STAGE=sparkle2
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle3" ]; then
+              PREFIX=SPARKLE3_
+              ENV=sparkle-3
+              TARGET=sparkle-3
+              RELEASE_STAGE=sparkle3
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle4" ]; then
+              PREFIX=SPARKLE4_
+              ENV=sparkle-4
+              TARGET=sparkle-4
+              RELEASE_STAGE=sparkle4
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle5" ]; then
+              PREFIX=SPARKLE5_
+              ENV=sparkle-5
+              TARGET=sparkle-5
+              RELEASE_STAGE=sparkle5
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle6" ]; then
+              PREFIX=SPARKLE6_
+              ENV=sparkle-6
+              TARGET=sparkle-6
+              RELEASE_STAGE=sparkle6
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+              PREFIX=SPARKLE7_
+              ENV=sparkle-7
+              TARGET=sparkle-7
+              RELEASE_STAGE=sparkle7
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle8" ]; then
+              PREFIX=SPARKLE8_
+              ENV=sparkle-8
+              TARGET=sparkle-8
+              RELEASE_STAGE=sparkle8
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle9" ]; then
+              PREFIX=SPARKLE9_
+              ENV=sparkle-9
+              TARGET=sparkle-9
+              RELEASE_STAGE=sparkle9
+            fi
+            if [ $CIRCLE_BRANCH = "sparkle10" ]; then
+              PREFIX=SPARKLE10_
+              ENV=sparkle-10
+              TARGET=sparkle-10
+              RELEASE_STAGE=sparkle10
             fi
 
             ./scripts/init-env.sh $PREFIX
@@ -176,6 +257,15 @@ workflows:
                 - staging
                 - sparkleverse
                 - sparkle1
+                - sparkle2
+                - sparkle3
+                - sparkle4
+                - sparkle5
+                - sparkle6
+                - sparkle7
+                - sparkle8
+                - sparkle9
+                - sparkle10
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -186,6 +276,15 @@ workflows:
                 - staging
                 - sparkleverse
                 - sparkle1
+                - sparkle2
+                - sparkle3
+                - sparkle4
+                - sparkle5
+                - sparkle6
+                - sparkle7
+                - sparkle8
+                - sparkle9
+                - sparkle10
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
