@@ -4,18 +4,29 @@ const admin = require("firebase-admin");
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
+const functionsConfig = functions.config();
+
+console.log("functions.config()", JSON.stringify(functionsConfig, null, 2));
+
+if (!functionsConfig) throw new Error("failed: functionsConfig missing");
+if (!functionsConfig.project)
+  throw new Error("failed: functionsConfig.project missing");
+if (!functionsConfig.project.id)
+  throw new Error("failed: functionsConfig.project.id missing");
+
 const firebaseConfig = {
-  projectId: functions.config().project.id,
+  projectId: functionsConfig.project.id,
 };
 firebase.initializeApp(firebaseConfig);
 
 admin.initializeApp({
   ...firebaseConfig,
   credential: admin.credential.cert({
-    ...functions.config().service_account,
-    private_key: functions
-      .config()
-      .service_account.private_key.replace(/\\n/g, "\n"),
+    ...functionsConfig.service_account,
+    private_key: functionsConfig.service_account.private_key.replace(
+      /\\n/g,
+      "\n"
+    ),
   }),
 });
 
