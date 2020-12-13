@@ -97,7 +97,7 @@ jobs:
               ENV=sparkle-1
             fi
             if [ $CIRCLE_BRANCH = "sparkle2" ]; then
-              ENV=sparkle-2
+              ENV=sparkle-2a
             fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
@@ -139,8 +139,8 @@ jobs:
             fi
             if [ $CIRCLE_BRANCH = "sparkle2" ]; then
               PREFIX=SPARKLE2_
-              ENV=sparkle-2
-              TARGET=sparkle-2
+              ENV=sparkle-2a
+              TARGET=sparkle-2a
               RELEASE_STAGE=sparkle2
             fi
 
