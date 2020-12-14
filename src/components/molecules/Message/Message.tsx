@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "types/User";
-import { RestrictedChatMessage } from "store/actions/Chat";
+import { RestrictedChatMessage } from "components/context/ChatContext";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,

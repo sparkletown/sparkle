@@ -1,17 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import { User } from "types/User";
+import { ChatContext } from "components/context/ChatContext";
 import { WithId } from "utils/id";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useDispatch } from "hooks/useDispatch";
-import { useVenueId } from "hooks/useVenueId";
-import {
-  sendGlobalChat,
-  sendPrivateChat,
-  sendRoomChat,
-  sendTableChat,
-} from "store/actions/Chat";
 
 // Prevent spamming the chatbox
 const TIME_BETWEEN_SENDS_MILLIS = 2000;
@@ -33,7 +26,6 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
   table,
   setIsRecipientChangeBlocked,
 }) => {
-  const venueId = useVenueId();
   const [text, setText] = useState("");
   const [longEnoughSinceLastSend, setLongEnoughSinceLastSend] = useState(true);
 
@@ -41,7 +33,16 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     setText(e.target.value);
   }
 
-  const dispatch = useDispatch();
+  const chatContext = useContext(ChatContext);
+
+  if (!chatContext) return <></>;
+
+  const {
+    sendPrivateChat,
+    sendGlobalChat,
+    sendRoomChat,
+    sendTableChat,
+  } = chatContext;
 
   const sendMessage = (
     type: string,
@@ -52,43 +53,16 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     if (!currentUserUID) return;
     switch (type) {
       case "private":
-        if (!discussionPartner) return;
-        return dispatch(
-          sendPrivateChat({
-            from: currentUserUID,
-            to: discussionPartner.id,
-            text,
-          })
+        return (
+          discussionPartner &&
+          sendPrivateChat(currentUserUID, discussionPartner.id, text)
         );
       case "global":
-        if (!venueId) return;
-        return dispatch(
-          sendGlobalChat({
-            venueId,
-            from: currentUserUID,
-            text,
-          })
-        );
+        return sendGlobalChat(currentUserUID, text);
       case "room":
-        if (!room || !venueId) return;
-        return dispatch(
-          sendRoomChat({
-            venueId,
-            from: currentUserUID,
-            to: room,
-            text,
-          })
-        );
+        return room && sendRoomChat(currentUserUID, room, text);
       case "table":
-        if (!table || !venueId) return;
-        return dispatch(
-          sendTableChat({
-            venueId,
-            from: currentUserUID,
-            to: table,
-            text,
-          })
-        );
+        return table && sendTableChat(currentUserUID, table, text);
       default:
         return;
     }
