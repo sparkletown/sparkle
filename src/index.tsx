@@ -47,6 +47,7 @@ import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
 import * as serviceWorker from "./serviceWorker";
+import { activatePolyFills } from "./polyfills";
 
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
@@ -60,6 +61,8 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "bootstrap";
 import "scss/global.scss";
+
+activatePolyFills();
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
