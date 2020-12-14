@@ -6,7 +6,6 @@ import { VenueTemplate } from "types/VenueTemplate";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
@@ -20,7 +19,8 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type Question = VenueInput["profileQuestions"][number];
+type ProfileQuestion = VenueInput["profile_questions"][number];
+type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>()
@@ -85,27 +85,8 @@ export const validationSchema = Yup.object()
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
 
-    mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
-
-    mapBackgroundImageFile: Yup.mixed<FileList>().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
-          : schema.notRequired()
-    ),
-
-    mapBackgroundImageUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.StringSchema) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
-          : schema.notRequired()
-    ),
-
-    attendeesTitle: Yup.string().notRequired().default('Guests'),
-    chatTitle: Yup.string().notRequired().default('Party'),
+    attendeesTitle: Yup.string().notRequired().default("Guests"),
+    chatTitle: Yup.string().notRequired().default("Party"),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
@@ -146,12 +127,19 @@ export const validationSchema = Yup.object()
 
     // @debt provide some validation error messages for invalid questions
     // advanced options
-    profileQuestions: Yup.array<Question>()
+    profile_questions: Yup.array<ProfileQuestion>()
       .ensure()
       .defined()
-      .transform((val: Array<Question>) =>
+      .transform((val: Array<ProfileQuestion>) =>
         val.filter((s) => !!s.name && !!s.text)
       ), // ensure questions are not empty strings
+
+    code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
+      .ensure()
+      .defined()
+      .transform((val: Array<CodeOfConductQuestion>) =>
+        val.filter((s) => !!s.name && !!s.text)
+      ),
 
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),

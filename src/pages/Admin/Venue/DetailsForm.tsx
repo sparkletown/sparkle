@@ -29,7 +29,6 @@ import { venueLandingUrl } from "utils/url";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
@@ -43,12 +42,12 @@ import {
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
 import { Form } from "react-bootstrap";
+import QuestionInput from "./QuestionInput";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -279,26 +278,19 @@ interface DetailsFormLeftProps {
   formError: boolean;
 }
 
-const backgroundTextByVenue: Record<string, string> = {
-  [VenueTemplate.themecamp]: "Theme Camp",
-  [VenueTemplate.partymap]: "Party Map",
-};
-
-const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
-  const {
-    editing,
-    state,
-    values,
-    isSubmitting,
-    register,
-    watch,
-    errors,
-    previous,
-    onSubmit,
-    setValue,
-    formError,
-  } = props;
-
+const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  editing,
+  state,
+  values,
+  isSubmitting,
+  register,
+  watch,
+  errors,
+  previous,
+  onSubmit,
+  setValue,
+  formError,
+}) => {
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -426,51 +418,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     </div>
   );
 
-  const renderMapIconInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">
-        {`Choose how you'd like your venue to appear on the map`}
-      </h4>
-      <ImageCollectionInput
-        collectionPath={"assets/mapIcons2"}
-        disabled={disable}
-        fieldName={"mapIconImage"}
-        register={register}
-        imageUrl={values.mapIconImageUrl}
-        containerClassName="input-square-container"
-        imageClassName="input-square-image"
-        image={values.mapIconImageFile}
-        error={errors.mapIconImageFile || errors.mapIconImageUrl}
-        setValue={setValue}
-        imageType="icons"
-      />
-      {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
-        <>
-          <h4 className="italic input-header">
-            {`Choose the background for your ${
-              backgroundTextByVenue[templateID] ?? "Experience"
-            }`}
-          </h4>
-          <ImageCollectionInput
-            collectionPath={"assets/mapBackgrounds"}
-            disabled={disable}
-            fieldName={"mapBackgroundImage"}
-            register={register}
-            imageUrl={values.mapBackgroundImageUrl}
-            containerClassName="input-square-container"
-            imageClassName="input-square-image"
-            image={values.mapBackgroundImageFile}
-            error={
-              errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
-            }
-            setValue={setValue}
-            imageType="backgrounds"
-          />
-        </>
-      )}
-    </div>
-  );
-
   const renderAnnouncementInput = () => (
     <>
       <h4 className="italic input-header">
@@ -566,27 +513,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
       />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
-      )}
-    </div>
-  );
-
-  const renderPlacementInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Placement Requests</h4>
-      <div style={{ fontSize: "16px" }}>
-        SparkleVerse&apos;s placement team will put your venue in an appropriate
-        location before the burn. If you wish to be placed somewhere specific,
-        or give suggestions for the team, please write that here.
-      </div>
-      <textarea
-        disabled={disable}
-        name="placementRequests"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="On the Esplanade!"
-      />
-      {errors.placementRequests && (
-        <span className="input-error">{errors.placementRequests.message}</span>
       )}
     </div>
   );
@@ -794,45 +720,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
     </>
   );
 
-  const renderCodeOfConductInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Code of conduct</h4>
-
-      <Button onClick={() => {}}>Add question</Button>
-
-      {errors.description && (
-        <span className="input-error">{errors.description.message}</span>
-      )}
-    </div>
-  );
-
-  const codeOfConductField = (index) => {
-    const baseName = `code_of_conduct_questions[${index}]`;
-    const inputName = `${baseName}name`;
-    const inputText = `${baseName}text`;
-    const inputLink = `${baseName}link`;
-
-    return (
-    <Form.Row>
-      <Form.Group>
-        <Form.Label>Title</Form.Label>
-        <Form.Control ref={register} name={inputName} />
-      </Form.Group>
-
-      <Form.Group>
-        <Form.Label>Text</Form.Label>
-        <Form.Control ref={register} name={inputText} />
-      </Form.Group>
-
-      <Form.Group>
-        <Form.Label>Link</Form.Label>
-        <Form.Control ref={register} name={inputLink} />
-      </Form.Group>
-
-      <Button onClick={() => {}}>Remove question</Button>
-    </Form.Row>
-  )};
-
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
@@ -855,8 +742,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         {renderBannerPhotoInput()}
         {renderLogoInput()}
 
-        {/* {renderMapIconInput()} */}
-
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
           renderAnnouncementInput()}
@@ -875,7 +760,17 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           </>
         )}
 
-        {/* {renderPlacementInput()} */}
+        <QuestionInput
+          title="Code of conduct questions"
+          fieldName="code_of_conduct_questions"
+          register={register}
+          hasLink
+        />
+        <QuestionInput
+          title="Profile questions"
+          fieldName="profile_questions"
+          register={register}
+        />
 
         {renderLiveScheduleToggle()}
         {templateID &&
@@ -913,20 +808,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
-          {!!Object.keys(errors).length && (
-            <div>One or more errors occurred when saving the form:</div>
-          )}
-          {Object.keys(errors).map((fieldName, index) => (
-            <div key={`error-${index}`}>
-              <span>Error in {fieldName}:</span>
-              <ErrorMessage
-                errors={errors}
-                name={fieldName}
-                as="span"
-                key={fieldName}
-              />
-            </div>
-          ))}
           <SubmitButton
             editing={editing}
             isSubmitting={isSubmitting}

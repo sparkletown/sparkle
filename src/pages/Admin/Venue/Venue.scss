@@ -194,6 +194,20 @@ $preview-margin: 30px;
   position: relative;
 }
 
+.question-input__button-wrapper {
+  display: flex;
+  margin: 1rem 0;
+  justify-content: space-between;
+}
+
+.question-wrapper {
+  margin-top: 1.5rem;
+
+  .btn {
+    margin: 1rem 0;
+  }
+}
+
 .checkbox {
   display: block;
   text-align: left;
