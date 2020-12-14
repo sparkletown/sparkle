@@ -39,6 +39,7 @@ import {
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -48,6 +49,8 @@ import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
 import { Form } from "react-bootstrap";
 import QuestionInput from "./QuestionInput";
+import EntranceInput from "./EntranceInput";
+import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -56,6 +59,11 @@ interface DetailsFormProps extends WizardPage {
 }
 
 const iconPositionFieldName = "iconPosition";
+
+const backgroundTextByVenue: Record<string, string> = {
+  [VenueTemplate.themecamp]: "Theme Camp",
+  [VenueTemplate.partymap]: "Party Map",
+};
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({
   previous,
@@ -711,13 +719,37 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Choose how you&apos;d like your rooms to appear on the map
       </h4>
       <div className="input-container">
-        <Form.Control as="select" ref={register} custom>
+        <Form.Control as="select" name="roomVisibility" ref={register} custom>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
           <option value="count/name">Count and names</option>
         </Form.Control>
       </div>
     </>
+  );
+
+  const renderMapBackgroundInput = (templateID: string) => (
+    <div className="input-container">
+      <h4 className="italic input-header">
+        {`Choose the background for your ${
+          backgroundTextByVenue[templateID] ?? "Experience"
+        }`}
+      </h4>
+
+      <ImageCollectionInput
+        collectionPath={"assets/mapBackgrounds"}
+        containerClassName="input-square-container"
+        disabled={disable}
+        error={errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl}
+        fieldName={"mapBackgroundImage"}
+        image={values.mapBackgroundImageFile}
+        imageClassName="input-square-image"
+        imageType="backgrounds"
+        imageUrl={values.mapBackgroundImageUrl}
+        register={register}
+        setValue={setValue}
+      />
+    </div>
   );
 
   return (
@@ -760,17 +792,24 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           </>
         )}
 
+        {templateID &&
+          BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
+          renderMapBackgroundInput(templateID)}
+
         <QuestionInput
           title="Code of conduct questions"
           fieldName="code_of_conduct_questions"
           register={register}
           hasLink
+          editing={state.detailsPage?.venue.code_of_conduct_questions}
         />
         <QuestionInput
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
         />
+
+        <EntranceInput register={register} fieldName="entrance" />
 
         {renderLiveScheduleToggle()}
         {templateID &&

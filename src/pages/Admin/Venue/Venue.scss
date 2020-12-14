@@ -194,14 +194,21 @@ $preview-margin: 30px;
   position: relative;
 }
 
-.question-input__button-wrapper {
+.dynamic-input__button-wrapper {
   display: flex;
   margin: 1rem 0;
   justify-content: space-between;
 }
 
-.question-wrapper {
+.dynamic-input-wrapper {
+  padding: 0.5em;
   margin-top: 1.5rem;
+
+  border: 1px solid #ccc;
+
+  input:disabled {
+    cursor: not-allowed;
+  }
 
   .btn {
     margin: 1rem 0;

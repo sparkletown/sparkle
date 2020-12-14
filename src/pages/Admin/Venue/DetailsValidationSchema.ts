@@ -180,7 +180,9 @@ export const editVenueCastSchema = Yup.object()
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("auditoriumColumns", "auditoriumColumns")
   .from("auditoriumRows", "auditoriumRows")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("mapIconImageUrl", "mapIconImageUrl")
+  .from("code_of_conduct_questions", "code_of_conduct_questions")
+  .from("profile_questions", "profile_questions");
 
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})

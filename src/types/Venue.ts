@@ -10,7 +10,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-interface Question {
+export interface Question {
   name: string;
   text: string;
   link?: string;

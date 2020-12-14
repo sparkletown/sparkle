@@ -1,11 +1,14 @@
-import React, { useCallback, useState } from "react";
+import { useDynamicInput } from "hooks/useDynamicInput";
+import React from "react";
 import { Form, Button } from "react-bootstrap";
+import { Question } from "types/Venue";
 
 interface QuestionInputProps {
   fieldName: string;
   hasLink?: boolean;
-  register: unknown;
+  register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title: string;
+  editing?: Question[];
 }
 
 const QuestionInput: React.FC<QuestionInputProps> = ({
@@ -13,29 +16,9 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   hasLink = false,
   register,
   title,
+  editing,
 }) => {
-  const [counter, setConductQuestionsCounter] = useState(0);
-  const [indexes, setConductQuestionsIndexes] = useState<number[]>([]);
-
-  const addQuestion = useCallback(() => {
-    setConductQuestionsIndexes((prevIndexes) => [...prevIndexes, counter]);
-    setConductQuestionsCounter((prevCounters) => prevCounters + 1);
-  }, [counter]);
-
-  const removeQuestion = useCallback(
-    (index: number) => () => {
-      setConductQuestionsIndexes((prevIndexes) => [
-        ...prevIndexes.filter((i) => i !== index),
-      ]);
-      setConductQuestionsCounter((prevCounters) => prevCounters - 1);
-    },
-    []
-  );
-
-  const clearQuestions = useCallback(() => {
-    setConductQuestionsIndexes([]);
-    setConductQuestionsCounter(0);
-  }, []);
+  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderFieldset = (index: number) => {
     const baseName = `${fieldName}[${index}]`;
@@ -44,7 +27,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
     const inputLink = `${baseName}link`;
 
     return (
-      <div className="question-wrapper" key={`${fieldName}_${index}`}>
+      <div className="dynamic-input-wrapper" key={`${fieldName}_${index}`}>
         <fieldset name={baseName}>
           <Form.Label>Title</Form.Label>
           <Form.Control ref={register} name={inputName} custom />
@@ -59,7 +42,9 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
             </>
           )}
         </fieldset>
-        <Button onClick={removeQuestion(index)}>Remove question</Button>
+        <Button onClick={remove(index)} variant="secondary">
+          Remove question
+        </Button>
       </div>
     );
   };
@@ -70,10 +55,12 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
 
       {indexes.map((i) => renderFieldset(i))}
 
-      <div>
-        <Button onClick={addQuestion}>Add question</Button>
+      <div className="dynamic-input__button-wrapper">
+        <Button onClick={add}>Add question</Button>
         {indexes.length > 0 && (
-          <Button onClick={clearQuestions}>Remove all</Button>
+          <Button onClick={clear} variant="secondary">
+            Remove all
+          </Button>
         )}
       </div>
     </div>
