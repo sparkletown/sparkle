@@ -18,6 +18,9 @@ const SOURCE_CREDENTIAL_FILE =
 const DEST_CREDENTIAL_FILE =
   "co-reality-staging-firebase-adminsdk-yy5cq-5fd568c2f4.json";
 
+const SOURCE_DOMAIN = "sparkle.space";
+const DEST_DOMAIN = "staging.sparkle.space";
+
 const VENUES_TO_CLONE = ["wayspace"];
 
 // ---------------------------------------------------------
@@ -29,7 +32,7 @@ const CONFIRM_VALUE = "i-have-edited-the-script-and-am-sure";
 const usage = () => {
   const scriptName = process.argv[1];
   const helpText = `
----------------------------------------------------------  
+---------------------------------------------------------
 ${scriptName}: Clone venue(s) between different firebase projects
 
 Usage: node ${scriptName} ${CONFIRM_VALUE}
@@ -89,6 +92,21 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
   wantedSourceVenues.forEach((venue) => {
     const { id, ...venueData } = venue;
     const destVenueRef = destApp.firestore().collection("venues").doc(id);
+
+    Object.keys(venue).forEach((key) => {
+      if (venue[key].toString().includes(`https://${SOURCE_DOMAIN}`)) {
+        const replacementValue = venue[key].replace(
+          `https://${SOURCE_DOMAIN}`,
+          `https://${DEST_DOMAIN}`
+        );
+        console.log(
+          `Found a reference to ${SOURCE_DOMAIN} in venue ${venue.id}, key ${key}.`,
+          `Value: ${venue[key]}`,
+          `Replacing with: ${replacementValue}`
+        );
+        venue[key] = replacementValue;
+      }
+    });
 
     destAppBatch.set(destVenueRef, venueData);
 
