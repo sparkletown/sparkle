@@ -43,18 +43,19 @@ const noopHandler = () => {};
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
-  const privateChats = useSelector(privateChatsSelector) ?? [];
+
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
-  const chats = [...privateChats];
-
-  const chatUserIds = chats
-    .sort(chatSort)
-    .flatMap((chat) => [chat.from, chat.to])
-    .filter(filterUniqueKeys)
-    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+  const privateChats = useSelector(privateChatsSelector) ?? [];
+  const chatUserIds = useMemo(() => {
+    return [...privateChats]
+      .sort(chatSort)
+      .flatMap((chat) => [chat.from, chat.to])
+      .filter(filterUniqueKeys)
+      .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+  }, [privateChats]);
 
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
