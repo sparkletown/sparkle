@@ -1,19 +1,19 @@
 import React, { useCallback, useState } from "react";
-import { useFirestoreConnect, WhereOptions } from "react-redux-firebase";
+
+import {
+  chatUsersSelector,
+  currentVenueSelector,
+  parentVenueSelector,
+  unreadMessagesSelector,
+} from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
-
-import { filterUnreadPrivateChats } from "utils/filter";
-import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
-import { hasElements, isTruthy } from "utils/types";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
 
 import "./Sidebar.scss";
-import { chatSort } from "components/context/ChatContext";
-import { useUser } from "hooks/useUser";
 
 enum TABS {
   PARTY_CHAT = 0,
@@ -21,43 +21,19 @@ enum TABS {
   LIVE_SCHEDULE = 2,
 }
 
-const DOCUMENT_ID = "__name__";
-const NUM_CHAT_UIDS_TO_LOAD = 10;
-
-// Maybe move this to  utils?
-const filterUniqueKeys = (userId: string, index: number, arr: string[]) =>
-  arr.indexOf(userId) === index;
-
 const Sidebar = () => {
-  const { user } = useUser();
+  const venue = useSelector(currentVenueSelector);
+  const parentVenue = useSelector(parentVenueSelector);
+
   const [tab, setTab] = useState(0);
-  const privateChats = useSelector(privateChatsSelector) ?? [];
+
   const chatUsers = useSelector(chatUsersSelector) ?? [];
-  const isEnabled = chatUsers && privateChats;
-  const unreadMessages = filterUnreadPrivateChats(privateChats, user);
-  const hasUnreadMessages = isTruthy(unreadMessages.length);
+  const hasUnreadMessages = useSelector(unreadMessagesSelector);
 
-  // Create new array because privateChats is read only and cannot be sorted.
-  // https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
-  const chats = [...privateChats];
+  const isEnabled = chatUsers;
 
-  const chatUserIds = chats
-    .sort(chatSort)
-    .flatMap((chat) => [chat.from, chat.to])
-    .filter(filterUniqueKeys)
-    .slice(0, NUM_CHAT_UIDS_TO_LOAD);
-
-  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
-
-  const chatUsersQuery = [
-    {
-      collection: "users",
-      where: chatUsersOption,
-      storeAs: "chatUsers",
-    },
-  ];
-
-  useFirestoreConnect(hasElements(chatUserIds) ? chatUsersQuery : undefined);
+  const currentVenueChatTitle = venue.chatTitle ?? "Party";
+  const chatTitle = parentVenue?.chatTitle ?? currentVenueChatTitle;
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);
@@ -74,9 +50,10 @@ const Sidebar = () => {
   return (
     <div className="sidebar-container">
       <div className="sidebar-slide-btn">
-        <div className="slide-btn-arrow-icon"></div>
-        <div className="slide-btn-chat-icon"></div>
+        <div className="slide-btn-arrow-icon" />
+        <div className="slide-btn-chat-icon" />
       </div>
+
       <div className="sidebar-tabs">
         <div
           className={`sidebar-tab sidebar-tab_chat ${
@@ -84,8 +61,9 @@ const Sidebar = () => {
           }`}
           onClick={selectPartyChatTab}
         >
-          Party Chat
+          {chatTitle} Chat
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_private ${
             hasUnreadMessages && "notification"

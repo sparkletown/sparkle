@@ -15,7 +15,12 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "components/context/ChatContext";
-import { partygoersSelector, partygoersSelectorData } from "utils/selectors";
+import {
+  partygoersSelector,
+  partygoersSelectorData,
+  privateChatsSelector,
+  venueChatsSelector,
+} from "utils/selectors";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -28,6 +33,7 @@ interface PropsType {
   room?: string;
 }
 
+// TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
 const Chatbox: React.FunctionComponent<PropsType> = ({
   isInProfileModal,
   discussionPartner,
@@ -46,24 +52,25 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const chats = useSelector((state) => state.firestore.ordered.venueChats);
-  const privateChats = useSelector(
-    (state) => state.firestore.ordered.privatechats
-  );
   const users = useSelector(partygoersSelectorData);
   const userArray = useSelector(partygoersSelector) ?? [];
-
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user?.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  useFirestoreConnect(
+    user && user.uid
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
+  const chats = useSelector(venueChatsSelector);
+  const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {
     const listOfChats =
       chats &&
@@ -199,9 +206,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                       <>
                         {chatboxMessageType === "global" ? "Everybody" : ""}
                         {chatboxMessageType === "room"
-                          ? room === "jazz"
-                            ? "Chat to the band"
-                            : `This Room: ${room}`
+                          ? `This room: ${room}`
                           : ""}
                       </>
                     )}

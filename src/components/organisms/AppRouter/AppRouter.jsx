@@ -5,7 +5,6 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import "firebase/analytics";
 
 import SplashPage from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
@@ -24,7 +23,7 @@ import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { VersionPage } from "pages/VersionPage/VersionPage";
-import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
@@ -37,7 +36,7 @@ const AppRouter = () => {
       <Switch>
         <Route
           path="/SparkleVerse"
-          component={() => <Redirect to={SPARKLEVERSE_MARKETING_URL} />}
+          component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
         />
         <Route path="/enter/step1" component={Step1} />
         <Route path="/enter/step2" component={Step2} />

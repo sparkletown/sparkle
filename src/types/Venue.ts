@@ -8,8 +8,15 @@ import { RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
+import { VideoAspectRatio } from "./VideoAspectRatio";
 
 interface Question {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+interface TermOfService {
   name: string;
   text: string;
   link?: string;
@@ -21,7 +28,7 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
-export type AnyRoom = RoomData | CampRoomData;
+export type AnyRoom = RoomData | CampRoomData | AvatarGridRoom;
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
@@ -80,6 +87,14 @@ export interface Venue {
   requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
+  chatTitle?: string;
+  showReactions?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  videoAspect?: VideoAspectRatio;
+  termsAndConditions: TermOfService[];
+  showRadio?: boolean;
+  showBadges?: boolean;
 }
 
 export interface VenueConfig {
@@ -171,6 +186,7 @@ export const createJazzbar = (values: FormValues): Venue => {
     owners: [],
     profile_questions: values.profileQuestions ?? [],
     code_of_conduct_questions: [],
+    termsAndConditions: [],
     adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,

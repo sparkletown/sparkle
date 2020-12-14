@@ -3,7 +3,17 @@
     "default": "co-reality-map",
     "staging": "co-reality-staging",
     "prod": "co-reality-map",
-    "sparkleverse": "sparkle-verse"
+    "sparkleverse": "sparkle-verse",
+    "sparkle1": "sparkle-1",
+    "sparkle2": "sparkle-2a",
+    "sparkle3": "sparkle-3",
+    "sparkle4": "sparkle-4",
+    "sparkle5": "sparkle-5",
+    "sparkle6": "sparkle-6",
+    "sparkle7": "sparkle-7",
+    "sparkle8": "sparkle-8",
+    "sparkle9": "sparkle-9",
+    "sparkle10": "sparkle-10"
   },
   "targets": {
     "co-reality-map": {
@@ -37,6 +47,76 @@
       "hosting": {
         "sparkleverse": [
           "sparkle-verse"
+        ]
+      }
+    },
+    "sparkle-1": {
+      "hosting": {
+        "sparkle-1": [
+          "sparkle-1"
+        ]
+      }
+    },
+    "sparkle-2a": {
+      "hosting": {
+        "sparkle-2a": [
+          "sparkle-2a"
+        ]
+      }
+    },
+    "sparkle-3": {
+      "hosting": {
+        "sparkle-3": [
+          "sparkle-3"
+        ]
+      }
+    },
+    "sparkle-4": {
+      "hosting": {
+        "sparkle-4": [
+          "sparkle-4"
+        ]
+      }
+    },
+    "sparkle-5": {
+      "hosting": {
+        "sparkle-5": [
+          "sparkle-5"
+        ]
+      }
+    },
+    "sparkle-6": {
+      "hosting": {
+        "sparkle-6": [
+          "sparkle-6"
+        ]
+      }
+    },
+    "sparkle-7": {
+      "hosting": {
+        "sparkle-7": [
+          "sparkle-7"
+        ]
+      }
+    },
+    "sparkle-8": {
+      "hosting": {
+        "sparkle-8": [
+          "sparkle-8"
+        ]
+      }
+    },
+    "sparkle-9": {
+      "hosting": {
+        "sparkle-9": [
+          "sparkle-9"
+        ]
+      }
+    },
+    "sparkle-10": {
+      "hosting": {
+        "sparkle-10": [
+          "sparkle-10"
         ]
       }
     }

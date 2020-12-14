@@ -99,20 +99,19 @@ export const PartyMapRoomOverlay: React.FC<PartyMapRoomOverlayProps> = ({
             </div>
           )}
 
-        <div className={`camp-venue-text`}>
-          {(!venue.roomVisibility ||
-            venue.roomVisibility === RoomVisibility.nameCount ||
-            (venue.roomVisibility === RoomVisibility.count &&
-              hasAttendance)) && (
+        {(!venue.roomVisibility ||
+          venue.roomVisibility === RoomVisibility.nameCount ||
+          (venue.roomVisibility === RoomVisibility.count && hasAttendance)) && (
+          <div className={`camp-venue-text`}>
             <div className="camp-venue-maininfo">
               {(!venue.roomVisibility ||
                 venue.roomVisibility === RoomVisibility.nameCount) && (
                 <div className="party-map-venue-title">{room.title}</div>
               )}
-              <RoomAttendance venue={venue} room={room} />
+              {hasAttendance && <RoomAttendance venue={venue} room={room} />}
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

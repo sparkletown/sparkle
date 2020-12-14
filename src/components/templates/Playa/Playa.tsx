@@ -10,6 +10,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
+import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
 
 import { IS_BURN } from "secrets";
@@ -43,12 +44,13 @@ import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
-import { useUser } from "hooks/useUser";
+import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
+import { useUser } from "hooks/useUser";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
@@ -360,7 +362,7 @@ const Playa = () => {
     user &&
       updateLocationData(
         user,
-        { [PLAYA_VENUE_NAME]: currentTimeInUnixEpoch },
+        { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
         profile?.lastSeenIn
       );
   }, [setShowModal, user, profile]);
@@ -394,29 +396,22 @@ const Playa = () => {
   }, [camp, venues, showVenue]);
 
   const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>();
-  useEffect(() => {
-    const getOnlineStats = firebase
+
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getLiveAndFutureEvents");
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(
-            profile?.kidsMode
-              ? openVenues.filter((v) => !v.venue.adultContent)
-              : openVenues
-          );
-          //setOpenVenues(openVenues);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, REFETCH_SCHEDULE_MS);
-    return () => clearInterval(id);
-  }, [profile]);
+      .httpsCallable("stats-getLiveAndFutureEvents")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
+        setOpenVenues(
+          profile?.kidsMode
+            ? openVenues.filter((v) => !v.venue.adultContent)
+            : openVenues
+        );
+        //setOpenVenues(openVenues);
+      })
+      .catch(Bugsnag.notify);
+  }, REFETCH_SCHEDULE_MS);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
   const [hoveredVenue, setHoveredVenue] = useState<Venue>();
@@ -429,7 +424,11 @@ const Playa = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
   const [shoutText, setShoutText] = useState("");
-  const [nowMs, setNowMs] = useState(new Date().getTime());
+  const [nowMs, setNowMs] = useState(Date.now());
+
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
 
   const shout = useCallback(() => {
     if (!user || !shoutText || !shoutText.length) return;
@@ -459,14 +458,6 @@ const Playa = () => {
       peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
     [partygoers, hoveredVenue, venueName]
   );
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
-
-    return () => clearInterval(interval);
-  }, [setNowMs]);
 
   const usersInCurrentVenue = partygoers
     ? partygoers.filter(

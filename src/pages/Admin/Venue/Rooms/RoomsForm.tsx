@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import Bugsnag from "@bugsnag/js";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import {
   ALL_VENUE_TEMPLATES,
@@ -21,9 +22,9 @@ import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
 import { ExtractProps } from "types/utility";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import RoomDeleteModal from "./RoomDeleteModal";
+import Login from "pages/Account/Login";
 
 export const RoomsForm: React.FC = () => {
   const { venueId } = useParams();
@@ -70,11 +71,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue) return null;
 
   if (!user) {
-    return (
-      <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
-      </WithNavigationBar>
-    );
+    return <Login formType="login" />;
   }
 
   return (
@@ -136,7 +133,13 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         history.push(`/admin/venue/${venueId}`);
       } catch (e) {
         setFormError(true);
-        console.error(e);
+        Bugsnag.notify(e, (event) => {
+          event.addMetadata("Admin::RoomsForm::onSubmit", {
+            venueId,
+            vals,
+            editingRoomIndex,
+          });
+        });
       }
     },
     [user, history, venueId, editingRoomIndex]

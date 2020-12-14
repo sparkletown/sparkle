@@ -18,7 +18,9 @@ interface UserSearchBarProps {
 const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<WithId<User>[]>([]);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
 
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);

@@ -12,6 +12,7 @@ import {
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  MAX_IMAGE_FILE_SIZE_TEXT,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -30,7 +31,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
@@ -103,6 +104,9 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
+    attendeesTitle: Yup.string().notRequired(),
+    chatTitle: Yup.string().notRequired(),
+
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     description: Yup.string().required("Required"),
@@ -153,6 +157,13 @@ export const validationSchema = Yup.object()
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
+    showReactions: Yup.bool().notRequired(),
+    auditoriumColumns: Yup.number()
+      .notRequired()
+      .min(5, "Columns must be at least 5"),
+    auditoriumRows: Yup.number()
+      .notRequired()
+      .min(5, "Rows must be at least 5"),
   })
   .required();
 
@@ -168,7 +179,10 @@ export const editVenueCastSchema = Yup.object()
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
+  .from("showReactions", "showReactions")
   .from("columns", "columns")
+  .from("attendeesTitle", "attendeesTitle")
+  .from("chatTitle", "chatTitle")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
@@ -176,6 +190,8 @@ export const editVenueCastSchema = Yup.object()
 
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
+  .from("auditoriumColumns", "auditoriumColumns")
+  .from("auditoriumRows", "auditoriumRows")
   .from("mapIconImageUrl", "mapIconImageUrl");
 
 export const editPlacementCastSchema = Yup.object()

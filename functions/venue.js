@@ -19,6 +19,7 @@ const VenueTemplate = {
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
+  conversationspace: "conversationspace",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -33,6 +34,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
+  VenueTemplate.conversationspace,
 ];
 
 const PlacementState = {
@@ -82,7 +84,22 @@ const createVenueData = (data, context) => {
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
+    attendeesTitle: data.attendeesTitle || "partygoers",
+    chatTitle: data.chatTitle || "Party",
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
   };
+
+  if (data.template === VenueTemplate.audience) {
+    venueData.showReactions = data.showReactions;
+
+    if (data.auditoriumColumns) {
+      venueData.auditoriumColumns = data.auditoriumColumns;
+    }
+
+    if (data.auditoriumRows) {
+      venueData.auditoriumRows = data.auditoriumRows;
+    }
+  }
 
   switch (data.template) {
     case VenueTemplate.jazzbar:
@@ -113,6 +130,7 @@ const createVenueData = (data, context) => {
     default:
       break;
   }
+
   return venueData;
 };
 
@@ -439,9 +457,35 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showGrid = data.showGrid;
   }
 
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:

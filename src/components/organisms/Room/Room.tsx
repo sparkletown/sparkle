@@ -6,6 +6,7 @@ import React, {
   Fragment,
 } from "react";
 import { useFirebase } from "react-redux-firebase";
+import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
@@ -52,6 +53,13 @@ const Room: React.FC<RoomProps> = ({
     [participants.length, setParticipantCount]
   );
 
+  const userFriendlyVideoError = (originalMessage: string) => {
+    if (originalMessage.toLowerCase().includes("unknown")) {
+      return `${originalMessage}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`;
+    }
+    return originalMessage;
+  };
+
   useEffect(() => {
     (async () => {
       if (!user) return;
@@ -76,7 +84,7 @@ const Room: React.FC<RoomProps> = ({
       .then((room) => {
         setRoom(room);
       })
-      .catch((error) => setVideoError(error.message));
+      .catch((error) => setVideoError(userFriendlyVideoError(error.message)));
   };
 
   useEffect(() => {
@@ -130,9 +138,21 @@ const Room: React.FC<RoomProps> = ({
     const participantDisconnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
         if (!prevParticipants.find((p) => p === participant)) {
-          // Remove when root issue foudn and fixed
-          console.error("Could not find disconnnected participant:");
-          console.error(participant);
+          // @debt Remove when root issue found and fixed
+          console.error(
+            "Could not find disconnnected participant:",
+            participant
+          );
+          Bugsnag.notify(
+            new Error("Could not find disconnnected participant"),
+            (event) => {
+              const { identity, sid } = participant;
+              event.addMetadata("Room::participantDisconnected", {
+                identity,
+                sid,
+              });
+            }
+          );
         }
         return prevParticipants.filter((p) => p !== participant);
       });

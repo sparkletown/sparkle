@@ -1,6 +1,4 @@
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -11,6 +9,7 @@ import { EntranceStepTemplate } from "types/EntranceStep";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
+import Login from "pages/Account/Login";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -24,18 +23,6 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     return <LoadingPage />;
   }
 
-  if (!user || !profile) {
-    return (
-      <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
-      </WithNavigationBar>
-    );
-  }
-
   if (
     !(parseInt(step) > 0) ||
     !venue.entrance ||
@@ -43,6 +30,10 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     venue.entrance.length < parseInt(step)
   ) {
     return <Redirect to={venueInsideUrl(venueId)} />;
+  }
+
+  if (!user || !profile) {
+    return <Login />;
   }
 
   const proceed = () => {

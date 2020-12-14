@@ -1,15 +1,15 @@
 import React from "react";
-import firebase from "firebase/app";
 import "./VenueInfoEvents.scss";
 import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { openUrl, venueInsideUrl } from "utils/url";
+import { VenueEvent } from "types/VenueEvent";
 import { EventDisplay } from "../EventDisplay/EventDisplay";
 import "../EventDisplay/EventDisplay.scss";
 import { PLAYA_VENUE_NAME } from "settings";
 
 interface PropsType {
-  eventsNow: firebase.firestore.DocumentData[];
+  eventsNow: VenueEvent[];
   venue: WithId<AnyVenue>;
   showButton: boolean;
   futureEvents?: boolean;
@@ -86,7 +86,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               eventsNow.length ? "btn-primary" : "btn-secondary"
             } btn-block`}
             // @debt would be nice not to refresh the page
-            onClick={() => (window.location.href = venueInsideUrl(venue.id))}
+            onClick={() => openUrl(venueInsideUrl(venue.id))}
           >
             {eventsNow.length ? "Join now" : `View on ${PLAYA_VENUE_NAME}`}
           </button>

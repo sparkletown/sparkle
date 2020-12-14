@@ -4,7 +4,6 @@ import { useFirebase } from "react-redux-firebase";
 import axios from "axios";
 import { codeCheckUrl } from "utils/url";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { useSelector } from "hooks/useSelector";
 import { venueSelector } from "utils/selectors";
 
@@ -20,6 +19,7 @@ interface LoginFormData {
   password: string;
   code: string;
   date_of_birth: string;
+  backend?: string;
 }
 
 const LoginForm: React.FunctionComponent<PropsType> = ({
@@ -31,22 +31,37 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   const firebase = useFirebase();
 
   const venue = useSelector(venueSelector);
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    LoginFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+    clearError,
+  } = useForm<LoginFormData>({
     mode: "onChange",
+    reValidateMode: "onChange",
   });
+
+  if (!venue) return null;
+
+  const clearBackendErrors = () => {
+    clearError("backend");
+  };
 
   const signIn = ({ email, password }: LoginFormData) => {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
   const onSubmit = async (data: LoginFormData) => {
+    if (!venue) return;
     try {
       if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
       if (venue.requiresEmailVerification)
         await axios.get(codeCheckUrl(data.email));
+
       const auth = await signIn(data);
+
       if (
         auth.user &&
         (venue.requiresTicketCode || venue.requiresEmailVerification)
@@ -67,7 +82,9 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             }
           });
       }
+
       afterUserIsLoggedIn && afterUserIsLoggedIn();
+
       closeAuthenticationModal();
     } catch (error) {
       if (error.response?.status === 404) {
@@ -83,10 +100,11 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("email", "firebase", error.message);
+        setError("backend", "firebase", error.message);
       }
     }
   };
+
   return (
     <div className="form-container">
       <div className="secondary-action">
@@ -96,8 +114,14 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           Register instead!
         </span>
       </div>
+
       <h2>Log in</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onChange={clearBackendErrors}
+        className="form"
+      >
         <div className="input-group">
           <input
             name="email"
@@ -113,6 +137,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.email.message}</span>
             )}
         </div>
+
         <div className="input-group">
           <input
             name="password"
@@ -127,12 +152,15 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
             <span className="input-error">Password is required</span>
           )}
         </div>
+
         {venue.requiresTicketCode && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
-        {venue.requiresDateOfBirth && (
-          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+
+        {errors.backend && (
+          <span className="input-error">{errors.backend.message}</span>
         )}
+
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
@@ -140,6 +168,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
+
       <div className="secondary-action">
         {`Forgot your password?`}
         <br />

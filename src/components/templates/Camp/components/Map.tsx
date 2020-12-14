@@ -10,8 +10,8 @@ import { User } from "types/User";
 import { makeCampRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+import { enterLocation } from "utils/useLocationUpdateEffect";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -169,6 +169,8 @@ export const Map: React.FC<MapProps> = ({
   });
 
   const venues = useSelector(orderedVenuesSelector);
+
+  // @debt refactor this to use openRoomWithCounting (though this is getting deleted soon so might not matter)
   const enterCampRoom = useCallback(
     (room: CampRoomData) => {
       if (!room || !user) return;
@@ -178,12 +180,14 @@ export const Map: React.FC<MapProps> = ({
         room.url.endsWith(`/${venue.id}`)
       );
 
+      const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
       const roomName = {
-        [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch,
-        ...(roomVenue ? { [venue.name]: currentTimeInUnixEpoch } : {}),
+        [`${venue.name}/${room.title}`]: nowInEpochSeconds,
+        ...(roomVenue ? { [venue.name]: nowInEpochSeconds } : {}),
       };
 
-      enterRoom(user, roomName, profile?.lastSeenIn);
+      enterLocation(user, roomName, profile?.lastSeenIn);
     },
     [profile, user, venue, venues]
   );

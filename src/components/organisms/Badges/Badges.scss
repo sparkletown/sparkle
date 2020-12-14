@@ -1,0 +1,51 @@
+@import "scss/constants.scss";
+
+.badges-component {
+  .visits {
+    display: flex;
+    background-color: $dark;
+    border-radius: 22px;
+    padding: 15px;
+    justify-content: space-evenly;
+
+    .visit-separator {
+      border: 1px solid $concrete;
+      border-radius: 22px;
+    }
+
+    .visit-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .visit-item__value {
+        font-weight: 900;
+        font-size: 1.3em;
+      }
+
+      .visit-item__label {
+        color: $concrete;
+      }
+    }
+  }
+
+  .badges-container {
+    padding: 15px;
+
+    .badges-title {
+      color: $concrete;
+    }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+
+    .badge-list-item-image {
+      width: 40px;
+      height: 40px;
+      border-radius: 22px;
+    }
+  }
+}
