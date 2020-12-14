@@ -3,11 +3,7 @@ import { useSelector } from "hooks/useSelector";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
 import { User } from "types/User";
-import {
-  currentVenueSelectorData,
-  partygoersSelector,
-  venueEventsSelector,
-} from "utils/selectors";
+import { partygoersSelector } from "utils/selectors";
 import "./UserSearchBar.scss";
 import { WithId } from "utils/id";
 
@@ -17,35 +13,36 @@ interface UserSearchBarProps {
 
 const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState<WithId<User>[]>([]);
+  const [searchResults, setSearchResults] = useState<WithId<User>[]>([]);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
 
-  const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
-  const venueEvents = useSelector(venueEventsSelector);
+  const partygoers = useSelector(partygoersSelector) ?? [];
 
   useEffect(() => {
     if (!searchQuery) {
-      setSearchResult([]);
+      setSearchResults([]);
       return;
     }
-    const filteredPartygoers = partygoers
-      ? Object.values(partygoers).filter((partygoer) =>
-          partygoer.partyName
-            ?.toLowerCase()
-            ?.includes(searchQuery.toLowerCase())
-        )
-      : [];
-    setSearchResult(filteredPartygoers);
-  }, [partygoers, searchQuery, venue, venueEvents]);
 
-  const numberOfSearchResults = searchResult.length;
+    const filteredPartygoers = partygoers.filter((partygoer) =>
+      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    );
+
+    setSearchResults(filteredPartygoers);
+  }, [partygoers, searchQuery]);
+
+  const numberOfSearchResults = searchResults.length;
 
   const clearSearchQuery = useCallback(() => {
     setSearchQuery("");
   }, []);
+
+  const clearSelectedUserProfile = useCallback(
+    () => setSelectedUserProfile(undefined),
+    []
+  );
 
   return (
     <div className="user-search-links">
@@ -55,37 +52,33 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
         <div className="user-search-close-icon" onClick={clearSearchQuery} />
       )}
       {!!numberOfSearchResults && (
-        <>
-          <div className="user-search-results">
-            <div className="user-search-result-number">
-              <b>{numberOfSearchResults}</b> search results
-            </div>
-            {searchResult.map((user, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => onSelect(user)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${user.pictureUrl})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div key={`user-${index}`}>{user.partyName}</div>
-                  </div>
-                </div>
-              );
-            })}
+        <div className="user-search-results">
+          <div className="user-search-result-number">
+            <b>{numberOfSearchResults}</b> search results
           </div>
-        </>
+          {searchResults.map((user) => (
+            <div
+              className="row result-user"
+              key={user.id}
+              onClick={() => onSelect(user)}
+            >
+              <div
+                className="result-avatar"
+                style={{
+                  backgroundImage: `url(${user.pictureUrl})`,
+                }}
+              ></div>
+              <div className="result-info">
+                <div key={user.id}>{user.partyName}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        show={!!selectedUserProfile}
+        onHide={clearSelectedUserProfile}
       />
     </div>
   );
