@@ -2,8 +2,7 @@ import { writeFileSync } from "fs";
 
 import admin from "firebase-admin";
 import formatDate from "date-fns/format/index.js";
-
-import serviceAccount from "../prodAccountKey.json";
+import { resolve } from "path";
 
 export const makeSaveToBackupFile = (filenamePrefix: string) => (
   data: string | {} | [],
@@ -20,10 +19,18 @@ export const makeSaveToBackupFile = (filenamePrefix: string) => (
   console.log(`Saved backup (type='${type}') to ${backupFilename}`);
 };
 
-export const initFirebaseAdminApp = (projectId: string) => {
-  admin.initializeApp({
-    credential: admin.credential.cert((serviceAccount as unknown) as string),
-    databaseURL: `https://${projectId}.firebaseio.com`,
-    storageBucket: `${projectId}.appspot.com`,
-  });
-};
+export const initFirebaseAdminApp = (
+  projectId: string,
+  {
+    appName,
+    credentialPath = resolve(__dirname, "../prodAccountKey.json"),
+  }: { appName?: string; credentialPath?: string }
+) =>
+  admin.initializeApp(
+    {
+      projectId,
+      credential: admin.credential.cert(credentialPath),
+      storageBucket: `${projectId}.appspot.com`,
+    },
+    appName
+  );
