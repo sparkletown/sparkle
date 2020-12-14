@@ -13,7 +13,7 @@ import {
 // Configuration (this is the bit you should edit)
 // ---------------------------------------------------------
 
-const EMAIL_ADDRESSES = ["foouser@example.com"];
+const EMAIL_ADDRESSES: string[] = [];
 
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)
@@ -25,9 +25,9 @@ const usage = () => {
 ---------------------------------------------------------  
 ${scriptName}: Bulk register users based on the supplied email address(es)
 
-Usage: node ${scriptName} CREDENTIAL_FILE
+Usage: node ${scriptName} CREDENTIAL_FILE EMAIL1 EMAIL2 EMAIlN...
 
-Example: node ${scriptName} TODO
+Example: node ${scriptName} fooAccountKey.json foouser@example.com baruser@example.com
 ---------------------------------------------------------
 `;
 
@@ -35,7 +35,7 @@ Example: node ${scriptName} TODO
   process.exit(1);
 };
 
-const [credentialPath] = process.argv.slice(2);
+const [credentialPath, ...extraEmailAddresses] = process.argv.slice(2);
 if (!credentialPath) {
   usage();
 }
@@ -55,7 +55,9 @@ if (!projectId) {
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
 (async () => {
-  for (const email of EMAIL_ADDRESSES) {
+  const allEmailAddresses = [...EMAIL_ADDRESSES, ...extraEmailAddresses];
+
+  for (const email of allEmailAddresses) {
     const existingUser = await findUserByEmail(app)(email);
 
     if (existingUser) {
