@@ -104,9 +104,7 @@ export interface VenueConfig {
   };
 
   landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
-
   redirectUrl?: string;
-
   memberEmails?: string[];
   showRangers?: boolean;
   tables?: Table[];
