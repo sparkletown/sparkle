@@ -1,4 +1,11 @@
-import React, { useEffect, useState, useMemo, FC, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  useMemo,
+  FC,
+  useCallback,
+} from "react";
 import {
   ReduxFirestoreQuerySetting,
   useFirestoreConnect,
@@ -9,17 +16,15 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
 
-import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
-import { chatSort } from "utils/chat";
+import { ChatContext, chatSort } from "components/context/ChatContext";
 import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
-import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -49,22 +54,15 @@ const VenueChat: FC = () => {
     }
   }, [isMessageToTheBarSent]);
 
-  const dispatch = useDispatch();
+  const chatContext = useContext(ChatContext);
 
   const submitMessage = useCallback(
     async (data: ChatOutDataType) => {
-      user &&
-        venueId &&
-        dispatch(
-          sendRoomChat({
-            venueId,
-            from: user.uid,
-            to: venueId,
-            text: data.messageToTheBand,
-          })
-        );
+      chatContext &&
+        user &&
+        chatContext.sendRoomChat(user.uid, venueId!, data.messageToTheBand);
     },
-    [user, venueId, dispatch]
+    [chatContext, user, venueId]
   );
 
   const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);

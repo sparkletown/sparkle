@@ -3,7 +3,7 @@ import {
   MessageToTheBandReaction,
   Reaction,
   ReactionsTextMap,
-} from "utils/reactions";
+} from "components/context/ExperienceContext";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
@@ -15,7 +15,7 @@ import {
 } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { ChatMessage } from "store/actions/Chat";
+import { ChatMessage } from "components/context/ChatContext";
 
 interface ReactionListProps {
   reactions: Reaction[];

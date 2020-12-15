@@ -13,7 +13,11 @@ import { getLinkFromText } from "utils/getLinkFromText";
 import { useUser } from "hooks/useUser";
 
 import { User } from "types/User";
-import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
+
+import {
+  PrivateChatMessage,
+  RestrictedChatMessage,
+} from "components/context/ChatContext";
 
 interface ChatMessageProps {
   message: WithId<RestrictedChatMessage | PrivateChatMessage>;

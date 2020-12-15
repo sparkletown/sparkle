@@ -47,6 +47,7 @@ import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
 import * as serviceWorker from "./serviceWorker";
+import { activatePolyFills } from "./polyfills";
 
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
@@ -60,6 +61,8 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "bootstrap";
 import "scss/global.scss";
+
+activatePolyFills();
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
@@ -111,8 +114,6 @@ const store = createStore(
   )
 );
 
-export type AppDispatch = typeof store.dispatch;
-
 const rrfProps = {
   firebase,
   config: rrfConfig,
@@ -125,7 +126,19 @@ if (BUGSNAG_API_KEY) {
   const TEST = "test";
   const STAGING = "staging";
   const PRODUCTION = "production";
-  const SPARKLEVERSE = "sparkleverse";
+  const SPARKLE_ENVS = [
+    "sparkleverse",
+    "sparkle1",
+    "sparkle2",
+    "sparkle3",
+    "sparkle4",
+    "sparkle5",
+    "sparkle6",
+    "sparkle7",
+    "sparkle8",
+    "sparkle9",
+    "sparkle10",
+  ];
 
   const releaseStage = () => {
     if (
@@ -150,8 +163,8 @@ if (BUGSNAG_API_KEY) {
       return PRODUCTION;
     }
 
-    if (BUILD_BRANCH?.includes(SPARKLEVERSE)) {
-      return SPARKLEVERSE;
+    if (BUILD_BRANCH !== undefined && SPARKLE_ENVS.includes(BUILD_BRANCH)) {
+      return BUILD_BRANCH;
     }
 
     return process.env.NODE_ENV;
@@ -162,7 +175,7 @@ if (BUGSNAG_API_KEY) {
     plugins: [new BugsnagPluginReact()],
     appType: "client",
     appVersion: BUILD_SHA1,
-    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE], // don't track errors in development/test
+    enabledReleaseStages: [STAGING, PRODUCTION, ...SPARKLE_ENVS], // don't track errors in development/test
     releaseStage: releaseStage(),
     maxEvents: 25,
     metadata: {
