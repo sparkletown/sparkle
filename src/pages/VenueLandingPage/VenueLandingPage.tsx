@@ -53,6 +53,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   );
   const purchaseHistory = useSelector(userPurchaseHistorySelector);
 
+  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const { hostname } = window.location;
+
+  if (redirectUrl && redirectUrl !== hostname) {
+    window.location.hostname = redirectUrl;
+  }
+
   useFirestoreConnect({
     collection: "venues",
     doc: venueId,
