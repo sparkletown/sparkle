@@ -41,8 +41,9 @@ const lowercaseFirstChar = (password) =>
   password.charAt(0).toLowerCase() + password.substring(1);
 
 export const passwordsMatch = (submittedPassword, actualPassword) =>
-  submittedPassword === actualPassword ||
-  lowercaseFirstChar(submittedPassword) === lowercaseFirstChar(actualPassword);
+  submittedPassword.trim() === actualPassword.trim() ||
+  lowercaseFirstChar(submittedPassword.trim()) ===
+    lowercaseFirstChar(actualPassword.trim());
 
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
