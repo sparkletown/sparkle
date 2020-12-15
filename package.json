@@ -28,7 +28,6 @@
     "dayjs": "^1.8.35",
     "esm": "^3.2.25",
     "firebase": "^7.14.2",
-    "firebase-functions": "^3.13.0",
     "fuse.js": "^6.4.1",
     "husky": "^4.2.5",
     "immutability-helper": "^3.1.1",
