@@ -10,7 +10,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-interface Question {
+export interface Question {
   name: string;
   text: string;
   link?: string;
@@ -184,7 +184,7 @@ export const createJazzbar = (values: FormValues): Venue => {
       icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
     },
     owners: [],
-    profile_questions: values.profileQuestions ?? [],
+    profile_questions: values.profile_questions ?? [],
     code_of_conduct_questions: [],
     termsAndConditions: [],
     adultContent: values.adultContent || false,
