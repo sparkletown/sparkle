@@ -147,7 +147,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access?.includes(VenueAccessType.CodeList) && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 

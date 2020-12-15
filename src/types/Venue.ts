@@ -83,9 +83,7 @@ export interface Venue {
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
-  requiresTicketCode?: boolean;
   requiresDateOfBirth?: boolean;
-  requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
   chatTitle?: string;

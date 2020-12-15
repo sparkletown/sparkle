@@ -109,10 +109,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       }
 
       const auth = await signUp(data);
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
+      if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
           date_of_birth: data.date_of_birth,
         });
@@ -219,7 +216,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access?.includes(VenueAccessType.CodeList) && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
