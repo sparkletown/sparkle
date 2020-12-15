@@ -1,6 +1,6 @@
 import fs from "fs";
 import admin from "firebase-admin";
-import serviceAccount from "./prodAccountKey.json";
+import serviceAccount from "./sparkle-7-firebase-adminsdk-f5a3m-482bebb057.json";
 import "firebase/firestore";
 import { Venue } from "../src/types/Venue";
 import {
