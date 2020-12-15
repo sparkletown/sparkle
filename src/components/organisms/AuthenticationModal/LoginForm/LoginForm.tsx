@@ -56,6 +56,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
+      await signIn(data);
+
       if (venue.access?.includes(VenueAccessType.Codes)) {
         const result = await _firebase
           .functions()
@@ -74,8 +76,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         });
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
-
-      await signIn(data);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 

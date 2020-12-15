@@ -1,5 +1,6 @@
 const firebase = require("firebase");
 const admin = require("firebase-admin");
+const { passwordsMatch } = require("./auth");
 
 require("firebase/firestore");
 const functions = require("firebase-functions");
@@ -35,15 +36,6 @@ const payment = require("./payment");
 const venue = require("./venue");
 const stats = require("./stats");
 const access = require("./access");
-
-// Case-insensitive first character for iDevices
-const lowercaseFirstChar = (password) =>
-  password.charAt(0).toLowerCase() + password.substring(1);
-
-export const passwordsMatch = (submittedPassword, actualPassword) =>
-  submittedPassword.trim() === actualPassword.trim() ||
-  lowercaseFirstChar(submittedPassword.trim()) ===
-    lowercaseFirstChar(actualPassword.trim());
 
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase

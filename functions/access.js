@@ -1,12 +1,13 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const { passwordsMatch } = require(".");
-const { checkAuth } = require("./auth");
+const { passwordsMatch } = require("./auth");
 const { uuidv4 } = require("uuidv4");
 
 const checkIsValidToken = async (venueId, uid, token) => {
-  const venue = await admin.collection("venues").doc(venueId).get();
+  if (!uid) return false;
+
+  const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
@@ -29,7 +30,7 @@ const checkIsValidToken = async (venueId, uid, token) => {
 };
 
 const getAccessDoc = async (venueId, method) => {
-  const venue = await admin.collection("venues").doc(venueId).get();
+  const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
@@ -61,7 +62,7 @@ const isValidCode = async (venueId, code) => {
 };
 
 const createToken = async (venueId, uid, password, email, code) => {
-  const venue = await admin.collection("venues").doc(venueId).get();
+  const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
@@ -85,13 +86,11 @@ const createToken = async (venueId, uid, password, email, code) => {
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
-
-  const isValidToken = await checkIsValidToken(
-    data.venueId,
-    context.auth.uid,
-    data.token
-  );
+  const isValidToken =
+    context &&
+    context.auth &&
+    context.auth.uid &&
+    (await checkIsValidToken(data.venueId, context.auth.uid, data.token));
   if (data.token && isValidToken) {
     return { token: data.token };
   }
@@ -113,8 +112,5 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     return { token };
   }
 
-  throw new HttpsError(
-    "permission-denied",
-    "You appear to have no access to this venue."
-  );
+  return false;
 });

@@ -89,6 +89,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
+      const auth = await signUp(data);
+
       if (venue.access?.includes(VenueAccessType.Codes)) {
         const result = await firebase
           .functions()
@@ -108,7 +110,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
 
-      const auth = await signUp(data);
       if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
           date_of_birth: data.date_of_birth,
