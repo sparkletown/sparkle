@@ -21,9 +21,9 @@ export const useReactions = (venueId?: string) => {
             setReactions((prevReactions) => [...prevReactions, newReaction]);
 
             setTimeout(() => {
-              setReactions((prevReactions) => {
-                return prevReactions.filter((r) => r !== newReaction);
-              });
+              setReactions((prevReactions) =>
+                prevReactions.filter((r) => r !== newReaction)
+              );
             }, REACTION_TIMEOUT);
           }
         });

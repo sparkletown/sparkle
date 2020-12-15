@@ -53,6 +53,7 @@ const ChatForm: React.FunctionComponent<PropsType> = ({
     switch (type) {
       case "private":
         if (!discussionPartner) return;
+
         return dispatch(
           sendPrivateChat({
             from: currentUserUID,

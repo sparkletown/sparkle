@@ -132,6 +132,7 @@ const ChatsList: React.FunctionComponent = () => {
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
       if (!user) return;
+
       return dispatch(
         sendPrivateChat({
           from: user.uid,
