@@ -82,7 +82,6 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
-  showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
   requiresTicketCode?: boolean;
   requiresDateOfBirth?: boolean;

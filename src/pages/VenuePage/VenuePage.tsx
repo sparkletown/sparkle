@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useFirestore } from "react-redux-firebase";
+import firebase from "firebase/app";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -28,7 +29,7 @@ import {
   updateLocationData,
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
-import { venueEntranceUrl } from "utils/url";
+import { venueEntranceUrl, venueLandingUrl } from "utils/url";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -51,9 +52,10 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+import { isTruthy, notEmpty } from "utils/types";
 import Login from "pages/Account/Login";
 import { showZendeskWidget } from "utils/zendesk";
+import { localStorageTokenKey } from "utils/localStorage";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -67,6 +69,7 @@ const VenuePage: React.FC = () => {
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
   const [unmounted, setUnmounted] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
 
@@ -129,7 +132,9 @@ const VenuePage: React.FC = () => {
   const location = venueName;
   useLocationUpdateEffect(user, venueName);
 
-  const newLocation = { [location]: new Date().getTime() };
+  const newLocation = {
+    [location]: new Date().getTime(),
+  };
   const isNewLocation = profile?.lastSeenIn
     ? !profile?.lastSeenIn[location]
     : false;
@@ -248,6 +253,30 @@ const VenuePage: React.FC = () => {
       showZendeskWidget();
     }
   }, [venue]);
+  // Need a token to access the venue
+  useEffect(() => {
+    // @debt convert this so token is needed to get venue config
+    if (notEmpty(venue.access)) {
+      const token = localStorage.getItem(localStorageTokenKey(venueId));
+      if (!token) {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => setAccessDenied(true));
+      }
+      try {
+        firebase.functions().httpsCallable("access-checkAccess")({
+          venueId,
+          token,
+        });
+      } catch (err) {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => setAccessDenied(true));
+      }
+    }
+  }, [venue, venueId]);
 
   if (!user) {
     return <Login formType="initial" />;
@@ -257,9 +286,12 @@ const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (accessDenied) {
+    return <Redirect to={venueLandingUrl(venueId)} />;
+  }
+
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
-
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }

@@ -44,7 +44,7 @@ if (argv.length < 4) {
 
 const projectId = argv[0];
 const venueId = argv[1];
-const accessMode = argv[2] as VenueAccessType;
+const method = argv[2] as VenueAccessType;
 const accessDetail = argv[3];
 
 admin.initializeApp({
@@ -54,7 +54,7 @@ admin.initializeApp({
 });
 
 (async () => {
-  console.log(`Ensuring ${venueId} access via ${accessMode} - ${accessDetail}`);
+  console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
   const venueDoc = await admin.firestore().doc(`venues/${venueId}`).get();
   if (!venueDoc.exists) {
     console.error(`venue ${venueId} does not exist`);
@@ -69,21 +69,21 @@ admin.initializeApp({
     venue.access = [];
   }
   console.log(`Previous access methods: ${venue.access}`);
-  if (!venue.access.includes(accessMode)) {
-    venue.access.push(accessMode);
+  if (!venue.access.includes(method)) {
+    venue.access.push(method);
   }
   console.log(`Setting venues/${venueId} access to ${venue.access}...`);
   await admin.firestore().doc(`venues/${venueId}`).set(venue);
   console.log("Done");
 
-  console.log(`Configuring access details for ${accessMode}...`);
+  console.log(`Configuring access details for ${method}...`);
   const accessDoc = await admin
     .firestore()
-    .doc(`venues/${venueId}/${accessMode}`)
+    .doc(`venues/${venueId}/access/${method}`)
     .get();
   const access = accessDoc.exists ? accessDoc : {};
 
-  switch (accessMode) {
+  switch (method) {
     case VenueAccessType.Password:
       (access as VenueAccessPassword).password = accessDetail;
       break;
@@ -111,8 +111,8 @@ admin.initializeApp({
       (access as VenueAccessCodes).codes = codes;
       break;
   }
-  console.log(`Setting venues/${venueId}/${accessMode} to ${access}...`);
-  await admin.firestore().doc(`venues/${venueId}/${accessMode}`).set(access);
+  console.log(`Setting venues/${venueId}/access/${method} to ${access}...`);
+  await admin.firestore().doc(`venues/${venueId}/access/${method}`).set(access);
   console.log("Done.");
 
   process.exit(0);

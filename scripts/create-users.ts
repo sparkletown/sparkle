@@ -22,7 +22,7 @@ const EMAIL_ADDRESSES: string[] = [];
 const usage = () => {
   const scriptName = process.argv[1];
   const helpText = `
----------------------------------------------------------  
+---------------------------------------------------------
 ${scriptName}: Bulk register users based on the supplied email address(es)
 
 Usage: node ${scriptName} CREDENTIAL_FILE EMAIL1 EMAIL2 EMAIlN...

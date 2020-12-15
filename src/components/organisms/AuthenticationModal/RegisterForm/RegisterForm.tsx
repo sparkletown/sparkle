@@ -2,11 +2,9 @@ import React, { useState } from "react";
 import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { codeCheckUrl } from "utils/url";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
@@ -17,6 +15,8 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { VenueAccessType } from "types/VenueAcccess";
+import { localStorageTokenKey } from "utils/localStorage";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -40,7 +40,6 @@ export interface CodeOfConductQuestion {
 }
 
 export interface RegisterData {
-  codes_used: string[];
   date_of_birth: string;
 }
 
@@ -90,9 +89,24 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
-      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
-      if (venue.requiresEmailVerification)
-        await axios.get(codeCheckUrl(data.email));
+      if (venue.access?.includes(VenueAccessType.CodeList)) {
+        const result = await firebase
+          .functions()
+          .httpsCallable("access-checkAccess")({
+          venueId: venue.id,
+          code: data.code,
+        });
+        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
+      }
+      if (venue.access?.includes(VenueAccessType.EmailList)) {
+        const result = await firebase
+          .functions()
+          .httpsCallable("access-checkAccess")({
+          venueId: venue.id,
+          email: data.email,
+        });
+        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
+      }
 
       const auth = await signUp(data);
       if (
@@ -100,7 +114,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         (venue.requiresTicketCode || venue.requiresEmailVerification)
       ) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.email],
           date_of_birth: data.date_of_birth,
         });
       }

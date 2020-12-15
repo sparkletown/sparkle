@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import axios from "axios";
-import { codeCheckUrl } from "utils/url";
+import { default as _firebase } from "firebase/app";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { useSelector } from "hooks/useSelector";
 import { venueSelector } from "utils/selectors";
 import { VenueAccessType } from "types/VenueAcccess";
+import { localStorageTokenKey } from "utils/localStorage";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -19,7 +19,6 @@ interface LoginFormData {
   email: string;
   password: string;
   code: string;
-  date_of_birth: string;
   backend?: string;
 }
 
@@ -57,33 +56,26 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
-      if (venue.access?.includes(VenueAccessType.CodeList))
-        await axios.get(codeCheckUrl(data.code));
-      if (venue.access?.includes(VenueAccessType.EmailList))
-        await axios.get(codeCheckUrl(data.email));
-
-      const auth = await signIn(data);
-
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
-        firebase
-          .firestore()
-          .doc(`userprivate/${auth.user.uid}`)
-          .get()
-          .then((doc) => {
-            if (auth.user && doc.exists) {
-              firebase
-                .firestore()
-                .doc(`userprivate/${auth.user.uid}`)
-                .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.code],
-                  date_of_birth: data.date_of_birth,
-                });
-            }
-          });
+      if (venue.access?.includes(VenueAccessType.CodeList)) {
+        const result = await _firebase
+          .functions()
+          .httpsCallable("access-checkAccess")({
+          venueId: venue.id,
+          code: data.code,
+        });
+        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
       }
+      if (venue.access?.includes(VenueAccessType.EmailList)) {
+        const result = await _firebase
+          .functions()
+          .httpsCallable("access-checkAccess")({
+          venueId: venue.id,
+          email: data.email,
+        });
+        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
+      }
+
+      await signIn(data);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 
