@@ -16,7 +16,7 @@ import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { VenueAccessType } from "types/VenueAcccess";
-import { localStorageTokenKey } from "utils/localStorage";
+import { getAccessTokenKey } from "utils/localStorage";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -96,7 +96,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           venueId: venue.id,
           code: data.code,
         });
-        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
+        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
       if (venue.access?.includes(VenueAccessType.EmailList)) {
         const result = await firebase
@@ -105,7 +105,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           venueId: venue.id,
           email: data.email,
         });
-        localStorage.setItem(localStorageTokenKey(venue.id), result.data.token);
+        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
 
       const auth = await signUp(data);
