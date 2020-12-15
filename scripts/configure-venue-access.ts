@@ -11,8 +11,8 @@ import {
 } from "../src/types/VenueAcccess";
 
 const mergeStringArrays = (
-  arr1: string[] | undefined,
-  arr2: string[] | undefined
+  arr1: string[] = [],
+  arr2: string[] = []
 ): string[] => {
   const result = (arr1 ?? []).map((val) => val.trim());
   (arr2 ?? []).forEach((val) => {
@@ -42,10 +42,7 @@ if (argv.length < 4) {
   usage();
 }
 
-const projectId = argv[0];
-const venueId = argv[1];
-const method = argv[2] as VenueAccessType;
-const accessDetail = argv[3];
+const [projectId, venueId, method, accessDetail] = argv;
 
 admin.initializeApp({
   credential: admin.credential.cert((serviceAccount as unknown) as string),
