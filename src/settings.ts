@@ -243,6 +243,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Party Map",
     description: [""],
   },
+  {
+    template: VenueTemplate.themecamp,
+    name: "Theme Camp (legacy)",
+    description: ["To be removed asap"],
+  },
 ];
 
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
