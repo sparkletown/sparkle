@@ -16,10 +16,9 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { updateTheme } from "pages/VenuePage/helpers";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
-
 import { Firestore } from "types/Firestore";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
@@ -39,6 +38,7 @@ import {
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { showZendeskWidget } from "utils/zendesk";
+import { useVenueId } from "hooks/useVenueId";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -46,6 +46,14 @@ export interface VenueLandingPageProps {
   venueRequestStatus: Firestore["status"]["requested"]["currentVenue"];
   purchaseHistory?: Firestore["ordered"]["userPurchaseHistory"];
   venueId?: string;
+}
+
+enum VenueAccessMode {
+  open = "open",
+  email = "email",
+  password = "password",
+  ticket = "ticket",
+  parent = "parent",
 }
 
 export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
@@ -116,6 +124,48 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [venue]);
 
+  const onJoinClick = useCallback(() => {
+    if (venueId) {
+      const venueEntrance = venue?.entrance && venue.entrance.length;
+      window.location.href =
+        user && !venueEntrance
+          ? venueInsideUrl(venueId)
+          : venueEntranceUrl(venueId);
+    }
+  }, [user, venue, venueId]);
+
+  const renderJoinButton = useCallback(() => {
+    switch (venue?.accessMode) {
+      case VenueAccessMode.password:
+        return (
+          <div className="secret-password-form-wrapper">
+            <SecretPasswordForm
+              buttonText={venue.config?.landingPageConfig.joinButtonText}
+            />
+          </div>
+        );
+
+      case VenueAccessMode.email:
+      case VenueAccessMode.ticket:
+      case VenueAccessMode.parent:
+      case VenueAccessMode.open:
+      default:
+        return (
+          <button
+            className="btn btn-primary btn-block btn-centered"
+            onClick={onJoinClick}
+          >
+            Join the event
+            {(venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
+              <span className="countdown">
+                Begins in {getTimeBeforeParty(venue?.start_utc_seconds)}
+              </span>
+            )}
+          </button>
+        );
+    }
+  }, [onJoinClick, venue]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -138,16 +188,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   const closeAuthenticationModal = () => {
     setIsAuthenticationModalOpen(false);
-  };
-
-  const onJoinClick = () => {
-    if (!venueId) return;
-
-    const venueEntrance = venue.entrance && venue.entrance.length;
-    window.location.href =
-      user && !venueEntrance
-        ? venueInsideUrl(venueId)
-        : venueEntranceUrl(venueId);
   };
 
   const hasSecretForm = isTruthy(venue.showSecretPasswordForm);
@@ -182,6 +222,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
+          {renderJoinButton()}
           {venue.showSecretPasswordForm && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
