@@ -49,7 +49,7 @@ const isValidEmail = async (venueId, email) => {
   if (!access.exists || !access.emails) {
     return false;
   }
-  return access.emails.includes(email.trim());
+  return access.emails.includes(email.trim().toLowerCase());
 };
 
 const isValidCode = async (venueId, code) => {

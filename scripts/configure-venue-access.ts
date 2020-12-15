@@ -66,8 +66,8 @@ admin.initializeApp({
     venue.access = [];
   }
   console.log(`Previous access methods: ${venue.access}`);
-  if (!venue.access.includes(method)) {
-    venue.access.push(method);
+  if (!venue.access.includes(method as VenueAccessType)) {
+    venue.access.push(method as VenueAccessType);
   }
   console.log(`Setting venues/${venueId} access to ${venue.access}...`);
   await admin.firestore().doc(`venues/${venueId}`).set(venue);
@@ -82,7 +82,7 @@ admin.initializeApp({
 
   switch (method) {
     case VenueAccessType.Password:
-      (access as VenueAccessPassword).password = accessDetail;
+      (access as VenueAccessPassword).password = accessDetail.trim();
       break;
 
     case VenueAccessType.EmailList:
@@ -90,7 +90,7 @@ admin.initializeApp({
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach(function (line) {
-          emails.push(line);
+          emails.push(line.trim().toLowerCase());
         });
       (access as VenueAccessEmails).emails = mergeStringArrays(
         (access as VenueAccessEmails).emails,
@@ -103,7 +103,7 @@ admin.initializeApp({
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach(function (line) {
-          emails.push(line);
+          emails.push(line.trim());
         });
       (access as VenueAccessCodes).codes = codes;
       break;
