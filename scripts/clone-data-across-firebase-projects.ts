@@ -79,6 +79,26 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
       )
   );
 
+  const replaceSourceDomainReferences = (
+    obj: Object,
+    key: string,
+    objectType: string,
+    objectIdentifier: string
+  ) => {
+    if (obj[key].toString().includes(`//${SOURCE_DOMAIN}`)) {
+      const replacementValue = obj[key].replace(
+        `//${SOURCE_DOMAIN}`,
+        `//${DEST_DOMAIN}`
+      );
+      console.log(
+        `Found a reference to ${SOURCE_DOMAIN} in ${objectType} ${objectIdentifier}, key ${key}.`,
+        `Value: ${obj[key]}`,
+        `Replacing with: ${replacementValue}`
+      );
+      obj[key] = replacementValue;
+    }
+  };
+
   console.log("total venues:", allSourceVenues.length);
   console.log("wanted venues:", wantedSourceVenues.length, VENUES_TO_CLONE);
 
@@ -94,19 +114,15 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
     const destVenueRef = destApp.firestore().collection("venues").doc(id);
 
     Object.keys(venue).forEach((key) => {
-      if (venue[key].toString().includes(`https://${SOURCE_DOMAIN}`)) {
-        const replacementValue = venue[key].replace(
-          `https://${SOURCE_DOMAIN}`,
-          `https://${DEST_DOMAIN}`
-        );
-        console.log(
-          `Found a reference to ${SOURCE_DOMAIN} in venue ${venue.id}, key ${key}.`,
-          `Value: ${venue[key]}`,
-          `Replacing with: ${replacementValue}`
-        );
-        venue[key] = replacementValue;
-      }
+      replaceSourceDomainReferences(venue, key, "venue", venue.id);
     });
+    if (venue.rooms) {
+      venue.rooms.forEach((room) => {
+        Object.keys(room).forEach((key) => {
+          replaceSourceDomainReferences(room, key, "room", room.title);
+        });
+      });
+    }
 
     destAppBatch.set(destVenueRef, venueData);
 
