@@ -184,10 +184,10 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp",
+    template: VenueTemplate.partymap,
+    name: "Party Map",
     description: [
-      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "An explorable party map into which you can place all your party rooms.",
     ],
   },
   {
@@ -242,6 +242,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [""],
+  },
+  {
+    template: VenueTemplate.themecamp,
+    name: "Theme Camp (legacy)",
+    description: ["To be removed asap"],
   },
 ];
 
