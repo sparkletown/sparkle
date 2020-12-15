@@ -65,15 +65,37 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           venueId: venue.id,
           code: data.code,
         });
+        if (result.data === false) {
+          throw new Error("access denied");
+        }
+        console.log("result.data", result.data);
+        console.log(
+          "saving token to",
+          getAccessTokenKey(venue.id),
+          ": ",
+          result.data.token
+        );
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
       if (venue.access?.includes(VenueAccessType.Emails)) {
+        console.log("emails");
         const result = await _firebase
           .functions()
           .httpsCallable("access-checkAccess")({
           venueId: venue.id,
           email: data.email,
         });
+        console.log("result", result);
+        if (result.data === false) {
+          throw new Error("access denied");
+        }
+        console.log("result.data", result.data);
+        console.log(
+          "saving token to",
+          getAccessTokenKey(venue.id),
+          ": ",
+          result.data.token
+        );
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
 

@@ -98,6 +98,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           venueId: venue.id,
           code: data.code,
         });
+        console.log("result.data", result.data);
+        console.log(
+          "saving token to",
+          getAccessTokenKey(venue.id),
+          ": ",
+          result.data.token
+        );
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
       if (venue.access?.includes(VenueAccessType.Emails)) {
@@ -107,6 +114,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           venueId: venue.id,
           email: data.email,
         });
+        console.log("result.data", result.data);
+        console.log(
+          "saving token to",
+          getAccessTokenKey(venue.id),
+          ": ",
+          result.data.token
+        );
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
 

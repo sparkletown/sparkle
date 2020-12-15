@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { passwordsMatch } = require("./auth");
-const { uuidv4 } = require("uuidv4");
+const { uuid } = require("uuidv4");
 
 const checkIsValidToken = async (venueId, uid, token) => {
   if (!uid) return false;
@@ -34,31 +34,32 @@ const getAccessDoc = async (venueId, method) => {
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
-  return await venue.ref.collection("access").doc(method).get();
+  const accessDoc = await venue.ref.collection("access").doc(method).get();
+  return accessDoc;
 };
 
 const isValidPassword = async (venueId, password) => {
-  const access = getAccessDoc(venueId, "password");
-  if (!access.exists || !access.password) {
+  const access = await getAccessDoc(venueId, "password");
+  if (!access.exists || !access.data().password) {
     return false;
   }
-  return passwordsMatch(access.password, password);
+  return passwordsMatch(access.data().password, password);
 };
 
 const isValidEmail = async (venueId, email) => {
-  const access = getAccessDoc(venueId, "email");
-  if (!access.exists || !access.emails) {
+  const access = await getAccessDoc(venueId, "emails");
+  if (!access.exists || !access.data().emails) {
     return false;
   }
-  return access.emails.includes(email.trim().toLowerCase());
+  return access.data().emails.includes(email.trim().toLowerCase());
 };
 
 const isValidCode = async (venueId, code) => {
   const access = getAccessDoc(venueId, "code");
-  if (!access.exists || !access.codes) {
+  if (!access.exists || !access.data().codes) {
     return false;
   }
-  return access.codes.includes(code.trim());
+  return access.data().codes.includes(code.trim());
 };
 
 const createToken = async (venueId, uid, password, email, code) => {
@@ -66,32 +67,35 @@ const createToken = async (venueId, uid, password, email, code) => {
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
-  let granted = await venue.ref.collection("accessgranted").doc(uid).get();
-  if (!granted.exists) {
-    granted = {};
+  let granted = {};
+  let grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
+  if (grantedDoc.exists) {
+    granted = grantedDoc.data();
   }
   if (!granted.tokens) {
     granted.tokens = {};
   }
   // Record the first time the token was created
-  const token = uuidv4();
+  const token = uuid();
   granted.tokens[token] = {
     usedAt: [new Date().getTime()],
-    password,
-    email,
-    code,
+    password: password ?? null,
+    email: email ?? null,
+    code: code ?? null,
   };
   await venue.ref.collection("accessgranted").doc(uid).set(granted);
   return { token };
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
+  console.log("checkAccess", data, context.auth);
   const isValidToken =
     context &&
     context.auth &&
     context.auth.uid &&
     (await checkIsValidToken(data.venueId, context.auth.uid, data.token));
   if (data.token && isValidToken) {
+    console.log(`valid token, returning ${data.token}`);
     return { token: data.token };
   }
 
@@ -101,6 +105,8 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     data.email && (await isValidEmail(data.venueId, data.email));
   const codeValid = data.code && (await isValidCode(data.venueId, data.code));
 
+  console.log(`valid: ${passwordValid},${emailValid},${codeValid}`);
+
   if (passwordValid || emailValid || codeValid) {
     const token = await createToken(
       data.venueId,
@@ -109,6 +115,7 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
       data.email,
       data.code
     );
+    console.log(`create token: ${token}`);
     return { token };
   }
 
