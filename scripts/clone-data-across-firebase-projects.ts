@@ -18,6 +18,9 @@ const SOURCE_CREDENTIAL_FILE =
 const DEST_CREDENTIAL_FILE =
   "co-reality-staging-firebase-adminsdk-yy5cq-5fd568c2f4.json";
 
+const SOURCE_DOMAIN = "sparkle.space";
+const DEST_DOMAIN = "staging.sparkle.space";
+
 const VENUES_TO_CLONE = ["wayspace"];
 
 // ---------------------------------------------------------
@@ -29,7 +32,7 @@ const CONFIRM_VALUE = "i-have-edited-the-script-and-am-sure";
 const usage = () => {
   const scriptName = process.argv[1];
   const helpText = `
----------------------------------------------------------  
+---------------------------------------------------------
 ${scriptName}: Clone venue(s) between different firebase projects
 
 Usage: node ${scriptName} ${CONFIRM_VALUE}
@@ -76,6 +79,26 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
       )
   );
 
+  const replaceSourceDomainReferences = (
+    obj: Object,
+    key: string,
+    objectType: string,
+    objectIdentifier: string
+  ) => {
+    if (obj[key].toString().includes(`//${SOURCE_DOMAIN}`)) {
+      const replacementValue = obj[key].replace(
+        `//${SOURCE_DOMAIN}`,
+        `//${DEST_DOMAIN}`
+      );
+      console.log(
+        `Found a reference to ${SOURCE_DOMAIN} in ${objectType} ${objectIdentifier}, key ${key}.`,
+        `Value: ${obj[key]}`,
+        `Replacing with: ${replacementValue}`
+      );
+      obj[key] = replacementValue;
+    }
+  };
+
   console.log("total venues:", allSourceVenues.length);
   console.log("wanted venues:", wantedSourceVenues.length, VENUES_TO_CLONE);
 
@@ -89,6 +112,17 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
   wantedSourceVenues.forEach((venue) => {
     const { id, ...venueData } = venue;
     const destVenueRef = destApp.firestore().collection("venues").doc(id);
+
+    Object.keys(venue).forEach((key) => {
+      replaceSourceDomainReferences(venue, key, "venue", venue.id);
+    });
+    if (venue.rooms) {
+      venue.rooms.forEach((room) => {
+        Object.keys(room).forEach((key) => {
+          replaceSourceDomainReferences(room, key, "room", room.title);
+        });
+      });
+    }
 
     destAppBatch.set(destVenueRef, venueData);
 
