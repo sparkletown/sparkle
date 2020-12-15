@@ -123,8 +123,19 @@ if (BUGSNAG_API_KEY) {
   const TEST = "test";
   const STAGING = "staging";
   const PRODUCTION = "production";
-  const SPARKLEVERSE = "sparkleverse";
-  const SPARKLE1 = "sparkle1";
+  const SPARKLE_ENVS = [
+    "sparkleverse",
+    "sparkle1",
+    "sparkle2",
+    "sparkle3",
+    "sparkle4",
+    "sparkle5",
+    "sparkle6",
+    "sparkle7",
+    "sparkle8",
+    "sparkle9",
+    "sparkle10",
+  ];
 
   const releaseStage = () => {
     if (
@@ -149,12 +160,8 @@ if (BUGSNAG_API_KEY) {
       return PRODUCTION;
     }
 
-    if (BUILD_BRANCH?.includes(SPARKLEVERSE)) {
-      return SPARKLEVERSE;
-    }
-
-    if (BUILD_BRANCH?.includes(SPARKLE1)) {
-      return SPARKLE1;
+    if (BUILD_BRANCH !== undefined && SPARKLE_ENVS.includes(BUILD_BRANCH)) {
+      return BUILD_BRANCH;
     }
 
     return process.env.NODE_ENV;
@@ -165,7 +172,7 @@ if (BUGSNAG_API_KEY) {
     plugins: [new BugsnagPluginReact()],
     appType: "client",
     appVersion: BUILD_SHA1,
-    enabledReleaseStages: [STAGING, PRODUCTION, SPARKLEVERSE, SPARKLE1], // don't track errors in development/test
+    enabledReleaseStages: [STAGING, PRODUCTION, ...SPARKLE_ENVS], // don't track errors in development/test
     releaseStage: releaseStage(),
     maxEvents: 25,
     metadata: {

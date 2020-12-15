@@ -1,16 +1,13 @@
 import React, { useCallback, useState } from "react";
 
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-
-import { filterUnreadPrivateChats } from "utils/filter";
 import {
   chatUsersSelector,
   currentVenueSelector,
   parentVenueSelector,
-  privateChatsSelector,
+  unreadMessagesSelector,
 } from "utils/selectors";
-import { isTruthy } from "utils/types";
+
+import { useSelector } from "hooks/useSelector";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -25,16 +22,15 @@ enum TABS {
 }
 
 const Sidebar = () => {
-  const { user } = useUser();
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
   const [tab, setTab] = useState(0);
-  const privateChats = useSelector(privateChatsSelector) ?? [];
+
   const chatUsers = useSelector(chatUsersSelector) ?? [];
-  const isEnabled = chatUsers && privateChats;
-  const unreadMessages = filterUnreadPrivateChats(privateChats, user);
-  const hasUnreadMessages = isTruthy(unreadMessages.length);
+  const hasUnreadMessages = useSelector(unreadMessagesSelector);
+
+  const isEnabled = chatUsers;
 
   const currentVenueChatTitle = venue.chatTitle ?? "Party";
   const chatTitle = parentVenue?.chatTitle ?? currentVenueChatTitle;
