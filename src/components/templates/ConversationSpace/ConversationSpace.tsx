@@ -35,6 +35,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   if (!venue) return <>Loading...</>;
 
+  const tables = venue?.config?.tables ?? TABLES;
+
   const venueUsers = users
     ? users.filter(
         (user) =>
@@ -85,14 +87,14 @@ export const ConversationSpace: React.FunctionComponent = () => {
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
-                  tables={TABLES}
+                  tables={tables}
                 />
               )}
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
                     venueName={venue.name}
-                    roomName={seatedAtTable}
+                    roomName={`${venue.name}-${seatedAtTable}`}
                     setUserList={() => {}}
                   />
                 </div>
@@ -106,7 +108,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
               venueName={venue.name}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
-              customTables={TABLES}
+              customTables={tables}
             />
           </div>
           <UserList

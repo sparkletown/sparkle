@@ -1,61 +1,99 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { chunk } from "lodash";
 import { User } from "@bugsnag/js";
 
-import { Link } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestore } from "react-redux-firebase";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useSelector } from "hooks/useSelector";
+import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { PLAYA_VENUE_NAME } from "settings";
-
-import { CampRoomData } from "types/CampRoomData";
 import { isVenueWithRooms } from "types/CampVenue";
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue, UserVisit } from "types/Firestore";
 import { Venue } from "types/Venue";
 
 import { WithId } from "utils/id";
-import {
-  orderedVenuesSelector,
-  userModalVisitsSelector,
-} from "utils/selectors";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { notEmpty } from "utils/types";
+import { isTruthy, notEmpty } from "utils/types";
+
+import { BadgeImage } from "./BadgeImage";
+
+import "./Badges.scss";
 
 export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<Venue>;
 }> = ({ user, currentVenue }) => {
-  useFirestoreConnect([
-    {
-      collection: "users",
-      doc: user.id,
-      subcollections: [{ collection: "visits" }],
-      storeAs: "userModalVisits",
-    },
-  ]);
-  const visits = useSelector(userModalVisitsSelector);
-  const venues = useSelector(orderedVenuesSelector);
+  const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
+  const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const { relatedVenues } = useConnectRelatedVenues({
-    venueId: currentVenue.id,
-    withEvents: false,
-  });
-  const relatedVenueIds = relatedVenues.map((venue) => venue.id);
+  const firestore = useFirestore();
+
+  const fetchAllVenues = useCallback(async () => {
+    const userSnapshot = await firestore.collection("users").doc(user.id).get();
+    const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
+
+    const visits: WithId<UserVisit>[] =
+      visitsSnapshot.docs.map(
+        (visitSnapshot) =>
+          ({ ...visitSnapshot.data(), id: visitSnapshot.id } as WithId<
+            UserVisit
+          >)
+      ) ?? [];
+
+    const venuesRequests = chunk(visits, 10).map((visitChunk) =>
+      firestore
+        .collection("venues")
+        .where(
+          "name",
+          "in",
+          visitChunk.map((visit) => visit.id)
+        )
+        .get()
+    );
+
+    let venues: WithId<AnyVenue>[] = [];
+    const hasVenuesRequests = isTruthy(venuesRequests);
+
+    // If there are no venues visited avoid sending the request.
+    if (hasVenuesRequests) {
+      const requestSnapshots = await Promise.all(venuesRequests);
+
+      // Promise all returns arrays as response. That's why there is so much depth.
+      // TODO: Same logic can be used for the private chats as well.
+      venues = requestSnapshots.flatMap((venuesSnapshot) =>
+        venuesSnapshot.docs.map(
+          (venueSnapshot) =>
+            ({
+              ...venueSnapshot.data(),
+              id: venueSnapshot.id,
+            } as WithId<AnyVenue>)
+        )
+      );
+    }
+
+    setVenues(venues);
+    setVisits(visits);
+    setIsLoading(false);
+  }, [firestore, user.id]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchAllVenues();
+  }, [fetchAllVenues]);
+
+  const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues]);
 
   const visitHours = useMemo(() => {
     if (!visits) return 0;
 
     const visitSeconds = visits
-      .filter((v) => v.id === currentVenue.id || relatedVenueIds.includes(v.id))
+      .filter((v) => v.id === currentVenue.id || venueNames.includes(v.id))
       .reduce((acc, v) => acc + v.timeSpent, 0);
     return Math.floor(visitSeconds / (60 * 60));
-  }, [visits, currentVenue, relatedVenueIds]);
+  }, [visits, currentVenue, venueNames]);
 
-  // Only show visits to related venues
+  // Only show visits for existing venues
   const relevantVisits = visits?.filter(
-    (visit) =>
-      currentVenue.id === visit.id || relatedVenueIds.includes(visit.id)
+    (visit) => currentVenue.name === visit.id || venueNames.includes(visit.id)
   );
 
   const badges = useMemo(() => {
@@ -63,11 +101,7 @@ export const Badges: React.FC<{
     return relevantVisits
       .map((visit) => {
         const { venue, room } = findVenueAndRoomByName(visit.id, venues);
-        if (
-          !venue ||
-          (currentVenue.id !== venue.id && !relatedVenueIds.includes(venue.id))
-        )
-          return undefined;
+        if (!venue) return undefined;
 
         if (room) {
           return {
@@ -80,35 +114,33 @@ export const Badges: React.FC<{
 
         return {
           venue,
-          image: venue.mapIconImageUrl,
+          image: venue?.host?.icon ?? DEFAULT_AVATAR_IMAGE,
           label: venue.name,
         };
       })
       .filter((b) => b !== undefined);
-  }, [relevantVisits, venues, currentVenue, relatedVenueIds]);
+  }, [relevantVisits, venues]);
 
   const badgeList = useMemo(
     () =>
-      badges.filter(notEmpty).map((b) => (
-        <li className="badge-list-item" key={b.label}>
-          <Link to={getLocationLink(b.venue, b.room)}>
-            <img
-              className="badge-list-item-image"
-              src={b.image}
-              alt={`${b.label} badge`}
-            />
-          </Link>
+      badges.filter(notEmpty).map((badge) => (
+        <li className="badge-list-item" key={badge.label}>
+          <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>
       )),
     [badges]
   );
+
+  if (isLoading) {
+    return <div className="visits">Loading...</div>;
+  }
 
   if (!relevantVisits) {
     return <>Visit venues to collect badges!</>;
   }
 
   return (
-    <>
+    <div className="badges-component">
       <div className="visits">
         <div className="visit-item">
           <span className="visit-item__value">
@@ -116,7 +148,9 @@ export const Badges: React.FC<{
           </span>
           <span className="visit-item__label">Time spent in Sparkle</span>
         </div>
-        <div className="separator" />
+
+        <div className="visit-separator" />
+
         <div className="visit-item">
           <span className="visit-item__value">
             {relevantVisits?.length ?? 0}
@@ -124,11 +158,12 @@ export const Badges: React.FC<{
           <span className="visit-item__label">Venues visited</span>
         </div>
       </div>
+
       <div className="badges-container">
         <div className="badges-title">{badges.length} Badges</div>
         <ul className="badge-list">{badgeList}</ul>
       </div>
-    </>
+    </div>
   );
 };
 
@@ -152,16 +187,4 @@ const findVenueAndRoomByName = (
       isVenueWithRooms(venue) &&
       venue.rooms?.find((r) => r.title === nameOrRoomTitle),
   };
-};
-
-const getLocationLink = (venue: WithId<AnyVenue>, room?: CampRoomData) => {
-  if (venue.name === PLAYA_VENUE_NAME) {
-    return venueInsideUrl(venue.id);
-  }
-
-  if (room) {
-    return venuePreviewUrl(venue.id, room.title);
-  }
-
-  return venueInsideUrl(venue.id);
 };

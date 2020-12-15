@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -49,51 +49,57 @@ type ReactionType =
   | { reaction: EmojiReactionType }
   | { reaction: TextReactionType; text: string };
 
+const createReaction = (reaction: ReactionType, user: UserInfo) => {
+  return {
+    created_at: Date.now(),
+    created_by: user.uid,
+    ...reaction,
+  };
+};
+
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useFirestoreConnect([
-    {
-      collection: "experiences",
-      doc: venue?.name,
-      storeAs: "experiences",
-    },
-  ]);
-
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
+  useFirestoreConnect(
+    venue?.name
+      ? {
+          collection: "experiences",
+          doc: venue.name,
+          storeAs: "experiences",
+        }
+      : undefined
+  );
 
   const { user } = useUser();
 
   const firestoreVenue = useSelector(currentVenueSelectorData);
-  const users = useSelector(partygoersSelector);
 
   const venueToUse = venue ? venue : firestoreVenue;
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  const venueUsers = users
-    ? users.filter(
-        (user) =>
-          !!user.lastSeenIn &&
-          user.lastSeenIn[venueToUse?.name ?? ""] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  // TODO: this will break memo on venueUsers (below) every 5min, does that matter?
+  const [nowMs, setNowMs] = useState(Date.now());
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
+
+  // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
+  const venueToUseName = venueToUse?.name;
+  const users = useSelector(partygoersSelector);
+  const venueUsers = useMemo(() => {
+    if (!users) return [];
+
+    return users.filter(
+      (user) =>
+        !!user.lastSeenIn &&
+        user.lastSeenIn[venueToUseName ?? ""] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+    );
+  }, [nowMs, users, venueToUseName]);
 
   const experienceContext = useContext(ExperienceContext);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-
-  function createReaction(reaction: ReactionType, user: UserInfo) {
-    return {
-      created_at: new Date().getTime(),
-      created_by: user.uid,
-      ...reaction,
-    };
-  }
 
   const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
     experienceContext &&
@@ -232,14 +238,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                       ref={registerBandMessage({ required: true })}
                       isMessageToTheBandSent={isMessageToTheBandSent}
-                      placeholder="Shout out to the band"
+                      placeholder="Shout out..."
                     />
                   </div>
                 </div>
               )}
               {seatedAtTable && (
                 <Room
-                  roomName={seatedAtTable}
+                  roomName={`${venueToUse.name}-${seatedAtTable}`}
                   venueName={venueToUse.name}
                   setUserList={setUserList}
                   setSeatedAtTable={setSeatedAtTable}

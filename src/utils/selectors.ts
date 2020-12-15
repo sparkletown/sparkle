@@ -1,6 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
+import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
@@ -14,6 +15,7 @@ import {
   makeIsRequestedSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
+import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -124,6 +126,26 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
+const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+
+export const unreadMessagesSelector = (state: RootState) => {
+  const user = authSelector(state);
+  const privateChats = privateChatsSelector(state) ?? [];
+
+  return privateChats.some(
+    (message) =>
+      message.from !== user?.uid &&
+      message.deleted !== true &&
+      message.type === "private" &&
+      message.ts_utc.seconds > HIDE_BEFORE &&
+      message.isRead === false
+  );
+};
+
+export const venueChatsSelector = (state: RootState) =>
+  state.firestore.ordered.venueChats;
+
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
 
@@ -137,8 +159,9 @@ export const experiencesSelector = (state: RootState) =>
   state.firestore.data.experiences;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue &&
-  state.firestore.ordered.currentVenue[0];
+  state.firestore.ordered.currentVenue
+    ? state.firestore.ordered.currentVenue[0]
+    : undefined;
 
 export const parentVenueOrderedSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
@@ -178,7 +201,7 @@ export const userModalVisitsSelector = (state: RootState) =>
   state.firestore.ordered.userModalVisits;
 
 export const radioStationsSelector = (state: RootState) =>
-  state.firestore.data.venues?.playa?.radioStations;
+  state.firestore.data.currentVenue?.radioStations;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,

@@ -19,6 +19,7 @@ const VenueTemplate = {
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
+  conversationspace: "conversationspace",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -33,6 +34,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
+  VenueTemplate.conversationspace,
 ];
 
 const PlacementState = {
@@ -85,6 +87,7 @@ const createVenueData = (data, context) => {
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -491,6 +494,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showGrid = data.showGrid;
   }
 
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
@@ -514,6 +521,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
   }
+
+  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:

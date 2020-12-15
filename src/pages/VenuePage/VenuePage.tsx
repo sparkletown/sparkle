@@ -21,7 +21,7 @@ import {
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  currentTimeInUnixEpoch,
+  getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -34,6 +34,7 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
+import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -52,7 +53,6 @@ import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PlayaRouter } from "components/templates/Playa/Router";
 
-import { AuthenticationModal } from "components/organisms/AuthenticationModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
@@ -63,8 +63,9 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
-import { updateProfileEnteredVenueIds } from "utils/profile";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import Login from "pages/Account/Login";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -73,6 +74,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
 const VenuePage = () => {
   const venueId = useVenueId();
   const firestore = useFirestore();
+  const mixpanel = useMixpanel();
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
@@ -96,14 +98,18 @@ const VenuePage = () => {
   const retainAttendance = useSelector(shouldRetainAttendanceSelector);
 
   const venueName = venue?.name ?? "";
+  const venueTemplate = venue?.template;
+
   const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
 
   const updateUserLocation = useCallback(() => {
     if (!user || !venueName || (venueName && prevLocations[venueName])) return;
+
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: currentTimeInUnixEpoch,
+      [venueName]: getCurrentTimeInUnixEpochSeconds(),
     };
+
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
       lastSeenAt: new Date().getTime(),
@@ -237,16 +243,17 @@ const VenuePage = () => {
       : undefined
   );
 
+  useEffect(() => {
+    if (user && profile && venueId && venueTemplate) {
+      mixpanel.track("VenuePage loaded", {
+        venueId,
+        template: venueTemplate,
+      });
+    }
+  }, [user, profile, venueId, venueTemplate, mixpanel]);
+
   if (!user) {
-    return (
-      <WithNavigationBar>
-        <AuthenticationModal
-          show={true}
-          onHide={() => {}}
-          showAuth="register"
-        />
-      </WithNavigationBar>
-    );
+    return <Login formType="initial" />;
   }
 
   if (!venue || !venueId) {
@@ -255,6 +262,7 @@ const VenuePage = () => {
 
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
@@ -296,14 +304,12 @@ const VenuePage = () => {
     }
   }
 
-  if (profile === undefined) {
+  if (!user) {
     return <LoadingPage />;
   }
 
-  if (!(profile?.partyName && profile?.pictureUrl)) {
-    history.push(
-      `/account/profile?returnUrl=${window.location.pathname}${window.location.search}`
-    );
+  if (profile && !isCompleteProfile(profile)) {
+    history.push(`/account/profile?venueId=${venueId}`);
   }
 
   let template;

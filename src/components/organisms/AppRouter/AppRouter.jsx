@@ -5,7 +5,6 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import "firebase/analytics";
 
 import SplashPage from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";

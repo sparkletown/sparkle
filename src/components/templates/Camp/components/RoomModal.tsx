@@ -5,13 +5,16 @@ import { Modal } from "react-bootstrap";
 import { CampRoomData } from "types/CampRoomData";
 
 import { getCurrentEvent } from "utils/event";
-import { enterRoom } from "utils/useLocationUpdateEffect";
+import { enterLocation } from "utils/useLocationUpdateEffect";
 import {
   currentVenueSelector,
   orderedVenuesSelector,
   partygoersSelector,
 } from "utils/selectors";
-import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import {
+  getCurrentTimeInUnixEpochSeconds,
+  ONE_MINUTE_IN_SECONDS,
+} from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -57,19 +60,22 @@ export const RoomModal: React.FC<RoomModalProps> = ({
       )
     : [];
 
+  // @debt refactor this to use openRoomWithCounting (though this is getting deleted soon so might not matter)
   const enter = () => {
     const roomVenue = venues?.find((venue) =>
       room.url.endsWith(`/${venue.id}`)
     );
-    const venueRoom = roomVenue
-      ? { [roomVenue.name]: currentTimeInUnixEpoch }
-      : {};
+
+    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
+    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+
     room &&
       user &&
-      enterRoom(
+      enterLocation(
         user,
         {
-          [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch,
+          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
           ...venueRoom,
         },
         profile?.lastSeenIn
@@ -83,7 +89,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          currentTimeInUnixEpoch
+          getCurrentTimeInUnixEpochSeconds()
     );
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
