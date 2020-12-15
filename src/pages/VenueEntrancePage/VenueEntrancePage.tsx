@@ -10,6 +10,7 @@ import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
 import Login from "pages/Account/Login";
+import { isCompleteProfile } from "utils/profile";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -34,6 +35,10 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
 
   if (!user || !profile) {
     return <Login />;
+  }
+
+  if (profile && !isCompleteProfile(profile)) {
+    history.push(`/account/profile?venueId=${venueId}`);
   }
 
   const proceed = () => {
