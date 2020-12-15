@@ -1,6 +1,6 @@
 export enum VenueAccessType {
-  EmailList = "emaillist",
-  CodeList = "codelist",
+  Emails = "emails",
+  Codes = "codes",
   Password = "password",
 }
 

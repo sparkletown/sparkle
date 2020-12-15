@@ -6,7 +6,6 @@ import { Venue } from "../src/types/Venue";
 import {
   VenueAccessCodes,
   VenueAccessEmails,
-  VenueAccessPassword,
   VenueAccessType,
 } from "../src/types/VenueAcccess";
 
@@ -28,7 +27,7 @@ function usage() {
   console.log(`
 ${process.argv[1]}: Configure venue access. Supports configuring a secret password, list of emails which can access the venue, or ticket codes.
 
-Usage: npx ts-node ${process.argv[1]} PROJECT_ID VENUE_ID [password|emails|codes] [password | emails file path | codes file path]
+Usage: npx ts-node ${process.argv[1]} PROJECT_ID VENUE_ID [password|emaillist|codelist] [password | emails file path | codes file path]
 
 Example: npx ts-node ${process.argv[1]} co-reality-map password abc123
 Example: npx ts-node ${process.argv[1]} co-reality-map emails emails-one-per-line.txt
@@ -43,6 +42,12 @@ if (argv.length < 4) {
 }
 
 const [projectId, venueId, method, accessDetail] = argv;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+if (!(Object as any).values(VenueAccessType).includes(method)) {
+  console.error(`Invalid access method ${method}`);
+  process.exit(1);
+}
 
 admin.initializeApp({
   credential: admin.credential.cert((serviceAccount as unknown) as string),
@@ -78,38 +83,58 @@ admin.initializeApp({
     .firestore()
     .doc(`venues/${venueId}/access/${method}`)
     .get();
-  const access = accessDoc.exists ? accessDoc : {};
+  const access = accessDoc.exists ? accessDoc.data() : {};
 
   switch (method) {
     case VenueAccessType.Password:
-      (access as VenueAccessPassword).password = accessDetail.trim();
+      console.log(
+        `Setting venues/${venueId}/access/${method} to {password: ${accessDetail.trim()}}...`
+      );
+      await admin
+        .firestore()
+        .doc(`venues/${venueId}/access/${method}`)
+        .set({ password: accessDetail.trim() });
       break;
 
-    case VenueAccessType.EmailList:
+    case VenueAccessType.Emails:
       const emails = [];
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .forEach(function (line) {
+        .forEach((line) => {
           emails.push(line.trim().toLowerCase());
         });
-      (access as VenueAccessEmails).emails = mergeStringArrays(
-        (access as VenueAccessEmails).emails,
-        emails
+      console.log(
+        `Setting venues/${venueId}/access/${method} to {emails: ${emails}}...`
       );
+      await admin
+        .firestore()
+        .doc(`venues/${venueId}/access/${method}`)
+        .set({
+          emails: mergeStringArrays(
+            emails,
+            (access as VenueAccessEmails).emails
+          ),
+        });
       break;
 
-    case VenueAccessType.CodeList:
+    case VenueAccessType.Codes:
       const codes = [];
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .forEach(function (line) {
+        .forEach((line) => {
           emails.push(line.trim());
         });
-      (access as VenueAccessCodes).codes = codes;
+      console.log(
+        `Setting venues/${venueId}/access/${method} to {codes: ${codes}}...`
+      );
+      await admin
+        .firestore()
+        .doc(`venues/${venueId}/access/${method}`)
+        .set({
+          codes: mergeStringArrays(codes, (access as VenueAccessCodes).codes),
+        });
       break;
   }
-  console.log(`Setting venues/${venueId}/access/${method} to ${access}...`);
-  await admin.firestore().doc(`venues/${venueId}/access/${method}`).set(access);
   console.log("Done.");
 
   process.exit(0);

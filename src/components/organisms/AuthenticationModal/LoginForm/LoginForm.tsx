@@ -56,7 +56,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
-      if (venue.access?.includes(VenueAccessType.CodeList)) {
+      if (venue.access?.includes(VenueAccessType.Codes)) {
         const result = await _firebase
           .functions()
           .httpsCallable("access-checkAccess")({
@@ -65,7 +65,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         });
         localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
       }
-      if (venue.access?.includes(VenueAccessType.EmailList)) {
+      if (venue.access?.includes(VenueAccessType.Emails)) {
         const result = await _firebase
           .functions()
           .httpsCallable("access-checkAccess")({
@@ -147,7 +147,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access?.includes(VenueAccessType.CodeList) && (
+        {venue.access?.includes(VenueAccessType.Codes) && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
