@@ -87,18 +87,22 @@ const createToken = async (venueId, uid, password, email, code) => {
 exports.checkAccess = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  if (
-    data.token &&
-    (await checkIsValidToken(data.venueId, context.auth.uid, data.token))
-  ) {
+  const isValidToken = await checkIsValidToken(
+    data.venueId,
+    context.auth.uid,
+    data.token
+  );
+  if (data.token && isValidToken) {
     return { token: data.token };
   }
 
-  if (
-    (data.password && (await isValidPassword(data.venueId, data.password))) ||
-    (data.email && (await isValidEmail(data.venueId, data.email))) ||
-    (data.code && (await isValidCode(data.venueId, data.code)))
-  ) {
+  const passwordValid =
+    data.password && (await isValidPassword(data.venueId, data.password));
+  const emailValid =
+    data.email && (await isValidEmail(data.venueId, data.email));
+  const codeValid = data.code && (await isValidCode(data.venueId, data.code));
+
+  if (passwordValid || emailValid || codeValid) {
     const token = await createToken(
       data.venueId,
       context.auth.uid,
