@@ -18,10 +18,12 @@ export interface EventInput {
 interface Question {
   name: string;
   text: string;
+  link?: string;
 }
 
 export interface AdvancedVenueInput {
-  profileQuestions: Array<Question>;
+  profile_questions: Array<Question>;
+  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
