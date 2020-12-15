@@ -531,7 +531,6 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const updated = doc.data();
-  // updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
   updated.placement = {
     x: dataOrUpdateKey(data.placement, updated.placement, "x"),
     y: dataOrUpdateKey(data.placement, updated.placement, "y"),
