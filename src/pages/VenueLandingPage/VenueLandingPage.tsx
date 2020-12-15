@@ -16,10 +16,9 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { updateTheme } from "pages/VenuePage/helpers";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
-
 import { Firestore } from "types/Firestore";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
@@ -116,6 +115,46 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [venue]);
 
+  const onJoinClick = useCallback(() => {
+    if (venueId) {
+      const venueEntrance = venue?.entrance && venue.entrance.length;
+      window.location.href =
+        user && !venueEntrance
+          ? venueInsideUrl(venueId)
+          : venueEntranceUrl(venueId);
+    }
+  }, [user, venue, venueId]);
+
+  const renderJoinButton = useCallback(() => {
+    switch (venue?.accessMode) {
+      case VenueAccessMode.Password:
+        return (
+          <div className="secret-password-form-wrapper">
+            <SecretPasswordForm
+              buttonText={venue.config?.landingPageConfig.joinButtonText}
+            />
+          </div>
+        );
+
+      case VenueAccessMode.Emails:
+      case VenueAccessMode.Codes:
+      default:
+        return (
+          <button
+            className="btn btn-primary btn-block btn-centered"
+            onClick={onJoinClick}
+          >
+            Join the event
+            {(venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
+              <span className="countdown">
+                Begins in {getTimeBeforeParty(venue?.start_utc_seconds)}
+              </span>
+            )}
+          </button>
+        );
+    }
+  }, [onJoinClick, venue]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -139,18 +178,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const closeAuthenticationModal = () => {
     setIsAuthenticationModalOpen(false);
   };
-
-  const onJoinClick = () => {
-    if (!venueId) return;
-
-    const venueEntrance = venue.entrance && venue.entrance.length;
-    window.location.href =
-      user && !venueEntrance
-        ? venueInsideUrl(venueId)
-        : venueEntranceUrl(venueId);
-  };
-
-  const isPasswordRequired = venue.access === VenueAccessMode.Password;
 
   return (
     <WithNavigationBar>
@@ -182,29 +209,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
-          {isPasswordRequired && (
-            <div className="secret-password-form-wrapper">
-              <SecretPasswordForm
-                buttonText={venue.config?.landingPageConfig.joinButtonText}
-              />
-            </div>
-          )}
-          {!isPasswordRequired &&
-            (!futureOrOngoingVenueEvents ||
-              futureOrOngoingVenueEvents.length === 0) && (
-              <button
-                className="btn btn-primary btn-block btn-centered"
-                onClick={onJoinClick}
-              >
-                Join the event
-                {(venue?.start_utc_seconds ?? 0) >
-                  new Date().getTime() / 1000 && (
-                  <span className="countdown">
-                    Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
-                  </span>
-                )}
-              </button>
-            )}
+          {renderJoinButton()}
         </div>
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">

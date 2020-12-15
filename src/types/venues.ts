@@ -144,6 +144,7 @@ export interface Venue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+  accessMode?: string;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
