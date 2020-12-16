@@ -84,7 +84,6 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         <li
           key={formatDate(day.dateDay.getTime())}
           className={`button ${idx === date ? "active" : ""}`}
-          style={{ width: 100 }}
           onClick={() => setDate(idx)}
         >
           {formatDateToWeekday(day.dateDay.getTime() / 1000)}
@@ -97,8 +96,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     () =>
       orderedEvents[date]?.events.map((event) => (
         <EventDisplay
-          // @debt I think is probably a poor choice for a key?
-          key={event.name + Math.random().toString()}
+          key={event.id}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />

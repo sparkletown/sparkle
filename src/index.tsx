@@ -54,6 +54,7 @@ import { User } from "types/User";
 
 import { useSelector } from "hooks/useSelector";
 import { authSelector } from "utils/selectors";
+import { initializeZendesk } from "utils/zendesk";
 
 import AppRouter from "components/organisms/AppRouter";
 
@@ -63,6 +64,7 @@ import "bootstrap";
 import "scss/global.scss";
 
 activatePolyFills();
+initializeZendesk();
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
