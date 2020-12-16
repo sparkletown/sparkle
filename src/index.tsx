@@ -64,6 +64,9 @@ import "bootstrap";
 import "scss/global.scss";
 
 activatePolyFills();
+// Always initialize Zendesk's help button on key pages.
+// Zendesk is initialized for venue related pages, if the venue enables it.
+// That logic lives in Venue{,Entrance,Landing}Page.tsx.
 if (
   ZENDESK_URL_PREFIXES.find((prefix) =>
     window.location.pathname.startsWith(prefix)
