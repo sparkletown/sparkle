@@ -31,7 +31,7 @@ import {
 import { IFRAME_ALLOW } from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import { initializeZendesk } from "utils/zendesk";
+import { showZendeskWidget } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -101,7 +101,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   useEffect(() => {
     if (venue?.showZendesk) {
-      initializeZendesk();
+      showZendeskWidget();
     }
   }, [venue]);
 

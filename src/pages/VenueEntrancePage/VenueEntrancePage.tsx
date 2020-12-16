@@ -11,7 +11,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
 import Login from "pages/Account/Login";
 import { isCompleteProfile } from "utils/profile";
-import { initializeZendesk } from "utils/zendesk";
+import { showZendeskWidget } from "utils/zendesk";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -23,7 +23,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
 
   useEffect(() => {
     if (venue?.showZendesk) {
-      initializeZendesk();
+      showZendeskWidget();
     }
   }, [venue]);
 

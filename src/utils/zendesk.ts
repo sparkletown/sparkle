@@ -5,14 +5,28 @@ const ZENDESK_SCRIPT_SRC =
 
 const ZENDESK_SCRIPT_ID = "ze-snippet";
 
-let initialized = false;
-
 export const initializeZendesk = () => {
-  if (!initialized) {
-    loadScript({
-      src: ZENDESK_SCRIPT_SRC,
-      id: ZENDESK_SCRIPT_ID,
-    });
-    initialized = true;
+  loadScript({
+    src: ZENDESK_SCRIPT_SRC,
+    id: ZENDESK_SCRIPT_ID,
+    onload: hideZendeskWidget,
+  });
+};
+
+const hideZendeskWidget = () => {
+  if (window.zE) {
+    window.zE("webWidget", "hide");
+  }
+};
+
+export const showZendeskWidget = () => {
+  if (window.zE) {
+    zE("webWidget", "show");
+  } else {
+    setTimeout(() => {
+      if (window.zE) {
+        zE("webWidget", "show");
+      }
+    }, 6000);
   }
 };

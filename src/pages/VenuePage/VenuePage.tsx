@@ -64,7 +64,7 @@ import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
-import { initializeZendesk } from "utils/zendesk";
+import { showZendeskWidget } from "utils/zendesk";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -253,7 +253,7 @@ const VenuePage = () => {
 
   useEffect(() => {
     if (venue?.showZendesk) {
-      initializeZendesk();
+      showZendeskWidget();
     }
   }, [venue]);
 
