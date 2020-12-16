@@ -13,6 +13,6 @@ export const initializeZendesk = () => {
       src: ZENDESK_SCRIPT_SRC,
       id: ZENDESK_SCRIPT_ID,
     });
+    initialized = true;
   }
-  initialized = true;
 };
