@@ -11,6 +11,7 @@ export interface VenueEvent {
   collective_price: number;
   host: string;
   room?: string;
+  id?: string;
 }
 
 export type AdminVenueDetailsPartProps = {
