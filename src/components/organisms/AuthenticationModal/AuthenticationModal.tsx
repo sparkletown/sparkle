@@ -16,6 +16,7 @@ export enum AuthOptions {
 interface PropsType {
   show: boolean;
   onHide: () => void;
+  headerMessage?: string;
   afterUserIsLoggedIn?: () => void;
   showAuth: AuthOptions;
 }
@@ -23,6 +24,7 @@ interface PropsType {
 export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
+  headerMessage,
   afterUserIsLoggedIn,
   showAuth,
 }) => {
@@ -48,10 +50,14 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   return (
     <Modal show={show} onHide={closeAuthenticationModal}>
       <div className="authentication-modal-container">
+        {headerMessage && (
+          <div className="authentication-modal-title">{headerMessage}</div>
+        )}
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}
             displayRegisterForm={displayRegisterForm}
+            showSeparator={false}
           />
         )}
         {formToDisplay === "register" && (

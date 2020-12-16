@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 
-import { venueEntranceUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./SecretPasswordForm.scss";
 
-const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
+const SecretPasswordForm = ({ buttonText = "Join the party", onSuccess }) => {
   const firebase = useFirebase();
-  const history = useHistory();
   const venueId = useVenueId();
 
   const [invalidPassword, setInvalidPassword] = useState();
@@ -32,7 +29,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       .then(() => {
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");
-        history.push(venueEntranceUrl(venueId));
+        onSuccess();
       })
       .catch(() => {
         setInvalidPassword(true);

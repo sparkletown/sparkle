@@ -3,6 +3,11 @@
 .authentication-modal-container {
   padding: 20px;
 
+  .authentication-modal-title {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+
   .save-card-form-container {
     display: flex;
     align-items: center;
