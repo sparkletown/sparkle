@@ -77,6 +77,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumRows?: number;
     auditoriumColumns?: number;
     showReactions?: boolean;
+    showZendesk?: boolean;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -166,6 +167,12 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
+
+  // Default to showing Zendesk
+  if (input.showZendesk !== false) {
+    input.showZendesk = true;
+  }
+
   return firestoreVenueInput;
 };
 
