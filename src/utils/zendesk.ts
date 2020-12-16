@@ -5,9 +5,14 @@ const ZENDESK_SCRIPT_SRC =
 
 const ZENDESK_SCRIPT_ID = "ze-snippet";
 
+let initialized = false;
+
 export const initializeZendesk = () => {
-  loadScript({
-    src: ZENDESK_SCRIPT_SRC,
-    id: ZENDESK_SCRIPT_ID,
-  });
+  if (!initialized) {
+    loadScript({
+      src: ZENDESK_SCRIPT_SRC,
+      id: ZENDESK_SCRIPT_ID,
+    });
+  }
+  initialized = true;
 };

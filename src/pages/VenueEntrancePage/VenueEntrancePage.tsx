@@ -3,7 +3,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
-import React from "react";
+import React, { useEffect } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { EntranceStepTemplate } from "types/EntranceStep";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
@@ -21,12 +21,14 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      initializeZendesk();
+    }
+  }, [venue]);
+
   if (!venue || !venueId) {
     return <LoadingPage />;
-  }
-
-  if (venue.showZendesk) {
-    initializeZendesk();
   }
 
   if (

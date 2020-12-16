@@ -99,16 +99,18 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      initializeZendesk();
+    }
+  }, [venue]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
   if (!venue) {
     return <>Loading...</>;
-  }
-
-  if (venue.showZendesk) {
-    initializeZendesk();
   }
 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);

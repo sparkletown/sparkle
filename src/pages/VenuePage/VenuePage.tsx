@@ -251,16 +251,18 @@ const VenuePage = () => {
     }
   }, [user, profile, venueId, venueTemplate, mixpanel]);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      initializeZendesk();
+    }
+  }, [venue]);
+
   if (!user) {
     return <Login formType="initial" />;
   }
 
   if (!venue || !venueId) {
     return <LoadingPage />;
-  }
-
-  if (venue.showZendesk) {
-    initializeZendesk();
   }
 
   const hasEntrance = isTruthy(venue?.entrance);
