@@ -169,7 +169,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   };
 
   // Default to showing Zendesk
-  if (input.showZendesk !== false) {
+  if (input.showZendesk === undefined) {
     input.showZendesk = true;
   }
 
