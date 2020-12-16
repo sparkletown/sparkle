@@ -5,11 +5,13 @@ import "./InitialForm.scss";
 interface InitialFormProps {
   displayLoginForm: () => void;
   displayRegisterForm: () => void;
+  showSeparator?: boolean;
 }
 
 export const InitialForm: FC<InitialFormProps> = ({
   displayLoginForm,
   displayRegisterForm,
+  showSeparator = true,
 }) => {
   return (
     <div className="initial-form">
@@ -19,7 +21,7 @@ export const InitialForm: FC<InitialFormProps> = ({
       >
         Create your account
       </div>
-      <div className="buttons-separator">or</div>
+      {showSeparator && <div className="buttons-separator">or</div>}
       <div
         className="btn btn-block btn-centered login-button"
         onClick={displayLoginForm}
