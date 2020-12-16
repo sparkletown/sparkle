@@ -2,34 +2,6 @@ import { useCallback, useEffect, useState } from "react";
 import Video, { LocalVideoTrack } from "twilio-video";
 import firebase from "firebase/app";
 
-// export const VideoContext = createContext(null);
-//
-// export const VideoProvider = ({ token, children }) => {
-//   const { token, roomName, room, participants, disconnect } = useVideoState({
-//     useClientToken,
-//   });
-//
-//   return (
-//     <VideoContext.Provider
-//       value={{ token, roomName, room, participants, disconnect }}
-//     >
-//       {children}
-//     </VideoContext.Provider>
-//   );
-// };
-
-// export const useVideoConsumer = () => {
-//   const context = useContext(VideoContext);
-//
-//   if (!context) {
-//     throw new Error(
-//       "VideoContext is missing, did you forget to use a <VideoProvider /> component?"
-//     );
-//   }
-//
-//   return context;
-// };
-
 export interface UseVideoStateProps {
   userUid?: string;
   roomName?: string;

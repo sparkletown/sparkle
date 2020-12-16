@@ -116,6 +116,8 @@ const store = createStore(
   )
 );
 
+export type AppDispatch = typeof store.dispatch;
+
 const rrfProps = {
   firebase,
   config: rrfConfig,
