@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,10 +14,9 @@ import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
 
 import {
   EmojiReactionType,
-  ExperienceContext,
   Reactions,
   TextReactionType,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import Room from "components/organisms/Room";
@@ -28,9 +27,13 @@ import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useInterval } from "hooks/useInterval";
+import { useVenueId } from "hooks/useVenueId";
+
+import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -96,14 +99,19 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     );
   }, [nowMs, users, venueToUseName]);
 
-  const experienceContext = useContext(ExperienceContext);
-
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
+  const dispatch = useDispatch();
+  const venueId = useVenueId();
+
   const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
-    experienceContext &&
-      experienceContext.addReaction(createReaction({ reaction }, user));
+    dispatch(
+      addReaction({
+        venueId,
+        reaction: createReaction({ reaction }, user),
+      })
+    );
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
@@ -127,13 +135,15 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
     setIsMessageToTheBandSent(true);
-    experienceContext &&
-      user &&
-      experienceContext.addReaction(
-        createReaction(
-          { reaction: "messageToTheBand", text: data.messageToTheBand },
-          user
-        )
+    user &&
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createReaction(
+            { reaction: "messageToTheBand", text: data.messageToTheBand },
+            user
+          ),
+        })
       );
     reset();
   };
