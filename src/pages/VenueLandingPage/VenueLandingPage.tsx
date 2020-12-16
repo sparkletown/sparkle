@@ -31,6 +31,7 @@ import {
 import { IFRAME_ALLOW } from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { initializeZendesk } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -104,6 +105,10 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   if (!venue) {
     return <>Loading...</>;
+  }
+
+  if (venue.showZendesk) {
+    initializeZendesk();
   }
 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);
