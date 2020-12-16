@@ -11,7 +11,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import "./SecretPasswordForm.scss";
 
-const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
+const SecretPasswordForm = ({ buttonText = "Join the party", onSuccess }) => {
   const history = useHistory();
   const venueId = useVenueId();
 
@@ -38,6 +38,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           if (isTruthy(result?.data?.token)) {
             setLocalStorageToken(venueId, result.data.token);
             history.push(venueEntranceUrl(venueId));
+            onSuccess && onSuccess()
           } else {
             setMessage(`Wrong password!`);
           }
@@ -46,7 +47,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           setMessage(`Password error: ${error.toString()}`);
         });
     },
-    [error, history, password, venueId]
+    [error, history, onSuccess, password, venueId]
   );
 
   return (
