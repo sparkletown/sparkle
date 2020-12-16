@@ -5,8 +5,9 @@ const ZENDESK_SCRIPT_SRC =
 
 const ZENDESK_SCRIPT_ID = "ze-snippet";
 
-export function initializeZendesk() {
-  loadScript(ZENDESK_SCRIPT_SRC, () => {}, {
+export const initializeZendesk = () => {
+  loadScript({
+    src: ZENDESK_SCRIPT_SRC,
     id: ZENDESK_SCRIPT_ID,
   });
-}
+};

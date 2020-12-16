@@ -1,17 +1,12 @@
-import { HTMLAttributes } from "react";
+type ScriptProps = "src" | "id";
+type LoadScriptProps = Record<ScriptProps, string>;
 
-export function loadScript(
-  src: string,
-  onLoad: () => void,
-  options?: HTMLAttributes<HTMLScriptElement>
-) {
+export const loadScript = (options: LoadScriptProps) => {
   const script = document.createElement("script");
-  script.src = src;
 
-  if (options?.id) {
-    script.id = options.id;
-  }
+  Object.entries(options).forEach(([propertyName, property]) => {
+    script[propertyName as ScriptProps] = property;
+  });
 
-  script.onload = onLoad;
   document.querySelector("body")?.appendChild(script);
-}
+};
