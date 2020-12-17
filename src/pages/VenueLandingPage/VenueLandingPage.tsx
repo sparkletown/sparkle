@@ -31,6 +31,7 @@ import {
 import { IFRAME_ALLOW } from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { showZendeskWidget } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -97,6 +98,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
       setShouldOpenPaymentModal(false);
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
+
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
