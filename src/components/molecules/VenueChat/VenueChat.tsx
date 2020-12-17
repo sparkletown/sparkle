@@ -1,8 +1,4 @@
 import React, { useEffect, useState, useMemo, FC, useCallback } from "react";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -14,6 +10,7 @@ import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
+import { useConnectVenueUsers } from "hooks/useConnectVenueUsers";
 
 import { chatSort } from "utils/chat";
 import ChatBox from "components/molecules/Chatbox";
@@ -26,13 +23,9 @@ interface ChatOutDataType {
 }
 
 const VenueChat: FC = () => {
+  useConnectVenueUsers();
+
   const venueId = useVenueId();
-  const venueChatUsersQuery: ReduxFirestoreQuerySetting = {
-    collection: "users",
-    where: ["enteredVenueIds", "array-contains", venueId],
-    storeAs: "venueChatUsers",
-  };
-  useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const { userRoles } = useRoles();
   const { user } = useUser();
 
