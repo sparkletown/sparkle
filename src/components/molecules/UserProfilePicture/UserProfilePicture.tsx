@@ -1,20 +1,10 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // Typings
 import { UserProfilePictureProp } from "./UserProfilePicture.types";
 
 // Components
-import {
-  ExperienceContext,
-  MessageToTheBandReaction,
-  Reactions,
-} from "components/context/ExperienceContext";
+import { MessageToTheBandReaction, Reactions } from "utils/reactions";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
@@ -29,6 +19,8 @@ import {
 // Styles
 import "./UserProfilePicture.scss";
 import * as S from "./UserProfilePicture.styles";
+import { useReactions } from "hooks/useReactions";
+import { useVenueId } from "hooks/useVenueId";
 
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
@@ -40,7 +32,6 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition,
   user,
 }) => {
-  const experienceContext = useContext(ExperienceContext);
   const muteReactions = useSelector((state) => state.room.mute);
 
   const [pictureUrl, setPictureUrl] = useState("");
@@ -72,7 +63,10 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     avatarUrl(user.id, user.anonMode, user.pictureUrl);
   }, [avatarUrl, user.anonMode, user.id, user.pictureUrl]);
 
-  const typedReaction = experienceContext?.reactions ?? [];
+  const venueId = useVenueId();
+  const reactions = useReactions(venueId);
+
+  const typedReaction = reactions ?? [];
 
   const messagesToBand = typedReaction.find(
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
@@ -111,8 +105,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
         {Reactions.map(
           (reaction, index) =>
-            experienceContext &&
-            experienceContext.reactions.find(
+            reactions.find(
               (r) => r.created_by === user.id && r.reaction === reaction.type
             ) && (
               <div key={index} className="reaction-container">
@@ -156,7 +149,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     reactionPosition,
     imageErrorHandler,
     setSelectedUserProfile,
-    experienceContext,
+    reactions,
     muteReactions,
     isAudioEffectDisabled,
   ]);

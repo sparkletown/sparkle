@@ -18,10 +18,12 @@ export interface EventInput {
 interface Question {
   name: string;
   text: string;
+  link?: string;
 }
 
 export interface AdvancedVenueInput {
-  profileQuestions: Array<Question>;
+  profile_questions: Array<Question>;
+  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -80,6 +82,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumRows?: number;
     auditoriumColumns?: number;
     showReactions?: boolean;
+    showZendesk?: boolean;
   };
 
 export interface VenueInput_v2 {
@@ -91,6 +94,8 @@ export interface VenueInput_v2 {
   logoImageFile: FileList;
   logoImageUrl: string;
   rooms: Array<unknown>;
+
+  showZendesk?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -187,6 +192,11 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     rooms: [], // eventually we will be getting the rooms from the form
   };
 
+  // Default to showing Zendesk
+  if (input.showZendesk === undefined) {
+    input.showZendesk = true;
+  }
+
   return firestoreVenueInput;
 };
 
@@ -237,13 +247,18 @@ const createFirestoreVenueInput_v2 = async (
   }
 
   const firestoreVenueInput: FirestoreVenueInput_v2 = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
     ...imageInputData,
     rooms: [],
   };
+
+  // Default to showing Zendesk
+  if (input.showZendesk === undefined) {
+    input.showZendesk = true;
+  }
 
   return firestoreVenueInput;
 };

@@ -59,7 +59,6 @@ import { useUser } from "hooks/useUser";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import AdminEditComponent from "./AdminEditComponent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
@@ -192,9 +191,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
               editedEvent={editedEvent}
               setEditedEvent={setEditedEvent}
             />
-          </Route>
-          <Route path={`${matchUrl}/placement`}>
-            <AdminEditComponent />
           </Route>
           <Route path={`${matchUrl}/Appearance`}>
             <>Appearance Component</>

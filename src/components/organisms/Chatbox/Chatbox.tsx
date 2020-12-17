@@ -11,10 +11,12 @@ import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { chatSort } from "components/context/ChatContext";
+import { chatSort } from "utils/chat";
 import {
   partygoersSelector,
   partygoersSelectorData,
@@ -69,6 +71,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         }
       : undefined
   );
+  const venueId = useVenueId();
+  useConnectVenueChats(venueId);
   const chats = useSelector(venueChatsSelector);
   const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {

@@ -1,11 +1,8 @@
 import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
-import {
-  RestrictedChatMessage,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
-import { Reaction } from "components/context/ExperienceContext";
+import { RestrictedChatMessage, PrivateChatMessage } from "store/actions/Chat";
+import { Reaction } from "utils/reactions";
 
 import { CampVenue } from "./CampVenue";
 import { ChatRequest } from "./ChatRequest";
@@ -67,7 +64,7 @@ export interface FirestoreData {
   venueChats: Record<string, RestrictedChatMessage> | null;
   venueEvents: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
-  venueChatUsers?: Record<string, User>;
+  venueUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -99,5 +96,5 @@ export interface FirestoreOrdered {
   venueChats: Array<WithId<RestrictedChatMessage>>;
   venueEvents: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
-  venueChatUsers?: Array<WithId<User>>;
+  venueUsers?: Array<WithId<User>>;
 }

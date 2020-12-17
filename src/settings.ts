@@ -191,10 +191,10 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp",
+    template: VenueTemplate.partymap,
+    name: "Party Map",
     description: [
-      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+      "An explorable party map into which you can place all your party rooms.",
     ],
   },
   {
@@ -293,6 +293,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Party Map",
     description: [""],
   },
+  {
+    template: VenueTemplate.themecamp,
+    name: "Theme Camp (legacy)",
+    description: ["To be removed asap"],
+  },
 ];
 
 export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
@@ -390,3 +395,5 @@ export const RANDOM_AVATARS = [
 ];
 
 export const REACTION_TIMEOUT = 5000; // time im ms
+
+export const ZENDESK_URL_PREFIXES = ["/admin"];
