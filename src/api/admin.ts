@@ -77,6 +77,8 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumRows?: number;
     auditoriumColumns?: number;
     showReactions?: boolean;
+    showRadio?: boolean;
+    radioStations?: string;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -224,6 +226,7 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
 };
 
 export const updateVenue = async (input: VenueInput, user: UserInfo) => {
+  console.log("input: ", input);
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
   return await firebase.functions().httpsCallable("venue-updateVenue")(
