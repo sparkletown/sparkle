@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { RestrictedChatMessage } from "components/context/ChatContext";
+import { RestrictedChatMessage } from "store/actions/Chat";
 import { Message } from "components/molecules/Message";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";

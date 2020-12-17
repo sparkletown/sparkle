@@ -6,10 +6,7 @@ import { WithId } from "utils/id";
 
 import { useVenueId } from "hooks/useVenueId";
 
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
@@ -29,6 +26,7 @@ interface ChatboxProps {
   isVenueChat?: boolean;
 }
 
+// @debt TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
 const ChatBox: React.FC<ChatboxProps> = ({
   allowDelete,
   chats,
@@ -39,10 +37,12 @@ const ChatBox: React.FC<ChatboxProps> = ({
 }) => {
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
-  const venueChatUsers = useSelector(venueUsersSelectorData) ?? {};
-  const privateChatUsers = useSelector(chatUsersSelector) ?? {};
 
-  const usersById = isVenueChat ? venueChatUsers : privateChatUsers;
+  const usersByIdSelector = isVenueChat
+    ? venueUsersSelectorData
+    : chatUsersSelector;
+
+  const usersById = useSelector(usersByIdSelector) ?? {};
 
   useEffect(() => {
     if (isMessageToTheBarSent) {

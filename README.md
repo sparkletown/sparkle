@@ -124,3 +124,9 @@ Paste into a google sheet. Leftmost column is the [UNIX timestamp](https://en.wi
 6. Be mindful this is PII (personally identifiable information) so we should handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
 7. Share the google sheet, ready to import the users into our other email lists.
 8. Email the new folks, welcome them, and say thanks for coming to the party!
+
+## Addenda
+
+Sparkle is using Bugsnag! We are proud to be part of Bugsnag's open source program and are glad that Bugsnag supports open source.
+
+![Bugsnag Logo](https://avatars3.githubusercontent.com/u/1058895?s=200&v=4)

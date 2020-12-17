@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import firebase from "firebase/app";
 import { MessageList } from "components/molecules/MessageList";
 import CallOutMessageForm from "components/molecules/CallOutMessageForm";
 import { useForm } from "react-hook-form";
-import { ChatContext, chatSort } from "components/context/ChatContext";
+import { chatSort } from "utils/chat";
 import "./ChatDrawer.scss";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -12,11 +12,13 @@ import {
   faCommentDots,
   faAngleDoubleLeft,
 } from "@fortawesome/free-solid-svg-icons";
+import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
 import { useVenueId } from "hooks/useVenueId";
 import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 import { currentVenueSelectorData } from "utils/selectors";
+import { sendRoomChat } from "store/actions/Chat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -52,7 +54,7 @@ const ChatDrawer: React.FC<PropsType> = ({
     }
   }, [isMessageToTheBarSent]);
 
-  const chatContext = useContext(ChatContext);
+  const dispatch = useDispatch();
 
   const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
     mode: "onSubmit",
@@ -60,9 +62,16 @@ const ChatDrawer: React.FC<PropsType> = ({
 
   const onBarMessageSubmit = async (data: ChatOutDataType) => {
     setIsMessageToTheBarSent(true);
-    chatContext &&
-      user &&
-      chatContext.sendRoomChat(user.uid, roomName, data.messageToTheBand);
+    user &&
+      venueId &&
+      dispatch(
+        sendRoomChat({
+          venueId,
+          from: user.uid,
+          to: roomName,
+          text: data.messageToTheBand,
+        })
+      );
     reset();
   };
 
