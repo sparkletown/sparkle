@@ -318,3 +318,5 @@ export const RANDOM_AVATARS = [
 ];
 
 export const REACTION_TIMEOUT = 5000; // time im ms
+
+export const ZENDESK_URL_PREFIXES = ["/admin"];
