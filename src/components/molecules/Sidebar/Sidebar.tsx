@@ -1,10 +1,13 @@
 import React, { useCallback, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+
+import {
+  chatUsersSelector,
+  currentVenueSelector,
+  parentVenueSelector,
+  unreadMessagesSelector,
+} from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
-
-import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -19,16 +22,18 @@ enum TABS {
 }
 
 const Sidebar = () => {
-  const venueId = useVenueId();
-  useFirestoreConnect({
-    collection: "users",
-    where: ["enteredVenueIds", "array-contains", venueId],
-    storeAs: "chatUsers",
-  });
+  const venue = useSelector(currentVenueSelector);
+  const parentVenue = useSelector(parentVenueSelector);
+
   const [tab, setTab] = useState(0);
-  const privateChats = useSelector(privateChatsSelector);
-  const chatUsers = useSelector(chatUsersSelector);
-  const isEnabled = chatUsers && privateChats;
+
+  const chatUsers = useSelector(chatUsersSelector) ?? [];
+  const hasUnreadMessages = useSelector(unreadMessagesSelector);
+
+  const isEnabled = chatUsers;
+
+  const currentVenueChatTitle = venue.chatTitle ?? "Party";
+  const chatTitle = parentVenue?.chatTitle ?? currentVenueChatTitle;
 
   const selectPartyChatTab = useCallback(() => {
     isEnabled && setTab(TABS.PARTY_CHAT);
@@ -45,9 +50,10 @@ const Sidebar = () => {
   return (
     <div className="sidebar-container">
       <div className="sidebar-slide-btn">
-        <div className="slide-btn-arrow-icon"></div>
-        <div className="slide-btn-chat-icon"></div>
+        <div className="slide-btn-arrow-icon" />
+        <div className="slide-btn-chat-icon" />
       </div>
+
       <div className="sidebar-tabs">
         <div
           className={`sidebar-tab sidebar-tab_chat ${
@@ -55,16 +61,18 @@ const Sidebar = () => {
           }`}
           onClick={selectPartyChatTab}
         >
-          Party Chat
+          {chatTitle} Chat
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_private ${
-            tab === TABS.PRIVATE_CHAT && "active"
-          }`}
+            hasUnreadMessages && "notification"
+          } ${tab === TABS.PRIVATE_CHAT && "active"}`}
           onClick={selectPrivateChatTab}
         >
           Messages
         </div>
+
         <div
           className={`sidebar-tab sidebar-tab_schedule ${
             tab === TABS.LIVE_SCHEDULE && "active"

@@ -1,4 +1,5 @@
 import React from "react";
+import Bugsnag from "@bugsnag/js";
 import { CampRoomData } from "types/CampRoomData";
 import { Link, useHistory } from "react-router-dom";
 import { Venue } from "types/Venue";
@@ -62,7 +63,13 @@ export const AdminVenueRoomDetails = ({
       );
       history.push(`/admin/venue/${venue.id}`);
     } catch (e) {
-      console.error(e);
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("AdminVenueRoomDetails::updateRoom", {
+          venueId: venue.id,
+          roomIndex: index,
+          newState,
+        });
+      });
     }
   };
 

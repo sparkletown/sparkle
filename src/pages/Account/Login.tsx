@@ -1,103 +1,65 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useHistory, Link } from "react-router-dom";
-import firebase from "firebase/app";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-
+import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
+import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
+import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
+import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
+import React, { FC, useState } from "react";
 import "./Account.scss";
-import getQueryParameters from "utils/getQueryParameters";
-import { RouterLocation } from "types/RouterLocation";
-import { updateTheme } from "pages/VenuePage/helpers";
-import { useSelector } from "hooks/useSelector";
-import { venueLandingUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
 
-interface LoginFormData {
-  email: string;
-  password: string;
+interface LoginProps {
+  formType?: "initial" | "login" | "register" | "passwordReset";
 }
 
-interface PropsType {
-  location: RouterLocation;
-}
+export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
+  const [formToDisplay, setFormToDisplay] = useState(formType);
 
-const signIn = ({ email, password }: LoginFormData) => {
-  return firebase.auth().signInWithEmailAndPassword(email, password);
-};
-
-const Login: React.FunctionComponent<PropsType> = ({ location }) => {
-  useConnectCurrentVenue();
-  const history = useHistory();
-  const { venueId } = getQueryParameters(location.search);
-  const venue = useSelector(currentVenueSelectorData);
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    LoginFormData
-  >({
-    mode: "onChange",
-  });
-  const onSubmit = async (data: LoginFormData) => {
-    try {
-      await signIn(data);
-      history.push(
-        venueId
-          ? `${venueLandingUrl(venueId.toString())}${location.search}`
-          : ""
-      );
-    } catch (error) {
-      setError("email", "firebase", error.message);
-    }
+  const displayLoginForm = () => {
+    setFormToDisplay("login");
   };
 
-  venue && updateTheme(venue);
+  const displayRegisterForm = () => {
+    setFormToDisplay("register");
+  };
+
+  const displayPasswordResetForm = () => {
+    setFormToDisplay("passwordReset");
+  };
+
+  const redirectAfterLogin = () => {};
 
   return (
-    <div className="page-container">
-      <div className="hero-logo sparkle"></div>
-      <div className="secondary-action">
-        {`Don't have an account yet?`}
-        <br />
-        <Link to={`/account/register${location.search}`}>
-          Register instead!
-        </Link>
+    <div className="auth-container">
+      <div className="logo-container">
+        <img src="/sparkle-header.png" alt="" width="100%" />
       </div>
-      <div className="login-container">
-        <h2>Log in</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="form">
-          <div className="input-group">
-            <input
-              name="email"
-              className="input-block input-centered"
-              placeholder="Your email"
-              ref={register({ required: true })}
-            />
-            {errors.email && errors.email.type === "required" && (
-              <span className="input-error">Email is required</span>
-            )}
-            {errors.email && errors.email.type === "firebase" && (
-              <span className="input-error">{errors.email.message}</span>
-            )}
-          </div>
-          <div className="input-group">
-            <input
-              name="password"
-              className="input-block input-centered"
-              type="password"
-              placeholder="Password"
-              ref={register({
-                required: true,
-              })}
-            />
-            {errors.password && errors.password.type === "required" && (
-              <span className="input-error">Password is required</span>
-            )}
-          </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Log in"
-            disabled={!formState.isValid}
+      <div className="auth-form-container">
+        {formToDisplay === "initial" && (
+          <InitialForm
+            displayLoginForm={displayLoginForm}
+            displayRegisterForm={displayRegisterForm}
           />
-        </form>
+        )}
+        {formToDisplay === "register" && (
+          <RegisterForm
+            displayLoginForm={displayLoginForm}
+            displayPasswordResetForm={displayPasswordResetForm}
+            afterUserIsLoggedIn={redirectAfterLogin}
+            closeAuthenticationModal={() => null}
+          />
+        )}
+        {formToDisplay === "login" && (
+          <LoginForm
+            displayRegisterForm={displayRegisterForm}
+            displayPasswordResetForm={displayPasswordResetForm}
+            closeAuthenticationModal={() => null}
+            afterUserIsLoggedIn={redirectAfterLogin}
+          />
+        )}
+        {formToDisplay === "passwordReset" && (
+          <PasswordResetForm
+            displayLoginForm={displayLoginForm}
+            closeAuthenticationModal={redirectAfterLogin}
+          />
+        )}
       </div>
     </div>
   );

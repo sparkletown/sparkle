@@ -61,7 +61,7 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
       <div className="room-delete-modal-container">
         <h2 className="centered">Delete room</h2>
         <div className="secondary-action">
-          WARNING: Permanently removes a room from SparkleVerse
+          WARNING: Permanently removes this room from SparkleVerse
         </div>
         {!deleted && (
           <>
@@ -99,7 +99,9 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
         )}
         {deleted && (
           <div className="input-group">
-            <span className="info">Room has been permanently deleted.</span>
+            <span className="info">
+              Room {room.title} has been permanently deleted.
+            </span>
             <button
               className="btn btn-primary btn-block btn-centered"
               type="submit"

@@ -21,6 +21,7 @@ import "./Admin.scss";
 import { IS_BURN } from "secrets";
 import { Venue_v2 } from "types/Venue";
 import VenueList from "./VenueList";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 
 dayjs.extend(advancedFormat);
 
@@ -58,7 +59,11 @@ const Admin: React.FC = () => {
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal
+          show={!user}
+          onHide={() => {}}
+          showAuth={AuthOptions.login}
+        />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />

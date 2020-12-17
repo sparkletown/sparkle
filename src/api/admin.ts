@@ -1,5 +1,5 @@
 import firebase, { UserInfo } from "firebase/app";
-import _ from "lodash";
+import { omit } from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { VenuePlacement } from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
@@ -20,10 +20,12 @@ export interface EventInput {
 interface Question {
   name: string;
   text: string;
+  link?: string;
 }
 
 export interface AdvancedVenueInput {
-  profileQuestions: Array<Question>;
+  profile_questions: Array<Question>;
+  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -84,6 +86,15 @@ export type VenueInput = AdvancedVenueInput &
     bannerMessage?: string;
     parentId?: string;
     owners?: string[];
+    showRangers?: boolean;
+    chatTitle?: string;
+    attendeesTitle?: string;
+    auditoriumRows?: number;
+    auditoriumColumns?: number;
+    showReactions?: boolean;
+    showRadio?: boolean;
+    radioStations?: string;
+    showZendesk?: boolean;
   };
 
 export interface VenueInput_v2 {
@@ -195,7 +206,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   }
 
   const firestoreVenueInput: FirestoreVenueInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
@@ -203,6 +214,11 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
+
+  // Default to showing Zendesk
+  if (input.showZendesk === undefined) {
+    input.showZendesk = true;
+  }
 
   return firestoreVenueInput;
 };
@@ -255,7 +271,7 @@ const createFirestoreVenueInput_v2 = async (
   }
 
   const firestoreVenueInput: FirestoreVenueInput_v2 = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
@@ -275,7 +291,6 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
 };
 
 export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
-  console.log("CREATE VENUE", input);
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue_v2")(
     firestoreVenueInput
@@ -336,7 +351,7 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
@@ -383,7 +398,7 @@ const createFirestoreRoomInput_v2 = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput_v2 = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),

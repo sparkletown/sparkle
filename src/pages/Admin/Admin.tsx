@@ -1,12 +1,11 @@
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import dayjs from "dayjs";
-import advancedFormat from "dayjs/plugin/advancedFormat";
-import "firebase/storage";
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
+import { shallowEqual } from "react-redux";
 import {
   Link,
   Route,
@@ -15,24 +14,16 @@ import {
   useParams,
   useRouteMatch,
   useHistory,
+  Redirect,
 } from "react-router-dom";
-import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
-import { WithId } from "utils/id";
 import {
-  canHaveSubvenues,
-  canBeDeleted,
-  canHaveEvents,
-  canHavePlacement,
-} from "utils/venue";
-import "./Admin.scss";
-import AdminEventModal from "./AdminEventModal";
-import { venueInsideUrl } from "utils/url";
-import { AdminVenuePreview } from "./AdminVenuePreview";
-import { isCampVenue } from "types/CampVenue";
-import { useQuery } from "hooks/useQuery";
-import { VenueTemplate } from "types/VenueTemplate";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+  ReduxFirestoreQuerySetting,
+  useFirestoreConnect,
+} from "react-redux-firebase";
+import dayjs from "dayjs";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import "firebase/storage";
+
 import {
   PLACEABLE_VENUE_TEMPLATES,
   PLAYA_IMAGE,
@@ -41,13 +32,41 @@ import {
   PLAYA_VENUE_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  DEFAULT_VENUE,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent";
-import { VenueOwnersModal } from "./VenueOwnersModal";
-import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
-import EventsComponent from "./EventsComponent";
+
+import { isVenueWithRooms } from "types/CampVenue";
+import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
+
+import { isTruthyFilter } from "utils/filter";
+import { WithId } from "utils/id";
+import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
+import { venueInsideUrl } from "utils/url";
+import {
+  canHaveSubvenues,
+  canBeDeleted,
+  canHaveEvents,
+  canHavePlacement,
+} from "utils/venue";
+
+import { useIsAdminUser } from "hooks/roles";
+import { useSelector } from "hooks/useSelector";
+import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import AdminEventModal from "./AdminEventModal";
+import { AdminVenuePreview } from "./AdminVenuePreview";
+import EventsComponent from "./EventsComponent";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
+import { VenueOwnersModal } from "./VenueOwnersModal";
+
+import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
 
@@ -60,7 +79,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;
 
@@ -81,9 +100,9 @@ const VenueList: React.FC<VenueListProps> = ({
             }`}
           >
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
-            {isCampVenue(venue) && (
+            {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venue.rooms.map((room, idx) => (
+                {venue.rooms?.map((room, idx) => (
                   <li
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
@@ -108,30 +127,44 @@ type VenueDetailsProps = {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
-  const match = useRouteMatch();
-  const location = useLocation();
-  const { venues } = useKeyedSelector(
-    (state) => ({
-      venues: state.firestore.data.venues ?? {},
-    }),
-    ["venues"]
-  );
+  const { url: matchUrl } = useRouteMatch();
+  const { pathname: urlPath } = useLocation();
 
-  const venue = venues[venueId];
+  const venueSelector = useCallback(
+    (state) => makeVenueSelector(venueId)(state),
+    [venueId]
+  );
+  const venue = useSelector(venueSelector, shallowEqual);
+
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
-  if (!venue) {
-    return <>{`Oops, seems we can't find your venue!`}</>;
-  }
+  const adminEventModalOnHide = useCallback(() => {
+    setShowCreateEventModal(false);
+    setEditedEvent(undefined);
+  }, []);
 
-  const tabs = [{ url: `${match.url}`, label: "Venue Info" }];
-  if (canHaveEvents(venue)) {
-    tabs.push({ url: `${match.url}/events`, label: "Events" });
-  }
-  if (canHavePlacement(venue)) {
-    tabs.push({ url: `${match.url}/placement`, label: "Placement & Editing" });
+  const adminDeleteEventOnHide = useCallback(() => {
+    setShowDeleteEventModal(false);
+    setEditedEvent && setEditedEvent(undefined);
+  }, []);
+
+  const tabs = useMemo(() => {
+    if (!venue) return [];
+
+    return [
+      { url: matchUrl, label: "Venue Info" },
+      canHaveEvents(venue) && { url: `${matchUrl}/events`, label: "Events" },
+      canHavePlacement(venue) && {
+        url: `${matchUrl}/placement`,
+        label: "Placement & Editing",
+      },
+    ].filter(isTruthyFilter);
+  }, [matchUrl, venue]);
+
+  if (!venue) {
+    return <>{"Oops, seems we can't find your venue!"}</>;
   }
 
   return (
@@ -141,7 +174,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <div
             key={tab.url}
             className={`page-container-adminpanel-tab ${
-              location.pathname === tab.url ? "selected" : ""
+              urlPath === tab.url ? "selected" : ""
             }`}
           >
             <Link to={tab.url}>{tab.label}</Link>
@@ -150,49 +183,33 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       </div>
       <div className="page-container-adminpanel-venuepage">
         <Switch>
-          <Route
-            path={`${match.url}/events`}
-            render={() => (
-              <EventsComponent
-                venue={venue}
-                showCreateEventModal={showCreateEventModal}
-                setShowCreateEventModal={setShowCreateEventModal}
-                editedEvent={editedEvent}
-                setEditedEvent={setEditedEvent}
-              />
-            )}
-            venue={venue}
-          />
-          <Route
-            path={`${match.url}/placement`}
-            render={() => <AdminEditComponent />}
-            venue={venue}
-          />
-          <Route
-            path={`${match.url}/Appearance`}
-            render={() => <>Appearance Component</>}
-          />
-          <Route
-            path={`${match.url}`}
-            render={() => (
-              <VenueInfoComponent
-                venue={venue}
-                roomIndex={roomIndex}
-                showCreateEventModal={showCreateEventModal}
-                setShowCreateEventModal={setShowCreateEventModal}
-                setShowDeleteEventModal={setShowDeleteEventModal}
-              />
-            )}
-          />
+          <Route path={`${matchUrl}/events`}>
+            <EventsComponent
+              venue={venue}
+              showCreateEventModal={showCreateEventModal}
+              setShowCreateEventModal={setShowCreateEventModal}
+              editedEvent={editedEvent}
+              setEditedEvent={setEditedEvent}
+            />
+          </Route>
+          <Route path={`${matchUrl}/Appearance`}>
+            <>Appearance Component</>
+          </Route>
+          <Route path={matchUrl}>
+            <VenueInfoComponent
+              venue={venue}
+              roomIndex={roomIndex}
+              showCreateEventModal={showCreateEventModal}
+              setShowCreateEventModal={setShowCreateEventModal}
+              setShowDeleteEventModal={setShowDeleteEventModal}
+            />
+          </Route>
         </Switch>
       </div>
       <AdminEventModal
         show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
+        onHide={adminEventModalOnHide}
+        venueId={venueId}
         event={editedEvent}
         template={venue.template}
         setEditedEvent={setEditedEvent}
@@ -200,11 +217,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       />
       <AdminDeleteEvent
         show={showDeleteEventModal}
-        onHide={() => {
-          setShowDeleteEventModal(false);
-          setEditedEvent && setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
+        onHide={adminDeleteEventOnHide}
+        venueId={venueId}
         event={editedEvent}
       />
     </>
@@ -337,7 +351,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                 Add a Room
               </Link>
             )}
-            {isCampVenue(venue) && typeof roomIndex !== "undefined" && (
+            {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
                 to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
@@ -409,33 +423,36 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
 
 const Admin: React.FC = () => {
   const { user } = useUser();
-  const { venueId } = useParams<{ venueId: string }>();
+  const userId = user?.uid || "";
+
+  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
+
+  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
+    () => ({
+      collection: "venues",
+      where: [["owners", "array-contains", userId]],
+    }),
+    [userId]
+  );
+  useFirestoreConnect(venuesOwnedByUserQuery);
+
+  const { venueId } = useParams();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      where: [["owners", "array-contains", user?.uid || ""]],
-    },
-  ]);
+  if (isAdminUserLoading) return <>Loading...</>;
+  if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
 
-  const { roles } = useRoles();
-  if (!roles) {
-    return <>Loading...</>;
-  }
-
-  if (!IS_BURN && !roles.includes("admin")) {
-    return <>Forbidden</>;
+  if (!user) {
+    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />

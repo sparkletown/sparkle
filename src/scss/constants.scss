@@ -31,6 +31,8 @@ $danger-gradient: linear-gradient(
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
 $navbar-height: 66px;
+$footer-height: 66px;
+$chat-input-height: 114px;
 $ripple-color: chocolate;
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
@@ -38,3 +40,22 @@ $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
 $profile-image-bg-color: #999999;
+
+$z-layers: (
+  header: 5,
+  footer: 5,
+  announcement: 3,
+  schedule: 4,
+  schedule-backdrop: 3,
+  map-back-button: 3,
+  sidebar: 2,
+);
+
+@function z($layer) {
+  @if not map-has-key($z-layers, $layer) {
+    @warn "No layer found for `#{$layer}` in $z-layers map. Property omitted. Falling back to 1.";
+    @return 1;
+  }
+
+  @return map-get($z-layers, $layer);
+}

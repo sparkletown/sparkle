@@ -6,13 +6,12 @@ import { WithId } from "utils/id";
 
 import { useVenueId } from "hooks/useVenueId";
 
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
+import { chatUsersSelector, venueUsersSelectorData } from "utils/selectors";
+import { useSelector } from "hooks/useSelector";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -23,16 +22,27 @@ interface ChatboxProps {
   onMessageSubmit: (data: ChatOutDataType) => void;
   allowDelete?: boolean;
   emptyListMessage?: string;
+  showSenderImage?: boolean;
+  isVenueChat?: boolean;
 }
 
+// @debt TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
 const ChatBox: React.FC<ChatboxProps> = ({
   allowDelete,
   chats,
   onMessageSubmit,
   emptyListMessage,
+  showSenderImage,
+  isVenueChat,
 }) => {
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
+
+  const usersByIdSelector = isVenueChat
+    ? venueUsersSelectorData
+    : chatUsersSelector;
+
+  const usersById = useSelector(usersByIdSelector) ?? {};
 
   useEffect(() => {
     if (isMessageToTheBarSent) {
@@ -69,10 +79,12 @@ const ChatBox: React.FC<ChatboxProps> = ({
     <div className="chat-container show">
       {chats && (
         <ChatList
+          usersById={usersById}
           messages={chats}
           emptyListMessage={emptyListMessage}
           allowDelete={allowDelete}
           deleteMessage={deleteMessage}
+          showSenderImage={showSenderImage}
         />
       )}
       <form className="chat-form" onSubmit={handleSubmit(submitChatMessage)}>

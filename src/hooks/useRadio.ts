@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-export const useRadio = (audio?: HTMLAudioElement) => {
+export const useRadio = (playRadio: boolean, audio?: HTMLAudioElement) => {
   const [volume, setVolume] = useState<number>(10);
 
   const loadedInitialState = useRef(false);
+
   useEffect(() => {
     const storageKey = "Radio";
     if (!loadedInitialState.current) {
@@ -20,15 +21,16 @@ export const useRadio = (audio?: HTMLAudioElement) => {
   }, [volume]);
 
   useEffect(() => {
-    if (audio) {
+    if (audio && playRadio) {
       audio.volume = volume / 100;
       audio?.play();
-    }
-  }, [volume, audio]);
 
-  useEffect(() => {
-    audio?.play();
-  }, [audio]);
+      return () => {
+        audio.volume = 0;
+        audio.remove();
+      };
+    }
+  }, [volume, audio, playRadio]);
 
   return { volume, setVolume };
 };

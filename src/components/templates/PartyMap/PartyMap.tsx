@@ -49,7 +49,7 @@ export const PartyMap: React.FC = () => {
 
   useEffect(() => {
     if (roomTitle) {
-      const partyRoom = venue?.rooms.find(
+      const partyRoom = venue?.rooms?.find(
         (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
       );
       if (partyRoom) {
@@ -75,7 +75,7 @@ export const PartyMap: React.FC = () => {
           onHide={modalHidden}
         />
         <AnnouncementMessage message={venue.bannerMessage} />
-        {venue?.config?.showRangers && (
+        {venue?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
           </div>

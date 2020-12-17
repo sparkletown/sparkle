@@ -251,17 +251,23 @@ textarea {
   display: flex;
   flex-direction: column;
   margin-bottom: 0.8rem;
+
   input.input-block {
     margin-bottom: 0.3rem;
   }
   .input-info {
     font-size: 0.8em;
     opacity: 0.8;
+    align-self: center;
+  }
+  &.input-info {
+    align-self: center;
   }
   .input-error {
-    font-size: 0.8em;
-    opacity: 0.8;
-    color: red;
+    text-align: center;
+    color: #e30b0b;
+    font-size: 0.9em;
+    font-weight: bold;
   }
 }
 

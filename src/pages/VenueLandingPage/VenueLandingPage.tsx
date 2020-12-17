@@ -29,6 +29,9 @@ import {
   userPurchaseHistorySelector,
 } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
+import { isTruthy } from "utils/types";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { showZendeskWidget } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -50,6 +53,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     (state) => state.firestore.ordered.venueEvents
   );
   const purchaseHistory = useSelector(userPurchaseHistorySelector);
+
+  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const { hostname } = window.location;
+
+  if (redirectUrl && redirectUrl !== hostname) {
+    window.location.hostname = redirectUrl;
+  }
 
   useFirestoreConnect({
     collection: "venues",
@@ -89,6 +99,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -121,6 +137,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         : venueEntranceUrl(venueId);
   };
 
+  const hasSecretForm = isTruthy(venue.showSecretPasswordForm);
+
   return (
     <WithNavigationBar>
       <div className="container venue-entrance-experience-container">
@@ -140,7 +158,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img className="host-icon" src={venue.host.icon} alt="host" />
+              <img className="host-icon" src={venue.host?.icon} alt="host" />
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">
@@ -154,21 +172,22 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               />
             </div>
           )}
-          {(!futureOrOngoingVenueEvents ||
-            futureOrOngoingVenueEvents.length === 0) && (
-            <button
-              className="btn btn-primary btn-block btn-centered"
-              onClick={onJoinClick}
-            >
-              Join the event
-              {(venue?.start_utc_seconds ?? 0) >
-                new Date().getTime() / 1000 && (
-                <span className="countdown">
-                  Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
-                </span>
-              )}
-            </button>
-          )}
+          {!hasSecretForm &&
+            (!futureOrOngoingVenueEvents ||
+              futureOrOngoingVenueEvents.length === 0) && (
+              <button
+                className="btn btn-primary btn-block btn-centered"
+                onClick={onJoinClick}
+              >
+                Join the event
+                {(venue?.start_utc_seconds ?? 0) >
+                  new Date().getTime() / 1000 && (
+                  <span className="countdown">
+                    Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                  </span>
+                )}
+              </button>
+            )}
         </div>
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
@@ -343,7 +362,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
         afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
-        showAuth="register"
+        showAuth={AuthOptions.register}
       />
     </WithNavigationBar>
   );

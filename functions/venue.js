@@ -20,6 +20,7 @@ const VenueTemplate = {
   audience: "audience",
   avatargrid: "avatargrid",
   firebarrel: "firebarrel",
+  conversationspace: "conversationspace",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -34,6 +35,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
+  VenueTemplate.conversationspace,
 ];
 
 const PlacementState = {
@@ -64,35 +66,47 @@ const createVenueData = (data, context) => {
   }
 
   const venueData = {
-    template: data.template,
-    name: data.name,
+    attendeesTitle: data.attendeesTitle || "partygoers",
+    bannerMessage: data.bannerMessage,
+    chatTitle: data.chatTitle || "Party",
+    code_of_conduct_questions: [],
     config: {
       landingPageConfig: {
         checkList: [],
         coverImageUrl: data.bannerImageUrl,
-        subtitle: data.subtitle,
         description: data.description,
+        subtitle: data.subtitle,
       },
     },
-    presentation: [],
-    quotations: [],
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
-    host: {
-      icon: data.logoImageUrl,
-    },
-    code_of_conduct_questions: [],
+    host: { icon: data.logoImageUrl },
+    name: data.name,
     owners,
-    profile_questions: data.profileQuestions,
-    mapIconImageUrl: data.mapIconImageUrl,
-    placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
-    showChat: true,
-    showRangers: data.showRangers || false,
     parentId: data.parentId,
-    bannerMessage: data.bannerMessage,
+    placement: { ...data.placement, state: PlacementState.SelfPlaced },
+    presentation: [],
+    profile_questions: data.profile_questions,
+    quotations: [],
+    radioStations: data.radioStations ? [data.radioStations] : [],
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
+    showChat: true,
+    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
+    showRadio: data.showRadio || false,
+    showRangers: data.showRangers || false,
+    template: data.template,
+    theme: { primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR },
   };
+
+  if (data.template === VenueTemplate.audience) {
+    venueData.showReactions = data.showReactions;
+
+    if (data.auditoriumColumns) {
+      venueData.auditoriumColumns = data.auditoriumColumns;
+    }
+
+    if (data.auditoriumRows) {
+      venueData.auditoriumRows = data.auditoriumRows;
+    }
+  }
 
   switch (data.template) {
     case VenueTemplate.jazzbar:
@@ -106,7 +120,6 @@ const createVenueData = (data, context) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
-      venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
       break;
@@ -123,6 +136,7 @@ const createVenueData = (data, context) => {
     default:
       break;
   }
+
   return venueData;
 };
 
@@ -441,12 +455,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profileQuestions) {
-    updated.profileQuestions = data.profileQuestions;
-  }
-
-  if (data.mapIconImageUrl) {
-    updated.mapIconImageUrl = data.mapIconImageUrl;
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
   }
 
   if (data.mapBackgroundImageUrl) {
@@ -489,9 +499,55 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showGrid = data.showGrid;
   }
 
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showZendesk === "boolean") {
+    updated.showZendesk = data.showZendesk;
+  }
+
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+  }
+
+  if (data.radioStations) {
+    updated.radioStations = [data.radioStations];
+  }
+
+  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
   switch (updated.template) {
     case VenueTemplate.jazzbar:
@@ -606,7 +662,6 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const updated = doc.data();
-  updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
   updated.placement = {
     x: dataOrUpdateKey(data.placement, updated.placement, "x"),
     y: dataOrUpdateKey(data.placement, updated.placement, "y"),

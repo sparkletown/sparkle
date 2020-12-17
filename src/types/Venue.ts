@@ -8,8 +8,15 @@ import { RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
+import { VideoAspectRatio } from "./VideoAspectRatio";
 
-interface Question {
+export interface Question {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+interface TermOfService {
   name: string;
   text: string;
   link?: string;
@@ -21,7 +28,7 @@ export enum RoomVisibility {
   nameCount = "count/name",
 }
 
-export type AnyRoom = RoomData | CampRoomData;
+export type AnyRoom = RoomData | CampRoomData | AvatarGridRoom;
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
@@ -30,7 +37,7 @@ export interface Venue {
   name: string;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
-  host: {
+  host?: {
     icon: string;
   };
   profile_questions: Question[];
@@ -75,6 +82,20 @@ export interface Venue {
   start_utc_seconds?: number;
   showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
+  requiresTicketCode?: boolean;
+  requiresDateOfBirth?: boolean;
+  requiresEmailVerification?: boolean;
+  ticketUrl?: string;
+  showRangers?: boolean;
+  chatTitle?: string;
+  showReactions?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  videoAspect?: VideoAspectRatio;
+  termsAndConditions: TermOfService[];
+  showRadio?: boolean;
+  showBadges?: boolean;
+  showZendesk?: boolean;
 }
 
 export interface Venue_v2 {
@@ -107,7 +128,7 @@ export interface VenueConfig {
   };
 
   landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
-
+  redirectUrl?: string;
   memberEmails?: string[];
   showRangers?: boolean;
   tables?: Table[];
@@ -187,8 +208,9 @@ export const createJazzbar = (values: FormValues): Venue => {
       icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
     },
     owners: [],
-    profile_questions: values.profileQuestions ?? [],
+    profile_questions: values.profile_questions ?? [],
     code_of_conduct_questions: [],
+    termsAndConditions: [],
     adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,

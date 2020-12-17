@@ -1,34 +1,35 @@
-import React, {
-  Fragment,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import React, { Fragment, useCallback, useMemo, useState } from "react";
 import { isEmpty } from "lodash";
+import { formatDistanceToNow } from "date-fns";
 
-import { DEFAULT_PARTY_NAME, VENUE_CHAT_AGE_DAYS } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  NUM_CHAT_UIDS_TO_LOAD,
+  VENUE_CHAT_AGE_DAYS,
+  DOCUMENT_ID,
+} from "settings";
 
 import { User } from "types/User";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
 import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
 
-import {
-  ChatContext,
-  chatSort,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
+import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
-import { setPrivateChatMessageIsRead } from "components/organisms/PrivateChatModal/helpers";
+import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
 import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
+import { WhereOptions, useFirestoreConnect } from "react-redux-firebase";
+import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;
@@ -41,10 +42,35 @@ const noopHandler = () => {};
 
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
-  const privateChats = useSelector(privateChatsSelector);
-  const chatUsers = useSelector(chatUsersSelector);
+  const dispatch = useDispatch();
+
+  const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
+
+  const privateChats = useSelector(privateChatsSelector) ?? [];
+  const chatUserIds = useMemo(() => {
+    return [...privateChats]
+      .sort(chatSort)
+      .flatMap((chat) => [chat.from, chat.to])
+      .filter(filterUniqueKeys)
+      .slice(0, NUM_CHAT_UIDS_TO_LOAD);
+  }, [privateChats]);
+
+  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
+
+  const chatQuery = useMemo(() => {
+    if (!hasElements(chatUserIds)) return undefined;
+    return [
+      {
+        collection: "users",
+        where: chatUsersOption,
+        storeAs: "chatUsers",
+      },
+    ];
+  }, [chatUserIds, chatUsersOption]);
+
+  useFirestoreConnect(chatQuery);
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {
@@ -75,6 +101,8 @@ const ChatsList: React.FunctionComponent = () => {
 
   const onClickOnSender = useCallback(
     (sender: WithId<User>) => {
+      if (!privateChats) return;
+
       const chatsToUpdate = privateChats.filter(
         (chat) => !chat.isRead && chat.from === sender.id
       );
@@ -88,9 +116,8 @@ const ChatsList: React.FunctionComponent = () => {
 
   const chatsToDisplay = useMemo(
     () =>
-      privateChats &&
       privateChats
-        .filter(
+        ?.filter(
           (message) =>
             message.deleted !== true &&
             message.type === "private" &&
@@ -98,22 +125,23 @@ const ChatsList: React.FunctionComponent = () => {
               message.from === selectedUser?.id) &&
             message.ts_utc.seconds > HIDE_BEFORE
         )
-        .sort(chatSort),
+        .sort(chatSort) ?? [],
     [privateChats, selectedUser]
   );
 
-  const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      chatContext &&
-        user &&
-        chatContext.sendPrivateChat(
-          user.uid,
-          selectedUser!.id,
-          data.messageToTheBand
-        );
+      if (!user) return;
+
+      return dispatch(
+        sendPrivateChat({
+          from: user.uid,
+          to: selectedUser!.id,
+          text: data.messageToTheBand,
+        })
+      );
     },
-    [chatContext, selectedUser, user]
+    [selectedUser, user, dispatch]
   );
 
   const hideUserChat = useCallback(() => setSelectedUser(undefined), []);
@@ -130,6 +158,63 @@ const ChatsList: React.FunctionComponent = () => {
     );
   }, [discussionPartnerWithLastMessageExchanged]);
 
+  const userUid = user?.uid;
+  const privateMessageList = useMemo(() => {
+    return discussions.map((userId: string) => {
+      const sender = { ...chatUsers![userId], id: userId };
+      const lastMessageExchanged =
+        discussionPartnerWithLastMessageExchanged?.[userId];
+      const isUnreadMessage = !isTruthy(lastMessageExchanged.isRead);
+      const profileName = sender.anonMode
+        ? DEFAULT_PARTY_NAME
+        : sender.partyName;
+
+      return (
+        <div
+          key={userId}
+          className="private-message-item"
+          onClick={() => onClickOnSender(sender)}
+          id="private-chat-modal-select-private-recipient"
+        >
+          <UserProfilePicture
+            avatarClassName="private-message-author-pic"
+            user={sender}
+            setSelectedUserProfile={noopHandler}
+          />
+
+          <div className="private-message-content">
+            <div
+              className={`private-message-author ${
+                isUnreadMessage && "unread"
+              }`}
+            >
+              {profileName}
+            </div>
+            <div
+              className={`private-message-last ${isUnreadMessage && "unread"}`}
+            >
+              {lastMessageExchanged.text}
+            </div>
+          </div>
+
+          {lastMessageExchanged.from !== userUid && (
+            <div
+              className={`private-message-time ${isUnreadMessage && "unread"}`}
+            >
+              {formatDistanceToNow(lastMessageExchanged.ts_utc.toDate())}
+            </div>
+          )}
+        </div>
+      );
+    });
+  }, [
+    chatUsers,
+    discussionPartnerWithLastMessageExchanged,
+    discussions,
+    onClickOnSender,
+    userUid,
+  ]);
+
   if (selectedUser) {
     return (
       <Fragment>
@@ -144,44 +229,10 @@ const ChatsList: React.FunctionComponent = () => {
 
   return (
     <Fragment>
+      <UserSearchBar onSelect={setSelectedUser} />
       {hasPrivateChats && (
         <div className="private-container show">
-          <div className="private-messages-list">
-            <UserSearchBar onSelect={setSelectedUser} />
-            {discussions.map((userId: string) => {
-              const sender = { ...chatUsers![userId], id: userId };
-              const lastMessageExchanged =
-                discussionPartnerWithLastMessageExchanged?.[userId];
-              const profileName = sender.anonMode
-                ? DEFAULT_PARTY_NAME
-                : sender.partyName;
-
-              return (
-                <div
-                  key={userId}
-                  className="private-message-item"
-                  onClick={() => onClickOnSender(sender)}
-                  id="private-chat-modal-select-private-recipient"
-                >
-                  <UserProfilePicture
-                    avatarClassName="private-message-author-pic"
-                    user={sender}
-                    setSelectedUserProfile={noopHandler}
-                  />
-                  <div className="private-message-content">
-                    <div className="private-message-author">{profileName}</div>
-                    <div className="private-message-last">
-                      {lastMessageExchanged.text}
-                    </div>
-                  </div>
-                  {lastMessageExchanged.from !== user?.uid &&
-                    !lastMessageExchanged.isRead && (
-                      <div className="not-read-indicator" />
-                    )}
-                </div>
-              );
-            })}
-          </div>
+          <div className="private-messages-list">{privateMessageList}</div>
         </div>
       )}
       {!hasPrivateChats && (

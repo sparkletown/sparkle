@@ -1,0 +1,6 @@
+# Usage: https://github.com/actions/labeler#usage
+
+dependencies:
+- '**/package.json'
+- '**/package-lock.json'
+- '**/yarn.lock'

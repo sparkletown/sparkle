@@ -1,19 +1,12 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import firebase, { UserInfo } from "firebase/app";
 
 // Components
 import {
   EmojiReactionType,
-  ExperienceContext,
   Reactions,
   TextReactionType,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -22,6 +15,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useForm } from "react-hook-form";
+import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -37,6 +31,8 @@ import { User } from "types/User";
 
 // Styles
 import "./Audience.scss";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { addReaction } from "store/actions/Reactions";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -116,14 +112,20 @@ const MIN_ROWS = 19;
 
 // But it takes up the same amount of space.
 
-const capacity = (auditoriumSize: number) =>
-  (MIN_COLUMNS - 1 + auditoriumSize * 2) *
-  (MIN_ROWS + auditoriumSize * 2) *
-  0.75;
+const capacity = (
+  auditoriumSize: number,
+  minColumns: number,
+  minRows: number
+) =>
+  (minColumns - 1 + auditoriumSize * 2) * (minRows + auditoriumSize * 2) * 0.75;
 // Never let the auditorium get more than 80% full
-const requiredAuditoriumSize = (occupants: number) => {
+const requiredAuditoriumSize = (
+  occupants: number,
+  minColumns: number,
+  minRows: number
+) => {
   let size = 0;
-  while (size < 10 && capacity(size) * 0.8 < occupants) {
+  while (size < 10 && capacity(size, minColumns, minRows) * 0.8 < occupants) {
     size++;
   }
   return size;
@@ -134,6 +136,9 @@ export const Audience: React.FunctionComponent = () => {
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);
+
+  const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
+  const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -152,7 +157,8 @@ export const Audience: React.FunctionComponent = () => {
       );
   }, [venueId]);
 
-  const experienceContext = useContext(ExperienceContext);
+  const dispatch = useDispatch();
+
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
     created_at: new Date().getTime(),
     created_by: user.uid,
@@ -160,11 +166,15 @@ export const Audience: React.FunctionComponent = () => {
   });
   const reactionClicked = useCallback(
     (user: UserInfo, reaction: EmojiReactionType) => {
-      experienceContext &&
-        experienceContext.addReaction(createReaction({ reaction }, user));
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createReaction({ reaction }, user),
+        })
+      );
       setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
     },
-    [experienceContext]
+    [venueId, dispatch]
   );
 
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -209,11 +219,13 @@ export const Audience: React.FunctionComponent = () => {
   });
 
   useEffect(() => {
-    setAuditoriumSize(requiredAuditoriumSize(seatedPartygoers));
-  }, [seatedPartygoers]);
+    setAuditoriumSize(
+      requiredAuditoriumSize(seatedPartygoers, minColumns, minRows)
+    );
+  }, [minColumns, minRows, seatedPartygoers]);
 
-  const rowsForSizedAuditorium = MIN_ROWS + auditoriumSize * 2;
-  const columnsForSizedAuditorium = MIN_COLUMNS + auditoriumSize * 2;
+  const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
+  const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
   const isSeat = useCallback(
     (translatedRow: number, translatedColumn: number) => {
@@ -265,13 +277,15 @@ export const Audience: React.FunctionComponent = () => {
 
     const onSubmit = async (data: ChatOutDataType) => {
       setIsShoutSent(true);
-      experienceContext &&
-        user &&
-        experienceContext.addReaction(
-          createReaction(
-            { reaction: "messageToTheBand", text: data.text },
-            user
-          )
+      user &&
+        dispatch(
+          addReaction({
+            venueId,
+            reaction: createReaction(
+              { reaction: "messageToTheBand", text: data.text },
+              user
+            ),
+          })
         );
       reset();
     };
@@ -293,6 +307,65 @@ export const Audience: React.FunctionComponent = () => {
     const translateColumn = (untranslatedColumnIndex: number) =>
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
+    const videoFrameClasses = `frame ${
+      venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
+    }`;
+
+    const renderReactionsContainer = () => (
+      <>
+        <div className="emoji-container">
+          {burningReactions.map((reaction) => (
+            <button
+              key={reaction.name}
+              className="reaction"
+              onClick={() => user && reactionClicked(user, reaction.type)}
+              id={`send-reaction-${reaction.type}`}
+            >
+              <span role="img" aria-label={reaction.ariaLabel}>
+                {reaction.text}
+              </span>
+            </button>
+          ))}
+          <div
+            className="mute-button"
+            onClick={() => setIsAudioEffectDisabled((state) => !state)}
+          >
+            <FontAwesomeIcon
+              className="reaction"
+              icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
+            />
+          </div>
+          <button className="leave-seat-button" onClick={leaveSeat}>
+            Leave Seat
+          </button>
+        </div>
+        <div className="shout-container">
+          <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+            <input
+              name="text"
+              className="text"
+              placeholder="Shout out to the crowd"
+              ref={register({ required: true })}
+              disabled={isShoutSent}
+            />
+            <input
+              className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
+              type="submit"
+              id={`send-shout-out-${venue.name}`}
+              value={isShoutSent ? "Sent!" : "Send"}
+              disabled={isShoutSent}
+            />
+          </form>
+        </div>
+      </>
+    );
+
+    const renderInstructions = () => (
+      <div className="instructions">
+        Welcome! Click on an empty seat to claim it!
+      </div>
+    );
+
     return (
       <>
         <div
@@ -302,7 +375,7 @@ export const Audience: React.FunctionComponent = () => {
           <div className="video-container">
             <div className="video">
               <iframe
-                className="frame"
+                className={videoFrameClasses}
                 src={iframeUrl}
                 title="Video"
                 frameBorder="0"
@@ -310,69 +383,13 @@ export const Audience: React.FunctionComponent = () => {
                 allowFullScreen
               />
             </div>
-            <div className={`reaction-container ${userSeated ? "seated" : ""}`}>
-              {userSeated ? (
-                <>
-                  <div className="emoji-container">
-                    {burningReactions.map((reaction) => (
-                      <button
-                        key={reaction.name}
-                        className="reaction"
-                        onClick={() =>
-                          user && reactionClicked(user, reaction.type)
-                        }
-                        id={`send-reaction-${reaction.type}`}
-                      >
-                        <span role="img" aria-label={reaction.ariaLabel}>
-                          {reaction.text}
-                        </span>
-                      </button>
-                    ))}
-                    <div
-                      className="mute-button"
-                      onClick={() =>
-                        setIsAudioEffectDisabled((state) => !state)
-                      }
-                    >
-                      <FontAwesomeIcon
-                        className="reaction"
-                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-                      />
-                    </div>
-                    <button className="leave-seat-button" onClick={leaveSeat}>
-                      Leave Seat
-                    </button>
-                  </div>
-                  <div className="shout-container">
-                    <form
-                      onSubmit={handleSubmit(onSubmit)}
-                      className="shout-form"
-                    >
-                      <input
-                        name="text"
-                        className="text"
-                        placeholder="Shout out to the crowd"
-                        ref={register({ required: true })}
-                        disabled={isShoutSent}
-                      />
-                      <input
-                        className={`shout-button ${
-                          isShoutSent ? "btn-success" : ""
-                        } `}
-                        type="submit"
-                        id={`send-shout-out-${venue.name}`}
-                        value={isShoutSent ? "Sent!" : "Send"}
-                        disabled={isShoutSent}
-                      />
-                    </form>
-                  </div>
-                </>
-              ) : (
-                <div className="instructions">
-                  Welcome! Click on an empty seat to claim it!
-                </div>
-              )}
-            </div>
+            {venue.showReactions && (
+              <div
+                className={`reaction-container ${userSeated ? "seated" : ""}`}
+              >
+                {userSeated ? renderReactionsContainer() : renderInstructions()}
+              </div>
+            )}
           </div>
 
           <div className="audience">
@@ -434,9 +451,9 @@ export const Audience: React.FunctionComponent = () => {
           </div>
           <div className="chat-container">
             <ChatDrawer
-              title={`${venue.name ?? "Audience"} Chat`}
+              title={`${venue.name ?? "Auditorium"} Q&A`}
               roomName={venue.name}
-              chatInputPlaceholder="Chat"
+              chatInputPlaceholder="Ask a question"
               defaultShow={true}
             />
           </div>
@@ -460,11 +477,11 @@ export const Audience: React.FunctionComponent = () => {
     rowsForSizedAuditorium,
     selectedUserProfile,
     user,
-    experienceContext,
     reset,
     reactionClicked,
     columnsForSizedAuditorium,
     isSeat,
     partygoersBySeat,
+    dispatch,
   ]);
 };

@@ -1,14 +1,22 @@
+import React, { useState } from "react";
 import firebase from "firebase/app";
-import React from "react";
 import { useForm } from "react-hook-form";
-import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { useHistory } from "react-router-dom";
-import { CODE_CHECK_URL } from "secrets";
 import axios from "axios";
-import { updateUserPrivate } from "pages/Account/helpers";
-import { IS_BURN } from "secrets";
-import { CODE_CHECK_ENABLED, TICKET_URL } from "settings";
+
+import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+
+import { codeCheckUrl } from "utils/url";
+import { venueSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
+
 import { useSelector } from "hooks/useSelector";
+
+import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
+import { updateUserPrivate } from "pages/Account/helpers";
+import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { TicketCodeField } from "components/organisms/TicketCodeField";
+import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -20,6 +28,9 @@ interface PropsType {
 interface RegisterFormData {
   email: string;
   password: string;
+  code: string;
+  date_of_birth: string;
+  backend?: string;
 }
 
 export interface CodeOfConductQuestion {
@@ -30,25 +41,14 @@ export interface CodeOfConductQuestion {
 
 export interface RegisterData {
   codes_used: string[];
+  date_of_birth: string;
 }
 
-const CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
-  {
-    name: "termsAndConditions",
-    text: "I agree to SparkleVerse's Terms and Conditions",
-    link: "https://sparklever.se/terms-and-conditions",
-  },
-  {
-    name: "commonDecency",
-    text:
-      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
-  },
-  {
-    name: "regionalBurn",
-    text:
-      "I understand this is an Australian Regional Burn guided by the Ten Principles of Burning Man",
-  },
-];
+const sparkleTermsAndConditions = {
+  name: `I agree to Sparkle's terms and conditions`,
+  text: `I agree to Sparkle's terms and conditions`,
+  link: SPARKLE_TERMS_AND_CONDITIONS_URL,
+};
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
@@ -57,7 +57,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector((state) => state.firestore.ordered.currentVenue);
+  const venue = useSelector(venueSelector);
+
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -69,38 +71,58 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     errors,
     formState,
     setError,
+    clearError,
     watch,
+    getValues,
   } = useForm<RegisterFormData>({
     mode: "onChange",
+    reValidateMode: "onChange",
   });
+
+  const clearBackendErrors = () => {
+    clearError("backend");
+  };
 
   if (!venue) {
     return <>Loading...</>;
   }
 
-  const venueId = venue[0]?.id;
-
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      if (CODE_CHECK_ENABLED) await axios.get(CODE_CHECK_URL + data.email);
+      setShowLoginModal(false);
+      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
+      if (venue.requiresEmailVerification)
+        await axios.get(codeCheckUrl(data.email));
+
       const auth = await signUp(data);
-      if (CODE_CHECK_ENABLED && auth.user) {
+      if (
+        auth.user &&
+        (venue.requiresTicketCode || venue.requiresEmailVerification)
+      ) {
         updateUserPrivate(auth.user.uid, {
           codes_used: [data.email],
+          date_of_birth: data.date_of_birth,
         });
       }
+
       afterUserIsLoggedIn && afterUserIsLoggedIn();
+
       closeAuthenticationModal();
+
       const accountProfileUrl = `/account/profile${
-        venueId ? `?venueId=${venueId}` : ""
+        venue.id ? `?venueId=${venue.id}` : ""
       }`;
-      history.push(IS_BURN ? "/enter/step2" : accountProfileUrl);
+
+      history.push(accountProfileUrl);
     } catch (error) {
+      if (error.code === "auth/email-already-in-use") {
+        setShowLoginModal(true);
+      }
       if (error.response?.status === 404) {
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${TICKET_URL}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -109,22 +131,37 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("email", "firebase", error.message);
+        setError("backend", "firebase", error.message);
       }
     }
   };
 
+  const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
+  const termsAndConditions = venue.termsAndConditions;
+
+  const signIn = async () => {
+    const { email, password } = getValues();
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+  };
+
   return (
     <div className="form-container">
-      <h2>Create an account!</h2>
-      <div className="secondary-action">
-        Already have an account?
-        <br />
-        <span className="link" onClick={displayLoginForm}>
-          Login
-        </span>
+      {showLoginModal && (
+        <ConfirmationModal
+          header={"This account already exists."}
+          message="Would you like to login with the same credentials?"
+          onConfirm={signIn}
+        />
+      )}
+      <div>
+        <div className="register-form-title">First, create your account</div>
+        <div>This will give you access to all sorts of events in Sparkle</div>
       </div>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        onChange={clearBackendErrors}
+        className="form"
+      >
         <div className="input-group">
           <input
             name="email"
@@ -140,6 +177,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               <span className="input-error">{errors.email.message}</span>
             )}
         </div>
+
         <div className="input-group">
           <input
             name="password"
@@ -148,10 +186,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             placeholder="Password"
             ref={register({
               required: true,
-              // minLength: 8,
-              pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/,
+              pattern: /^(?=.*[0-9])(?=.*[a-zA-Z]).{6,}$/,
             })}
           />
+
           <span
             className={`input-${
               errors.password && errors.password.type === "pattern"
@@ -159,40 +197,93 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
                 : "info"
             }`}
           >
-            Password must contain letters and numbers
+            Password must contain letters, numbers, and be at least 6 characters
+            long
           </span>
+
           {errors.password && errors.password.type === "required" && (
             <span className="input-error">Password is required</span>
           )}
         </div>
-        {IS_BURN &&
-          CODE_OF_CONDUCT_QUESTIONS.map((q) => (
-            <div className="input-group" key={q.name}>
-              <label
-                htmlFor={q.name}
-                className={`checkbox ${watch(q.name) && "checkbox-checked"}`}
+
+        {venue.requiresTicketCode && (
+          <TicketCodeField register={register} error={errors?.code} />
+        )}
+
+        {venue.requiresDateOfBirth && (
+          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        )}
+
+        {errors.backend && (
+          <span className="input-error">{errors.backend.message}</span>
+        )}
+
+        <div className="input-group" key={sparkleTermsAndConditions.name}>
+          <label
+            htmlFor={sparkleTermsAndConditions.name}
+            className={`checkbox input-info ${
+              watch(sparkleTermsAndConditions.name) && "checkbox-checked"
+            }`}
+          >
+            {sparkleTermsAndConditions.link && (
+              <a
+                href={sparkleTermsAndConditions.link}
+                target="_blank"
+                rel="noopener noreferrer"
               >
-                {q.link && (
-                  <a href={q.link} target="_blank" rel="noopener noreferrer">
-                    {q.text}
-                  </a>
-                )}
-                {!q.link && q.text}
-              </label>
-              <input
-                type="checkbox"
-                name={q.name}
-                id={q.name}
-                ref={register({
-                  required: true,
-                })}
-              />
-              {/* @ts-ignore @debt questions should be typed if possible */}
-              {q.name in errors && errors[q.name].type === "required" && (
-                <span className="input-error">Required</span>
-              )}
-            </div>
-          ))}
+                {sparkleTermsAndConditions.text}
+              </a>
+            )}
+            {!sparkleTermsAndConditions.link && sparkleTermsAndConditions.text}
+          </label>
+          <input
+            type="checkbox"
+            name={sparkleTermsAndConditions.name}
+            id={sparkleTermsAndConditions.name}
+            ref={register({
+              required: true,
+            })}
+          />
+          {/* @ts-ignore @debt term should be typed if possible */}
+          {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
+            <span className="input-error">Required</span>
+          )}
+        </div>
+        {hasTermsAndConditions &&
+          termsAndConditions.map((term) => {
+            /* @ts-ignore @debt term should be typed if possible */
+            const required = errors?.[term.name]?.type === "required";
+            return (
+              <div className="input-group" key={term.name}>
+                <label
+                  htmlFor={term.name}
+                  className={`checkbox ${
+                    watch(term.name) && "checkbox-checked"
+                  }`}
+                >
+                  {term.link && (
+                    <a
+                      href={term.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {term.text}
+                    </a>
+                  )}
+                  {!term.link && term.text}
+                </label>
+                <input
+                  type="checkbox"
+                  name={term.name}
+                  id={term.name}
+                  ref={register({
+                    required: true,
+                  })}
+                />
+                {required && <span className="input-error">Required</span>}
+              </div>
+            );
+          })}
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
@@ -200,11 +291,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           disabled={!formState.isValid}
         />
       </form>
+
       <div className="secondary-action">
-        {`Forgot your password?`}
+        Already have an account?
         <br />
-        <span className="link" onClick={displayPasswordResetForm}>
-          Reset your password
+        <span className="link" onClick={displayLoginForm}>
+          Login
         </span>
       </div>
     </div>
