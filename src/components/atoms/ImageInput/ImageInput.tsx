@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { GIF_RESIZER_URL, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
 
 // Typings
@@ -16,7 +16,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   small,
   forwardRef,
 }) => {
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(imgUrl);
   const [imageSizeError, setImageSizeError] = useState(false);
 
   const handleOnChange = (files: FileList | null) => {
@@ -37,16 +37,6 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const imageError =
     error?.message ||
     `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`;
-
-  const initialRender = useRef<boolean>(true);
-
-  useEffect(() => {
-    if (initialRender && imgUrl) setImageUrl(imgUrl);
-  }, [imgUrl]);
-
-  useEffect(() => {
-    initialRender.current = false;
-  }, []);
 
   return (
     <>

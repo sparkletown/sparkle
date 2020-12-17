@@ -16,8 +16,6 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type Question = VenueInput["profileQuestions"][number];
-
 export interface SchemaShape {
   name: string;
   subtitle: string;

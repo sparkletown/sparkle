@@ -13,6 +13,7 @@ import { useUser } from "hooks/useUser";
 
 // Typings
 import { VenueWizardCreateProps } from "./VenueWizardCreate.types";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 
 const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   state,
@@ -29,7 +30,11 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   if (!user) {
     return (
       <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal
+          show={true}
+          onHide={() => {}}
+          showAuth={AuthOptions.login}
+        />
       </WithNavigationBar>
     );
   }

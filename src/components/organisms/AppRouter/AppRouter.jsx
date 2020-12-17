@@ -19,6 +19,8 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
+import Admin_v2 from "pages/Admin/Admin_v2";
+
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
@@ -63,10 +65,10 @@ const AppRouter = () => {
         />
 
         <Route path="/admin/venue/:venueId" component={Admin} />
-        <Route path="/admin_v2/venue/:venueId" component={Admin} />
+        <Route path="/admin_v2/venue/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin_v2" component={Admin} />
+        <Route path="/admin_v2" component={Admin_v2} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />

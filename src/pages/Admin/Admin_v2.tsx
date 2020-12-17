@@ -42,13 +42,13 @@ import {
   PLAYA_HEIGHT,
   HAS_ROOMS_TEMPLATES,
 } from "settings";
-import AdminEditComponent from "./AdminEditComponent_v2";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 import useRoles from "hooks/useRoles";
 import { IS_BURN } from "secrets";
 import EventsComponent from "./EventsComponent";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import { orderedVenuesSelector } from "utils/selectors";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 
 dayjs.extend(advancedFormat);
 
@@ -69,7 +69,7 @@ const VenueList: React.FC<VenueListProps> = ({
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin/venue/creation" className="btn btn-primary">
+        <Link to="/admin_v2/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -81,7 +81,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "camp" : ""
             }`}
           >
-            <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
+            <Link to={`/admin_v2/venue/${venue.id}`}>{venue.name}</Link>
             {HAS_ROOMS_TEMPLATES.includes(venue.template) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms &&
@@ -91,7 +91,7 @@ const VenueList: React.FC<VenueListProps> = ({
                       key={idx}
                       className={`${idx === roomIndex ? "selected" : ""}`}
                     >
-                      <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                      <Link to={`/admin_v2/venue/${venue.id}?roomIndex=${idx}`}>
                         {room.title}
                       </Link>
                     </li>
@@ -164,11 +164,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
                 setEditedEvent={setEditedEvent}
               />
             )}
-            venue={venue}
-          />
-          <Route
-            path={`${match.url}/placement`}
-            render={() => <AdminEditComponent />}
             venue={venue}
           />
           <Route
@@ -327,14 +322,14 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
               {visitText}
             </Link>
             <Link
-              to={`/admin/venue/edit/${venue.id}`}
+              to={`/admin_v2/venue/edit/${venue.id}`}
               className="btn btn-block"
             >
               {editText}
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
-                to={`/admin/venue/rooms/${venue.id}`}
+                to={`/admin_v2/venue/rooms/${venue.id}`}
                 className="btn btn-block"
               >
                 Add a Room
@@ -343,7 +338,7 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
             {HAS_ROOMS_TEMPLATES.includes(venue.template) &&
               typeof roomIndex !== "undefined" && (
                 <Link
-                  to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+                  to={`/admin_v2/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
                   className="btn btn-block"
                 >
                   Edit Room
@@ -437,7 +432,11 @@ const Admin: React.FC = () => {
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
+        <AuthenticationModal
+          show={!user}
+          onHide={() => {}}
+          showAuth={AuthOptions.login}
+        />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
