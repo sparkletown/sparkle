@@ -64,6 +64,7 @@ import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
+import { showZendeskWidget } from "utils/zendesk";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -249,6 +250,12 @@ const VenuePage = () => {
       });
     }
   }, [user, profile, venueId, venueTemplate, mixpanel]);
+
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
 
   if (!user) {
     return <Login formType="initial" />;
