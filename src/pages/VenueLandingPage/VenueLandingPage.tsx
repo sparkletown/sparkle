@@ -31,6 +31,7 @@ import {
 import { IFRAME_ALLOW } from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { showZendeskWidget } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -52,6 +53,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     (state) => state.firestore.ordered.venueEvents
   );
   const purchaseHistory = useSelector(userPurchaseHistorySelector);
+
+  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const { hostname } = window.location;
+
+  if (redirectUrl && redirectUrl !== hostname) {
+    window.location.hostname = redirectUrl;
+  }
 
   useFirestoreConnect({
     collection: "venues",
@@ -90,6 +98,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
       setShouldOpenPaymentModal(false);
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
+
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;

@@ -77,8 +77,7 @@ const createVenueData = (data, context) => {
     },
     code_of_conduct_questions: [],
     owners,
-    profile_questions: data.profileQuestions,
-    mapIconImageUrl: data.mapIconImageUrl,
+    profile_questions: data.profile_questions,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
@@ -113,7 +112,6 @@ const createVenueData = (data, context) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
-      venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
       break;
@@ -409,12 +407,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profileQuestions) {
-    updated.profileQuestions = data.profileQuestions;
-  }
-
-  if (data.mapIconImageUrl) {
-    updated.mapIconImageUrl = data.mapIconImageUrl;
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
   }
 
   if (data.mapBackgroundImageUrl) {
@@ -461,6 +455,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showBadges = data.showBadges;
   }
 
+  if (typeof data.showZendesk === "boolean") {
+    updated.showZendesk = data.showZendesk;
+  }
+
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
@@ -483,6 +481,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
@@ -529,7 +535,6 @@ exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const updated = doc.data();
-  updated.mapIconImageUrl = data.mapIconImageUrl || updated.mapIconImageUrl;
   updated.placement = {
     x: dataOrUpdateKey(data.placement, updated.placement, "x"),
     y: dataOrUpdateKey(data.placement, updated.placement, "y"),

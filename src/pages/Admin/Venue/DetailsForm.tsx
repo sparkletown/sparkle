@@ -29,7 +29,6 @@ import { venueLandingUrl } from "utils/url";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
   PLAYA_IMAGE,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
@@ -40,14 +39,18 @@ import {
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { ExtractProps } from "types/utility";
 import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
+import { Form } from "react-bootstrap";
+import QuestionInput from "./QuestionInput";
+import EntranceInput from "./EntranceInput";
+import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -56,6 +59,11 @@ interface DetailsFormProps extends WizardPage {
 }
 
 const iconPositionFieldName = "iconPosition";
+
+const backgroundTextByVenue: Record<string, string> = {
+  [VenueTemplate.themecamp]: "Theme Camp",
+  [VenueTemplate.partymap]: "Party Map",
+};
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({
   previous,
@@ -184,13 +192,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
   return (
-    <div className="page">
-      <div className="page-side">
-        <div className="page-container-left">
-          <div
-            className="page-container-left-content"
-            style={{ maxWidth: "680px" }}
-          >
+    <div className="page page--admin">
+      <div className="page-side page-side--admin">
+        <div className="page-container-left page-container-left">
+          <div className="page-container-left-content">
             <DetailsFormLeft
               setValue={setValue}
               state={state}
@@ -281,26 +286,19 @@ interface DetailsFormLeftProps {
   formError: boolean;
 }
 
-const backgroundTextByVenue: Record<string, string> = {
-  [VenueTemplate.themecamp]: "Theme Camp",
-  [VenueTemplate.partymap]: "Party Map",
-};
-
-const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
-  const {
-    editing,
-    state,
-    values,
-    isSubmitting,
-    register,
-    watch,
-    errors,
-    previous,
-    onSubmit,
-    setValue,
-    formError,
-  } = props;
-
+const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  editing,
+  state,
+  values,
+  isSubmitting,
+  register,
+  watch,
+  errors,
+  previous,
+  onSubmit,
+  setValue,
+  formError,
+}) => {
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -311,6 +309,463 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
   const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});
+
+  const renderVenueNameInput = () => {
+    return !editing ? (
+      <div className="input-container">
+        <h4 className="italic input-header">Name your {templateType}</h4>
+        <input
+          disabled={disable}
+          name="name"
+          ref={register}
+          className="align-left"
+          placeholder={`My ${templateType} name`}
+        />
+        {errors.name ? (
+          <span className="input-error">{errors.name.message}</span>
+        ) : urlSafeName ? (
+          <span className="input-info">
+            The URL of your venue will be: <b>{urlSafeName}</b>
+          </span>
+        ) : null}
+      </div>
+    ) : (
+      <div className="input-container">
+        <h4 className="italic input-header">
+          Your {templateType}: {values.name}
+        </h4>
+        <input type="hidden" name="name" ref={register} value={values.name} />
+        <span className="input-info">
+          The URL of your venue will be: <b>{urlSafeName}</b>
+        </span>
+      </div>
+    );
+  };
+
+  const renderTaglineInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">The venue tagline</h4>
+      <input
+        disabled={disable}
+        name={"subtitle"}
+        ref={register}
+        className="wide-input-block align-left"
+        placeholder={defaultVenue.config?.landingPageConfig.subtitle}
+      />
+      {errors.subtitle && (
+        <span className="input-error">{errors.subtitle.message}</span>
+      )}
+    </div>
+  );
+
+  const renderDescriptionInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Long description</h4>
+      <textarea
+        disabled={disable}
+        name={"description"}
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder={defaultVenue.config?.landingPageConfig.description}
+      />
+      {errors.description && (
+        <span className="input-error">{errors.description.message}</span>
+      )}
+    </div>
+  );
+
+  const renderRestrictToAdultsInput = () => (
+    <div className="input-container">
+      <label
+        htmlFor={"chkadultContent"}
+        className={`checkbox ${
+          watch("adultContent", false) && "checkbox-checked"
+        }`}
+      >
+        Restrict entry to adults aged 18+
+      </label>
+      <input
+        type="checkbox"
+        id={"chkadultContent"}
+        name={"adultContent"}
+        defaultChecked={values.adultContent}
+        ref={register}
+      />
+    </div>
+  );
+
+  const renderBannerPhotoInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Upload a banner photo</h4>
+      <ImageInput
+        disabled={disable}
+        name={"bannerImageFile"}
+        image={values.bannerImageFile}
+        remoteUrlInputName={"bannerImageUrl"}
+        remoteImageUrl={values.bannerImageUrl}
+        ref={register}
+        error={errors.bannerImageFile || errors.bannerImageUrl}
+      />
+    </div>
+  );
+
+  const renderLogoInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Upload a square logo</h4>
+      <ImageInput
+        disabled={disable}
+        ref={register}
+        image={values.logoImageFile}
+        remoteUrlInputName={"logoImageUrl"}
+        remoteImageUrl={values.logoImageUrl}
+        name={"logoImageFile"}
+        containerClassName="input-square-container"
+        imageClassName="input-square-image"
+        error={errors.logoImageFile || errors.logoImageUrl}
+      />
+    </div>
+  );
+
+  const renderAnnouncementInput = () => (
+    <>
+      <h4 className="italic input-header">
+        Show an announcement in the venue (or leave blank for none)
+      </h4>
+      <input
+        type="text"
+        disabled={disable}
+        name="bannerMessage"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Enter your announcement"
+      />
+      {errors.bannerMessage && (
+        <span className="input-error">{errors.bannerMessage.message}</span>
+      )}
+    </>
+  );
+
+  const renderAttendeesTitleInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Title of your venues attendees</h4>
+      <div style={{ fontSize: "16px" }}>
+        For example: guests, attendees, partygoers.
+      </div>
+      <input
+        type="text"
+        disabled={disable}
+        name="attendeesTitle"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Attendees title"
+      />
+      {errors.attendeesTitle && (
+        <span className="input-error">{errors.attendeesTitle.message}</span>
+      )}
+    </div>
+  );
+
+  const renderChatTitleInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Your venue type label</h4>
+      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
+      <input
+        type="text"
+        disabled={disable}
+        name="chatTitle"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Event label"
+      />
+      {errors.chatTitle && (
+        <span className="input-error">{errors.chatTitle.message}</span>
+      )}
+    </div>
+  );
+
+  const renderUrlInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">URL</h4>
+      <div style={{ fontSize: "16px" }}>
+        Please post a URL to, for example, a Zoom room, Twitch stream, other
+        Universe, or any interesting thing out there on the open web.
+      </div>
+      <textarea
+        disabled={disable}
+        name={"zoomUrl"}
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="https://us02web.zoom.us/j/654123654123"
+      />
+      {errors.zoomUrl && (
+        <span className="input-error">{errors.zoomUrl.message}</span>
+      )}
+    </div>
+  );
+
+  const renderLivestreamUrlInput = () => (
+    <div className="input-container">
+      <div className="input-title">
+        Livestream URL, or embed URL, for people to view in your venue
+      </div>
+      <div className="input-title">
+        (Enter an embeddable URL link. You can edit this later so you can leave
+        a placeholder for now)
+      </div>
+      <textarea
+        disabled={disable}
+        name={"iframeUrl"}
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="https://youtu.be/embed/abcDEF987w"
+      />
+      {errors.iframeUrl && (
+        <span className="input-error">{errors.iframeUrl.message}</span>
+      )}
+    </div>
+  );
+
+  const renderLiveScheduleToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show live schedule</h4>
+      <label id={"showLiveSchedule"} className="switch">
+        <input
+          type="checkbox"
+          id={"showLiveSchedule"}
+          name={"showLiveSchedule"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderShowGridToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show grid layout</h4>
+      <label id={"showGrid"} className="switch">
+        <input
+          type="checkbox"
+          id={"showGrid"}
+          name={"showGrid"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderShowBadgesToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show badges</h4>
+      <label id={"showBadges"} className="switch">
+        <input
+          type="checkbox"
+          id={"showBadges"}
+          name={"showBadges"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderShowZendeskToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show Zendesk support popup</h4>
+      <label id={"showZendesk"} className="switch">
+        <input
+          type="checkbox"
+          id={"showZendesk"}
+          name={"showZendesk"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderSeatingNumberInput = () => (
+    <>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of seats columns</h4>
+        <input
+          disabled={disable}
+          defaultValue={25}
+          min={5}
+          name="auditoriumColumns"
+          type="number"
+          ref={register}
+          className="align-left"
+          placeholder="Number of seats columns"
+        />
+        {errors.auditoriumColumns ? (
+          <span className="input-error">
+            {errors.auditoriumColumns.message}
+          </span>
+        ) : null}
+      </div>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of seats rows</h4>
+        <input
+          disabled={disable}
+          defaultValue={19}
+          name="auditoriumRows"
+          type="number"
+          ref={register}
+          className="align-left"
+          placeholder="Number of seats rows"
+          min={5}
+        />
+        {errors.auditoriumRows ? (
+          <span className="input-error">{errors.auditoriumRows.message}</span>
+        ) : null}
+      </div>
+    </>
+  );
+
+  const renderShowReactions = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show reactions</h4>
+      <label id="showReactions" className="switch">
+        <input
+          type="checkbox"
+          id="showReactions"
+          name="showReactions"
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderShowRangersToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show Rangers support</h4>
+      <label id="showRangers" className="switch">
+        <input
+          type="checkbox"
+          id="showRangers"
+          name="showRangers"
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderRestrictDOBToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Require date of birth on register</h4>
+      <label id="requiresDateOfBirth" className="switch">
+        <input
+          type="checkbox"
+          id="requiresDateOfBirth"
+          name="requiresDateOfBirth"
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
+  const renderGridDimensionsInputs = () => (
+    <>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of columns</h4>
+        <input
+          disabled={disable}
+          defaultValue={1}
+          name="columns"
+          type="number"
+          ref={register}
+          className="align-left"
+          placeholder={`Number of grid columns`}
+        />
+        {errors.name ? (
+          <span className="input-error">{errors.name.message}</span>
+        ) : null}
+      </div>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of rows</h4>
+        <div>
+          Not editable. The number of rows is derived from the number of
+          specified columns and the width:height ratio of the party map, to keep
+          the two aligned.
+        </div>
+      </div>
+    </>
+  );
+
+  const renderParentIdInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">
+        Enter the parent venue ID, for the &quot;back&quot; button to go to, and
+        for sharing events in the schedule
+      </h4>
+      <div style={{ fontSize: "16px" }}>
+        The nav bar can show a &quot;back&quot; button if you enter an ID here.
+        Clicking &quot;back&quot; will return the user to the venue whose ID you
+        enter. Additionally, the events you add here will be shown to users
+        while they are on all other venues which share the parent venue ID you
+        enter here, as well as in the parent venue. The value is a venue ID.
+        Enter the venue ID you wish to use. A venue ID is the part of the URL
+        after /in/, so eg. for <i>sparkle.space/in/abcdef</i> you would enter{" "}
+        <i>abcdef</i>
+        below
+      </div>
+      <input
+        type="text"
+        disabled={disable}
+        name="parentId"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="abcdef"
+      />
+      {errors.parentId && (
+        <span className="input-error">{errors.parentId.message}</span>
+      )}
+    </div>
+  );
+
+  const renderRoomAppearanceSelect = () => (
+    <>
+      <h4 className="italic input-header">
+        Choose how you&apos;d like your rooms to appear on the map
+      </h4>
+      <div className="input-container">
+        <Form.Control as="select" name="roomVisibility" ref={register} custom>
+          <option value="hover">Hover</option>
+          <option value="count">Count</option>
+          <option value="count/name">Count and names</option>
+        </Form.Control>
+      </div>
+    </>
+  );
+
+  const renderMapBackgroundInput = (templateID: string) => (
+    <div className="input-container">
+      <h4 className="italic input-header">
+        {`Choose the background for your ${
+          backgroundTextByVenue[templateID] ?? "Experience"
+        }`}
+      </h4>
+
+      <ImageCollectionInput
+        collectionPath={"assets/mapBackgrounds"}
+        containerClassName="input-square-container"
+        disabled={disable}
+        error={errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl}
+        fieldName={"mapBackgroundImage"}
+        image={values.mapBackgroundImageFile}
+        imageClassName="input-square-image"
+        imageType="backgrounds"
+        imageUrl={values.mapBackgroundImageUrl}
+        register={register}
+        setValue={setValue}
+      />
+    </div>
+  );
 
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
@@ -325,476 +780,80 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
         >
           You can change anything except for the name of your venue later
         </p>
-        {!editing ? (
-          <div className="input-container">
-            <h4 className="italic input-header">Name your {templateType}</h4>
-            <input
-              disabled={disable}
-              name="name"
-              ref={register}
-              className="align-left"
-              placeholder={`My ${templateType} name`}
-            />
-            {errors.name ? (
-              <span className="input-error">{errors.name.message}</span>
-            ) : urlSafeName ? (
-              <span className="input-info">
-                The URL of your venue will be: <b>{urlSafeName}</b>
-              </span>
-            ) : null}
-          </div>
-        ) : (
-          <div className="input-container">
-            <h4 className="italic input-header">
-              Your {templateType}: {values.name}
-            </h4>
-            <input
-              type="hidden"
-              name="name"
-              ref={register}
-              value={values.name}
-            />
-            <span className="input-info">
-              The URL of your venue will be: <b>{urlSafeName}</b>
-            </span>
-          </div>
-        )}
-        <div className="input-container">
-          <h4 className="italic input-header">The venue tagline</h4>
-          <input
-            disabled={disable}
-            name={"subtitle"}
-            ref={register}
-            className="wide-input-block align-left"
-            placeholder={defaultVenue.config?.landingPageConfig.subtitle}
-          />
-          {errors.subtitle && (
-            <span className="input-error">{errors.subtitle.message}</span>
-          )}
-        </div>
-        <div className="input-container">
-          <h4 className="italic input-header">Long description</h4>
-          <textarea
-            disabled={disable}
-            name={"description"}
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder={defaultVenue.config?.landingPageConfig.description}
-          />
-          {errors.description && (
-            <span className="input-error">{errors.description.message}</span>
-          )}
-        </div>
-        <div className="input-container">
-          <label
-            htmlFor={"chkadultContent"}
-            className={`checkbox ${
-              watch("adultContent", false) && "checkbox-checked"
-            }`}
-          >
-            Restrict entry to adults aged 18+
-          </label>
-          <input
-            type="checkbox"
-            id={"chkadultContent"}
-            name={"adultContent"}
-            defaultChecked={values.adultContent}
-            ref={register}
-          />
-        </div>
-        <div className="input-container">
-          <h4 className="italic input-header">Upload a banner photo</h4>
-          <ImageInput
-            disabled={disable}
-            name={"bannerImageFile"}
-            image={values.bannerImageFile}
-            remoteUrlInputName={"bannerImageUrl"}
-            remoteImageUrl={values.bannerImageUrl}
-            ref={register}
-            error={errors.bannerImageFile || errors.bannerImageUrl}
-          />
-        </div>
-        <div className="input-container">
-          <h4 className="italic input-header">Upload a square logo</h4>
-          <ImageInput
-            disabled={disable}
-            ref={register}
-            image={values.logoImageFile}
-            remoteUrlInputName={"logoImageUrl"}
-            remoteImageUrl={values.logoImageUrl}
-            name={"logoImageFile"}
-            containerClassName="input-square-container"
-            imageClassName="input-square-image"
-            error={errors.logoImageFile || errors.logoImageUrl}
-          />
-        </div>
-        <div className="input-container">
-          <h4 className="italic input-header">
-            {`Choose how you'd like your venue to appear on the map`}
-          </h4>
-          <ImageCollectionInput
-            collectionPath={"assets/mapIcons2"}
-            disabled={disable}
-            fieldName={"mapIconImage"}
-            register={register}
-            imageUrl={values.mapIconImageUrl}
-            containerClassName="input-square-container"
-            imageClassName="input-square-image"
-            image={values.mapIconImageFile}
-            error={errors.mapIconImageFile || errors.mapIconImageUrl}
-            setValue={setValue}
-            imageType="icons"
-          />
-          {templateID && BACKGROUND_IMG_TEMPLATES.includes(templateID) && (
-            <>
-              <h4 className="italic input-header">
-                {`Choose the background for your ${
-                  backgroundTextByVenue[templateID] ?? "Experience"
-                }`}
-              </h4>
-              <ImageCollectionInput
-                collectionPath={"assets/mapBackgrounds"}
-                disabled={disable}
-                fieldName={"mapBackgroundImage"}
-                register={register}
-                imageUrl={values.mapBackgroundImageUrl}
-                containerClassName="input-square-container"
-                imageClassName="input-square-image"
-                image={values.mapBackgroundImageFile}
-                error={
-                  errors.mapBackgroundImageFile || errors.mapBackgroundImageUrl
-                }
-                setValue={setValue}
-                imageType="backgrounds"
-              />
-            </>
-          )}
-        </div>
-        {templateID && BANNER_MESSAGE_TEMPLATES.includes(templateID) && (
-          <>
-            <h4 className="italic input-header">
-              Show an announcement in the venue (or leave blank for none)
-            </h4>
-            <input
-              type="text"
-              disabled={disable}
-              name="bannerMessage"
-              ref={register}
-              className="wide-input-block input-centered align-left"
-              placeholder="Enter your announcement"
-            />
-            {errors.bannerMessage && (
-              <span className="input-error">
-                {errors.bannerMessage.message}
-              </span>
-            )}
-          </>
-        )}
+
+        {renderVenueNameInput()}
+        {renderTaglineInput()}
+        {renderDescriptionInput()}
+        {renderRestrictToAdultsInput()}
+
+        {renderBannerPhotoInput()}
+        {renderLogoInput()}
+
+        {templateID &&
+          BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
+          renderAnnouncementInput()}
 
         {/* ATTENDEES (multiple) TITLE */}
-        <div className="input-container">
-          <h4 className="italic input-header">
-            Title of your venues attendees
-          </h4>
-          <div style={{ fontSize: "16px" }}>
-            For example: guests, attendees, partygoers.
-          </div>
-          <input
-            type="text"
-            disabled={disable}
-            name="attendeesTitle"
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder="Attendees title"
-          />
-          {errors.attendeesTitle && (
-            <span className="input-error">{errors.attendeesTitle.message}</span>
-          )}
-        </div>
+        {renderAttendeesTitleInput()}
 
         {/* EVENT CHAT TITLE */}
-        <div className="input-container">
-          <h4 className="italic input-header">Your venue type label</h4>
-          <div style={{ fontSize: "16px" }}>
-            For example: Party, Event, Meeting
-          </div>
-          <input
-            type="text"
-            disabled={disable}
-            name="chatTitle"
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder="Event label"
-          />
-          {errors.chatTitle && (
-            <span className="input-error">{errors.chatTitle.message}</span>
-          )}
-        </div>
+        {renderChatTitleInput()}
 
         {templateID && (
           <>
-            {ZOOM_URL_TEMPLATES.includes(templateID) && (
-              <div className="input-container">
-                <h4 className="italic input-header">URL</h4>
-                <div style={{ fontSize: "16px" }}>
-                  Please post a URL to, for example, a Zoom room, Twitch stream,
-                  other Universe, or any interesting thing out there on the open
-                  web.
-                </div>
-                <textarea
-                  disabled={disable}
-                  name={"zoomUrl"}
-                  ref={register}
-                  className="wide-input-block input-centered align-left"
-                  placeholder="https://us02web.zoom.us/j/654123654123"
-                />
-                {errors.zoomUrl && (
-                  <span className="input-error">{errors.zoomUrl.message}</span>
-                )}
-              </div>
-            )}
-            {IFRAME_TEMPLATES.includes(templateID) && (
-              <div className="input-container">
-                <div className="input-title">
-                  Livestream URL, or embed URL, for people to view in your venue
-                </div>
-                <div className="input-title">
-                  (Enter an embeddable URL link. You can edit this later so you
-                  can leave a placeholder for now)
-                </div>
-                <textarea
-                  disabled={disable}
-                  name={"iframeUrl"}
-                  ref={register}
-                  className="wide-input-block input-centered align-left"
-                  placeholder="https://youtu.be/embed/abcDEF987w"
-                />
-                {errors.iframeUrl && (
-                  <span className="input-error">
-                    {errors.iframeUrl.message}
-                  </span>
-                )}
-              </div>
-            )}
-          </>
-        )}
-        <div className="input-container">
-          <h4 className="italic input-header">Placement Requests</h4>
-          <div style={{ fontSize: "16px" }}>
-            SparkleVerse&apos;s placement team will put your venue in an
-            appropriate location before the burn. If you wish to be placed
-            somewhere specific, or give suggestions for the team, please write
-            that here.
-          </div>
-          <textarea
-            disabled={disable}
-            name="placementRequests"
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder="On the Esplanade!"
-          />
-          {errors.placementRequests && (
-            <span className="input-error">
-              {errors.placementRequests.message}
-            </span>
-          )}
-        </div>
-        <div className="toggle-room">
-          <h4 className="italic input-header">Show live schedule</h4>
-          <label id={"showLiveSchedule"} className="switch">
-            <input
-              type="checkbox"
-              id={"showLiveSchedule"}
-              name={"showLiveSchedule"}
-              ref={register}
-            />
-            <span className="slider round"></span>
-          </label>
-        </div>
-
-        {templateID && HAS_GRID_TEMPLATES.includes(templateID) && (
-          <div className="toggle-room">
-            <h4 className="italic input-header">Show grid layout</h4>
-            <label id={"showGrid"} className="switch">
-              <input
-                type="checkbox"
-                id={"showGrid"}
-                name={"showGrid"}
-                ref={register}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
-        )}
-
-        <div className="toggle-room">
-          <h4 className="italic input-header">Show badges</h4>
-          <label id={"showBadges"} className="switch">
-            <input
-              type="checkbox"
-              id={"showBadges"}
-              name={"showBadges"}
-              ref={register}
-            />
-            <span className="slider round"></span>
-          </label>
-        </div>
-
-        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
-          <div className="toggle-room">
-            <h4 className="italic input-header">Show reactions</h4>
-            <label id="showReactions" className="switch">
-              <input
-                type="checkbox"
-                id="showReactions"
-                name="showReactions"
-                ref={register}
-              />
-              <span className="slider round"></span>
-            </label>
-          </div>
-        )}
-
-        {templateID && HAS_REACTIONS_TEMPLATES.includes(templateID) && (
-          <>
-            <div className="input-container">
-              <h4 className="italic input-header">Number of seats columns</h4>
-              <input
-                disabled={disable}
-                defaultValue={25}
-                min={5}
-                name="auditoriumColumns"
-                type="number"
-                ref={register}
-                className="align-left"
-                placeholder="Number of seats columns"
-              />
-              {errors.auditoriumColumns ? (
-                <span className="input-error">
-                  {errors.auditoriumColumns.message}
-                </span>
-              ) : null}
-            </div>
-            <div className="input-container">
-              <h4 className="italic input-header">Number of seats rows</h4>
-              <input
-                disabled={disable}
-                defaultValue={19}
-                name="auditoriumRows"
-                type="number"
-                ref={register}
-                className="align-left"
-                placeholder="Number of seats rows"
-                min={5}
-              />
-              {errors.auditoriumRows ? (
-                <span className="input-error">
-                  {errors.auditoriumRows.message}
-                </span>
-              ) : null}
-            </div>
+            {ZOOM_URL_TEMPLATES.includes(templateID) && renderUrlInput()}
+            {IFRAME_TEMPLATES.includes(templateID) &&
+              renderLivestreamUrlInput()}
           </>
         )}
 
-        <div className="toggle-room">
-          <h4 className="italic input-header">Show Rangers support</h4>
-          <label id="showRangers" className="switch">
-            <input
-              type="checkbox"
-              id="showRangers"
-              name="showRangers"
-              ref={register}
-            />
-            <span className="slider round"></span>
-          </label>
-        </div>
+        {templateID &&
+          BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
+          renderMapBackgroundInput(templateID)}
 
-        <div className="toggle-room">
-          <h4 className="italic input-header">
-            Require date of birth on register
-          </h4>
-          <label id="requiresDateOfBirth" className="switch">
-            <input
-              type="checkbox"
-              id="requiresDateOfBirth"
-              name="requiresDateOfBirth"
-              ref={register}
-            />
-            <span className="slider round"></span>
-          </label>
-        </div>
+        <QuestionInput
+          title="Code of conduct questions"
+          fieldName="code_of_conduct_questions"
+          register={register}
+          hasLink
+          editing={state.detailsPage?.venue.code_of_conduct_questions}
+        />
+        <QuestionInput
+          title="Profile questions"
+          fieldName="profile_questions"
+          register={register}
+        />
+
+        <EntranceInput register={register} fieldName="entrance" />
+
+        {renderLiveScheduleToggle()}
+        {templateID &&
+          HAS_GRID_TEMPLATES.includes(templateID) &&
+          renderShowGridToggle()}
+        {renderShowBadgesToggle()}
+        {renderShowZendeskToggle()}
+        {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          renderShowReactions()}
+        {renderShowRangersToggle()}
+        {renderRestrictDOBToggle()}
+
+        {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          renderSeatingNumberInput()}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
-          values.showGrid && (
-            <>
-              <div className="input-container">
-                <h4 className="italic input-header">Number of columns</h4>
-                <input
-                  disabled={disable}
-                  defaultValue={1}
-                  name="columns"
-                  type="number"
-                  ref={register}
-                  className="align-left"
-                  placeholder={`Number of grid columns`}
-                />
-                {errors.name ? (
-                  <span className="input-error">{errors.name.message}</span>
-                ) : null}
-              </div>
-              <div className="input-container">
-                <h4 className="italic input-header">Number of rows</h4>
-                <div>
-                  Not editable. The number of rows is derived from the number of
-                  specified columns and the width:height ratio of the party map,
-                  to keep the two aligned.
-                </div>
-              </div>
-            </>
-          )}
-        <div className="input-container">
-          <h4 className="italic input-header">
-            Enter the parent venue ID, for the &quot;back&quot; button to go to,
-            and for sharing events in the schedule
-          </h4>
-          <div style={{ fontSize: "16px" }}>
-            The nav bar can show a &quot;back&quot; button if you enter an ID
-            here. Clicking &quot;back&quot; will return the user to the venue
-            whose ID you enter. Additionally, the events you add here will be
-            shown to users while they are on all other venues which share the
-            parent venue ID you enter here, as well as in the parent venue. The
-            value is a venue ID. Enter the venue ID you wish to use. A venue ID
-            is the part of the URL after /in/, so eg. for
-            sparkle.space/in/abcdef you would enter abcdef below
-          </div>
-          <input
-            type="text"
-            disabled={disable}
-            name="parentId"
-            ref={register}
-            className="wide-input-block input-centered align-left"
-            placeholder="abcdef"
-          />
-          {errors.parentId && (
-            <span className="input-error">{errors.parentId.message}</span>
-          )}
-        </div>
-        {templateID && HAS_ROOMS_TEMPLATES.includes(templateID) && (
-          <>
-            <h4 className="italic input-header">
-              Choose how you&apos;d like your rooms to appear on the map
-            </h4>
-            <div className="input-container">
-              <select name="roomVisibility" ref={register}>
-                <option value="hover">Hover</option>
-                <option value="count">Count</option>
-                <option value="count/name">Count and names</option>
-              </select>
-            </div>
-          </>
-        )}
+          values.showGrid &&
+          renderGridDimensionsInputs()}
+
+        {renderParentIdInput()}
+
+        {templateID &&
+          HAS_ROOMS_TEMPLATES.includes(templateID) &&
+          renderRoomAppearanceSelect()}
       </div>
+
       <div className="page-container-left-bottombar">
         {previous ? (
           <button className="btn btn-primary nav-btn" onClick={previous}>
@@ -804,20 +863,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = (props) => {
           <div />
         )}
         <div>
-          {!!Object.keys(errors).length && (
-            <div>One or more errors occurred when saving the form:</div>
-          )}
-          {Object.keys(errors).map((fieldName, index) => (
-            <div key={`error-${index}`}>
-              <span>Error in {fieldName}:</span>
-              <ErrorMessage
-                errors={errors}
-                name={fieldName}
-                as="span"
-                key={fieldName}
-              />
-            </div>
-          ))}
           <SubmitButton
             editing={editing}
             isSubmitting={isSubmitting}

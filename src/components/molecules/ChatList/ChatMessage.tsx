@@ -13,11 +13,7 @@ import { getLinkFromText } from "utils/getLinkFromText";
 import { useUser } from "hooks/useUser";
 
 import { User } from "types/User";
-
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 
 interface ChatMessageProps {
   message: WithId<RestrictedChatMessage | PrivateChatMessage>;
@@ -57,26 +53,26 @@ export const ChatMessage: FC<ChatMessageProps> = ({
 
   const getProfileImage = (): string => {
     if (isMe) {
-      return profile.pictureUrl || "";
+      return profile.pictureUrl || DEFAULT_PROFILE_IMAGE;
     }
 
     if (sender.anonMode) {
       return DEFAULT_PROFILE_IMAGE;
     }
 
-    return sender.pictureUrl || "";
+    return sender.pictureUrl || DEFAULT_PROFILE_IMAGE;
   };
 
   const getProfileName = (): string => {
     if (isMe) {
-      return profile.partyName || "";
+      return profile.partyName || DEFAULT_PROFILE_IMAGE;
     }
 
     if (sender.anonMode) {
       return DEFAULT_PARTY_NAME;
     }
 
-    return sender.partyName || "";
+    return sender.partyName || DEFAULT_PROFILE_IMAGE;
   };
 
   return (

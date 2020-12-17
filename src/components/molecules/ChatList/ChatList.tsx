@@ -6,10 +6,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
 
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";

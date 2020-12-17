@@ -39,8 +39,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { ChatContextWrapper } from "components/context/ChatContext";
-
 import { FriendShipPage } from "pages/FriendShipPage";
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -66,6 +64,7 @@ import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
+import { showZendeskWidget } from "utils/zendesk";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -252,6 +251,12 @@ const VenuePage = () => {
     }
   }, [user, profile, venueId, venueTemplate, mixpanel]);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
+
   if (!user) {
     return <Login formType="initial" />;
   }
@@ -372,9 +377,7 @@ const VenuePage = () => {
   }
 
   return (
-    <ChatContextWrapper>
-      <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
-    </ChatContextWrapper>
+    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
   );
 };
 
