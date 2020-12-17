@@ -36,6 +36,7 @@ $ node fetch-reports.js
 13. Run:
 
 ```
+$ pip3 install virtualenv
 $ virtualenv env
 $ . env/bin/activate
 $ pip3 install hv numpy matplotlib # there may be others, please update the docs!
