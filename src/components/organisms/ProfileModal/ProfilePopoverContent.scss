@@ -4,12 +4,12 @@
   &.popover {
     &::-webkit-scrollbar-track {
       border-radius: 3px;
-      background-color: rgba(0, 0, 0, 0);
+      background-color: $white;
     }
 
     &::-webkit-scrollbar {
       width: 8px;
-      background-color: rgba(0, 0, 0, 0);
+      background-color: $white;
     }
 
     &::-webkit-scrollbar-thumb {
