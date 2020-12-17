@@ -381,7 +381,7 @@ const AvatarGrid = () => {
             const peopleInRoom = partygoers
               ? partygoers.filter(
                   (partygoer) =>
-                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+                    partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
                 )
               : [];
             return (

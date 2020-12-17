@@ -15,7 +15,6 @@ const ReactionPage = () => {
 
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);
-  const usersById = partygoers;
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
   const chats = useSelector((state) =>
     state.firestore.ordered.venueChats?.filter((chat) => chat.deleted !== true)
@@ -43,7 +42,7 @@ const ReactionPage = () => {
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
-            {usersById && (
+            {partygoers && (
               <ReactionList reactions={messagesToTheBand} chats={chats} />
             )}
           </div>

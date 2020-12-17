@@ -81,7 +81,7 @@ const VenuePage = () => {
 
   const { user, profile } = useUser();
 
-  const users = useSelector(partygoersSelector);
+  const partygoers = useSelector(partygoersSelector);
 
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
@@ -285,7 +285,7 @@ const VenuePage = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
+    if (!event || !venue || !partygoers || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 
