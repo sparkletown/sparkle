@@ -20,7 +20,7 @@ export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
   const partygoers = useSelector(partygoersSelector);
   const usersInRoom =
     partygoers?.filter(
-      (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+      (partygoer) => partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
     ) ?? [];
   const numberOfUsersInRoom = usersInRoom?.length;
   if (numberOfUsersInRoom < 1) return <></>;

@@ -15,7 +15,7 @@ import "./VenuePartygoers.scss";
 
 const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
   return (
-    partygoers?.filter((partygoer) => partygoer.lastSeenIn[venue.name]) ?? []
+    partygoers?.filter((partygoer) => partygoer.lastSeenIn?.[venue.name]) ?? []
   );
 };
 

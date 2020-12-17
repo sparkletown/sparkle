@@ -462,9 +462,8 @@ const Playa = () => {
   const usersInCurrentVenue = partygoers
     ? partygoers.filter(
         (partygoer) =>
-          partygoer.lastSeenIn &&
-          partygoer.lastSeenIn[venueName] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+          partygoer.lastSeenIn?.[venueName] >
+          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
       )
     : [];
 
@@ -606,9 +605,8 @@ const Playa = () => {
           const usersInVenue = partygoers
             ? partygoers.filter(
                 (partygoer) =>
-                  partygoer.lastSeenIn &&
-                  partygoer.lastSeenIn[v.name] >
-                    (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+                  partygoer.lastSeenIn?.[v.name] >
+                  (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
               )
             : [];
           return (
