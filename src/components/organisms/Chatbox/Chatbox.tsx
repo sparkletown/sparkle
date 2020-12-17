@@ -14,7 +14,7 @@ import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { chatSort } from "components/context/ChatContext";
+import { chatSort } from "utils/chat";
 import {
   partygoersSelector,
   partygoersSelectorData,

@@ -95,6 +95,7 @@ export interface Venue {
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
   showBadges?: boolean;
+  showZendesk?: boolean;
 }
 
 export interface VenueConfig {

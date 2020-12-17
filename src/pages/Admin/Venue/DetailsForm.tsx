@@ -570,6 +570,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowZendeskToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show Zendesk support popup</h4>
+      <label id={"showZendesk"} className="switch">
+        <input
+          type="checkbox"
+          id={"showZendesk"}
+          name={"showZendesk"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -843,6 +858,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
+        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
