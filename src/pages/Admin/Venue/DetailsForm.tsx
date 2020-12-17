@@ -779,14 +779,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderRadioStationInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Radio station (stream):</h4>
+      <h4 className="italic input-header">Radio station stream URL:</h4>
       <input
         type="text"
         disabled={disable}
         name={`radioStations`}
         ref={register}
         className="wide-input-block input-centered align-left"
-        placeholder="Radio station"
+        placeholder="Radio station URL..."
       />
       {errors.radioStations && (
         <span className="input-error">{errors.radioStations.message}</span>
