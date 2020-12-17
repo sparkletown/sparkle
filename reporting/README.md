@@ -7,6 +7,13 @@ The `makegraphs.py` script will create `analytics.pdf` based on Usage Reports fr
 - Stay durations for each party segment (currently "whole party", "first half", "second half", and "afterparty")
 - Movements between rooms during the party
 
+There are 2 major steps involved:
+
+1. `fetch-reports.js` opens a headless puppeteer window, goes to Zoom's report download page, and fetches all the reports as CSVs into ~/Downloads. (I tried APIs, other report types, nothing else gives this data as far as I can tell.)
+2. `makegraphs.py` uses a variety of python libraries to create visualizations of the data downloaded in the CSV. It currently saves the results to `analytics.pdf`, overwriting any previous file in that path.
+
+Below are the steps you need to take to make use of these scripts.
+
 # How to generate an analytics report
 
 1. Open `fetch-reports.js` and update the date range to 1 day before and 1 day after your target party.
