@@ -81,12 +81,12 @@ const createVenueData = (data, context) => {
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
-    showRangers: data.showRangers ?? false,
+    showRangers: data.showRangers || false,
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
-    requiresDateOfBirth: data.requiresDateOfBirth ?? false,
-    showRadio: data.showRadio ?? false,
+    requiresDateOfBirth: data.requiresDateOfBirth || false,
+    showRadio: data.showRadio || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
