@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
@@ -18,10 +18,14 @@ const MAX_AVATARS_VISIBLE = 2;
 
 export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
   const partygoers = useSelector(partygoersSelector);
-  const usersInRoom =
-    partygoers?.filter(
-      (partygoer) => partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
-    ) ?? [];
+  const usersInRoom = useMemo(
+    () =>
+      partygoers?.filter(
+        (partygoer) => partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
+      ),
+    [partygoers, venue.name, room.title]
+  );
+
   const numberOfUsersInRoom = usersInRoom?.length;
   if (numberOfUsersInRoom < 1) return <></>;
   return (

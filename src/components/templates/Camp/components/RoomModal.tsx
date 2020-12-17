@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal } from "react-bootstrap";
 
@@ -47,18 +47,19 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   const venueEvents = useSelector(
     (state) => state.firestore.ordered.venueEvents
   );
-  const users = useSelector(partygoersSelector);
+  const users = useSelector(partygoersSelector) ?? [];
+
+  const usersToDisplay = useMemo(
+    () =>
+      users?.filter(
+        (user) => user.lastSeenIn?.[`${venue?.name}/${room?.title}`]
+      ),
+    [users, venue?.name, room?.title]
+  );
 
   if (!room) {
     return <></>;
   }
-
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
 
   // @debt refactor this to use openRoomWithCounting (though this is getting deleted soon so might not matter)
   const enter = () => {
