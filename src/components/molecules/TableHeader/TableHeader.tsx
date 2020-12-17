@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import firebase from "firebase/app";
 import { User } from "types/User";
 import { useUser } from "hooks/useUser";
@@ -28,12 +28,14 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
 
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[venueName]?.table === seatedAtTable
-    );
+  const usersAtCurrentTable = useMemo(
+    () =>
+      seatedAtTable &&
+      users?.filter(
+        (user: User) => user.data?.[venueName]?.table === seatedAtTable
+      ),
+    [seatedAtTable, users, venueName]
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = (doc: string, update: any) => {

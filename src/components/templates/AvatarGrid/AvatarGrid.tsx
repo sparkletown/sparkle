@@ -54,6 +54,7 @@ const AvatarGrid = () => {
     [profile, user, venue]
   );
 
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
     partygoers.forEach((partygoer) => {

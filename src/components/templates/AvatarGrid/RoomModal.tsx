@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 // Components
 import { Modal } from "react-bootstrap";
@@ -48,14 +48,19 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   miniAvatars,
 }) => {
-  const { user, profile } = useUser();
-  const partygoers = useSelector(partygoersSelector) ?? [];
-  const venueEvents = useSelector(venueEventsSelector);
-  const venue = useSelector(venueSelector);
-
   const dispatch = useDispatch();
 
+  const { user, profile } = useUser();
+  const partygoers = useSelector(partygoersSelector) ?? [];
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venue = useSelector(venueSelector);
   const venueName = venue?.name;
+
+  const usersInRoom = useMemo(
+    () =>
+      partygoers.filter((goer) => goer.room === `${venueName}/${room?.title}`),
+    [partygoers, room?.title, venueName]
+  );
 
   const enter = useCallback(() => {
     if (venue) {
@@ -67,18 +72,11 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
-      (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          getCurrentTimeInUTCSeconds()
-    );
-
-  const usersInRoom = partygoers.filter(
-    (goer) => goer.room === `${venueName}/${room.title}`
+  const roomEvents = venueEvents.filter(
+    (event) =>
+      event.room === room.title &&
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+        getCurrentTimeInUTCSeconds()
   );
 
   return (

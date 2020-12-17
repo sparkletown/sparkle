@@ -13,8 +13,6 @@ export const useConnectPartyGoers = () => {
     console.count("Created a listener to fetch data");
   }, []);
 
-  console.log({ lastSeenThreshold });
-
   useFirestoreConnect([
     {
       collection: "users",

@@ -37,13 +37,10 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   const tables = venue?.config?.tables ?? TABLES;
 
-  const venueUsers = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn &&
-          user.lastSeenIn[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const venueUsers = users.filter(
+    (user) =>
+      user.lastSeenIn?.[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   return (
     <>

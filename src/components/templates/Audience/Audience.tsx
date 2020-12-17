@@ -198,6 +198,8 @@ export const Audience: React.FunctionComponent = () => {
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
+
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
   partygoers?.forEach((partygoer) => {

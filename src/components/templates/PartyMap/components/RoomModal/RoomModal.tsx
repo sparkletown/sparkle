@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { PartyMapRoomData } from "types/PartyMapRoomData";
@@ -38,16 +38,17 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   );
   const users = useSelector(partygoersSelector);
 
+  const usersToDisplay = useMemo(
+    () =>
+      users?.filter(
+        (user) => user.lastSeenIn?.[`${venue?.name}/${room?.title}`]
+      ),
+    [users, venue?.name, room?.title]
+  );
+
   if (!room) {
     return <></>;
   }
-
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
 
   // TODO: @debt refactor this to use openRoomWithCounting
   const enter = () => {
