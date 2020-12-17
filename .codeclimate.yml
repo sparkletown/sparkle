@@ -28,12 +28,12 @@ checks:
   return-statements:
     config:
       threshold: 4
-#  similar-code:
-#    config:
-#      threshold: # language-specific defaults. an override will affect all languages.
-#  identical-code:
-#    config:
-#      threshold: # language-specific defaults. an override will affect all languages.
+  similar-code:
+    config:
+      threshold: 4
+  identical-code:
+    config:
+      threshold: 4
 #plugins:
 #  PLUGINAME:
 #    enabled: true
