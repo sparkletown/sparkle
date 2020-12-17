@@ -9,10 +9,7 @@ export const ProfilePopoverContent: React.FC = () => {
   const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
 
   return (
-    <div
-      style={{ maxHeight: window.screen.availHeight * 0.8 }}
-      className="profile-modal-container"
-    >
+    <div className="profile-modal-container">
       {!isEditMode && !isPasswordEditMode && (
         <UserInformationContent
           setIsEditMode={setIsEditMode}
