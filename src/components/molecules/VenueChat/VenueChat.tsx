@@ -20,6 +20,7 @@ import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -33,6 +34,7 @@ const VenueChat: FC = () => {
     storeAs: "venueChatUsers",
   };
   useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
+  useConnectVenueChats(venueId);
   const { userRoles } = useRoles();
   const { user } = useUser();
 
