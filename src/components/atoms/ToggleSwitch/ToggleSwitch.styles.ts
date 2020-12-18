@@ -1,9 +1,15 @@
 import styled, { css } from "styled-components";
 
+export const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const Label = styled.label`
   display: inline-block;
-  width: 40px;
-  height: 23px;
+  width: 6rem;
+  height: 2.5rem;
+  margin: 0 1rem;
 
   position: relative;
 `;
@@ -18,7 +24,7 @@ const checkedSlider = css`
   background-color: #4bcc4b;
 
   &::before {
-    transform: translateX(17px);
+    transform: translateX(3.5rem)
   }
 `;
 export const Slider = styled.span`
@@ -39,8 +45,8 @@ export const Slider = styled.span`
   &::before {
     content: "";
 
-    width: 17px;
-    height: 17px;
+    width: 2.1rem;
+    height: 2.1rem;
 
     position: absolute;
     bottom: 3px;
@@ -57,3 +63,7 @@ export const Input = styled.input.attrs({
   hidden: true,
   type: "checkbox",
 })``;
+
+export const Text = styled.span`
+  font-size: 1.3rem;
+`;

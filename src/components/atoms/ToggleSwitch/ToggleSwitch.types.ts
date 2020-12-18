@@ -3,4 +3,5 @@ export interface SwitchProps {
   forwardRef?: any;
   isChecked?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  withText?: boolean;
 }

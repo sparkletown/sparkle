@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Typings
 import { SwitchProps } from "./ToggleSwitch.types";
@@ -11,12 +11,9 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
   forwardRef,
   isChecked = false,
   onChange,
+  withText = false,
 }) => {
-  const [checked, setChecked] = useState<boolean>(false);
-
-  useEffect(() => {
-    setChecked(isChecked);
-  }, [isChecked]);
+  const [checked, setChecked] = useState<boolean>(isChecked);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
@@ -27,16 +24,22 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
   };
 
   return (
-    <S.Label>
-      <S.Input
-        name={name}
-        ref={forwardRef}
-        onChange={(e) => handleOnChange(e)}
-        checked={checked}
-      />
+    <S.Wrapper>
+      {withText && <S.Text>OFF</S.Text>}
+      <S.Label>
+        <S.Input
+          name={name}
+          ref={forwardRef}
+          onChange={(e) => handleOnChange(e)}
+          checked={checked}
+        />
 
-      <S.Slider checked={checked} />
-    </S.Label>
+        <S.Slider
+        checked={checked}
+        />
+      </S.Label>
+      {withText && <S.Text>ON</S.Text>}
+    </S.Wrapper>
   );
 };
 
