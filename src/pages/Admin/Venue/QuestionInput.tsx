@@ -7,7 +7,7 @@ interface QuestionInputProps {
   fieldName: string;
   hasLink?: boolean;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
-  title: string;
+  title?: string;
   editing?: Question[];
 }
 
@@ -51,7 +51,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
 
   return (
     <div className="input-container" style={{ marginBottom: "1.5rem" }}>
-      <h4 className="italic input-header">{title}</h4>
+      {title && <h4 className="italic input-header">{title}</h4>}
 
       {indexes.map((i) => renderFieldset(i))}
 
