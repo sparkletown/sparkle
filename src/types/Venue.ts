@@ -98,7 +98,17 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
-export interface Venue_v2 {
+
+// --- VENUE V2
+export interface Venue_v2_AdvancedConfig {
+  showRadio?: boolean;
+  showBadges?: boolean;
+  showZendesk?: boolean;
+  requiresDateOfBirth?: boolean;
+  radioStations?: string[];
+}
+
+export interface Venue_v2 extends Venue_v2_AdvancedConfig {
   name: string;
   config: {
     landingPageConfig: {
