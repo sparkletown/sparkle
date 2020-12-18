@@ -217,9 +217,9 @@ export const Map: React.FC<PropsType> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
+      venue.rooms?.map((room, index) => (
         <PartyMapRoomOverlay
-          key={room.title}
+          key={`${room.title} ${index}`}
           venue={venue}
           room={room}
           attendances={attendances}

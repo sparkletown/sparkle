@@ -19,7 +19,7 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/usePartygoers";
+import { usePartygoers } from "hooks/useUsers";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
 import { currentVenueSelectorData } from "utils/selectors";

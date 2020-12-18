@@ -18,7 +18,7 @@ import { useVenueId } from "hooks/useVenueId";
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
 import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -26,6 +26,7 @@ import { User } from "types/User";
 
 // Styles
 import "./AvatarGrid.scss";
+import { usePartygoers } from "hooks/useUsers";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -35,7 +36,7 @@ const AvatarGrid = () => {
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = usePartygoers();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(

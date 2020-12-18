@@ -9,7 +9,7 @@ import { IS_BURN } from "secrets";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
-import { useCampPartygoers } from "hooks/useCampPartygoers";
+import { useCampPartygoers } from "hooks/useUsers";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";

@@ -1,11 +1,10 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { useSelector } from "hooks/useSelector";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
 import { User } from "types/User";
-import { partygoersSelector } from "utils/selectors";
 import "./UserSearchBar.scss";
 import { WithId } from "utils/id";
+import { usePartygoers } from "hooks/useUsers";
 
 interface UserSearchBarProps {
   onSelect: (user: WithId<User>) => void;
@@ -18,7 +17,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
     WithId<User>
   >();
 
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
 
   useEffect(() => {
     if (!searchQuery) {

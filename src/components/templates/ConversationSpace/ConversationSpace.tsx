@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
@@ -20,10 +20,11 @@ import UserList from "components/molecules/UserList";
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
+import { usePartygoers } from "hooks/useUsers";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const users = useSelector(partygoersSelector);
+  const users = usePartygoers();
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");

@@ -13,8 +13,9 @@ import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 import firebase from "firebase/app";
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { usePartygoers } from "hooks/useUsers";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
@@ -24,7 +25,7 @@ const FireBarrel: React.FC = () => {
   >([]);
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
 
   const chairs =
     currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS

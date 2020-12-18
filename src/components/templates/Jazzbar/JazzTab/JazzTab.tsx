@@ -10,7 +10,7 @@ import { UserInfo } from "firebase/app";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import {
   EmojiReactionType,
@@ -38,6 +38,7 @@ import { addReaction } from "store/actions/Reactions";
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
+import { usePartygoers } from "hooks/useUsers";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
@@ -87,7 +88,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
   const venueToUseName = venueToUse?.name;
-  const users = useSelector(partygoersSelector);
+  const users = usePartygoers();
 
   const venueUsers = useMemo(
     () =>

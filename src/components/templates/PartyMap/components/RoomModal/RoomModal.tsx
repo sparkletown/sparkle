@@ -5,11 +5,7 @@ import { PartyMapRoomData } from "types/PartyMapRoomData";
 
 import { getCurrentEvent } from "utils/event";
 import { enterLocation } from "utils/useLocationUpdateEffect";
-import {
-  currentVenueSelector,
-  orderedVenuesSelector,
-  partygoersSelector,
-} from "utils/selectors";
+import { currentVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import {
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
@@ -21,6 +17,7 @@ import { useSelector } from "hooks/useSelector";
 import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "../";
+import { usePartygoers } from "hooks/useUsers";
 
 interface RoomModalProps {
   show: boolean;
@@ -36,7 +33,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const venueEvents = useSelector(
     (state) => state.firestore.ordered.venueEvents
   );
-  const users = useSelector(partygoersSelector);
+  const users = usePartygoers();
 
   const usersToDisplay = useMemo(
     () =>

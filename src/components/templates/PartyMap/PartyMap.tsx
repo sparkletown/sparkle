@@ -7,7 +7,7 @@ import { createUrlSafeName } from "api/admin";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
-import { useCampPartygoers } from "hooks/useCampPartygoers";
+import { useCampPartygoers } from "hooks/useUsers";
 import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
