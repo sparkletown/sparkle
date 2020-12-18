@@ -19,30 +19,25 @@ Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
   process.exit(1);
 };
 
-const [projectId] = process.argv.slice(2);
-if (!projectId) {
+const [projectId, venueId] = process.argv.slice(2);
+if (!projectId || !venueId) {
   usage();
 }
 
-const [venueId] = process.argv.slice(2);
-if (!venueId) {
-  usage();
-}
-
-initFirebaseAdminApp(projectId, {
+const app = initFirebaseAdminApp(projectId, {
   appName: projectId,
 });
 
 (async () => {
   const allUsers: admin.auth.UserRecord[] = [];
   let nextPageToken: string | undefined;
-  const { users, pageToken } = await admin.auth().listUsers(1000);
+  const { users, pageToken } = await app.auth().listUsers(1000);
 
   allUsers.push(...users);
   nextPageToken = pageToken;
 
   while (nextPageToken) {
-    const { users, pageToken } = await admin
+    const { users, pageToken } = await app
       .auth()
       .listUsers(1000, nextPageToken);
     allUsers.push(...users);
@@ -55,16 +50,16 @@ initFirebaseAdminApp(projectId, {
       .join(",")
   );
 
-  const firestoreUsers = await admin.firestore().collection("users").get();
+  const firestoreUsers = await app.firestore().collection("users").get();
 
   firestoreUsers.docs.forEach((doc) => {
     const user = allUsers.find((u) => u.uid === doc.id);
     const partyName = doc.data().partyName;
-    const enteredVenues = doc.data().enteredVenuesIds;
+    const enteredVenueIds = doc.data().enteredVenueIds;
 
-    if (enteredVenues.includes(venueId)) {
+    if (enteredVenueIds?.includes(venueId)) {
       console.log(
-        [user?.email ?? doc.id, partyName, enteredVenues]
+        [user?.email ?? doc.id, partyName, enteredVenueIds.sort()]
           .map((v) => `"${v}"`)
           .join(",")
       );
