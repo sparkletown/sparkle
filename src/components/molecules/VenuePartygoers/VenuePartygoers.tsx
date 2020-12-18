@@ -5,9 +5,6 @@ import { usePartygoers } from "hooks/users";
 
 import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
-import { Venue } from "types/Venue";
-import { User } from "types/User";
-
 import "./VenuePartygoers.scss";
 import { usePartygoersThreshold } from "hooks/useCampPartygoers";
 
@@ -27,6 +24,7 @@ export const VenuePartygoers = () => {
     return partygoers.filter((partygoer) => partygoer.lastSeenIn?.[venueName]);
   }, [partygoers, venueName]);
   const numberOfPartygoers = currentVenuePartygoers.length;
+  // const numberOfPartygoers = partygoers.length;
 
   console.log(partygoers);
 
