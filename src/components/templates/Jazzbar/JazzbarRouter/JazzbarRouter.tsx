@@ -2,12 +2,10 @@ import React from "react";
 import { useRouteMatch, Switch, Route } from "react-router-dom";
 import JazzBar from "../Jazzbar";
 import ReactionPage from "pages/ReactionPage";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import VideoAdmin from "pages/VideoAdmin";
 
-export const JazzbarRouter: React.FunctionComponent = () => {
+export const JazzbarRouter: React.FC = () => {
   const match = useRouteMatch();
-  useConnectPartyGoers();
 
   return (
     <Switch>

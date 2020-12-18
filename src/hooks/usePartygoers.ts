@@ -1,17 +1,15 @@
-import { useEffect } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 
 import { partygoersSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 
-export const useConnectPartyGoers = () => {
-  const lastSeenThreshold = useUserLastSeenThreshold();
+import { User } from "types/User";
 
-  useEffect(() => {
-    console.count("Created a listener to fetch data");
-  }, []);
+const useConnectPartyGoers = () => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
 
   useFirestoreConnect([
     {
@@ -24,7 +22,8 @@ export const useConnectPartyGoers = () => {
   return useSelector(partygoersSelector);
 };
 
-/**
- * @deprecated use named export instead
- */
-export default useConnectPartyGoers;
+export const usePartygoers = (): WithId<User>[] => {
+  useConnectPartyGoers();
+
+  return useSelector(partygoersSelector);
+};

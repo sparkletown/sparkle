@@ -15,7 +15,6 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
-  partygoersSelector,
   shouldRetainAttendanceSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
@@ -31,13 +30,13 @@ import {
 import { venueEntranceUrl } from "utils/url";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/usePartygoers";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 import { updateUserProfile } from "pages/Account/helpers";
@@ -70,7 +69,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const VenuePage = () => {
+const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const firestore = useFirestore();
   const mixpanel = useMixpanel();
@@ -81,7 +80,7 @@ const VenuePage = () => {
 
   const { user, profile } = useUser();
 
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = usePartygoers();
 
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
@@ -221,7 +220,6 @@ const VenuePage = () => {
     ?.venueId as string;
 
   useConnectCurrentVenue();
-  useConnectPartyGoers();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
   useEffect(() => {
@@ -231,16 +229,13 @@ const VenuePage = () => {
       storeAs: "currentVenue",
     });
   }, [firestore, venueId, venueIdFromParams]);
-  useFirestoreConnect(
-    user
-      ? {
-          collection: "privatechats",
-          doc: user.uid,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
-        }
-      : undefined
-  );
+
+  useFirestoreConnect({
+    collection: "privatechats",
+    doc: user?.uid,
+    subcollections: [{ collection: "chats" }],
+    storeAs: "privatechats",
+  });
 
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
@@ -285,7 +280,12 @@ const VenuePage = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !partygoers || !userPurchaseHistoryRequestStatus) {
+    if (
+      !event ||
+      !venue ||
+      !userPurchaseHistoryRequestStatus ||
+      !partygoers.length
+    ) {
       return <LoadingPage />;
     }
 

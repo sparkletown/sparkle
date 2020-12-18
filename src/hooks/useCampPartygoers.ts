@@ -2,10 +2,8 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { partygoersSelector } from "utils/selectors";
 
-import { useConnectPartyGoers } from "./useConnectPartyGoers";
-import { useSelector } from "./useSelector";
+import { usePartygoers } from "./usePartygoers";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 
 /**
@@ -15,8 +13,7 @@ import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
  * @param venueName venueName to filter partygoers by
  */
 export const useCampPartygoers = (venueName: string): WithId<User>[] => {
-  useConnectPartyGoers();
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
 
   const lastSeenThreshold = useUserLastSeenThreshold();
 
