@@ -66,7 +66,7 @@ const AppRouter = () => {
         />
 
         <Route path="/admin/venue/:venueId" component={Admin} />
-        <Route path="/admin_v2/venue/:venueId" component={Admin_v2} />
+        <Route path="/admin_v2/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
         <Route path="/admin_v2" component={Admin_v2} />
