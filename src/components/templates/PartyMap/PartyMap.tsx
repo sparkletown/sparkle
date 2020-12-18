@@ -8,6 +8,7 @@ import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
 import { usePartygoers } from "hooks/users";
+import { usePartygoersThreshold } from "hooks/useCampPartygoers";
 import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
@@ -27,6 +28,7 @@ export const PartyMap: React.FC = () => {
 
   const venue = useSelector(partyMapVenueSelector);
   const usersInCamp = usePartygoers();
+  // const usersInCamp = usePartygoersThreshold(venue.name);
 
   const attendances = useMemo(
     () =>

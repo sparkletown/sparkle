@@ -22,6 +22,8 @@ import { usePartygoers } from "hooks/users";
 import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "../";
+import { usePartygoersThreshold } from "hooks/useCampPartygoers";
+import { useFirestoreConnect } from "react-redux-firebase";
 
 interface RoomModalProps {
   show: boolean;
@@ -30,6 +32,7 @@ interface RoomModalProps {
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
+  useFirestoreConnect("venues");
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
@@ -45,6 +48,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
     [users, venueName, roomTitle]
   );
+  // const users = usePartygoersThreshold(venue.name);
 
   if (!room) {
     return <></>;

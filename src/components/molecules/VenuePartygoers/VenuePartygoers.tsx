@@ -5,10 +5,15 @@ import { usePartygoers } from "hooks/users";
 
 import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
+import { Venue } from "types/Venue";
+import { User } from "types/User";
+
 import "./VenuePartygoers.scss";
+import { usePartygoersThreshold } from "hooks/useCampPartygoers";
 
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
+  // const partygoers = usePartygoersThreshold(venue.name) ?? [];
   const parentVenue = useSelector(parentVenueSelector);
   const partygoers = usePartygoers();
 
@@ -22,6 +27,8 @@ export const VenuePartygoers = () => {
     return partygoers.filter((partygoer) => partygoer.lastSeenIn?.[venueName]);
   }, [partygoers, venueName]);
   const numberOfPartygoers = currentVenuePartygoers.length;
+
+  console.log(partygoers);
 
   return (
     <div className="venue-partygoers-container">

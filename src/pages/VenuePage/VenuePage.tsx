@@ -177,7 +177,7 @@ const VenuePage: React.FC = () => {
 
   useEffect(() => {
     const leaveRoomBeforeUnload = () => {
-      if (user) {
+      if (user && !retainAttendance) {
         const locations = { ...prevLocations };
         delete locations[venueName];
         setUnmounted(true);
@@ -188,7 +188,7 @@ const VenuePage: React.FC = () => {
     return () => {
       window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
     };
-  }, [prevLocations, user, venueName]);
+  }, [prevLocations, retainAttendance, user, venueName]);
 
   useEffect(() => {
     if (
