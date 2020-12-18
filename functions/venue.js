@@ -86,6 +86,8 @@ const createVenueData = (data, context) => {
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
+    showRadio: data.showRadio || false,
+    radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -489,6 +491,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.code_of_conduct_questions) {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+  }
+
+  if (data.radioStations) {
+    updated.radioStations = [data.radioStations];
   }
 
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;

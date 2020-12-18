@@ -77,6 +77,8 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumRows?: number;
     auditoriumColumns?: number;
     showReactions?: boolean;
+    showRadio?: boolean;
+    radioStations?: string;
     showZendesk?: boolean;
   };
 

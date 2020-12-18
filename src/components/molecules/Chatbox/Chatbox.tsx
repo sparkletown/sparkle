@@ -10,7 +10,7 @@ import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
-import { chatUsersSelector, venueChatUsersSelector } from "utils/selectors";
+import { chatUsersSelector, venueUsersSelectorData } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 
 interface ChatOutDataType {
@@ -39,7 +39,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
   const usersByIdSelector = isVenueChat
-    ? venueChatUsersSelector
+    ? venueUsersSelectorData
     : chatUsersSelector;
 
   const usersById = useSelector(usersByIdSelector) ?? {};
