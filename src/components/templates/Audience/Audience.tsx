@@ -24,7 +24,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -33,6 +33,7 @@ import { User } from "types/User";
 import "./Audience.scss";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { addReaction } from "store/actions/Reactions";
+import { usePartygoers } from "hooks/useUsers";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -135,7 +136,7 @@ export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = usePartygoers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;

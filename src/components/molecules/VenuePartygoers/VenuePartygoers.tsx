@@ -1,12 +1,9 @@
 import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/useUsers";
 
-import {
-  currentVenueSelector,
-  parentVenueSelector,
-  partygoersSelector,
-} from "utils/selectors";
+import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
 import { Venue } from "types/Venue";
 import { User } from "types/User";
@@ -21,8 +18,8 @@ const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
 
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector) ?? [];
   const parentVenue = useSelector(parentVenueSelector);
+  const partygoers = usePartygoers();
 
   const currentVenueTitle = venue.attendeesTitle ?? "partygoers";
   const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
@@ -31,6 +28,8 @@ export const VenuePartygoers = () => {
     [partygoers, venue]
   );
   const numberOfPartygoers = currentVenuePartygoers.length;
+
+  console.log({ partygoers, currentVenuePartygoers });
 
   return (
     <div className="venue-partygoers-container">

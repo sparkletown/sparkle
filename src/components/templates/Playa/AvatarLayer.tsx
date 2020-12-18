@@ -34,7 +34,7 @@ import {
 import { useDispatch } from "hooks/useDispatch";
 import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
-import { usePartygoers } from "hooks/usePartygoers";
+import { usePartygoers } from "hooks/useUsers";
 
 interface PropsType {
   useProfilePicture: boolean;

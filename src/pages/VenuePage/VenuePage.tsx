@@ -36,30 +36,18 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { usePartygoers } from "hooks/usePartygoers";
+import { usePartygoers } from "hooks/useUsers";
 
-import { FriendShipPage } from "pages/FriendShipPage";
 import { updateUserProfile } from "pages/Account/helpers";
-
-import { ArtPiece } from "components/templates/ArtPiece";
-import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
-import { AvatarRouter } from "components/templates/AvatarGrid/Router";
-import { CampRouter } from "components/templates/Camp/Router";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import FireBarrel from "components/templates/FireBarrel";
-import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
-import { PlayaRouter } from "components/templates/Playa/Router";
-
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
@@ -230,12 +218,16 @@ const VenuePage: React.FC = () => {
     });
   }, [firestore, venueId, venueIdFromParams]);
 
-  useFirestoreConnect({
-    collection: "privatechats",
-    doc: user?.uid,
-    subcollections: [{ collection: "chats" }],
-    storeAs: "privatechats",
-  });
+  useFirestoreConnect(
+    user && user.uid
+      ? {
+          collection: "privatechats",
+          doc: user.uid,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "privatechats",
+        }
+      : undefined
+  );
 
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
@@ -317,68 +309,7 @@ const VenuePage: React.FC = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  let template;
-  let fullscreen = false;
-  switch (venue.template) {
-    case VenueTemplate.jazzbar:
-      template = <JazzbarRouter />;
-      break;
-    case VenueTemplate.friendship:
-      template = <FriendShipPage />;
-      break;
-    case VenueTemplate.partymap:
-      template = <PartyMapRouter />;
-      break;
-    case VenueTemplate.artpiece:
-      template = <ArtPiece />;
-      break;
-    case VenueTemplate.themecamp:
-      template = <CampRouter />;
-      break;
-    case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
-      template = <PlayaRouter />;
-      fullscreen = true;
-      break;
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artcar:
-      if (venue.zoomUrl) {
-        window.location.replace(venue.zoomUrl);
-      }
-      template = (
-        <p>
-          Venue {venue.name} should redirect to a URL, but none was set.
-          <br />
-          <button
-            role="link"
-            className="btn btn-primary"
-            onClick={() => history.goBack()}
-          >
-            Go Back
-          </button>
-        </p>
-      );
-      break;
-    case VenueTemplate.audience:
-      template = <AudienceRouter />;
-      fullscreen = true;
-      break;
-    case VenueTemplate.avatargrid:
-      template = <AvatarRouter />;
-      break;
-    case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
-      break;
-
-    case VenueTemplate.firebarrel:
-      template = <FireBarrel />;
-      break;
-  }
-
-  return (
-    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
-  );
+  return <TemplateWrapper venue={venue} />;
 };
 
 export default VenuePage;

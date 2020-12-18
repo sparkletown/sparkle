@@ -27,11 +27,8 @@ import { retainAttendance } from "store/actions/Attendance";
 // Styles
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
-import {
-  partygoersSelector,
-  venueEventsSelector,
-  venueSelector,
-} from "utils/selectors";
+import { venueEventsSelector, venueSelector } from "utils/selectors";
+import { usePartygoers } from "hooks/useUsers";
 
 interface PropsType {
   show: boolean;
@@ -51,7 +48,7 @@ export const RoomModal: React.FC<PropsType> = ({
   const dispatch = useDispatch();
 
   const { user, profile } = useUser();
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const venue = useSelector(venueSelector);
   const venueName = venue?.name;
