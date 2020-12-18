@@ -282,12 +282,14 @@ interface DetailsFormLeftProps {
   onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
   errors: FieldErrors<FormValues>;
   editing?: boolean;
+  venueId?: string;
   setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   editing,
+  venueId,
   state,
   values,
   isSubmitting,
@@ -336,7 +338,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         </h4>
         <input type="hidden" name="name" ref={register} value={values.name} />
         <span className="input-info">
-          The URL of your venue will be: <b>{urlSafeName}</b>
+          The URL of your venue will be:{" "}
+          <b>
+            {venueId
+              ? `${window.location.host}${venueLandingUrl(venueId)}`
+              : urlSafeName}
+          </b>
         </span>
       </div>
     );
