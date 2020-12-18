@@ -81,6 +81,8 @@ const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
+  oneListenerPerPath: true,
+  allowMultipleListeners: false,
 };
 
 firebase.initializeApp(FIREBASE_CONFIG);
