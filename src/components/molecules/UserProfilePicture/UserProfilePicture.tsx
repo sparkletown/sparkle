@@ -32,6 +32,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   setSelectedUserProfile,
   reactionPosition,
   user,
+  showName,
 }) => {
   const muteReactions = useSelector((state) => state.room.mute);
 
@@ -103,7 +104,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
         >
-          {SHOW_AVATAR_NAME && (
+          {showName && (
             <div className="profile-name-avatar">{user.partyName}</div>
           )}
         </S.Avatar>
@@ -156,12 +157,14 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     reactions,
     muteReactions,
     isAudioEffectDisabled,
+    showName,
   ]);
 };
 
 UserProfilePicture.defaultProps = {
   avatarClassName: "profile-icon",
   miniAvatars: false,
+  showName: SHOW_AVATAR_NAME,
 };
 
 export default UserProfilePicture;
