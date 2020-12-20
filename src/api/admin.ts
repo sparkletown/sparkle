@@ -79,6 +79,7 @@ export type VenueInput = AdvancedVenueInput &
     showReactions?: boolean;
     showRadio?: boolean;
     radioStations?: string;
+    showNametags?: boolean;
     showZendesk?: boolean;
   };
 

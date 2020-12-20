@@ -88,6 +88,7 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     showRadio: data.showRadio || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    showNametags: data.showNametags || false,
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -499,6 +500,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (data.radioStations) {
     updated.radioStations = [data.radioStations];
+  }
+
+  if (typeof data.showNametags === "boolean") {
+    updated.showNametags = data.showNametags;
   }
 
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;

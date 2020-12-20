@@ -794,6 +794,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderNametagsToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Display profile names on avatars</h4>
+      <label id="showNametags" className="switch">
+        <input
+          type="checkbox"
+          id="showNametags"
+          name="showNametags"
+          ref={register}
+        />
+        <span className="slider round" />
+      </label>
+    </div>
+  );
+
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
@@ -868,6 +883,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderSeatingNumberInput()}
+
+        {renderNametagsToggle()}
 
         {renderRadioToggle()}
         {values.showRadio && renderRadioStationInput()}

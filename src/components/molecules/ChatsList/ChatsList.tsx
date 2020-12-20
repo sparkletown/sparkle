@@ -180,7 +180,7 @@ const ChatsList: React.FunctionComponent = () => {
             avatarClassName="private-message-author-pic"
             user={sender}
             setSelectedUserProfile={noopHandler}
-            showName={false}
+            showNametags={false}
           />
 
           <div className="private-message-content">
