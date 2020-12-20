@@ -14,6 +14,7 @@ import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
+  SHOW_AVATAR_NAME,
 } from "settings";
 
 // Styles
@@ -101,8 +102,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           className={avatarClassName}
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
-        />
-
+        >
+          {SHOW_AVATAR_NAME && (
+            <div className="profile-name-avatar">{user.partyName}</div>
+          )}
+        </S.Avatar>
         {Reactions.map(
           (reaction, index) =>
             reactions.find(

@@ -56,6 +56,26 @@ export const Container = styled.div`
       left: -20px;
     }
   }
+
+  .profile-name-avatar {
+    z-index: 1;
+    bottom: 10%;
+    position: absolute;
+    margin: 0 auto;
+    padding: 0px 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    border-radius: 18px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    font-size: 0.8rem;
+    line-height: 0.9;
+    opacity: 1;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0);
+    min-width: 70%;
+  }
 `;
 
 // --- Shout-out message
