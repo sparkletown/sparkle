@@ -13,9 +13,9 @@ import {
   REACTION_PROFILE_IMAGE_SIZE_LARGE,
   REACTION_PROFILE_IMAGE_SIZE_SMALL,
 } from "settings";
-import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { ChatMessage } from "store/actions/Chat";
+import { useUsersById } from "hooks/useUsers";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -28,9 +28,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers ?? {},
-  }));
+  const usersById = useUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

@@ -3,7 +3,7 @@ import { User } from "types/User";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 import "./PrivateRecipientSearchInput.scss";
-import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/useUsers";
 import { WithId } from "utils/id";
 
 interface PropsType {
@@ -21,9 +21,7 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
     setSelectedUser(user);
   };
 
-  const { userArray } = useSelector((state) => ({
-    userArray: state.firestore.ordered.partygoers,
-  }));
+  const partygoers = usePartygoers();
 
   return (
     <div className="private-recipient-search-input-container">
@@ -48,33 +46,30 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
         />
         {searchValue && (
           <ul className="floating-dropdown">
-            {userArray &&
-              userArray
-                .filter(
-                  (u) =>
-                    !u.anonMode &&
-                    u.partyName
-                      ?.toLowerCase()
-                      .includes(searchValue.toLowerCase())
-                )
-                .filter((u) => u.id !== undefined)
-                .map((u) => (
-                  <Dropdown.Item
-                    onClick={() => onClickOnUserInSearchInput(u)}
-                    id="private-chat-dropdown-private-recipient"
-                    className="private-recipient"
-                    key={u.id}
-                  >
-                    <img
-                      src={u.pictureUrl}
-                      className="picture-logo"
-                      alt={u.partyName}
-                      width="20"
-                      height="20"
-                    />
-                    {u.partyName}
-                  </Dropdown.Item>
-                ))}
+            {partygoers
+              .filter(
+                (u) =>
+                  !u.anonMode &&
+                  u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
+              )
+              .filter((u) => u.id !== undefined)
+              .map((u) => (
+                <Dropdown.Item
+                  onClick={() => onClickOnUserInSearchInput(u)}
+                  id="private-chat-dropdown-private-recipient"
+                  className="private-recipient"
+                  key={u.id}
+                >
+                  <img
+                    src={u.pictureUrl}
+                    className="picture-logo"
+                    alt={u.partyName}
+                    width="20"
+                    height="20"
+                  />
+                  {u.partyName}
+                </Dropdown.Item>
+              ))}
           </ul>
         )}
       </Dropdown>

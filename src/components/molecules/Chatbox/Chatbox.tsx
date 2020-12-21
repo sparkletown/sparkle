@@ -10,8 +10,7 @@ import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
-import { chatUsersSelector, venueUsersSelectorData } from "utils/selectors";
-import { useSelector } from "hooks/useSelector";
+import { useUsersById } from "hooks/useUsers";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -38,11 +37,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
-  const usersByIdSelector = isVenueChat
-    ? venueUsersSelectorData
-    : chatUsersSelector;
-
-  const usersById = useSelector(usersByIdSelector) ?? {};
+  const usersById = useUsersById();
 
   useEffect(() => {
     if (isMessageToTheBarSent) {

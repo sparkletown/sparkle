@@ -17,12 +17,8 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
-import {
-  partygoersSelectorData,
-  privateChatsSelector,
-  venueChatsSelector,
-} from "utils/selectors";
-import { usePartygoers } from "hooks/useUsers";
+import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
+import { usePartygoers, useUsersById } from "hooks/useUsers";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -54,7 +50,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const users = useSelector(partygoersSelectorData);
+  const usersById = useUsersById();
   const userArray = usePartygoers();
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -167,7 +163,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
           </div>
         )}
 
-        {users && (
+        {usersById && (
           <>
             {!isInProfileModal && (
               <div className="dropdown-container">
@@ -291,7 +287,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   <ChatMessage
                     key={`${chat.ts_utc.valueOf()}-${chat.id}`}
                     user={user}
-                    users={users}
+                    users={usersById}
                     setSelectedUserProfile={setSelectedUserProfile}
                     isInProfileModal={!!isInProfileModal}
                     chat={chat}

@@ -29,8 +29,6 @@ export const VenuePartygoers = () => {
   );
   const numberOfPartygoers = currentVenuePartygoers.length;
 
-  console.log({ partygoers, currentVenuePartygoers });
-
   return (
     <div className="venue-partygoers-container">
       {numberOfPartygoers} {attendeesTitle} online
