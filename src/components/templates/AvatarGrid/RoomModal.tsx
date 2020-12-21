@@ -52,11 +52,12 @@ export const RoomModal: React.FC<PropsType> = ({
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const venue = useSelector(venueSelector);
   const venueName = venue?.name;
+  const roomTitle = room?.title;
 
   const usersInRoom = useMemo(
     () =>
-      partygoers.filter((goer) => goer.room === `${venueName}/${room?.title}`),
-    [partygoers, room?.title, venueName]
+      partygoers.filter((goer) => goer.room === `${venueName}/${roomTitle}`),
+    [partygoers, roomTitle, venueName]
   );
 
   const enter = useCallback(() => {

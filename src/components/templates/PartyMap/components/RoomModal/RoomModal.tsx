@@ -35,12 +35,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   );
   const users = usePartygoers();
 
+  const venueName = venue?.name;
+  const roomTitle = room?.title;
+
   const usersToDisplay = useMemo(
     () =>
-      users?.filter(
-        (user) => user.lastSeenIn?.[`${venue?.name}/${room?.title}`]
-      ),
-    [users, venue?.name, room?.title]
+      users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
+    [users, venueName, roomTitle]
   );
 
   if (!room) {

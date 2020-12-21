@@ -1,4 +1,4 @@
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User, VideoState } from "types/User";
 import { Venue } from "types/Venue";
@@ -15,7 +15,7 @@ import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 import firebase from "firebase/app";
 import { currentVenueSelector } from "utils/selectors";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers, useUsersById } from "hooks/useUsers";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
@@ -56,12 +56,7 @@ const FireBarrel: React.FC = () => {
   const chairsArray = Array.from(Array(chairs));
 
   const [videoError, setVideoError] = useState<string>("");
-  const { users } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.partygoers ?? {},
-    }),
-    ["users"]
-  );
+  const users = useUsersById();
 
   const updateVideoState = useCallback(
     (update: VideoState) => {
@@ -115,7 +110,9 @@ const FireBarrel: React.FC = () => {
                 <LocalParticipant
                   showLeave={false}
                   participant={room.localParticipant}
-                  user={users[user!.uid]}
+                  user={
+                    users[user!.uid] && { ...users[user!.uid], id: user!.uid }
+                  }
                   setSelectedUserProfile={() => {}}
                   isHost={false}
                   leave={leave}
@@ -133,7 +130,12 @@ const FireBarrel: React.FC = () => {
               <S.Chair key={participant.identity}>
                 <RemoteParticipant
                   participant={participant}
-                  user={users[participant.identity]}
+                  user={
+                    users[participant.identity] && {
+                      ...users[participant.identity],
+                      id: participant.identity,
+                    }
+                  }
                   setSelectedUserProfile={() => {}}
                   isHost={false}
                   showHostControls={false}

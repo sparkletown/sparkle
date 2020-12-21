@@ -49,6 +49,7 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/useUsers";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
 
@@ -132,9 +133,7 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
@@ -450,7 +449,7 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const partygoers = usePartygoers();
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
@@ -459,13 +458,11 @@ const Playa = () => {
     [partygoers, hoveredVenue, venueName]
   );
 
-  const usersInCurrentVenue = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.lastSeenIn?.[venueName] >
-          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const usersInCurrentVenue = partygoers.filter(
+    (partygoer) =>
+      partygoer.lastSeenIn?.[venueName] >
+      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -602,13 +599,11 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers
-            ? partygoers.filter(
-                (partygoer) =>
-                  partygoer.lastSeenIn?.[v.name] >
-                  (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-              )
-            : [];
+          const usersInVenue = partygoers.filter(
+            (partygoer) =>
+              partygoer.lastSeenIn?.[v.name] >
+              (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+          );
           return (
             <>
               <div
@@ -1066,7 +1061,7 @@ const Playa = () => {
         <UserProfileModal
           show={selectedUserProfile !== undefined}
           onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile}
+          userProfile={selectedUserProfile as WithId<User>}
         />
         <Modal
           show={showEventSchedule}

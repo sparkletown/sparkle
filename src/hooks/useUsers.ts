@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 
-import { usersSelector } from "utils/selectors";
+import { usersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
@@ -14,7 +14,7 @@ const useConnectUsers = () => {
   useFirestoreConnect("users");
 };
 
-export const usePartygoers = (): WithId<User>[] => {
+export const usePartygoers = () => {
   useConnectUsers();
 
   const lastSeenThreshold = useUserLastSeenThreshold();
@@ -25,6 +25,12 @@ export const usePartygoers = (): WithId<User>[] => {
     () => users.filter((user) => user.lastSeenAt > lastSeenThreshold),
     [users, lastSeenThreshold]
   );
+};
+
+export const useUsersById = () => {
+  useConnectUsers();
+
+  return useSelector(usersByIdSelector);
 };
 
 export const useVenueUsers = () => {

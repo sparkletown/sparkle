@@ -43,7 +43,6 @@ export interface FirestoreStatus {
 export interface FirestoreData {
   adminRole: AdminRole;
   allowAllRoles: Record<string, Role>;
-  allUsers?: Record<string, User>;
   chatUsers?: Record<string, User>;
   currentEvent: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
@@ -53,7 +52,6 @@ export interface FirestoreData {
   events?: Record<string, VenueEvent>;
   experiences: Record<string, Experience>;
   parentVenue?: AnyVenue;
-  partygoers?: Record<string, User>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   privatechats: Record<string, PrivateChatMessage>;
   reactions: Record<string, Reaction>;
@@ -64,12 +62,10 @@ export interface FirestoreData {
   venueChats: Record<string, RestrictedChatMessage> | null;
   venueEvents: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
-  venueUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  allUsers?: Array<WithId<User>>;
   chatRequests?: Array<WithId<ChatRequest>>;
   currentEvent: Array<WithId<VenueEvent>>;
   currentVenue: Array<WithId<AnyVenue>>;
@@ -80,7 +76,6 @@ export interface FirestoreOrdered {
   experiences: Array<WithId<Experience>>;
   parentVenue?: Array<WithId<AnyVenue>>;
   parentVenueEvents?: Array<WithId<VenueEvent>>;
-  partygoers?: Array<WithId<User>>;
   playaVenues?: Array<WithId<AnyVenue>>;
   privatechats?: Array<WithId<PrivateChatMessage>>;
   reactions: Array<WithId<Reaction>>;
@@ -96,5 +91,4 @@ export interface FirestoreOrdered {
   venueChats: Array<WithId<RestrictedChatMessage>>;
   venueEvents: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
-  venueUsers?: Array<WithId<User>>;
 }
