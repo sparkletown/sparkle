@@ -1,7 +1,12 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
 import { VenueEvent } from "types/VenueEvent";
-import { VenuePlacement } from "types/Venue";
+import {
+  AnyRoom,
+  VenuePlacement,
+  Venue_v2_AdvancedConfig,
+  Venue_v2_EntranceConfig,
+} from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
 import { VenueTemplate } from "types/VenueTemplate";
 import { RoomData_v2 } from "types/RoomData";
@@ -97,7 +102,9 @@ export type VenueInput = AdvancedVenueInput &
     showZendesk?: boolean;
   };
 
-export interface VenueInput_v2 {
+export interface VenueInput_v2
+  extends Venue_v2_AdvancedConfig,
+    Venue_v2_EntranceConfig {
   name: string;
   description?: string;
   subtitle?: string;
@@ -105,11 +112,11 @@ export interface VenueInput_v2 {
   bannerImageUrl?: string;
   logoImageFile?: FileList;
   logoImageUrl?: string;
-  rooms?: Array<unknown>;
+  rooms?: AnyRoom[];
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
-  showGrid?: boolean;
-  roomVisibility?: "hover" | "count" | "count/name" | string; // this should be strict typed to the string values
+  // showGrid?: boolean;
+  // roomVisibility?: "hover" | "count" | "count/name" | string; // this should be strict typed to the string values
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -277,7 +284,6 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: VenueTemplate.themecamp, // New venues are always themecamp
-    rooms: [],
   };
 
   return firestoreVenueInput;
@@ -291,7 +297,13 @@ export const createVenue = async (input: VenueInput, user: UserInfo) => {
 };
 
 export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(
+    {
+      ...input,
+      rooms: [],
+    },
+    user
+  );
   return await firebase.functions().httpsCallable("venue-createVenue_v2")(
     firestoreVenueInput
   );

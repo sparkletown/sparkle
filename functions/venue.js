@@ -624,6 +624,35 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
+  if (typeof data.showLiveSchedule === "boolean") {
+    updated.showLiveSchedule = data.showLiveSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showZendesk === "boolean") {
+    updated.showZendesk = data.showZendesk;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.requiresDateOfBirth === "boolean") {
+    updated.requiresDateOfBirth = data.requiresDateOfBirth;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+    updated.radioStations = [data.radioStations];
+  }
+
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   } else {
@@ -634,11 +663,25 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  // updated = {
-  //   ...updated,
-  //   showGrid: data.showGrid || false,
-  //   columns: data.columns || 1,
-  // }
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });

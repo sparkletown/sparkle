@@ -98,17 +98,28 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
-
 // --- VENUE V2
 export interface Venue_v2_AdvancedConfig {
-  showRadio?: boolean;
-  showBadges?: boolean;
-  showZendesk?: boolean;
+  columns?: number;
+  radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
-  radioStations?: string[];
+  roomVisibility?: RoomVisibility;
+  showBadges?: boolean;
+  showGrid?: boolean;
+  showRadio?: boolean;
+  showZendesk?: boolean;
+  showRangers?: boolean;
 }
 
-export interface Venue_v2 extends Venue_v2_AdvancedConfig {
+export interface Venue_v2_EntranceConfig {
+  profile_questions?: Array<Question>;
+  code_of_conduct_questions?: Array<Question>;
+  entrance?: EntranceStepConfig[];
+}
+
+export interface Venue_v2
+  extends Venue_v2_AdvancedConfig,
+    Venue_v2_EntranceConfig {
   name: string;
   config: {
     landingPageConfig: {
@@ -125,8 +136,6 @@ export interface Venue_v2 extends Venue_v2_AdvancedConfig {
     primaryColor: string;
     backgroundColor?: string;
   };
-  showGrid: boolean;
-  columns?: number;
   id?: string;
   rooms?: AnyRoom[];
   mapBackgroundImageUrl?: string;

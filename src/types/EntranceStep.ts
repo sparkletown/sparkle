@@ -2,12 +2,12 @@ export enum EntranceStepTemplate {
   WelcomeVideo = "welcomevideo",
 }
 
-type EntranceStepButtonConfig = {
+export interface EntranceStepButtonConfig {
   isProceed: boolean;
   text?: string;
   className?: string;
   href?: string;
-};
+}
 
 export type EntranceStepConfig = {
   template: EntranceStepTemplate;
