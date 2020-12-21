@@ -5,12 +5,10 @@ import { Button } from "components/atoms/Button/Button.styles";
 
 export const Container = styled.div`
   display: flex;
-  height: calc(100vh - ${(props) => props.theme.dimensions.topBarHeight});
   flex-direction: column;
   padding-right: 15%;
 
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden;
   scrollbar-width: thin;
 
   background-color: #000000;

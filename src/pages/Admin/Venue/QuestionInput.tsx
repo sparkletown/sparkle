@@ -9,6 +9,7 @@ interface QuestionInputProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title?: string;
   editing?: Question[];
+  errors?: any;
 }
 
 const QuestionInput: React.FC<QuestionInputProps> = ({
@@ -17,6 +18,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   register,
   title,
   editing,
+  errors,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
@@ -31,14 +33,25 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
         <fieldset name={baseName}>
           <Form.Label>Title</Form.Label>
           <Form.Control ref={register} name={inputName} custom />
+          {errors && errors[index].name && (
+            <span className="input-error">{errors[index].name.message}</span>
+          )}
 
           <Form.Label>Text</Form.Label>
           <Form.Control ref={register} name={inputText} as="textarea" custom />
+          {errors && errors[index].text && (
+            <span className="input-error">{errors[index].text.message}</span>
+          )}
 
           {hasLink && (
             <>
               <Form.Label>Link</Form.Label>
               <Form.Control ref={register} name={inputLink} custom />
+              {errors && errors[index].link && (
+                <span className="input-error">
+                  {errors[index].link.message}
+                </span>
+              )}
             </>
           )}
         </fieldset>

@@ -1,3 +1,6 @@
+import { Venue_v2 } from "types/Venue";
+
 export interface EntranceExperienceProps {
-  foo?: string;
+  venue: Venue_v2;
+  onSave: () => void;
 }

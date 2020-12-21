@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 // Components
 import VenueHero from "components/molecules/VenueHero";
@@ -18,15 +18,13 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 // Styles
 import * as S from "./VenueDetails.styles";
 import MapPreview from "pages/Admin/MapPreview";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
-import { updateRoom, updateVenue_v2 } from "api/admin";
-import { useUser } from "hooks/useUser";
-import { Form } from "react-bootstrap";
+import { updateRoom } from "api/admin";
 import { RoomData_v2 } from "types/RoomData";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { isEqual } from "lodash";
 import RoomDeleteModal from "../Rooms/RoomDeleteModal";
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
+import { useUser } from "hooks/useUser";
 
 type Owner = {
   id: string;
@@ -46,7 +44,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     id: venueId,
     rooms,
     mapBackgroundImageUrl,
-    showGrid,
   } = venue;
   const {
     subtitle,
@@ -54,8 +51,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     coverImageUrl,
   } = venue.config.landingPageConfig;
   const { icon } = venue.host;
-
   const { user } = useUser();
+
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -80,21 +77,19 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const ownersRef = useRef([]);
 
   useEffect(() => {
-    const newOwners: any = [];
-
+    const newOwners: Owner[] = []
     async function getOwnersData() {
-      if (!!owners) {
+      if (owners && owners.length > 0) {
         for (const owner of owners) {
-          const user = await firebase
-            .functions()
-            .httpsCallable("venue-getOwnerData")({ userId: owner });
+          const user = await firebase.functions().httpsCallable('venue-getOwnerData')({ userId: owner });
+
           const userData = user.data;
 
           if (ownersRef.current.filter((i: Owner) => i.id !== owner)) {
             newOwners.push({
               id: owner,
-              ...userData,
-            });
+              ...userData
+            })
           }
         }
 
@@ -103,79 +98,13 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         }
       }
     }
+    getOwnersData();
+  }, [owners, ownersData])
 
-    try {
-      getOwnersData();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [owners, ownersData]);
 
   if (!user) return null;
 
   const toggleRoomModal = () => setModalOpen(!modalOpen);
-
-  const handleShowGridToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const venueData = {
-      ...venue,
-      showGrid: e.target.checked,
-    };
-
-    updateVenue_v2(venueData, user);
-  };
-
-  const handleRoomVisibilityChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const venueData = {
-      name,
-      roomVisibility: e.target.value,
-    };
-
-    updateVenue_v2(venueData, user);
-  };
-
-  const renderShowGrid = () => (
-    <S.InputContainer>
-      <S.GridSwitchWrapper>
-        <h4>Show grid</h4>
-
-        <ToggleSwitch
-          name="showGrid"
-          isChecked={showGrid}
-          onChange={handleShowGridToggle}
-        />
-      </S.GridSwitchWrapper>
-
-      {showGrid && (
-        <S.GridInputWrapper>
-          <label htmlFor="grid_columns">Number of columns:</label>
-          <input
-            name="columns"
-            id="grid_columns"
-            placeholder="Number of grid columns"
-            type="number"
-          />
-        </S.GridInputWrapper>
-      )}
-    </S.InputContainer>
-  );
-
-  const renderRoomVisibility = () => (
-    <Form style={{ width: "50%", margin: "1rem 0 0" }}>
-      <Form.Group controlId="roomVisibilityControlGroup">
-        <Form.Label>
-          Choose how you&apos;d like your rooms to appear on the map
-        </Form.Label>
-
-        <Form.Control as="select" custom onChange={handleRoomVisibilityChange}>
-          <option value="hover">Hover</option>
-          <option value="count">Count</option>
-          <option value="count/name">Count and names</option>
-        </Form.Control>
-      </Form.Group>
-    </Form>
-  );
 
   const handleEditRoom = (room: RoomData_v2, index: number) => {
     setEditingRoom({
@@ -279,9 +208,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
             ))}
           </S.RoomWrapper>
         )}
-
-        {!!mapBackgroundImageUrl && renderShowGrid()}
-        {!!mapBackgroundImageUrl && renderRoomVisibility()}
       </S.Main>
 
       <RoomModal
