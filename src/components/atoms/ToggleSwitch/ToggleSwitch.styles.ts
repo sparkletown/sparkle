@@ -1,30 +1,47 @@
 import styled, { css } from "styled-components";
 
-export const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
 export const Label = styled.label`
   display: inline-block;
-  width: 6rem;
-  height: 2.5rem;
   margin: 0 1rem;
 
   position: relative;
 `;
 
+type WrapperProps = {
+  large?: boolean;
+};
+const defaultToggle = css`
+  ${Label} {
+    width: 40px;
+    height: 23px;
+  }
+`;
+const largeToggle = css`
+  ${Label} {
+    width: 6rem;
+    height: 2.5rem;
+  }
+`;
+export const Wrapper = styled.div<WrapperProps>`
+  display: flex;
+  align-items: center;
+
+  ${({ large }) => (large ? largeToggle : defaultToggle)};
+`;
+
 type SliderType = {
   checked: boolean;
+  large?: boolean;
 };
 const defaultSlider = css`
   background-color: #f6e652;
 `;
-const checkedSlider = css`
+const checkedSlider = css<SliderType>`
   background-color: #4bcc4b;
 
   &::before {
-    transform: translateX(3.5rem)
+    transform: ${({ large }) =>
+      large ? "translateX(3.5rem)" : "translateX(17px)"};
   }
 `;
 export const Slider = styled.span`
@@ -45,8 +62,10 @@ export const Slider = styled.span`
   &::before {
     content: "";
 
-    width: 2.1rem;
-    height: 2.1rem;
+    width: ${({ large }) =>
+      large ? "2.1rem" : "17px"};
+    height: ${({ large }) =>
+      large ? "2.1rem" : "17px"};
 
     position: absolute;
     bottom: 3px;

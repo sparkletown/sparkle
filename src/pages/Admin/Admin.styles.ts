@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Wrapper as ToggleSwitch } from 'components/atoms/ToggleSwitch/ToggleSwitch.styles';
+import styled from "styled-components";
+import { Wrapper as ToggleSwitch } from "components/atoms/ToggleSwitch/ToggleSwitch.styles";
 
 export const Wrapper = styled.div`
   display: grid;
@@ -40,13 +40,16 @@ export const ItemWrapper = styled.div`
   }
 `;
 
-export const ItemHeader = styled.header`
+export const ItemHeader = styled.header``;
+
+export const TitleWrapper = styled.div`
   display: flex;
+  width: 100%;
   align-items: center;
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     background-color: ${(props) => props.theme.colors.white};
     height: 1px;
   }
@@ -62,6 +65,13 @@ export const ItemHeader = styled.header`
 
 export const ItemTitle = styled.h2`
   margin: 0 1rem;
+`;
+
+export const ItemSubtitle = styled.h3`
+  margin: 1em 0;
+
+  font-size: 1.2rem;
+  font-weight: normal;
 `;
 
 export const ItemBody = styled.div`

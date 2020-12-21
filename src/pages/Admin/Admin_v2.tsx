@@ -97,7 +97,7 @@ const Admin_v2: React.FC = () => {
         return <BasicInfo />;
 
       case SidebarOptions.entranceExperience:
-        return <EntranceExperience venue={selectedVenue as Venue_v2} />;
+        return <EntranceExperience venue={selectedVenue as Venue_v2} onSave={() => setSelectedOption(sidebarOptions[0].id)} />;
 
       case SidebarOptions.advancedMapSettings:
         return <AdvancedSettings venue={selectedVenue as Venue_v2} />;
