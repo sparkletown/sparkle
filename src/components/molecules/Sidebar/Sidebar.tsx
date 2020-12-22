@@ -32,7 +32,7 @@ const Sidebar = () => {
 
   const isEnabled = chatUsers;
 
-  const currentVenueChatTitle = venue.chatTitle ?? "Party";
+  const currentVenueChatTitle = venue?.chatTitle ?? "Party";
   const chatTitle = parentVenue?.chatTitle ?? currentVenueChatTitle;
 
   const selectPartyChatTab = useCallback(() => {

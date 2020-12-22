@@ -50,6 +50,7 @@ const AvatarGrid = () => {
 
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
+      if (!venue) return;
       openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]

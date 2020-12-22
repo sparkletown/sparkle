@@ -29,7 +29,7 @@ const VenueChat: FC = () => {
   const { userRoles } = useRoles();
   const { user } = useUser();
 
-  const chats = useSelector(venueChatsSelector);
+  const chats = useSelector(venueChatsSelector) ?? [];
   const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);

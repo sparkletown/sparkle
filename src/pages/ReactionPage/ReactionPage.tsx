@@ -14,9 +14,12 @@ const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = usePartygoers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats = useSelector((state) =>
-    state.firestore.ordered.venueChats?.filter((chat) => chat.deleted !== true)
-  );
+  const chats =
+    useSelector((state) =>
+      state.firestore.ordered.venueChats?.filter(
+        (chat) => chat.deleted !== true
+      )
+    ) ?? [];
 
   const hasPartygoers = useMemo(() => !!partygoers.length, [partygoers]);
 

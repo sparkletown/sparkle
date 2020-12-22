@@ -40,9 +40,9 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<WithId<AnyVenue>> = (
-  state
-) => state.firestore.ordered.currentVenue?.[0];
+export const currentVenueSelector: SparkleSelector<
+  WithId<AnyVenue> | undefined
+> = (state) => state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
@@ -92,11 +92,11 @@ export const makeVenueSelector = (venueId: string) => (
 };
 
 export const currentEventSelector: SparkleSelector<
-  WithId<VenueEvent>[]
+  WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");
 
 export const userPurchaseHistorySelector: SparkleSelector<
-  WithId<Purchase>[]
+  WithId<Purchase>[] | undefined
 > = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
