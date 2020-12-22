@@ -583,16 +583,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
-  const updated = doc.data();
 
-  if (data.bannerImageUrl || data.subtitle || data.description) {
-    if (!updated.config) {
-      updated.config = {};
-    }
-    if (!updated.config.landingPageConfig) {
-      updated.config.landingPageConfig = {};
-    }
-  }
+  const updated = doc.data();
 
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
@@ -609,12 +601,14 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     }
     updated.theme.primaryColor = data.primaryColor;
   }
+
   if (data.logoImageUrl) {
     if (!updated.host) {
       updated.host = {};
     }
     updated.host.icon = data.logoImageUrl;
   }
+
   if (data.parentId) {
     updated.parentId = data.parentId;
   }
@@ -681,6 +675,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   if (data.chatTitle) {
     updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.bannerMessage) {
+    updated.bannerMessage = data.bannerMessage;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);

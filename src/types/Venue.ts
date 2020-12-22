@@ -117,9 +117,13 @@ export interface Venue_v2_EntranceConfig {
   entrance?: EntranceStepConfig[];
 }
 
-export interface Venue_v2
-  extends Venue_v2_AdvancedConfig,
-    Venue_v2_EntranceConfig {
+export interface Venue_v2_BasicInfo {
+  bannerMessage?: string;
+  attendeesTitle?: string;
+  chatTitle?: string;
+}
+
+export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
@@ -140,6 +144,12 @@ export interface Venue_v2
   rooms?: AnyRoom[];
   mapBackgroundImageUrl?: string;
 }
+
+export interface Venue_v2
+  extends Venue_v2_Base,
+    Venue_v2_AdvancedConfig,
+    Venue_v2_EntranceConfig,
+    Venue_v2_BasicInfo {}
 export interface VenueConfig {
   theme: {
     primaryColor: string;

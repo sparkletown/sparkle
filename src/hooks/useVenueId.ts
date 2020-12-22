@@ -5,27 +5,25 @@ type VenueRoute = {
 };
 
 // Sometimes in a nested route we want venue ID
+const venuePaths = [
+  "/e/:step/:venueId",
+  "/in/:venueId",
+  "/v/:venueId",
+  "/admin/venue/:venueId",
+  "/admin_v2/:venueId",
+  "/admin_v2/edit/:venueId",
+];
 export const useVenueId: () => string | undefined = () => {
   const history = useHistory();
-  let match = matchPath<VenueRoute>(history.location.pathname, {
-    path: "/e/:step/:venueId",
-  });
 
-  if (match && match.params.venueId) {
-    return match.params.venueId;
+  for (const path of venuePaths) {
+    const match = matchPath<VenueRoute>(history.location.pathname, {
+      path,
+      exact: true,
+    });
+
+    if (match && match.params.venueId) {
+      return match.params.venueId;
+    }
   }
-
-  match = matchPath<VenueRoute>(history.location.pathname, {
-    path: "/in/:venueId",
-  });
-
-  if (match && match.params.venueId) {
-    return match.params.venueId;
-  }
-
-  match = matchPath(history.location.pathname, {
-    path: "/v/:venueId",
-  });
-
-  return match?.params?.venueId;
 };
