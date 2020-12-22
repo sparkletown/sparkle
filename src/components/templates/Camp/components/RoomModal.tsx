@@ -6,7 +6,11 @@ import { CampRoomData } from "types/CampRoomData";
 
 import { getCurrentEvent } from "utils/event";
 import { enterLocation } from "utils/useLocationUpdateEffect";
-import { currentVenueSelector, orderedVenuesSelector } from "utils/selectors";
+import {
+  currentVenueSelector,
+  orderedVenuesSelector,
+  venueEventsSelector,
+} from "utils/selectors";
 import {
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
@@ -41,9 +45,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
-  );
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
   const users = usePartygoers();
   const venueName = venue?.name;
   const roomTitle = room?.title;
@@ -73,7 +75,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
       enterLocation(
         user,
         {
-          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
+          [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
           ...venueRoom,
         },
         profile?.lastSeenIn

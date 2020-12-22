@@ -193,6 +193,7 @@ const VenuePage: React.FC = () => {
   useEffect(() => {
     if (
       profile?.enteredVenueIds &&
+      venue?.id &&
       profile?.enteredVenueIds.includes(venue?.id)
     )
       return;
