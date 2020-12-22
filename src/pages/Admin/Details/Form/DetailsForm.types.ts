@@ -10,6 +10,7 @@ export interface FormValues extends WizardState {
 
 export interface DetailsFormProps {
   previous: TVenueWizard["previous"];
-  dispatch: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dispatch: any;
   editData?: WizardState;
 }
