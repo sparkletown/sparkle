@@ -41,44 +41,44 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  adminRole: AdminRole;
-  allowAllRoles: Record<string, Role>;
+  adminRole?: AdminRole;
+  allowAllRoles?: Record<string, Role>;
   chatUsers?: Record<string, User>;
-  currentEvent: Record<string, VenueEvent>;
+  currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  eventPurchase: Record<string, Purchase>;
+  eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experiences: Record<string, Experience>;
   parentVenue?: AnyVenue;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
-  privatechats: Record<string, PrivateChatMessage>;
-  reactions: Record<string, Reaction>;
+  privatechats?: Record<string, PrivateChatMessage>;
+  reactions?: Record<string, Reaction>;
   userModalVisits?: Record<string, UserVisit>;
-  userPurchaseHistory: Record<string, Purchase>;
-  userRoles: Record<string, Role>;
-  users: Record<string, User>;
-  venueChats: Record<string, RestrictedChatMessage> | null;
-  venueEvents: Record<string, VenueEvent>;
+  userPurchaseHistory?: Record<string, Purchase>;
+  userRoles?: Record<string, Role>;
+  users?: Record<string, User>;
+  venueChats?: Record<string, RestrictedChatMessage> | null;
+  venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
   chatRequests?: Array<WithId<ChatRequest>>;
-  currentEvent: Array<WithId<VenueEvent>>;
-  currentVenue: Array<WithId<AnyVenue>>;
+  currentEvent?: Array<WithId<VenueEvent>>;
+  currentVenue?: Array<WithId<AnyVenue>>;
   currentVenueEventsNG?: Array<WithId<VenueEvent>>;
   currentVenueNG?: Array<WithId<AnyVenue>>;
-  eventPurchase: Array<WithId<Purchase>>;
+  eventPurchase?: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experiences: Array<WithId<Experience>>;
   parentVenue?: Array<WithId<AnyVenue>>;
   parentVenueEvents?: Array<WithId<VenueEvent>>;
   playaVenues?: Array<WithId<AnyVenue>>;
   privatechats?: Array<WithId<PrivateChatMessage>>;
-  reactions: Array<WithId<Reaction>>;
+  reactions?: Array<WithId<Reaction>>;
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
   statsOnlineUsers?: Array<WithId<User>>;
@@ -86,9 +86,9 @@ export interface FirestoreOrdered {
   subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: Array<WithId<UserVisit>>;
-  userPurchaseHistory: Array<WithId<Purchase>>;
-  users: Array<WithId<User>>;
-  venueChats: Array<WithId<RestrictedChatMessage>>;
-  venueEvents: Array<WithId<VenueEvent>>;
+  userPurchaseHistory?: Array<WithId<Purchase>>;
+  users?: Array<WithId<User>>;
+  venueChats?: Array<WithId<RestrictedChatMessage>>;
+  venueEvents?: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
 }
