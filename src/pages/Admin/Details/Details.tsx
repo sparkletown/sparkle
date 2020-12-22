@@ -11,20 +11,10 @@ import { DetailsProps } from "./Details.types";
 import "../Venue/Venue.scss";
 import * as S from "./Details.styles";
 
-const Details: React.FC<DetailsProps> = ({
-  previous,
-  venueId,
-  dispatch,
-  data,
-}) => (
+const Details: React.FC<DetailsProps> = ({ previous, dispatch, data }) => (
   <S.DetailsContainer>
     <S.DetailsFormWrapper>
-      <DetailsForm
-        previous={previous}
-        editData={data}
-        dispatch={dispatch}
-        venueId={venueId}
-      />
+      <DetailsForm previous={previous} editData={data} dispatch={dispatch} />
     </S.DetailsFormWrapper>
 
     <S.PreviewWrapper>

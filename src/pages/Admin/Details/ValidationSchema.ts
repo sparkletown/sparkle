@@ -26,9 +26,6 @@ export interface SchemaShape {
 
   logoImageFile: FileList;
   logoImageUrl: string;
-
-  showGrid: boolean;
-  columns?: number;
 }
 
 const createFileSchema = (
@@ -112,16 +109,6 @@ export const validationSchema_v2 = Yup.object()
       then: createFileSchema("logoImageUrl", true, "Logo"),
     }),
     logoImageUrl: Yup.string().required("Logo is required!"),
-
-    showGrid: Yup.boolean().required(),
-    columns: Yup.number().when("showGrid", {
-      is: true,
-      then: Yup.number()
-        .required("Number of columns is required!")
-        .min(1)
-        .positive(),
-      otherwise: Yup.number(),
-    }),
   })
   .required();
 
