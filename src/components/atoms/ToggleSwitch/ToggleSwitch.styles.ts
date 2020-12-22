@@ -62,10 +62,8 @@ export const Slider = styled.span`
   &::before {
     content: "";
 
-    width: ${({ large }) =>
-      large ? "2.1rem" : "17px"};
-    height: ${({ large }) =>
-      large ? "2.1rem" : "17px"};
+    width: ${({ large }) => (large ? "2.1rem" : "17px")};
+    height: ${({ large }) => (large ? "2.1rem" : "17px")};
 
     position: absolute;
     bottom: 3px;

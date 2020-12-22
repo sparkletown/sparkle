@@ -12,7 +12,7 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
   isChecked = false,
   onChange,
   withText = false,
-  isLarge = false
+  isLarge = false,
 }) => {
   const [checked, setChecked] = useState<boolean>(isChecked);
 
@@ -35,10 +35,7 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
           checked={checked}
         />
 
-        <S.Slider
-        checked={checked}
-        large={isLarge}
-        />
+        <S.Slider checked={checked} large={isLarge} />
       </S.Label>
       {withText && <S.Text>ON</S.Text>}
     </S.Wrapper>
