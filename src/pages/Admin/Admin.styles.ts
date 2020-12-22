@@ -84,4 +84,8 @@ export const ItemBody = styled.div`
     flex: 1;
     margin-left: 5rem;
   }
+
+  input[type="text"] {
+    cursor: auto;
+  }
 `;

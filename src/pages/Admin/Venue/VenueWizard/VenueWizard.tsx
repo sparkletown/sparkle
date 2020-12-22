@@ -4,14 +4,12 @@ import React, { useReducer } from "react";
 import VenueWizardEdit from "./Edit";
 import VenueWizardCreate from "./Create";
 
-// Hooks
-import { useParams } from "react-router-dom";
-
 // Reducer
 import { VenueWizardReducer, initialState } from "./redux";
+import { useVenueId } from "hooks/useVenueId";
 
 const VenueWizard: React.FC = () => {
-  const { venueId } = useParams<{ venueId?: string | undefined }>();
+  const venueId = useVenueId();
   const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
   if (venueId)

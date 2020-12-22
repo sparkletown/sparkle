@@ -66,7 +66,7 @@ const sidebarOptions: SidebarOption[] = [
 ];
 
 const Admin_v2: React.FC = () => {
-  const [selectedOption, setSelectedOption] = useState(sidebarOptions[2].id);
+  const [selectedOption, setSelectedOption] = useState(sidebarOptions[0].id);
 
   const { user } = useUser();
   const venues = useSelector(orderedVenuesSelector);
@@ -91,16 +91,36 @@ const Admin_v2: React.FC = () => {
   const renderVenueView = () => {
     switch (selectedOption) {
       case SidebarOptions.dashboard:
-        return <VenueDetails venue={selectedVenue as Venue_v2} />; // Venue_v2 is incomplete with typing (lags behind latest Venue)
+        return (
+          <VenueDetails
+            venue={selectedVenue as Venue_v2}
+            onSave={() => setSelectedOption(sidebarOptions[0].id)}
+          />
+        ); // Venue_v2 is incomplete with typing (lags behind latest Venue)
 
       case SidebarOptions.basicInfo:
-        return <BasicInfo />;
+        return (
+          <BasicInfo
+            venue={selectedVenue as Venue_v2}
+            onSave={() => setSelectedOption(sidebarOptions[0].id)}
+          />
+        );
 
       case SidebarOptions.entranceExperience:
-        return <EntranceExperience venue={selectedVenue as Venue_v2} onSave={() => setSelectedOption(sidebarOptions[0].id)} />;
+        return (
+          <EntranceExperience
+            venue={selectedVenue as Venue_v2}
+            onSave={() => setSelectedOption(sidebarOptions[0].id)}
+          />
+        );
 
       case SidebarOptions.advancedMapSettings:
-        return <AdvancedSettings venue={selectedVenue as Venue_v2} />;
+        return (
+          <AdvancedSettings
+            venue={selectedVenue as Venue_v2}
+            onSave={() => setSelectedOption(sidebarOptions[0].id)}
+          />
+        );
 
       case SidebarOptions.ticketingAndAccess:
         return <TicketingAndAccess />;

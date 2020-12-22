@@ -10,7 +10,7 @@ import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
 
 // Hooks
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 // Typings
 import { VenueDetailsProps } from "./VenueDetails.types";
@@ -25,10 +25,11 @@ import { isEqual } from "lodash";
 import RoomDeleteModal from "../Rooms/RoomDeleteModal";
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 import { useUser } from "hooks/useUser";
+import { AnyRoom } from "types/Venue";
 
 type Owner = {
   id: string;
-  data: any;
+  data: unknown;
   partyName: string;
   pictureUrl: string;
 };
@@ -38,13 +39,7 @@ type EditRoomType = RoomData_v2 & {
 };
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const {
-    name,
-    owners,
-    id: venueId,
-    rooms,
-    mapBackgroundImageUrl,
-  } = venue;
+  const { name, owners, id: venueId, rooms, mapBackgroundImageUrl } = venue;
   const {
     subtitle,
     description,
@@ -62,8 +57,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showOwnersModal, setShowOwnersModal] = useState(false);
 
-  const history = useHistory();
-
   useFirestoreConnect([
     {
       collection: "venues",
@@ -77,19 +70,21 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const ownersRef = useRef([]);
 
   useEffect(() => {
-    const newOwners: Owner[] = []
+    const newOwners: Owner[] = [];
     async function getOwnersData() {
       if (owners && owners.length > 0) {
         for (const owner of owners) {
-          const user = await firebase.functions().httpsCallable('venue-getOwnerData')({ userId: owner });
+          const user = await firebase
+            .functions()
+            .httpsCallable("venue-getOwnerData")({ userId: owner });
 
           const userData = user.data;
 
           if (ownersRef.current.filter((i: Owner) => i.id !== owner)) {
             newOwners.push({
               id: owner,
-              ...userData
-            })
+              ...userData,
+            });
           }
         }
 
@@ -99,8 +94,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       }
     }
     getOwnersData();
-  }, [owners, ownersData])
-
+  }, [owners, ownersData]);
 
   if (!user) return null;
 
@@ -141,9 +135,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           description={description}
           large
           showEdit
-          editClickHandler={() =>
-            history.push(`/admin_v2/venue/edit/${venue.id}`)
-          }
+          venueId={venue.id!}
         />
 
         <S.HeaderActions>
@@ -196,7 +188,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
         {!!rooms && !!mapBackgroundImageUrl && (
           <S.RoomWrapper>
-            {rooms.map((room: any, index: number) => (
+            {rooms.map((room: AnyRoom, index: number) => (
               <RoomCard
                 key={room.title}
                 room={room}

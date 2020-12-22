@@ -51,7 +51,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
 
   return (
     <WithNavigationBar>
-      <Details venueId={venueId} data={state} dispatch={dispatch} />
+      <Details data={state} dispatch={dispatch} />
     </WithNavigationBar>
   );
 };
