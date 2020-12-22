@@ -5,7 +5,9 @@ import { DetailsPreviewProps } from "./VenueHero.types";
 
 // Styles
 import * as S from "./VenueHero.styles";
-import Button from "components/atoms/Button/Button";
+// import Button from "components/atoms/Button/Button";
+import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 const VenueHero: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
@@ -15,7 +17,7 @@ const VenueHero: React.FC<DetailsPreviewProps> = ({
   description,
   large = false,
   showEdit,
-  editClickHandler,
+  venueId,
 }) => {
   const renderLogo = () => <S.Logo backgroundImage={logoImageUrl} />;
 
@@ -29,7 +31,9 @@ const VenueHero: React.FC<DetailsPreviewProps> = ({
   const renderDescription = () => <S.Description>{description}</S.Description>;
 
   const renderEditButton = () => (
-    <Button onClick={() => editClickHandler!()}>Edit party info</Button>
+    <Button as={Link} to={`/admin_v2/edit/${venueId}`}>
+      Edit party info
+    </Button>
   );
 
   return (

@@ -1,5 +1,4 @@
 import styled, { css } from "styled-components";
-import { Button } from "components/atoms/Button/Button.styles";
 
 // -------------------- Outer Wrapper
 export const OuterWrapper = styled.div`
@@ -42,7 +41,7 @@ export const Container = styled.div<ContainerProps>`
   background-position: center;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.26);
 
-  ${Button} {
+  .btn {
     width: fit-content;
     padding: 0.5em 1em;
     align-self: flex-end;
