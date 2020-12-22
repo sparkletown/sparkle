@@ -35,29 +35,27 @@ import { validationSchema_v2 } from "../ValidationSchema";
 
 // Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
-import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 
 // Stylings
 import * as S from "./DetailsForm.styles";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
+import { useVenueId } from "hooks/useVenueId";
 
-const DetailsForm: React.FC<DetailsFormProps> = (props) => {
-  const { venueId, dispatch, editData } = props;
-
+const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
+  const venueId = useVenueId();
   const { user } = useUser();
 
   const onSubmit = useCallback(
-    async (vals: Partial<WizardState>) => {
+    async (vals: FormValues) => {
       if (!user) return;
+
       try {
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
-        vals.name
-          ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
-          : history.push(`/admin`);
+        history.push(`/admin_v2/${createUrlSafeName(vals.name!)}`);
       } catch (e) {
         console.error(e);
       }
@@ -79,7 +77,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
     validationContext: {
       editing: !!venueId,
     },
-    defaultValues: validationSchema_v2.cast(),
   });
 
   const values = watch();
@@ -105,10 +102,6 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
         { logoImageUrl: editData?.logoImageUrl },
         { showGrid: editData?.showGrid },
       ]);
-
-      if (values.columns === undefined) {
-        setValue([{ columns: editData?.columns }]);
-      }
     }
   }, [editData, setValue, values.columns, venueId]);
 
@@ -218,7 +211,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
   };
 
   return (
-    <S.Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
+    <Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
       <S.FormInnerWrapper>
         <input
           type="hidden"
@@ -248,7 +241,7 @@ const DetailsForm: React.FC<DetailsFormProps> = (props) => {
           {!!editData ? "Update Venue" : "Create Venue"}
         </Button>
       </S.FormFooter>
-    </S.Form>
+    </Form>
   );
 };
 

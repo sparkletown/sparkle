@@ -10,7 +10,6 @@ export interface FormValues extends WizardState {
 
 export interface DetailsFormProps {
   previous: TVenueWizard["previous"];
-  dispatch: any;
-  venueId?: string;
+  dispatch: unknown;
   editData?: WizardState;
 }
