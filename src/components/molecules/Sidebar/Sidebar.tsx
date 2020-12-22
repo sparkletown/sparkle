@@ -66,11 +66,12 @@ const Sidebar = () => {
 
         <div
           className={`sidebar-tab sidebar-tab_private ${
-            hasUnreadMessages && "notification"
-          } ${tab === TABS.PRIVATE_CHAT && "active"}`}
+            tab === TABS.PRIVATE_CHAT && "active"
+          }`}
           onClick={selectPrivateChatTab}
         >
-          Messages
+          {hasUnreadMessages && <div className="notification"></div>}
+          <span>Messages</span>
         </div>
 
         <div
