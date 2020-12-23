@@ -1,21 +1,17 @@
-import React, { useState } from "react";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
+import React from "react";
+
 import { CampVenue } from "types/CampVenue";
 
-interface PropsType {
+import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
+
+interface InfoDrawerProps {
   venue: CampVenue;
 }
 
-export const InfoDrawer: React.FunctionComponent<PropsType> = ({ venue }) => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-
+export const InfoDrawer: React.FC<InfoDrawerProps> = ({ venue }) => {
   return (
-    <InformationLeftColumn
-      venueLogoPath={venue?.host.icon ?? ""}
-      isLeftColumnExpanded={isLeftColumnExpanded}
-      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-    >
+    <InformationLeftColumn venueLogoPath={venue?.host.icon ?? ""}>
       <InformationCard title="About the venue">
         <p
           className="title-sidebar"

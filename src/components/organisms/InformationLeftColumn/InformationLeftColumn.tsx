@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,11 +11,12 @@ import {
 
 import "./InformationLeftColumn.scss";
 
+// TODO: only allow isColumnExanded and setColumnExpanded to be provided together, or not at all; not one or the other
 interface InformationLeftColumnProps {
   venueLogoPath: LogoMapTypes | string;
   children: React.ReactNode;
-  isLeftColumnExpanded: boolean;
-  setIsLeftColumnExpanded: React.Dispatch<React.SetStateAction<boolean>>;
+  isExpanded?: boolean;
+  setExpanded?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type LogoMapTypes = "ambulance" | "heart" | "create";
@@ -28,33 +29,38 @@ const logoMap = new Map([
 
 const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
   venueLogoPath,
+  isExpanded: _isExpanded,
+  setExpanded: _setExpanded,
   children,
-  isLeftColumnExpanded,
-  setIsLeftColumnExpanded,
 }) => {
-  const toggleColumnExpanded = useCallback(
-    () => setIsLeftColumnExpanded(!isLeftColumnExpanded),
-    [isLeftColumnExpanded, setIsLeftColumnExpanded]
-  );
+  const [_isExpandedInternal, _setExpandedInternal] = useState(false);
+
+  const isExpanded = _isExpanded ?? _isExpandedInternal;
+
+  const toggleExpanded = useCallback(() => {
+    const setExpanded = _setExpanded ?? _setExpandedInternal;
+
+    setExpanded((prev) => !prev);
+  }, [_setExpanded]);
 
   const leftColumnClasses = classNames("left-column", {
-    "expanded-donation": isLeftColumnExpanded && venueLogoPath === "heart",
-    "expanded-popup": isLeftColumnExpanded,
+    "expanded-donation": isExpanded && venueLogoPath === "heart",
+    "expanded-popup": isExpanded,
   });
 
   const chevronIconClasses = classNames("chevron-icon", {
-    turned: isLeftColumnExpanded,
+    turned: isExpanded,
   });
 
   const venueLogoClasses = classNames("band-logo", {
-    "expanded-popup": isLeftColumnExpanded,
+    "expanded-popup": isExpanded,
   });
 
   const iconPath = logoMap.get(venueLogoPath);
 
   return (
     <div className="information-left-column-container">
-      <div className={leftColumnClasses} onClick={toggleColumnExpanded}>
+      <div className={leftColumnClasses} onClick={toggleExpanded}>
         <div className="chevron-icon-container">
           <div className={chevronIconClasses}>
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
@@ -75,7 +81,7 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
           />
         )}
 
-        {isLeftColumnExpanded && <>{children}</>}
+        {isExpanded && <>{children}</>}
       </div>
     </div>
   );

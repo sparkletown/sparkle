@@ -25,7 +25,6 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const users = useSelector(partygoersSelector);
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [nowMs, setNowMs] = useState(Date.now());
 
@@ -47,11 +46,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   return (
     <>
-      <InformationLeftColumn
-        venueLogoPath={venue?.host?.icon ?? ""}
-        isLeftColumnExpanded={isLeftColumnExpanded}
-        setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-      >
+      <InformationLeftColumn venueLogoPath={venue?.host?.icon ?? ""}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>

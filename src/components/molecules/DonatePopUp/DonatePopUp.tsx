@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
-import "./DonatePopUp.scss";
+
 import {
   BURNING_MAN_DONATION_SITE,
   BURNING_MAN_DONATION_TEXT,
   BURNING_MAN_DONATION_TITLE,
-} from "../../../../src/settings";
+} from "settings";
+
+import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
+
+import "./DonatePopUp.scss";
 
 export const DonatePopUp = () => {
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
 
   return (
     <InformationLeftColumn
-      venueLogoPath={"heart"}
-      isLeftColumnExpanded={isLeftColumnExpanded}
-      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
+      venueLogoPath="heart"
+      isExpanded={isLeftColumnExpanded}
+      setExpanded={setIsLeftColumnExpanded}
     >
       <InformationCard title={BURNING_MAN_DONATION_TITLE}>
         <p className="title-sidebar" style={{ fontSize: 15 }}>

@@ -18,7 +18,6 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
@@ -33,11 +32,7 @@ export const ArtPiece = () => {
     <WithNavigationBar>
       <BannerMessage venue={venue} />
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn
-          venueLogoPath={venue?.host?.icon ?? ""}
-          isLeftColumnExpanded={isLeftColumnExpanded}
-          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-        >
+        <InformationLeftColumn venueLogoPath={venue?.host?.icon ?? ""}>
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}</p>
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
@@ -57,7 +52,7 @@ export const ArtPiece = () => {
               frameBorder="0"
               allow={IFRAME_ALLOW}
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <div className="video-chat-wrapper">
             <Room
