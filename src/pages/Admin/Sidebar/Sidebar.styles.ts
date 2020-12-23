@@ -5,7 +5,6 @@ export const Wrapper = styled.div`
   height: 100vh;
   padding: 0.5rem 0.5rem 2rem;
   flex-direction: column;
-  justify-content: space-between;
 
   position: sticky;
   top: 0;
@@ -14,6 +13,8 @@ export const Wrapper = styled.div`
 `;
 
 export const InnerWrapper = styled.div`
+  margin-top: 2rem;
+
   .nav-link {
     text-decoration: none;
     &.active {

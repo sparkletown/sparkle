@@ -453,13 +453,7 @@ export const updateRoom = async (
   return await firebase.functions().httpsCallable("venue-upsertRoom")({
     venueId,
     roomIndex,
-    room: {
-      ...firestoreVenueInput,
-      x_percent: input.x_percent,
-      y_percent: input.y_percent,
-      width_percent: input.width_percent,
-      height_percent: input.height_percent,
-    },
+    room: firestoreVenueInput,
   });
 };
 
@@ -478,6 +472,8 @@ export const createRoom = async (
     venueId,
     room: {
       ...firestoreVenueInput,
+      // Initial positions and size
+      // TODO: As an alternative to the center positioning, maybe have a Math.random() to place rooms at random
       x_percent: 50,
       y_percent: 50,
       width_percent: 5,

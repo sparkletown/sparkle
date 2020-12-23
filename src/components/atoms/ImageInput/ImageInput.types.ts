@@ -1,7 +1,7 @@
 import { FieldError } from "react-hook-form";
 
 export interface ImageInputProps {
-  onChange: (url: string) => void;
+  onChange?: (url: string) => void;
   name: string;
   customClass?: string;
   imgUrl?: string;

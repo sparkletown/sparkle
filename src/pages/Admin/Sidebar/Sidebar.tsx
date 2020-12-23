@@ -31,6 +31,10 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <S.Wrapper>
+      <Button as={Link} to="/admin_v2/venue/creation">
+        Create new venue
+      </Button>
+
       <S.InnerWrapper>
         <Form.Control
           as="select"
@@ -69,10 +73,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           </Nav>
         )}
       </S.InnerWrapper>
-
-      <Button as={Link} to="/admin_v2/venue/creation">
-        Create new venue
-      </Button>
     </S.Wrapper>
   );
 };

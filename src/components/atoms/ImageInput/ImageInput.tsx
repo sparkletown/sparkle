@@ -1,14 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { GIF_RESIZER_URL, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
 
 // Typings
 import { ImageInputProps } from "./ImageInput.types";
 
 // Styles
-import * as S from "./ImageInputProps.styles";
+import * as S from "./ImageInput.styles";
 
 const ImageInput: React.FC<ImageInputProps> = ({
-  onChange,
+  onChange = () => {},
   customClass,
   name,
   imgUrl,
@@ -17,7 +17,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   forwardRef,
   nameWithUnderscore = false,
 }) => {
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState(imgUrl);
   const [imageSizeError, setImageSizeError] = useState(false);
 
   const handleOnChange = (files: FileList | null) => {
@@ -38,16 +38,6 @@ const ImageInput: React.FC<ImageInputProps> = ({
   const imageError =
     error?.message ||
     `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`;
-
-  const initialRender = useRef<boolean>(true);
-
-  useEffect(() => {
-    if (initialRender && imgUrl) setImageUrl(imgUrl);
-  }, [imgUrl]);
-
-  useEffect(() => {
-    initialRender.current = false;
-  }, []);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;

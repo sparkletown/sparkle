@@ -16,10 +16,11 @@ export const Container = styled.div`
 
 export const Header = styled.header`
   display: grid;
-  grid-template-columns: 70% 30%;
+  grid-template-columns: repeat(10, 1fr);
   grid-column-gap: 2rem;
 
   ${VenueHeroContainer} {
+    grid-column: 1 / span 7;
     position: relative;
 
     border-radius: 0;
@@ -30,6 +31,7 @@ export const Header = styled.header`
 export const HeaderActions = styled.div`
   display: flex;
   padding-top: 1rem;
+  grid-column: 8 / end;
   flex-direction: column;
 
   ${Button} {
@@ -40,7 +42,6 @@ export const HeaderActions = styled.div`
 // -------------------- MAIN CONTENT
 export const Main = styled.main`
   display: flex;
-  padding: 0 0 4em 4.4em;
   margin-top: 2rem;
   flex-wrap: wrap;
   justify-content: space-between;

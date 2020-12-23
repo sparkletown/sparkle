@@ -118,6 +118,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({
                 style={{
                   width: "100%",
                   height: "100%",
+                  filter: room.isEnabled ? "none" : "grayscale(100%)",
+                  transition: "filter .3s ease",
                 }}
                 src={room.image_url}
                 alt="room banner"

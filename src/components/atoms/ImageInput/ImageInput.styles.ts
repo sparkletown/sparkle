@@ -3,7 +3,7 @@ import styled, { css } from "styled-components";
 type UploadButtonType = {
   isHidden?: boolean;
 };
-const defaultButton = css`
+const defaultButtonStyles = css`
   background-color: #462a87;
 
   cursor: pointer;
@@ -15,14 +15,13 @@ const defaultButton = css`
     background-color: rgba(55, 90, 127, 0.18);
   }
 `;
-const hiddenButton = css`
+const hiddenButtonStyles = css`
   background-color: transparent;
   color: transparent;
   cursor: default;
 `;
-export const UploadButton = styled.span`
-  ${(props: UploadButtonType) =>
-    props.isHidden ? hiddenButton : defaultButton};
+export const UploadButton = styled.span<UploadButtonType>`
+  ${({ isHidden }) => (isHidden ? hiddenButtonStyles : defaultButtonStyles)};
 
   padding: 0.7em 4.2em;
   margin: 0;
@@ -40,7 +39,7 @@ type WrapperType = {
   backgroundImage?: string;
 };
 
-const smallWrapper = css`
+const smallWrapperStyles = css`
   display: inline-block;
   padding: 2.5em;
 
@@ -48,12 +47,12 @@ const smallWrapper = css`
     padding: 0.7em 2em;
   }
 `;
-const defaultWrapper = css`
+const defaultWrapperStyles = css`
   display: flex;
   padding: 2.5em 0;
 `;
-export const Wrapper = styled.div`
-  ${(props: WrapperType) => (props.small ? smallWrapper : defaultWrapper)};
+export const Wrapper = styled.div<WrapperType>`
+  ${({ small }) => (small ? smallWrapperStyles : defaultWrapperStyles)};
 
   align-items: center;
   justify-content: center;
@@ -63,8 +62,8 @@ export const Wrapper = styled.div`
 
   background-size: cover;
   background-color: #1a1d24;
-  background-image: ${(props) =>
-    props.backgroundImage ? `url(${props.backgroundImage})` : "none"};
+  background-image: ${({ backgroundImage }) =>
+    backgroundImage ? `url(${backgroundImage})` : "none"};
   background-position: center;
 
   cursor: pointer;

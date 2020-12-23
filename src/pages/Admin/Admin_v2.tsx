@@ -26,6 +26,7 @@ import AdvancedSettings from "./AdvancedSettings";
 // import TicketingAndAccess from "./TicketingAndAccess";
 
 import * as S from "./Admin.styles";
+import BasicInfo from "./BasicInfo";
 
 dayjs.extend(advancedFormat);
 
@@ -49,7 +50,6 @@ const sidebarOptions: SidebarOption[] = [
   {
     id: SidebarOptions.basicInfo,
     text: "Basic info",
-    redirectTo: "/admin_v2/edit",
   },
   {
     id: SidebarOptions.entranceExperience,
@@ -99,6 +99,14 @@ const Admin_v2: React.FC = () => {
             onSave={() => setSelectedOption(sidebarOptions[0].id)}
           />
         ); // Venue_v2 is incomplete with typing (lags behind latest Venue)
+
+      case SidebarOptions.basicInfo:
+        return (
+          <BasicInfo
+            venue={selectedVenue as Venue_v2}
+            onSave={() => setSelectedOption(sidebarOptions[0].id)}
+          />
+        );
 
       case SidebarOptions.entranceExperience:
         return (
