@@ -12,11 +12,19 @@ import {
 import "./InformationLeftColumn.scss";
 
 interface InformationLeftColumnProps {
-  venueLogoPath: string;
+  venueLogoPath: LogoMapTypes | string;
   children: React.ReactNode;
   isLeftColumnExpanded: boolean;
   setIsLeftColumnExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+type LogoMapTypes = "ambulance" | "heart" | "create";
+
+const logoMap = new Map([
+  ["ambulance", faAmbulance],
+  ["heart", faHeart],
+  ["create", faEdit],
+]);
 
 const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
   venueLogoPath,
@@ -33,6 +41,8 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
     "expanded-popup": isLeftColumnExpanded,
   });
 
+  const iconPath = logoMap.get(venueLogoPath);
+
   return (
     <div className="information-left-column-container">
       <div
@@ -46,29 +56,18 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
           </div>
         </div>
-        {venueLogoPath === "ambulance" ? (
+
+        {iconPath !== undefined ? (
           <FontAwesomeIcon
-            icon={faAmbulance}
-            size="2x"
             className={venueLogoClasses}
-          />
-        ) : venueLogoPath === "heart" ? (
-          <FontAwesomeIcon
-            icon={faHeart}
+            icon={iconPath}
             size="2x"
-            className={venueLogoClasses}
-          />
-        ) : venueLogoPath === "create" ? (
-          <FontAwesomeIcon
-            icon={faEdit}
-            size="2x"
-            className={venueLogoClasses}
           />
         ) : (
           <img
+            className={venueLogoClasses}
             src={venueLogoPath}
             alt="experience-logo"
-            className={venueLogoClasses}
           />
         )}
 
