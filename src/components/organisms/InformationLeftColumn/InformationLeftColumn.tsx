@@ -1,5 +1,5 @@
 import React from "react";
-import "./InformationLeftColumn.scss";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAmbulance,
@@ -8,14 +8,16 @@ import {
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
-interface PropsType {
+import "./InformationLeftColumn.scss";
+
+interface InformationLeftColumnProps {
   venueLogoPath: string;
   children: React.ReactNode;
   isLeftColumnExpanded: boolean;
   setIsLeftColumnExpanded: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
+const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
   venueLogoPath,
   children,
   isLeftColumnExpanded,
@@ -32,7 +34,6 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             : "expanded-popup"
         }`}
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
-        id="expand-venue-information"
       >
         <div className="chevron-icon-container">
           <div
@@ -74,6 +75,7 @@ const InformationLeftColumn: React.FunctionComponent<PropsType> = ({
             }`}
           />
         )}
+
         {isLeftColumnExpanded && <>{children}</>}
       </div>
     </div>
