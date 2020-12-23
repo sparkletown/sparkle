@@ -17,7 +17,7 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
     const baseName = `${fieldName}[${index}]`;
     const buttonText = `${baseName}text`;
     const buttonHref = `${baseName}href`;
-    const buttonIsProceed = `${baseName}isProceed`
+    const buttonIsProceed = `${baseName}isProceed`;
 
     return (
       <div className="dynamic-input-wrapper" key={`${fieldName}_${index}`}>
@@ -28,7 +28,13 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
           <Form.Label>Link</Form.Label>
           <Form.Control ref={register} name={buttonHref} custom />
 
-          <Form.Check label="To venue" ref={register} name={buttonIsProceed} custom id={buttonIsProceed} />
+          <Form.Check
+            label="To venue"
+            ref={register}
+            name={buttonIsProceed}
+            custom
+            id={buttonIsProceed}
+          />
         </fieldset>
 
         <Button onClick={remove(index)} variant="secondary">
@@ -65,7 +71,7 @@ interface EntranceInputProps {
 const EntranceInput: React.FC<EntranceInputProps> = ({
   fieldName,
   register,
-  showTitle = true
+  showTitle = true,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput();
 
