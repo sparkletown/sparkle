@@ -100,6 +100,9 @@ export interface Venue {
 
 // --- VENUE V2
 export interface Venue_v2_AdvancedConfig {
+  attendeesTitle?: string;
+  bannerMessage?: string;
+  chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
@@ -107,20 +110,14 @@ export interface Venue_v2_AdvancedConfig {
   showBadges?: boolean;
   showGrid?: boolean;
   showRadio?: boolean;
-  showZendesk?: boolean;
   showRangers?: boolean;
+  showZendesk?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
   profile_questions?: Array<Question>;
   code_of_conduct_questions?: Array<Question>;
   entrance?: EntranceStepConfig[];
-}
-
-export interface Venue_v2_BasicInfo {
-  bannerMessage?: string;
-  attendeesTitle?: string;
-  chatTitle?: string;
 }
 
 export interface Venue_v2_Base {
@@ -148,8 +145,7 @@ export interface Venue_v2_Base {
 export interface Venue_v2
   extends Venue_v2_Base,
     Venue_v2_AdvancedConfig,
-    Venue_v2_EntranceConfig,
-    Venue_v2_BasicInfo {}
+    Venue_v2_EntranceConfig {}
 
 export interface VenueConfig {
   theme: {

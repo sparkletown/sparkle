@@ -21,7 +21,6 @@ import AdminSidebar from "./Sidebar/Sidebar";
 import { useVenueId } from "hooks/useVenueId";
 import { orderedVenuesSelector } from "utils/selectors";
 import { useAdminVenues } from "hooks/useAdminVenues";
-import BasicInfo from "./BasicInfo";
 import EntranceExperience from "./EntranceExperience";
 import AdvancedSettings from "./AdvancedSettings";
 // import TicketingAndAccess from "./TicketingAndAccess";
@@ -100,14 +99,6 @@ const Admin_v2: React.FC = () => {
             onSave={() => setSelectedOption(sidebarOptions[0].id)}
           />
         ); // Venue_v2 is incomplete with typing (lags behind latest Venue)
-
-      case SidebarOptions.basicInfo:
-        return (
-          <BasicInfo
-            venue={selectedVenue as Venue_v2}
-            onSave={() => setSelectedOption(sidebarOptions[0].id)}
-          />
-        );
 
       case SidebarOptions.entranceExperience:
         return (

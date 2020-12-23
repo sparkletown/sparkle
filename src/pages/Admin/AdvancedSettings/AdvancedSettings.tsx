@@ -93,6 +93,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({ venue }) => {
       showRadio: venue.showRadio,
       showZendesk: venue.showZendesk,
       showRangers: venue.showRangers,
+      bannerMessage: venue.bannerMessage,
+      attendeesTitle: venue.attendeesTitle,
+      chatTitle: venue.chatTitle,
     },
   });
 
@@ -181,11 +184,91 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({ venue }) => {
     </S.ItemWrapper>
   );
 
+  const renderAnnouncementInput = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Venue announcement</S.ItemTitle>
+        </S.TitleWrapper>
+        <S.ItemSubtitle>
+          Show an announcement in the venue (or leave blank for none)
+        </S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control
+          name="bannerMessage"
+          placeholder="Enter your announcement"
+          ref={register}
+          custom
+          type="text"
+        />
+        {errors.bannerMessage && (
+          <span className="input-error">{errors.bannerMessage.message}</span>
+        )}
+      </S.ItemBody>
+    </S.ItemWrapper>
+  );
+
+  const renderAttendeesTitleInput = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Title of your venues attendees</S.ItemTitle>
+        </S.TitleWrapper>
+        <S.ItemSubtitle>
+          For example: guests, attendees, partygoers.
+        </S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control
+          name="attendeesTitle"
+          placeholder="Attendees title"
+          ref={register}
+          custom
+          type="text"
+        />
+        {errors.attendeesTitle && (
+          <span className="input-error">{errors.attendeesTitle.message}</span>
+        )}
+      </S.ItemBody>
+    </S.ItemWrapper>
+  );
+
+  const renderChatTitleInput = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Your venue chat label</S.ItemTitle>
+        </S.TitleWrapper>
+        <S.ItemSubtitle>For example: Party, Event, Meeting</S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control
+          name="chatTitle"
+          placeholder="Event label"
+          ref={register}
+          custom
+          type="text"
+        />
+        {errors.chatTitle && (
+          <span className="input-error">{errors.chatTitle.message}</span>
+        )}
+      </S.ItemBody>
+    </S.ItemWrapper>
+  );
+
   return (
     <div>
       <h1>Advanced settings</h1>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
+        {renderAnnouncementInput()}
+        {renderAttendeesTitleInput()}
+        {renderChatTitleInput()}
+
         {renderShowGridToggle()}
 
         <ToggleElement

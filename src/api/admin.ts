@@ -5,7 +5,6 @@ import {
   AnyRoom,
   VenuePlacement,
   Venue_v2_AdvancedConfig,
-  Venue_v2_BasicInfo,
   Venue_v2_EntranceConfig,
 } from "types/Venue";
 import { CampRoomData } from "types/CampRoomData";
@@ -105,8 +104,7 @@ export type VenueInput = AdvancedVenueInput &
 
 export interface VenueInput_v2
   extends Venue_v2_AdvancedConfig,
-    Venue_v2_EntranceConfig,
-    Venue_v2_BasicInfo {
+    Venue_v2_EntranceConfig {
   name: string;
   description?: string;
   subtitle?: string;
