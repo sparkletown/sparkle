@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ImageInput /> renders correctly 1`] = `
+Array [
+  <label
+    className="sc-gsTCUz gGtXOY"
+  >
+    <input
+      accept="image/x-png,image/gif,image/jpeg"
+      className=""
+      hidden={true}
+      id="imageInputName"
+      name="imageInputNameFile"
+      onChange={[Function]}
+      type="file"
+    />
+    <span
+      className="sc-bdfBwQ izHeuX"
+    >
+      Upload
+    </span>
+  </label>,
+  <input
+    name="imageInputNameUrl"
+    readOnly={true}
+    type="hidden"
+    value=""
+  />,
+]
+`;
