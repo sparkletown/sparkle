@@ -37,6 +37,10 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
     "expanded-popup": isLeftColumnExpanded,
   });
 
+  const chevronIconClasses = classNames("chevron-icon", {
+    turned: isLeftColumnExpanded,
+  });
+
   const venueLogoClasses = classNames("band-logo", {
     "expanded-popup": isLeftColumnExpanded,
   });
@@ -50,9 +54,7 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
         onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
       >
         <div className="chevron-icon-container">
-          <div
-            className={`chevron-icon ${isLeftColumnExpanded ? "turned" : ""}`}
-          >
+          <div className={chevronIconClasses}>
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
           </div>
         </div>
