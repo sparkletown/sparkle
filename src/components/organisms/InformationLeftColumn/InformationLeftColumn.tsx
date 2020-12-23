@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,6 +32,11 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
   isLeftColumnExpanded,
   setIsLeftColumnExpanded,
 }) => {
+  const toggleColumnExpanded = useCallback(
+    () => setIsLeftColumnExpanded(!isLeftColumnExpanded),
+    [isLeftColumnExpanded, setIsLeftColumnExpanded]
+  );
+
   const leftColumnClasses = classNames("left-column", {
     "expanded-donation": isLeftColumnExpanded && venueLogoPath === "heart",
     "expanded-popup": isLeftColumnExpanded,
@@ -49,10 +54,7 @@ const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
 
   return (
     <div className="information-left-column-container">
-      <div
-        className={leftColumnClasses}
-        onClick={() => setIsLeftColumnExpanded(!isLeftColumnExpanded)}
-      >
+      <div className={leftColumnClasses} onClick={toggleColumnExpanded}>
         <div className="chevron-icon-container">
           <div className={chevronIconClasses}>
             <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
