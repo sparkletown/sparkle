@@ -21,6 +21,7 @@ import { useUser } from "hooks/useUser";
 interface ToggleElementProps {
   title: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   forwardRef?: any;
   isChecked?: boolean;
 }

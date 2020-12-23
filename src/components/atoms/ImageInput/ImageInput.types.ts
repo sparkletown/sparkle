@@ -7,6 +7,7 @@ export interface ImageInputProps {
   imgUrl?: string;
   error?: FieldError;
   small?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   forwardRef: any;
   nameWithUnderscore?: boolean;
 }

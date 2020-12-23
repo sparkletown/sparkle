@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import firebase from "firebase";
+import firebase from "firebase/app";
 
 export const useFetchAssetImages = (path: string): string[] => {
   const [imagePaths, setImagePaths] = useState<string[]>([]);

@@ -9,6 +9,7 @@ interface QuestionInputProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title?: string;
   editing?: Question[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: any;
 }
 

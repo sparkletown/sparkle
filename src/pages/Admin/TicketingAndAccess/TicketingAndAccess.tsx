@@ -1,8 +1,6 @@
 import React from "react";
 
-// import * as S from './TicketingAndAccess.styles';
-
-const TicketingAndAccess: React.FC<any> = (props) => {
+const TicketingAndAccess: React.FC = () => {
   return <h1>TicketingAndAccess</h1>;
 };
 
