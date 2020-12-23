@@ -1,4 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, {
+  forwardRef,
+  Ref,
+  useCallback,
+  useImperativeHandle,
+  useState,
+} from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,8 +21,12 @@ import "./InformationLeftColumn.scss";
 interface InformationLeftColumnProps {
   venueLogoPath: LogoMapTypes | string;
   children: React.ReactNode;
-  isExpanded?: boolean;
-  setExpanded?: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface InformationLeftColumnControls {
+  isExpanded: boolean;
+  setExpanded: (isExpanded: boolean) => void;
+  toggleExpanded: () => void;
 }
 
 type LogoMapTypes = "ambulance" | "heart" | "create";
@@ -27,64 +37,67 @@ const logoMap = new Map([
   ["create", faEdit],
 ]);
 
-const InformationLeftColumn: React.FC<InformationLeftColumnProps> = ({
-  venueLogoPath,
-  isExpanded: _isExpanded,
-  setExpanded: _setExpanded,
-  children,
-}) => {
-  const [_isExpandedInternal, _setExpandedInternal] = useState(false);
+const InformationLeftColumn = forwardRef(
+  (
+    { venueLogoPath, children }: InformationLeftColumnProps,
+    controlsRef: Ref<InformationLeftColumnControls>
+  ) => {
+    const [isExpanded, setExpanded] = useState(false);
 
-  const isExpanded = _isExpanded ?? _isExpandedInternal;
+    const toggleExpanded = useCallback(() => {
+      setExpanded((prev) => !prev);
+    }, []);
 
-  const toggleExpanded = useCallback(() => {
-    const setExpanded = _setExpanded ?? _setExpandedInternal;
+    // Expose internal state/controls to parent components via ref
+    useImperativeHandle(controlsRef, () => ({
+      isExpanded,
+      setExpanded,
+      toggleExpanded,
+    }));
 
-    setExpanded((prev) => !prev);
-  }, [_setExpanded]);
+    const leftColumnClasses = classNames("left-column", {
+      "expanded-donation": isExpanded && venueLogoPath === "heart",
+      "expanded-popup": isExpanded,
+    });
 
-  const leftColumnClasses = classNames("left-column", {
-    "expanded-donation": isExpanded && venueLogoPath === "heart",
-    "expanded-popup": isExpanded,
-  });
+    const chevronIconClasses = classNames("chevron-icon", {
+      turned: isExpanded,
+    });
 
-  const chevronIconClasses = classNames("chevron-icon", {
-    turned: isExpanded,
-  });
+    const venueLogoClasses = classNames("band-logo", {
+      "expanded-popup": isExpanded,
+    });
 
-  const venueLogoClasses = classNames("band-logo", {
-    "expanded-popup": isExpanded,
-  });
+    const iconPath = logoMap.get(venueLogoPath);
 
-  const iconPath = logoMap.get(venueLogoPath);
-
-  return (
-    <div className="information-left-column-container">
-      <div className={leftColumnClasses} onClick={toggleExpanded}>
-        <div className="chevron-icon-container">
-          <div className={chevronIconClasses}>
-            <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
+    return (
+      <div className="information-left-column-container">
+        <div className={leftColumnClasses} onClick={toggleExpanded}>
+          <div className="chevron-icon-container">
+            <div className={chevronIconClasses}>
+              <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
+            </div>
           </div>
+
+          {iconPath !== undefined ? (
+            <FontAwesomeIcon
+              className={venueLogoClasses}
+              icon={iconPath}
+              size="2x"
+            />
+          ) : (
+            <img
+              className={venueLogoClasses}
+              src={venueLogoPath}
+              alt="experience-logo"
+            />
+          )}
+
+          {isExpanded && <>{children}</>}
         </div>
-
-        {iconPath !== undefined ? (
-          <FontAwesomeIcon
-            className={venueLogoClasses}
-            icon={iconPath}
-            size="2x"
-          />
-        ) : (
-          <img
-            className={venueLogoClasses}
-            src={venueLogoPath}
-            alt="experience-logo"
-          />
-        )}
-
-        {isExpanded && <>{children}</>}
       </div>
-    </div>
-  );
-};
+    );
+  }
+);
 
 export default InformationLeftColumn;

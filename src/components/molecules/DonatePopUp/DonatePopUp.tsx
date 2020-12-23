@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef } from "react";
 
 import {
   BURNING_MAN_DONATION_SITE,
@@ -7,23 +7,24 @@ import {
 } from "settings";
 
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumnControls } from "components/organisms/InformationLeftColumn/InformationLeftColumn";
+
 import InformationCard from "components/molecules/InformationCard";
 
 import "./DonatePopUp.scss";
 
 export const DonatePopUp = () => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+  const controlsRef = useRef<InformationLeftColumnControls>(null);
+
+  const { toggleExpanded } = controlsRef.current ?? {};
 
   return (
-    <InformationLeftColumn
-      venueLogoPath="heart"
-      isExpanded={isLeftColumnExpanded}
-      setExpanded={setIsLeftColumnExpanded}
-    >
+    <InformationLeftColumn ref={controlsRef} venueLogoPath="heart">
       <InformationCard title={BURNING_MAN_DONATION_TITLE}>
         <p className="title-sidebar" style={{ fontSize: 15 }}>
           {BURNING_MAN_DONATION_TEXT}
         </p>
+
         <div className="donate-container">
           <a
             className="btn btn-primary join-button"
@@ -34,11 +35,10 @@ export const DonatePopUp = () => {
           >
             Make a donation
           </a>
+
           <br />
-          <button
-            className="not-yet-button"
-            onClick={() => setIsLeftColumnExpanded((prev) => !prev)}
-          >
+
+          <button className="not-yet-button" onClick={toggleExpanded}>
             Not yet
           </button>
         </div>
