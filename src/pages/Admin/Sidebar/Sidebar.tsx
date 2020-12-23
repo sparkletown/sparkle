@@ -50,11 +50,22 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
         {initialVenue !== selectVenue && (
           <Nav activeKey={selected} onSelect={onClick}>
-            {sidebarOptions.map((option: SidebarOption) => (
-              <Nav.Item key={option.id}>
-                <Nav.Link eventKey={option.id}>{option.text}</Nav.Link>
-              </Nav.Item>
-            ))}
+            {sidebarOptions.map((option: SidebarOption) => {
+              if (option.redirectTo)
+                return (
+                  <Nav.Item key={option.id}>
+                    <Nav.Link href={`${option.redirectTo}/${venueId}`}>
+                      {option.text}
+                    </Nav.Link>
+                  </Nav.Item>
+                );
+
+              return (
+                <Nav.Item key={option.id}>
+                  <Nav.Link eventKey={option.id}>{option.text}</Nav.Link>
+                </Nav.Item>
+              );
+            })}
           </Nav>
         )}
       </S.InnerWrapper>

@@ -33,6 +33,7 @@ dayjs.extend(advancedFormat);
 export type SidebarOption = {
   id: string;
   text: string;
+  redirectTo?: string;
 };
 enum SidebarOptions {
   dashboard = "dashboard",
@@ -49,6 +50,7 @@ const sidebarOptions: SidebarOption[] = [
   {
     id: SidebarOptions.basicInfo,
     text: "Basic info",
+    redirectTo: "/admin_v2/edit",
   },
   {
     id: SidebarOptions.entranceExperience,
