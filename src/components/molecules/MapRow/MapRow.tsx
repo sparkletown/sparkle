@@ -24,7 +24,7 @@ interface MapRowProps {
   ) => void;
 }
 
-export const MapRow: React.FC<MapRowProps> = ({
+export const _MapRaw: React.FC<MapRowProps> = ({
   row,
   column,
   seatedPartygoer,
@@ -52,3 +52,5 @@ export const MapRow: React.FC<MapRowProps> = ({
     </div>
   );
 };
+
+export const MapRow = React.memo(_MapRaw);

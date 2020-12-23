@@ -9,8 +9,10 @@ import { MapRow } from "../../../molecules/MapRow";
 interface UseMapGrid {
   showGrid?: boolean;
   userUid?: string;
-  columnsArray: JSX.Element[];
-  rowsArray: JSX.Element[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  columnsArray: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rowsArray: any[];
   partygoersBySeat?: WithId<User>[][];
   onSeatClick: (
     row: number,
@@ -43,10 +45,9 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
 
             // TODO: our types imply that this shouldn't be able to be null, but it was..
             const isMe = seatedPartygoer?.id === userUid;
-
             return (
               <MapRow
-                key={`row${rowIndex}`}
+                key={`row${rowIndex}_col${colIndex}`}
                 row={row}
                 column={column}
                 showGrid={showGrid}

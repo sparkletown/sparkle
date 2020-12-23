@@ -35,7 +35,7 @@ export const useUsersById = () => {
 
 export const useVenueUsers = () => {
   const venueId = useVenueId();
-  const users = useSelector(usersSelector);
+  const users = usePartygoers();
 
   return useMemo(
     () =>
