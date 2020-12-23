@@ -24,7 +24,7 @@ import { useAdminVenues } from "hooks/useAdminVenues";
 import BasicInfo from "./BasicInfo";
 import EntranceExperience from "./EntranceExperience";
 import AdvancedSettings from "./AdvancedSettings";
-import TicketingAndAccess from "./TicketingAndAccess";
+// import TicketingAndAccess from "./TicketingAndAccess";
 
 import * as S from "./Admin.styles";
 
@@ -58,10 +58,11 @@ const sidebarOptions: SidebarOption[] = [
     id: SidebarOptions.advancedMapSettings,
     text: "Advanced map settings",
   },
-  {
-    id: SidebarOptions.ticketingAndAccess,
-    text: "Ticketing and access",
-  },
+  // TODO: Reintroduce when field is decided what to include
+  // {
+  //   id: SidebarOptions.ticketingAndAccess,
+  //   text: "Ticketing and access",
+  // },
 ];
 
 const Admin_v2: React.FC = () => {
@@ -73,14 +74,10 @@ const Admin_v2: React.FC = () => {
   const venues = useSelector(orderedVenuesSelector);
   const venueId = useVenueId();
 
-  console.log("user: ", user);
-  console.log("venues: ", venues, venueId);
   const selectedVenue = useMemo(() => venues?.find((v) => v.id === venueId), [
     venueId,
     venues,
   ]);
-
-  console.log("selectedVenue: ", selectedVenue);
 
   const { roles } = useRoles();
 
@@ -126,8 +123,8 @@ const Admin_v2: React.FC = () => {
           />
         );
 
-      case SidebarOptions.ticketingAndAccess:
-        return <TicketingAndAccess />;
+      // case SidebarOptions.ticketingAndAccess:
+      //   return <TicketingAndAccess />;
 
       default:
         return null;
