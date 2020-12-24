@@ -43,6 +43,8 @@
     "mousetrap": "^1.6.5",
     "node-sass": "^4.14.1",
     "npm-force-resolutions": "0.0.3",
+    "pixi-filters": "^3.2.0",
+    "pixi.js": "^5.3.6",
     "popper.js": "^1.16.1",
     "prettier": "^2.0.5",
     "qs": "^6.9.4",

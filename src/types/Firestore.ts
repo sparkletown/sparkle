@@ -62,6 +62,7 @@ export interface FirestoreData {
   venueChats?: Record<string, RestrictedChatMessage> | null;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
+  onlinePlayers?: Record<string, { x: number; y: number }>;
 }
 
 // note: these entries should be sorted alphabetically
