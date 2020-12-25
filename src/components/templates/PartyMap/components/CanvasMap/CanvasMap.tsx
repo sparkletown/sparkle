@@ -16,92 +16,88 @@ import { useInterval } from "hooks/useInterval";
 import Sidebar from "components/molecules/Sidebar";
 
 import { Charm } from "./charm";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { PartyMapVenue } from "types/PartyMapVenue";
-import { hitTestRectangle } from "./utils";
-// import * as S from "./styles";
+import { hitTestRectangle, createPlayer } from "./utils";
+import * as S from "./styles";
 
 type Props = {
   user: WithId<User>;
   venue: PartyMapVenue;
 };
 
-const venueObjects = [
-  { x: 400, y: 100, url: "/venues/pickspace-thumbnail_art.png" },
-  { x: 400, y: 500, url: "/venues/pickspace-thumbnail_artcar.png" },
-  { x: 600, y: 200, url: "/venues/pickspace-thumbnail_auditorium.png" },
-];
-
-const createPlayer = ({
-  id,
-  x,
-  y,
-  userProfile,
-  onCreated,
-  isMe = false,
-}: {
-  id: string;
-  x?: number;
-  y?: number;
-  userProfile?: User;
-  onCreated: (child: PIXI.Sprite) => void;
-  isMe?: boolean;
-}) => {
-  const texture = PIXI.Texture.from(DEFAULT_PROFILE_IMAGE);
-
-  const player = new PIXI.Sprite(texture);
-
-  player.name = id;
-
-  player.height = 45;
-  player.width = 45;
-
-  player.x = x ?? 10;
-  player.y = y ?? 10;
-
-  player.zIndex = 1;
-
-  onCreated(player);
-
-  return player;
-};
-
 export const CanvasMap: React.FC<Props> = ({ user, venue }) => {
   const firestore = useFirestore();
   const on = useKeysListeners();
 
-  const divElement = useRef<HTMLDivElement>(null);
+  const divElementRef = useRef<HTMLDivElement>(null);
+  const [backgroundImageHeight, setBackgroundImageHeight] = useState("100%");
   const appRef = useRef<{ app: PIXI.Application; charm: Charm } | null>(null);
 
-  // console.log(venue.rooms);
-
   useEffect(() => {
-    const containerWidth = divElement.current?.offsetWidth ?? 0;
-    const containerHeight = divElement.current?.offsetHeight ?? 0;
+    const divElement = divElementRef.current;
+    if (!divElement) return;
 
     const newApp = new PIXI.Application({
-      width: containerWidth,
-      height: containerHeight,
+      resizeTo: divElement as HTMLElement,
       backgroundColor: 0xffffe5,
     });
 
-    // const backgroundImage = PIXI.Sprite.from("/testBg.jpg");
-    // backgroundImage.anchor.set(0, 0);
-    // backgroundImage.position.set(0, 0);
-    // backgroundImage.width = containerWidth;
-    // const imageRatio = backgroundImage.width / backgroundImage.height;
-    // const containerRatio = containerWidth / containerHeight;
+    const backgroundSprite = new PIXI.Sprite();
 
-    // backgroundImage.height = containerHeight;
-    // backgroundImage.width = containerWidth;
-    // backgroundImage.position.x = 0;
-    // backgroundImage.position.y = (containerHeight - backgroundImage.height) / 2;
+    newApp.stage.addChild(backgroundSprite);
 
-    // newApp.stage.addChild(backgroundImage);
+    const img = new Image();
+    img.crossOrigin = "";
+    img.src = `https://cors-anywhere.herokuapp.com/${venue.mapBackgroundImageUrl}`;
+    img.onload = () => {
+      const bgImageTexture = PIXI.Texture.from(img);
+      const imageScale =
+        divElement.offsetWidth / bgImageTexture.baseTexture.width;
+
+      setBackgroundImageHeight(
+        `${bgImageTexture.baseTexture.height * imageScale}px`
+      );
+
+      window.dispatchEvent(new Event("resize"));
+      const bgImageSprite = PIXI.Sprite.from(bgImageTexture);
+      bgImageSprite.scale.x = imageScale;
+      bgImageSprite.scale.y = imageScale;
+
+      backgroundSprite.addChild(bgImageSprite);
+
+      venue.rooms?.forEach((room) => {
+        const roomSprite = PIXI.Sprite.from(
+          `https://cors-anywhere.herokuapp.com/${room.image_url}`
+        );
+
+        roomSprite.name = room.title;
+
+        roomSprite.height =
+          ((bgImageTexture.baseTexture.height * room.height_percent) / 100) *
+          imageScale;
+        roomSprite.width =
+          ((bgImageTexture.baseTexture.width * room.width_percent) / 100) *
+          imageScale;
+
+        roomSprite.x =
+          ((bgImageTexture.baseTexture.width * room.x_percent) / 100) *
+          imageScale;
+        roomSprite.y =
+          ((bgImageTexture.baseTexture.height * room.y_percent) / 100) *
+          imageScale;
+
+        roomSprite.interactive = true;
+        roomSprite.buttonMode = true;
+        // roomSprite.hitArea = new PIXI.Rectangle(0, 0, 100, 100);
+        roomSprite.on("click", (event: any) => console.log(event));
+
+        newApp.stage.addChild(roomSprite);
+      });
+    };
 
     const player = createPlayer({
       id: user.id,
-      // userProfile: user,
+      userProfile: user,
       onCreated: (child) => newApp.stage.addChild(child),
       isMe: true,
     });
@@ -114,12 +110,6 @@ export const CanvasMap: React.FC<Props> = ({ user, venue }) => {
       on("KeyD", () => (player.x += 3));
       on("KeyA", () => (player.x -= 3));
 
-      // venueObjects.forEach(({ url }) => {
-      //   if (hitTestRectangle(player, newApp.stage.getChildByName(url))) {
-      //     console.log("MAYDAY");
-      //   }
-      // });
-
       charm.update();
 
       requestAnimationFrame(startGame);
@@ -127,38 +117,25 @@ export const CanvasMap: React.FC<Props> = ({ user, venue }) => {
 
     startGame();
 
-    // venueObjects.forEach((obj) => {
-    //   const texture = PIXI.Texture.from(obj.url);
+    console.log(venue.rooms);
 
-    //   const player = new PIXI.Sprite(texture);
-
-    //   player.name = obj.url;
-
-    //   player.height = 150;
-    //   player.width = 200;
-
-    //   player.x = obj.x;
-    //   player.y = obj.y;
-    //   newApp.stage.addChild(player);
-    // });
-
-    divElement.current?.appendChild(newApp.view);
+    divElement.appendChild(newApp.view);
     appRef.current = {
       app: newApp,
       charm,
     };
 
-    setInterval(() => {
-      firestore
-        .collection("venues")
-        .doc(venue.name)
-        .collection("onlinePlayers")
-        .doc(user.id)
-        .set({
-          x: player.x,
-          y: player.y,
-        });
-    }, 200);
+    // setInterval(() => {
+    //   firestore
+    //     .collection("venues")
+    //     .doc(venue.name)
+    //     .collection("onlinePlayers")
+    //     .doc(user.id)
+    //     .set({
+    //       x: player.x,
+    //       y: player.y,
+    //     });
+    // }, 200);
   }, []);
 
   useFirestoreConnect({
@@ -170,7 +147,7 @@ export const CanvasMap: React.FC<Props> = ({ user, venue }) => {
 
   const allPlayers = useSelector((state) => state.firestore.data.onlinePlayers);
 
-  // const usersById = useUsersById();
+  const usersById = useUsersById();
 
   useEffect(() => {
     const app = appRef.current?.app;
@@ -194,16 +171,17 @@ export const CanvasMap: React.FC<Props> = ({ user, venue }) => {
           ...allPlayers[userId],
           id: userId,
           onCreated: (child: PIXI.Sprite) => app.stage.addChild(child),
-          // userProfile: usersById[userId],
+          userProfile: usersById[userId],
         });
       }
     }
   }, [appRef.current, allPlayers]);
 
   return (
-    <>
-      <div ref={divElement} style={{ height: "100%", width: "100%" }} />
+    <S.Container>
+      <S.Canvas height={backgroundImageHeight} ref={divElementRef} />
+      <S.SidebasePlace />
       <Sidebar />
-    </>
+    </S.Container>
   );
 };
