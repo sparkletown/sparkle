@@ -66,7 +66,12 @@ export const PartyMap: React.FC = () => {
   return (
     <>
       <div className="party-venue-container">
-        <CanvasMap venue={venue} user={userWithId}></CanvasMap>
+        <CanvasMap
+          venue={venue}
+          user={userWithId}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+        ></CanvasMap>
         {/* <Map
           venue={venue}
           attendances={attendances}

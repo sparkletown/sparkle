@@ -1,6 +1,7 @@
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { User } from "types/User";
 import * as PIXI from "pixi.js";
+import * as Filters from "pixi-filters";
 
 export function hitTestRectangle(r1: any, r2: any) {
   if (!r1 || !r2) return;
@@ -64,24 +65,53 @@ export const createPlayer = ({
   onCreated: (child: PIXI.Sprite) => void;
   isMe?: boolean;
 }) => {
+  const playerContainer = new PIXI.Sprite();
+
   const imgURL = userProfile?.pictureUrl
     ? `https://cors-anywhere.herokuapp.com/${userProfile.pictureUrl}`
     : DEFAULT_PROFILE_IMAGE;
-  const texture = PIXI.Texture.from(imgURL);
 
-  const player = new PIXI.Sprite(texture);
+  // const imgURL = DEFAULT_PROFILE_IMAGE;
 
-  player.name = id;
+  const img = new Image();
+  img.crossOrigin = "";
+  img.src = imgURL;
+  img.onload = () => {
+    const texture = PIXI.Texture.from(imgURL);
 
-  player.height = 45;
-  player.width = 45;
+    texture.baseTexture.setSize(30, 30);
+    const player = new PIXI.Sprite(texture);
 
-  player.x = x ?? 10;
-  player.y = y ?? 10;
+    const mask = new PIXI.Graphics()
+      .beginFill(0xffffff)
+      .drawCircle(
+        player.width / 2,
+        player.height / 2,
+        Math.min(player.width, player.height) / 2
+      )
+      .endFill();
 
-  player.zIndex = 1;
+    player.mask = mask;
+    player.addChild(mask);
 
-  onCreated(player);
+    playerContainer.addChild(player);
+    if (isMe) {
+      playerContainer.filters = [
+        new Filters.GlowFilter({
+          innerStrength: 2,
+          outerStrength: 2,
+          color: 0x039be5,
+        }),
+      ];
+    }
 
-  return player;
+    playerContainer.name = id;
+
+    playerContainer.x = x ?? 10;
+    playerContainer.y = y ?? 10;
+
+    onCreated(playerContainer);
+  };
+
+  return playerContainer;
 };
