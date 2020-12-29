@@ -1,26 +1,30 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import UserProfileModal from "components/organisms/UserProfileModal";
+import { useFirestoreConnect } from "react-redux-firebase";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
-
 import { isChatValid } from "validation";
 
 import ChatForm from "./ChatForm";
-import "./Chatbox.scss";
-import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
+import UserProfileModal from "components/organisms/UserProfileModal";
+
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useVenueChats } from "hooks/useChats";
+
 import { WithId } from "utils/id";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
 import {
   partygoersSelector,
   partygoersSelectorData,
   privateChatsSelector,
-  venueChatsSelector,
 } from "utils/selectors";
+
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
+import { User } from "types/User";
+
+import "./Chatbox.scss";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server
@@ -69,7 +73,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         }
       : undefined
   );
-  const chats = useSelector(venueChatsSelector);
+  const chats = useVenueChats();
   const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {
     const listOfChats =

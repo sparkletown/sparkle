@@ -9,6 +9,7 @@ import { useSelector } from "hooks/useSelector";
 import { MessageToTheBandReaction } from "utils/reactions";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { useVenueChats } from "hooks/useChats";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
@@ -17,9 +18,8 @@ const ReactionPage = () => {
   const partygoers = useSelector(partygoersSelector);
   const usersById = partygoers;
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats = useSelector((state) =>
-    state.firestore.ordered.venueChats?.filter((chat) => chat.deleted !== true)
-  );
+  const chats = useVenueChats();
+  const filteredChats = chats?.filter((chat) => chat.deleted !== true);
 
   useFirestoreConnect([
     venue
@@ -44,7 +44,10 @@ const ReactionPage = () => {
         <div className="row">
           <div className="col-8">
             {usersById && (
-              <ReactionList reactions={messagesToTheBand} chats={chats} />
+              <ReactionList
+                reactions={messagesToTheBand}
+                chats={filteredChats}
+              />
             )}
           </div>
           {partygoers && (
