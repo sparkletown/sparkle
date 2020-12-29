@@ -40,6 +40,7 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import ChatsList from "components/molecules/ChatsList";
 import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
+import GeneralChatsList from "components/molecules/Sidebar";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { NavBarLogin } from "./NavBarLogin";
@@ -63,6 +64,14 @@ const ChatPopover = (
   <Popover id="popover-basic">
     <Popover.Content>
       <ChatsList />
+    </Popover.Content>
+  </Popover>
+);
+
+const GeneralChatPopver = (
+  <Popover id="general-chat-popover">
+    <Popover.Content id="general-chat-popover-body">
+      <GeneralChatsList />
     </Popover.Content>
   </Popover>
 );
@@ -329,7 +338,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   trigger="click"
                   placement="bottom-end"
                   overlay={ProfilePopover}
-                  rootClose={true}
+                  rootClose
                 >
                   <div className="navbar-link-profile">
                     <img
@@ -341,6 +350,23 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     />
                   </div>
                 </OverlayTrigger>
+                {isVenueUsingPartyMap && (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={GeneralChatPopver}
+                    rootClose
+                  >
+                    <span className="private-chat-icon">
+                      {numberOfUnreadMessages > 0 && (
+                        <div className="notification-card">
+                          {numberOfUnreadMessages}
+                        </div>
+                      )}
+                      <div className="navbar-link-message" />
+                    </span>
+                  </OverlayTrigger>
+                )}
               </div>
             )}
           </div>

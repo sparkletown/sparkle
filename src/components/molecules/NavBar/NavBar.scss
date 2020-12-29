@@ -577,3 +577,24 @@ $border-radius: 28px;
     }
   }
 }
+
+#general-chat-popover {
+  transform: none !important;
+  left: auto !important;
+  right: 0 !important;
+  top: 66px !important;
+  height: calc(100% - 132px);
+
+  .popover-body {
+    height: 100%;
+  }
+
+  .chat-container {
+    // height: 100%!important;
+    height: calc(100% - 56px);
+    .chat-form {
+      position: sticky;
+      bottom: 0;
+    }
+  }
+}

@@ -260,8 +260,8 @@ export const CanvasMap: React.FC<Props> = ({
   return (
     <S.Container>
       <S.Canvas height={backgroundImageHeight} ref={divElementRef} />
-      <S.SidebasePlace />
-      <Sidebar />
+      {/* <S.SidebasePlace /> */}
+      {/* <Sidebar /> */}
     </S.Container>
   );
 };
