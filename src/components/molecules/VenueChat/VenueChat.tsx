@@ -7,7 +7,7 @@ import {
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
-import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
@@ -20,6 +20,7 @@ import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";
+import { useVenueChats } from "hooks/useVenueChats";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -36,7 +37,7 @@ const VenueChat: FC = () => {
   const { userRoles } = useRoles();
   const { user } = useUser();
 
-  const chats = useSelector(venueChatsSelector);
+  const chats = useVenueChats(venueId);
   const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);

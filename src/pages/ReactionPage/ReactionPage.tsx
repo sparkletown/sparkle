@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useFirestoreConnect } from "react-redux-firebase";
 import useConnectPartyGoers from "hooks/useConnectPartyGoers";
@@ -9,20 +9,25 @@ import { useSelector } from "hooks/useSelector";
 import { MessageToTheBandReaction } from "utils/reactions";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { useVenueChats } from "hooks/useVenueChats";
+import { useVenueId } from "hooks/useVenueId";
 
 const ReactionPage = () => {
   useConnectPartyGoers();
 
+  const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = useSelector(partygoersSelector);
   const usersById = partygoers;
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats = useSelector((state) =>
-    state.firestore.ordered.venueChats?.filter((chat) => chat.deleted !== true)
+  const chats = useVenueChats(venueId);
+  const filteredChats = useMemo(
+    () => chats?.filter((chat) => chat.deleted !== true),
+    [chats]
   );
 
   useFirestoreConnect([
-    venue
+    venue?.name
       ? {
           collection: "experiences",
           doc: venue.name,
@@ -44,7 +49,10 @@ const ReactionPage = () => {
         <div className="row">
           <div className="col-8">
             {usersById && (
-              <ReactionList reactions={messagesToTheBand} chats={chats} />
+              <ReactionList
+                reactions={messagesToTheBand}
+                chats={filteredChats}
+              />
             )}
           </div>
           {partygoers && (
