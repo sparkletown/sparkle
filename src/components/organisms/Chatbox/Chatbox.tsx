@@ -10,7 +10,8 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useVenueChats } from "hooks/useChats";
+import { useVenueChats } from "hooks/useVenueChats";
+import { useVenueId } from "hooks/useVenueId";
 
 import { WithId } from "utils/id";
 import { chatSort } from "utils/chat";
@@ -73,7 +74,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         }
       : undefined
   );
-  const chats = useVenueChats();
+  const venueId = useVenueId();
+  const chats = useVenueChats(venueId);
   const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {
     const listOfChats =

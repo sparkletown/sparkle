@@ -20,7 +20,7 @@ import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";
-import { useVenueChats } from "hooks/useChats";
+import { useVenueChats } from "hooks/useVenueChats";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -37,7 +37,7 @@ const VenueChat: FC = () => {
   const { userRoles } = useRoles();
   const { user } = useUser();
 
-  const chats = useVenueChats();
+  const chats = useVenueChats(venueId);
   const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
