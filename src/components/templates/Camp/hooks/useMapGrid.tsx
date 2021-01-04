@@ -9,10 +9,9 @@ import { MapRow } from "../../../molecules/MapRow";
 interface UseMapGrid {
   showGrid?: boolean;
   userUid?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  columnsArray: any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rowsArray: any[];
+  // FIXME: Convert to number only, when Camp is deleted
+  columnsArray: (number | JSX.Element)[];
+  rowsArray: (number | JSX.Element)[];
   partygoersBySeat?: WithId<User>[][];
   onSeatClick: (
     row: number,

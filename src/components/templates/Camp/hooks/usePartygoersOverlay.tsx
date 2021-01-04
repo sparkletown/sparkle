@@ -37,7 +37,7 @@ export const usePartygoersOverlay: ReactHook<
     // @debt this can be undefined because our types are broken so check explicitly
     return partygoers.map((partygoer) => {
       if (!partygoer.id || !partygoer.data?.[venueId]) return null;
-      // console.count();
+
       return (
         <MapPartygoerOverlay
           key={partygoer.id}

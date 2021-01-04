@@ -70,11 +70,13 @@ export const Map: React.FC<PropsType> = ({
 
   const currentPosition = profile?.data?.[venue.id];
 
-  const columnsArray = useMemo(
-    () => Array.from(Array(venue.columns ?? DEFAULT_COLUMNS)),
+  const columnsArray: number[] = useMemo(
+    () => Array.from(Array(venue.columns ?? DEFAULT_COLUMNS)).fill(0),
     [venue.columns]
   );
-  const [rowsArray, setRowsArray] = useState(Array.from(Array(DEFAULT_ROWS)));
+  const [rowsArray, setRowsArray] = useState(() =>
+    Array.from(Array(DEFAULT_ROWS).fill(0))
+  );
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
