@@ -6,10 +6,6 @@ We have validation.js and wdyr.js files at the top level of src
 <H1> Styles </H1>
 Currently we both use Styled-Components and scss across our codebase. I think we should stick to one and remove the other
 
----
-
-Mike's comment: _Personally, I prefer styled-components because they allow you to pass variables to your styles from the component_
-
 <H1> Data fetching & selectors in components </H1>
 We have a lot of ambiguity about how we interact with data in our app.
 For example:
@@ -20,39 +16,10 @@ For example:
 <H1> Merging flow </H1>
 We should have a well-defined merging flow to avoid misunderstandings.
 
----
-
-Mike's comment:
-
-Depending on the CI\CD strategy we choose, we could end up with 2 flows(normal | hotfix).
-
-- Normal: feat|impr|fix branch => Staging => Production
-- Hotfix: hotfix branch => Prod && hotfix branch => Staging
-
 <H1> Branch and commit naming </H1>
 Well-defined rules for this can help keep everything tidy and understandable by all parties
 
----
-
-Mike's comment:
-
-I suggest having only 4 allowed terms in commits, branches, PR names:
-
-- Improvement | IMPR - Refactoring
-- Fix | FIX - bug fix
-- Hotfix | HOTFIX - Direct bugfix to production(hopefully, the rarest one)
-- Feature | FEAT - New feature / Behavior change of an old feature
-
-Example:
-
-- _[GITHUB_BOARD_TICKET_NUMBER]/['feat' | 'fix' | 'impr' | 'hotfix']/[short branch description] as an example of branch naming. Should be solidified as a regexp rule_
-- _[GITHUB_BOARD_TICKET_NUMBER]: [Commit extensive description in present simple] - commit naming example. Should be solidified as a regexp rule_
-
 <H1> Merging vs rebasing </H1>
-
----
-
-Mike's comment: _I vote for rebasing as it helps in keeping the history clean. Also, one should rebase his branch with staging every day to avoid having lots of conflicts. After we discuss this one, I could write the perfect flow of working on a feature(As I see it)_
 
 <H1> Casing for different types of files(Service, Component, Util functions, Styles, Types) </H1>
 We have different casings for the same file types. For example:
@@ -63,8 +30,6 @@ We have different casings for the same file types. For example:
 - types/Question
 
 <H1> Not related \ unused files and folders should be removed </H1>
-
-Mike's comment: _I don't think `reporting` is needed in our codebase_
 
 ---
 
@@ -92,7 +57,3 @@ I think we should have a component structure and convention. Ex:
 render structure: Ex:
 
 - _renderMethod()_ or `<MiniComponent />`
-
----
-
-Mike's comment: _I vote for using `MiniComponent` approach as it is easier to read and understand components when they are small and decoupled._
