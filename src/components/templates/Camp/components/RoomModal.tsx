@@ -18,6 +18,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -25,7 +26,6 @@ import { RoomModalOngoingEvent } from "./RoomModalOngoingEvent";
 import { ScheduleItem } from "./ScheduleItem";
 
 import "components/templates/PartyMap/components/RoomModal/RoomModal.scss";
-import { usePartygoers } from "hooks/useUsers";
 
 interface RoomModalProps {
   show: boolean;
@@ -52,7 +52,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
   const usersToDisplay = useMemo(
     () =>
-      users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
+      users.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
     [users, venueName, roomTitle]
   );
 

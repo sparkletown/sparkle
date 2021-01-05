@@ -12,9 +12,9 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
+import { useUsersById } from "hooks/users";
 import { User } from "types/User";
 import VideoErrorModal from "./VideoErrorModal";
-import { useUsersById } from "hooks/useUsers";
 
 interface RoomProps {
   roomName: string;

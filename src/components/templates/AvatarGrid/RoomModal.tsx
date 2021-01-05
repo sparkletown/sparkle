@@ -8,6 +8,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { isEventLive } from "utils/event";
@@ -28,7 +29,6 @@ import { retainAttendance } from "store/actions/Attendance";
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
 import { venueEventsSelector, venueSelector } from "utils/selectors";
-import { usePartygoers } from "hooks/useUsers";
 
 interface PropsType {
   show: boolean;

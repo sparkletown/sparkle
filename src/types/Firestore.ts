@@ -59,7 +59,7 @@ export interface FirestoreData {
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
   users?: Record<string, User>;
-  venueChats?: Record<string, RestrictedChatMessage> | null;
+  venueChats?: Record<string, RestrictedChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
 }

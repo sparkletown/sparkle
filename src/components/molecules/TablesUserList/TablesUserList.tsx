@@ -9,7 +9,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers, useUsersIsLoaded } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
@@ -70,6 +70,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const { user, profile } = useUser();
   const partygoers = usePartygoers();
+  // FIXME: This is meant to be a quickfix, before we implement Loading strategy
+  const isPartygoersLoaded = useUsersIsLoaded();
   const { experience } = useSelector((state) => ({
     experience:
       state.firestore.data.experiences &&
@@ -85,6 +87,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
       setSeatedAtTable("");
     }
   }, [profile, setSeatedAtTable, user, venueName]);
+
+  if (!isPartygoersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: Record<string, Array<User>> = {};
@@ -143,18 +147,16 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     const doc = `users/${user.uid}`;
     const existingData = partygoers.find((u) => u.id === user.uid)?.data;
 
-    if (existingData) {
-      const update = {
-        data: {
-          ...existingData,
-          [venueName]: {
-            table,
-            videoRoom,
-          },
+    const update = {
+      data: {
+        ...existingData,
+        [venueName]: {
+          table,
+          videoRoom,
         },
-      };
-      firestoreUpdate(doc, update);
-    }
+      },
+    };
+    firestoreUpdate(doc, update);
   };
 
   const usersAtOtherTables = [];

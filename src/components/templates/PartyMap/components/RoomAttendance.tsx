@@ -1,10 +1,11 @@
 import React, { FC, useMemo } from "react";
 
+import { usePartygoers } from "hooks/users";
+
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./RoomAttendance.scss";
-import { usePartygoers } from "hooks/useUsers";
 
 interface PropsType {
   venue: PartyMapVenue;

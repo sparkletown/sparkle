@@ -5,7 +5,7 @@ import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 import { MessageToTheBandReaction } from "utils/reactions";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -21,7 +21,7 @@ const ReactionPage = () => {
       )
     ) ?? [];
 
-  const hasPartygoers = useMemo(() => !!partygoers.length, [partygoers]);
+  const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
 
   useFirestoreConnect([
     venue

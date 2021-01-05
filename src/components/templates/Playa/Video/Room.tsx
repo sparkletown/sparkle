@@ -4,8 +4,8 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";
 import { useUser } from "hooks/useUser";
+import { useUsersById } from "hooks/users";
 import { User } from "types/User";
-import { useUsersById } from "hooks/useUsers";
 import { WithId } from "utils/id";
 
 interface RoomProps {

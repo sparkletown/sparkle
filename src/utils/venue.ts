@@ -21,7 +21,7 @@ export const canHavePlacement = (venue: Venue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
 export const peopleByLastSeenIn = (
-  users: Array<WithId<User>> | undefined,
+  users: readonly WithId<User>[] | undefined,
   venueName: string
 ) => {
   const result: { [lastSeenIn: string]: WithId<User>[] } = {};

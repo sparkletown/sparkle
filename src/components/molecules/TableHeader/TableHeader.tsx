@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import firebase from "firebase/app";
 import { User } from "types/User";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";

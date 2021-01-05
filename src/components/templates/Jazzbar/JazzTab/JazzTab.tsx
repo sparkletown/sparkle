@@ -32,13 +32,13 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useInterval } from "hooks/useInterval";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
-import { usePartygoers } from "hooks/useUsers";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;

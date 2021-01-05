@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 
 import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
@@ -14,14 +14,13 @@ export const VenuePartygoers = () => {
 
   const currentVenueTitle = venue?.attendeesTitle ?? "partygoers";
   const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
-  const venueName = venue?.name ?? "";
+  const venueName = venue?.name;
 
-  const currentVenuePartygoers = useMemo(
-    () =>
-      partygoers?.filter((partygoer) => partygoer.lastSeenIn?.[venueName]) ??
-      [],
-    [partygoers, venueName]
-  );
+  const currentVenuePartygoers = useMemo(() => {
+    if (!venueName) return [];
+
+    return partygoers.filter((partygoer) => partygoer.lastSeenIn?.[venueName]);
+  }, [partygoers, venueName]);
   const numberOfPartygoers = currentVenuePartygoers.length;
 
   return (

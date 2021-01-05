@@ -49,7 +49,7 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
 

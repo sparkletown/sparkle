@@ -17,11 +17,11 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "../";
-import { usePartygoers } from "hooks/useUsers";
 
 interface RoomModalProps {
   show: boolean;

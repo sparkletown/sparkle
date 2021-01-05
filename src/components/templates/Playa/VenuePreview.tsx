@@ -9,18 +9,19 @@ import {
   LOC_UPDATE_FREQ_MS,
 } from "settings";
 import UserList from "components/molecules/UserList";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import firebase from "firebase/app";
-import "components/molecules/OnlineStats/OnlineStats.scss";
 import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
+
+import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;

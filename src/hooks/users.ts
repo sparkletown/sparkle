@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { isLoaded } from "react-redux-firebase";
 
 import { usersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
@@ -7,24 +7,41 @@ import { WithId } from "utils/id";
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 import { useVenueId } from "hooks/useVenueId";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 
 import { User } from "types/User";
 
 const useConnectUsers = () => {
-  useFirestoreConnect("users");
+  const venueId = useVenueId();
+
+  useSparkleFirestoreConnect([
+    {
+      collection: "users",
+      where: ["enteredVenueIds", "array-contains", venueId],
+      storeAs: "users",
+    },
+  ]);
 };
 
-export const usePartygoers = () => {
+export const usePartygoers = (): readonly WithId<User>[] => {
   useConnectUsers();
 
   const lastSeenThreshold = useUserLastSeenThreshold();
 
-  const users = useSelector(usersSelector);
+  const users = useSelector(usersSelector) ?? [];
 
   return useMemo(
     () => users.filter((user) => user.lastSeenAt > lastSeenThreshold),
     [users, lastSeenThreshold]
   );
+};
+
+export const useUsersIsLoaded = () => {
+  useConnectUsers();
+
+  const users = useSelector(usersSelector);
+
+  return useMemo(() => isLoaded(users), [users]);
 };
 
 export const useUsersById = () => {
@@ -33,20 +50,12 @@ export const useUsersById = () => {
   return useSelector(usersByIdSelector);
 };
 
-export const useVenueUsers = () => {
-  const venueId = useVenueId();
-  const users = useSelector(usersSelector);
+export const useVenueUsers = (): readonly WithId<User>[] =>
+  useSelector(usersSelector) ?? [];
 
-  return useMemo(
-    () =>
-      users.filter(
-        (user) => venueId && user.enteredVenueIds?.includes(venueId)
-      ),
-    [users, venueId]
-  );
-};
-
-export const useCampPartygoers = (venueName: string): WithId<User>[] => {
+export const useCampPartygoers = (
+  venueName: string
+): readonly WithId<User>[] => {
   const partygoers = usePartygoers();
 
   const lastSeenThreshold = useUserLastSeenThreshold();

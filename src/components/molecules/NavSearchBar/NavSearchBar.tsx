@@ -1,6 +1,6 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useVenueUsers } from "hooks/useUsers";
+import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";

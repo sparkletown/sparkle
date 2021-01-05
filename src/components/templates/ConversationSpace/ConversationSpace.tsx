@@ -6,6 +6,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -20,7 +21,6 @@ import UserList from "components/molecules/UserList";
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
-import { usePartygoers } from "hooks/useUsers";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);

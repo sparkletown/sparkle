@@ -5,12 +5,12 @@ import firebase from "firebase/app";
 import { WithId } from "utils/id";
 
 import { useVenueId } from "hooks/useVenueId";
+import { useUsersById } from "hooks/users";
 
 import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
 
 import "./Chatbox.scss";
-import { useUsersById } from "hooks/useUsers";
 
 interface ChatOutDataType {
   messageToTheBand: string;

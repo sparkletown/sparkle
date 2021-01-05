@@ -13,12 +13,12 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { usePartygoers, useUsersById } from "hooks/users";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
 import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
-import { usePartygoers, useUsersById } from "hooks/useUsers";
 
 // Don't pull everything
 // REVISIT: only grab most recent N from server

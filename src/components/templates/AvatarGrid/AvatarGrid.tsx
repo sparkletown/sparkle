@@ -14,6 +14,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
@@ -26,7 +27,6 @@ import { User } from "types/User";
 
 // Styles
 import "./AvatarGrid.scss";
-import { usePartygoers } from "hooks/useUsers";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
@@ -51,6 +51,7 @@ const AvatarGrid = () => {
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
       if (!venue) return;
+
       openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]

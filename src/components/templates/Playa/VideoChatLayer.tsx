@@ -1,12 +1,14 @@
 import React from "react";
-import { useUser } from "hooks/useUser";
 import { useFirebase } from "react-redux-firebase";
+
+import { useUser } from "hooks/useUser";
+import { useUsersById } from "hooks/users";
+
 import Room from "./Video/Room";
 import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 import { PROJECT_ID } from "secrets";
 import "./VideoChatLayer.scss";
-import { useUsersById } from "hooks/useUsers";
 
 type PropsType = {
   setSelectedUserProfile: (user: WithId<User>) => void;

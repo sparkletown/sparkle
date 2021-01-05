@@ -1,10 +1,11 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
+import { usePartygoers } from "hooks/users";
 import { User } from "types/User";
-import "./UserSearchBar.scss";
 import { WithId } from "utils/id";
-import { usePartygoers } from "hooks/useUsers";
+
+import "./UserSearchBar.scss";
 
 interface UserSearchBarProps {
   onSelect: (user: WithId<User>) => void;

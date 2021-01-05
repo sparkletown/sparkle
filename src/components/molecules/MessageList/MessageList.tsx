@@ -3,9 +3,9 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RestrictedChatMessage } from "store/actions/Chat";
 import { Message } from "components/molecules/Message";
+import { useUsersById } from "hooks/users";
 import { WithId } from "utils/id";
 import { Modal } from "react-bootstrap";
-import { useUsersById } from "hooks/useUsers";
 
 interface MessageListProps {
   messages: WithId<RestrictedChatMessage>[];

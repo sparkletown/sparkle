@@ -19,6 +19,7 @@ import {
 } from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
@@ -34,7 +35,6 @@ import {
 import { useDispatch } from "hooks/useDispatch";
 import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
-import { usePartygoers } from "hooks/useUsers";
 
 interface PropsType {
   useProfilePicture: boolean;

@@ -19,6 +19,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -33,7 +34,6 @@ import { User } from "types/User";
 import "./Audience.scss";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { addReaction } from "store/actions/Reactions";
-import { usePartygoers } from "hooks/useUsers";
 
 type ReactionType =
   | { reaction: EmojiReactionType }

@@ -6,7 +6,7 @@ import {
 } from "utils/reactions";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-
+import { useUsersById } from "hooks/users";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
@@ -15,7 +15,6 @@ import {
 } from "settings";
 import { WithId } from "utils/id";
 import { ChatMessage } from "store/actions/Chat";
-import { useUsersById } from "hooks/useUsers";
 
 interface ReactionListProps {
   reactions: Reaction[];

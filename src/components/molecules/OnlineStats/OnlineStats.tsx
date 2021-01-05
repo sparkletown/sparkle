@@ -19,7 +19,7 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/useUsers";
+import { usePartygoers } from "hooks/users";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -76,6 +76,8 @@ const OnlineStats: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = usePartygoers();
 
+  const venueName = venue?.name;
+
   useInterval(() => {
     firebase
       .functions()
@@ -92,7 +94,7 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
+    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName ?? "");
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
@@ -109,7 +111,7 @@ const OnlineStats: React.FC = () => {
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, partygoers, venue]);
+  }, [openVenues, partygoers, venue, venueName]);
 
   const fuseVenues = useMemo(
     () =>
@@ -161,8 +163,8 @@ const OnlineStats: React.FC = () => {
   );
 
   const peopleByLastSeen = useMemo(
-    () => peopleByLastSeenIn(partygoers, venue?.name ?? ""),
-    [partygoers, venue?.name]
+    () => peopleByLastSeenIn(partygoers, venueName ?? ""),
+    [partygoers, venueName]
   );
 
   const popover = useMemo(

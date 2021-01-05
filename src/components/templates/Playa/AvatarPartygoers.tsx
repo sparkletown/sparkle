@@ -1,10 +1,10 @@
 import React from "react";
+import { usePartygoers } from "hooks/users";
 import { PLAYA_AVATAR_SIZE } from "../../../settings";
 import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
 import AvatarImage from "./AvatarImage";
-import { usePartygoers } from "hooks/useUsers";
 interface PropsType {
   user: WithId<User>;
   state: UserState;
