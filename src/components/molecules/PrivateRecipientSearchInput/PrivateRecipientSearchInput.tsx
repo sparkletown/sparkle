@@ -41,21 +41,20 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
 
   const dropdownOptions = useMemo(
     () =>
-      privateRecipients.map((u) => (
+      privateRecipients.map((user) => (
         <Dropdown.Item
-          onClick={() => onClickOnUserInSearchInput(u)}
-          id="private-chat-dropdown-private-recipient"
+          onClick={() => onClickOnUserInSearchInput(user)}
           className="private-recipient"
-          key={u.id}
+          key={user.id}
         >
           <img
-            src={u.pictureUrl}
+            src={user.pictureUrl}
             className="picture-logo"
-            alt={u.partyName}
+            alt={user.partyName}
             width="20"
             height="20"
           />
-          {u.partyName}
+          {user.partyName}
         </Dropdown.Item>
       )),
     [privateRecipients, onClickOnUserInSearchInput]

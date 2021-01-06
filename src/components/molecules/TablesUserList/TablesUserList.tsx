@@ -9,7 +9,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers, useUsersIsLoaded } from "hooks/users";
+import { usePartygoers, useIsUsersLoaded } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
@@ -70,8 +70,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const { user, profile } = useUser();
   const partygoers = usePartygoers();
-  // FIXME: This is meant to be a quickfix, before we implement Loading strategy
-  const isPartygoersLoaded = useUsersIsLoaded();
+  const isPartygoersLoaded = useIsUsersLoaded();
   const { experience } = useSelector((state) => ({
     experience:
       state.firestore.data.experiences &&

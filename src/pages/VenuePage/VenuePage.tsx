@@ -36,7 +36,7 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useUsersIsLoaded } from "hooks/users";
+import { useIsUsersLoaded } from "hooks/users";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -68,7 +68,7 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const isPartygoersLoaded = useUsersIsLoaded();
+  const isPartygoersLoaded = useIsUsersLoaded();
 
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);

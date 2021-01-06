@@ -14,13 +14,15 @@ import { User } from "types/User";
 const useConnectUsers = () => {
   const venueId = useVenueId();
 
-  useSparkleFirestoreConnect([
-    {
-      collection: "users",
-      where: ["enteredVenueIds", "array-contains", venueId],
-      storeAs: "users",
-    },
-  ]);
+  useSparkleFirestoreConnect(
+    venueId
+      ? {
+          collection: "users",
+          where: ["enteredVenueIds", "array-contains", venueId],
+          storeAs: "users",
+        }
+      : undefined
+  );
 };
 
 export const usePartygoers = (): readonly WithId<User>[] => {
@@ -36,7 +38,7 @@ export const usePartygoers = (): readonly WithId<User>[] => {
   );
 };
 
-export const useUsersIsLoaded = () => {
+export const useIsUsersLoaded = () => {
   useConnectUsers();
 
   const users = useSelector(usersSelector);
@@ -50,8 +52,11 @@ export const useUsersById = () => {
   return useSelector(usersByIdSelector);
 };
 
-export const useVenueUsers = (): readonly WithId<User>[] =>
-  useSelector(usersSelector) ?? [];
+export const useVenueUsers = (): readonly WithId<User>[] => {
+  useConnectUsers();
+
+  return useSelector(usersSelector) ?? [];
+};
 
 export const useCampPartygoers = (
   venueName: string

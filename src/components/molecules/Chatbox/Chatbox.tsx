@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import firebase from "firebase/app";
 
 import { WithId } from "utils/id";
+import { chatUsersSelector } from "utils/selectors";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUsersById } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
 
 import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import ChatList from "../ChatList";
@@ -37,7 +39,10 @@ const ChatBox: React.FC<ChatboxProps> = ({
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
-  const usersById = useUsersById();
+  const venueUsersById = useUsersById();
+  const chatUsersById = useSelector(chatUsersSelector) ?? {};
+
+  const usersById = isVenueChat ? venueUsersById : chatUsersById;
 
   useEffect(() => {
     if (isMessageToTheBarSent) {
