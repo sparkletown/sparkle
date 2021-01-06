@@ -39,6 +39,9 @@ export const usePartygoers = (): readonly WithId<User>[] => {
 };
 
 export const useIsUsersLoaded = () => {
+  // @debt The reason for this useConnect to be here is that we have entry point components,
+  // which have useConnects calls. And there are checks for the data loaded statuses.
+  // We want to gradualy move from that approach to a more modular one, where the specific data is connected where it is required
   useConnectUsers();
 
   const users = useSelector(usersSelector);
