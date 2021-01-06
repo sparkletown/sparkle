@@ -25,16 +25,20 @@ const useConnectUsers = () => {
   );
 };
 
-export const usePartygoers = (): readonly WithId<User>[] => {
+export const useVenueUsers = (): readonly WithId<User>[] => {
   useConnectUsers();
 
+  return useSelector(usersSelector) ?? [];
+};
+
+export const usePartygoers = (): readonly WithId<User>[] => {
   const lastSeenThreshold = useUserLastSeenThreshold();
 
-  const users = useSelector(usersSelector) ?? [];
+  const venueUsers = useVenueUsers();
 
   return useMemo(
-    () => users.filter((user) => user.lastSeenAt > lastSeenThreshold),
-    [users, lastSeenThreshold]
+    () => venueUsers.filter((user) => user.lastSeenAt > lastSeenThreshold),
+    [venueUsers, lastSeenThreshold]
   );
 };
 
@@ -53,10 +57,4 @@ export const useUsersById = () => {
   useConnectUsers();
 
   return useSelector(usersByIdSelector);
-};
-
-export const useVenueUsers = (): readonly WithId<User>[] => {
-  useConnectUsers();
-
-  return useSelector(usersSelector) ?? [];
 };
