@@ -1,17 +1,13 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useConnectVenueUsers } from "hooks/useConnectVenueUsers";
+import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  venueEventsSelector,
-  venueUsersSelector,
-} from "utils/selectors";
+import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
@@ -23,8 +19,6 @@ interface SearchResult {
 }
 
 const NavSearchBar = () => {
-  useConnectVenueUsers();
-
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
@@ -37,8 +31,9 @@ const NavSearchBar = () => {
   const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
   const venue = useSelector(currentVenueSelectorData);
-  const venueUsers = useSelector(venueUsersSelector) ?? [];
+
   const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venueUsers = useVenueUsers();
 
   useEffect(() => {
     if (!searchQuery) {
