@@ -133,7 +133,9 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
@@ -1061,7 +1063,7 @@ const Playa = () => {
         <UserProfileModal
           show={selectedUserProfile !== undefined}
           onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile as WithId<User>}
+          userProfile={selectedUserProfile}
         />
         <Modal
           show={showEventSchedule}
