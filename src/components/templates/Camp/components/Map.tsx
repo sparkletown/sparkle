@@ -29,7 +29,7 @@ import "./Map.scss";
 
 interface MapProps {
   venue: CampVenue;
-  partygoers: readonly WithId<User>[];
+  partygoers: WithId<User>[];
   attendances: Attendances;
   selectedRoom: CampRoomData | undefined;
   selectRoom: (room: CampRoomData) => void;

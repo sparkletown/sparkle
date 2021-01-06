@@ -43,7 +43,7 @@ export const useIsUsersLoaded = () => {
 
   const users = useSelector(usersSelector);
 
-  return useMemo(() => isLoaded(users), [users]);
+  return isLoaded(users);
 };
 
 export const useUsersById = () => {
@@ -56,20 +56,4 @@ export const useVenueUsers = (): readonly WithId<User>[] => {
   useConnectUsers();
 
   return useSelector(usersSelector) ?? [];
-};
-
-export const useCampPartygoers = (
-  venueName: string
-): readonly WithId<User>[] => {
-  const partygoers = usePartygoers();
-
-  const lastSeenThreshold = useUserLastSeenThreshold();
-
-  return useMemo(
-    () =>
-      partygoers.filter(
-        (partygoer) => partygoer?.lastSeenIn?.[venueName] > lastSeenThreshold
-      ),
-    [partygoers, lastSeenThreshold, venueName]
-  );
 };

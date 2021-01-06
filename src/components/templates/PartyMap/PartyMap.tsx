@@ -7,7 +7,7 @@ import { createUrlSafeName } from "api/admin";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
-import { useCampPartygoers } from "hooks/users";
+import { usePartygoers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
@@ -26,7 +26,7 @@ export const PartyMap: React.FC = () => {
   >();
 
   const venue = useSelector(partyMapVenueSelector);
-  const usersInCamp = useCampPartygoers(venue.name);
+  const usersInCamp = usePartygoers();
 
   const attendances = useMemo(
     () =>

@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW, LOC_UPDATE_FREQ_MS } from "settings";
+import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
@@ -30,7 +30,6 @@ import UserList from "components/molecules/UserList";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useInterval } from "hooks/useInterval";
 import { useVenueId } from "hooks/useVenueId";
 import { usePartygoers } from "hooks/users";
 
@@ -80,25 +79,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  // TODO: this will break memo on venueUsers (below) every 5min, does that matter?
-  const [nowMs, setNowMs] = useState(Date.now());
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
-  // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
-  const venueToUseName = venueToUse?.name;
-  const users = usePartygoers();
-
-  const venueUsers = useMemo(
-    () =>
-      users?.filter(
-        (user) =>
-          user.lastSeenIn?.[venueToUseName ?? ""] >
-          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      ),
-    [nowMs, users, venueToUseName]
-  );
+  const venueUsers = usePartygoers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);

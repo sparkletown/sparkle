@@ -63,7 +63,7 @@ export const Map: React.FC<PropsType> = ({
   const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
-  const partygoers: readonly WithId<User>[] = usePartygoers();
+  const partygoers = usePartygoers();
 
   useEffect(() => {
     const img = new Image();
