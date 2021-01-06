@@ -11,7 +11,7 @@ import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 
 import { User } from "types/User";
 
-const useConnectUsers = () => {
+const useConnectVenueUsers = () => {
   const venueId = useVenueId();
 
   useSparkleFirestoreConnect(
@@ -26,7 +26,7 @@ const useConnectUsers = () => {
 };
 
 export const useVenueUsers = (): readonly WithId<User>[] => {
-  useConnectUsers();
+  useConnectVenueUsers();
 
   return useSelector(usersSelector) ?? [];
 };
@@ -42,11 +42,11 @@ export const usePartygoers = (): readonly WithId<User>[] => {
   );
 };
 
-export const useIsUsersLoaded = () => {
+export const useIsVenueUsersLoaded = () => {
   // @debt The reason for this useConnect to be here is that we have entry point components,
   // which have useConnects calls. And there are checks for the data loaded statuses.
   // We want to gradualy move from that approach to a more modular one, where the specific data is connected where it is required
-  useConnectUsers();
+  useConnectVenueUsers();
 
   const users = useSelector(usersSelector);
 
@@ -54,7 +54,7 @@ export const useIsUsersLoaded = () => {
 };
 
 export const useUsersById = () => {
-  useConnectUsers();
+  useConnectVenueUsers();
 
   return useSelector(usersByIdSelector);
 };
