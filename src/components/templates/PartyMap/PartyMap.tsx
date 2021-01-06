@@ -10,11 +10,12 @@ import { PartyMapVenue } from "types/PartyMapVenue";
 import { usePartygoers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
-import { Map, RoomModal } from "./components";
+import { Map, RoomModal, CanvasMap } from "./components";
 
 import "./PartyMap.scss";
 import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { useUser } from "hooks/useUser";
 
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
@@ -27,6 +28,7 @@ export const PartyMap: React.FC = () => {
 
   const venue = useSelector(partyMapVenueSelector);
   const usersInCamp = usePartygoers();
+  const { userWithId, profile } = useUser();
 
   const attendances = useMemo(
     () =>
@@ -59,16 +61,24 @@ export const PartyMap: React.FC = () => {
     }
   }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
 
+  if (!userWithId || !profile || !venue) return <>Loading...</>;
+
   return (
     <>
       <div className="party-venue-container">
-        <Map
+        <CanvasMap
+          venue={venue}
+          user={userWithId}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+        ></CanvasMap>
+        {/* <Map
           venue={venue}
           attendances={attendances}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
           setIsRoomModalOpen={setIsRoomModalOpen}
-        />
+        /> */}
         <RoomModal
           show={isRoomModalOpen}
           room={selectedRoom}
