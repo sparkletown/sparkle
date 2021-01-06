@@ -456,7 +456,7 @@ const Playa = () => {
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
+      peopleAttending(peopleByLastSeenIn(venueName, partygoers), hoveredVenue),
     [partygoers, hoveredVenue, venueName]
   );
 
@@ -593,7 +593,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName);
+    const peopleByLastSeen = peopleByLastSeenIn(venueName, partygoers);
     return (
       <>
         <PlayaBackground

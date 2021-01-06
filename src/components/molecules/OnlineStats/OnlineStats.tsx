@@ -94,7 +94,7 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName ?? "");
+    const peopleByLastSeen = peopleByLastSeenIn(venueName ?? "", partygoers);
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
@@ -163,7 +163,7 @@ const OnlineStats: React.FC = () => {
   );
 
   const peopleByLastSeen = useMemo(
-    () => peopleByLastSeenIn(partygoers, venueName ?? ""),
+    () => peopleByLastSeenIn(venueName ?? "", partygoers),
     [partygoers, venueName]
   );
 
