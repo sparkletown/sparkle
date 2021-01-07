@@ -41,7 +41,7 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  * @see ReduxFirestoreQuerySetting
  */
 export const useSparkleFirestoreConnect = (
-  config?: SparkleRFQConfig[] | SparkleRFQConfig
+  config?: SparkleRFQConfig[] | SparkleRFQConfig | (() => SparkleRFQConfig[])
 ) => useFirestoreConnect(config);
 
 /**

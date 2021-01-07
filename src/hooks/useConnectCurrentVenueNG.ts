@@ -7,7 +7,10 @@ import { VenueEvent } from "types/VenueEvent";
 import { withId } from "utils/id";
 
 import { useSelector } from "./useSelector";
-import { useSparkleFirestoreConnect } from "./useSparkleFirestoreConnect";
+import {
+  isLoaded,
+  useSparkleFirestoreConnect,
+} from "./useSparkleFirestoreConnect";
 
 export const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (
   state
@@ -45,6 +48,7 @@ export const useConnectCurrentVenueNG = (venueId?: string) => {
       currentVenue:
         venueId && currentVenueNG ? withId(currentVenueNG, venueId) : undefined,
       currentVenueEvents: currentVenueEventsNG,
+      isCurrentVenueLoaded: isLoaded(currentVenueNG),
     }),
     [venueId, currentVenueNG, currentVenueEventsNG]
   );

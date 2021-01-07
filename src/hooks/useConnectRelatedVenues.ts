@@ -23,6 +23,7 @@ import {
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
 import {
+  isLoaded,
   SparkleRFQConfig,
   useSparkleFirestoreConnect,
 } from "./useSparkleFirestoreConnect";
@@ -57,13 +58,17 @@ interface UseConnectRelatedVenuesReturn {
   venueEvents: WithVenueId<VenueEvent>[];
   siblingVenueEvents: WithVenueId<VenueEvent>[];
   subvenueEvents: WithVenueId<VenueEvent>[];
+
+  isRelatedVenuesLoaded: boolean;
 }
 
 export const useConnectRelatedVenues: ReactHook<
   UseConnectRelatedVenuesProps,
   UseConnectRelatedVenuesReturn
 > = ({ venueId, withEvents = false }) => {
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
 
   const parentId: string | undefined = currentVenue?.parentId;
 
@@ -96,9 +101,18 @@ export const useConnectRelatedVenues: ReactHook<
     [venueId]
   );
 
-  const parentVenue = useSelector(parentVenueOrderedSelector);
-  const subvenues = useSelector(subvenuesSelector) ?? [];
-  const siblingVenues = useSelector(siblingNotVenueSelector) ?? [];
+  const parentVenueRaw = useSelector(parentVenueOrderedSelector);
+  const parentVenue = parentVenueRaw?.[0];
+
+  const subvenuesRaw = useSelector(subvenuesSelector);
+  const subvenues = subvenuesRaw ?? [];
+
+  const siblingVenuesRaw = useSelector(siblingNotVenueSelector);
+  const siblingVenues = siblingVenuesRaw ?? [];
+
+  const isParentVenueLoaded = isLoaded(parentVenueRaw);
+  const isSubvenuesLoaded = isLoaded(subvenuesRaw);
+  const isSiblingVenuesLoaded = isLoaded(siblingVenuesRaw);
 
   const maybeParentEventsSelector = useCallback(
     (state) =>
@@ -149,6 +163,15 @@ export const useConnectRelatedVenues: ReactHook<
   /////////////////////////////////
   // Firestore Connect Configs/etc
   /////////////////////////////////
+
+  // Parent
+  const parentVenueQuery: SparkleRFQConfig | undefined = !!parentId
+    ? {
+        collection: "venues",
+        doc: parentId,
+        storeAs: "parentVenue",
+      }
+    : undefined;
 
   // Sibling
   const siblingVenuesQuery: SparkleRFQConfig | undefined = !!parentId
@@ -202,6 +225,7 @@ export const useConnectRelatedVenues: ReactHook<
 
   // Combine / filter for valid queries
   const allValidQueries: SparkleRFQConfig[] = [
+    parentVenueQuery,
     siblingVenuesQuery,
     subvenuesQuery,
     parentVenueEventsQuery,
@@ -235,11 +259,34 @@ export const useConnectRelatedVenues: ReactHook<
     [currentVenue, parentVenue, siblingVenues, subvenues]
   );
 
+  const isRelatedVenuesLoaded = useMemo(() => {
+    const loaders = [
+      isCurrentVenueLoaded,
+      isSubvenuesLoaded,
+      isSiblingVenuesLoaded,
+    ];
+
+    if (parentId) {
+      loaders.push(isParentVenueLoaded);
+    }
+
+    return loaders.reduce(
+      (finalIsLoaded, isLoaded) => finalIsLoaded && isLoaded
+    );
+  }, [
+    parentId,
+    isCurrentVenueLoaded,
+    isParentVenueLoaded,
+    isSubvenuesLoaded,
+    isSiblingVenuesLoaded,
+  ]);
+
   return useMemo(
     () => ({
       parentVenue,
       currentVenue,
       relatedVenues,
+      isRelatedVenuesLoaded,
       relatedVenueEvents,
       parentVenueEvents,
       venueEvents,
@@ -250,6 +297,7 @@ export const useConnectRelatedVenues: ReactHook<
       parentVenue,
       currentVenue,
       relatedVenues,
+      isRelatedVenuesLoaded,
       relatedVenueEvents,
       parentVenueEvents,
       venueEvents,

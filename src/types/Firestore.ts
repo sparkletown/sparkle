@@ -87,7 +87,7 @@ export interface FirestoreOrdered {
   subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
-  users?: Array<WithId<User>>;
+  universeUsers?: Array<WithId<User>>;
   venueChats?: Array<WithId<RestrictedChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;

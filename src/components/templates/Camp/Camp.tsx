@@ -10,7 +10,7 @@ import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
 import { usePartygoers } from "hooks/users";
-import { usePartygoersThreshold } from "hooks/useCampPartygoers";
+// import { useRecentPartyUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -40,7 +40,7 @@ const Camp: React.FC = () => {
 
   const venue = useSelector(campVenueSelector);
   const usersInCamp = usePartygoers();
-  // const usersInCamp = usePartygoersThreshold(venue.name);
+  // const usersInCamp = useRecentPartyUsers(venue.name);
 
   const selectRoom = useCallback((campRoom: CampRoomData) => {
     setSelectedRoom(campRoom);

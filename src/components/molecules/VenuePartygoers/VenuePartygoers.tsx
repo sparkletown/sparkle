@@ -6,11 +6,11 @@ import { usePartygoers } from "hooks/users";
 import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
 import "./VenuePartygoers.scss";
-import { usePartygoersThreshold } from "hooks/useCampPartygoers";
+// import { useRecentPartyUsers } from "hooks/users";
 
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
-  // const partygoers = usePartygoersThreshold(venue.name) ?? [];
+  // const partygoers = useRecentPartyUsers(venue.name) ?? [];
   const parentVenue = useSelector(parentVenueSelector);
   const partygoers = usePartygoers();
 
