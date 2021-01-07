@@ -1,6 +1,11 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
 import admin from "firebase-admin";
+import { chunk } from "lodash";
+
+import { User } from "../src/types/User";
+import { WithId, withId } from "../src/utils/id";
+
 import { initFirebaseAdminApp } from "./lib/helpers";
 
 const usage = () => {
@@ -9,9 +14,9 @@ const usage = () => {
 ---------------------------------------------------------
 ${scriptName}: Get user details. Prints each user's email address, last seen time in milliseconds since epoch, and codes used.
 
-Usage: node ${scriptName} PROJECT_ID VENUE_ID CREDENTIAL_PATH
+Usage: ${scriptName} PROJECT_ID VENUE_IDS
 
-Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
+Example: ${scriptName} co-reality-map venueId,venueId2,venueIdN
 ---------------------------------------------------------
 `;
 
@@ -19,51 +24,70 @@ Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
   process.exit(1);
 };
 
-const [projectId, venueId] = process.argv.slice(2);
-if (!projectId || !venueId) {
+const [projectId, venueIds] = process.argv.slice(2);
+if (!projectId || !venueIds) {
   usage();
 }
 
-const app = initFirebaseAdminApp(projectId, {
-  appName: projectId,
-});
+const venueIdsArray = venueIds.split(",");
+
+initFirebaseAdminApp(projectId);
 
 (async () => {
-  const allUsers: admin.auth.UserRecord[] = [];
-  let nextPageToken: string | undefined;
-  const { users, pageToken } = await app.auth().listUsers(1000);
+  // TODO: extract this as a generic helper function?
+  const usersWhoEnteredAnyOfVenues: WithId<User>[] = await admin
+    .firestore()
+    .collection("users")
+    .where("enteredVenueIds", "array-contains-any", venueIdsArray)
+    .get()
+    .then((snapshot) =>
+      snapshot.docs.map((doc) => withId(doc.data() as User, doc.id))
+    );
 
-  allUsers.push(...users);
-  nextPageToken = pageToken;
+  // TODO: extract this as a generic helper function?
+  // Note: 100 is the max that can be requested with getUsers() per chunk
+  const authUsers: admin.auth.UserRecord[] = await Promise.all(
+    chunk(usersWhoEnteredAnyOfVenues, 100).map(async (usersChunk) => {
+      const usersChunkIds = usersChunk.map((user) => ({ uid: user.id }));
+      const authUsersResult = await admin.auth().getUsers(usersChunkIds);
 
-  while (nextPageToken) {
-    const { users, pageToken } = await app
-      .auth()
-      .listUsers(1000, nextPageToken);
-    allUsers.push(...users);
-    nextPageToken = pageToken;
-  }
+      return authUsersResult.users;
+    })
+  ).then((result) => result.flat());
 
+  const authUsersById = authUsers.reduce(
+    (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
+    {} as Record<string, admin.auth.UserRecord>
+  );
+
+  // TODO: filter enteredVenueIds so that they only contain related venues?
+
+  const result = usersWhoEnteredAnyOfVenues.map((user) => {
+    const { id, partyName, enteredVenueIds = [] } = user;
+    const { email } = authUsersById[id];
+
+    return {
+      id,
+      email,
+      partyName,
+      enteredVenueIds: enteredVenueIds.sort(),
+    };
+  });
+
+  // Display CSV headings
   console.log(
     ["Email", "Party Name", "Entered Venues"]
       .map((heading) => `"${heading}"`)
       .join(",")
   );
 
-  const firestoreUsers = await app.firestore().collection("users").get();
+  // Display CSV lines
+  result.forEach((user) => {
+    const csvLine = [user.email, user.partyName, user.enteredVenueIds]
+      .map((s) => `"${s}"`)
+      .join(",");
 
-  firestoreUsers.docs.forEach((doc) => {
-    const user = allUsers.find((u) => u.uid === doc.id);
-    const partyName = doc.data().partyName;
-    const enteredVenueIds = doc.data().enteredVenueIds;
-
-    if (enteredVenueIds?.includes(venueId)) {
-      console.log(
-        [user?.email ?? doc.id, partyName, enteredVenueIds.sort()]
-          .map((v) => `"${v}"`)
-          .join(",")
-      );
-    }
+    console.log(csvLine);
   });
 
   process.exit(0);
