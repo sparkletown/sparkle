@@ -65,7 +65,7 @@ export const universeUsersSelector: SparkleSelector<
  */
 export const usersByIdSelector: SparkleSelector<Record<string, User>> = (
   state
-) => state.firestore.data.users ?? {};
+) => state.firestore.data.universeUsers ?? {};
 
 /**
  * Selector to retrieve venues from the Redux Firestore.

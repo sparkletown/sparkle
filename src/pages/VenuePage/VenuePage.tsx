@@ -36,7 +36,7 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useIsVenueUsersLoaded } from "hooks/users";
+import { useUniverseUsers } from "hooks/users";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -68,7 +68,7 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const isVenueUsersLoaded = useIsVenueUsersLoaded();
+  const { isUniverseUsersLoaded } = useUniverseUsers();
 
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
@@ -277,7 +277,8 @@ const VenuePage: React.FC = () => {
       !event ||
       !venue ||
       !userPurchaseHistoryRequestStatus ||
-      !isVenueUsersLoaded
+      // @debt since we are not using users directly here, it would be nice to eventually remove this check from here
+      !isUniverseUsersLoaded
     ) {
       return <LoadingPage />;
     }

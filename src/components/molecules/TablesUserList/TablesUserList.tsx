@@ -9,7 +9,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers, useIsVenueUsersLoaded } from "hooks/users";
+import { usePartygoers, useUniverseUsers } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
@@ -70,7 +70,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const { user, profile } = useUser();
   const partygoers = usePartygoers();
-  const isVenueUsersLoaded = useIsVenueUsersLoaded();
+  // FIXME before merge: pass isLoaded to currentPartygoers(recentUniverseUsers in the future)
+  const { isUniverseUsersLoaded } = useUniverseUsers();
   const { experience } = useSelector((state) => ({
     experience:
       state.firestore.data.experiences &&
@@ -87,7 +88,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     }
   }, [profile, setSeatedAtTable, user, venueName]);
 
-  if (!isVenueUsersLoaded) return <>Loading...</>;
+  if (!isUniverseUsersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: Record<string, Array<User>> = {};

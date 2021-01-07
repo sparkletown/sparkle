@@ -58,7 +58,7 @@ export interface FirestoreData {
   userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
-  users?: Record<string, User>;
+  universeUsers?: Array<WithId<User>>;
   venueChats?: Record<string, RestrictedChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
