@@ -4,8 +4,10 @@ import { Modal, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { AnyVenue } from "types/Firestore";
+
 import { User } from "types/User";
+import { AnyVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 

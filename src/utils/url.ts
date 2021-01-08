@@ -1,8 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import { CODE_CHECK_URL } from "secrets";
 import { VALID_URL_PROTOCOLS } from "settings";
-import { CampVenue } from "types/CampVenue";
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue, CampVenue } from "types/venues";
 import { WithId } from "./id";
 
 export const venueLandingUrl = (venueId: string) => {

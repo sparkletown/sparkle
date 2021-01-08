@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { PartyMapRoomData } from "types/RoomData";
-import { VenueEvent } from "types/VenueEvent";
+import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
 import { getRoomUrl, openUrl } from "utils/url";

@@ -1,6 +1,5 @@
-import { Venue } from "types/Venue";
+import { isCampVenue, Venue } from "types/venues";
 import { User } from "types/User";
-import { isCampVenue } from "types/CampVenue";
 import {
   SUBVENUE_TEMPLATES,
   PLAYA_TEMPLATES,

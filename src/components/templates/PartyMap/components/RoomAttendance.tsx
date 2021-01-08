@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { usePartygoers } from "hooks/users";
 
 import { PartyMapRoomData } from "types/RoomData";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { PartyMapVenue } from "types/venues";
 
 import "./RoomAttendance.scss";
 

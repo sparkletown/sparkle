@@ -1,3 +1,5 @@
+import { HAS_ROOMS_TEMPLATES } from "settings";
+
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 import { AvatarGridRoom } from "./AvatarGrid";
@@ -6,28 +8,30 @@ import { Quotation } from "./Quotation";
 import { PartyMapRoomData, RoomData } from "./RoomData";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-export interface Question {
-  name: string;
-  text: string;
-  link?: string;
-}
-
-interface TermOfService {
-  name: string;
-  text: string;
-  link?: string;
-}
-
-export enum RoomVisibility {
-  hover = "hover",
-  count = "count",
-  nameCount = "count/name",
-}
+// TODO: should JazzBarVenue be added to this?
+export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
 export type AnyRoom = RoomData | PartyMapRoomData | AvatarGridRoom;
+
+export enum VenueTemplate {
+  jazzbar = "jazzbar",
+  friendship = "friendship",
+  partymap = "partymap",
+  zoomroom = "zoomroom",
+  themecamp = "themecamp",
+  artpiece = "artpiece",
+  artcar = "artcar",
+  performancevenue = "performancevenue",
+  preplaya = "preplaya",
+  playa = "playa",
+  audience = "audience",
+  avatargrid = "avatargrid",
+  conversationspace = "conversationspace",
+
+  firebarrel = "firebarrel",
+}
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
@@ -97,13 +101,91 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
+// @debt which of these params are exactly the same as on Venue? Can we simplify this?
+export interface PartyMapVenue extends Venue {
+  id: string;
+  template: VenueTemplate.partymap;
+  host?: {
+    url: string;
+    icon: string;
+    name: string;
+  };
+  description?: {
+    text: string;
+    program_url?: string;
+  };
+  start_utc_seconds?: number;
+  duration_hours?: number;
+  entrance_hosted_hours?: number;
+  party_name?: string;
+  unhosted_entry_video_url?: string;
+  map_url?: string;
+  map_viewbox?: string;
+  password?: string;
+  admin_password?: string;
+  owners?: string[];
+  rooms?: PartyMapRoomData[];
+}
+
+// TODO: refactor the remaining things that are using this, then delete it
+export interface CampVenue extends Venue {
+  id: string;
+  template: VenueTemplate.themecamp;
+  mapBackgroundImageUrl?: string;
+  host: {
+    url: string;
+    icon: string;
+    name: string;
+  };
+  description?: {
+    text: string;
+    program_url?: string;
+  };
+  name: string;
+  map_url: string;
+  owners: string[];
+  rooms: PartyMapRoomData[];
+  activity?: string;
+  showChat?: boolean;
+  joinButtonText?: string;
+  start_utc_seconds?: number;
+}
+
+export interface JazzbarVenue extends Venue {
+  template: VenueTemplate.jazzbar;
+  iframeUrl: string;
+  logoImageUrl: string;
+  host: {
+    icon: string;
+  };
+}
+
+export interface Question {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+interface TermOfService {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+export enum RoomVisibility {
+  hover = "hover",
+  count = "count",
+  nameCount = "count/name",
+}
+
 export interface VenueConfig {
   theme: {
     primaryColor: string;
     backgroundColor?: string;
   };
 
-  landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
+  // @debt landingPageConfig should probably be undefined, or is it guaranteed to exist everywhere?
+  landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
   showRangers?: boolean;
@@ -145,6 +227,31 @@ export interface PlayaIcon {
   venueId: string;
 }
 
+export interface VenueEvent {
+  name: string;
+  start_utc_seconds: number;
+  description: string;
+  descriptions?: string[];
+  duration_minutes: number;
+  price: number;
+  collective_price: number;
+  host: string;
+  room?: string;
+  id?: string;
+}
+
+export const isVenueWithRooms = (
+  venue: AnyVenue
+): venue is CampVenue | PartyMapVenue =>
+  HAS_ROOMS_TEMPLATES.includes(venue.template);
+
+export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+  venue.template === VenueTemplate.partymap;
+
+// TODO: find usages of this and refactor, then delete
+export const isCampVenue = (venue: AnyVenue): venue is CampVenue =>
+  venue.template === VenueTemplate.themecamp;
+
 export const urlFromImage = (
   defaultValue: string,
   filesOrUrl?: FileList | string
@@ -155,6 +262,7 @@ export const urlFromImage = (
     : defaultValue;
 };
 
+// TODO: refactor this somewhere more useful, maybe utils?
 export const createJazzbar = (values: FormValues): Venue => {
   return {
     template: VenueTemplate.jazzbar,

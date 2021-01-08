@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
-import { isVenueWithRooms } from "types/CampVenue";
 import { PartyMapRoomData } from "types/RoomData";
 import { canHaveSubvenues } from "utils/venue";
-import { Venue } from "types/Venue";
+import { isVenueWithRooms, Venue, VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 import { Link } from "react-router-dom";
 import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import { VenueEvent } from "types/VenueEvent";
 
 interface Props {
   venue: WithId<Venue>;

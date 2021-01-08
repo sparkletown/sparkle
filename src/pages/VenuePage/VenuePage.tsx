@@ -4,7 +4,7 @@ import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { VenueTemplate } from "types/VenueTemplate";
+import { VenueTemplate } from "types/venues";
 
 import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";

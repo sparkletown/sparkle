@@ -16,7 +16,7 @@ import { IS_BURN } from "secrets";
 import { isChatValid } from "validation";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { VenueTemplate } from "types/VenueTemplate";
+import { VenueTemplate } from "types/venues";
 
 import {
   currentVenueSelectorData,

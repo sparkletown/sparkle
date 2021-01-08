@@ -1,9 +1,7 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom } from "types/Venue";
-import { AnyVenue } from "types/Firestore";
+import { AnyRoom, AnyVenue, VenueEvent } from "types/venues";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";

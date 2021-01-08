@@ -13,8 +13,7 @@ import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { FriendShipPage } from "pages/FriendShipPage";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { VenueTemplate } from "types/VenueTemplate";
-import { Venue } from "types/Venue";
+import { Venue, VenueTemplate } from "types/venues";
 
 type Props = {
   venue: Venue;

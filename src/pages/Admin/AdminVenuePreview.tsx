@@ -1,8 +1,6 @@
 import React, { CSSProperties, useMemo } from "react";
-import { Venue } from "types/Venue";
+import { CampVenue, Venue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
-import { VenueTemplate } from "types/VenueTemplate";
-import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import {

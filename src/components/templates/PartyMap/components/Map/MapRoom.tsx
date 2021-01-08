@@ -3,9 +3,8 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
-import { RoomVisibility } from "types/Venue";
+import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { isTruthy } from "utils/types";
 

@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { RoomData } from "types/RoomData";
 import { RoomEvent } from "types/RoomEventData";
-import { VenueEvent } from "types/VenueEvent";
+import { VenueEvent } from "types/venues";
 
 export const ONE_MINUTE_IN_SECONDS = 60;
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;

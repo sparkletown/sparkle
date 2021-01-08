@@ -36,7 +36,7 @@ import {
   Venue,
   VenuePlacement,
   VenuePlacementState,
-} from "types/Venue";
+} from "types/venues";
 
 import { WithId } from "utils/id";
 import { updateLocationData } from "utils/useLocationUpdateEffect";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 import JazzBarSkeletonPage from "./JazzBarSkeletonPage";
 import JazzTab from "./JazzTab";
 

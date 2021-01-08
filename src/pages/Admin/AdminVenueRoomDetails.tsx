@@ -3,7 +3,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 import { PartyMapRoomData } from "types/RoomData";
 import { WithId } from "utils/id";
 import "./Admin.scss";

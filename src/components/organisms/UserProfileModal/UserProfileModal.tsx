@@ -9,15 +9,16 @@ import {
   privateChatsSelector,
 } from "utils/selectors";
 
+import { User } from "types/User";
+import { isCampVenue } from "types/venues";
+
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
 import ChatBox from "components/molecules/Chatbox";
-import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { isCampVenue } from "types/CampVenue";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";

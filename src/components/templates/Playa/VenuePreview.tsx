@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
-import { Venue, VenuePlacementState } from "types/Venue";
-import { VenueEvent } from "types/VenueEvent";
+import {
+  Venue,
+  VenueEvent,
+  VenuePlacementState,
+  VenueTemplate,
+} from "types/venues";
 import "./VenuePreview.scss";
 import {
   BURN_VENUE_TEMPLATES,
@@ -12,7 +16,6 @@ import UserList from "components/molecules/UserList";
 import { usePartygoers } from "hooks/users";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
-import { VenueTemplate } from "types/VenueTemplate";
 import firebase from "firebase/app";
 import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";

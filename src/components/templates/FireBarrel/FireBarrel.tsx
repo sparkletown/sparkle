@@ -1,7 +1,7 @@
 import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User, VideoState } from "types/User";
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 

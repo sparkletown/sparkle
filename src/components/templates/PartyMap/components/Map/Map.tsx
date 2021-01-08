@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { User, UserExperienceData } from "types/User";
-import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapVenue } from "types/venues";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 

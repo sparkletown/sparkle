@@ -1,4 +1,4 @@
-import { VenueEvent } from "types/VenueEvent";
+import { VenueEvent } from "types/venues";
 import { getCurrentTimeInUTCSeconds } from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {

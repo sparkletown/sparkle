@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
+
+import { VenueEvent } from "types/venues";
+
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { PartyMapRoomData } from "types/RoomData";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";

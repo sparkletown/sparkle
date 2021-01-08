@@ -10,9 +10,8 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { Venue } from "types/Venue";
+import { CampVenue, Venue } from "types/venues";
 import { useParams, useHistory } from "react-router-dom";
-import { CampVenue } from "types/CampVenue";
 import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { validationSchema } from "./RoomsValidationSchema";

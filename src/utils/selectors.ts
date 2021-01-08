@@ -3,11 +3,10 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "index";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
