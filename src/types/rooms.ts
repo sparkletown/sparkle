@@ -1,4 +1,4 @@
-export type AnyRoom = PartyMapRoom | AvatarGridRoom;
+export type AnyRoom = Room | AvatarGridRoom;
 
 export interface BaseRoom {
   about: string;
@@ -7,11 +7,7 @@ export interface BaseRoom {
   url: string;
 }
 
-// TODO: most of our usage across the codebase uses PartyMapRoom, not Room.
-//  We should refactor usages of Room, then rename this to Room. I don't believe
-//  there is any valid reason why we need both types to exist.
-// @debt should this extend from/be merged with Rooms?
-export interface PartyMapRoom extends BaseRoom {
+export interface Room extends BaseRoom {
   attendanceBoost?: number;
   height_percent: number;
   image_url: string;

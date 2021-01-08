@@ -2,7 +2,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { AnyRoom, AvatarGridRoom, PartyMapRoom } from "./rooms";
+import { AnyRoom, AvatarGridRoom, Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VideoAspectRatio } from "./VideoAspectRatio";
@@ -121,7 +121,7 @@ export interface PartyMapVenue extends Venue {
   password?: string;
   admin_password?: string;
   owners?: string[];
-  rooms?: PartyMapRoom[];
+  rooms?: Room[];
 }
 
 export interface JazzbarVenue extends Venue {

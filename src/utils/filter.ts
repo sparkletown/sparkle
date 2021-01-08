@@ -2,7 +2,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { PartyMapRoom } from "types/rooms";
+import { Room } from "types/rooms";
 
 import { chatSort } from "utils/chat";
 import { PrivateChatMessage } from "store/actions/Chat";
@@ -59,7 +59,7 @@ export const makeRoomHitFilter = ({
   column,
   totalRows,
   totalColumns,
-}: RoomHitFilterProps) => (room: PartyMapRoom) => {
+}: RoomHitFilterProps) => (room: Room) => {
   const checkPercentRow = (row / totalRows) * 100;
   const checkPercentColumn = (column / totalColumns) * 100;
 

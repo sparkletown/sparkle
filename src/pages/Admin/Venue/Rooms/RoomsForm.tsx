@@ -14,7 +14,7 @@ import { PartyMapVenue, Venue } from "types/venues";
 import { useParams, useHistory } from "react-router-dom";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
-import { PartyMapRoom } from "types/rooms";
+import { Room } from "types/rooms";
 import { validationSchema } from "./RoomsValidationSchema";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
@@ -92,7 +92,7 @@ export const RoomsForm: React.FC = () => {
 interface RoomInnerForm {
   venueId: string;
   venue: PartyMapVenue;
-  editingRoom?: PartyMapRoom;
+  editingRoom?: Room;
   editingRoomIndex?: number;
 }
 

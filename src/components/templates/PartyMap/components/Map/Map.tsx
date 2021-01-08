@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { User, UserExperienceData } from "types/User";
-import { PartyMapRoom } from "types/rooms";
+import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import { makeUpdateUserGridLocation } from "api/profile";
@@ -34,8 +34,8 @@ interface MapProps {
   profileData: UserExperienceData;
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
-  selectedRoom: PartyMapRoom | undefined;
-  selectRoom: (room: PartyMapRoom) => void;
+  selectedRoom: Room | undefined;
+  selectRoom: (room: Room) => void;
   unselectRoom: () => void;
   enterSelectedRoom: () => void;
 }

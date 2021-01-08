@@ -4,13 +4,13 @@ import { Modal } from "react-bootstrap";
 
 import firebase from "firebase/app";
 
-import { PartyMapRoom } from "types/rooms";
+import { Room } from "types/rooms";
 
 import "./RoomDeleteModal.scss";
 
 interface PropsType {
   venueId: string;
-  room: PartyMapRoom;
+  room: Room;
   show: boolean;
   onHide: () => void;
 }

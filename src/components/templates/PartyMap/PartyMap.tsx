@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { RootState } from "index";
 import { createUrlSafeName } from "api/admin";
 
-import { PartyMapRoom } from "types/rooms";
+import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import { useSelector } from "hooks/useSelector";
@@ -33,9 +33,9 @@ export const PartyMap: React.FC = () => {
 
   // TODO: can we just make this a boolean that is set from isTruthy(selectedRoom)?
   const [isRoomModalOpen, setRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<PartyMapRoom | undefined>();
+  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
-  const selectRoom = useCallback((room: PartyMapRoom) => {
+  const selectRoom = useCallback((room: Room) => {
     setSelectedRoom(room);
     setRoomModalOpen(true);
   }, []);
@@ -47,7 +47,7 @@ export const PartyMap: React.FC = () => {
 
   // TODO: extract this into a reusable hook/similar
   const enterRoom = useCallback(
-    (room: PartyMapRoom) => {
+    (room: Room) => {
       if (!room || !user) return;
 
       // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
