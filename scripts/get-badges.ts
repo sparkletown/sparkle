@@ -1,6 +1,7 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
 import admin from "firebase-admin";
+import { resolve } from "path";
 import { initFirebaseAdminApp } from "./lib/helpers";
 
 const usage = () => {
@@ -19,13 +20,14 @@ Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
   process.exit(1);
 };
 
-const [projectId, venueId] = process.argv.slice(2);
-if (!projectId || !venueId) {
+const [projectId, venueId, credentialPath] = process.argv.slice(2);
+if (!projectId || !venueId || !credentialPath) {
   usage();
 }
 
 const app = initFirebaseAdminApp(projectId, {
   appName: projectId,
+  credentialPath: resolve(__dirname, credentialPath),
 });
 
 (async () => {
@@ -45,26 +47,33 @@ const app = initFirebaseAdminApp(projectId, {
   }
 
   console.log(
-    ["Email", "Party Name", "Entered Venues"]
+    ["Email", "Party Name", "Entered Venues", "Venue Visits:Time Spent"]
       .map((heading) => `"${heading}"`)
       .join(",")
   );
 
   const firestoreUsers = await app.firestore().collection("users").get();
 
-  firestoreUsers.docs.forEach((doc) => {
-    const user = allUsers.find((u) => u.uid === doc.id);
-    const partyName = doc.data().partyName;
-    const enteredVenueIds = doc.data().enteredVenueIds;
+  await Promise.all(
+    firestoreUsers.docs.map(async (doc) => {
+      const user = allUsers.find((u) => u.uid === doc.id);
+      const partyName = doc.data().partyName;
+      const enteredVenueIds = doc.data().enteredVenueIds;
 
-    if (enteredVenueIds?.includes(venueId)) {
-      console.log(
-        [user?.email ?? doc.id, partyName, enteredVenueIds.sort()]
-          .map((v) => `"${v}"`)
-          .join(",")
-      );
-    }
-  });
+      if (enteredVenueIds?.includes(venueId)) {
+        const visitsCollection = await doc.ref.collection("visits").get();
+        const visitsTimeSpent = visitsCollection.docs
+          .filter((doc) => doc.exists)
+          .map((doc) => `${doc.id}:${doc.data().timeSpent}`);
+
+        console.log(
+          [user?.email ?? doc.id, partyName, visitsTimeSpent.sort()]
+            .map((v) => `"${v}"`)
+            .join(",")
+        );
+      }
+    })
+  );
 
   process.exit(0);
 })();
