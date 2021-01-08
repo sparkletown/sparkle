@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { isLoaded, useFirestoreConnect } from "react-redux-firebase";
 
 import { universeUsersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
@@ -7,11 +6,14 @@ import { WithId } from "utils/id";
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 import { useVenueId } from "hooks/useVenueId";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import {
+  useSparkleFirestoreConnect,
+  isLoaded,
+} from "hooks/useSparkleFirestoreConnect";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
 import { User } from "types/User";
-import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
 // NOTE: Heuristic approach. Way faster and efficient.
 // Is based on assumption that there is only one parent venue and it is an entry point for any user
@@ -23,14 +25,13 @@ export const useConnectUniverseUsers = () => {
   );
 
   useSparkleFirestoreConnect(() => {
-    if (!isCurrentVenueLoaded || !currentVenue) return [];
+    if (!isCurrentVenueLoaded || !currentVenue || !venueId) return [];
 
-    const rawVenueId = currentVenue.parentId || currentVenue.name;
-    const venueId = rawVenueId.toLowerCase();
+    const queryVenueId = currentVenue.parentId || venueId;
     return [
       {
         collection: "users",
-        where: ["enteredVenueIds", "array-contains", venueId],
+        where: ["enteredVenueIds", "array-contains", queryVenueId],
         storeAs: "universeUsers",
       },
     ];
@@ -45,18 +46,16 @@ export const useConnectUniverseUsers_V2 = () => {
     venueId,
   });
 
-  useFirestoreConnect(() => {
+  useSparkleFirestoreConnect(() => {
     if (!isRelatedVenuesLoaded) return [];
 
-    const worldUsersVenueNames = relatedVenues.map((venue) =>
+    const universeUserVenueIds = relatedVenues.map((venue) =>
       venue.name.toLowerCase()
     );
 
-    console.log({ worldUsersVenueNames });
-
-    return worldUsersVenueNames.map((venueName) => ({
+    return universeUserVenueIds.map((venueId) => ({
       collection: "users",
-      where: ["enteredVenueIds", "array-contains", venueName],
+      where: ["enteredVenueIds", "array-contains", venueId],
       storeAs: "universeUsers",
     }));
   });

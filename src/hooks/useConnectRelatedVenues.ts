@@ -60,6 +60,8 @@ interface UseConnectRelatedVenuesReturn {
   subvenueEvents: WithVenueId<VenueEvent>[];
 
   isRelatedVenuesLoaded: boolean;
+  isParentVenueLoaded: boolean;
+  isCurrentVenueLoaded: boolean;
 }
 
 export const useConnectRelatedVenues: ReactHook<
@@ -286,12 +288,14 @@ export const useConnectRelatedVenues: ReactHook<
       parentVenue,
       currentVenue,
       relatedVenues,
-      isRelatedVenuesLoaded,
       relatedVenueEvents,
       parentVenueEvents,
       venueEvents,
       siblingVenueEvents,
       subvenueEvents,
+      isRelatedVenuesLoaded,
+      isParentVenueLoaded,
+      isCurrentVenueLoaded,
     }),
     [
       parentVenue,
@@ -303,6 +307,8 @@ export const useConnectRelatedVenues: ReactHook<
       venueEvents,
       siblingVenueEvents,
       subvenueEvents,
+      isParentVenueLoaded,
+      isCurrentVenueLoaded,
     ]
   );
 };

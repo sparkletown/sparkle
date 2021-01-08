@@ -1,8 +1,8 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useVenueUsers } from "hooks/users";
+import { useUniverseUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
@@ -20,6 +20,10 @@ interface SearchResult {
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+
+  const normalizedSearchQuery = useMemo(() => searchQuery.toLowerCase(), [
+    searchQuery,
+  ]);
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
     users: [],
@@ -33,10 +37,10 @@ const NavSearchBar = () => {
   const venue = useSelector(currentVenueSelectorData);
 
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const venueUsers = useVenueUsers();
+  const { universeUsers } = useUniverseUsers();
 
   useEffect(() => {
-    if (!searchQuery) {
+    if (!normalizedSearchQuery) {
       setSearchResult({
         rooms: [],
         users: [],
@@ -44,18 +48,18 @@ const NavSearchBar = () => {
       });
       return;
     }
-    const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
-      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    const venueUsersResults = universeUsers.filter((user) =>
+      user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
 
-    const venueEventsResults = Object.values(venueEvents).filter((event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const venueEventsResults = venueEvents.filter((event) =>
+      event.name.toLowerCase().includes(normalizedSearchQuery)
     );
 
     const roomsResults =
       venue && venue.rooms
         ? (venue?.rooms as CampRoomData[]).filter((room) =>
-            room.title.toLowerCase().includes(searchQuery.toLowerCase())
+            room.title.toLowerCase().includes(normalizedSearchQuery)
           )
         : [];
 
@@ -64,7 +68,7 @@ const NavSearchBar = () => {
       users: venueUsersResults,
       events: venueEventsResults,
     });
-  }, [searchQuery, venue, venueEvents, venueUsers]);
+  }, [normalizedSearchQuery, venue, venueEvents, universeUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +
