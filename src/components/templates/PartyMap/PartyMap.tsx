@@ -103,21 +103,6 @@ export const PartyMap: React.FC = () => {
       <div className="party-venue-container">
         <AnnouncementMessage message={currentVenue.bannerMessage} />
 
-        {/* TODO: should this still be here on the partymap? */}
-        {/*{usersInCamp && (*/}
-        {/*  <div className="row">*/}
-        {/*    <div className="col">*/}
-        {/*      <UserList*/}
-        {/*        users={usersInCamp}*/}
-        {/*        imageSize={50}*/}
-        {/*        disableSeeAll={false}*/}
-        {/*        isCamp={true}*/}
-        {/*        activity={currentVenue.activity ?? "partying"}*/}
-        {/*      />*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*)}*/}
-
         <Map
           user={user}
           profileData={profile.data}
@@ -128,18 +113,6 @@ export const PartyMap: React.FC = () => {
           unselectRoom={unselectRoom}
           enterSelectedRoom={enterSelectedRoom}
         />
-
-        {/* TODO: should this still be here on the partymap? */}
-        {/*<div className="row">*/}
-        {/*  <div className="col">*/}
-        {/*    <RoomList*/}
-        {/*        rooms={venue.rooms}*/}
-        {/*        attendances={attendances}*/}
-        {/*        setSelectedRoom={setSelectedRoom}*/}
-        {/*        setIsRoomModalOpen={setIsRoomModalOpen}*/}
-        {/*    />*/}
-        {/*  </div>*/}
-        {/*</div>*/}
 
         <RoomModal
           show={isRoomModalOpen}
