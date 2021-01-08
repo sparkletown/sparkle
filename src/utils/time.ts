@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { RoomEvent, Room } from "types/rooms";
+
 import { VenueEvent } from "types/venues";
 
 export const ONE_MINUTE_IN_SECONDS = 60;
@@ -78,52 +78,6 @@ export function oneHourAfterTimestamp(timestamp: number) {
 
 export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds ? format(new Date(utcSeconds * 1000), "p") : "(unknown)";
-}
-
-const getEventStartingTimeInSeconds = (
-  event: RoomEvent,
-  startUtcSeconds: number
-) => {
-  return event.start_minute * ONE_MINUTE_IN_SECONDS + startUtcSeconds;
-};
-
-const getEventEndingTimeInSeconds = (
-  event: RoomEvent,
-  startUtcSeconds: number
-) => {
-  return (
-    (event.start_minute + event.duration_minutes) * ONE_MINUTE_IN_SECONDS +
-    startUtcSeconds
-  );
-};
-
-export const getCurrentEvent = (room: Room, startUtcSeconds: number) => {
-  const currentTimeInSeconds = Date.now() / 1000;
-
-  return room.events.find((event) => {
-    const eventStart = getEventStartingTimeInSeconds(event, startUtcSeconds);
-    const eventEnd = getEventEndingTimeInSeconds(event, startUtcSeconds);
-
-    const hasEventStarted = eventStart < currentTimeInSeconds;
-    const hasEventEnded = eventEnd < currentTimeInSeconds;
-
-    return hasEventStarted && !hasEventEnded;
-  });
-};
-
-export const eventHappeningNow = (room: Room, startUtcSeconds: number) => {
-  return !!getCurrentEvent(room, startUtcSeconds);
-};
-
-export function entranceUnhosted(
-  startUtcSeconds: number,
-  hostedDurationHours: number
-) {
-  const currentTimeInSeconds = Date.now() / 1000;
-  return (
-    currentTimeInSeconds >
-    startUtcSeconds + hostedDurationHours * ONE_HOUR_IN_SECONDS
-  );
 }
 
 export function getHoursAgoInSeconds(hours: number) {

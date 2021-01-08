@@ -1,24 +1,10 @@
-export type AnyRoom = Room | PartyMapRoom | AvatarGridRoom;
+export type AnyRoom = PartyMapRoom | AvatarGridRoom;
 
 export interface BaseRoom {
   about: string;
   subtitle: string;
   title: string;
   url: string;
-}
-
-export interface Room extends BaseRoom {
-  attendance_x?: string;
-  attendance_y?: string;
-  button_text?: string;
-  events: RoomEvent[];
-  external_url: string;
-  image: string;
-  name?: string;
-  on_list: boolean;
-  on_map: boolean;
-  path: string;
-  template?: string;
 }
 
 // TODO: most of our usage across the codebase uses PartyMapRoom, not Room.
@@ -34,15 +20,6 @@ export interface PartyMapRoom extends BaseRoom {
   x_percent: number;
   y_percent: number;
 }
-
-export type RoomEvent = {
-  start_minute: number;
-  duration_minutes: number;
-  host: string;
-  name: string;
-  text: string;
-  interactivity: string;
-};
 
 export interface AvatarGridRoom {
   row: number;
