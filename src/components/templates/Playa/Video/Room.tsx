@@ -4,9 +4,9 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";
 import { useUser } from "hooks/useUser";
-import { useKeyedSelector } from "hooks/useSelector";
-import { WithId } from "utils/id";
+import { useUsersById } from "hooks/users";
 import { User } from "types/User";
+import { WithId } from "utils/id";
 
 interface RoomProps {
   roomName: string;
@@ -29,12 +29,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
-  const { users } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.partygoers ?? {},
-    }),
-    ["users"]
-  );
+  const usersById = useUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
@@ -101,13 +96,13 @@ const Room: React.FC<RoomProps> = ({
     return room && user ? (
       <LocalParticipant
         participant={room.localParticipant}
-        user={users[user.uid]}
+        user={usersById[user.uid] && { ...usersById[user.uid], id: user.uid }}
         setSelectedUserProfile={setSelectedUserProfile}
         isHost={hostUid === user.uid}
         leave={leave}
       />
     ) : null;
-  }, [room, user, users, setSelectedUserProfile, hostUid, leave]);
+  }, [room, user, usersById, setSelectedUserProfile, hostUid, leave]);
 
   const others = useMemo(
     () =>
@@ -117,7 +112,12 @@ const Room: React.FC<RoomProps> = ({
             .map((participant, index) => (
               <RemoteParticipant
                 participant={participant}
-                user={users[participant.identity]}
+                user={
+                  usersById[participant.identity] && {
+                    ...usersById[participant.identity],
+                    id: participant.identity,
+                  }
+                }
                 setSelectedUserProfile={setSelectedUserProfile}
                 isHost={hostUid === participant.identity}
                 showHostControls={hostUid === user.uid}
@@ -129,7 +129,7 @@ const Room: React.FC<RoomProps> = ({
     [
       participants,
       user,
-      users,
+      usersById,
       hostUid,
       setSelectedUserProfile,
       removeParticipant,

@@ -40,8 +40,9 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  * @see ValidFirestoreKeys
  * @see ReduxFirestoreQuerySetting
  */
-export const useSparkleFirestoreConnect = (config: SparkleRFQConfig[]) =>
-  useFirestoreConnect(config);
+export const useSparkleFirestoreConnect = (
+  config?: SparkleRFQConfig[] | SparkleRFQConfig
+) => useFirestoreConnect(config);
 
 /**
  * Use react-redux-firestore's isEmpty helper with

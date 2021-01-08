@@ -1,32 +1,26 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
-import {
-  currentVenueSelector,
-  parentVenueSelector,
-  partygoersSelector,
-} from "utils/selectors";
-
-import { Venue } from "types/Venue";
-import { User } from "types/User";
+import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
 
 import "./VenuePartygoers.scss";
 
-const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
-  return (
-    partygoers?.filter((partygoer) => partygoer.lastSeenIn[venue.name]) ?? []
-  );
-};
-
 export const VenuePartygoers = () => {
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector) ?? [];
   const parentVenue = useSelector(parentVenueSelector);
+  const partygoers = usePartygoers();
 
-  const currentVenueTitle = venue.attendeesTitle ?? "partygoers";
+  const currentVenueTitle = venue?.attendeesTitle ?? "partygoers";
   const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
-  const currentVenuePartygoers = filterVenuePartygoers(partygoers, venue);
+  const venueName = venue?.name;
+
+  const currentVenuePartygoers = useMemo(() => {
+    if (!venueName) return [];
+
+    return partygoers.filter((partygoer) => partygoer.lastSeenIn?.[venueName]);
+  }, [partygoers, venueName]);
   const numberOfPartygoers = currentVenuePartygoers.length;
 
   return (

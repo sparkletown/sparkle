@@ -6,7 +6,6 @@ import TablesUserList from "components/molecules/TablesUserList";
 import "./FriendShipPage.scss";
 import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import TableComponent from "components/molecules/TableComponent";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
 import TableHeader from "components/molecules/TableHeader";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -14,8 +13,6 @@ import { currentVenueSelectorData } from "utils/selectors";
 export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const venue = useSelector(currentVenueSelectorData);
-
-  useConnectPartyGoers();
 
   if (!venue) return <>Loading...</>;
 

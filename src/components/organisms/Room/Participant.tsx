@@ -26,7 +26,6 @@ type Track = VideoTracks[number] | AudioTracks[number];
 const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   participant,
   profileData,
-  profileDataId,
   bartender,
   children,
   defaultMute = false,
