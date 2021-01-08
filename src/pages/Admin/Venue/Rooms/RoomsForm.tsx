@@ -10,10 +10,11 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { CampVenue, Venue } from "types/venues";
+import { PartyMapVenue, Venue } from "types/venues";
 import { useParams, useHistory } from "react-router-dom";
-import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
+import { PartyMapRoomData } from "types/RoomData";
 import { validationSchema } from "./RoomsValidationSchema";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
@@ -30,7 +31,7 @@ export const RoomsForm: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<CampVenue>();
+  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -53,17 +54,20 @@ export const RoomsForm: React.FC = () => {
       if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
-      setVenue(data as CampVenue);
+      setVenue(data as PartyMapVenue);
     };
     fetchVenueFromAPI();
   }, [firestore, venueId, history]);
+
   const room = useMemo(() => {
     if (
       typeof queryRoomIndex === "undefined" ||
       !venue ||
+      !venue.rooms ||
       venue.rooms.length - 1 < queryRoomIndex
     )
       return undefined;
+
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
@@ -87,8 +91,8 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerForm {
   venueId: string;
-  venue: CampVenue;
-  editingRoom?: CampVenue["rooms"][number];
+  venue: PartyMapVenue;
+  editingRoom?: PartyMapRoomData;
   editingRoomIndex?: number;
 }
 
@@ -153,7 +157,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
 
   const iconPositionFieldName = "iconPosition";
   const onBoxChange: ExtractProps<
-    typeof CampContainer
+    typeof PartyMapContainer
   >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
@@ -358,7 +362,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
           </p>
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
-              <CampContainer
+              <PartyMapContainer
                 interactive
                 resizable
                 coordinatesBoundary={{

@@ -11,7 +11,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 // TODO: should JazzBarVenue be added to this?
-export type AnyVenue = Venue | PartyMapVenue | CampVenue;
+export type AnyVenue = Venue | PartyMapVenue;
 
 export type AnyRoom = RoomData | PartyMapRoomData | AvatarGridRoom;
 
@@ -127,30 +127,6 @@ export interface PartyMapVenue extends Venue {
   rooms?: PartyMapRoomData[];
 }
 
-// TODO: refactor the remaining things that are using this, then delete it
-export interface CampVenue extends Venue {
-  id: string;
-  template: VenueTemplate.themecamp;
-  mapBackgroundImageUrl?: string;
-  host: {
-    url: string;
-    icon: string;
-    name: string;
-  };
-  description?: {
-    text: string;
-    program_url?: string;
-  };
-  name: string;
-  map_url: string;
-  owners: string[];
-  rooms: PartyMapRoomData[];
-  activity?: string;
-  showChat?: boolean;
-  joinButtonText?: string;
-  start_utc_seconds?: number;
-}
-
 export interface JazzbarVenue extends Venue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
@@ -240,9 +216,7 @@ export interface VenueEvent {
   id?: string;
 }
 
-export const isVenueWithRooms = (
-  venue: AnyVenue
-): venue is CampVenue | PartyMapVenue =>
+export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
 export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
