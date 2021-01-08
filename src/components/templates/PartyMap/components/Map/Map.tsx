@@ -155,7 +155,7 @@ export const Map: React.FC<MapProps> = ({
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
-    partygoers: partygoers ?? [], // TODO: we shouldn't have to handle undefined here.. but this may be an issue with our types
+    partygoers,
   });
 
   useKeyboardControls({
