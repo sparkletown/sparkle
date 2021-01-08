@@ -96,9 +96,6 @@ export const PartyMap: React.FC = () => {
   //   but lost that functionality in #1042, so this may no longer be correct..
   const usersInVenue = usePartygoers();
 
-  // TODO: do we need this?
-  // const [showEventSchedule, setShowEventSchedule] = useState(false);
-
   if (!user || !profile?.data) return <>Loading..</>;
 
   return (
@@ -195,17 +192,6 @@ export const PartyMap: React.FC = () => {
         {/*<div className="info-drawer-camp">*/}
         {/*  <InfoDrawer venue={currentVenue} />*/}
         {/*</div>*/}
-
-        {/* TODO: should this still be here on the partymap? */}
-        {/*<Modal*/}
-        {/*    show={showEventSchedule}*/}
-        {/*    onHide={() => setShowEventSchedule(false)}*/}
-        {/*    dialogClassName="custom-dialog"*/}
-        {/*>*/}
-        {/*  <Modal.Body>*/}
-        {/*    <SchedulePageModal />*/}
-        {/*  </Modal.Body>*/}
-        {/*</Modal>*/}
       </div>
     </>
   );
