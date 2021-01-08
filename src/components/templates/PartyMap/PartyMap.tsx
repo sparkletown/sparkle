@@ -171,17 +171,6 @@ export const PartyMap: React.FC = () => {
           onHide={unselectRoom}
         />
 
-        {/* TODO: should this still be here on the partymap? */}
-        {/*{(IS_BURN || currentVenue.showChat) && (*/}
-        {/*    <div className="chat-pop-up" style={{ zIndex: 100 }}>*/}
-        {/*      <ChatDrawer*/}
-        {/*          roomName={currentVenue.name}*/}
-        {/*          title={`${currentVenue.name} Chat`}*/}
-        {/*          chatInputPlaceholder="Chat"*/}
-        {/*      />*/}
-        {/*    </div>*/}
-        {/*)}*/}
-
         {currentVenue?.config?.showRangers && (
           <div className="sparkle-fairies">
             <SparkleFairiesPopUp />
