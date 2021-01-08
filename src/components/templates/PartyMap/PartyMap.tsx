@@ -187,11 +187,6 @@ export const PartyMap: React.FC = () => {
             <SparkleFairiesPopUp />
           </div>
         )}
-
-        {/* TODO: should this still be here on the partymap? */}
-        {/*<div className="info-drawer-camp">*/}
-        {/*  <InfoDrawer venue={currentVenue} />*/}
-        {/*</div>*/}
       </div>
     </>
   );
