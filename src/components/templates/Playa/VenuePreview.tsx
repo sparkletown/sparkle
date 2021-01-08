@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
+import { VenueEvent } from "types/VenueEvent";
 import "./VenuePreview.scss";
 import {
   BURN_VENUE_TEMPLATES,
@@ -8,17 +9,19 @@ import {
   LOC_UPDATE_FREQ_MS,
 } from "settings";
 import UserList from "components/molecules/UserList";
-import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import firebase from "firebase/app";
-import "../../molecules/OnlineStats/OnlineStats.scss";
-import VenueInfoEvents from "../../molecules/VenueInfoEvents/VenueInfoEvents";
+import { useInterval } from "hooks/useInterval";
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
+
+import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -55,28 +58,21 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const [nowMs, setNowMs] = useState(new Date().getTime());
+  const [nowMs, setNowMs] = useState(Date.now());
 
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  useInterval(() => {
+    setNowMs(Date.now());
+  }, LOC_UPDATE_FREQ_MS);
+
+  const partygoers = usePartygoers();
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNowMs(new Date().getTime());
-    }, LOC_UPDATE_FREQ_MS);
-
-    return () => clearInterval(interval);
-  }, [setNowMs]);
-
-  const usersInVenue = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.lastSeenIn &&
-          partygoer.lastSeenIn[venue.name] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const usersInVenue = partygoers.filter(
+    (partygoer) =>
+      partygoer.lastSeenIn?.[venue.name] >
+      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   useFirestoreConnect([
     {
@@ -127,12 +123,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
 
   const { urlLink, targetLink } = getLink(venue);
 
-  const [eventsNow, setEventsNow] = useState<firebase.firestore.DocumentData[]>(
-    []
-  );
-  const [eventsFuture, setEventsFuture] = useState<
-    firebase.firestore.DocumentData[]
-  >([]);
+  const [eventsNow, setEventsNow] = useState<VenueEvent[]>([]);
+  const [eventsFuture, setEventsFuture] = useState<VenueEvent[]>([]);
+
   useEffect(() => {
     firebase
       .firestore()
@@ -146,7 +139,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
               event.start_utc_seconds < nowSeconds &&
               event.start_utc_seconds + event.duration_minutes * 60 > nowSeconds
           );
-        setEventsNow(currentEvents);
+
+        // TODO: is this type cast correct?
+        setEventsNow(currentEvents as VenueEvent[]);
       });
   }, [venue]);
 
@@ -160,7 +155,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           .map((doc) => doc.data())
           .filter((event) => event.start_utc_seconds > nowSeconds)
           .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
-        setEventsFuture(futureEvents);
+
+        // TODO: is this type cast correct?
+        setEventsFuture(futureEvents as VenueEvent[]);
       });
   }, [venue]);
 
@@ -200,7 +197,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           <div className="title-container">
             <img
               className="host-icon"
-              src={venue.host.icon}
+              src={venue.host?.icon}
               alt={`${venue.name} host`}
             />
             <div className="title-text">

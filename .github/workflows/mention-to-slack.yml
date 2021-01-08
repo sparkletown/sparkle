@@ -1,3 +1,5 @@
+name: "Mention to Slack"
+
 on:
   issues:
     types: [opened, edited]

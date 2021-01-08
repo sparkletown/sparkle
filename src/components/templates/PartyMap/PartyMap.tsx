@@ -7,9 +7,9 @@ import { createUrlSafeName } from "api/admin";
 import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/RoomData";
 
-import { useVenueRecentPartygoers } from "hooks/useVenueRecentPartygoers";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { usePartygoers } from "hooks/users";
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { getCurrentTimeInUTCSeconds } from "utils/time";
@@ -79,7 +79,7 @@ export const PartyMap: React.FC = () => {
   // Find current room from url
   const { roomTitle } = useParams();
   const currentRoom = useMemo(() => {
-    if (!currentVenue || !roomTitle) return;
+    if (!currentVenue || !currentVenue.rooms || !roomTitle) return;
 
     return currentVenue.rooms.find(
       (venueRoom) =>
@@ -94,7 +94,9 @@ export const PartyMap: React.FC = () => {
   }, [currentRoom, selectRoom]);
 
   // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
-  const usersInVenue = useVenueRecentPartygoers(currentVenue.name);
+  // @debt We used to specify the explicit venue that we wanted the users for,
+  //   but lost that functionality in #1042, so this may no longer be correct..
+  const usersInVenue = usePartygoers();
 
   // TODO: do we need this?
   // const [showEventSchedule, setShowEventSchedule] = useState(false);

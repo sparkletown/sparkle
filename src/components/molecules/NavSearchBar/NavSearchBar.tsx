@@ -1,22 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
+import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { PartyMapRoomData } from "types/RoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
-import {
-  currentVenueSelectorData,
-  partygoersSelector,
-  venueEventsSelector,
-} from "utils/selectors";
+import { WithId } from "utils/id";
+import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
   rooms: PartyMapRoomData[];
-  users: User[];
+  users: readonly WithId<User>[];
   events: VenueEvent[];
 }
 
@@ -27,12 +25,15 @@ const NavSearchBar = () => {
     users: [],
     events: [],
   });
-  const [selectedUserProfile, setSelectedUserProfile] = useState<User>();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
   const [selectedRoom, setSelectedRoom] = useState<PartyMapRoomData>();
 
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
-  const venueEvents = useSelector(venueEventsSelector);
+
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venueUsers = useVenueUsers();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -43,30 +44,29 @@ const NavSearchBar = () => {
       });
       return;
     }
-    const filteredPartygoers = partygoers
-      ? Object.values(partygoers).filter((partygoer) =>
-          partygoer.partyName
-            ?.toLowerCase()
-            ?.includes(searchQuery.toLowerCase())
-        )
-      : [];
-    const filteredEvents = venueEvents
-      ? Object.values(venueEvents).filter((event) =>
-          event.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : [];
-    const filteredRooms =
+
+    // TODO: rename these filteredVenueUsers, filteredVenueEvents, filteredRooms, etc?
+    const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
+      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    );
+
+    const venueEventsResults = Object.values(venueEvents).filter((event) =>
+      event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const roomsResults =
       venue && venue.rooms
         ? (venue?.rooms as PartyMapRoomData[]).filter((room) =>
             room.title.toLowerCase().includes(searchQuery.toLowerCase())
           )
         : [];
+
     setSearchResult({
-      rooms: filteredRooms,
-      users: filteredPartygoers,
-      events: filteredEvents,
+      rooms: roomsResults,
+      users: venueUsersResults,
+      events: venueEventsResults,
     });
-  }, [partygoers, searchQuery, venue, venueEvents]);
+  }, [searchQuery, venue, venueEvents, venueUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +

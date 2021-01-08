@@ -1,13 +1,16 @@
-import React, { useEffect, useState, useMemo } from "react";
+import Bugsnag from "@bugsnag/js";
+import React, { useState, useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import firebase from "firebase/app";
 import { OnlineStatsData } from "types/OnlineStatsData";
-import _ from "lodash";
+import { range } from "lodash";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import "./SchedulePage.scss";
 import { Link } from "react-router-dom";
 import { DEFAULT_VENUE } from "settings";
 import { venueInsideUrl } from "utils/url";
+import { useInterval } from "hooks/useInterval";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 type OpenVenues = OnlineStatsData["openVenues"];
 type OpenVenue = OpenVenues[number];
@@ -26,27 +29,18 @@ const DAYS_AHEAD = 100;
 
 export const SchedulePage = () => {
   const [openVenues, setOpenVenues] = useState<OpenVenues>();
-  const [, setLoaded] = useState(false);
 
-  useEffect(() => {
-    const getOnlineStats = firebase
+  useInterval(() => {
+    firebase
       .functions()
-      .httpsCallable("stats-getOnlineStats");
-    const updateStats = () => {
-      getOnlineStats()
-        .then((result) => {
-          const { openVenues } = result.data as OnlineStatsData;
-          setOpenVenues(openVenues);
-          setLoaded(true);
-        })
-        .catch(() => {}); // REVISIT: consider a bug report tool
-    };
-    updateStats();
-    const id = setInterval(() => {
-      updateStats();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(id);
-  }, []);
+      .httpsCallable("stats-getOnlineStats")()
+      .then((result) => {
+        const { openVenues } = result.data as OnlineStatsData;
+
+        setOpenVenues(openVenues);
+      })
+      .catch(Bugsnag.notify);
+  }, FIVE_MINUTES_MS);
 
   const orderedEvents: DatedEvents = useMemo(() => {
     if (!openVenues) return [];
@@ -61,7 +55,7 @@ export const SchedulePage = () => {
       []
     );
 
-    const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
+    const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
       return {

@@ -1,12 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { usePartygoers } from "hooks/users";
+
 import { PartyMapRoomData } from "types/RoomData";
-
-import { partygoersSelector } from "utils/selectors";
-import { isTruthy } from "utils/types";
-
-import { useSelector } from "hooks/useSelector";
+import { PartyMapVenue } from "types/PartyMapVenue";
 
 import "./RoomAttendance.scss";
 
@@ -21,10 +18,14 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   venue,
   room,
 }) => {
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
 
-  const usersInRoom = partygoers.filter(
-    (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+  const usersInRoom = useMemo(
+    () =>
+      partygoers?.filter(
+        (partygoer) => partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
+      ),
+    [partygoers, venue.name, room.title]
   );
 
   const numberOfUsersInRoom = usersInRoom?.length;
@@ -32,7 +33,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
     numberOfUsersInRoom - MAX_AVATARS_VISIBLE,
     0
   );
-  const hasExtraUsersInRoom = isTruthy(numberOfExtraUsersInRoom);
+  const hasExtraUsersInRoom = numberOfExtraUsersInRoom > 0;
 
   const userAvatars = usersInRoom
     .slice(0, MAX_AVATARS_VISIBLE)

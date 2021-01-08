@@ -70,9 +70,8 @@
 .user-search-results {
   position: absolute;
   width: 100%;
-  position: fixed;
   z-index: 380;
-  top: 60px;
+  top: 105%;
   height: auto;
   padding: 20px;
   box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5);
@@ -88,6 +87,7 @@
   .row {
     padding: 10px;
     flex-direction: row;
+    cursor: pointer;
 
     &:hover {
       background-color: rgb(80, 74, 87);

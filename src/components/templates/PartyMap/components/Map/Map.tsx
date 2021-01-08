@@ -92,6 +92,8 @@ export const Map: React.FC<MapProps> = ({
 
   const checkForRoomHit = useCallback(
     (row: number, column: number) => {
+      if (!venue) return;
+
       const roomHitFilter = makeRoomHitFilter({
         row,
         column,
@@ -100,16 +102,22 @@ export const Map: React.FC<MapProps> = ({
       });
 
       // Only select the first room if we hit multiple (eg. overlapping)
-      const roomHit = venue.rooms.find(roomHitFilter);
+      const roomHit = venue.rooms?.find(roomHitFilter);
       if (roomHit) {
         selectRoom(roomHit);
       }
     },
-    [selectRoom, totalColumns, totalRows, venue.rooms]
+    [selectRoom, totalColumns, totalRows, venue]
   );
 
   const roomsHit = useMemo(() => {
-    if (!currentPosition?.row || !currentPosition?.column) return [];
+    if (
+      !venue ||
+      !venue.rooms ||
+      !currentPosition?.row ||
+      !currentPosition?.column
+    )
+      return [];
 
     const { row, column } = currentPosition;
 
@@ -121,7 +129,7 @@ export const Map: React.FC<MapProps> = ({
     });
 
     return venue.rooms.filter(roomHitFilter);
-  }, [currentPosition, totalRows, totalColumns, venue.rooms]);
+  }, [venue, currentPosition, totalRows, totalColumns]);
 
   useEffect(() => {
     if (hasElements(roomsHit)) {
@@ -193,9 +201,9 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms.map((room, index) => (
+      venue.rooms?.map((room) => (
         <MapRoom
-          key={index}
+          key={room.title}
           venue={venue}
           room={room}
           isSelected={room === selectedRoom}

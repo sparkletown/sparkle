@@ -14,6 +14,7 @@ export const PartyMapRouter: FC = () => {
   return (
     <Switch>
       <Route exact path={`${match.url}/admin`} component={BannerAdmin} />
+      <Route path={`${match.url}/:roomTitle`} component={PartyMap} />
       <Route path={`${match.url}/`} component={PartyMap} />
     </Switch>
   );

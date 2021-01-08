@@ -6,7 +6,7 @@ $dark: #19181a;
 
 .sidebar-container {
   position: fixed;
-  z-index: 90;
+  z-index: z(sidebar);
   right: 0;
   top: 60px;
   width: 360px;
@@ -74,16 +74,27 @@ $dark: #19181a;
 
   .sidebar-tabs {
     width: 100%;
+    flex: 1;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     background-color: $black;
+
+    .notification {
+      width: 8px;
+      height: 8px;
+      right: 5px;
+      border-radius: 4px;
+      background: #ffffff;
+      box-shadow: 0 1px 6px 0 rgba(255, 255, 255, 0.8);
+    }
+
     div {
+      position: relative;
       text-align: center;
       flex-grow: 1;
       display: inline-block;
       cursor: pointer;
-      height: 54px;
       line-height: 54px;
       opacity: 0.6;
       font-size: 0.9rem;

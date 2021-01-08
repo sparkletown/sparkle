@@ -1,44 +1,28 @@
-import React, { FC, useCallback } from "react";
+import React, { useCallback } from "react";
 
 import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
 
-import {
-  formatHourAndMinute,
-  getCurrentTimeInUTCSeconds,
-  currentTimeInUnixEpoch,
-} from "utils/time";
+import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
 
 import { useUser } from "hooks/useUser";
 
 import "./EventDisplay.scss";
 
 interface EventDisplayProps {
-  event: firebase.firestore.DocumentData;
+  event: VenueEvent;
   venue?: WithId<AnyVenue>;
 }
 
-export const EventDisplay: FC<EventDisplayProps> = ({ event, venue }) => {
+export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const { user, profile } = useUser();
 
   const enterEvent = useCallback(() => {
     if (!venue) return;
 
-    const room = venue?.rooms?.find((room) => room.title === event.room);
-
-    if (!room) {
-      openUrl(venueInsideUrl(venue.id));
-      return;
-    }
-
-    trackRoomEntered(
-      user!,
-      { [`${venue.name}/${room.title}`]: currentTimeInUnixEpoch },
-      profile?.lastSeenIn
-    );
-    openRoomUrl(room.url);
+    openEventRoomWithCounting({ user, profile, venue, event });
   }, [event, profile, user, venue]);
 
   const isLiveEvent =

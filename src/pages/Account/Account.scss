@@ -9,7 +9,6 @@ $large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
 $login-max-width: 540px;
 $login-wide-max-width: 1140px;
 
-$primary: #7c46fb;
 $black: #000000;
 $white: #fff;
 
@@ -55,6 +54,10 @@ $page-max-width: 1240px;
   background-color: $dark;
   flex-direction: column;
   flex: 1;
+
+  .login-container {
+    align-self: center;
+  }
 }
 .page-container-onboarding {
   max-height: 100%;
@@ -63,10 +66,33 @@ $page-max-width: 1240px;
   top: 20%;
   left: 20%;
   right: 20%;
+
+  .login-welcome-title {
+    font-style: italic;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .login-welcome-subtitle {
+    text-align: center;
+    padding-bottom: 30px;
+  }
 }
 
 .code-of-conduct-container {
   padding-top: 30px;
+
+  .code-of-conduct-form {
+    align-self: center;
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+
+    .final-step-title {
+      padding-bottom: 30px;
+    }
+  }
 }
 
 .hero-logo {
@@ -87,17 +113,42 @@ $page-max-width: 1240px;
   }
 }
 
-.login-container {
-  max-width: $login-max-width;
-  margin: 0 auto;
-  padding: $side-padding;
-  background-color: $black;
-  box-shadow: $large-shadow;
-  text-align: center;
-  border-radius: $border-radius;
+.auth-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  background-color: #1a1d24;
 
-  .form {
-    margin-top: 2rem;
+  .logo-container {
+    width: $login-max-width / 2;
+    padding-bottom: 50px;
+  }
+
+  .auth-form-container {
+    .form-container {
+      display: inline-table;
+      flex: 0;
+      width: $login-max-width;
+      margin: 0 auto;
+      padding: $side-padding;
+      background-color: $black;
+      box-shadow: $large-shadow;
+      text-align: center;
+      border-radius: $border-radius;
+
+      .form {
+        margin-top: 2rem;
+      }
+    }
+
+    .register-form-title {
+      font-weight: 900;
+      font-style: italic;
+      font-size: 2em;
+      color: white;
+    }
   }
 }
 
@@ -128,13 +179,13 @@ $page-max-width: 1240px;
 }
 
 .profile-picture-button {
-  background: $primaryColor;
   max-width: 300px;
   display: flex;
   align-items: center;
   border-radius: 22px;
+  border: solid $primary;
   padding: 15px 50px;
-  color: $black;
+  color: $white;
   font-weight: 700;
 
   &:hover {
@@ -144,7 +195,7 @@ $page-max-width: 1240px;
       rgba(0, 0, 0, 0.6) 0%,
       rgba(0, 0, 0, 0.6) 100%
     );
-    color: rgba(0, 0, 0, 1);
+    background-color: darken($primary, 20%);
   }
 }
 

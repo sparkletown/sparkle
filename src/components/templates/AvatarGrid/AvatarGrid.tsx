@@ -10,11 +10,11 @@ import { makeUpdateUserGridLocation } from "api/profile";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 import { WithId } from "utils/id";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-import { currentTimeInUnixEpoch } from "utils/time";
+import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { currentVenueSelector } from "utils/selectors";
 
 import { RoomModal } from "./RoomModal";
 import Announcement from "./Announcement";
@@ -31,8 +31,8 @@ const AvatarGrid = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
 
-  const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
+  const venue = useSelector(currentVenueSelector);
+  const partygoers = usePartygoers();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
@@ -46,18 +46,14 @@ const AvatarGrid = () => {
 
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
-      if (room && user) {
-        trackRoomEntered(
-          user,
-          { [`${venue?.name}/${room.title}`]: currentTimeInUnixEpoch },
-          profile?.lastSeenIn
-        );
-        window.open(room.url);
-      }
+      if (!venue) return;
+
+      openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]
   );
 
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
     partygoers.forEach((partygoer) => {
@@ -371,7 +367,7 @@ const AvatarGrid = () => {
             const peopleInRoom = partygoers
               ? partygoers.filter(
                   (partygoer) =>
-                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+                    partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
                 )
               : [];
             return (

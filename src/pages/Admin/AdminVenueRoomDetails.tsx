@@ -1,6 +1,8 @@
 import React from "react";
 import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
+import Bugsnag from "@bugsnag/js";
+
 import { Venue } from "types/Venue";
 import { PartyMapRoomData } from "types/RoomData";
 import { WithId } from "utils/id";
@@ -62,7 +64,13 @@ export const AdminVenueRoomDetails = ({
       );
       history.push(`/admin/venue/${venue.id}`);
     } catch (e) {
-      console.error(e);
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("AdminVenueRoomDetails::updateRoom", {
+          venueId: venue.id,
+          roomIndex: index,
+          newState,
+        });
+      });
     }
   };
 

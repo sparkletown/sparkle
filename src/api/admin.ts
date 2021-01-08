@@ -1,7 +1,5 @@
-import _ from "lodash";
-
 import firebase, { UserInfo } from "firebase/app";
-
+import { omit } from "lodash";
 import { VenueEvent } from "types/VenueEvent";
 import { PartyMapRoomData } from "types/RoomData";
 import { VenuePlacement } from "types/Venue";
@@ -20,10 +18,12 @@ export interface EventInput {
 interface Question {
   name: string;
   text: string;
+  link?: string;
 }
 
 export interface AdvancedVenueInput {
-  profileQuestions: Array<Question>;
+  profile_questions: Array<Question>;
+  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -71,6 +71,15 @@ export type VenueInput = AdvancedVenueInput &
     bannerMessage?: string;
     parentId?: string;
     owners?: string[];
+    showRangers?: boolean;
+    chatTitle?: string;
+    attendeesTitle?: string;
+    auditoriumRows?: number;
+    auditoriumColumns?: number;
+    showReactions?: boolean;
+    showRadio?: boolean;
+    radioStations?: string;
+    showZendesk?: boolean;
   };
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -152,7 +161,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
   }
 
   const firestoreVenueInput: FirestoreVenueInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
@@ -160,6 +169,12 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
+
+  // Default to showing Zendesk
+  if (input.showZendesk === undefined) {
+    input.showZendesk = true;
+  }
+
   return firestoreVenueInput;
 };
 
@@ -201,7 +216,7 @@ const createFirestoreRoomInput = async (
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ..._.omit(
+    ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),

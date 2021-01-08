@@ -9,7 +9,7 @@ import { RouterLocation } from "types/RouterLocation";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE, PLAYA_VENUE_NAME } from "settings";
+import { DEFAULT_VENUE } from "settings";
 import { useVenueId } from "hooks/useVenueId";
 
 export interface ProfileFormData {
@@ -29,6 +29,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     venueName ??
     getQueryParameters(window.location.search)?.venueId?.toString() ??
     DEFAULT_VENUE;
+  const { returnUrl } = getQueryParameters(window.location.search);
 
   const {
     register,
@@ -44,8 +45,10 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}&returnUrl=${window.location.pathname}${window.location.search}`;
-    const nextUrl = venueId ? accountQuestionsUrl : `/${DEFAULT_VENUE}`;
+    const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
+      returnUrl ? "&returnUrl=" + returnUrl : ""
+    }`;
+    const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
@@ -54,17 +57,12 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="page-container-onboarding">
       <div className="login-container">
-        <h2>Well done! Now create your profile</h2>
-        <p>
-          {IS_BURN ? (
-            <>
-              This will give you access to the {PLAYA_VENUE_NAME} and all the
-              fun venues!
-            </>
-          ) : (
-            <>This will be your public profile in the party</>
-          )}
-        </p>
+        <h2 className="login-welcome-title">
+          Well done! Now create your profile
+        </h2>
+        <div className="login-welcome-subtitle">
+          {`Don't fret, you'll be able to edit it at any time later`}
+        </div>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             <input
@@ -100,7 +98,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
-            value="Create profile"
+            value="Create my profile"
             disabled={!formState.isValid}
           />
         </form>

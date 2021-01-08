@@ -3,13 +3,13 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import "./Venue.scss";
 import { TemplateForm } from "./TemplateForm";
 import { DetailsForm } from "./DetailsForm";
-import { useHistory, useParams } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
-import { Template, ALL_VENUE_TEMPLATES } from "settings";
+import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { useUser } from "hooks/useUser";
+import { venueInsideUrl } from "utils/url";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -136,11 +136,7 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return (
-      <WithNavigationBar fullscreen>
-        <AuthenticationModal show={true} onHide={() => {}} showAuth="login" />
-      </WithNavigationBar>
-    );
+    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
   return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;

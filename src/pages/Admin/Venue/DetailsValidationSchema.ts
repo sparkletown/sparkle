@@ -6,12 +6,12 @@ import { VenueTemplate } from "types/VenueTemplate";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  MAX_IMAGE_FILE_SIZE_TEXT,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -19,7 +19,8 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type Question = VenueInput["profileQuestions"][number];
+type ProfileQuestion = VenueInput["profile_questions"][number];
+type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>()
@@ -30,7 +31,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
@@ -84,24 +85,8 @@ export const validationSchema = Yup.object()
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
 
-    mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
-
-    mapBackgroundImageFile: Yup.mixed<FileList>().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
-          : schema.notRequired()
-    ),
-
-    mapBackgroundImageUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.StringSchema) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
-          : schema.notRequired()
-    ),
+    attendeesTitle: Yup.string().notRequired().default("Guests"),
+    chatTitle: Yup.string().notRequired().default("Party"),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
@@ -142,17 +127,37 @@ export const validationSchema = Yup.object()
 
     // @debt provide some validation error messages for invalid questions
     // advanced options
-    profileQuestions: Yup.array<Question>()
+    profile_questions: Yup.array<ProfileQuestion>()
       .ensure()
       .defined()
-      .transform((val: Array<Question>) =>
+      .transform((val: Array<ProfileQuestion>) =>
         val.filter((s) => !!s.name && !!s.text)
       ), // ensure questions are not empty strings
+
+    code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
+      .ensure()
+      .defined()
+      .transform((val: Array<CodeOfConductQuestion>) =>
+        val.filter((s) => !!s.name && !!s.text)
+      ),
+
+    showRadio: Yup.bool().notRequired(),
+    radioStations: Yup.string().when("showRadio", {
+      is: true,
+      then: Yup.string().required("Radio station (stream) is required!"),
+    }),
 
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
+    showReactions: Yup.bool().notRequired(),
+    auditoriumColumns: Yup.number()
+      .notRequired()
+      .min(5, "Columns must be at least 5"),
+    auditoriumRows: Yup.number()
+      .notRequired()
+      .min(5, "Rows must be at least 5"),
   })
   .required();
 
@@ -168,7 +173,10 @@ export const editVenueCastSchema = Yup.object()
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
+  .from("showReactions", "showReactions")
   .from("columns", "columns")
+  .from("attendeesTitle", "attendeesTitle")
+  .from("chatTitle", "chatTitle")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
@@ -176,7 +184,11 @@ export const editVenueCastSchema = Yup.object()
 
   // possible locations for the map icon
   .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("auditoriumColumns", "auditoriumColumns")
+  .from("auditoriumRows", "auditoriumRows")
+  .from("mapIconImageUrl", "mapIconImageUrl")
+  .from("code_of_conduct_questions", "code_of_conduct_questions")
+  .from("profile_questions", "profile_questions");
 
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})

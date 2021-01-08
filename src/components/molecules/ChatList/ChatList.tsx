@@ -1,52 +1,35 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { venueChatUsersSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
-
-import {
-  PrivateChatMessage,
-  RestrictedChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
 import "./ChatList.scss";
 import { ChatMessage } from "./ChatMessage";
+import { sortBy } from "lodash";
 
 interface ChatListProps {
+  usersById: Record<string, User>;
   messages: WithId<RestrictedChatMessage | PrivateChatMessage>[];
   emptyListMessage?: string;
   allowDelete?: boolean;
   deleteMessage: (id: string) => Promise<void>;
+  showSenderImage?: boolean;
 }
 
 const ChatList: React.FC<ChatListProps> = ({
+  usersById,
   messages,
   allowDelete,
   emptyListMessage,
   deleteMessage,
+  showSenderImage,
 }) => {
-  const usersById = useSelector(venueChatUsersSelector) ?? {};
-  const venueId = useVenueId();
-  const venueChatUsersQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "users",
-      where: ["enteredVenueIds", "array-contains", venueId],
-      storeAs: "venueChatUsers",
-    }),
-    [venueId]
-  );
-  useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -58,7 +41,7 @@ const ChatList: React.FC<ChatListProps> = ({
   >();
 
   const showUserProfile = useCallback(
-    (message) => {
+    (message: RestrictedChatMessage | PrivateChatMessage) => {
       if (!usersById) {
         return;
       }
@@ -101,22 +84,38 @@ const ChatList: React.FC<ChatListProps> = ({
   const hideDeleteModal = useCallback(() => setShowDeleteModal(false), []);
 
   const hasMessages = hasElements(messages);
+
   const messageSender = usersById?.[messageToDelete?.from ?? ""]?.partyName;
+
+  const renderMessages = useMemo(() => {
+    // Last (newest) message goes first
+    const sortedMessages = sortBy(messages, ["ts_utc"]).reverse();
+
+    return sortedMessages.map((message) => (
+      <ChatMessage
+        key={`${message.from}-${message.ts_utc.seconds}-${message.ts_utc.nanoseconds}`}
+        usersById={usersById}
+        message={message}
+        allowDelete={allowDelete ?? false}
+        onDeleteClick={toggleDeleteModal}
+        onAvatarClick={showUserProfile}
+        showSenderImage={showSenderImage}
+      />
+    ));
+  }, [
+    allowDelete,
+    messages,
+    showSenderImage,
+    showUserProfile,
+    toggleDeleteModal,
+    usersById,
+  ]);
+
   return (
     <>
       {hasMessages && (
         <div className="chat-messages-container">
-          {usersById &&
-            messages.map((message, index) => (
-              <ChatMessage
-                key={`chat-message-${index}`}
-                usersById={usersById}
-                message={message}
-                allowDelete={allowDelete ?? false}
-                onDeleteClick={toggleDeleteModal}
-                onAvatarClick={showUserProfile}
-              />
-            ))}
+          {usersById && renderMessages}
         </div>
       )}
       {!hasMessages && (

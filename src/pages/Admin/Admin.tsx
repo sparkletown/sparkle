@@ -14,6 +14,7 @@ import {
   useParams,
   useRouteMatch,
   useHistory,
+  Redirect,
 } from "react-router-dom";
 import {
   ReduxFirestoreQuerySetting,
@@ -31,6 +32,7 @@ import {
   PLAYA_VENUE_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
+  DEFAULT_VENUE,
 } from "settings";
 import { IS_BURN } from "secrets";
 
@@ -54,11 +56,9 @@ import { useSelector } from "hooks/useSelector";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import AdminEditComponent from "./AdminEditComponent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
@@ -102,7 +102,7 @@ const VenueList: React.FC<VenueListProps> = ({
             <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
-                {venue.rooms.map((room, idx) => (
+                {venue.rooms?.map((room, idx) => (
                   <li
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
@@ -191,9 +191,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
               editedEvent={editedEvent}
               setEditedEvent={setEditedEvent}
             />
-          </Route>
-          <Route path={`${matchUrl}/placement`}>
-            <AdminEditComponent />
           </Route>
           <Route path={`${matchUrl}/Appearance`}>
             <>Appearance Component</>
@@ -449,10 +446,13 @@ const Admin: React.FC = () => {
   if (isAdminUserLoading) return <>Loading...</>;
   if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
 
+  if (!user) {
+    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
+  }
+
   return (
     <WithNavigationBar fullscreen>
       <div className="admin-dashboard">
-        <AuthenticationModal show={!user} onHide={() => {}} showAuth="login" />
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
             <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />

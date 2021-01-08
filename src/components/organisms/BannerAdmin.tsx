@@ -8,7 +8,7 @@ import { useSelector } from "hooks/useSelector";
 
 export const BannerAdmin: React.FC = () => {
   const currentVenue = useSelector(currentVenueSelector);
-  const venueId = currentVenue.id;
+  const venueId = currentVenue?.id;
   const existingBannerMessage = currentVenue?.bannerMessage ?? "";
 
   const inputFieldRef = useRef<HTMLInputElement>(null);
@@ -20,6 +20,8 @@ export const BannerAdmin: React.FC = () => {
 
   const updateBannerInFirestore = useCallback(
     (msg?: string) => {
+      if (!venueId) return;
+
       makeUpdateBanner(venueId, (errorMsg) => setError(errorMsg))(msg);
     },
     [venueId]

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, FC } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
-import _ from "lodash";
+import { range } from "lodash";
 
 import { AnyVenue } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -51,7 +51,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
     const nowDay = startOfDay(new Date());
 
-    const dates: DatedEvents = _.range(0, DAYS_AHEAD).map((idx) => {
+    const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
       const day = addDays(nowDay, idx);
 
       const todaysEvents = liveAndFutureEvents
@@ -84,7 +84,6 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         <li
           key={formatDate(day.dateDay.getTime())}
           className={`button ${idx === date ? "active" : ""}`}
-          style={{ width: 100 }}
           onClick={() => setDate(idx)}
         >
           {formatDateToWeekday(day.dateDay.getTime() / 1000)}
@@ -97,8 +96,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     () =>
       orderedEvents[date]?.events.map((event) => (
         <EventDisplay
-          // @debt I think is probably a poor choice for a key?
-          key={event.name + Math.random().toString()}
+          key={event.id}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />
@@ -116,7 +114,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const hasParentVenue = !!parentVenue;
 
   const partyinfoImage = hasParentVenue
-    ? parentVenue?.host.icon
+    ? parentVenue?.host?.icon
     : currentVenue?.host?.icon;
 
   const titleText = hasParentVenue ? parentVenue?.name : currentVenue?.name;

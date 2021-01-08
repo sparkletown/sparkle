@@ -244,9 +244,9 @@
   /************************************************/
 
   .participants-container {
-    display: flex;
-    flex-wrap: wrap;
-    height: calc(100vh - 118px);
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-gap: 1rem;
   }
 
   .seated-area {
@@ -261,6 +261,7 @@
     -khtml-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+    padding-bottom: 150px;
   }
 
   .chat-drawer {

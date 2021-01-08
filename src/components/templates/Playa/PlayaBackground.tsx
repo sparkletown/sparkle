@@ -1,9 +1,10 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState } from "react";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "./PlayaBackground.scss";
 import { PLAYA_BG_DAYPART_MS, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+import { useInterval } from "hooks/useInterval";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -12,31 +13,29 @@ interface Props {
   nightCycle?: boolean;
 }
 
-export const PlayaBackground: FC<Props> = ({ backgroundImage, nightCycle }) => {
+export const PlayaBackground: React.FC<Props> = ({
+  backgroundImage,
+  nightCycle,
+}) => {
   const [daypartClassName, setDaypartClassName] = useState("");
 
-  useEffect(() => {
-    const updateStats = () => {
-      const pt = dayjs().tz("America/Los_Angeles");
-      const ptHour = pt.hour();
+  useInterval(() => {
+    const pt = dayjs().tz("America/Los_Angeles");
+    const ptHour = pt.hour();
 
-      if (ptHour >= 5 && ptHour < 9) {
-        setDaypartClassName("daypart-morning");
-      }
-      if (ptHour >= 9 && ptHour < 18) {
-        setDaypartClassName("daypart-day");
-      }
-      if (ptHour >= 18 && ptHour < 21) {
-        setDaypartClassName("daypart-evening");
-      }
-      if (ptHour >= 21 || ptHour < 5) {
-        setDaypartClassName("daypart-night");
-      }
-    };
-    updateStats();
-    const id = setInterval(updateStats, PLAYA_BG_DAYPART_MS);
-    return () => clearInterval(id);
-  }, []);
+    if (ptHour >= 5 && ptHour < 9) {
+      setDaypartClassName("daypart-morning");
+    }
+    if (ptHour >= 9 && ptHour < 18) {
+      setDaypartClassName("daypart-day");
+    }
+    if (ptHour >= 18 && ptHour < 21) {
+      setDaypartClassName("daypart-evening");
+    }
+    if (ptHour >= 21 || ptHour < 5) {
+      setDaypartClassName("daypart-night");
+    }
+  }, PLAYA_BG_DAYPART_MS);
 
   return (
     <img

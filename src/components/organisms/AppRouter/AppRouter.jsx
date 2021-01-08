@@ -5,7 +5,6 @@ import {
   Switch,
   Redirect,
 } from "react-router-dom";
-import "firebase/analytics";
 
 import SplashPage from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
@@ -20,10 +19,11 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
-import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
+import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_MARKETING_URL } from "settings";
+import { VersionPage } from "pages/VersionPage/VersionPage";
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
@@ -36,7 +36,7 @@ const AppRouter = () => {
       <Switch>
         <Route
           path="/SparkleVerse"
-          component={() => <Redirect to={SPARKLEVERSE_MARKETING_URL} />}
+          component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
         />
         <Route path="/enter/step1" component={Step1} />
         <Route path="/enter/step2" component={Step2} />
@@ -58,6 +58,7 @@ const AppRouter = () => {
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId" component={VenuePage} />
+        <Route path="/version" component={VersionPage} />
         <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"

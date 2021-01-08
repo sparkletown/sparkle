@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { PartyMapRoomData } from "types/RoomData";
@@ -8,12 +8,16 @@ import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import {
   currentVenueSelector,
   orderedVenuesSelector,
-  partygoersSelector,
+  venueEventsSelector,
 } from "utils/selectors";
-import { currentTimeInUnixEpoch, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import {
+  getCurrentTimeInUnixEpochSeconds,
+  ONE_MINUTE_IN_SECONDS,
+} from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -30,35 +34,38 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const users = usePartygoers();
+
+  const venueName = venue?.name;
+  const roomTitle = room?.title;
+
+  const usersToDisplay = useMemo(
+    () =>
+      users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
+    [users, venueName, roomTitle]
   );
-  const users = useSelector(partygoersSelector);
 
   if (!room) {
     return <></>;
   }
 
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
-
+  // TODO: @debt refactor this to use openRoomWithCounting
   const enter = () => {
     const roomVenue = venues?.find((venue) =>
       room.url.endsWith(`/${venue.id}`)
     );
-    const venueRoom = roomVenue
-      ? { [roomVenue.name]: currentTimeInUnixEpoch }
-      : {};
+
+    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
+    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+
     room &&
       user &&
       trackRoomEntered(
         user,
         {
-          [`${venue.name}/${room?.title}`]: currentTimeInUnixEpoch,
+          [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
           ...venueRoom,
         },
         profile?.lastSeenIn
@@ -72,7 +79,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          currentTimeInUnixEpoch
+          getCurrentTimeInUnixEpochSeconds()
     );
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 

@@ -184,6 +184,8 @@
     display: flex;
     justify-content: space-evenly;
     margin-right: 10px;
+    max-width: 100%;
+    min-width: 90%;
 
     .reaction {
       padding: 0 8px;
@@ -237,6 +239,7 @@
     }
     .iframe-container {
       width: 100%;
+      min-height: 300px;
     }
   }
 }
@@ -301,6 +304,7 @@
   -khtml-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  padding-bottom: 150px;
 }
 
 .chat-drawer {

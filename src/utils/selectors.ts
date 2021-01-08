@@ -1,6 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
+import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
@@ -14,6 +15,7 @@ import {
   makeIsRequestedSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
+import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -38,9 +40,9 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<WithId<AnyVenue>> = (
-  state
-) => state.firestore.ordered.currentVenue?.[0];
+export const currentVenueSelector: SparkleSelector<
+  WithId<AnyVenue> | undefined
+> = (state) => state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
@@ -48,22 +50,22 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
 ) => state.firestore.data.currentVenue;
 
 /**
- * Selector to retrieve partygoers from the Redux Firestore.
+ * Selector to retrieve array of users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const partygoersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+export const usersSelector: SparkleSelector<WithId<User>[] | undefined> = (
   state
-) => state.firestore.ordered.partygoers;
+) => state.firestore.ordered.users;
 
 /**
- * Selector to retrieve partygoers from the Redux Firestore.
+ * Selector to retrieve an object with users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const partygoersSelectorData: SparkleSelector<
-  Record<string, User> | undefined
-> = (state) => state.firestore.data.partygoers;
+export const usersByIdSelector: SparkleSelector<Record<string, User>> = (
+  state
+) => state.firestore.data.users ?? {};
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -101,11 +103,11 @@ export const makeVenueSelector = (venueId: string) => (
 };
 
 export const currentEventSelector: SparkleSelector<
-  WithId<VenueEvent>[]
+  WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");
 
 export const userPurchaseHistorySelector: SparkleSelector<
-  WithId<Purchase>[]
+  WithId<Purchase>[] | undefined
 > = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
@@ -124,21 +126,39 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
+const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+
+export const unreadMessagesSelector = (state: RootState) => {
+  const user = authSelector(state);
+  const privateChats = privateChatsSelector(state) ?? [];
+
+  return privateChats.some(
+    (message) =>
+      message.from !== user?.uid &&
+      message.deleted !== true &&
+      message.type === "private" &&
+      message.ts_utc.seconds > HIDE_BEFORE &&
+      message.isRead === false
+  );
+};
+
+export const venueChatsSelector = (state: RootState) =>
+  state.firestore.ordered.venueChats;
+
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
 
 export const chatUsersSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
 
-export const venueChatUsersSelector = (state: RootState) =>
-  state.firestore.data.venueChatUsers;
-
 export const experiencesSelector = (state: RootState) =>
   state.firestore.data.experiences;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue &&
-  state.firestore.ordered.currentVenue[0];
+  state.firestore.ordered.currentVenue
+    ? state.firestore.ordered.currentVenue[0]
+    : undefined;
 
 export const parentVenueOrderedSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
@@ -174,8 +194,11 @@ export const makeSiblingVenueEventsSelector = (venueId?: string) => (
 ): WithId<VenueEvent>[] | undefined =>
   (state.firestore.ordered as never)[`siblingVenueEvents-${venueId}`];
 
+export const userModalVisitsSelector = (state: RootState) =>
+  state.firestore.ordered.userModalVisits;
+
 export const radioStationsSelector = (state: RootState) =>
-  state.firestore.data.venues?.playa?.radioStations;
+  state.firestore.data.currentVenue?.radioStations;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,

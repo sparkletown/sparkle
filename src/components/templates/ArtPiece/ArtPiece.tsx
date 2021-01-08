@@ -9,11 +9,11 @@ import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { IS_BURN } from "secrets";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -24,12 +24,17 @@ export const ArtPiece = () => {
   if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
+
+  const aspectContainerClasses = `aspect-container ${
+    venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
+  }`;
+
   return (
     <WithNavigationBar>
       <AnnouncementMessage message={venue?.bannerMessage} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
-          venueLogoPath={venue?.host.icon ?? ""}
+          venueLogoPath={venue?.host?.icon ?? ""}
           isLeftColumnExpanded={isLeftColumnExpanded}
           setIsLeftColumnExpanded={setIsLeftColumnExpanded}
         >
@@ -44,14 +49,16 @@ export const ArtPiece = () => {
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
-          <iframe
-            className="youtube-video"
-            title="art-piece-video"
-            src={iframeUrl}
-            frameBorder="0"
-            allow={IFRAME_ALLOW}
-            allowFullScreen
-          ></iframe>
+          <div className={aspectContainerClasses}>
+            <iframe
+              className="youtube-video"
+              title="art-piece-video"
+              src={iframeUrl}
+              frameBorder="0"
+              allow={IFRAME_ALLOW}
+              allowFullScreen
+            ></iframe>
+          </div>
           <div className="video-chat-wrapper">
             <Room
               venueName={venue.name}
@@ -71,7 +78,7 @@ export const ArtPiece = () => {
           </div>
         </div>
       </div>
-      {IS_BURN && (
+      {venue?.showRangers && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>

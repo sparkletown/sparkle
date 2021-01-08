@@ -1,6 +1,6 @@
 import React from "react";
 import { User } from "types/User";
-import { RestrictedChatMessage } from "components/context/ChatContext";
+import { RestrictedChatMessage } from "store/actions/Chat";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
@@ -45,7 +45,9 @@ export const Message: React.FC<MessageProps> = ({
         />
         <div>
           {(!sender.anonMode && sender.partyName) || DEFAULT_PARTY_NAME}{" "}
-          <span className="timestamp">{formatUtcSeconds(message.ts_utc)}</span>
+          <span className="timestamp">
+            {formatUtcSeconds(message.ts_utc.seconds)}
+          </span>
           {deletable && (
             <button
               className="btn btn-small btn-danger delete-button"
