@@ -1,13 +1,13 @@
 import React from "react";
 
 import { formatMinute, getCurrentEvent } from "utils/time";
-import { RoomData } from "types/RoomData";
+import { Room } from "types/rooms";
 
 import "./RoomCard.scss";
 
 interface PropsType {
   startUtcSeconds: number;
-  room: RoomData;
+  room: Room;
   attendance?: number;
   onClick: () => void;
 }

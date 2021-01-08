@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { AvatarGridRoom } from "types/AvatarGrid";
+import { AvatarGridRoom } from "types/rooms";
 import { User } from "types/User";
 
 import { makeUpdateUserGridLocation } from "api/profile";

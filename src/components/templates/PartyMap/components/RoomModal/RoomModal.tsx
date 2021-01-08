@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoom } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
@@ -26,7 +26,7 @@ import { RoomModalOngoingEvent, ScheduleItem } from "../";
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
-  room: PartyMapRoomData | undefined;
+  room: PartyMapRoom | undefined;
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {

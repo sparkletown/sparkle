@@ -1,16 +1,16 @@
 import React from "react";
 
 import { eventHappeningNow } from "utils/time";
-import { RoomData } from "types/RoomData";
+import { Room } from "types/rooms";
 
 import { RoomCard } from "..";
 import "./RoomList.scss";
 
 interface PropsType {
   startUtcSeconds: number;
-  rooms: RoomData[];
+  rooms: Room[];
   attendances: Record<string, number>;
-  setSelectedRoom: (value: RoomData) => void;
+  setSelectedRoom: (value: Room) => void;
   setIsRoomModalOpen: (value: boolean) => void;
 }
 
@@ -25,7 +25,7 @@ export const RoomList: React.FunctionComponent<PropsType> = ({
     (room) => room.on_list && eventHappeningNow(room, startUtcSeconds)
   );
 
-  const openModal = (room: RoomData) => {
+  const openModal = (room: Room) => {
     setSelectedRoom(room);
     setIsRoomModalOpen(true);
   };

@@ -1,6 +1,7 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom, AnyVenue, VenueEvent } from "types/venues";
+import { AnyRoom } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
 import { User } from "types/User";
 
 import { updateUserProfile } from "pages/Account/helpers";

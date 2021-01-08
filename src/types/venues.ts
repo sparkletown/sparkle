@@ -1,19 +1,16 @@
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
-
-import { AvatarGridRoom } from "./AvatarGrid";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { PartyMapRoomData, RoomData } from "./RoomData";
+import { AnyRoom, AvatarGridRoom, PartyMapRoom } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
 // TODO: should JazzBarVenue be added to this?
 export type AnyVenue = Venue | PartyMapVenue;
-
-export type AnyRoom = RoomData | PartyMapRoomData | AvatarGridRoom;
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -124,7 +121,7 @@ export interface PartyMapVenue extends Venue {
   password?: string;
   admin_password?: string;
   owners?: string[];
-  rooms?: PartyMapRoomData[];
+  rooms?: PartyMapRoom[];
 }
 
 export interface JazzbarVenue extends Venue {

@@ -6,7 +6,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoom } from "types/rooms";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
@@ -15,7 +15,7 @@ import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
-  rooms: PartyMapRoomData[];
+  rooms: PartyMapRoom[];
   users: readonly WithId<User>[];
   events: VenueEvent[];
 }
@@ -30,7 +30,7 @@ const NavSearchBar = () => {
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  const [selectedRoom, setSelectedRoom] = useState<PartyMapRoomData>();
+  const [selectedRoom, setSelectedRoom] = useState<PartyMapRoom>();
 
   const venue = useSelector(currentVenueSelectorData);
 
@@ -58,7 +58,7 @@ const NavSearchBar = () => {
 
     const roomsResults =
       venue && venue.rooms
-        ? (venue?.rooms as PartyMapRoomData[]).filter((room) =>
+        ? (venue?.rooms as PartyMapRoom[]).filter((room) =>
             room.title.toLowerCase().includes(searchQuery.toLowerCase())
           )
         : [];

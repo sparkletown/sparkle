@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 
 import { usePartygoers } from "hooks/users";
 
-import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoom } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import "./RoomAttendance.scss";
 
 interface RoomAttendanceProps {
   venue: PartyMapVenue;
-  room: PartyMapRoomData;
+  room: PartyMapRoom;
 }
 
 const MAX_AVATARS_VISIBLE = 2;

@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
 import { Venue } from "types/venues";
-import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoom } from "types/rooms";
 import { WithId } from "utils/id";
 import "./Admin.scss";
 import { RoomInput, upsertRoom } from "api/admin";
@@ -15,7 +15,7 @@ import VenueEventDetails from "./VenueEventDetails";
 interface Props {
   index: number;
   venue: WithId<Venue>;
-  room: PartyMapRoomData;
+  room: PartyMapRoom;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;

@@ -1,6 +1,5 @@
 import { format } from "date-fns";
-import { RoomData } from "types/RoomData";
-import { RoomEvent } from "types/RoomEventData";
+import { RoomEvent, Room } from "types/rooms";
 import { VenueEvent } from "types/venues";
 
 export const ONE_MINUTE_IN_SECONDS = 60;
@@ -98,7 +97,7 @@ const getEventEndingTimeInSeconds = (
   );
 };
 
-export const getCurrentEvent = (room: RoomData, startUtcSeconds: number) => {
+export const getCurrentEvent = (room: Room, startUtcSeconds: number) => {
   const currentTimeInSeconds = Date.now() / 1000;
 
   return room.events.find((event) => {
@@ -112,7 +111,7 @@ export const getCurrentEvent = (room: RoomData, startUtcSeconds: number) => {
   });
 };
 
-export const eventHappeningNow = (room: RoomData, startUtcSeconds: number) => {
+export const eventHappeningNow = (room: Room, startUtcSeconds: number) => {
   return !!getCurrentEvent(room, startUtcSeconds);
 };
 

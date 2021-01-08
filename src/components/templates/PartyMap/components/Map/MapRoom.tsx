@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { PartyMapRoomData } from "types/RoomData";
+import { PartyMapRoom } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { isTruthy } from "utils/types";
@@ -16,7 +16,7 @@ import "./MapRoom.scss";
 
 interface MapRoomProps {
   venue: PartyMapVenue;
-  room: PartyMapRoomData;
+  room: PartyMapRoom;
   isSelected: boolean;
   selectRoom: () => void;
 }
@@ -27,7 +27,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   isSelected,
   selectRoom,
 }) => {
-  const [roomHovered, setRoomHovered] = useState<PartyMapRoomData | undefined>(
+  const [roomHovered, setRoomHovered] = useState<PartyMapRoom | undefined>(
     undefined
   );
 
