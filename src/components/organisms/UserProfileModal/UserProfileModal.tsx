@@ -10,7 +10,7 @@ import {
 } from "utils/selectors";
 
 import { User } from "types/User";
-import { isCampVenue } from "types/venues";
+import { isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
@@ -146,19 +146,19 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   const venue = useSelector(currentVenueSelectorData);
   const venues = useSelector(orderedVenuesSelector);
 
-  const suspectedLocation = useMemo(
-    () => ({
+  const suspectedLocation = useMemo(() => {
+    return {
       venue: venues?.find(
         (v) =>
           (user.lastSeenIn && user.lastSeenIn[venue?.name ?? ""]) ||
           v.name === user.room
       ),
-      camp: venues?.find(
-        (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)
+      room: venues?.find(
+        (v) =>
+          isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
       ),
-    }),
-    [user, venues, venue]
-  );
+    };
+  }, [user, venues, venue]);
 
   if (!user.room || !venues) {
     return <></>;
@@ -171,13 +171,15 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
       </Link>
     );
   }
-  if (suspectedLocation.camp) {
+
+  if (suspectedLocation.room) {
     return (
-      <Link to={venuePreviewUrl(suspectedLocation.camp.id, user.room)}>
-        Room {user.room}, in camp {suspectedLocation.camp.name}
+      <Link to={venuePreviewUrl(suspectedLocation.room.id, user.room)}>
+        Room {user.room}, in camp {suspectedLocation.room.name}
       </Link>
     );
   }
+
   return <>This burner has gone walkabout. Location unguessable</>;
 };
 

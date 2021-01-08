@@ -1,4 +1,4 @@
-import { isCampVenue, Venue } from "types/venues";
+import { Venue } from "types/venues";
 import { User } from "types/User";
 import {
   SUBVENUE_TEMPLATES,
@@ -38,8 +38,10 @@ export const peopleByLastSeenIn = (
 export const peopleAttending = (
   peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
   venue: Venue
-) =>
-  [
-    venue.name,
-    ...(isCampVenue(venue) ? venue.rooms?.map((r) => r.title) : []),
-  ].flatMap((place) => peopleByLastSeenIn[place] ?? []);
+) => {
+  const rooms = venue.rooms?.map((room) => room.title) ?? [];
+
+  const locations = [venue.name, ...rooms];
+
+  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
+};

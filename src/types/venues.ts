@@ -248,10 +248,6 @@ export const isVenueWithRooms = (
 export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
-// TODO: find usages of this and refactor, then delete
-export const isCampVenue = (venue: AnyVenue): venue is CampVenue =>
-  venue.template === VenueTemplate.themecamp;
-
 export const urlFromImage = (
   defaultValue: string,
   filesOrUrl?: FileList | string
