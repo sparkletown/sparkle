@@ -118,30 +118,6 @@ export const PartyMap: React.FC = () => {
         {/*  </div>*/}
         {/*)}*/}
 
-        {/* TODO: should this still be here on the partymap? */}
-        {/*<div className="row">*/}
-        {/*  <div className="col">*/}
-        {/*    <div className="starting-indication">*/}
-        {/*      {venue.description?.text}{" "}*/}
-        {/*      {venue.description?.program_url && (*/}
-        {/*          <a*/}
-        {/*              href={venue.description.program_url}*/}
-        {/*              target="_blank"*/}
-        {/*              rel="noopener noreferrer"*/}
-        {/*          >*/}
-        {/*            Event Program here*/}
-        {/*          </a>*/}
-        {/*      )}*/}
-        {/*    </div>*/}
-        {/*    {venue.start_utc_seconds && (*/}
-        {/*        <CountDown*/}
-        {/*            startUtcSeconds={venue.start_utc_seconds}*/}
-        {/*            textBeforeCountdown="Party begins in"*/}
-        {/*        />*/}
-        {/*    )}*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
         <Map
           user={user}
           profileData={profile.data}
