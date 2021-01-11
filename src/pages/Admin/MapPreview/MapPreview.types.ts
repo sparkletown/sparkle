@@ -5,4 +5,6 @@ export interface MapPreviewProps {
   mapBackground?: string;
   rooms?: RoomData_v2[];
   venueId: string;
+  editing: boolean;
+  setEditing: (value: boolean) => void;
 }

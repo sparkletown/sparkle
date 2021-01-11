@@ -33,7 +33,6 @@ const AppButton: React.FC<ButtonProps> = ({
         as={Link}
         className={customClass}
         style={customStyle}
-        // hasGradient={gradient}
         to={linkTo!}
       >
         {children ?? text}

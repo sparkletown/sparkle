@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import firebase from "firebase/app";
 
 // Components
@@ -38,6 +38,8 @@ type EditRoomType = RoomData_v2 & {
   roomIndex: number;
 };
 
+const noop = () => {};
+
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const { name, owners, id: venueId, rooms, mapBackgroundImageUrl } = venue;
   const {
@@ -50,6 +52,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [editing, setEditing] = useState<boolean>(false);
 
   const [editingRoom, setEditingRoom] = useState<EditRoomType | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -96,23 +99,51 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     getOwnersData();
   }, [owners, ownersData]);
 
-  if (!user) return null;
+  const openPreviewLandingPage = useCallback(() => {
+    window.open(`/v/${venue.id}`);
+  }, [venue.id]);
 
-  const toggleRoomModal = () => setModalOpen(!modalOpen);
+  const toggleRoomModal = useCallback(() => setModalOpen(!modalOpen), [
+    modalOpen,
+  ]);
 
-  const handleEditRoom = (room: RoomData_v2, index: number) => {
+  const handleEditRoom = useCallback((room: RoomData_v2, index: number) => {
     setEditingRoom({
       ...room,
       roomIndex: index,
     });
-  };
+  }, []);
 
-  const handleRoomEvent = (roomName: string) => {
+  const handleRoomEvent = useCallback((roomName: string) => {
     setEventRoom(roomName);
     setShowEventModal(true);
-  };
+  }, []);
 
-  const handleEditRoomSave = (values: RoomData_v2, index: number) => {
+  const closeModal = useCallback(() => setModalOpen(false), []);
+
+  const openDeleteModal = useCallback(() => setShowDeleteModal(true), []);
+
+  const closeDeleteModal = useCallback(() => setShowDeleteModal(false), []);
+
+  const closeOwnersModal = useCallback(() => setShowOwnersModal(false), []);
+
+  const closeEventModal = useCallback(() => setShowEventModal(false), []);
+
+  const closeEditingModal = useCallback(() => setEditingRoom(null), []);
+
+  const handleNewRoom = useCallback(() => {
+    setModalOpen(false);
+    setEditing(true);
+  }, []);
+
+  const closeDeleteModals = useCallback(() => {
+    setShowDeleteModal(false);
+    setEditingRoom(null);
+  }, []);
+
+  if (!user) return null;
+
+  const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
     const newData = {
       ...values,
       x_percent: editingRoom?.x_percent,
@@ -121,7 +152,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       height_percent: editingRoom?.height_percent,
     };
 
-    updateRoom(newData, venueId!, user, index);
+    await updateRoom(newData, venueId!, user, index);
+    closeEditingModal();
   };
 
   return (
@@ -147,7 +179,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           >
             Go to your space
           </Link>
-          <Button>Preview landing page</Button>
+          <Button onClick={openPreviewLandingPage}>Preview landing page</Button>
 
           <S.AdminList>
             <S.AdminListTitle>Party admins</S.AdminListTitle>
@@ -169,6 +201,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <S.Main>
         <MapPreview
+          editing={editing}
+          setEditing={setEditing}
           venueId={venueId!}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
@@ -179,7 +213,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           <>
             <S.RoomActions>
               <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
-              <Button onClick={() => toggleRoomModal()} gradient>
+              <Button onClick={toggleRoomModal} gradient>
                 Add a room
               </Button>
             </S.RoomActions>
@@ -205,46 +239,42 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       <RoomModal
         isVisible={modalOpen}
         venueId={venueId!}
-        onSubmitHandler={() => setModalOpen(false)}
-        onClickOutsideHandler={() => setModalOpen(false)}
+        onSubmitHandler={handleNewRoom}
+        onClickOutsideHandler={closeModal}
       />
 
       {editingRoom && (
         <RoomEdit
-          isVisible={!!editingRoom}
-          onClickOutsideHandler={() => setEditingRoom(null)}
+          isVisible={!!editingRoom && !showDeleteModal}
+          onClickOutsideHandler={closeEditingModal}
           room={editingRoom}
           submitHandler={handleEditRoomSave}
-          deleteHandler={() => setShowDeleteModal(true)}
+          deleteHandler={openDeleteModal}
         />
       )}
 
       {editingRoom && (
         <RoomDeleteModal
           show={showDeleteModal}
-          onHide={() => setShowDeleteModal(false)}
+          onHide={closeDeleteModal}
           venueId={venueId!}
           room={editingRoom}
-          onDeleteRedirect={`/admin_v2/venue/${venueId}`}
-          onDelete={() => {
-            setShowDeleteModal(false);
-            setEditingRoom(null);
-          }}
+          onDelete={closeDeleteModals}
         />
       )}
 
       <VenueOwnersModal
         visible={showOwnersModal}
-        onHide={() => setShowOwnersModal(false)}
+        onHide={closeOwnersModal}
         venue={venue}
       />
 
       <AdminEventModal
         show={showEventModal}
         venueId={venueId!}
-        onHide={() => setShowEventModal(false)}
-        setEditedEvent={() => {}}
-        setShowDeleteEventModal={() => {}}
+        onHide={closeEventModal}
+        setEditedEvent={noop}
+        setShowDeleteEventModal={noop}
         roomName={eventRoom}
       />
     </S.Container>

@@ -167,6 +167,7 @@ $page-max-width: 1240px;
 
         .page-container-adminpanel-content {
           margin-right: 40px;
+          height: calc(100vh - 180px);
         }
 
         .page-container-adminpanel-content,

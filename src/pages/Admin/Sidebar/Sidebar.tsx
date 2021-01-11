@@ -3,6 +3,7 @@ import { useVenueId } from "hooks/useVenueId";
 import React from "react";
 import { Button, Form, Nav } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
+import { VenueTemplate } from "types/VenueTemplate";
 import { SidebarOption } from "../Admin_v2";
 
 import * as S from "./Sidebar.styles";
@@ -24,6 +25,9 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const history = useHistory();
 
   const venues = useSelector((state) => state.firestore.ordered.venues);
+  const partyVenues = venues?.filter(
+    (venue) => venue.template === VenueTemplate.partymap
+  );
   const handleVenueChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     history.push(`/admin_v2/${event.target.value}`);
 
@@ -45,7 +49,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
           <option disabled aria-disabled value={selectVenue}>
             - Select Venue-
           </option>
-          {venues?.map((venue) => (
+          {partyVenues?.map((venue) => (
             <option key={venue.id!} value={venue.id!}>
               {venue.name}
             </option>
