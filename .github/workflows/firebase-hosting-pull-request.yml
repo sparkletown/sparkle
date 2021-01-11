@@ -2,8 +2,18 @@
 
 name: Deploy to Firebase Hosting Preview on PR
 on:
-  pull_request_target:
-    branches: [ staging ]
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+    branches:
+      - staging
+    paths:
+      - 'package-lock.json'
+      - 'public/**'
+      - 'src/**'
 
 jobs:
   build_and_preview:
