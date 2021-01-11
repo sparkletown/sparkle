@@ -102,6 +102,10 @@ const createVenueData = (data, context) => {
     }
   }
 
+  if (data.mapBackgroundImageUrl) {
+    venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   switch (data.template) {
     case VenueTemplate.jazzbar:
     case VenueTemplate.performancevenue:
