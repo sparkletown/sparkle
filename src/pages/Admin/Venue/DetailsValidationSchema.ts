@@ -12,6 +12,7 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -84,6 +85,14 @@ export const validationSchema = Yup.object()
 
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
 
     attendeesTitle: Yup.string().notRequired().default("Guests"),
     chatTitle: Yup.string().notRequired().default("Party"),
