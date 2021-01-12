@@ -3,8 +3,8 @@ import { RoomData_v2 } from "types/RoomData";
 export interface MapPreviewProps {
   venueName: string;
   mapBackground?: string;
-  rooms?: RoomData_v2[];
+  rooms: RoomData_v2[];
   venueId: string;
-  editing: boolean;
-  setEditing: (value: boolean) => void;
+  isEditing: boolean;
+  setIsEditing: (value: boolean) => void;
 }

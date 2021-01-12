@@ -457,6 +457,22 @@ export const updateRoom = async (
   });
 };
 
+export const bulkUpdateRooms = async (
+  venueId: string,
+  user: UserInfo,
+  rooms: RoomInput_v2[]
+) => {
+  const test = rooms.map((firestoreVenueInput, index) => {
+    return firebase.functions().httpsCallable("venue-upsertRoom")({
+      venueId,
+      index,
+      room: firestoreVenueInput,
+    });
+  });
+
+  return Promise.all(test);
+};
+
 export const createRoom = async (
   input: RoomData_v2,
   venueId: string,

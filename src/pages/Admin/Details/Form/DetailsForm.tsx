@@ -46,7 +46,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  console.log(editData);
   const onSubmit = useCallback(
     async (vals: FormValues) => {
       if (!user) return;

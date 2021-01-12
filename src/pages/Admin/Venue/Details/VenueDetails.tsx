@@ -1,31 +1,30 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import firebase from "firebase/app";
+import { useFirestoreConnect } from "react-redux-firebase";
+import { isEqual } from "lodash";
+import { Link } from "react-router-dom";
 
-// Components
+import { updateRoom } from "api/admin";
+
+import { venueLandingUrl } from "utils/url";
+
+import { useUser } from "hooks/useUser";
+
+import { AnyRoom } from "types/Venue";
+import { RoomData_v2 } from "types/RoomData";
+import { VenueDetailsProps } from "./VenueDetails.types";
+
 import VenueHero from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
 import RoomEdit from "pages/Admin/Room/Edit";
 import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
-
-// Hooks
-import { Link } from "react-router-dom";
-
-// Typings
-import { VenueDetailsProps } from "./VenueDetails.types";
-
-// Styles
-import * as S from "./VenueDetails.styles";
 import MapPreview from "pages/Admin/MapPreview";
-import { updateRoom } from "api/admin";
-import { RoomData_v2 } from "types/RoomData";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { isEqual } from "lodash";
-import RoomDeleteModal from "../Rooms/RoomDeleteModal";
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
-import { useUser } from "hooks/useUser";
-import { AnyRoom } from "types/Venue";
+import RoomDeleteModal from "../Rooms/RoomDeleteModal";
+
+import * as S from "./VenueDetails.styles";
 
 type Owner = {
   id: string;
@@ -52,7 +51,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [editing, setEditing] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const [editingRoom, setEditingRoom] = useState<EditRoomType | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -100,7 +99,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   }, [owners, ownersData]);
 
   const openPreviewLandingPage = useCallback(() => {
-    window.open(`/v/${venue.id}`);
+    window.open(venueLandingUrl(venue.id));
   }, [venue.id]);
 
   const toggleRoomModal = useCallback(() => setModalOpen(!modalOpen), [
@@ -133,7 +132,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const handleNewRoom = useCallback(() => {
     setModalOpen(false);
-    setEditing(true);
+    setIsEditing(true);
   }, []);
 
   const closeDeleteModals = useCallback(() => {
@@ -201,12 +200,12 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <S.Main>
         <MapPreview
-          editing={editing}
-          setEditing={setEditing}
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
           venueId={venueId!}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
-          rooms={rooms}
+          rooms={rooms ?? []}
         />
 
         {!!mapBackgroundImageUrl && (

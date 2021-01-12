@@ -137,7 +137,7 @@ export interface Venue_v2_Base {
     primaryColor: string;
     backgroundColor?: string;
   };
-  id?: string;
+  id: string;
   rooms?: AnyRoom[];
   mapBackgroundImageUrl?: string;
 }
