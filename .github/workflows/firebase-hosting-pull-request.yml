@@ -19,7 +19,7 @@ on:
 jobs:
   build_and_preview:
     runs-on: ubuntu-latest
-    environment: staging
+    environment: feature-preview
     env:
       REACT_APP_BUILD_SHA1: '${{ github.sha }}'
       REACT_APP_BUILD_TAG: '${{ github.ref }}'
