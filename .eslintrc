@@ -23,7 +23,7 @@
       {
         "name": "react-redux",
         "importNames": ["useSelector", "useDispatch", "useFirestoreConnect"],
-        "message": "Import typed version from hooks/{useSelector|useDispatch|useFirestoreConnect}"
+        "message": "Import typed version from hooks/{useSelector|useDispatch|useSparkleFirestoreConnect}"
       },
       {
         "name": "firebase",

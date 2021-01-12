@@ -28,9 +28,9 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import {
-  SparkleRFDocQuery,
-  useFirestoreConnect,
-} from "hooks/useFirestoreConnect";
+  SparkleRFQConfig,
+  useSparkleFirestoreConnect,
+} from "hooks/useSparkleFirestoreConnect";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -91,11 +91,12 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
+  const venueParentId = venue?.parentId;
   const privateChats = useSelector(privateChatsSelector);
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentQuery = useMemo<SparkleRFDocQuery[]>(
+  const venueParentQuery = useMemo<SparkleRFQConfig[]>(
     () =>
       venue?.parentId
         ? [
@@ -108,7 +109,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         : [],
     [venue]
   );
-  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
+  useSparkleFirestoreConnect(venueParentId ? venueParentQuery : undefined);
 
   const numberOfUnreadMessages = useMemo(() => {
     if (!user || !privateChats) return 0;

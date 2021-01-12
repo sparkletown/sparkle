@@ -63,7 +63,10 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
-import { SparkleRFQuery, useFirestoreConnect } from "hooks/useFirestoreConnect";
+import {
+  SparkleRFQConfig,
+  useSparkleFirestoreConnect,
+} from "hooks/useSparkleFirestoreConnect";
 
 dayjs.extend(advancedFormat);
 
@@ -424,14 +427,14 @@ const Admin: React.FC = () => {
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<SparkleRFQuery>(
+  const venuesOwnedByUserQuery = useMemo<SparkleRFQConfig>(
     () => ({
       collection: "venues",
       where: [["owners", "array-contains", userId]],
     }),
     [userId]
   );
-  useFirestoreConnect(venuesOwnedByUserQuery);
+  useSparkleFirestoreConnect(venuesOwnedByUserQuery);
 
   const { venueId } = useParams();
   const queryParams = useQuery();
