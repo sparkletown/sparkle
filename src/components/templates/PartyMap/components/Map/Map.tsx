@@ -234,36 +234,34 @@ export const Map: React.FC<PropsType> = ({
   }
 
   return (
-    <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl}
-            alt=""
-          />
+    <div className="party-map-page-container">
+      <div className="party-map-content-container">
+        <img
+          width="100%"
+          className="party-map-background"
+          src={venue.mapBackgroundImageUrl}
+          alt=""
+        />
 
-          <div
-            className="party-map-grid-container"
-            style={{
-              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
-              gridTemplateRows: `repeat(${rows}, 1fr)`,
-            }}
-          >
-            {mapGrid}
-            {partygoersOverlay}
-            {roomOverlay}
-          </div>
-
-          {selectedUserProfile && (
-            <UserProfileModal
-              show={isUserProfileSelected}
-              onHide={deselectUserProfile}
-              userProfile={selectedUserProfile}
-            />
-          )}
+        <div
+          className="party-map-grid-container"
+          style={{
+            gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+            gridTemplateRows: `repeat(${rows}, 1fr)`,
+          }}
+        >
+          {mapGrid}
+          {partygoersOverlay}
+          {roomOverlay}
         </div>
+
+        {selectedUserProfile && (
+          <UserProfileModal
+            show={isUserProfileSelected}
+            onHide={deselectUserProfile}
+            userProfile={selectedUserProfile}
+          />
+        )}
       </div>
 
       <div className="sidebar">
