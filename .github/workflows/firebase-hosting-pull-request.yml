@@ -53,7 +53,7 @@ jobs:
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CO_REALITY_STAGING }}'
-          projectId: co-reality-staging
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
           target: staging
           expires: 14d
         env:
