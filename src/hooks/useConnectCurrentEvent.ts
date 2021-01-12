@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { oneHourAfterTimestamp } from "utils/time";
 import { useState } from "react";
 import { useUser } from "./useUser";
@@ -9,7 +9,7 @@ export const useConnectCurrentEvent = () => {
   const { user } = useUser();
   const [currentTimestamp] = useState(Date.now() / 1000);
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "venues",
       doc: venueId,
@@ -23,7 +23,7 @@ export const useConnectCurrentEvent = () => {
     },
   ]);
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "purchases",
       where: [

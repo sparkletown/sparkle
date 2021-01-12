@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { IFRAME_ALLOW, PLAYA_VENUE_NAME } from "settings";
 
 const WelcomePage: React.FunctionComponent = () => {
-  useFirestoreConnect("marketingemails");
+  useSparkleFirestoreConnect("marketingemails");
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailSubmitError, setEmailSubmitError] = useState(null);

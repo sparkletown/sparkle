@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 
 import { currentVenueSelector } from "utils/selectors";
 import getQueryParameters from "utils/getQueryParameters";
@@ -16,7 +16,7 @@ export const useConnectCurrentVenue = () => {
     venueId = getQueryParameters(window.location.search)?.venueId;
   }
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "venues",
       doc: venueId,
@@ -24,7 +24,7 @@ export const useConnectCurrentVenue = () => {
     },
   ]);
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "venues",
       doc: venueId,

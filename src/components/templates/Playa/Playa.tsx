@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
@@ -131,7 +131,7 @@ const isPlaced = (venue: Venue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
-  useFirestoreConnect("venues");
+  useSparkleFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>

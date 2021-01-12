@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { Modal } from "react-bootstrap";
 
 import { CampRoomData } from "types/CampRoomData";
@@ -40,7 +40,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   joinButtonText,
 }) => {
-  useFirestoreConnect("venues");
+  useSparkleFirestoreConnect("venues");
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);

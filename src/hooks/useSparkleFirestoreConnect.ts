@@ -1,6 +1,7 @@
+// eslint-disable-next-line no-restricted-imports
 import {
   ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
+  useFirestoreConnect as _useFirestoreConnect,
   isLoaded as _isLoaded,
   isEmpty as _isEmpty,
 } from "react-redux-firebase";
@@ -21,9 +22,16 @@ export type Defined<T> = T & Exclude<T, undefined>;
  * @see useSparkleFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
-export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
+
+export interface SparkleRFQConfigObject extends ReduxFirestoreQuerySetting {
   storeAs?: ValidFirestoreKeys;
 }
+
+export type SparkleRFQConfig =
+  | SparkleRFQConfigObject
+  | SparkleRFQConfigObject[]
+  | ValidFirestoreKeys // @debt Eridicate this as a way to connectData
+  | undefined;
 
 /**
  * A wrapper for useFirestoreConnect() that ensures the config
@@ -40,9 +48,8 @@ export interface SparkleRFQConfig extends ReduxFirestoreQuerySetting {
  * @see ValidFirestoreKeys
  * @see ReduxFirestoreQuerySetting
  */
-export const useSparkleFirestoreConnect = (
-  config?: SparkleRFQConfig[] | SparkleRFQConfig
-) => useFirestoreConnect(config);
+export const useSparkleFirestoreConnect = (config: SparkleRFQConfig) =>
+  _useFirestoreConnect(config);
 
 /**
  * Use react-redux-firestore's isEmpty helper with

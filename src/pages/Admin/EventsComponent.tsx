@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { RoomVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
@@ -16,7 +16,7 @@ const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
   editedEvent,
   setEditedEvent,
 }) => {
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "venues",
       doc: venue.id,

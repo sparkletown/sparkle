@@ -85,6 +85,7 @@ export interface FirestoreOrdered {
   statsOpenVenues?: Array<WithId<AnyVenue>>;
   subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
+  marketingemails?: Array<string>;
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
   users?: Array<WithId<User>>;

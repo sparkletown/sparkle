@@ -14,7 +14,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { updateTheme } from "pages/VenuePage/helpers";
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { useParams } from "react-router-dom";
 import { Firestore } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
@@ -61,7 +61,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     window.location.hostname = redirectUrl;
   }
 
-  useFirestoreConnect({
+  useSparkleFirestoreConnect({
     collection: "venues",
     doc: venueId,
     subcollections: [{ collection: "events" }],

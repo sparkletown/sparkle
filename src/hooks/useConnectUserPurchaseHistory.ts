@@ -1,12 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { useUser } from "./useUser";
 
 export const useConnectUserPurchaseHistory = () => {
   const { venueId } = useParams();
   const { user } = useUser();
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     {
       collection: "purchases",
       where: [

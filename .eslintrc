@@ -22,8 +22,13 @@
       "error",
       {
         "name": "react-redux",
-        "importNames": ["useSelector", "useDispatch", "useFirestoreConnect"],
-        "message": "Import typed version from hooks/{useSelector|useDispatch|useSparkleFirestoreConnect}"
+        "importNames": ["useSelector", "useDispatch"],
+        "message": "Import typed version from hooks/{useSelector|useDispatch}"
+      },
+      {
+        "name": "react-redux-firebase",
+        "importNames": ["useFirestoreConnect"],
+        "message": "Import typed version from hooks/useSparkleFirestoreConnect"
       },
       {
         "name": "firebase",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
+import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -37,6 +37,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useIsVenueUsersLoaded } from "hooks/users";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -219,7 +220,7 @@ const VenuePage: React.FC = () => {
     });
   }, [firestore, venueId, venueIdFromParams]);
 
-  useFirestoreConnect(
+  useSparkleFirestoreConnect(
     user?.uid
       ? {
           collection: "privatechats",

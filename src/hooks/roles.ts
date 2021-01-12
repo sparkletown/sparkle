@@ -24,7 +24,7 @@ export const adminRoleSelector: SparkleSelector<AdminRole | undefined> = (
 /**
  * React Hook to load and return adminRole data from Firestore/Redux.
  *
- * @see useFirestoreConnect
+ * @see useSparkleFirestoreConnect
  * @see useSelector
  */
 export const useAdminRole = () => {

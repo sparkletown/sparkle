@@ -1,15 +1,15 @@
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { useUser } from "./useUser";
 import { useSelector } from "./useSelector";
 
 const useRoles = () => {
   const { user } = useUser();
-  useFirestoreConnect({
+  useSparkleFirestoreConnect({
     collection: "roles",
     where: [["users", "array-contains", user?.uid || ""]],
     storeAs: "userRoles",
   });
-  useFirestoreConnect({
+  useSparkleFirestoreConnect({
     collection: "roles",
     where: [["allowAll", "==", true]],
     storeAs: "allowAllRoles",

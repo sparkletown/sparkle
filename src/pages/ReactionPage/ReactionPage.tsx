@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
@@ -23,7 +23,7 @@ const ReactionPage = () => {
 
   const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
 
-  useFirestoreConnect([
+  useSparkleFirestoreConnect([
     venue
       ? {
           collection: "experiences",

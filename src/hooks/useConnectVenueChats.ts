@@ -1,7 +1,7 @@
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 
 export const useConnectVenueChats = (venueId?: string) => {
-  useFirestoreConnect(
+  useSparkleFirestoreConnect(
     venueId
       ? {
           collection: "venues",

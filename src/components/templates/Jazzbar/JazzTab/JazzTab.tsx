@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -61,7 +61,7 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useFirestoreConnect(
+  useSparkleFirestoreConnect(
     venue?.name
       ? {
           collection: "experiences",
