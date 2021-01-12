@@ -14,8 +14,9 @@ export const adminRoleQuery: SparkleRFDocQuery = {
   storeAs: "adminRole",
 };
 
-export const adminRoleSelector: SparkleSelector<AdminRole> = (state) =>
-  state.firestore.data.adminRole;
+export const adminRoleSelector: SparkleSelector<AdminRole | undefined> = (
+  state
+) => state.firestore.data.adminRole;
 
 /**
  * React Hook to load and return adminRole data from Firestore/Redux.
@@ -40,7 +41,8 @@ export const useAdminRole = () => {
  */
 export const useAdminUserIds = () => {
   const { adminRole, isLoading, isEmpty } = useAdminRole();
-  const adminUserIds = !isLoading && !isEmpty ? adminRole.users : [];
+  const adminUserIds =
+    !isLoading && !isEmpty && adminRole?.users ? adminRole.users : [];
   return {
     adminUserIds,
     isLoading,

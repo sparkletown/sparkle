@@ -19,12 +19,13 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -135,7 +136,7 @@ export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = usePartygoers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
@@ -198,6 +199,8 @@ export const Audience: React.FunctionComponent = () => {
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
+
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
   partygoers?.forEach((partygoer) => {

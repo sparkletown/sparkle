@@ -19,10 +19,10 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import { getRandomInt } from "utils/getRandomInt";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 import { useSelector } from "hooks/useSelector";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { usePartygoers } from "hooks/users";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 
 interface PotLuckButtonProps {
@@ -40,7 +40,6 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
   venues,
   afterSelect,
 }) => {
-  useConnectPartyGoers();
   const goToRandomVenue = useCallback(() => {
     if (!venues) return;
     const randomVenue = venues[getRandomInt(venues?.length - 1)];
@@ -75,7 +74,9 @@ const OnlineStats: React.FC = () => {
   >();
 
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
+
+  const venueName = venue?.name;
 
   useInterval(() => {
     firebase
@@ -93,7 +94,7 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
+    const peopleByLastSeen = peopleByLastSeenIn(venueName ?? "", partygoers);
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
@@ -110,7 +111,7 @@ const OnlineStats: React.FC = () => {
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, partygoers, venue]);
+  }, [openVenues, partygoers, venue, venueName]);
 
   const fuseVenues = useMemo(
     () =>
@@ -156,10 +157,15 @@ const OnlineStats: React.FC = () => {
   const liveVenues = filteredVenues.filter(
     (venue) => venue.currentEvents.length
   );
+
   const allVenues = filteredVenues.filter(
     (venue) => !venue.currentEvents.length
   );
-  const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
+
+  const peopleByLastSeen = useMemo(
+    () => peopleByLastSeenIn(venueName ?? "", partygoers),
+    [partygoers, venueName]
+  );
 
   const popover = useMemo(
     () =>

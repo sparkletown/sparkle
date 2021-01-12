@@ -8,12 +8,13 @@ import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { enterLocation } from "utils/useLocationUpdateEffect";
 import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
+import { orderedVenuesSelector } from "utils/selectors";
 import { openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
+import { usePartygoers } from "hooks/users";
 
 import Sidebar from "components/molecules/Sidebar";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -62,9 +63,7 @@ export const Map: React.FC<PropsType> = ({
   const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
-  const partygoers: readonly WithId<User>[] | undefined = useSelector(
-    partygoersSelector
-  );
+  const partygoers = usePartygoers();
 
   useEffect(() => {
     const img = new Image();
@@ -158,7 +157,7 @@ export const Map: React.FC<PropsType> = ({
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
-    partygoers: partygoers ?? [],
+    partygoers,
   });
 
   const enterSelectedRoom = useCallback(() => {

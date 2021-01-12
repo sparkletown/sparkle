@@ -1,11 +1,10 @@
 import React from "react";
-import { useSelector } from "../../../hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 import { PLAYA_AVATAR_SIZE } from "../../../settings";
 import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
 import AvatarImage from "./AvatarImage";
-import { partygoersSelector } from "utils/selectors";
 interface PropsType {
   user: WithId<User>;
   state: UserState;
@@ -16,7 +15,7 @@ const AvatarPartygoers: React.FC<PropsType> = ({
   state,
   useProfilePicture,
 }) => {
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
   const roomParticipants = user.video?.inRoomOwnedBy
     ? partygoers.filter(
         (partygoer) =>

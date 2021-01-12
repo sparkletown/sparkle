@@ -14,11 +14,12 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
 import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 // Typings
 import { AvatarGridRoom } from "types/AvatarGrid";
@@ -35,7 +36,7 @@ const AvatarGrid = () => {
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const partygoers = usePartygoers();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
@@ -49,11 +50,14 @@ const AvatarGrid = () => {
 
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
+      if (!venue) return;
+
       openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]
   );
 
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   partygoers &&
     partygoers.forEach((partygoer) => {
@@ -381,7 +385,7 @@ const AvatarGrid = () => {
             const peopleInRoom = partygoers
               ? partygoers.filter(
                   (partygoer) =>
-                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
+                    partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
                 )
               : [];
             return (
