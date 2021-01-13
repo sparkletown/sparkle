@@ -16,7 +16,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "bodyssey",
@@ -27,7 +31,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "staging",
@@ -38,7 +46,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkleverse",
@@ -49,7 +61,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-1",
@@ -60,7 +76,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-2a",
@@ -71,7 +91,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-3",
@@ -82,7 +106,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-4",
@@ -93,7 +121,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-5",
@@ -104,7 +136,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-6",
@@ -115,7 +151,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-7",
@@ -126,7 +166,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-8",
@@ -137,7 +181,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-9",
@@ -148,7 +196,11 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     },
     {
       "target": "sparkle-10",
@@ -159,10 +211,17 @@
           "destination": "/index.html"
         }
       ],
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ]
     }
   ],
   "functions": {
-    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run lint"]
+    "predeploy": [
+      "npm --prefix \"$RESOURCE_DIR\" run lint"
+    ],
+    "source": "functions"
   }
 }
