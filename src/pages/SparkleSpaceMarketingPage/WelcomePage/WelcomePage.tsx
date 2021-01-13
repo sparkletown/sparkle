@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { IFRAME_ALLOW, PLAYA_VENUE_NAME } from "settings";
+import { ValidFirestoreKeys } from "types/Firestore";
 
 const WelcomePage: React.FunctionComponent = () => {
-  useSparkleFirestoreConnect("marketingemails");
+  // @dept Probably we should remove this piece of software if it is not functional anymore
+  useFirestoreConnect("marketingemails" as ValidFirestoreKeys);
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailSubmitError, setEmailSubmitError] = useState(null);

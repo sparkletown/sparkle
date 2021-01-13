@@ -1,9 +1,6 @@
 import { isEmpty, isLoaded } from "react-redux-firebase";
 import { SparkleSelector } from "types/SparkleSelector";
-import {
-  SparkleRFQConfig,
-  useSparkleFirestoreConnect,
-} from "./useSparkleFirestoreConnect";
+import { SparkleRFQConfig, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
 export type AdminRole = {
@@ -24,11 +21,11 @@ export const adminRoleSelector: SparkleSelector<AdminRole | undefined> = (
 /**
  * React Hook to load and return adminRole data from Firestore/Redux.
  *
- * @see useSparkleFirestoreConnect
+ * @see useFirestoreConnect
  * @see useSelector
  */
 export const useAdminRole = () => {
-  useSparkleFirestoreConnect(adminRoleQuery);
+  useFirestoreConnect(adminRoleQuery);
   const adminRole = useSelector(adminRoleSelector);
   return {
     adminRole,

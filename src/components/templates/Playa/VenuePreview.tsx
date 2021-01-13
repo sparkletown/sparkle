@@ -10,7 +10,7 @@ import {
 } from "settings";
 import UserList from "components/molecules/UserList";
 import { usePartygoers } from "hooks/users";
-import { useSparkleFirestoreConnect } from "useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -75,7 +75,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
   );
 
-  useSparkleFirestoreConnect([
+  useFirestoreConnect([
     {
       collection: "venues",
       doc: venue.id,

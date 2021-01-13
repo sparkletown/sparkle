@@ -37,7 +37,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useIsVenueUsersLoaded } from "hooks/users";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -220,7 +220,7 @@ const VenuePage: React.FC = () => {
     });
   }, [firestore, venueId, venueIdFromParams]);
 
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     user?.uid
       ? {
           collection: "privatechats",

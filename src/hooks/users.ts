@@ -7,14 +7,14 @@ import { WithId } from "utils/id";
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 import { useVenueId } from "hooks/useVenueId";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { User } from "types/User";
 
 const useConnectVenueUsers = () => {
   const venueId = useVenueId();
 
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     venueId
       ? {
           collection: "users",

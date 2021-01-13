@@ -1,22 +1,26 @@
-import { useParams } from "react-router-dom";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useUser } from "./useUser";
+import { useVenueId } from "./useVenueId";
 
 export const useConnectUserPurchaseHistory = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const { user } = useUser();
 
-  useSparkleFirestoreConnect([
-    {
-      collection: "purchases",
-      where: [
-        ["userId", "==", user?.uid ?? ""],
-        ["venueId", "==", venueId],
-        ["status", "==", "COMPLETE"],
-      ],
-      storeAs: "userPurchaseHistory",
-    },
-  ]);
+  useFirestoreConnect(
+    venueId
+      ? [
+          {
+            collection: "purchases",
+            where: [
+              ["userId", "==", user?.uid ?? ""],
+              ["venueId", "==", venueId],
+              ["status", "==", "COMPLETE"],
+            ],
+            storeAs: "userPurchaseHistory",
+          },
+        ]
+      : undefined
+  );
 };
 
 /**

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
@@ -14,7 +14,7 @@ type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
 
 export const PlayaContainer: React.FC<PropsType> = (props) => {
   const { venueId, ...rest } = props;
-  useSparkleFirestoreConnect({
+  useFirestoreConnect({
     collection: "venues",
     where: [
       "placement.state",

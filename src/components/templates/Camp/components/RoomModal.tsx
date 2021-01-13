@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { Modal } from "react-bootstrap";
 
 import { CampRoomData } from "types/CampRoomData";
@@ -19,6 +18,7 @@ import {
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import UserList from "components/molecules/UserList";
 
@@ -40,7 +40,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   joinButtonText,
 }) => {
-  useSparkleFirestoreConnect("venues");
+  useFirestoreConnect("venues");
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);

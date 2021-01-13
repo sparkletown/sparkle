@@ -14,7 +14,7 @@ import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { usePartygoers, useUsersById } from "hooks/users";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
@@ -57,7 +57,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     user && user.uid
       ? {
           collection: "privatechats",

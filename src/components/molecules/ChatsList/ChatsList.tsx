@@ -19,6 +19,10 @@ import { hasElements, isTruthy } from "utils/types";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useDispatch } from "hooks/useDispatch";
+import {
+  SparkleRFQConfig,
+  useFirestoreConnect,
+} from "hooks/useFirestoreConnect";
 
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { chatSort } from "utils/chat";
@@ -29,10 +33,7 @@ import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
 import { WhereOptions } from "react-redux-firebase";
-import {
-  SparkleRFQConfig,
-  useSparkleFirestoreConnect,
-} from "hooks/useSparkleFirestoreConnect";
+
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
 interface LastMessageByUser {
@@ -64,7 +65,8 @@ const ChatsList: React.FunctionComponent = () => {
   const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
 
   const chatQuery = useMemo<SparkleRFQConfig>(() => {
-    if (!hasElements(chatUserIds)) return undefined;
+    if (!hasElements(chatUserIds)) return;
+
     return [
       {
         collection: "users",
@@ -74,7 +76,7 @@ const ChatsList: React.FunctionComponent = () => {
     ];
   }, [chatUserIds, chatUsersOption]);
 
-  useSparkleFirestoreConnect(chatQuery);
+  useFirestoreConnect(chatQuery);
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {

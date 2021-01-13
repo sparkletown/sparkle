@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -32,6 +31,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -61,7 +61,7 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     venue?.name
       ? {
           collection: "experiences",

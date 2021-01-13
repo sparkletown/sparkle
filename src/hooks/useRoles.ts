@@ -1,15 +1,15 @@
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useUser } from "./useUser";
 import { useSelector } from "./useSelector";
 
 const useRoles = () => {
   const { user } = useUser();
-  useSparkleFirestoreConnect({
+  useFirestoreConnect({
     collection: "roles",
     where: [["users", "array-contains", user?.uid || ""]],
     storeAs: "userRoles",
   });
-  useSparkleFirestoreConnect({
+  useFirestoreConnect({
     collection: "roles",
     where: [["allowAll", "==", true]],
     storeAs: "allowAllRoles",

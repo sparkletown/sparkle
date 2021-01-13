@@ -11,7 +11,7 @@ const venuePaths = [
   "/v/:venueId",
   "/admin_v2/venue/:venueId",
 ];
-export const useVenueId: () => string | undefined = () => {
+export const useVenueId: () => string | null = () => {
   const history = useHistory();
 
   for (const path of venuePaths) {
@@ -19,8 +19,10 @@ export const useVenueId: () => string | undefined = () => {
       path,
     });
 
-    if (match && match.params.venueId) {
+    if (match?.params.venueId) {
       return match.params.venueId;
     }
   }
+
+  return null;
 };

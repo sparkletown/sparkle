@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
@@ -52,6 +51,7 @@ import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
@@ -131,7 +131,7 @@ const isPlaced = (venue: Venue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
-  useSparkleFirestoreConnect("venues");
+  useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>

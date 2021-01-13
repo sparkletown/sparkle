@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
@@ -23,7 +23,7 @@ const ReactionPage = () => {
 
   const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
 
-  useSparkleFirestoreConnect([
+  useFirestoreConnect([
     venue
       ? {
           collection: "experiences",

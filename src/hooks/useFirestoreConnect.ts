@@ -5,6 +5,7 @@ import {
   isLoaded as _isLoaded,
   isEmpty as _isEmpty,
 } from "react-redux-firebase";
+
 import { ValidFirestoreKeys } from "types/Firestore";
 
 /**
@@ -16,21 +17,27 @@ export type Defined<T> = T & Exclude<T, undefined>;
  * This type allows us to automagically constrain the storeAs
  * parameter to keys that exist within ValidFirestoreKeys, ensuring
  * that we can't forget to define it in our types when using functions
- * that rely on this type (eg. useSparkleFirestoreConnect)
+ * that rely on this type (eg. useFirestoreConnect)
  *
  * @see ValidFirestoreKeys
- * @see useSparkleFirestoreConnect
+ * @see useFirestoreConnect
  * @see ReduxFirestoreQuerySetting
  */
 
-export interface SparkleRFQConfigObject extends ReduxFirestoreQuerySetting {
+export type SparkleUseFirestoreConfigObject = ReduxFirestoreQuerySetting & {
   storeAs?: ValidFirestoreKeys;
-}
+};
 
+/**
+ * This type lists all allowed argument types for @useFirestoreConnect function
+ *
+ * @see SparkleUseFirestoreConfigObject
+ * @see ValidFirestoreKeys
+ */
 export type SparkleRFQConfig =
-  | SparkleRFQConfigObject
-  | SparkleRFQConfigObject[]
-  | ValidFirestoreKeys // @debt Eridicate this as a way to connectData
+  | SparkleUseFirestoreConfigObject
+  | SparkleUseFirestoreConfigObject[]
+  | ValidFirestoreKeys
   | undefined;
 
 /**
@@ -39,7 +46,7 @@ export type SparkleRFQConfig =
  * in our FirestoreData/FirestoreOrdered types.
  *
  * Note: the config does NOT need to be memo'd before being passed
- * to this function as useSparkleFirestoreConnect() determines equality
+ * to this function as useFirestoreConnect() determines equality
  * through a deep comparison using lodash's isEqual() function.
  *
  * @param config the config to be passed to useFirestoreConnect()
@@ -48,7 +55,7 @@ export type SparkleRFQConfig =
  * @see ValidFirestoreKeys
  * @see ReduxFirestoreQuerySetting
  */
-export const useSparkleFirestoreConnect = (config: SparkleRFQConfig) =>
+export const useFirestoreConnect = (config: SparkleRFQConfig) =>
   _useFirestoreConnect(config);
 
 /**

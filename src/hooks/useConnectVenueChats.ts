@@ -1,7 +1,7 @@
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const useConnectVenueChats = (venueId?: string) => {
-  useSparkleFirestoreConnect(
+  useFirestoreConnect(
     venueId
       ? {
           collection: "venues",

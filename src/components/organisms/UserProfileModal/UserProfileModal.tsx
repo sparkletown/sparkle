@@ -19,7 +19,7 @@ import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";
@@ -141,7 +141,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 };
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
-  useSparkleFirestoreConnect("venues");
+  useFirestoreConnect("venues");
   const venue = useSelector(currentVenueSelectorData);
   const venues = useSelector(orderedVenuesSelector);
 

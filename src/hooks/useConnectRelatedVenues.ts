@@ -23,9 +23,10 @@ import {
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
 import {
-  useSparkleFirestoreConnect,
+  useFirestoreConnect,
   SparkleRFQConfig,
-} from "./useSparkleFirestoreConnect";
+  SparkleUseFirestoreConfigObject,
+} from "./useFirestoreConnect";
 
 const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
   withVenueId(event, venueId);
@@ -151,7 +152,7 @@ export const useConnectRelatedVenues: ReactHook<
   /////////////////////////////////
 
   // Sibling
-  const siblingVenuesQuery: SparkleRFQConfig | undefined = !!parentId
+  const siblingVenuesQuery: SparkleRFQConfig = !!parentId
     ? {
         collection: "venues",
         where: [["parentId", "==", parentId]],
@@ -160,7 +161,7 @@ export const useConnectRelatedVenues: ReactHook<
     : undefined;
 
   // Sub
-  const subvenuesQuery: SparkleRFQConfig | undefined = !!venueId
+  const subvenuesQuery: SparkleRFQConfig = !!venueId
     ? {
         collection: "venues",
         where: [["parentId", "==", venueId]],
@@ -171,7 +172,7 @@ export const useConnectRelatedVenues: ReactHook<
   const makeEventsQueryConfig = (
     doc: string,
     storeAs: ValidFirestoreKeys
-  ): SparkleRFQConfig => ({
+  ): SparkleUseFirestoreConfigObject => ({
     collection: "venues",
     doc,
     subcollections: [{ collection: "events" }],
@@ -180,13 +181,13 @@ export const useConnectRelatedVenues: ReactHook<
   });
 
   // Parent Events
-  const parentVenueEventsQuery: SparkleRFQConfig | undefined =
+  const parentVenueEventsQuery =
     parentId && withEvents
       ? makeEventsQueryConfig(parentId, "parentVenueEvents")
       : undefined;
 
   // Sibling Events
-  const siblingVenueEventsQueries: SparkleRFQConfig[] = withEvents
+  const siblingVenueEventsQueries = withEvents
     ? siblingVenues.map((sibling) =>
         makeEventsQueryConfig(
           sibling.id,
@@ -196,7 +197,7 @@ export const useConnectRelatedVenues: ReactHook<
     : [];
 
   // Sub Events
-  const subvenueEventsQueries: SparkleRFQConfig[] = withEvents
+  const subvenueEventsQueries = withEvents
     ? subvenues.map((subvenue) =>
         makeEventsQueryConfig(
           subvenue.id,
@@ -206,7 +207,7 @@ export const useConnectRelatedVenues: ReactHook<
     : [];
 
   // Combine / filter for valid queries
-  const allValidQueries: SparkleRFQConfig[] = [
+  const allValidQueries: SparkleRFQConfig = [
     siblingVenuesQuery,
     subvenuesQuery,
     parentVenueEventsQuery,
@@ -215,7 +216,7 @@ export const useConnectRelatedVenues: ReactHook<
   ].filter(isTruthyFilter);
 
   // Connect
-  useSparkleFirestoreConnect(allValidQueries);
+  useFirestoreConnect(allValidQueries);
 
   /////////////////////////////////
   // Return

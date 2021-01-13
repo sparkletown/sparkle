@@ -20,7 +20,7 @@ import {
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
@@ -311,7 +311,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ]
   );
 
-  useSparkleFirestoreConnect([
+  useFirestoreConnect([
     {
       collection: "experiences",
       doc: PLAYA_VENUE_NAME,

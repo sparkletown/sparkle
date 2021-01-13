@@ -9,7 +9,7 @@ import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import VenueEventDetails from "./VenueEventDetails";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 interface Props {
   index: number;
@@ -28,7 +28,7 @@ export const AdminVenueRoomDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
 }: Props) => {
-  useSparkleFirestoreConnect([
+  useFirestoreConnect([
     {
       collection: "venues",
       doc: venue.id,

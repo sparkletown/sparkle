@@ -11,7 +11,6 @@ import {
   Route,
   Switch,
   useLocation,
-  useParams,
   useRouteMatch,
   useHistory,
   Redirect,
@@ -65,8 +64,9 @@ import { VenueOwnersModal } from "./VenueOwnersModal";
 import "./Admin.scss";
 import {
   SparkleRFQConfig,
-  useSparkleFirestoreConnect,
-} from "hooks/useSparkleFirestoreConnect";
+  useFirestoreConnect,
+} from "hooks/useFirestoreConnect";
+import { useVenueId } from "hooks/useVenueId";
 
 dayjs.extend(advancedFormat);
 
@@ -434,9 +434,9 @@ const Admin: React.FC = () => {
     }),
     [userId]
   );
-  useSparkleFirestoreConnect(venuesOwnedByUserQuery);
+  useFirestoreConnect(venuesOwnedByUserQuery);
 
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
