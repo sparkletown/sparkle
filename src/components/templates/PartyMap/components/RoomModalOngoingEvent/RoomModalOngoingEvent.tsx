@@ -10,6 +10,8 @@ import { getRoomUrl, openUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import "./RoomModalOngoingEvent.scss";
+
 interface RoomModalOngoingEventProps {
   room: Room;
   roomEvents: VenueEvent[];
