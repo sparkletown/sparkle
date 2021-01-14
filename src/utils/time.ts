@@ -169,6 +169,7 @@ export function getHoursAgoInSeconds(hours: number) {
   return nowInSec - hours * 60 * 60;
 }
 
+// @debt this is a duplicate of getCurrentTimeInUTCSeconds
 export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
 
 export function getDaysAgoInSeconds(days: number) {
