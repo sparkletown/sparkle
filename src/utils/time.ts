@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, formatDuration } from "date-fns";
 import { RoomData } from "types/RoomData";
 import { RoomEvent } from "types/RoomEventData";
 import { VenueEvent } from "types/VenueEvent";
@@ -35,6 +35,17 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
 
   return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
 };
+
+/**
+ * Format seconds as a string representing the Duration.
+ *
+ * @example
+ *
+ * @param seconds
+ */
+export const formatSecondsAsDuration = (seconds: number): string =>
+  formatDuration(secondsToDuration(seconds));
+
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
 
