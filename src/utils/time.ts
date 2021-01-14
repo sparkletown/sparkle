@@ -9,6 +9,32 @@ export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
 export const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
+/**
+ * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
+ *
+ * @param totalSeconds
+ *
+ * @see https://date-fns.org/docs/Duration
+ *
+ * @debt replace this with better implementation using `intervalToDuration` (see link) once we upgrade date-fns beyond v2.13.0
+ * @see https://github.com/date-fns/date-fns/issues/229#issuecomment-646124041
+ */
+export const secondsToDuration = (totalSeconds: number): Duration => {
+  const days = Math.floor(totalSeconds / ONE_DAY_IN_SECONDS);
+  const remainingSecondsWithoutDays = totalSeconds % ONE_DAY_IN_SECONDS;
+
+  const hours = Math.floor(remainingSecondsWithoutDays / ONE_HOUR_IN_SECONDS);
+  const remainingSecondsWithoutHours =
+    remainingSecondsWithoutDays % ONE_HOUR_IN_SECONDS;
+
+  const minutes = Math.floor(
+    remainingSecondsWithoutHours / ONE_MINUTE_IN_SECONDS
+  );
+  const remainingSecondsWithoutMinutes =
+    remainingSecondsWithoutHours % ONE_MINUTE_IN_SECONDS;
+
+  return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
+};
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
 
