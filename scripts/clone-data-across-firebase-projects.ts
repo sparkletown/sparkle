@@ -33,11 +33,11 @@ const usage = () => {
   const scriptName = process.argv[1];
   const helpText = `
 ---------------------------------------------------------
-${scriptName}: Clone venue(s) between different firebase projects
+Clone venue(s) between different firebase projects
 
-Usage: node ${scriptName} ${CONFIRM_VALUE}
+Usage: ${scriptName} ${CONFIRM_VALUE}
 
-Example: node ${scriptName} ${CONFIRM_VALUE}
+Example: ${scriptName} ${CONFIRM_VALUE}
 ---------------------------------------------------------
 `;
 
@@ -64,6 +64,33 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
 // TODO: venues (owners will need to be changed)
 // TODO: check if venue already exists (be safe, don't overwrite!)
 
+const replaceSourceDomainReferences = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  obj: Record<string, any>,
+  key: string,
+  objectType: string,
+  objectIdentifier: string
+) => {
+  const objVal = obj[key];
+
+  if (typeof objVal !== "string") return;
+
+  if (objVal.toString().includes(`//${SOURCE_DOMAIN}`)) {
+    const replacementValue = objVal.replace(
+      `//${SOURCE_DOMAIN}`,
+      `//${DEST_DOMAIN}`
+    );
+
+    console.log(
+      `Found a reference to ${SOURCE_DOMAIN} in ${objectType} ${objectIdentifier}, key ${key}.`,
+      `Value: ${obj[key]}`,
+      `Replacing with: ${replacementValue}`
+    );
+
+    obj[key] = replacementValue;
+  }
+};
+
 (async () => {
   // TODO: @debt use filters so we are only getting batches of the venues we want, use 'in', _.chunk + Promise.all, etc to page through the data
   const allSourceVenues = await sourceApp
@@ -78,26 +105,6 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
         venue.get().then((v) => ({ ...(v.data() as AnyVenue), id: v.id }))
       )
   );
-
-  const replaceSourceDomainReferences = (
-    obj: Object,
-    key: string,
-    objectType: string,
-    objectIdentifier: string
-  ) => {
-    if (obj[key].toString().includes(`//${SOURCE_DOMAIN}`)) {
-      const replacementValue = obj[key].replace(
-        `//${SOURCE_DOMAIN}`,
-        `//${DEST_DOMAIN}`
-      );
-      console.log(
-        `Found a reference to ${SOURCE_DOMAIN} in ${objectType} ${objectIdentifier}, key ${key}.`,
-        `Value: ${obj[key]}`,
-        `Replacing with: ${replacementValue}`
-      );
-      obj[key] = replacementValue;
-    }
-  };
 
   console.log("total venues:", allSourceVenues.length);
   console.log("wanted venues:", wantedSourceVenues.length, VENUES_TO_CLONE);
