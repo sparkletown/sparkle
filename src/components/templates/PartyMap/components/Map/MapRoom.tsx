@@ -67,7 +67,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   return (
     <div
-      className={classNames("room", {
+      className={classNames("map-room-container", {
         "room-selected": isSelected,
       })}
       style={containerStyles}
