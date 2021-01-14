@@ -21,7 +21,7 @@ enum TABS {
   LIVE_SCHEDULE = 2,
 }
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
