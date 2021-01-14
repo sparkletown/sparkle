@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
+import { FirebaseReducer } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 import "./VenuePreview.scss";
@@ -10,6 +10,7 @@ import {
 } from "settings";
 import UserList from "components/molecules/UserList";
 import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";

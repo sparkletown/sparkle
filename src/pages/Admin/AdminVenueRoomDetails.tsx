@@ -9,7 +9,7 @@ import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import VenueEventDetails from "./VenueEventDetails";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 interface Props {
   index: number;
