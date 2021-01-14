@@ -17,9 +17,11 @@ export interface RoomData {
   events: RoomEventData;
   external_url: string;
 }
+
 export interface RoomData_v2 {
   title?: string;
   subtitle?: string;
+  url?: string;
   description?: string;
   x_percent?: number;
   y_percent?: number;

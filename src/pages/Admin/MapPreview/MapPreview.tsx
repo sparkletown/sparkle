@@ -29,10 +29,14 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
 
   useEffect(() => {
-    if (!mapRooms.length || !isEqual(rooms.length, mapRooms.length)) {
+    if (
+      !mapRooms.length ||
+      !isEqual(rooms.length, mapRooms.length) ||
+      !isEditing
+    ) {
       setMapRooms(rooms);
     }
-  }, [mapRooms, rooms]);
+  }, [isEditing, mapRooms, rooms]);
 
   const roomRef = useRef<SubVenueIconMap>({});
 

@@ -34,6 +34,9 @@ export const PRIVACY_POLICY = IS_BURN
   ? SPARKLEVERSE_PRIVACY_POLICY
   : SPARKLE_PRIVACY_POLICY;
 
+export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
+export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
 export const DEFAULT_PARTY_NAME = "Anon";
@@ -94,7 +97,6 @@ export const REACTION_PROFILE_IMAGE_SIZE_LARGE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
 export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
-export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
 // Add for Jam demo event, used for admin placement background.
 export const JAM_IMAGE = "/maps/jam.jpg";
 export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {

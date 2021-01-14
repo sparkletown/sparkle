@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import * as S from "./Item.styles";
@@ -12,6 +12,7 @@ import { Button } from "react-bootstrap";
 import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 import { CustomInputsType } from "settings";
 import { RoomModalItemProps } from "./Item.types";
+import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
@@ -28,25 +29,22 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
   const toggleIsOpen = () => setIsOpen(!isOpen);
 
-  const initialRender = useRef(true);
-
   useEffect(() => {
-    if (initialRender.current && editValues) {
+    if (editValues) {
       setIsOpen(true);
     }
   }, [editValues]);
 
-  useEffect(() => {
-    initialRender.current = false;
-  }, []);
-
   const {
     register,
     watch,
+    errors,
     handleSubmit,
     setValue,
     formState: { isSubmitting },
   } = useForm({
+    reValidateMode: "onChange",
+    validationSchema: roomCreateSchema,
     defaultValues: {
       venueName: "",
       title: editValues ? editValues.title : "",
@@ -69,7 +67,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
       const fileList = list.files;
 
-      const asd: VenueInput_v2 = {
+      const venueInput: VenueInput_v2 = {
         name: values.venueName,
         subtitle: "",
         description: "",
@@ -83,15 +81,17 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       };
 
       try {
-        await createVenue_v2(asd, user);
+        if (!editValues) {
+          await createVenue_v2(venueInput, user);
+        }
         await createRoom(valuesWithTemplate, venueId, user);
-      } catch (error) {}
 
-      onSubmitHandler();
+        onSubmitHandler();
+      } catch (error) {}
     } catch (err) {
       console.error(err);
     }
-  }, [onSubmitHandler, template, user, values, venueId]);
+  }, [editValues, onSubmitHandler, template, user, values, venueId]);
 
   const handleOnChange = (val: string) => setValue("image_url", val, false);
 
@@ -166,6 +166,10 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
               ref={register}
             />
           </S.InputWrapper>
+
+          {errors.venueName && (
+            <span className="input-error">{errors.venueName.message}</span>
+          )}
 
           {renderNameInput()}
           {renderDescriptionInput()}

@@ -11,10 +11,10 @@ import VenueDetails from "./Venue/Details";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import useRoles from "hooks/useRoles";
+import { useIsAdminUser } from "hooks/roles";
 
 // Styles
 import "./Admin.scss";
-import { IS_BURN } from "secrets";
 import { Venue_v2 } from "types/Venue";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import AdminSidebar from "./Sidebar/Sidebar";
@@ -70,7 +70,7 @@ const Admin_v2: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState(sidebarOptions[0].id);
 
   const { user } = useUser();
-  useAdminVenues(user!.uid);
+  useAdminVenues(user?.uid);
 
   const venues = useSelector(orderedVenuesSelector);
   const venueId = useVenueId();
@@ -82,11 +82,17 @@ const Admin_v2: React.FC = () => {
 
   const { roles } = useRoles();
 
+  const { isAdminUser } = useIsAdminUser(user?.uid);
+
   if (!venues || !roles) {
     return <>Loading...</>;
   }
 
-  if (!IS_BURN && !roles.includes("admin")) {
+  if (!user) {
+    return <>You need to log in first.</>;
+  }
+
+  if (!roles.includes("admin") || !isAdminUser) {
     return <>Forbidden</>;
   }
 

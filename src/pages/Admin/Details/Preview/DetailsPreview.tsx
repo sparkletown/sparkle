@@ -5,6 +5,7 @@ import { DetailsPreviewProps } from "./DetailsPreview.types";
 
 // Styles
 import * as S from "./DetailsPreview.styles";
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
@@ -13,7 +14,11 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   subtitle,
   description,
 }) => {
-  const renderLogo = () => <S.Logo backgroundImage={logoImageUrl} />;
+  const renderLogo = () => (
+    <S.Logo
+      backgroundImage={!!logoImageUrl ? logoImageUrl : DEFAULT_VENUE_LOGO}
+    />
+  );
 
   const renderName = () => (
     <S.TitleWrapper>
@@ -26,7 +31,11 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
 
   return (
     <S.Wrapper>
-      <S.PreviewCard backgroundImage={bannerImageUrl}>
+      <S.PreviewCard
+        backgroundImage={
+          !!bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER
+        }
+      >
         {renderLogo()}
         {renderName()}
         {renderDescription()}

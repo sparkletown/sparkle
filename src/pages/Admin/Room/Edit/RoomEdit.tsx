@@ -36,6 +36,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
   } = useForm({
     defaultValues: {
       title: room.title,
+      url: room.url,
       description: room.description,
       tempalte: room.template,
     },
@@ -58,6 +59,13 @@ const EditRoom: React.FC<EditRoomProps> = ({
         />
       </S.InputWrapper>
     </Form.Row>
+  );
+
+  const renderUrlInput = () => (
+    <S.InputWrapper>
+      <span>The room url</span>
+      <input type="text" ref={register} name="url" placeholder="Room url" />
+    </S.InputWrapper>
   );
 
   const renderDescriptionInput = () => (
@@ -127,6 +135,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
           {renderNameInput()}
+          {renderUrlInput()}
           {renderDescriptionInput()}
           {renderLogoInput()}
 

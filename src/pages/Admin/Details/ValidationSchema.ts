@@ -28,6 +28,10 @@ export interface SchemaShape {
   logoImageUrl: string;
 }
 
+export interface RoomSchemaShape {
+  venueName: string;
+}
+
 const createFileSchema = (
   name: string,
   required: boolean,
@@ -111,6 +115,35 @@ export const validationSchema_v2 = Yup.object()
     logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();
+
+export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
+  venueName: Yup.string()
+    .required("Name is required!")
+    .min(3, ({ min }) => `Name must be at least ${min} characters`)
+    .when("$editing", (editing: boolean, schema: Yup.StringSchema) =>
+      !editing
+        ? schema
+            .test(
+              "name",
+              "Must have alphanumeric characters",
+              (val: string) => createUrlSafeName(val).length > 0
+            )
+            .test(
+              "name",
+              "This venue name is already taken",
+              async (val: string) =>
+                !val ||
+                !(
+                  await firebase
+                    .firestore()
+                    .collection("venues")
+                    .doc(createUrlSafeName(val))
+                    .get()
+                ).exists
+            )
+        : schema
+    ),
+});
 
 export const venueEditSchema = Yup.object()
   .shape<Partial<SchemaShape>>({})

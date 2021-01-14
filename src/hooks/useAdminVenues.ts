@@ -4,12 +4,12 @@ import {
 } from "react-redux-firebase";
 
 export const adminVenuesQuery = (
-  userUid: string
+  userUid?: string
 ): ReduxFirestoreQuerySetting => ({
   collection: "venues",
   where: [["owners", "array-contains", userUid || ""]],
 });
 
-export const useAdminVenues = (userUid: string) => {
+export const useAdminVenues = (userUid?: string) => {
   useFirestoreConnect(adminVenuesQuery(userUid));
 };

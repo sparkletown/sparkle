@@ -10,6 +10,7 @@ import {
 import { CampRoomData } from "types/CampRoomData";
 import { VenueTemplate } from "types/VenueTemplate";
 import { RoomData_v2 } from "types/RoomData";
+import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
   name: string;
@@ -64,6 +65,7 @@ export type RoomInput = Omit<CampRoomData, "image_url"> & {
 };
 
 export type RoomInput_v2 = RoomData_v2 & {
+  venueName?: string;
   image_url?: string;
   image_file?: FileList;
 };
@@ -413,7 +415,7 @@ const createFirestoreRoomInput_v2 = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: urlRoomName,
+    url: venueInsideUrl(input.venueName!),
     ...imageInputData,
   };
 
@@ -475,7 +477,7 @@ export const bulkUpdateRooms = async (
 };
 
 export const createRoom = async (
-  input: RoomData_v2,
+  input: RoomInput_v2,
   venueId: string,
   user: UserInfo
 ) => {
