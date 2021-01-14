@@ -177,7 +177,7 @@ export const useConnectRelatedVenues: ReactHook<
     : undefined;
 
   // Parent Events
-  const parentVenueEventsQuery =
+  const parentVenueEventsQuery: AnySparkleRFQuery | undefined =
     parentId && withEvents
       ? makeEventsQueryConfig(parentId, "parentVenueEvents")
       : undefined;
