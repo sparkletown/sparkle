@@ -20,10 +20,11 @@ import {
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
-import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
+import { useFirebase } from "react-redux-firebase";
 import { MenuConfig, Shout } from "./Playa";
 import Switch from "react-switch";
 import "./AvatarLayer.scss";

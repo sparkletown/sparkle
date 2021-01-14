@@ -1,25 +1,28 @@
 import { useMemo } from "react";
 import { isLoaded } from "react-redux-firebase";
 
+import { User } from "types/User";
+import { ValidStoreAsKeys } from "types/Firestore";
+
 import { usersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 import { useVenueId } from "hooks/useVenueId";
-import { useSparkleFirestoreConnect } from "hooks/useSparkleFirestoreConnect";
-
-import { User } from "types/User";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 const useConnectVenueUsers = () => {
   const venueId = useVenueId();
 
-  useSparkleFirestoreConnect(
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentVenueUsers"` or similar
+  useFirestoreConnect(
     venueId
       ? {
           collection: "users",
           where: ["enteredVenueIds", "array-contains", venueId],
-          storeAs: "users",
+          storeAs: "users" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );

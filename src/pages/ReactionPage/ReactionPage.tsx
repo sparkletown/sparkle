@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
@@ -23,17 +23,17 @@ const ReactionPage = () => {
 
   const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
 
-  useFirestoreConnect([
+  useFirestoreConnect(
     venue
       ? {
           collection: "experiences",
           doc: venue.name,
           subcollections: [{ collection: "reactions" }],
-          storeAs: "reactions",
           orderBy: ["created_at", "desc"],
+          storeAs: "reactions",
         }
-      : {},
-  ]);
+      : undefined
+  );
 
   const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
