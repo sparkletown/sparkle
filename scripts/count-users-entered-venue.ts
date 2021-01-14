@@ -1,8 +1,8 @@
-#!/usr/bin/env node --experimental-json-modules --loader ts-node/esm
+#!/usr/bin/env node -r esm -r ts-node/register
 
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp } from "./lib/helpers.js";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
 const usage = () => {
   const scriptName = process.argv[1];

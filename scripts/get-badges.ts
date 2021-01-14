@@ -1,7 +1,15 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
-import admin from "firebase-admin";
 import { resolve } from "path";
+
+import admin from "firebase-admin";
+import { chunk } from "lodash";
+
+import { UserVisit } from "../src/types/Firestore";
+import { User } from "../src/types/User";
+
+import { WithId, withId } from "../src/utils/id";
+
 import { initFirebaseAdminApp } from "./lib/helpers";
 
 const usage = () => {
@@ -10,9 +18,9 @@ const usage = () => {
 ---------------------------------------------------------
 ${scriptName}: Get user details. Prints each user's email address, last seen time in milliseconds since epoch, and codes used.
 
-Usage: node ${scriptName} PROJECT_ID VENUE_ID CREDENTIAL_PATH
+Usage: ${scriptName} PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]
 
-Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
+Example: ${scriptName} co-reality-map venueId,venueId2,venueIdN [someAccountKey.json]
 ---------------------------------------------------------
 `;
 
@@ -20,60 +28,107 @@ Example: node ${scriptName} co-reality-map myawesomevenue prodAccountKey.json
   process.exit(1);
 };
 
-const [projectId, venueId, credentialPath] = process.argv.slice(2);
-if (!projectId || !venueId || !credentialPath) {
+const [projectId, venueIds, credentialPath] = process.argv.slice(2);
+
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
+if (!projectId || !venueIds) {
   usage();
 }
 
-const app = initFirebaseAdminApp(projectId, {
-  appName: projectId,
-  credentialPath: resolve(__dirname, credentialPath),
+const venueIdsArray = venueIds.split(",");
+
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
 });
 
+interface UsersWithVisitsResult {
+  user: WithId<User>;
+  visits: WithId<UserVisit>[];
+}
+
 (async () => {
-  const allUsers: admin.auth.UserRecord[] = [];
-  let nextPageToken: string | undefined;
-  const { users, pageToken } = await app.auth().listUsers(1000);
+  // TODO: extract this as a generic helper function?
+  const usersWithVisits = await Promise.all(
+    await admin
+      .firestore()
+      .collection("users")
+      .where("enteredVenueIds", "array-contains-any", venueIdsArray)
+      .get()
+      .then((usersSnapshot) =>
+        usersSnapshot.docs.map(async (userDoc) => {
+          const user = withId(userDoc.data() as User, userDoc.id);
 
-  allUsers.push(...users);
-  nextPageToken = pageToken;
+          const visits = await userDoc.ref
+            .collection("visits")
+            .get()
+            .then((visitsSnapshot) =>
+              visitsSnapshot.docs.map((visitDoc) =>
+                withId(visitDoc.data() as UserVisit, visitDoc.id)
+              )
+            );
 
-  while (nextPageToken) {
-    const { users, pageToken } = await app
-      .auth()
-      .listUsers(1000, nextPageToken);
-    allUsers.push(...users);
-    nextPageToken = pageToken;
-  }
+          const userWithVisits: UsersWithVisitsResult = { user, visits };
 
+          return userWithVisits;
+        })
+      )
+  );
+
+  // TODO: extract this as a generic helper function?
+  // Note: 100 is the max that can be requested with getUsers() per chunk
+  const authUsers: admin.auth.UserRecord[] = await Promise.all(
+    chunk(usersWithVisits, 100).map(async (usersWithVisitsChunk) => {
+      const chunkUserIds = usersWithVisitsChunk.map((userWithVisits) => ({
+        uid: userWithVisits.user.id,
+      }));
+
+      const authUsersResult = await admin.auth().getUsers(chunkUserIds);
+
+      return authUsersResult.users;
+    })
+  ).then((result) => result.flat());
+
+  const authUsersById = authUsers.reduce(
+    (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
+    {} as Record<string, admin.auth.UserRecord>
+  );
+
+  // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
+  const result = usersWithVisits.map((userWithVisits) => {
+    const { user, visits } = userWithVisits;
+    const { id, partyName, enteredVenueIds = [] } = user;
+    const { email } = authUsersById[id];
+
+    const visitsTimeSpent = visits.map(
+      (visit) => `${visit.id} (${visit.timeSpent})`
+    );
+
+    return {
+      id,
+      email,
+      partyName,
+      enteredVenueIds: enteredVenueIds.sort().join(", "),
+      visitsTimeSpent: visitsTimeSpent.sort().join(", "),
+    };
+  });
+
+  // Display CSV headings
   console.log(
-    ["Email", "Party Name", "Entered Venues", "Venue Visits:Time Spent"]
+    ["Email", "Party Name", "Entered Venues (Time Spent)"]
       .map((heading) => `"${heading}"`)
       .join(",")
   );
 
-  const firestoreUsers = await app.firestore().collection("users").get();
+  // Display CSV lines
+  result.forEach((user) => {
+    const csvLine = [user.email, user.partyName, user.visitsTimeSpent]
+      .map((s) => `"${s}"`)
+      .join(",");
 
-  await Promise.all(
-    firestoreUsers.docs.map(async (doc) => {
-      const user = allUsers.find((u) => u.uid === doc.id);
-      const partyName = doc.data().partyName;
-      const enteredVenueIds = doc.data().enteredVenueIds;
-
-      if (enteredVenueIds?.includes(venueId)) {
-        const visitsCollection = await doc.ref.collection("visits").get();
-        const visitsTimeSpent = visitsCollection.docs
-          .filter((doc) => doc.exists)
-          .map((doc) => `${doc.id}:${doc.data().timeSpent}`);
-
-        console.log(
-          [user?.email ?? doc.id, partyName, visitsTimeSpent.sort()]
-            .map((v) => `"${v}"`)
-            .join(",")
-        );
-      }
-    })
-  );
+    console.log(csvLine);
+  });
 
   process.exit(0);
 })();

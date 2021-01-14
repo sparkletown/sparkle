@@ -24,7 +24,7 @@ export const initFirebaseAdminApp = (
   {
     appName,
     credentialPath = resolve(__dirname, "../prodAccountKey.json"),
-  }: { appName?: string; credentialPath?: string }
+  }: { appName?: string; credentialPath?: string } = {}
 ): admin.app.App =>
   admin.initializeApp(
     {
