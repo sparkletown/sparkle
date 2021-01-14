@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import * as S from "./Item.styles";
@@ -26,6 +26,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
   customInputs,
 }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [useUrl, setUseUrl] = useState<boolean>(false);
 
   const toggleIsOpen = () => setIsOpen(!isOpen);
 
@@ -47,6 +48,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
     validationSchema: roomCreateSchema,
     defaultValues: {
       venueName: "",
+      url: editValues ? editValues.url : "",
       title: editValues ? editValues.title : "",
       description: editValues ? editValues.description : "",
     },
@@ -81,7 +83,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       };
 
       try {
-        if (!editValues) {
+        if (!editValues || !useUrl) {
           await createVenue_v2(venueInput, user);
         }
         await createRoom(valuesWithTemplate, venueId, user);
@@ -91,15 +93,82 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
     } catch (err) {
       console.error(err);
     }
-  }, [editValues, onSubmitHandler, template, user, values, venueId]);
+  }, [editValues, onSubmitHandler, template, useUrl, user, values, venueId]);
 
   const handleOnChange = (val: string) => setValue("image_url", val, false);
 
+  const handleUrlToggle = useCallback(() => {
+    setUseUrl((value) => !value);
+  }, []);
+
+  const renderUrlToggle = () => (
+    <S.UrlToggleWrapper>
+      <S.Flex>
+        <h4 className="italic input-header">Create venue</h4>
+      </S.Flex>
+      <S.Flex>
+        <label id={"useUrl"} className="switch">
+          <input
+            type="checkbox"
+            id={"useUrl"}
+            name={"useUrl"}
+            checked={useUrl}
+            onChange={handleUrlToggle}
+            ref={register}
+          />
+          <span className="slider round"></span>
+        </label>
+      </S.Flex>
+      <S.Flex>
+        <h4 className="italic input-header">Use url</h4>
+      </S.Flex>
+    </S.UrlToggleWrapper>
+  );
+
+  const renderVenueNameInput = () => (
+    <Fragment>
+      <S.InputWrapper key={"venueName"}>
+        <span>Name your venue</span>
+
+        <input
+          type="text"
+          placeholder="Venue name"
+          name={"venueName"}
+          ref={register}
+        />
+      </S.InputWrapper>
+
+      {errors.venueName && (
+        <span className="input-error">{errors.venueName.message}</span>
+      )}
+    </Fragment>
+  );
+
+  const renderUrlInput = () => (
+    <Fragment>
+      <S.InputWrapper key={"url"}>
+        <span>The url for the room</span>
+        <input type="text" ref={register} name="url" placeholder="Room url" />
+      </S.InputWrapper>
+      {errors.url && <span className="input-error">{errors.url.message}</span>}
+    </Fragment>
+  );
+
   const renderNameInput = () => (
-    <S.InputWrapper>
-      <span>Name your room</span>
-      <input type="text" ref={register} name="title" placeholder="Room name" />
-    </S.InputWrapper>
+    <Fragment>
+      <S.InputWrapper>
+        <span>Name your room</span>
+        <input
+          type="text"
+          ref={register}
+          name="title"
+          placeholder="Room name"
+        />
+      </S.InputWrapper>
+      {errors.title && (
+        <span className="input-error">{errors.title.message}</span>
+      )}
+    </Fragment>
   );
 
   const renderDescriptionInput = () => (
@@ -156,20 +225,10 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
       <S.InnerWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <S.InputWrapper key={"venueName"}>
-            <span>Name your venue</span>
+          {renderUrlToggle()}
 
-            <input
-              type="text"
-              placeholder="Venue name"
-              name={"venueName"}
-              ref={register}
-            />
-          </S.InputWrapper>
-
-          {errors.venueName && (
-            <span className="input-error">{errors.venueName.message}</span>
-          )}
+          {!useUrl && renderVenueNameInput()}
+          {useUrl && renderUrlInput()}
 
           {renderNameInput()}
           {renderDescriptionInput()}

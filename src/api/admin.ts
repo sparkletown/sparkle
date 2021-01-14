@@ -66,6 +66,7 @@ export type RoomInput = Omit<CampRoomData, "image_url"> & {
 
 export type RoomInput_v2 = RoomData_v2 & {
   venueName?: string;
+  useUrl?: boolean;
   image_url?: string;
   image_file?: FileList;
 };
@@ -130,7 +131,7 @@ type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
   RoomImageUrls & {
-    url: string;
+    url?: string;
   };
 
 export type PlacementInput = {
@@ -415,7 +416,7 @@ const createFirestoreRoomInput_v2 = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: venueInsideUrl(input.venueName!),
+    url: input.useUrl ? input.url : venueInsideUrl(input.venueName!),
     ...imageInputData,
   };
 

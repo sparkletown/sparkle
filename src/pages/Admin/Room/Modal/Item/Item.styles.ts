@@ -75,3 +75,15 @@ export const InputWrapper = styled.div`
   align-items: flex-start;
   flex-direction: column;
 `;
+
+export const UrlToggleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const Flex = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: center;
+`;

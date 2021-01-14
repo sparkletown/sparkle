@@ -29,7 +29,10 @@ export interface SchemaShape {
 }
 
 export interface RoomSchemaShape {
-  venueName: string;
+  title: string;
+  venueName?: string;
+  url?: string;
+  useUrl: boolean;
 }
 
 const createFileSchema = (
@@ -117,11 +120,19 @@ export const validationSchema_v2 = Yup.object()
   .required();
 
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
+  useUrl: Yup.boolean().required(),
+  title: Yup.string()
+    .required("Room name is required")
+    .min(3, ({ min }) => `Name must be at least ${min} characters`),
   venueName: Yup.string()
-    .required("Name is required!")
-    .min(3, ({ min }) => `Name must be at least ${min} characters`)
-    .when("$editing", (editing: boolean, schema: Yup.StringSchema) =>
-      !editing
+    .when("useUrl", {
+      is: false,
+      then: Yup.string()
+        .required("Venue name is required")
+        .min(3, ({ min }) => `Name must be at least ${min} characters`),
+    })
+    .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
+      !useUrl
         ? schema
             .test(
               "name",
@@ -143,6 +154,12 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
             )
         : schema
     ),
+  url: Yup.string().when("useUrl", {
+    is: true,
+    then: Yup.string()
+      .required("Url is required!")
+      .min(3, ({ min }) => `Url must be at least ${min} characters`),
+  }),
 });
 
 export const venueEditSchema = Yup.object()
