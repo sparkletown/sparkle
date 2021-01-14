@@ -1,6 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 import { CustomInputsType } from "settings";
 import { RoomData_v2 } from "types/RoomData";
+import { VenueTemplate } from "types/VenueTemplate";
 
 export interface RoomModalItemProps {
   name?: string;
@@ -9,7 +10,7 @@ export interface RoomModalItemProps {
   venueId: string;
   user: FirebaseReducer.AuthState;
   onSubmitHandler: () => void;
-  template?: string;
+  template: VenueTemplate;
   editValues?: RoomData_v2;
   customInputs?: CustomInputsType[];
 }

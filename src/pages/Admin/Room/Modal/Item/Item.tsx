@@ -9,7 +9,7 @@ import {
   faChevronCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
-import { createRoom } from "api/admin";
+import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 import { CustomInputsType } from "settings";
 import { RoomModalItemProps } from "./Item.types";
 
@@ -48,6 +48,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
+      venueName: "",
       title: editValues ? editValues.title : "",
       description: editValues ? editValues.description : "",
     },
@@ -63,7 +64,28 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         ...values,
         template,
       };
-      await createRoom(valuesWithTemplate, venueId, user);
+
+      const list = new DataTransfer();
+
+      const fileList = list.files;
+
+      const asd: VenueInput_v2 = {
+        name: values.venueName,
+        subtitle: "",
+        description: "",
+        template: template,
+        bannerImageFile: fileList,
+        bannerImageUrl: "",
+        logoImageUrl: "",
+        mapBackgroundImageUrl: "",
+        logoImageFile: fileList,
+        rooms: [],
+      };
+
+      try {
+        await createVenue_v2(asd, user);
+        await createRoom(valuesWithTemplate, venueId, user);
+      } catch (error) {}
 
       onSubmitHandler();
     } catch (err) {
@@ -134,6 +156,17 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
       <S.InnerWrapper>
         <form onSubmit={handleSubmit(onSubmit)}>
+          <S.InputWrapper key={"venueName"}>
+            <span>Name your venue</span>
+
+            <input
+              type="text"
+              placeholder="Venue name"
+              name={"venueName"}
+              ref={register}
+            />
+          </S.InputWrapper>
+
           {renderNameInput()}
           {renderDescriptionInput()}
 

@@ -79,7 +79,7 @@ export type VenueInput = AdvancedVenueInput &
     description: string;
     zoomUrl?: string;
     iframeUrl?: string;
-    template: string;
+    template: VenueTemplate;
     rooms?: Array<CampRoomData>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
@@ -115,6 +115,7 @@ export interface VenueInput_v2
   rooms?: AnyRoom[];
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
+  template?: VenueTemplate;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -281,7 +282,7 @@ const createFirestoreVenueInput_v2 = async (
       imageKeys.map((entry) => entry.fileKey)
     ),
     ...imageInputData,
-    template: VenueTemplate.themecamp, // New venues are always themecamp
+    template: input.template ?? VenueTemplate.partymap,
   };
 
   return firestoreVenueInput;
