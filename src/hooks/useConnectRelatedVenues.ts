@@ -183,7 +183,7 @@ export const useConnectRelatedVenues: ReactHook<
       : undefined;
 
   // Sibling Events
-  const siblingVenueEventsQueries = withEvents
+  const siblingVenueEventsQueries: AnySparkleRFQuery[] = withEvents
     ? siblingVenues.map((sibling) =>
         makeEventsQueryConfig(
           sibling.id,
@@ -193,7 +193,7 @@ export const useConnectRelatedVenues: ReactHook<
     : [];
 
   // Sub Events
-  const subvenueEventsQueries = withEvents
+  const subvenueEventsQueries: AnySparkleRFQuery[] = withEvents
     ? subvenues.map((subvenue) =>
         makeEventsQueryConfig(
           subvenue.id,
