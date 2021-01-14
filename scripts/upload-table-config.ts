@@ -1,5 +1,7 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { resolve } from "path";
+
 import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
@@ -13,9 +15,9 @@ const usage = () => {
 ---------------------------------------------------------  
 ${scriptName}: Upload table config
 
-Usage: node ${scriptName} PROJECT_ID VENUE_ID
+Usage: ${scriptName} PROJECT_ID VENUE_ID [CREDENTIAL_PATH]
 
-Example: node ${scriptName} co-reality-map myvenue
+Example: ${scriptName} co-reality-map myvenue [someAccountKey.json]
 ---------------------------------------------------------
 `;
 
@@ -23,7 +25,9 @@ Example: node ${scriptName} co-reality-map myvenue
   process.exit(1);
 };
 
-const [projectId, venueId] = process.argv.slice(2);
+const [projectId, venueId, credentialPath] = process.argv.slice(2);
+
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !venueId) {
   usage();
 }
@@ -32,7 +36,11 @@ const saveToBackupFile = makeSaveToBackupFile(
   `${projectId}-upload-table-config`
 );
 
-initFirebaseAdminApp(projectId);
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 const generateTables: (props: {
   num: number;
