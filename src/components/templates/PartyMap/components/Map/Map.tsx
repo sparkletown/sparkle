@@ -234,8 +234,8 @@ export const Map: React.FC<PropsType> = ({
   }
 
   return (
-    <div className="party-map-page-container">
-      <div className="party-map-content-container">
+    <div className="party-map-map-component">
+      <div className="party-map-map-content">
         <img
           width="100%"
           className="party-map-background"
@@ -264,7 +264,7 @@ export const Map: React.FC<PropsType> = ({
         )}
       </div>
 
-      <div className="sidebar">
+      <div className="party-map-sidebar">
         <Sidebar />
       </div>
     </div>

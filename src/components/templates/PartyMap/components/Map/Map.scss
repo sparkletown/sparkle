@@ -4,21 +4,24 @@ $white: #ffffff;
 $room-info-bg: #005ee5;
 $border-radius: 28px;
 
-.party-map-page-container {
+.party-map-map-component {
   display: flex;
   flex-direction: row;
 
-  .party-map-content-container {
+  .party-map-map-content {
     display: flex;
     position: relative;
     box-sizing: content-box;
 
     flex: 1;
     margin: 20px;
+
+    width: calc(100% - 300px);
   }
 
-  .sidebar {
+  .party-map-map-sidebar {
     min-width: 300px;
+    box-shadow: 0 0 60px 10px rgba(0, 0, 0, 0.8);
   }
 }
 
