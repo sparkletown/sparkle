@@ -23,6 +23,8 @@ import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "../";
 
+import "./RoomModal.scss";
+
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
@@ -85,7 +87,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="container room-container">
+      <div className="container room-modal-container">
         <div className="room-description">
           <div className="title-container">
             <div
