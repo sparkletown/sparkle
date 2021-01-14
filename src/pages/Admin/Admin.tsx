@@ -32,6 +32,7 @@ import {
 import { IS_BURN } from "secrets";
 
 import { isVenueWithRooms } from "types/CampVenue";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -62,10 +63,7 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
-import {
-  SparkleRFQConfig,
-  useFirestoreConnect,
-} from "hooks/useFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
 
 dayjs.extend(advancedFormat);
@@ -427,14 +425,13 @@ const Admin: React.FC = () => {
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<SparkleRFQConfig>(
-    () => ({
-      collection: "venues",
-      where: [["owners", "array-contains", userId]],
-    }),
-    [userId]
-  );
-  useFirestoreConnect(venuesOwnedByUserQuery);
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
+  useFirestoreConnect({
+    collection: "venues",
+    where: [["owners", "array-contains", userId]],
+    storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
+  });
 
   const venueId = useVenueId();
   const queryParams = useQuery();
