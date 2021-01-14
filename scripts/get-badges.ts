@@ -9,6 +9,7 @@ import { UserVisit } from "../src/types/Firestore";
 import { User } from "../src/types/User";
 
 import { WithId, withId } from "../src/utils/id";
+import { formatSecondsAsDuration } from "../src/utils/time";
 
 import { initFirebaseAdminApp } from "./lib/helpers";
 
@@ -102,7 +103,7 @@ interface UsersWithVisitsResult {
     const { email } = authUsersById[id];
 
     const visitsTimeSpent = visits.map(
-      (visit) => `${visit.id} (${visit.timeSpent})`
+      (visit) => `${visit.id} (${formatSecondsAsDuration(visit.timeSpent)})`
     );
 
     return {
