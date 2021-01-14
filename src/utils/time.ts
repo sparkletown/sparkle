@@ -40,8 +40,10 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
  * Format seconds as a string representing the Duration.
  *
  * @example
+ *   formatSecondsAsDuration(1000000)
+ *   // 11 days 13 hours 46 minutes 40 seconds
  *
- * @param seconds
+ * @param seconds total seconds to be formatted as a duration
  */
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
