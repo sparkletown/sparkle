@@ -6,6 +6,7 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
+import { ValidStoreAsKeys } from "types/Firestore";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 
@@ -61,12 +62,14 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentVenueExperiences"` or similar
   useFirestoreConnect(
     venue?.name
       ? {
           collection: "experiences",
           doc: venue.name,
-          storeAs: "experiences",
+          storeAs: "experiences" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );

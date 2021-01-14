@@ -1,49 +1,80 @@
 // eslint-disable-next-line no-restricted-imports
 import {
+  isEmpty as _isEmpty,
+  isLoaded as _isLoaded,
   ReduxFirestoreQuerySetting,
   useFirestoreConnect as _useFirestoreConnect,
-  isLoaded as _isLoaded,
-  isEmpty as _isEmpty,
+  WhereOptions,
 } from "react-redux-firebase";
 
-import { ValidFirestoreKeys } from "types/Firestore";
+import {
+  ValidFirestoreRootCollections,
+  ValidStoreAsKeys,
+} from "types/Firestore";
+import { Defined } from "types/utility";
 
 /**
- * Type helper representing all types of T except undefined
+ * Query to access a root firestore collection
  */
-export type Defined<T> = T & Exclude<T, undefined>;
-
-/**
- * This type allows us to automagically constrain the storeAs
- * parameter to keys that exist within ValidFirestoreKeys, ensuring
- * that we can't forget to define it in our types when using functions
- * that rely on this type (eg. useFirestoreConnect)
- *
- * @see ValidFirestoreKeys
- * @see useFirestoreConnect
- * @see ReduxFirestoreQuerySetting
- */
-
-export type SparkleUseFirestoreConfigObject = ReduxFirestoreQuerySetting & {
-  storeAs?: ValidFirestoreKeys;
+export type SparkleRFCollectionQuery = ReduxFirestoreQuerySetting & {
+  collection: ValidFirestoreRootCollections;
+  doc?: never;
+  where?: never;
+  subcollections?: never;
+  storeAs?: never;
 };
 
 /**
- * This type lists all allowed argument types for @useFirestoreConnect function
- *
- * @see SparkleUseFirestoreConfigObject
- * @see ValidFirestoreKeys
+ * Query to access a root firestore collection with a where filter
  */
-export type SparkleRFQConfig =
-  | SparkleUseFirestoreConfigObject
-  | SparkleUseFirestoreConfigObject[]
-  | ValidFirestoreKeys
-  | undefined;
+export type SparkleRFCollectionWhereQuery = ReduxFirestoreQuerySetting & {
+  collection: ValidFirestoreRootCollections;
+  doc?: never;
+  where: WhereOptions | WhereOptions[];
+  subcollections?: never;
+  storeAs: ValidStoreAsKeys;
+};
 
 /**
- * A wrapper for useFirestoreConnect() that ensures the config
- * we pass it can only use a storeAs key that has been defined
- * in our FirestoreData/FirestoreOrdered types.
+ * Query to access a single document from a firestore collection
+ */
+export type SparkleRFSingleDocumentQuery = ReduxFirestoreQuerySetting & {
+  collection: ValidFirestoreRootCollections;
+  doc: string;
+  where?: never;
+  subcollections?: never;
+  storeAs: ValidStoreAsKeys;
+};
+
+/**
+ * Query to access a subcollection within a single document within a firestore collection
+ */
+export type SparkleRFSubcollectionQuery = ReduxFirestoreQuerySetting & {
+  collection: ValidFirestoreRootCollections;
+  doc: string;
+  where?: WhereOptions | WhereOptions[];
+  subcollections: ReduxFirestoreQuerySetting[];
+  storeAs: ValidStoreAsKeys;
+};
+
+/**
+ * All valid Sparkle useFirestoreConnect query types
+ *
+ * @see useFirestoreConnect
+ * @see SparkleRFCollectionQuery
+ * @see SparkleRFCollectionWhereQuery
+ * @see SparkleRFSingleDocumentQuery
+ * @see SparkleRFSubcollectionQuery
+ */
+export type AnySparkleRFQuery =
+  | SparkleRFCollectionQuery
+  | SparkleRFCollectionWhereQuery
+  | SparkleRFSingleDocumentQuery
+  | SparkleRFSubcollectionQuery;
+
+/**
+ * A wrapper for react-redux-firestore's useFirestoreConnect() that ensures the
+ * config we pass it conforms to our set of allowed query types.
  *
  * Note: the config does NOT need to be memo'd before being passed
  * to this function as useFirestoreConnect() determines equality
@@ -51,12 +82,16 @@ export type SparkleRFQConfig =
  *
  * @param config the config to be passed to useFirestoreConnect()
  *
- * @see SparkleRFQConfig
- * @see ValidFirestoreKeys
+ * @see AnySparkleRFQuery
  * @see ReduxFirestoreQuerySetting
+ * @see ValidFirestoreRootCollections
  */
-export const useFirestoreConnect = (config: SparkleRFQConfig) =>
-  _useFirestoreConnect(config);
+export const useFirestoreConnect = (
+  config?:
+    | AnySparkleRFQuery
+    | AnySparkleRFQuery[]
+    | ValidFirestoreRootCollections
+) => _useFirestoreConnect(config);
 
 /**
  * Use react-redux-firestore's isEmpty helper with
@@ -71,4 +106,9 @@ export const hasData = <T>(item: T): item is Defined<T> =>
 /**
  * Re-export react-redux-firestore's isLoaded helper for convenience.
  */
-export const isLoaded = <T>(item: T) => _isLoaded(item);
+export const isLoaded = <T>(item: T): boolean => _isLoaded(item);
+
+/**
+ * Re-export react-redux-firestore's isEmpty helper for convenience.
+ */
+export const isEmpty = <T>(item: T): boolean => _isEmpty(item);

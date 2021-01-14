@@ -4,6 +4,7 @@ import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
+import { ValidStoreAsKeys } from "types/Firestore";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { getQueryParameters } from "utils/getQueryParameters";
@@ -220,13 +221,15 @@ const VenuePage: React.FC = () => {
     });
   }, [firestore, venueId, venueIdFromParams]);
 
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
     user?.uid
       ? {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );

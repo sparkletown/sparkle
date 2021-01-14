@@ -135,6 +135,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   };
 
   const onJoinClick = () => {
+    if (!venueId) return;
+
     const venueEntrance = venue.entrance && venue.entrance.length;
     window.location.href =
       user && !venueEntrance

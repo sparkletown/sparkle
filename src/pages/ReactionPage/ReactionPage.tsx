@@ -23,17 +23,17 @@ const ReactionPage = () => {
 
   const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
 
-  useFirestoreConnect([
+  useFirestoreConnect(
     venue
       ? {
           collection: "experiences",
           doc: venue.name,
           subcollections: [{ collection: "reactions" }],
-          storeAs: "reactions",
           orderBy: ["created_at", "desc"],
+          storeAs: "reactions",
         }
-      : {},
-  ]);
+      : undefined
+  );
 
   const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
