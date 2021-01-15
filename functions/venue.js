@@ -88,6 +88,9 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     showRadio: data.showRadio || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    ...(data.mapBackgroundImageUrl && {
+      mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+    }),
   };
 
   if (data.template === VenueTemplate.audience) {
@@ -100,10 +103,6 @@ const createVenueData = (data, context) => {
     if (data.auditoriumRows) {
       venueData.auditoriumRows = data.auditoriumRows;
     }
-  }
-
-  if (data.mapBackgroundImageUrl) {
-    venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
   switch (data.template) {
