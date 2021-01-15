@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 
 import {
-  chatUsersSelector,
+  chatUsersByIdSelector,
   currentVenueSelector,
   parentVenueSelector,
   unreadMessagesSelector,
@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
 
   const [tab, setTab] = useState(0);
 
-  const chatUsers = useSelector(chatUsersSelector) ?? [];
+  const chatUsers = useSelector(chatUsersByIdSelector) ?? [];
   const hasUnreadMessages = useSelector(unreadMessagesSelector);
 
   const isEnabled = chatUsers;

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import firebase from "firebase/app";
 
 import { WithId } from "utils/id";
-import { chatUsersSelector } from "utils/selectors";
+import { chatUsersByIdSelector } from "utils/selectors";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUsersById } from "hooks/users";
@@ -40,7 +40,7 @@ const ChatBox: React.FC<ChatboxProps> = ({
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
   const venueUsersById = useUsersById();
-  const chatUsersById = useSelector(chatUsersSelector) ?? {};
+  const chatUsersById = useSelector(chatUsersByIdSelector) ?? {};
 
   const usersById = isVenueChat ? venueUsersById : chatUsersById;
 

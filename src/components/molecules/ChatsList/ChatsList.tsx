@@ -13,7 +13,7 @@ import { User } from "types/User";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
-import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
+import { chatUsersByIdSelector, privateChatsSelector } from "utils/selectors";
 import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
@@ -45,28 +45,11 @@ const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
 
-  const chatUsers = useSelector(chatUsersSelector) ?? {};
+  const chatUsers = useSelector(chatUsersByIdSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
   const privateChats = useSelector(privateChatsSelector) ?? [];
-  const chatUserIds = useMemo(() => {
-    return [...privateChats]
-      .sort(chatSort)
-      .flatMap((chat) => [chat.from, chat.to])
-      .filter(filterUniqueKeys)
-      .slice(0, NUM_CHAT_UIDS_TO_LOAD);
-  }, [privateChats]);
-
-  useFirestoreConnect(
-    hasElements(chatUserIds)
-      ? {
-          collection: "users",
-          where: [DOCUMENT_ID, "in", chatUserIds],
-          storeAs: "chatUsers",
-        }
-      : undefined
-  );
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {
