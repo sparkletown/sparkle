@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Venue, VenueEvent } from "types/venues";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
 import Fuse from "fuse.js";

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import firebase from "firebase/app";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { IFRAME_ALLOW, PLAYA_VENUE_NAME } from "settings";
+import { ValidFirestoreRootCollections } from "types/Firestore";
 
 const WelcomePage: React.FunctionComponent = () => {
-  useFirestoreConnect("marketingemails");
+  // @debt we should remove this code file if it's not being used anymore
+  useFirestoreConnect("marketingemails" as ValidFirestoreRootCollections);
   const [email, setEmail] = useState("");
   const [emailSubmitted, setEmailSubmitted] = useState(false);
   const [emailSubmitError, setEmailSubmitError] = useState(null);

@@ -11,7 +11,7 @@ import {
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { PartyMapVenue, Venue } from "types/venues";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
 import { Room } from "types/rooms";
@@ -21,13 +21,14 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
+import { useVenueId } from "hooks/useVenueId";
 import { ExtractProps } from "types/utility";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import RoomDeleteModal from "./RoomDeleteModal";
 import Login from "pages/Account/Login";
 
 export const RoomsForm: React.FC = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
@@ -39,12 +40,16 @@ export const RoomsForm: React.FC = () => {
     : undefined;
 
   useEffect(() => {
+    if (!venueId) return history.replace("/admin");
+
     const fetchVenueFromAPI = async () => {
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+
       if (!venueSnapshot.exists) return history.replace("/admin");
+
       const data = venueSnapshot.data() as Venue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
@@ -71,7 +76,7 @@ export const RoomsForm: React.FC = () => {
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
-  if (!venue) return null;
+  if (!venue || !venueId) return null;
 
   if (!user) {
     return <Login formType="login" />;

@@ -6,10 +6,10 @@ import { VenueEvent } from "types/venues";
 import CardInput from "components/molecules/CardInput";
 import firebase from "firebase/app";
 import "firebase/functions";
-import { useParams } from "react-router-dom";
 import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 import { Stripe, StripeElements } from "@stripe/stripe-js";
 import { WithId } from "utils/id";
 
@@ -31,7 +31,7 @@ const PaymentForm: React.FunctionComponent<PropsType> = ({
   setIsCardBeingSaved,
 }) => {
   const [selectedTab, setSelectedTab] = useState(INDIVIDUAL_TICKET_TAB.id);
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const stripe = useStripe();
   const elements = useElements();
   const [clientSecret, setClientSecret] = useState<string | undefined>();

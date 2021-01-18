@@ -7,17 +7,12 @@ import React, {
 } from "react";
 import { shallowEqual } from "react-redux";
 import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
-import {
   Link,
   Redirect,
   Route,
   Switch,
   useHistory,
   useLocation,
-  useParams,
   useRouteMatch,
 } from "react-router-dom";
 import dayjs from "dayjs";
@@ -36,6 +31,7 @@ import {
   PLAYA_WIDTH,
 } from "settings";
 
+import { ValidStoreAsKeys } from "types/Firestore";
 import {
   isVenueWithRooms,
   Venue,
@@ -54,10 +50,12 @@ import {
   canHaveSubvenues,
 } from "utils/venue";
 
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -441,16 +439,15 @@ const Admin: React.FC = () => {
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "venues",
-      where: [["owners", "array-contains", userId]],
-    }),
-    [userId]
-  );
-  useFirestoreConnect(venuesOwnedByUserQuery);
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
+  useFirestoreConnect({
+    collection: "venues",
+    where: [["owners", "array-contains", userId]],
+    storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
+  });
 
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString

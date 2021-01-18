@@ -1,16 +1,19 @@
 import React from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
 import { Venue } from "types/venues";
 import { Room } from "types/rooms";
 import { WithId } from "utils/id";
-import "./Admin.scss";
+
 import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+
 import VenueEventDetails from "./VenueEventDetails";
+
+import "./Admin.scss";
 
 interface Props {
   index: number;

@@ -21,7 +21,22 @@ export interface UserVisit {
   timeSpent: number;
 }
 
+export type ValidFirestoreRootCollections =
+  | "customers"
+  | "experiences"
+  | "privatechats"
+  | "purchases"
+  | "roles"
+  | "userprivate"
+  | "users"
+  | "venues";
+
 export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
+
+export type ValidStoreAsKeys = Exclude<
+  ValidFirestoreKeys,
+  ValidFirestoreRootCollections
+>;
 
 export interface Firestore {
   data: FirestoreData;

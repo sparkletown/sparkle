@@ -20,7 +20,7 @@ import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";

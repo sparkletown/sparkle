@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
@@ -52,6 +51,7 @@ import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
