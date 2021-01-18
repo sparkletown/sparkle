@@ -108,7 +108,6 @@ export const PartyMap: React.FC = () => {
           profileData={profile.data}
           venue={currentVenue}
           partygoers={usersInVenue}
-          selectedRoom={selectedRoom}
           selectRoom={selectRoom}
           unselectRoom={unselectRoom}
           enterSelectedRoom={enterSelectedRoom}

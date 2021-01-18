@@ -15,14 +15,12 @@ import "./MapRoom.scss";
 interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
-  isSelected: boolean;
   selectRoom: () => void;
 }
 
 export const MapRoom: React.FC<MapRoomProps> = ({
   venue,
   room,
-  isSelected,
   selectRoom,
 }) => {
   const dispatch = useDispatch();

@@ -34,7 +34,6 @@ interface MapProps {
   profileData: UserExperienceData;
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
-  selectedRoom: Room | undefined;
   selectRoom: (room: Room) => void;
   unselectRoom: () => void;
   enterSelectedRoom: () => void;
@@ -45,7 +44,6 @@ export const Map: React.FC<MapProps> = ({
   profileData,
   venue,
   partygoers,
-  selectedRoom,
   selectRoom,
   unselectRoom,
   enterSelectedRoom,
@@ -206,11 +204,10 @@ export const Map: React.FC<MapProps> = ({
           key={room.title}
           venue={venue}
           room={room}
-          isSelected={room === selectedRoom}
           selectRoom={() => selectRoom(room)}
         />
       )),
-    [selectRoom, selectedRoom, venue]
+    [selectRoom, venue]
   );
 
   const gridContainerStyles = useMemo(
