@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { RootState } from "index";
 
-import { AnyVenue, ValidFirestoreKeys } from "types/Firestore";
+import { AnyVenue, ValidStoreAsKeys } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 import { ReactHook } from "types/utility";
 import { Venue } from "types/Venue";
@@ -26,6 +26,7 @@ import {
   useFirestoreConnect,
   AnySparkleRFQuery,
   isLoaded,
+  SparkleRFSubcollectionQuery,
 } from "./useFirestoreConnect";
 
 const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
@@ -43,8 +44,8 @@ const venueEventsSelectorToEventsWithVenueIds = (
 
 const makeEventsQueryConfig = (
   doc: string,
-  storeAs: ValidFirestoreKeys
-): AnySparkleRFQuery => ({
+  storeAs: ValidStoreAsKeys
+): SparkleRFSubcollectionQuery => ({
   collection: "venues",
   doc,
   subcollections: [{ collection: "events" }],
@@ -80,7 +81,7 @@ export const useConnectRelatedVenues: ReactHook<
   UseConnectRelatedVenuesReturn
 > = ({ venueId, withEvents = false }) => {
   const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
+    venueId!
   );
 
   const parentId: string | undefined = currentVenue?.parentId;
@@ -215,7 +216,7 @@ export const useConnectRelatedVenues: ReactHook<
     ? siblingVenues.map((sibling) =>
         makeEventsQueryConfig(
           sibling.id,
-          `siblingVenueEvents-${sibling.id}` as ValidFirestoreKeys // @debt a little hacky, but we're consciously subverting our helper protections;
+          `siblingVenueEvents-${sibling.id}` as ValidStoreAsKeys // @debt a little hacky, but we're consciously subverting our helper protections;
         )
       )
     : [];
@@ -225,7 +226,7 @@ export const useConnectRelatedVenues: ReactHook<
     ? subvenues.map((subvenue) =>
         makeEventsQueryConfig(
           subvenue.id,
-          `subvenueEvents-${subvenue.id}` as ValidFirestoreKeys // @debt a little hacky, but we're consciously subverting our helper protections;
+          `subvenueEvents-${subvenue.id}` as ValidStoreAsKeys // @debt a little hacky, but we're consciously subverting our helper protections;
         )
       )
     : [];

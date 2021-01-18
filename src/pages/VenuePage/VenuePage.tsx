@@ -4,7 +4,7 @@ import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { ValidFirestoreKeys } from "types/Firestore";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { getQueryParameters } from "utils/getQueryParameters";
@@ -229,7 +229,7 @@ const VenuePage: React.FC = () => {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats" as ValidFirestoreKeys, // @debt super hacky, but we're consciously subverting our helper protections
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );

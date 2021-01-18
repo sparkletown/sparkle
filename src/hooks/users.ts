@@ -3,16 +3,20 @@ import { useMemo } from "react";
 import { worldUsersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
-import { useSelector } from "hooks/useSelector";
-import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
+import { useSelector } from "./useSelector";
+import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
-
-import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
+import { useVenueId } from "./useVenueId";
+import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 
 import { User } from "types/User";
 
 export const useConnectWorldUsers = () => {
-  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG();
+  const venueId = useVenueId();
+
+  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
+    venueId!
+  );
 
   useFirestoreConnect(() => {
     if (!isCurrentVenueLoaded || !currentVenue) return [];

@@ -17,7 +17,7 @@ export const currentVenueEventsNGSelector: SparkleSelector<
   Record<string, VenueEvent> | undefined
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
-export const useConnectCurrentVenueNG = (venueId?: string) => {
+export const useConnectCurrentVenueNG = (venueId: string) => {
   useFirestoreConnect(
     !!venueId
       ? [
