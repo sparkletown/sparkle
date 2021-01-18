@@ -13,8 +13,8 @@ const mergeStringArrays = (
   arr1: string[] = [],
   arr2: string[] = []
 ): string[] => {
-  const result = (arr1 ?? []).map((val) => val.trim());
-  (arr2 ?? []).forEach((val) => {
+  const result = arr1.map((val) => val.trim());
+  arr2.forEach((val) => {
     const valTrimmed = val.trim();
     if (!result.includes(valTrimmed)) {
       result.push(valTrimmed);

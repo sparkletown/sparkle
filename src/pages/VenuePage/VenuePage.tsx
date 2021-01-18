@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useFirestore } from "react-redux-firebase";
-import firebase from "firebase/app";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -52,11 +51,11 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy, notEmpty } from "utils/types";
+import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
 import { showZendeskWidget } from "utils/zendesk";
-import { getAccessTokenKey } from "utils/localStorage";
 import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
+import { useVenueAccessToken } from "hooks/useVenueAccessToken";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -133,9 +132,7 @@ const VenuePage: React.FC = () => {
   const location = venueName;
   useLocationUpdateEffect(user, venueName);
 
-  const newLocation = {
-    [location]: new Date().getTime(),
-  };
+  const newLocation = { [location]: Date.now() };
   const isNewLocation = profile?.lastSeenIn
     ? !profile?.lastSeenIn[location]
     : false;
@@ -254,54 +251,10 @@ const VenuePage: React.FC = () => {
       showZendeskWidget();
     }
   }, [venue]);
-  // Need a token to access the venue
-  useEffect(() => {
-    if (!venue) return;
 
-    const denyAccess = () => {
-      localStorage.removeItem(getAccessTokenKey(venueId));
-      setIsAccessDenied(true);
-    };
+  const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
-    // @debt convert this so token is needed to get venue config
-    if (notEmpty(venue.access)) {
-      console.log("venue.access", venue.access);
-      const token = localStorage.getItem(getAccessTokenKey(venueId));
-      console.log("found token:", token);
-      if (!token) {
-        console.log("checking access");
-        firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
-            venueId,
-            token,
-          })
-          .then((result) => {
-            console.log(
-              "access check result:",
-              result,
-              "isTruthy result.data:",
-              isTruthy(result.data)
-            );
-            if (!isTruthy(result.data)) {
-              firebase
-                .auth()
-                .signOut()
-                .finally(() => {
-                  denyAccess();
-                });
-            }
-          });
-      } else {
-        firebase
-          .auth()
-          .signOut()
-          .finally(() => {
-            denyAccess();
-          });
-      }
-    }
-  }, [venue, venueId]);
+  useVenueAccessToken(venue, handleAccessDenied);
 
   if (!user) {
     return <Login formType="initial" />;

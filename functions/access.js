@@ -21,7 +21,7 @@ const checkIsValidToken = async (venueId, uid, token) => {
     if (!granted.tokens[token].usedAt) {
       granted.tokens[token].usedAt = [];
     }
-    granted.tokens[token].usedAt.push(new Date().getTime());
+    granted.tokens[token].usedAt.push(Date.now());
     await venue.ref.collection("accessgranted").doc(uid).set(granted);
     return true;
   }
@@ -67,21 +67,20 @@ const createToken = async (venueId, uid, password, email, code) => {
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
-  let granted = {};
-  let grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
-  if (grantedDoc.exists) {
-    granted = grantedDoc.data();
-  }
+
+  const grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
+  const granted = grantedDoc.exists ? grantedDoc.data() : {};
+
   if (!granted.tokens) {
     granted.tokens = {};
   }
   // Record the first time the token was created
   const token = uuid();
   granted.tokens[token] = {
-    usedAt: [new Date().getTime()],
-    password: password ?? null,
-    email: email ?? null,
-    code: code ?? null,
+    usedAt: [Date.now()],
+    password: password || null,
+    email: email || null,
+    code: code || null,
   };
   await venue.ref.collection("accessgranted").doc(uid).set(granted);
   return { token };

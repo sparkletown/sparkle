@@ -6,7 +6,6 @@ import { venueEntranceUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./SecretPasswordForm.scss";
-import { localStorageTokenKey } from "utils/localStorage";
 import { getAccessTokenKey } from "utils/localStorage";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
