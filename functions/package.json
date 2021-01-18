@@ -19,7 +19,7 @@
     "twilio": "^3.45.0"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
+    "eslint": "^7.17.0",
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.3",
     "firebase-tools": "^8.4.1"

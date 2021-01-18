@@ -1,7 +1,7 @@
-import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
-import { RestrictedChatMessage, PrivateChatMessage } from "store/actions/Chat";
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
+import { WithId } from "utils/id";
 import { Reaction } from "utils/reactions";
 
 import { CampVenue } from "./CampVenue";
@@ -25,7 +25,22 @@ export interface UserVisit {
   timeSpent: number;
 }
 
+export type ValidFirestoreRootCollections =
+  | "customers"
+  | "experiences"
+  | "privatechats"
+  | "purchases"
+  | "roles"
+  | "userprivate"
+  | "users"
+  | "venues";
+
 export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
+
+export type ValidStoreAsKeys = Exclude<
+  ValidFirestoreKeys,
+  ValidFirestoreRootCollections
+>;
 
 export interface Firestore {
   data: FirestoreData;

@@ -5,23 +5,25 @@ import { debounce } from "lodash";
 
 import { isChatValid } from "validation";
 
+import { ValidStoreAsKeys } from "types/Firestore";
+import { User } from "types/User";
+
 import ChatForm from "./ChatForm";
 import "./Chatbox.scss";
-import { User } from "types/User";
 import ChatMessage from "components/molecules/ChatMessage";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { usePartygoers, useUsersById } from "hooks/users";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
 import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
 
 // Don't pull everything
-// REVISIT: only grab most recent N from server
+// @debt REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
@@ -57,13 +59,15 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user && user.uid
+    user?.uid
       ? {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );

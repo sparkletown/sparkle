@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { RootState } from "index";
 
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue, ValidFirestoreKeys } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 import { ReactHook } from "types/utility";
 import { Venue } from "types/Venue";
@@ -23,10 +23,10 @@ import {
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
 import {
+  useFirestoreConnect,
+  AnySparkleRFQuery,
   isLoaded,
-  SparkleRFQConfig,
-  useSparkleFirestoreConnect,
-} from "./useSparkleFirestoreConnect";
+} from "./useFirestoreConnect";
 
 const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
   withVenueId(event, venueId);
@@ -40,6 +40,17 @@ const venueEventsSelectorToEventsWithVenueIds = (
         toEventsWithVenueIds(venue.id)
       ) ?? []
   ) ?? [];
+
+const makeEventsQueryConfig = (
+  doc: string,
+  storeAs: ValidFirestoreKeys
+): AnySparkleRFQuery => ({
+  collection: "venues",
+  doc,
+  subcollections: [{ collection: "events" }],
+  orderBy: ["start_utc_seconds", "asc"],
+  storeAs,
+});
 
 interface UseConnectRelatedVenuesProps {
   venueId?: string;
@@ -167,7 +178,7 @@ export const useConnectRelatedVenues: ReactHook<
   /////////////////////////////////
 
   // Parent
-  const parentVenueQuery: SparkleRFQConfig | undefined = !!parentId
+  const parentVenueQuery: AnySparkleRFQuery | undefined = !!parentId
     ? {
         collection: "venues",
         doc: parentId,
@@ -176,7 +187,7 @@ export const useConnectRelatedVenues: ReactHook<
     : undefined;
 
   // Sibling
-  const siblingVenuesQuery: SparkleRFQConfig | undefined = !!parentId
+  const siblingVenuesQuery: AnySparkleRFQuery | undefined = !!parentId
     ? {
         collection: "venues",
         where: [["parentId", "==", parentId]],
@@ -185,7 +196,7 @@ export const useConnectRelatedVenues: ReactHook<
     : undefined;
 
   // Sub
-  const subvenuesQuery: SparkleRFQConfig | undefined = !!venueId
+  const subvenuesQuery: AnySparkleRFQuery | undefined = !!venueId
     ? {
         collection: "venues",
         where: [["parentId", "==", venueId]],
@@ -193,40 +204,34 @@ export const useConnectRelatedVenues: ReactHook<
       }
     : undefined;
 
-  const makeEventsQueryConfig = (
-    doc: string,
-    storeAs: string
-  ): SparkleRFQConfig =>
-    ({
-      collection: "venues",
-      doc,
-      subcollections: [{ collection: "events" }],
-      orderBy: ["start_utc_seconds", "asc"],
-      storeAs,
-    } as SparkleRFQConfig); // @debt a little hacky, but we're consciously subverting our helper protections;
-
   // Parent Events
-  const parentVenueEventsQuery: SparkleRFQConfig | undefined =
+  const parentVenueEventsQuery: AnySparkleRFQuery | undefined =
     parentId && withEvents
       ? makeEventsQueryConfig(parentId, "parentVenueEvents")
       : undefined;
 
   // Sibling Events
-  const siblingVenueEventsQueries: SparkleRFQConfig[] = withEvents
+  const siblingVenueEventsQueries: AnySparkleRFQuery[] = withEvents
     ? siblingVenues.map((sibling) =>
-        makeEventsQueryConfig(sibling.id, `siblingVenueEvents-${sibling.id}`)
+        makeEventsQueryConfig(
+          sibling.id,
+          `siblingVenueEvents-${sibling.id}` as ValidFirestoreKeys // @debt a little hacky, but we're consciously subverting our helper protections;
+        )
       )
     : [];
 
   // Sub Events
-  const subvenueEventsQueries: SparkleRFQConfig[] = withEvents
+  const subvenueEventsQueries: AnySparkleRFQuery[] = withEvents
     ? subvenues.map((subvenue) =>
-        makeEventsQueryConfig(subvenue.id, `subvenueEvents-${subvenue.id}`)
+        makeEventsQueryConfig(
+          subvenue.id,
+          `subvenueEvents-${subvenue.id}` as ValidFirestoreKeys // @debt a little hacky, but we're consciously subverting our helper protections;
+        )
       )
     : [];
 
   // Combine / filter for valid queries
-  const allValidQueries: SparkleRFQConfig[] = [
+  const allValidQueries: AnySparkleRFQuery[] = [
     parentVenueQuery,
     siblingVenuesQuery,
     subvenuesQuery,
@@ -236,7 +241,7 @@ export const useConnectRelatedVenues: ReactHook<
   ].filter(isTruthyFilter);
 
   // Connect
-  useSparkleFirestoreConnect(allValidQueries);
+  useFirestoreConnect(allValidQueries);
 
   /////////////////////////////////
   // Return

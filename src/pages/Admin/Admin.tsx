@@ -11,15 +11,10 @@ import {
   Route,
   Switch,
   useLocation,
-  useParams,
   useRouteMatch,
   useHistory,
   Redirect,
 } from "react-router-dom";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
@@ -37,6 +32,7 @@ import {
 import { IS_BURN } from "secrets";
 
 import { isVenueWithRooms } from "types/CampVenue";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -67,6 +63,8 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueId } from "hooks/useVenueId";
 
 dayjs.extend(advancedFormat);
 
@@ -427,16 +425,15 @@ const Admin: React.FC = () => {
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "venues",
-      where: [["owners", "array-contains", userId]],
-    }),
-    [userId]
-  );
-  useFirestoreConnect(venuesOwnedByUserQuery);
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
+  useFirestoreConnect({
+    collection: "venues",
+    where: [["owners", "array-contains", userId]],
+    storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
+  });
 
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
