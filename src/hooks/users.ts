@@ -18,30 +18,36 @@ export const useConnectWorldUsers = () => {
     venueId!
   );
 
-  useFirestoreConnect(() => {
-    if (!isCurrentVenueLoaded || !currentVenue) return [];
+  // useFirestoreConnect(() => {
+  //   if (!isCurrentVenueLoaded || !currentVenue) return [];
 
-    console.log(currentVenue.parentId, currentVenue.id);
+  //   console.log(currentVenue.parentId, currentVenue.id);
 
-    return [
-      {
-        collection: "users",
-        where: [
-          "enteredVenueIds",
-          "array-contains",
-          currentVenue.parentId || currentVenue.id,
-        ],
-        storeAs: "worldUsers",
-      },
-    ];
-  });
+  //   return [
+  //     {
+  //       collection: "users",
+  //       where: ["enteredVenueIds", "array-contains", venueId],
+  //       storeAs: "worldUsers",
+  //     },
+  //   ];
+  // });
+
+  useFirestoreConnect(
+    isCurrentVenueLoaded && currentVenue
+      ? {
+          collection: "users",
+          where: ["enteredVenueIds", "array-contains", venueId],
+          storeAs: "worldUsers",
+        }
+      : undefined
+  );
 };
 
 export const useWorldUsers = (): {
   worldUsers: readonly WithId<User>[];
   isWorldUsersLoaded: boolean;
 } => {
-  useConnectWorldUsers();
+  // useConnectWorldUsers();
 
   const selectedUniverseUsers = useSelector(worldUsersSelector);
 
@@ -76,7 +82,7 @@ export const useRecentWorldUsers = (): {
 };
 
 export const useWorldUsersById = () => {
-  useConnectWorldUsers();
+  // useConnectWorldUsers();
 
   const worldUsersById = useSelector(usersByIdSelector);
 

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { VenueTemplate } from "types/VenueTemplate";
 
-import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
@@ -37,7 +35,6 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -61,7 +58,6 @@ const hasPaidEvents = (template: VenueTemplate) => {
 
 const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const firestore = useFirestore();
   const mixpanel = useMixpanel();
 
   const history = useHistory();
@@ -70,9 +66,8 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const { isWorldUsersLoaded } = useWorldUsers();
-
   const venue = useSelector(currentVenueSelector);
+
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const currentEvent = useSelector(currentEventSelector);
@@ -207,19 +202,10 @@ const VenuePage: React.FC = () => {
     );
   }, [profile, user, venue]);
 
-  const venueIdFromParams = getQueryParameters(window.location.search)
-    ?.venueId as string;
-
+  // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
-  useEffect(() => {
-    firestore.get({
-      collection: "venues",
-      doc: venueId ? venueId : venueIdFromParams,
-      storeAs: "currentVenue",
-    });
-  }, [firestore, venueId, venueIdFromParams]);
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
@@ -264,7 +250,7 @@ const VenuePage: React.FC = () => {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (venueRequestStatus && !venue) {
+  if (venueRequestStatus && !venue && !venue) {
     return <>This venue does not exist</>;
   }
 
@@ -277,13 +263,7 @@ const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (
-      !event ||
-      !venue ||
-      !userPurchaseHistoryRequestStatus ||
-      // @debt since we are not using users directly here, it would be nice to eventually remove this check from here
-      !isWorldUsersLoaded
-    ) {
+    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 
@@ -307,13 +287,11 @@ const VenuePage: React.FC = () => {
     }
   }
 
-  if (!user) {
-    return <LoadingPage />;
-  }
-
   if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
+
+  // console.log("Venue page!");
 
   return <TemplateWrapper venue={venue} />;
 };
