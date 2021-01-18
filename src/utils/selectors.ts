@@ -33,7 +33,7 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  */
 export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
   state
-) => state.firebase.profile;
+) => state.firestore.data.profile;
 
 /**
  * Selector to retrieve currentVenue?.[0] from the Redux Firestore.

@@ -1,3 +1,5 @@
+import { FirebaseReducer } from "react-redux-firebase";
+
 import { AdminRole } from "hooks/roles";
 
 import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
@@ -77,6 +79,7 @@ export interface FirestoreData {
   venueChats?: Record<string, RestrictedChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
+  profile: FirebaseReducer.Profile<User>;
 }
 
 // note: these entries should be sorted alphabetically

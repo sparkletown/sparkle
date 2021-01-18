@@ -5,50 +5,35 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
-import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
-import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 
 import { User } from "types/User";
+import { Venue } from "types/Venue";
 
-export const useConnectWorldUsers = () => {
-  const venueId = useVenueId();
+export const useConnectWorldUsers = (venue?: WithId<Venue>) => {
+  useFirestoreConnect(() => {
+    const venueId = venue?.id;
 
-  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
-    venueId!
-  );
+    if (!venueId) return [];
 
-  // useFirestoreConnect(() => {
-  //   if (!isCurrentVenueLoaded || !currentVenue) return [];
-
-  //   console.log(currentVenue.parentId, currentVenue.id);
-
-  //   return [
-  //     {
-  //       collection: "users",
-  //       where: ["enteredVenueIds", "array-contains", venueId],
-  //       storeAs: "worldUsers",
-  //     },
-  //   ];
-  // });
-
-  useFirestoreConnect(
-    isCurrentVenueLoaded && currentVenue
-      ? {
-          collection: "users",
-          where: ["enteredVenueIds", "array-contains", venueId],
-          storeAs: "worldUsers",
-        }
-      : undefined
-  );
+    return [
+      {
+        collection: "users",
+        where: [
+          "enteredVenueIds",
+          "array-contains",
+          venue?.parentId || venueId,
+        ],
+        storeAs: "worldUsers",
+      },
+    ];
+  });
 };
 
 export const useWorldUsers = (): {
   worldUsers: readonly WithId<User>[];
   isWorldUsersLoaded: boolean;
 } => {
-  // useConnectWorldUsers();
-
   const selectedUniverseUsers = useSelector(worldUsersSelector);
 
   console.log("users", selectedUniverseUsers);
@@ -82,8 +67,6 @@ export const useRecentWorldUsers = (): {
 };
 
 export const useWorldUsersById = () => {
-  // useConnectWorldUsers();
-
   const worldUsersById = useSelector(usersByIdSelector);
 
   return useMemo(() => worldUsersById, [worldUsersById]);

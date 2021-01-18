@@ -79,8 +79,8 @@ if (LOGROCKET_APP_ID) {
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const rrfConfig = {
-  userProfile: "users",
-  useFirestoreForProfile: true,
+  // userProfile: "user",
+  // useFirestoreForProfile: true,
   oneListenerPerPath: true,
   allowMultipleListeners: false,
 };

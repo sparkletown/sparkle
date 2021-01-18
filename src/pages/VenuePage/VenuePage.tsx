@@ -27,6 +27,12 @@ import {
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
 import { venueEntranceUrl } from "utils/url";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
+import { isTruthy } from "utils/types";
+import { showZendeskWidget } from "utils/zendesk";
+
+import { updateTheme } from "./helpers";
+import { updateUserProfile } from "pages/Account/helpers";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -36,21 +42,32 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useConnectWorldUsers, useWorldUsers } from "hooks/users";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { updateUserProfile } from "pages/Account/helpers";
+import Login from "pages/Account/Login";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import TemplateWrapper from "./TemplateWrapper";
 
-import { updateTheme } from "./helpers";
-
 import "./VenuePage.scss";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
-import Login from "pages/Account/Login";
-import { showZendeskWidget } from "utils/zendesk";
+
+const VenueDataWrapper = () => {
+  const venueId = useVenueId();
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId!
+  );
+  useConnectWorldUsers(currentVenue);
+
+  const { isWorldUsersLoaded } = useWorldUsers();
+
+  if (!isCurrentVenueLoaded || !currentVenue || !isWorldUsersLoaded)
+    return <LoadingPage />;
+
+  return <VenuePage />;
+};
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -296,4 +313,4 @@ const VenuePage: React.FC = () => {
   return <TemplateWrapper venue={venue} />;
 };
 
-export default VenuePage;
+export default VenueDataWrapper;
