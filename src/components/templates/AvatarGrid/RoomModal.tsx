@@ -8,7 +8,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { isEventLive } from "utils/event";
@@ -48,7 +48,7 @@ export const RoomModal: React.FC<PropsType> = ({
   const dispatch = useDispatch();
 
   const { user, profile } = useUser();
-  const partygoers = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const venue = useSelector(venueSelector);
   const venueName = venue?.name;
@@ -56,8 +56,10 @@ export const RoomModal: React.FC<PropsType> = ({
 
   const usersInRoom = useMemo(
     () =>
-      partygoers.filter((goer) => goer.room === `${venueName}/${roomTitle}`),
-    [partygoers, roomTitle, venueName]
+      recentWorldUsers.filter(
+        (user) => user.room === `${venueName}/${roomTitle}`
+      ),
+    [recentWorldUsers, roomTitle, venueName]
   );
 
   const enter = useCallback(() => {

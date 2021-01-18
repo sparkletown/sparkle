@@ -17,7 +17,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import UserList from "components/molecules/UserList";
@@ -46,14 +46,16 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const users = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
   const venueName = venue?.name;
   const roomTitle = room?.title;
 
   const usersToDisplay = useMemo(
     () =>
-      users.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
-    [users, venueName, roomTitle]
+      recentWorldUsers.filter(
+        (user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]
+      ),
+    [recentWorldUsers, venueName, roomTitle]
   );
 
   if (!room) {

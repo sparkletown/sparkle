@@ -1,5 +1,5 @@
 import React from "react";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { PLAYA_AVATAR_SIZE } from "../../../settings";
 import { UserState } from "../../../types/RelayMessage";
 import { WithId } from "../../../utils/id";
@@ -15,9 +15,9 @@ const AvatarPartygoers: React.FC<PropsType> = ({
   state,
   useProfilePicture,
 }) => {
-  const partygoers = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
   const roomParticipants = user.video?.inRoomOwnedBy
-    ? partygoers.filter(
+    ? recentWorldUsers.filter(
         (partygoer) =>
           partygoer.video?.inRoomOwnedBy === user?.video?.inRoomOwnedBy &&
           partygoer.id &&

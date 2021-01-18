@@ -12,7 +12,7 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { User } from "types/User";
 import VideoErrorModal from "./VideoErrorModal";
 
@@ -43,7 +43,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user, profile } = useUser();
-  const users = useUsersById();
+  const users = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 

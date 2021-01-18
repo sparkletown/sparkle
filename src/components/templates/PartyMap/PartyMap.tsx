@@ -7,8 +7,7 @@ import { createUrlSafeName } from "api/admin";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { PartyMapVenue } from "types/PartyMapVenue";
 
-import { usePartygoers } from "hooks/users";
-// import { useRecentPartyUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import { Map, RoomModal } from "./components";
@@ -27,20 +26,20 @@ export const PartyMap: React.FC = () => {
   >();
 
   const venue = useSelector(partyMapVenueSelector);
-  const usersInCamp = usePartygoers();
-  // const usersInCamp = useRecentPartyUsers(venue.name);
+  const { recentWorldUsers } = useRecentWorldUsers();
 
+  // @debt Separate counting logic into the hook
   const attendances = useMemo(
     () =>
-      usersInCamp
-        ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-            Object.keys(value.lastSeenIn).forEach((key) => {
-              acc[key] = (acc[key] || 0) + 1;
+      recentWorldUsers
+        ? recentWorldUsers.reduce<Record<string, number>>((acc, value) => {
+            Object.keys(value.lastSeenIn).forEach((locationName) => {
+              acc[locationName] = (acc[locationName] || 0) + 1;
             });
             return acc;
           }, {})
         : {},
-    [usersInCamp]
+    [recentWorldUsers]
   );
 
   const modalHidden = useCallback(() => {

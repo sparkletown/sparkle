@@ -37,7 +37,7 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useUniverseUsers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -70,7 +70,7 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const { isUniverseUsersLoaded } = useUniverseUsers();
+  const { isWorldUsersLoaded } = useWorldUsers();
 
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
@@ -282,7 +282,7 @@ const VenuePage: React.FC = () => {
       !venue ||
       !userPurchaseHistoryRequestStatus ||
       // @debt since we are not using users directly here, it would be nice to eventually remove this check from here
-      !isUniverseUsersLoaded
+      !isWorldUsersLoaded
     ) {
       return <LoadingPage />;
     }

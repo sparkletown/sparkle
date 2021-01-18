@@ -5,14 +5,14 @@ import "./ReactionPage.scss";
 import UserList from "components/molecules/UserList";
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { MessageToTheBandReaction } from "utils/reactions";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
 
 const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
   const chats =
     useSelector((state) =>
@@ -21,7 +21,9 @@ const ReactionPage = () => {
       )
     ) ?? [];
 
-  const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
+  const hasPartygoers = useMemo(() => recentWorldUsers.length > 0, [
+    recentWorldUsers,
+  ]);
 
   useFirestoreConnect(
     venue
@@ -52,7 +54,7 @@ const ReactionPage = () => {
           {hasPartygoers && (
             <div className="col-4">
               <UserList
-                users={partygoers}
+                users={recentWorldUsers}
                 isAudioEffectDisabled
                 imageSize={50}
               />

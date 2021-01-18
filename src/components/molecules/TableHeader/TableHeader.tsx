@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import firebase from "firebase/app";
 import { User } from "types/User";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
@@ -23,7 +23,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const { user, profile } = useUser();
 
   const experiences = useSelector(experiencesSelector);
-  const users = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
 
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
@@ -32,10 +32,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const usersAtCurrentTable = useMemo(
     () =>
       seatedAtTable &&
-      users.filter(
+      recentWorldUsers.filter(
         (user: User) => user.data?.[venueName]?.table === seatedAtTable
       ),
-    [seatedAtTable, users, venueName]
+    [seatedAtTable, recentWorldUsers, venueName]
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,9 +52,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
-      users &&
-      users.filter((user: User) => user.data?.[venueName]?.table === table)
-        .length === 0
+      recentWorldUsers.filter(
+        (user: User) => user.data?.[venueName]?.table === table
+      ).length === 0
     ) {
       return false;
     }

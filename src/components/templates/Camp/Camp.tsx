@@ -9,8 +9,7 @@ import { IS_BURN } from "secrets";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
-import { usePartygoers } from "hooks/users";
-// import { useRecentPartyUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -39,8 +38,7 @@ const Camp: React.FC = () => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const venue = useSelector(campVenueSelector);
-  const usersInCamp = usePartygoers();
-  // const usersInCamp = useRecentPartyUsers(venue.name);
+  const { recentWorldUsers } = useRecentWorldUsers();
 
   const selectRoom = useCallback((campRoom: CampRoomData) => {
     setSelectedRoom(campRoom);
@@ -51,14 +49,15 @@ const Camp: React.FC = () => {
     setIsRoomModalOpen(false);
   }, []);
 
-  const attendances = usersInCamp
-    ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-        Object.keys(value.lastSeenIn).forEach((key) => {
-          acc[key] = (acc[key] || 0) + 1;
-        });
-        return acc;
-      }, {})
-    : {};
+  const attendances = recentWorldUsers.reduce<Record<string, number>>(
+    (acc, value) => {
+      Object.keys(value.lastSeenIn).forEach((key) => {
+        acc[key] = (acc[key] || 0) + 1;
+      });
+      return acc;
+    },
+    {}
+  );
 
   const { roomTitle } = useParams();
   useEffect(() => {
@@ -78,10 +77,10 @@ const Camp: React.FC = () => {
       <BannerMessage venue={venue} />
       <div className="camp-container">
         <div className="row">
-          {usersInCamp && (
+          {recentWorldUsers && (
             <div className="col">
               <UserList
-                users={usersInCamp}
+                users={recentWorldUsers}
                 imageSize={50}
                 disableSeeAll={false}
                 isCamp={true}
@@ -114,7 +113,7 @@ const Camp: React.FC = () => {
         </div>
         <Map
           venue={venue}
-          partygoers={usersInCamp}
+          partygoers={recentWorldUsers}
           attendances={attendances}
           selectedRoom={selectedRoom}
           selectRoom={selectRoom}

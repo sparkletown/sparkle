@@ -1,6 +1,6 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useUniverseUsers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
@@ -37,7 +37,7 @@ const NavSearchBar = () => {
   const venue = useSelector(currentVenueSelectorData);
 
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const { universeUsers } = useUniverseUsers();
+  const { worldUsers } = useWorldUsers();
 
   useEffect(() => {
     if (!normalizedSearchQuery) {
@@ -48,7 +48,7 @@ const NavSearchBar = () => {
       });
       return;
     }
-    const venueUsersResults = universeUsers.filter((user) =>
+    const venueUsersResults = worldUsers.filter((user) =>
       user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
 
@@ -68,7 +68,7 @@ const NavSearchBar = () => {
       users: venueUsersResults,
       events: venueEventsResults,
     });
-  }, [normalizedSearchQuery, venue, venueEvents, universeUsers]);
+  }, [normalizedSearchQuery, venue, venueEvents, worldUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +

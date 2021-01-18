@@ -6,7 +6,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -24,7 +24,7 @@ import "./ConversationSpace.scss";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const users = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -38,7 +38,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   const tables = venue?.config?.tables ?? TABLES;
 
-  const venueUsers = users.filter(
+  // @debt Refactor this
+  const venueUsers = recentWorldUsers.filter(
     (user) =>
       user.lastSeenIn?.[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
   );

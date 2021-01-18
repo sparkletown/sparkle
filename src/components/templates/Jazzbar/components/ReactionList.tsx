@@ -6,7 +6,7 @@ import {
 } from "utils/reactions";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
@@ -27,7 +27,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const usersById = useUsersById();
+  const usersById = useWorldUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

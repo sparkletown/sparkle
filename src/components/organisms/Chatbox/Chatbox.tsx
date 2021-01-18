@@ -15,7 +15,7 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectVenueChats } from "hooks/useConnectVenueChats";
-import { usePartygoers, useUsersById } from "hooks/users";
+import { useWorldUsers, useWorldUsersById } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
@@ -52,8 +52,8 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const usersById = useUsersById();
-  const userArray = usePartygoers();
+  const usersById = useWorldUsersById();
+  const { worldUsers } = useWorldUsers();
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
@@ -122,9 +122,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       setPrivateRecipient(undefined);
       if (!isInProfileModal && lastChat && lastChat.type === "private") {
         if (lastChat?.to === user.uid) {
-          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.from));
+          setPrivateRecipient(worldUsers.find((u) => u.id === lastChat?.from));
         } else {
-          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.to));
+          setPrivateRecipient(worldUsers.find((u) => u.id === lastChat?.to));
         }
       }
     }
@@ -134,7 +134,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     isInProfileModal,
     isRecipientChangeBlocked,
     user,
-    userArray,
+    worldUsers,
   ]);
 
   return (
@@ -241,7 +241,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     />
                     {searchValue && (
                       <ul className="list-unstyled">
-                        {userArray
+                        {worldUsers
                           .filter(
                             (u) =>
                               !u.anonMode &&

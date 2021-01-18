@@ -8,7 +8,7 @@ import { WithId } from "utils/id";
 import * as S from "./FireBarrel.styled";
 import { useVideoState } from "./useVideo";
 import { useUser } from "hooks/useUser";
-import { usePartygoers, useUsersById } from "hooks/users";
+import { useRecentWorldUsers, useWorldUsersById } from "hooks/users";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
@@ -25,7 +25,7 @@ const FireBarrel: React.FC = () => {
   >([]);
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = usePartygoers();
+  const { recentWorldUsers } = useRecentWorldUsers();
 
   const chairs =
     currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS
@@ -34,17 +34,17 @@ const FireBarrel: React.FC = () => {
 
   const filterPartygoers = (
     venue: Venue,
-    partygoers: readonly WithId<User>[]
+    recentWorldUsers: readonly WithId<User>[]
   ): WithId<User>[] =>
-    partygoers?.filter((person) => person.room === venue?.name);
+    recentWorldUsers?.filter((person) => person.room === venue?.name);
 
   useEffect(() => {
     if (venue) {
-      const partyPeople = filterPartygoers(venue, partygoers);
+      const partyPeople = filterPartygoers(venue, recentWorldUsers);
 
       setCurrentPartygoers(partyPeople);
     }
-  }, [partygoers, venue]);
+  }, [recentWorldUsers, venue]);
 
   const { user, profile, userWithId } = useUser();
 
@@ -56,7 +56,7 @@ const FireBarrel: React.FC = () => {
   const chairsArray = Array.from(Array(chairs));
 
   const [videoError, setVideoError] = useState<string>("");
-  const users = useUsersById();
+  const users = useWorldUsersById();
 
   const updateVideoState = useCallback(
     (update: VideoState) => {

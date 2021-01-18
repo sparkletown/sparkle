@@ -2,7 +2,7 @@ import React from "react";
 import { useFirebase } from "react-redux-firebase";
 
 import { useUser } from "hooks/useUser";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 
 import Room from "./Video/Room";
 import { User, VideoState } from "types/User";
@@ -21,7 +21,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
-  const usersById = useUsersById();
+  const usersById = useWorldUsersById();
 
   if (!user || !profile || !profile.video) return <></>;
   const roomOwnerUid = profile.video.inRoomOwnedBy;

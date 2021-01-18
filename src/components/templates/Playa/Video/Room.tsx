@@ -4,7 +4,7 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";
 import { useUser } from "hooks/useUser";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
@@ -29,7 +29,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
-  const usersById = useUsersById();
+  const usersById = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 

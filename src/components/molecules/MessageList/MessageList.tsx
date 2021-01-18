@@ -3,7 +3,7 @@ import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RestrictedChatMessage } from "store/actions/Chat";
 import { Message } from "components/molecules/Message";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { WithId } from "utils/id";
 import { Modal } from "react-bootstrap";
 
@@ -18,7 +18,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useUsersById();
+  const usersById = useWorldUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
