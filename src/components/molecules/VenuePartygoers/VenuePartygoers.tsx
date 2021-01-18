@@ -21,7 +21,7 @@ export const VenuePartygoers = () => {
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
   const title = useMemo<string>(() => {
-    if (!isParentVenueLoaded || isCurrentVenueLoaded) return "";
+    if (!isParentVenueLoaded || !isCurrentVenueLoaded) return "";
 
     const attendeesTitle =
       parentVenue?.attendeesTitle ??
