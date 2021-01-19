@@ -44,6 +44,9 @@ $label-visible: flex;
     padding: 6px 10px;
     border-radius: 20px;
 
+    // This is used to give the label text a slightly blurred appearance
+    backdrop-filter: blur(8px);
+
     font-size: 0.9rem;
     background-color: darken($primary, 50%);
     opacity: 0.5;
