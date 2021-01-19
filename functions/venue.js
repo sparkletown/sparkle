@@ -98,6 +98,10 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
+  if (data.mapBackgroundImageUrl) {
+    venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   if (data.template === VenueTemplate.audience) {
     venueData.showReactions = data.showReactions;
 
