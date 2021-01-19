@@ -17,19 +17,17 @@ function getStyles(
     left,
     opacity: isDragging ? 0 : 1,
     height: isDragging ? 0 : "",
-    borderRadius: "25%",
     background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
   };
 }
 
 export type PropsType = SubVenueIconMap[string] & {
   id: string;
-  imageStyle: CSSProperties;
+  imageStyle?: CSSProperties;
   onChangeSize?: (newSize: Dimensions) => void;
   isResizable?: boolean;
   rounded: boolean;
+  lockAspectRatio?: boolean;
 };
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
@@ -43,6 +41,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     onChangeSize,
     isResizable,
     rounded,
+    lockAspectRatio = false,
   } = props;
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
@@ -65,6 +64,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
           const newHeight = height + d.height;
           onChangeSize && onChangeSize({ width: newWidth, height: newHeight });
         }}
+        lockAspectRatio={lockAspectRatio}
       >
         <div ref={drag} style={styles.dragContainer}>
           <div
