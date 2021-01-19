@@ -96,7 +96,7 @@ export const Map: React.FC<MapProps> = ({
         row,
         column,
         totalRows,
-        totalColumns: totalColumns,
+        totalColumns,
       });
 
       // Only select the first room if we hit multiple (eg. overlapping)

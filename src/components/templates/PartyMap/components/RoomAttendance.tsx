@@ -22,32 +22,32 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
 
   const usersInRoom = useMemo(
     () =>
-      partygoers?.filter(
+      partygoers.filter(
         (partygoer) => partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
       ),
     [partygoers, venue.name, room.title]
   );
 
-  const numberOfUsersInRoom = usersInRoom?.length;
+  const numberOfUsersInRoom = usersInRoom.length;
   const numberOfExtraUsersInRoom = Math.max(
     numberOfUsersInRoom - MAX_AVATARS_VISIBLE,
     0
   );
   const hasExtraUsersInRoom = numberOfExtraUsersInRoom > 0;
 
-  const userAvatars = usersInRoom
-    .slice(0, MAX_AVATARS_VISIBLE)
-    .map((user, index) => (
-      <div key={`user-avatar-${user.id ?? index}`}>
-        <div
-          className="attendance-avatar"
-          style={{ backgroundImage: `url(${user.pictureUrl})` }}
-        />
-      </div>
-    ));
-
-  // TODO: do we want to keep this? What happens if we just render the empty wrapper div?
-  if (numberOfUsersInRoom < 1) return <></>;
+  // @debt use a default image when user.pictureUrl is undefined
+  const userAvatars = useMemo(
+    () =>
+      usersInRoom.slice(0, MAX_AVATARS_VISIBLE).map((user, index) => (
+        <div key={`user-avatar-${user.id}`}>
+          <div
+            className="attendance-avatar"
+            style={{ backgroundImage: `url(${user.pictureUrl})` }}
+          />
+        </div>
+      )),
+    [usersInRoom]
+  );
 
   return (
     <div className="attendance-avatars">

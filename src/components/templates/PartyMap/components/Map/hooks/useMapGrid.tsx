@@ -4,7 +4,6 @@ import { User } from "types/User";
 import { ReactHook } from "types/utility";
 
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 
 import { MapRow } from "components/molecules/MapRow";
 
@@ -41,7 +40,7 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
             const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
 
             const seatedPartygoer = partygoersBySeat?.[row]?.[column];
-            const hasSeatedPartygoer = isTruthy(seatedPartygoer);
+            const hasSeatedPartygoer = seatedPartygoer !== undefined;
 
             // TODO: our types imply that this shouldn't be able to be null, but it was..
             const isMe = seatedPartygoer?.id === userUid;

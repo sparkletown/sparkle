@@ -91,7 +91,6 @@ export const PartyMap: React.FC = () => {
     }
   }, [currentRoom, selectRoom]);
 
-  // TODO: do we need/want to calculate this on the frontend? Or can we do it in a function/similar serverside?
   // @debt We used to specify the explicit venue that we wanted the users for,
   //   but lost that functionality in #1042, so this may no longer be correct..
   const usersInVenue = usePartygoers();

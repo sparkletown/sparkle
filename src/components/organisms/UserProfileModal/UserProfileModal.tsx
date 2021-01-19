@@ -143,25 +143,26 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   useFirestoreConnect("venues");
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
+  const currentVenue = useSelector(currentVenueSelectorData);
+  const allVenues = useSelector(orderedVenuesSelector);
 
-  const suspectedLocation = useMemo(() => {
-    return {
-      venue: venues?.find(
+  const suspectedLocation = useMemo(
+    () => ({
+      venue: allVenues?.find(
         (v) =>
-          (user.lastSeenIn && user.lastSeenIn[venue?.name ?? ""]) ||
+          (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
           v.name === user.room
       ),
-      room: venues?.find(
+      room: allVenues?.find(
         (v) =>
           isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
       ),
-    };
-  }, [user, venues, venue]);
+    }),
+    [user, allVenues, currentVenue]
+  );
 
-  if (!user.room || !venues) {
-    return <></>;
+  if (!user.room || !allVenues) {
+    return null;
   }
 
   if (suspectedLocation.venue) {
@@ -180,7 +181,7 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
     );
   }
 
-  return <>This burner has gone walkabout. Location unguessable</>;
+  return <>This user has gone walkabout. Location unguessable</>;
 };
 
 export default UserProfileModal;

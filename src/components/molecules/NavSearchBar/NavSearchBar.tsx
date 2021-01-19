@@ -57,14 +57,12 @@ const NavSearchBar = () => {
     );
 
     const roomsResults =
-      venue && venue.rooms
-        ? (venue?.rooms as Room[]).filter((room) =>
-            room.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+      venue?.rooms?.filter((room) =>
+        room.title.toLowerCase().includes(searchQuery.toLowerCase())
+      ) ?? [];
 
     setSearchResult({
-      rooms: roomsResults,
+      rooms: roomsResults as Room[],
       users: venueUsersResults,
       events: venueEventsResults,
     });
