@@ -7,8 +7,6 @@ import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
-
 // TODO: should JazzBarVenue be added to this?
 export type AnyVenue = Venue | PartyMapVenue;
 
@@ -227,43 +225,4 @@ export const urlFromImage = (
   return filesOrUrl && filesOrUrl.length > 0
     ? URL.createObjectURL(filesOrUrl[0])
     : defaultValue;
-};
-
-// TODO: refactor this somewhere more useful, maybe utils?
-export const createJazzbar = (values: FormValues): Venue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    mapIconImageUrl: urlFromImage(
-      "/default-profile-pic.png",
-      values.mapIconImageFile
-    ),
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    profile_questions: values.profile_questions ?? [],
-    code_of_conduct_questions: [],
-    termsAndConditions: [],
-    adultContent: values.adultContent || false,
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-  };
 };

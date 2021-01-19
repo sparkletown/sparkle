@@ -17,11 +17,8 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import {
-  createJazzbar,
-  VenuePlacementState,
-  VenueTemplate,
-} from "types/venues";
+import { VenuePlacementState, VenueTemplate } from "types/venues";
+import { createJazzbar } from "utils/venue";
 import * as Yup from "yup";
 import {
   editVenueCastSchema,
