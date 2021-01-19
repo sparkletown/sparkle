@@ -5,25 +5,44 @@ const { passwordsMatch } = require("./auth");
 const { uuid } = require("uuidv4");
 
 const checkIsValidToken = async (venueId, uid, token) => {
+  console.log("asdasd");
   if (!uid) return false;
 
-  const venue = await admin.firestore().collection("venues").doc(venueId).get();
-  if (!venue.exists) {
-    throw new HttpsError("not-found", `venue ${venueId} does not exist`);
-  }
-  const granted = await venue.ref.collection("accessgranted").doc(uid).get();
-  if (!granted.exists || !granted.tokens) {
-    return false;
-  }
+  console.log("asdasd");
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const accessRef = admin.firestore().collection("accessgranted").doc(uid);
 
-  if (Object.keys(granted.tokens).includes(token)) {
-    // Record that the token was checked
-    if (!granted.tokens[token].usedAt) {
-      granted.tokens[token].usedAt = [];
-    }
-    granted.tokens[token].usedAt.push(Date.now());
-    await venue.ref.collection("accessgranted").doc(uid).set(granted);
-    return true;
+  try {
+    console.log("asdasd");
+    await admin.firestore().runTransaction(async (t) => {
+      const venue = await t.get(venueRef);
+      const granted = await t.get(accessRef);
+
+      if (!venue.exists) {
+        throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+      }
+      if (!granted.exists || !granted.tokens) {
+        return false;
+      }
+
+      console.log("v", venue);
+      console.log("g", granted);
+      if (Object.keys(granted.tokens).includes(token)) {
+        // Record that the token was checked
+        if (!granted.tokens[token].usedAt) {
+          granted.tokens[token].usedAt = [];
+        }
+        granted.tokens[token].usedAt.push(Date.now());
+        t.update(accessRef, granted);
+
+        return true;
+      } else {
+        return false;
+      }
+    });
+  } catch (e) {
+    console.log("Transaction failure:", e);
+    return false;
   }
 
   return false;
@@ -98,15 +117,15 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     return { token: data.token };
   }
 
-  const passwordValid =
+  const isPasswordValid =
     data.password && (await isValidPassword(data.venueId, data.password));
-  const emailValid =
+  const isEmailValid =
     data.email && (await isValidEmail(data.venueId, data.email));
-  const codeValid = data.code && (await isValidCode(data.venueId, data.code));
+  const isCodeValid = data.code && (await isValidCode(data.venueId, data.code));
 
-  console.log(`valid: ${passwordValid},${emailValid},${codeValid}`);
+  console.log(`valid: ${isPasswordValid},${isEmailValid},${isCodeValid}`);
 
-  if (passwordValid || emailValid || codeValid) {
+  if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(
       data.venueId,
       context.auth.uid,

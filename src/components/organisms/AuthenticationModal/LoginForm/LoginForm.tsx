@@ -6,7 +6,7 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { useSelector } from "hooks/useSelector";
 import { venueSelector } from "utils/selectors";
 import { VenueAccessType } from "types/VenueAcccess";
-import { getAccessTokenKey } from "utils/localStorage";
+import { accessTokenKey } from "utils/localStorage";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -71,11 +71,11 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         console.log("result.data", result.data);
         console.log(
           "saving token to",
-          getAccessTokenKey(venue.id),
+          accessTokenKey(venue.id),
           ": ",
           result.data.token
         );
-        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
+        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
       }
       if (venue.access?.includes(VenueAccessType.Emails)) {
         console.log("emails");
@@ -92,11 +92,11 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
         console.log("result.data", result.data);
         console.log(
           "saving token to",
-          getAccessTokenKey(venue.id),
+          accessTokenKey(venue.id),
           ": ",
           result.data.token
         );
-        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
+        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
       }
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();

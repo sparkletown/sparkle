@@ -16,7 +16,7 @@ import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { VenueAccessType } from "types/VenueAcccess";
-import { getAccessTokenKey } from "utils/localStorage";
+import { accessTokenKey } from "utils/localStorage";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -101,11 +101,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         console.log("result.data", result.data);
         console.log(
           "saving token to",
-          getAccessTokenKey(venue.id),
+          accessTokenKey(venue.id),
           ": ",
           result.data.token
         );
-        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
+        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
       }
       if (venue.access?.includes(VenueAccessType.Emails)) {
         const result = await firebase
@@ -117,11 +117,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         console.log("result.data", result.data);
         console.log(
           "saving token to",
-          getAccessTokenKey(venue.id),
+          accessTokenKey(venue.id),
           ": ",
           result.data.token
         );
-        localStorage.setItem(getAccessTokenKey(venue.id), result.data.token);
+        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
       }
 
       if (auth.user && venue.requiresDateOfBirth) {

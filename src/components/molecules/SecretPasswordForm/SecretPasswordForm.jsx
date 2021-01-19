@@ -6,7 +6,7 @@ import { venueEntranceUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./SecretPasswordForm.scss";
-import { getAccessTokenKey } from "utils/localStorage";
+import { accessTokenKey } from "utils/localStorage";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
@@ -35,7 +35,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         venueId,
         password,
       });
-      localStorage.setItem(getAccessTokenKey(venueId), result.data.token);
+      localStorage.setItem(accessTokenKey(venueId), result.data.token);
 
       setInvalidPassword(false);
       setMessage("Password OK! Proceeding...");

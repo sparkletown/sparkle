@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import { AnyVenue } from "types/Firestore";
 
 import { WithId } from "utils/id";
-import { getAccessTokenKey } from "utils/localStorage";
+import { accessTokenKey } from "utils/localStorage";
 import { isTruthy, notEmpty } from "utils/types";
 
 export const useVenueAccessToken = (
@@ -15,13 +15,13 @@ export const useVenueAccessToken = (
     if (!venue) return;
 
     const denyAccess = () => {
-      localStorage.removeItem(getAccessTokenKey(venue.id));
+      localStorage.removeItem(accessTokenKey(venue.id));
       onDenyAccess && onDenyAccess();
     };
 
     if (notEmpty(venue.access)) {
       console.log("venue.access", venue.access);
-      const token = localStorage.getItem(getAccessTokenKey(venue.id));
+      const token = localStorage.getItem(accessTokenKey(venue.id));
       console.log("found token:", token);
       if (!token) {
         console.log("checking access");

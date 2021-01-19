@@ -1,3 +1,2 @@
-export const getAccessTokenKey: (venueId: string | undefined) => string = (
-  venueId
-) => `token-${venueId}`;
+export const accessTokenKey: (venueId: string) => string = (venueId) =>
+  `token-${venueId}`;
