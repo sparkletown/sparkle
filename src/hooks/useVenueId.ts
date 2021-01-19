@@ -9,7 +9,9 @@ const venuePaths = [
   "/e/:step/:venueId",
   "/in/:venueId",
   "/v/:venueId",
-  "/admin_v2/venue/:venueId",
+  "/admin/venue/:venueId",
+  "/admin_v2/:venueId",
+  "/admin_v2/edit/:venueId",
 ];
 
 // @debt I think we could just use useParams() here instead of needing to loop through all of the venuePath, so long as the use :venueId in their path
@@ -21,6 +23,7 @@ export const useVenueId: () => string | undefined = () => {
   for (const path of venuePaths) {
     const match = matchPath<VenueRoute>(history.location.pathname, {
       path,
+      exact: true,
     });
 
     if (match?.params.venueId) {

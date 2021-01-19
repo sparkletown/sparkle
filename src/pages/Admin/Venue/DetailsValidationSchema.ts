@@ -51,7 +51,7 @@ const urlIfNoFileValidation = (fieldName: string) =>
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
-    template: Yup.string().required(),
+    template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Required")
       .min(1, "Required")
