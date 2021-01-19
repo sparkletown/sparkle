@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { Room } from "types/rooms";
@@ -21,7 +21,7 @@ import { usePartygoers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "../";
+import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
@@ -33,6 +33,8 @@ interface RoomModalProps {
 
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
+
+  // const lastRoom = useRef(room);
 
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
@@ -48,42 +50,49 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
     [users, venueName, roomTitle]
   );
 
-  if (!room) {
-    return <></>;
-  }
+  const roomVenue = useMemo(() => {
+    if (!room) return undefined;
+
+    return venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
+  }, [room, venues]);
 
   // TODO: @debt refactor this to use openRoomWithCounting
-  const enter = () => {
-    const roomVenue = venues?.find((venue) =>
-      room.url.endsWith(`/${venue.id}`)
-    );
+  const enter = useCallback(() => {
+    if (!room || !user) return;
 
     const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
 
     const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
 
-    room &&
-      user &&
-      trackRoomEntered(
-        user,
-        {
-          [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
-          ...venueRoom,
-        },
-        profile?.lastSeenIn
-      );
-  };
+    trackRoomEntered(
+      user,
+      {
+        [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
+        ...venueRoom,
+      },
+      profile?.lastSeenIn
+    );
+  }, [profile?.lastSeenIn, room, roomVenue, user, venue?.name]);
 
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
+  const roomEvents = useMemo(() => {
+    if (!room) return [];
+
+    return venueEvents.filter(
       (event) =>
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
           getCurrentTimeInUnixEpochSeconds()
     );
+  }, [room, venueEvents]);
+
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
+
+  // TODO: I believe this is what causes the room image to have to reload when the modal is closed, among other things
+  //   We want the modal to remember it's last room so that it can keep it's data while hiding/similar
+  if (!room) {
+    return <></>;
+  }
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -101,6 +110,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
               <h2 className="room-modal-title">{room.title}</h2>
               <div className="room-modal-subtitle">{room.subtitle}</div>
             </div>
+
             <div className="row ongoing-event-row">
               <div className="col">
                 {room.image_url && (
@@ -122,13 +132,16 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
             </div>
           </div>
         </div>
+
         <UserList
           users={usersToDisplay}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}
         />
+
         {room.about && <div className="about-this-room">{room.about}</div>}
+
         <div className="row">
           {roomEvents && roomEvents.length > 0 && (
             <div className="col schedule-container">
