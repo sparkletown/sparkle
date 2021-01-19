@@ -7,6 +7,8 @@ $label-visible: flex;
   position: absolute;
   z-index: z(map-room);
 
+  transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+
   &:hover {
     z-index: z(map-room-hovered);
     transform: scale(1.1);
