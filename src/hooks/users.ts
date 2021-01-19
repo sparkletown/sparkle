@@ -10,6 +10,7 @@ import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 
 import { User } from "types/User";
+import { useConnectRelatedVenues } from "./useConnectRelatedVenues";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
@@ -18,25 +19,15 @@ export const useConnectWorldUsers = () => {
     venueId!
   );
 
-  // useFirestoreConnect(() => {
-  //   if (!isCurrentVenueLoaded || !currentVenue) return [];
-
-  //   console.log(currentVenue.parentId, currentVenue.id);
-
-  //   return [
-  //     {
-  //       collection: "users",
-  //       where: ["enteredVenueIds", "array-contains", venueId],
-  //       storeAs: "worldUsers",
-  //     },
-  //   ];
-  // });
-
   useFirestoreConnect(
     isCurrentVenueLoaded && currentVenue
       ? {
           collection: "users",
-          where: ["enteredVenueIds", "array-contains", venueId],
+          where: [
+            "enteredVenueIds",
+            "array-contains",
+            currentVenue.parentId || currentVenue.id,
+          ],
           storeAs: "worldUsers",
         }
       : undefined
@@ -47,11 +38,9 @@ export const useWorldUsers = (): {
   worldUsers: readonly WithId<User>[];
   isWorldUsersLoaded: boolean;
 } => {
-  // useConnectWorldUsers();
+  useConnectWorldUsers();
 
   const selectedUniverseUsers = useSelector(worldUsersSelector);
-
-  console.log("users", selectedUniverseUsers);
 
   return useMemo(
     () => ({
@@ -66,23 +55,37 @@ export const useRecentWorldUsers = (): {
   recentWorldUsers: readonly WithId<User>[];
   isRecentWorldUsersLoaded: boolean;
 } => {
+  const venueId = useVenueId();
   const lastSeenThreshold = useUserLastSeenThreshold();
+
+  const { currentVenue, parentVenue } = useConnectRelatedVenues({ venueId });
+  const parentVenueName = parentVenue?.name;
 
   const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
 
   return useMemo(
     () => ({
-      recentWorldUsers: worldUsers.filter(
-        (user) => user.lastSeenAt > lastSeenThreshold
-      ),
+      recentWorldUsers: currentVenue
+        ? worldUsers.filter(
+            (user) =>
+              user.lastSeenIn?.[parentVenueName || currentVenue.name] >
+              lastSeenThreshold
+          )
+        : [],
       isRecentWorldUsersLoaded: isWorldUsersLoaded,
     }),
-    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
+    [
+      worldUsers,
+      isWorldUsersLoaded,
+      lastSeenThreshold,
+      currentVenue,
+      parentVenueName,
+    ]
   );
 };
 
 export const useWorldUsersById = () => {
-  // useConnectWorldUsers();
+  useConnectWorldUsers();
 
   const worldUsersById = useSelector(usersByIdSelector);
 

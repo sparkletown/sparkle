@@ -12,7 +12,6 @@ export const VenuePartygoers = () => {
   const {
     parentVenue,
     currentVenue,
-    isParentVenueLoaded,
     isCurrentVenueLoaded,
   } = useConnectRelatedVenues({ venueId });
 
@@ -21,7 +20,7 @@ export const VenuePartygoers = () => {
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
   const title = useMemo<string>(() => {
-    if (!isParentVenueLoaded || !isCurrentVenueLoaded) return "";
+    if (!isCurrentVenueLoaded) return "";
 
     const attendeesTitle =
       parentVenue?.attendeesTitle ??
@@ -30,7 +29,6 @@ export const VenuePartygoers = () => {
 
     return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
   }, [
-    isParentVenueLoaded,
     isCurrentVenueLoaded,
     parentVenue,
     currentVenue,

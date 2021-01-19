@@ -291,8 +291,6 @@ const VenuePage: React.FC = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  // console.log("Venue page!");
-
   return <TemplateWrapper venue={venue} />;
 };
 
