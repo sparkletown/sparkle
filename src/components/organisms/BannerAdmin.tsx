@@ -27,13 +27,16 @@ export const BannerAdmin: React.FC = () => {
     [venueId]
   );
 
-  const saveBanner = useCallback(() => {
-    if (!inputFieldRef.current) return;
+  const saveBanner = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
 
-    updateBannerInFirestore(inputFieldRef.current.value);
+      if (!inputFieldRef.current) return;
 
-    return false;
-  }, [updateBannerInFirestore]);
+      updateBannerInFirestore(inputFieldRef.current.value);
+    },
+    [updateBannerInFirestore]
+  );
 
   const clearBanner = useCallback(() => updateBannerInFirestore(""), [
     updateBannerInFirestore,
