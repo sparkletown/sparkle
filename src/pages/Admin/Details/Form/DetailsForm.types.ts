@@ -1,4 +1,4 @@
-import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
+import { WizardAction, WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 import { TVenueWizard } from "pages/Admin/Venue/VenueWizard/VenueWizard.types";
 
 export interface FormValues extends WizardState {
@@ -10,7 +10,6 @@ export interface FormValues extends WizardState {
 
 export interface DetailsFormProps {
   previous: TVenueWizard["previous"];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dispatch: any;
+  dispatch: React.Dispatch<WizardAction>;
   editData?: WizardState;
 }

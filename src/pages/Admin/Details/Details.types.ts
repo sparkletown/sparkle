@@ -1,7 +1,7 @@
-import { WizardState } from "../Venue/VenueWizard/redux";
+import { WizardAction, WizardState } from "../Venue/VenueWizard/redux";
 
 export interface DetailsProps {
   previous?: () => void;
   data?: WizardState;
-  dispatch: unknown;
+  dispatch: React.Dispatch<WizardAction>;
 }

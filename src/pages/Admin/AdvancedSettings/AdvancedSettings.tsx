@@ -21,8 +21,9 @@ import { useUser } from "hooks/useUser";
 interface ToggleElementProps {
   title: string;
   name: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  forwardRef?: any;
+  forwardRef?: (
+    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
+  ) => void;
   isChecked?: boolean;
 }
 const ToggleElement: React.FC<ToggleElementProps> = ({

@@ -27,6 +27,8 @@ export interface SetFormValues {
     name?: string;
     subtitle?: string;
     description?: string;
+    showGrid?: boolean;
+    columns?: number;
   };
 }
 

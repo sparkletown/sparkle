@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React from "react";
 
 // Typings
@@ -12,8 +11,7 @@ const AppButton: React.FC<ButtonProps> = ({
   customClass,
   loading,
   onClick,
-  text,
-  type,
+  type = "button",
   customStyle,
   children,
   gradient,
@@ -35,7 +33,7 @@ const AppButton: React.FC<ButtonProps> = ({
         style={customStyle}
         to={linkTo!}
       >
-        {children ?? text}
+        {children}
       </S.Button>
     );
   }
@@ -48,13 +46,9 @@ const AppButton: React.FC<ButtonProps> = ({
       onClick={onClick}
       hasGradient={gradient}
     >
-      {children ?? text}
+      {children}
     </S.Button>
   );
-};
-
-AppButton.defaultProps = {
-  type: "button",
 };
 
 export default AppButton;

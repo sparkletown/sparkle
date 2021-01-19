@@ -1,3 +1,4 @@
+import React from "react";
 import { FieldError } from "react-hook-form";
 
 export interface ImageInputProps {
@@ -7,7 +8,8 @@ export interface ImageInputProps {
   imgUrl?: string;
   error?: FieldError;
   small?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  forwardRef: any;
+  forwardRef: (
+    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
+  ) => void;
   nameWithUnderscore?: boolean;
 }

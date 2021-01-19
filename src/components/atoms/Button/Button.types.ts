@@ -18,6 +18,5 @@ export type ButtonProps = LinkProps & {
   gradient?: boolean;
   loading?: boolean;
   onClick?: () => void;
-  text?: string;
   type?: "button" | "reset" | "submit";
 };

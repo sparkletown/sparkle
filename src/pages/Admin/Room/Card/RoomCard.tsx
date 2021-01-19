@@ -68,7 +68,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         </S.TitleWrapper>
 
         <S.ButtonWrapper>
-          <Button text="Edit room" onClick={() => editHandler()} />
+          <Button onClick={() => editHandler()}>Edit room</Button>
 
           {/* Temporary div/toggle, this will be select element once the isEnabled is reworked */}
           <div
@@ -98,10 +98,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
       ) : (
         renderFilteredEvents()
       )}
-      <Button
-        text="Add an event"
-        onClick={() => onEventHandler(room!.title!)}
-      />
+      <Button onClick={() => onEventHandler(room!.title!)}>Add an event</Button>
     </S.Wrapper>
   );
 };
