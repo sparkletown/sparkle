@@ -70,7 +70,8 @@ export type AnySparkleRFQuery =
   | SparkleRFCollectionQuery
   | SparkleRFCollectionWhereQuery
   | SparkleRFSingleDocumentQuery
-  | SparkleRFSubcollectionQuery;
+  | SparkleRFSubcollectionQuery
+  | ReduxFirestoreQuerySetting;
 
 /**
  * A wrapper for react-redux-firestore's useFirestoreConnect() that ensures the
