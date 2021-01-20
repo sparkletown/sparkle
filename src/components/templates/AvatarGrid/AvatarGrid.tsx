@@ -59,21 +59,21 @@ const AvatarGrid = () => {
 
   // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
-  recentWorldUsers.forEach((partygoer) => {
+  recentWorldUsers.forEach((user) => {
     if (
       !venueId ||
-      !partygoer?.data ||
-      partygoer.data[venueId] === undefined ||
-      partygoer.data[venueId].row === undefined ||
-      partygoer.data[venueId].column === undefined
+      !user?.data ||
+      user.data[venueId] === undefined ||
+      user.data[venueId].row === undefined ||
+      user.data[venueId].column === undefined
     )
       return;
-    const row = partygoer.data[venueId].row || 0;
-    const column = partygoer.data[venueId].column || 0;
+    const row = user.data[venueId].row || 0;
+    const column = user.data[venueId].column || 0;
     if (!(row in partygoersBySeat)) {
       partygoersBySeat[row] = [];
     }
-    partygoersBySeat[row][column] = partygoer;
+    partygoersBySeat[row][column] = user;
   });
 
   const takeSeat = useCallback(
@@ -382,8 +382,7 @@ const AvatarGrid = () => {
         <div className="grid-rooms-container">
           {venue.spaces?.map((room: AvatarGridRoom, index: number) => {
             const peopleInRoom = recentWorldUsers.filter(
-              (partygoer) =>
-                partygoer.lastSeenIn?.[`${venue.name}/${room.title}`]
+              (user) => user.lastSeenIn?.[`${venue.name}/${room.title}`]
             );
             return (
               <div
