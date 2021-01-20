@@ -9,7 +9,9 @@ const venuePaths = [
   "/e/:step/:venueId",
   "/in/:venueId",
   "/v/:venueId",
-  "/admin/venue/:venueId",
+  "/admin/:venueId",
+  "/admin/venue/edit/:venueId",
+  "/admin/venue/rooms/:venueId",
   "/admin_v2/:venueId",
   "/admin_v2/edit/:venueId",
 ];

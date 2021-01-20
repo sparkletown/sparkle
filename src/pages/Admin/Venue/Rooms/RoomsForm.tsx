@@ -41,12 +41,15 @@ export const RoomsForm: React.FC = () => {
 
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
+      console.log(venueId);
       if (!venueId) return history.replace("/admin");
 
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+
+      console.log(venueSnapshot);
 
       if (!venueSnapshot.exists) return history.replace("/admin");
       const data = venueSnapshot.data() as Venue;
@@ -55,6 +58,7 @@ export const RoomsForm: React.FC = () => {
         (template) => data.template === template.template
       );
 
+      console.log(template);
       if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
@@ -134,7 +138,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       if (!user) return;
       try {
         await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
-        history.push(`/admin/venue/${venueId}`);
+        history.push(`/admin/${venueId}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
