@@ -287,6 +287,10 @@ const VenuePage: React.FC = () => {
     }
   }
 
+  if (!user) {
+    return <LoadingPage />;
+  }
+
   if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
