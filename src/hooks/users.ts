@@ -8,6 +8,7 @@ import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 
 import { User } from "types/User";
+import { useMemo } from "react";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
@@ -43,10 +44,13 @@ export const useWorldUsers = (): {
 
   const selectedUniverseUsers = useSelector(worldUsersSelector);
 
-  return {
-    worldUsers: selectedUniverseUsers ?? [],
-    isWorldUsersLoaded: isLoaded(selectedUniverseUsers),
-  };
+  return useMemo(
+    () => ({
+      worldUsers: selectedUniverseUsers ?? [],
+      isWorldUsersLoaded: isLoaded(selectedUniverseUsers),
+    }),
+    [selectedUniverseUsers]
+  );
 };
 
 export const useRecentWorldUsers = (): {
@@ -57,13 +61,16 @@ export const useRecentWorldUsers = (): {
 
   const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
 
-  return {
-    recentWorldUsers: worldUsers.filter(
-      // @debt Refactor this legacy way of counting into using lastSeenIn
-      (user) => user.lastSeenAt > lastSeenThreshold
-    ),
-    isRecentWorldUsersLoaded: isWorldUsersLoaded,
-  };
+  return useMemo(
+    () => ({
+      recentWorldUsers: worldUsers.filter(
+        // @debt Refactor this legacy way of counting into using lastSeenIn
+        (user) => user.lastSeenAt > lastSeenThreshold
+      ),
+      isRecentWorldUsersLoaded: isWorldUsersLoaded,
+    }),
+    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
+  );
 };
 
 export const useWorldUsersById = () => {
@@ -71,8 +78,11 @@ export const useWorldUsersById = () => {
 
   const worldUsersById = useSelector(usersByIdSelector);
 
-  return {
-    worldUsersById: worldUsersById ?? {},
-    isWorldUsersLoaded: isLoaded(worldUsersById),
-  };
+  return useMemo(
+    () => ({
+      worldUsersById: worldUsersById ?? {},
+      isWorldUsersLoaded: isLoaded(worldUsersById),
+    }),
+    [worldUsersById]
+  );
 };
