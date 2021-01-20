@@ -138,7 +138,7 @@ const OnlineStats: React.FC = () => {
   );
 
   const filteredVenues = useMemo(() => {
-    if (filterVenueText === "") return venuesWithAttendance;
+    if (!filterVenueText) return venuesWithAttendance;
     const resultOfSearch: typeof venuesWithAttendance = [];
     fuseVenues &&
       fuseVenues
@@ -148,7 +148,7 @@ const OnlineStats: React.FC = () => {
   }, [fuseVenues, filterVenueText, venuesWithAttendance]);
 
   const filteredUsers = useMemo(() => {
-    if (filterUsersText === "") return recentWorldUsers;
+    if (!filterUsersText) return recentWorldUsers;
     const resultOfSearch: WithId<User>[] = [];
     fuseUsers &&
       fuseUsers
