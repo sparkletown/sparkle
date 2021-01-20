@@ -143,6 +143,8 @@ if (BUGSNAG_API_KEY) {
     "sparkle8",
     "sparkle9",
     "sparkle10",
+    "bigtop",
+    "deloitte",
   ];
 
   const releaseStage = () => {
