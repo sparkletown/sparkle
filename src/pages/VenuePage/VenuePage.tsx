@@ -250,7 +250,7 @@ const VenuePage: React.FC = () => {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (venueRequestStatus && !venue && !venue) {
+  if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
