@@ -1,5 +1,3 @@
-import { useMemo } from "react";
-
 import { worldUsersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
@@ -41,13 +39,10 @@ export const useWorldUsers = (): {
 
   const selectedUniverseUsers = useSelector(worldUsersSelector);
 
-  return useMemo(
-    () => ({
-      worldUsers: selectedUniverseUsers ?? [],
-      isWorldUsersLoaded: isLoaded(selectedUniverseUsers),
-    }),
-    [selectedUniverseUsers]
-  );
+  return {
+    worldUsers: selectedUniverseUsers ?? [],
+    isWorldUsersLoaded: isLoaded(selectedUniverseUsers),
+  };
 };
 
 export const useRecentWorldUsers = (): {
@@ -58,16 +53,13 @@ export const useRecentWorldUsers = (): {
 
   const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
 
-  return useMemo(
-    () => ({
-      recentWorldUsers: worldUsers.filter(
-        // @debt Refactor this legacy way of counting into using lastSeenIn
-        (user) => user.lastSeenAt > lastSeenThreshold
-      ),
-      isRecentWorldUsersLoaded: isWorldUsersLoaded,
-    }),
-    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
-  );
+  return {
+    recentWorldUsers: worldUsers.filter(
+      // @debt Refactor this legacy way of counting into using lastSeenIn
+      (user) => user.lastSeenAt > lastSeenThreshold
+    ),
+    isRecentWorldUsersLoaded: isWorldUsersLoaded,
+  };
 };
 
 export const useWorldUsersById = () => {
@@ -75,5 +67,8 @@ export const useWorldUsersById = () => {
 
   const worldUsersById = useSelector(usersByIdSelector);
 
-  return useMemo(() => worldUsersById, [worldUsersById]);
+  return {
+    worldUsersById: worldUsersById ?? {},
+    isWorldUsersLoaded: isLoaded(worldUsersById),
+  };
 };

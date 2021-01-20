@@ -18,7 +18,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -36,14 +36,14 @@ export const MessageList: React.FC<MessageListProps> = ({
           <React.Fragment
             key={`${message.from}-${message.to}-${message.ts_utc}`}
           >
-            {message.from in usersById && (
+            {message.from in worldUsersById && (
               <Message
-                sender={{ ...usersById[message.from], id: message.from }}
+                sender={{ ...worldUsersById[message.from], id: message.from }}
                 message={message}
                 onClick={() =>
                   setSelectedUserProfile({
-                    ...usersById[message.from],
-                    id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
+                    ...worldUsersById[message.from],
+                    id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in worldUsersById
                   })
                 }
                 deletable={allowDelete}
@@ -65,7 +65,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         <div className="text-center">
           <p>
             Permanently delete message &quot;{messageToDelete?.text}&quot; from{" "}
-            {usersById[messageToDelete?.from ?? ""]?.partyName}?
+            {worldUsersById[messageToDelete?.from ?? ""]?.partyName}?
           </p>
           <button
             type="button"

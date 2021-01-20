@@ -56,7 +56,7 @@ const FireBarrel: React.FC = () => {
   const chairsArray = Array.from(Array(chairs));
 
   const [videoError, setVideoError] = useState<string>("");
-  const users = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersById();
 
   const updateVideoState = useCallback(
     (update: VideoState) => {
@@ -123,8 +123,10 @@ const FireBarrel: React.FC = () => {
 
           if (participants.length && !!participants[index]) {
             const participant = participants[index];
-            const participantUserData = users[participant.identity] && {
-              ...users[participant.identity],
+            const participantUserData = worldUsersById[
+              participant.identity
+            ] && {
+              ...worldUsersById[participant.identity],
               id: participant.identity,
             };
 
@@ -163,7 +165,7 @@ const FireBarrel: React.FC = () => {
     removeParticipant,
     room,
     user,
-    users,
+    worldUsersById,
     videoError,
     venue,
   ]);

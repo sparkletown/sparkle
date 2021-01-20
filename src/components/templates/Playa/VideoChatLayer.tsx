@@ -21,7 +21,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
-  const usersById = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersById();
 
   if (!user || !profile || !profile.video) return <></>;
   const roomOwnerUid = profile.video.inRoomOwnedBy;
@@ -35,7 +35,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     profile.video = {};
     updateVideoState({});
   };
-  const roomOwner = usersById[roomOwnerUid];
+  const roomOwner = worldUsersById[roomOwnerUid];
   const removed = roomOwner?.video?.removedParticipantUids?.includes(user.uid);
 
   if (removed) {

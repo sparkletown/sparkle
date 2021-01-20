@@ -52,7 +52,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const usersById = useWorldUsersById();
+  const { worldUsersById, isWorldUsersLoaded } = useWorldUsersById();
   const { worldUsers } = useWorldUsers();
 
   const [searchValue, setSearchValue] = useState<string>("");
@@ -167,7 +167,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
           </div>
         )}
 
-        {usersById && (
+        {isWorldUsersLoaded && (
           <>
             {!isInProfileModal && (
               <div className="dropdown-container">
@@ -291,7 +291,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   <ChatMessage
                     key={`${chat.ts_utc.valueOf()}-${chat.id}`}
                     user={user}
-                    users={usersById}
+                    users={worldUsersById}
                     setSelectedUserProfile={setSelectedUserProfile}
                     isInProfileModal={!!isInProfileModal}
                     chat={chat}

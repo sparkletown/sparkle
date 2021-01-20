@@ -39,10 +39,10 @@ const ChatBox: React.FC<ChatboxProps> = ({
   const venueId = useVenueId();
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
 
-  const venueUsersById = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersById();
   const chatUsersById = useSelector(chatUsersSelector) ?? {};
 
-  const usersById = isVenueChat ? venueUsersById : chatUsersById;
+  const usersById = isVenueChat ? worldUsersById : chatUsersById;
 
   useEffect(() => {
     if (isMessageToTheBarSent) {

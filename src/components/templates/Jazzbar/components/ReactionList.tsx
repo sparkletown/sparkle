@@ -27,7 +27,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const usersById = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -57,35 +57,35 @@ const ReactionList: React.FC<ReactionListProps> = ({
           >
             <img
               onClick={() =>
-                usersById[message.created_by] &&
+                worldUsersById[message.created_by] &&
                 setSelectedUserProfile({
-                  ...usersById[message.created_by],
+                  ...worldUsersById[message.created_by],
                   id: message.created_by,
                 })
               }
               key={`${message.created_by}-messaging-the-band`}
               className="profile-icon"
               src={
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.pictureUrl) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.pictureUrl) ||
                 DEFAULT_PROFILE_IMAGE
               }
               title={
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.partyName) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME
               }
               alt={`${
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.partyName) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME
               } profile`}
               width={profileImageSize}
               height={profileImageSize}
             />
             <div className="partyname-bubble">
-              {(!usersById[message.created_by]?.anonMode &&
-                usersById[message.created_by]?.partyName) ||
+              {(!worldUsersById[message.created_by]?.anonMode &&
+                worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME}
             </div>
             <div

@@ -63,9 +63,9 @@ export const worldUsersSelector: SparkleSelector<WithId<User>[] | undefined> = (
  *
  * @param state the Redux store
  */
-export const usersByIdSelector: SparkleSelector<Record<string, User>> = (
-  state
-) => state.firestore.data.worldUsers ?? {};
+export const usersByIdSelector: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.worldUsers;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
