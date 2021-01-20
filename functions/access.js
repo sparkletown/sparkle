@@ -123,8 +123,6 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     data.email && (await isValidEmail(data.venueId, data.email));
   const isCodeValid = data.code && (await isValidCode(data.venueId, data.code));
 
-  console.log(`valid: ${isPasswordValid},${isEmailValid},${isCodeValid}`);
-
   if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(
       data.venueId,

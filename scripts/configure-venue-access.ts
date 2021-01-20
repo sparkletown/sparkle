@@ -120,20 +120,17 @@ admin.initializeApp({
       break;
 
     case VenueAccessType.Codes:
-      const codes = [];
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach((line) => {
           emails.push(line.trim());
         });
-      console.log(
-        `Setting venues/${venueId}/access/${method} to {codes: ${codes}}...`
-      );
+      console.log(`Setting venues/${venueId}/access/${method}...`);
       await admin
         .firestore()
         .doc(`venues/${venueId}/access/${method}`)
         .set({
-          codes: mergeStringArrays(codes, (access as VenueAccessCodes).codes),
+          codes: (access as VenueAccessCodes).codes,
         });
       break;
   }

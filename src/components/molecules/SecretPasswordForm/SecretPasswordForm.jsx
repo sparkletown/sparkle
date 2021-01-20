@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
 
@@ -24,27 +24,30 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     setError(false);
   }
 
-  const passwordSubmitted = async (e) => {
-    e.preventDefault();
-    setMessage("Checking password...");
+  const passwordSubmitted = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setMessage("Checking password...");
 
-    try {
-      const result = await firebase
-        .functions()
-        .httpsCallable("access-checkAccess")({
-        venueId,
-        password,
-      });
-      localStorage.setItem(accessTokenKey(venueId), result.data.token);
+      try {
+        const result = await firebase
+          .functions()
+          .httpsCallable("access-checkAccess")({
+          venueId,
+          password,
+        });
+        localStorage.setItem(accessTokenKey(venueId), result.data.token);
 
-      setInvalidPassword(false);
-      setMessage("Password OK! Proceeding...");
-      history.push(venueEntranceUrl(venueId));
-    } catch (error) {
-      setInvalidPassword(true);
-      setMessage(`Password error: ${error.toString()}`);
-    }
-  };
+        setInvalidPassword(false);
+        setMessage("Password OK! Proceeding...");
+        history.push(venueEntranceUrl(venueId));
+      } catch (error) {
+        setInvalidPassword(true);
+        setMessage(`Password error: ${error.toString()}`);
+      }
+    },
+    [firebase, history, password, venueId]
+  );
 
   return (
     <>

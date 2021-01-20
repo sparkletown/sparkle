@@ -2,11 +2,17 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import { default as _firebase } from "firebase/app";
-import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { useSelector } from "hooks/useSelector";
+
 import { venueSelector } from "utils/selectors";
-import { VenueAccessType } from "types/VenueAcccess";
 import { accessTokenKey } from "utils/localStorage";
+
+import { VenueAccessType } from "types/VenueAcccess";
+
+import { checkAccess } from "functions/auth";
+
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -79,9 +85,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       }
       if (venue.access?.includes(VenueAccessType.Emails)) {
         console.log("emails");
-        const result = await _firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
+        const result = await checkAccess({
           venueId: venue.id,
           email: data.email,
         });

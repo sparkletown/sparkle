@@ -10,11 +10,11 @@ interface AccessDeniedModalProps {
 }
 
 export const AccessDeniedModal: React.FC<AccessDeniedModalProps> = ({
-  show,
+  show = true,
   venueId,
   venueName,
 }) => {
-  const [isVisible, setIsVisible] = useState(show ?? true);
+  const [isVisible, setIsVisible] = useState(show);
   const history = useHistory();
 
   const hide = useCallback(() => {
