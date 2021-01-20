@@ -5,7 +5,6 @@ import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
-// import { useRecentPartyUsers } from "hooks/users";
 
 export const VenuePartygoers = () => {
   const venueId = useVenueId();

@@ -22,7 +22,6 @@ import { useRecentWorldUsers } from "hooks/users";
 import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "../";
-// import { useRecentPartyUsers } from "hooks/users";
 
 interface RoomModalProps {
   show: boolean;
