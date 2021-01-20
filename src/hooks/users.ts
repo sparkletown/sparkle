@@ -16,19 +16,23 @@ export const useConnectWorldUsers = () => {
     venueId!
   );
 
-  useFirestoreConnect(
-    isCurrentVenueLoaded && currentVenue
-      ? {
-          collection: "users",
-          where: [
-            "enteredVenueIds",
-            "array-contains",
-            currentVenue.parentId || currentVenue.id,
-          ],
-          storeAs: "worldUsers",
-        }
-      : undefined
-  );
+  useFirestoreConnect(() => {
+    if (!isCurrentVenueLoaded || !currentVenue) return [];
+
+    const relatedLocationIds = [currentVenue.id];
+
+    if (currentVenue.parentId) {
+      relatedLocationIds.push(currentVenue.parentId);
+    }
+
+    return [
+      {
+        collection: "users",
+        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
+        storeAs: "worldUsers",
+      },
+    ];
+  });
 };
 
 export const useWorldUsers = (): {
