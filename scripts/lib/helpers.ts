@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
-import { resolve } from "path";
+import { relative, resolve } from "path";
 
 import admin from "firebase-admin";
 import formatDate from "date-fns/format/index.js";
@@ -112,6 +112,44 @@ export const ensureProjectIdMatchesCredentialProjectId = (
     console.error("  credentialData.project_id :", credentialData.project_id);
     process.exit(1);
   }
+};
+
+/**
+ * Helper to remove the boilerplate of making the usage() function (aka: help text) that we use in our scripts.
+ *
+ * @param description the text used for the main overview description of the script
+ * @param usageParams shows the positioning of each script parameter and what it's general name is
+ * @param exampleParams shows an example of supplying values for each script parameter
+ *
+ * @example
+ *   const usage = makeScriptUsage({
+ *     description:   "Describe my script in a really useful way.",
+ *     usageParams:   "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]", // Note: CREDENTIAL_PATH is optional here
+ *     exampleParams: "my-project-id venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
+ *   });
+ */
+export const makeScriptUsage = ({
+  description,
+  usageParams,
+  exampleParams,
+}: {
+  description: string;
+  usageParams: string;
+  exampleParams: string;
+}) => () => {
+  const scriptName = relative(process.cwd(), process.argv[1]);
+  const helpText = `
+---------------------------------------------------------
+${description}
+
+Usage: ${scriptName} ${usageParams}
+
+Example: ${scriptName} ${exampleParams}
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
 };
 
 /**
