@@ -25,10 +25,14 @@ export const initFirebaseAdminApp = (
   projectId: string,
   {
     appName,
-    credentialPath = resolve(__dirname, "../prodAccountKey.json"),
+    credentialPath: _credentialPath,
   }: { appName?: string; credentialPath?: string } = {}
-): admin.app.App =>
-  admin.initializeApp(
+): admin.app.App => {
+  const credentialPath = _credentialPath ?? resolveDefaultCredentialPath();
+
+  ensureProjectIdMatchesCredentialProjectId(projectId, credentialPath);
+
+  return admin.initializeApp(
     {
       projectId,
       credential: admin.credential.cert(credentialPath),
@@ -36,6 +40,7 @@ export const initFirebaseAdminApp = (
     },
     appName
   );
+};
 
 export const checkFileExists = (path: string) => existsSync(path);
 
