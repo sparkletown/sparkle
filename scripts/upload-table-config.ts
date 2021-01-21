@@ -11,6 +11,7 @@ import {
   generateTables,
   initFirebaseAdminApp,
   makeSaveToBackupFile,
+  makeScriptUsage,
 } from "./lib/helpers";
 
 // ---------------------------------------------------------
@@ -26,21 +27,12 @@ const newTables: Table[] = [
 // HERE THERE BE DRAGONS (edit below here at your own risk)
 // ---------------------------------------------------------
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Upload table config
-
-Usage: ${scriptName} PROJECT_ID VENUE_ID [CREDENTIAL_PATH]
-
-Example: ${scriptName} co-reality-map myvenue [someAccountKey.json]
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description:
+    "Generate/upload table config (from newTables const, edit the script)",
+  usageParams: "PROJECT_ID VENUE_ID [CREDENTIAL_PATH]",
+  exampleParams: "co-reality-map myvenue [theMatchingAccountServiceKey.json]",
+});
 
 const [projectId, venueId, credentialPath] = process.argv.slice(2);
 

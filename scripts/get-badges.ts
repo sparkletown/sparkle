@@ -11,23 +11,15 @@ import { User } from "../src/types/User";
 import { WithId, withId } from "../src/utils/id";
 import { formatSecondsAsDuration } from "../src/utils/time";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------
-${scriptName}: Get user details. Prints each user's email address, last seen time in milliseconds since epoch, and codes used.
-
-Usage: ${scriptName} PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]
-
-Example: ${scriptName} co-reality-map venueId,venueId2,venueIdN [someAccountKey.json]
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description:
+    "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
+  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]",
+  exampleParams:
+    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
+});
 
 const [projectId, venueIds, credentialPath] = process.argv.slice(2);
 
