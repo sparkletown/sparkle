@@ -31,7 +31,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { addReaction } from "store/actions/Reactions";
@@ -82,7 +82,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -251,7 +251,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
         <UserList
           isAudioEffectDisabled={isAudioEffectDisabled}
-          users={recentWorldUsers}
+          users={recentVenueUsers}
           activity={venue?.activity ?? "here"}
           disableSeeAll={false}
         />

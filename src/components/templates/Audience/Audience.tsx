@@ -19,7 +19,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -136,7 +136,7 @@ export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
@@ -203,7 +203,7 @@ export const Audience: React.FunctionComponent = () => {
   // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
-  recentWorldUsers?.forEach((user) => {
+  recentVenueUsers?.forEach((user) => {
     if (
       !venueId ||
       !user?.data ||

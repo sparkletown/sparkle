@@ -14,7 +14,7 @@ import { openRoomUrl } from "utils/url";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 import Sidebar from "components/molecules/Sidebar";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -64,7 +64,7 @@ export const Map: React.FC<PropsType> = ({
   const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   useEffect(() => {
     const img = new Image();
@@ -160,7 +160,7 @@ export const Map: React.FC<PropsType> = ({
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
-    partygoers: recentWorldUsers,
+    partygoers: recentVenueUsers,
   });
 
   const enterSelectedRoom = useCallback(() => {
@@ -213,7 +213,7 @@ export const Map: React.FC<PropsType> = ({
     withMiniAvatars: venue.miniAvatars,
     rows,
     columns,
-    partygoers: recentWorldUsers,
+    partygoers: recentVenueUsers,
     setSelectedUserProfile,
   });
 

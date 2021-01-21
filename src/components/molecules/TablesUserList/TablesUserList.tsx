@@ -9,7 +9,7 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
@@ -70,7 +70,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const { user, profile } = useUser();
 
-  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
 
   const { experience } = useSelector((state) => ({
     experience:
@@ -88,7 +88,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     }
   }, [profile, setSeatedAtTable, user, venueName]);
 
-  if (!isRecentWorldUsersLoaded) return <>Loading...</>;
+  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: Record<string, Array<User>> = {};
@@ -96,7 +96,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtTables[table.reference] = [];
   }
   const unseatedUsers = [];
-  for (const u of recentWorldUsers.filter((u: User) =>
+  for (const u of recentVenueUsers.filter((u: User) =>
     u.lastSeenIn ? u.lastSeenIn[venueName] : ""
   )) {
     if (
@@ -116,7 +116,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
-      recentWorldUsers.filter(
+      recentVenueUsers.filter(
         (user: User) => user.data?.[venueName]?.table === table
       ).length === 0
     ) {
@@ -146,7 +146,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const takeSeat = (table: string) => {
     if (!user) return;
     const doc = `users/${user.uid}`;
-    const existingData = recentWorldUsers.find((u) => u.id === user.uid)?.data;
+    const existingData = recentVenueUsers.find((u) => u.id === user.uid)?.data;
 
     const update = {
       data: {
@@ -178,7 +178,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             <TableComponent
               key={table.title}
               experienceName={venueName}
-              users={recentWorldUsers}
+              users={recentVenueUsers}
               table={table}
               tableLocked={tableLocked}
               setSelectedUserProfile={setSelectedUserProfile}

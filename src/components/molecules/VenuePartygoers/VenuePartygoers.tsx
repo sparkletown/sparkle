@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentWorldsUsers } from "hooks/users";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -14,12 +14,12 @@ export const VenuePartygoers = () => {
     isCurrentVenueLoaded,
   } = useConnectRelatedVenues({ venueId });
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldsUsers();
 
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
   const title = useMemo<string>(() => {
-    if (!isCurrentVenueLoaded) return "";
+    if (!isCurrentVenueLoaded || !isRecentWorldUsersLoaded) return "";
 
     const attendeesTitle =
       parentVenue?.attendeesTitle ??
@@ -32,6 +32,7 @@ export const VenuePartygoers = () => {
     parentVenue,
     currentVenue,
     numberOfRecentWorldUsers,
+    isRecentWorldUsersLoaded,
   ]);
 
   return <div className="venue-partygoers-container">{title}</div>;

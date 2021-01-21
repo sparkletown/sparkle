@@ -54,26 +54,6 @@ export const useWorldUsers = (): {
   );
 };
 
-export const useRecentWorldUsers = (): {
-  recentWorldUsers: readonly WithId<User>[];
-  isRecentWorldUsersLoaded: boolean;
-} => {
-  const lastSeenThreshold = useUserLastSeenThreshold();
-
-  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
-
-  return useMemo(
-    () => ({
-      recentWorldUsers: worldUsers.filter(
-        // @debt Refactor this legacy way of counting into using lastSeenIn
-        (user) => user.lastSeenAt > lastSeenThreshold
-      ),
-      isRecentWorldUsersLoaded: isWorldUsersLoaded,
-    }),
-    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
-  );
-};
-
 export const useWorldUsersById = () => {
   useConnectWorldUsers();
 
@@ -85,5 +65,95 @@ export const useWorldUsersById = () => {
       isWorldUsersLoaded: isLoaded(worldUsersById),
     }),
     [worldUsersById]
+  );
+};
+
+export const useRecentWorldsUsers = (): {
+  recentWorldUsers: readonly WithId<User>[];
+  isRecentWorldUsersLoaded: boolean;
+} => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
+
+  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+
+  return useMemo(
+    () => ({
+      recentWorldUsers: worldUsers.filter(
+        (user) => user.lastSeenAt > lastSeenThreshold
+      ),
+      isRecentWorldUsersLoaded: isWorldUsersLoaded,
+    }),
+    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
+  );
+};
+
+export const useRecentVenueUsers = (): {
+  recentVenueUsers: readonly WithId<User>[];
+  isRecentVenueUsersLoaded: boolean;
+} => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
+  const venueId = useVenueId();
+
+  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+
+  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
+    venueId
+  );
+
+  return useMemo(
+    () => ({
+      recentVenueUsers:
+        isCurrentVenueLoaded && currentVenue
+          ? worldUsers.filter(
+              (user) => user.lastSeenIn?.[currentVenue.name] > lastSeenThreshold
+            )
+          : [],
+      isRecentVenueUsersLoaded: isWorldUsersLoaded,
+    }),
+    [
+      worldUsers,
+      isWorldUsersLoaded,
+      lastSeenThreshold,
+      isCurrentVenueLoaded,
+      currentVenue,
+    ]
+  );
+};
+
+export const useRecentRoomUsers = (
+  roomTitle?: string
+): {
+  recentRoomUsers: readonly WithId<User>[];
+  isRecentRoomUsersLoaded: boolean;
+} => {
+  const venueId = useVenueId();
+  const lastSeenThreshold = useUserLastSeenThreshold();
+
+  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+
+  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
+    venueId
+  );
+
+  return useMemo(
+    () => ({
+      recentRoomUsers:
+        isCurrentVenueLoaded && currentVenue && roomTitle
+          ? worldUsers.filter(
+              (user) =>
+                user.lastSeenIn?.[`${currentVenue.name}/${roomTitle}`] >
+                lastSeenThreshold
+            )
+          : [],
+      isRecentRoomUsersLoaded: isWorldUsersLoaded,
+    }),
+    [
+      worldUsers,
+      isWorldUsersLoaded,
+      isCurrentVenueLoaded,
+      currentVenue,
+      roomTitle,
+      lastSeenThreshold,
+    ]
   );
 };

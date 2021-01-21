@@ -9,7 +9,7 @@ import { IS_BURN } from "secrets";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -38,7 +38,7 @@ const Camp: React.FC = () => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const venue = useSelector(campVenueSelector);
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const selectRoom = useCallback((campRoom: CampRoomData) => {
     setSelectedRoom(campRoom);
@@ -49,7 +49,7 @@ const Camp: React.FC = () => {
     setIsRoomModalOpen(false);
   }, []);
 
-  const attendances = recentWorldUsers.reduce<Record<string, number>>(
+  const attendances = recentVenueUsers.reduce<Record<string, number>>(
     (acc, value) => {
       Object.keys(value.lastSeenIn).forEach((key) => {
         acc[key] = (acc[key] || 0) + 1;
@@ -77,10 +77,10 @@ const Camp: React.FC = () => {
       <BannerMessage venue={venue} />
       <div className="camp-container">
         <div className="row">
-          {recentWorldUsers && (
+          {recentVenueUsers && (
             <div className="col">
               <UserList
-                users={recentWorldUsers}
+                users={recentVenueUsers}
                 imageSize={50}
                 disableSeeAll={false}
                 isCamp={true}
@@ -113,7 +113,7 @@ const Camp: React.FC = () => {
         </div>
         <Map
           venue={venue}
-          partygoers={recentWorldUsers}
+          partygoers={recentVenueUsers}
           attendances={attendances}
           selectedRoom={selectedRoom}
           selectRoom={selectRoom}

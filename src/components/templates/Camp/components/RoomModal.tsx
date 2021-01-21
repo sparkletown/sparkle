@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 
 import { CampRoomData } from "types/CampRoomData";
@@ -17,7 +17,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentRoomUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import UserList from "components/molecules/UserList";
@@ -46,17 +46,8 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const { recentWorldUsers } = useRecentWorldUsers();
-  const venueName = venue?.name;
-  const roomTitle = room?.title;
 
-  const usersToDisplay = useMemo(
-    () =>
-      recentWorldUsers.filter(
-        (user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]
-      ),
-    [recentWorldUsers, venueName, roomTitle]
-  );
+  const { recentRoomUsers } = useRecentRoomUsers();
 
   if (!room) {
     return <></>;
@@ -134,7 +125,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           </div>
         </div>
         <UserList
-          users={usersToDisplay}
+          users={recentRoomUsers}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}

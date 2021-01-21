@@ -19,7 +19,7 @@ import {
 } from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -88,7 +88,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const dispatch = useDispatch();
   const sendUpdatedState = useMemo(
@@ -184,7 +184,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   }, [user, setBikeMode, setVideoState, sendUpdatedState]);
 
   const selfUserProfile = user?.uid
-    ? recentWorldUsers.find((pg) => pg.id === user.uid)
+    ? recentVenueUsers.find((pg) => pg.id === user.uid)
     : undefined;
 
   const menu: MenuConfig = {
@@ -384,7 +384,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     };
 
     // Inform if you were removed
-    const remover = recentWorldUsers.find(
+    const remover = recentVenueUsers.find(
       (partygoer) =>
         partygoer?.video?.removedParticipantUids?.includes(user.uid) &&
         !ackedRemoves.includes(partygoer.id) &&
@@ -414,10 +414,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     if (actionableRequests && actionableRequests.length > 0) {
       const chatRequest = actionableRequests[0];
 
-      const fromUser = recentWorldUsers.find(
+      const fromUser = recentVenueUsers.find(
         (partygoer) => partygoer.id === chatRequest.fromUid
       );
-      const toUser = recentWorldUsers.find(
+      const toUser = recentVenueUsers.find(
         (partygoer) => partygoer.id === chatRequest.toUid
       );
       if (!fromUser || !toUser) return;
@@ -514,7 +514,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   }, [
     firebase,
     menuRef,
-    recentWorldUsers,
+    recentVenueUsers,
     profile,
     setMenu,
     setShowMenu,
@@ -585,10 +585,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       .filter(
         (uid) =>
           user?.uid !== uid &&
-          !!recentWorldUsers.find((partygoer) => partygoer.id === uid)
+          !!recentVenueUsers.find((partygoer) => partygoer.id === uid)
       )
       .map((uid) => {
-        const avatarUser = recentWorldUsers.find(
+        const avatarUser = recentVenueUsers.find(
           (partygoer) => partygoer.id === uid
         );
         if (!avatarUser) return <React.Fragment key={uid} />;
@@ -623,7 +623,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           avatarUser.video?.inRoomOwnedBy === avatarUser.id;
         const theirChatHostUser = theyAreHostOfTheirChat
           ? avatarUser
-          : recentWorldUsers.find(
+          : recentVenueUsers.find(
               (partygoer) => partygoer.id === avatarUser.video?.inRoomOwnedBy
             );
         const theyAreInAChat =
@@ -751,7 +751,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     shouts,
     userStateMap,
     firebase,
-    recentWorldUsers,
+    recentVenueUsers,
     useProfilePicture,
     setSelectedUserProfile,
     setMenu,

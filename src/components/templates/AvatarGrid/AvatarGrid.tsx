@@ -14,7 +14,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
@@ -36,7 +36,7 @@ const AvatarGrid = () => {
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
@@ -59,7 +59,7 @@ const AvatarGrid = () => {
 
   // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
-  recentWorldUsers.forEach((user) => {
+  recentVenueUsers.forEach((user) => {
     if (
       !venueId ||
       !user?.data ||
@@ -381,7 +381,7 @@ const AvatarGrid = () => {
       >
         <div className="grid-rooms-container">
           {venue.spaces?.map((room: AvatarGridRoom, index: number) => {
-            const peopleInRoom = recentWorldUsers.filter(
+            const peopleInRoom = recentVenueUsers.filter(
               (user) => user.lastSeenIn?.[`${venue.name}/${room.title}`]
             );
             return (

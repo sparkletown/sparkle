@@ -9,7 +9,7 @@ import {
   LOC_UPDATE_FREQ_MS,
 } from "settings";
 import UserList from "components/molecules/UserList";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
@@ -65,11 +65,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
-  const usersInVenue = recentWorldUsers.filter(
+  const usersInVenue = recentVenueUsers.filter(
     (partygoer) =>
       partygoer.lastSeenIn?.[venue.name] >
       (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
