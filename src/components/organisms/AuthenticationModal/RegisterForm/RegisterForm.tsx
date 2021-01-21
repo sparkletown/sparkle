@@ -15,8 +15,9 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { VenueAccessType } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAcccess";
 import { accessTokenKey } from "utils/localStorage";
+import { checkAccess, setLocalStorageToken } from "functions/auth";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -91,10 +92,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       setShowLoginModal(false);
       const auth = await signUp(data);
 
-      if (venue.access?.includes(VenueAccessType.Codes)) {
-        const result = await firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
+      if (venue.access?.includes(VenueAccessMode.Codes)) {
+        const result = await checkAccess({
           venueId: venue.id,
           code: data.code,
         });
@@ -105,12 +104,10 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           ": ",
           result.data.token
         );
-        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
+        setLocalStorageToken(venue.id, result.data.token);
       }
-      if (venue.access?.includes(VenueAccessType.Emails)) {
-        const result = await firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
+      if (venue.access?.includes(VenueAccessMode.Emails)) {
+        const result = await checkAccess({
           venueId: venue.id,
           email: data.email,
         });
@@ -121,7 +118,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           ": ",
           result.data.token
         );
-        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
+        setLocalStorageToken(venue.id, result.data.token);
       }
 
       if (auth.user && venue.requiresDateOfBirth) {
@@ -231,7 +228,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access?.includes(VenueAccessType.Codes) && (
+        {venue.access?.includes(VenueAccessMode.Codes) && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 

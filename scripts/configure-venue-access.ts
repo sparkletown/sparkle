@@ -4,11 +4,10 @@ import fs from "fs";
 import admin from "firebase-admin";
 import "firebase/firestore";
 
-import { Venue } from "../src/types/Venue";
 import {
   VenueAccessCodes,
   VenueAccessEmails,
-  VenueAccessType,
+  VenueAccessMode,
 } from "../src/types/VenueAcccess";
 
 import { initFirebaseAdminApp } from "./lib/helpers";
@@ -51,7 +50,7 @@ const method = argv[2];
 const accessDetail = argv[3];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (!(Object as any).values(VenueAccessType).includes(method)) {
+if (!(Object as any).values(VenueAccessMode).includes(method)) {
   console.error(`Invalid access method ${method}`);
   process.exit(1);
 }
@@ -63,20 +62,11 @@ initFirebaseAdminApp(projectId)(async () => {
     console.error(`venue ${venueId} does not exist`);
     process.exit(1);
   }
-  const venue = venueDoc.data() as Venue;
 
-  console.log(`venue ${venueId} in project ${projectId}:`);
-  console.log(venue);
-
-  if (!venue.access) {
-    venue.access = [];
-  }
-  console.log(`Previous access methods: ${venue.access}`);
-  if (!venue.access.includes(method as VenueAccessType)) {
-    venue.access.push(method as VenueAccessType);
-  }
-  console.log(`Setting venues/${venueId} access to ${venue.access}...`);
-  await admin.firestore().doc(`venues/${venueId}`).set(venue);
+  await admin
+    .firestore()
+    .doc(`venues/${venueId}`)
+    .update({ access: method ?? "" });
   console.log("Done");
 
   console.log(`Configuring access details for ${method}...`);
@@ -87,7 +77,7 @@ initFirebaseAdminApp(projectId)(async () => {
   const access = accessDoc.exists ? accessDoc.data() : {};
 
   switch (method) {
-    case VenueAccessType.Password:
+    case VenueAccessMode.Password:
       console.log(
         `Setting venues/${venueId}/access/${method} to {password: ${accessDetail.trim()}}...`
       );
@@ -97,13 +87,11 @@ initFirebaseAdminApp(projectId)(async () => {
         .set({ password: accessDetail.trim() });
       break;
 
-    case VenueAccessType.Emails:
-      const emails = [];
-      fs.readFileSync(accessDetail, "utf-8")
+    case VenueAccessMode.Emails:
+      const emails = fs
+        .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .forEach((line) => {
-          emails.push(line.trim().toLowerCase());
-        });
+        .map((line) => line.trim().toLowerCase());
       console.log(
         `Setting venues/${venueId}/access/${method} to {emails: ${emails}}...`
       );
@@ -118,7 +106,7 @@ initFirebaseAdminApp(projectId)(async () => {
         });
       break;
 
-    case VenueAccessType.Codes:
+    case VenueAccessMode.Codes:
       fs.readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach((line) => {

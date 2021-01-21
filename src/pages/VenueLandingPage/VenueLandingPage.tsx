@@ -30,10 +30,9 @@ import {
   userPurchaseHistorySelector,
 } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
-import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { showZendeskWidget } from "utils/zendesk";
-import { VenueAccessType } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAcccess";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -145,9 +144,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         : venueEntranceUrl(venueId);
   };
 
-  const hasPassword = isTruthy(
-    venue.access?.includes(VenueAccessType.Password)
-  );
+  const requiresPassword =
+    venue.access?.includes(VenueAccessMode.Password) ?? false;
 
   return (
     <WithNavigationBar>
@@ -175,14 +173,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
-          {hasPassword && (
+          {requiresPassword && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
                 buttonText={venue.config?.landingPageConfig.joinButtonText}
               />
             </div>
           )}
-          {!hasPassword &&
+          {!requiresPassword &&
             (!futureOrOngoingVenueEvents ||
               futureOrOngoingVenueEvents.length === 0) && (
               <button

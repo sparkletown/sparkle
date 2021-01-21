@@ -1,4 +1,4 @@
-export enum VenueAccessType {
+export enum VenueAccessMode {
   Emails = "emails",
   Codes = "codes",
   Password = "password",

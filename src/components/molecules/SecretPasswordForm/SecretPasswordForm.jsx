@@ -1,15 +1,15 @@
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useFirebase } from "react-redux-firebase";
 
 import { venueEntranceUrl } from "utils/url";
+
 import { useVenueId } from "hooks/useVenueId";
 
+import { checkAccess, setLocalStorageToken } from "functions/auth";
+
 import "./SecretPasswordForm.scss";
-import { accessTokenKey } from "utils/localStorage";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
-  const firebase = useFirebase();
   const history = useHistory();
   const venueId = useVenueId();
 
@@ -30,13 +30,11 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       setMessage("Checking password...");
 
       try {
-        const result = await firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
+        const result = await checkAccess({
           venueId,
           password,
         });
-        localStorage.setItem(accessTokenKey(venueId), result.data.token);
+        setLocalStorageToken(venueId, result.data.token);
 
         setInvalidPassword(false);
         setMessage("Password OK! Proceeding...");
@@ -46,7 +44,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         setMessage(`Password error: ${error.toString()}`);
       }
     },
-    [firebase, history, password, venueId]
+    [history, password, venueId]
   );
 
   return (

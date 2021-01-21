@@ -1,16 +1,15 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import { default as _firebase } from "firebase/app";
 
 import { useSelector } from "hooks/useSelector";
 
 import { venueSelector } from "utils/selectors";
 import { accessTokenKey } from "utils/localStorage";
 
-import { VenueAccessType } from "types/VenueAcccess";
+import { VenueAccessMode } from "types/VenueAcccess";
 
-import { checkAccess } from "functions/auth";
+import { checkAccess, setLocalStorageToken } from "functions/auth";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -64,10 +63,8 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     try {
       await signIn(data);
 
-      if (venue.access?.includes(VenueAccessType.Codes)) {
-        const result = await _firebase
-          .functions()
-          .httpsCallable("access-checkAccess")({
+      if (venue.access?.includes(VenueAccessMode.Codes)) {
+        const result = await checkAccess({
           venueId: venue.id,
           code: data.code,
         });
@@ -81,9 +78,9 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           ": ",
           result.data.token
         );
-        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
+        setLocalStorageToken(venue.id, result.data.token);
       }
-      if (venue.access?.includes(VenueAccessType.Emails)) {
+      if (venue.access?.includes(VenueAccessMode.Emails)) {
         console.log("emails");
         const result = await checkAccess({
           venueId: venue.id,
@@ -100,7 +97,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           ": ",
           result.data.token
         );
-        localStorage.setItem(accessTokenKey(venue.id), result.data.token);
+        setLocalStorageToken(venue.id, result.data.token);
       }
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
@@ -173,7 +170,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access?.includes(VenueAccessType.Codes) && (
+        {venue.access?.includes(VenueAccessMode.Codes) && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
