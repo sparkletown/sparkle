@@ -13,6 +13,19 @@ import {
   makeSaveToBackupFile,
 } from "./lib/helpers";
 
+// ---------------------------------------------------------
+// Configuration (this is the bit you should edit)
+// ---------------------------------------------------------
+
+const newTables: Table[] = [
+  ...generateTables({ num: 5, capacity: 6 }),
+  ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
+];
+
+// ---------------------------------------------------------
+// HERE THERE BE DRAGONS (edit below here at your own risk)
+// ---------------------------------------------------------
+
 const usage = () => {
   const scriptName = process.argv[1];
   const helpText = `
@@ -45,11 +58,6 @@ initFirebaseAdminApp(projectId, {
     ? resolve(__dirname, credentialPath)
     : undefined,
 });
-
-const newTables: Table[] = [
-  ...generateTables({ num: 5, capacity: 6 }),
-  ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
-];
 
 const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
 
