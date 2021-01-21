@@ -7,7 +7,11 @@ import admin from "firebase-admin";
 import { Table } from "../src/types/Table";
 import { Venue } from "../src/types/Venue";
 
-import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers";
+import {
+  generateTables,
+  initFirebaseAdminApp,
+  makeSaveToBackupFile,
+} from "./lib/helpers";
 
 const usage = () => {
   const scriptName = process.argv[1];
@@ -41,33 +45,6 @@ initFirebaseAdminApp(projectId, {
     ? resolve(__dirname, credentialPath)
     : undefined,
 });
-
-const generateTables: (props: {
-  num: number;
-  capacity: number;
-  startFrom?: number;
-  rows?: number;
-  columns?: number;
-  titlePrefix?: string;
-}) => Table[] = ({
-  num,
-  capacity,
-  startFrom = 0,
-  rows = 2,
-  columns = 3,
-  titlePrefix = "Table",
-}) =>
-  Array.from(Array(num)).map((_, idx) => {
-    const tableNumber = startFrom + 1 + idx;
-
-    return {
-      title: `${titlePrefix} ${tableNumber}`,
-      reference: `${titlePrefix} ${tableNumber}`,
-      capacity,
-      rows,
-      columns,
-    };
-  });
 
 const newTables: Table[] = [
   ...generateTables({ num: 5, capacity: 6 }),
