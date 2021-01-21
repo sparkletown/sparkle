@@ -95,7 +95,7 @@ const VenuePage: React.FC = () => {
 
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
-      lastSeenAt: new Date().getTime(),
+      lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
       room: venueName,
     });
   }, [prevLocations, user, venueName]);

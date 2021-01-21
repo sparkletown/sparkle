@@ -17,25 +17,25 @@ export const currentVenueEventsNGSelector: SparkleSelector<
   Record<string, VenueEvent> | undefined
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
-export const useConnectCurrentVenueNG = (venueId: string) => {
-  useFirestoreConnect(
-    !!venueId
-      ? [
-          {
-            collection: "venues",
-            doc: venueId,
-            storeAs: "currentVenueNG",
-          },
-          {
-            collection: "venues",
-            doc: venueId,
-            subcollections: [{ collection: "events" }],
-            orderBy: ["start_utc_seconds", "asc"],
-            storeAs: "currentVenueEventsNG",
-          },
-        ]
-      : []
-  );
+export const useConnectCurrentVenueNG = (venueId?: string) => {
+  useFirestoreConnect(() => {
+    if (!venueId) return [];
+
+    return [
+      {
+        collection: "venues",
+        doc: venueId,
+        storeAs: "currentVenueNG",
+      },
+      {
+        collection: "venues",
+        doc: venueId,
+        subcollections: [{ collection: "events" }],
+        orderBy: ["start_utc_seconds", "asc"],
+        storeAs: "currentVenueEventsNG",
+      },
+    ];
+  });
 
   const currentVenueNG = useSelector(currentVenueNGSelector);
   const currentVenueEventsNG = useSelector(currentVenueEventsNGSelector);
@@ -46,6 +46,7 @@ export const useConnectCurrentVenueNG = (venueId: string) => {
         venueId && currentVenueNG ? withId(currentVenueNG, venueId) : undefined,
       currentVenueEvents: currentVenueEventsNG,
       isCurrentVenueLoaded: isLoaded(currentVenueNG),
+      isCurrentVenueEventsLoaded: isLoaded(currentVenueEventsNG),
     }),
     [venueId, currentVenueNG, currentVenueEventsNG]
   );

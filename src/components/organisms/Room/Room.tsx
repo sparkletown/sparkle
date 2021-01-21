@@ -196,10 +196,11 @@ const Room: React.FC<RoomProps> = ({
 
   // Only allow the first bartender to appear as bartender
   const userIdentity = room?.localParticipant?.identity;
-  const meIsBartender =
-    worldUsersById && userIdentity
-      ? worldUsersById[userIdentity]?.data?.[roomName]?.bartender
-      : undefined;
+
+  // @debt The types for bartender doesn't allow anything except for User\undefined. `userIdentity` can be "" as for now.
+  const meIsBartender = userIdentity
+    ? worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender
+    : undefined;
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works

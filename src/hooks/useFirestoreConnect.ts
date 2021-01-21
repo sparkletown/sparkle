@@ -91,6 +91,7 @@ export const useFirestoreConnect = (
   config?:
     | AnySparkleRFQuery
     | AnySparkleRFQuery[]
+    | (() => AnySparkleRFQuery)
     | (() => AnySparkleRFQuery[])
     | ValidFirestoreRootCollections
 ) => _useFirestoreConnect(config);

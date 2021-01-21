@@ -1,4 +1,8 @@
-import { worldUsersSelector, usersByIdSelector } from "utils/selectors";
+import { useMemo } from "react";
+
+import { User } from "types/User";
+
+import { worldUsersSelector, worldUsersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
@@ -7,18 +11,15 @@ import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 
-import { User } from "types/User";
-import { useMemo } from "react";
-
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
   const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
-    venueId!
+    venueId
   );
 
   useFirestoreConnect(() => {
-    if (!isCurrentVenueLoaded || !currentVenue) return [];
+    if (!isCurrentVenueLoaded || !currentVenue || !venueId) return [];
 
     const relatedLocationIds = [currentVenue.id];
 
@@ -42,14 +43,14 @@ export const useWorldUsers = (): {
 } => {
   useConnectWorldUsers();
 
-  const selectedUniverseUsers = useSelector(worldUsersSelector);
+  const selectedWorldUsers = useSelector(worldUsersSelector);
 
   return useMemo(
     () => ({
-      worldUsers: selectedUniverseUsers ?? [],
-      isWorldUsersLoaded: isLoaded(selectedUniverseUsers),
+      worldUsers: selectedWorldUsers ?? [],
+      isWorldUsersLoaded: isLoaded(selectedWorldUsers),
     }),
-    [selectedUniverseUsers]
+    [selectedWorldUsers]
   );
 };
 
@@ -76,7 +77,7 @@ export const useRecentWorldUsers = (): {
 export const useWorldUsersById = () => {
   useConnectWorldUsers();
 
-  const worldUsersById = useSelector(usersByIdSelector);
+  const worldUsersById = useSelector(worldUsersByIdSelector);
 
   return useMemo(
     () => ({

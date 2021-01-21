@@ -81,7 +81,7 @@ export const useConnectRelatedVenues: ReactHook<
   UseConnectRelatedVenuesReturn
 > = ({ venueId, withEvents = false }) => {
   const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId!
+    venueId
   );
 
   const parentId: string | undefined = currentVenue?.parentId;
@@ -267,27 +267,11 @@ export const useConnectRelatedVenues: ReactHook<
     [currentVenue, parentVenue, siblingVenues, subvenues]
   );
 
-  const isRelatedVenuesLoaded = useMemo(() => {
-    const loaders = [
-      isCurrentVenueLoaded,
-      isSubvenuesLoaded,
-      isSiblingVenuesLoaded,
-    ];
-
-    if (parentId) {
-      loaders.push(isParentVenueLoaded);
-    }
-
-    return loaders.reduce(
-      (finalIsLoaded, isLoaded) => finalIsLoaded && isLoaded
-    );
-  }, [
-    parentId,
-    isCurrentVenueLoaded,
-    isParentVenueLoaded,
-    isSubvenuesLoaded,
-    isSiblingVenuesLoaded,
-  ]);
+  const isRelatedVenuesLoaded =
+    isCurrentVenueLoaded &&
+    isSubvenuesLoaded &&
+    isSiblingVenuesLoaded &&
+    (parentId ? isParentVenueLoaded : true);
 
   return useMemo(
     () => ({

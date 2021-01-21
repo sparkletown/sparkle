@@ -137,6 +137,59 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     worldUsers,
   ]);
 
+  const privateRecipientOptions = useMemo(
+    () =>
+      worldUsers
+        .filter(
+          (user) =>
+            user.id &&
+            !user.anonMode &&
+            user.partyName?.toLowerCase().includes(searchValue.toLowerCase())
+        )
+        .map((user) => (
+          <Dropdown.Item
+            onClick={() => setPrivateRecipient(user)}
+            id="chatbox-dropdown-private-recipient"
+            key={user.id}
+          >
+            <img
+              src={user.pictureUrl}
+              className="picture-logo"
+              alt={user.partyName}
+              width="20"
+              height="20"
+            />
+            {user.partyName}
+          </Dropdown.Item>
+        )),
+    [worldUsers, searchValue, setPrivateRecipient]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      chatsToDisplay &&
+      user &&
+      chatsToDisplay.map((chat) => (
+        <ChatMessage
+          key={`${chat.ts_utc.valueOf()}-${chat.id}`}
+          user={user}
+          users={worldUsersById}
+          setSelectedUserProfile={setSelectedUserProfile}
+          isInProfileModal={!!isInProfileModal}
+          chat={chat}
+          withoutSenderInformation={displayNameOfDiscussionPartnerAsTitle}
+        />
+      )),
+    [
+      chatsToDisplay,
+      user,
+      worldUsersById,
+      setSelectedUserProfile,
+      isInProfileModal,
+      displayNameOfDiscussionPartnerAsTitle,
+    ]
+  );
+
   return (
     <>
       <div className="chatbox-container">
@@ -241,31 +294,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     />
                     {searchValue && (
                       <ul className="list-unstyled">
-                        {worldUsers
-                          .filter(
-                            (u) =>
-                              !u.anonMode &&
-                              u.partyName
-                                ?.toLowerCase()
-                                .includes(searchValue.toLowerCase())
-                          )
-                          .filter((u) => u.id !== undefined)
-                          .map((u) => (
-                            <Dropdown.Item
-                              onClick={() => setPrivateRecipient(u)}
-                              id="chatbox-dropdown-private-recipient"
-                              key={u.id}
-                            >
-                              <img
-                                src={u.pictureUrl}
-                                className="picture-logo"
-                                alt={u.partyName}
-                                width="20"
-                                height="20"
-                              />
-                              {u.partyName}
-                            </Dropdown.Item>
-                          ))}
+                        {privateRecipientOptions}
                       </ul>
                     )}
                   </Dropdown.Menu>
@@ -284,23 +313,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
               room={room}
               setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />
-            <div className="message-container">
-              {chatsToDisplay &&
-                user &&
-                chatsToDisplay.map((chat) => (
-                  <ChatMessage
-                    key={`${chat.ts_utc.valueOf()}-${chat.id}`}
-                    user={user}
-                    users={worldUsersById}
-                    setSelectedUserProfile={setSelectedUserProfile}
-                    isInProfileModal={!!isInProfileModal}
-                    chat={chat}
-                    withoutSenderInformation={
-                      displayNameOfDiscussionPartnerAsTitle
-                    }
-                  />
-                ))}
-            </div>
+            <div className="message-container">{messagesToDisplay}</div>
           </>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import "./ReactionPage.scss";
@@ -21,9 +21,7 @@ const ReactionPage = () => {
       )
     ) ?? [];
 
-  const hasPartygoers = useMemo(() => recentWorldUsers.length > 0, [
-    recentWorldUsers,
-  ]);
+  const hasPartygoers = recentWorldUsers.length > 0;
 
   useFirestoreConnect(
     venue

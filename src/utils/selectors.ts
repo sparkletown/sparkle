@@ -50,7 +50,7 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
 ) => state.firestore.data.currentVenue;
 
 /**
- * Selector to retrieve array of universe-related users from the Redux Firestore.
+ * Selector to retrieve array of world-related users from the Redux Firestore.
  *
  * @param state the Redux store
  */
@@ -59,11 +59,11 @@ export const worldUsersSelector: SparkleSelector<WithId<User>[] | undefined> = (
 ) => state.firestore.ordered.worldUsers;
 
 /**
- * Selector to retrieve an object with universe-related users from the Redux Firestore.
+ * Selector to retrieve an object with world-related users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const usersByIdSelector: SparkleSelector<
+export const worldUsersByIdSelector: SparkleSelector<
   Record<string, User> | undefined
 > = (state) => state.firestore.data.worldUsers;
 
