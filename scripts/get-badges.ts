@@ -38,6 +38,15 @@ if (!projectId || !venueIds) {
 
 const venueIdsArray = venueIds.split(",");
 
+// Note: if we ever need to handle this, we can split our firestore query into 'chunks', each with 10 items per array-contains-any
+if (venueIdsArray.length > 10) {
+  console.error(
+    "Error: This script can only handle up to 10 venueIds at once at the moment."
+  );
+  console.error("  venueIdsArray.length :", venueIdsArray.length);
+  process.exit(1);
+}
+
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
     ? resolve(__dirname, credentialPath)
