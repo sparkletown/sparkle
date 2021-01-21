@@ -1,10 +1,6 @@
-import {
-  isEmpty,
-  isLoaded,
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
+import { isEmpty, isLoaded } from "react-redux-firebase";
 import { SparkleSelector } from "types/SparkleSelector";
+import { AnySparkleRFQuery, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
 export type AdminRole = {
@@ -12,7 +8,7 @@ export type AdminRole = {
   users: string[];
 };
 
-export const adminRoleQuery: ReduxFirestoreQuerySetting = {
+export const adminRoleQuery: AnySparkleRFQuery = {
   collection: "roles",
   doc: "admin",
   storeAs: "adminRole",
