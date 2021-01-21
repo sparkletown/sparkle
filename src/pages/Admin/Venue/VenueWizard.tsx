@@ -55,7 +55,6 @@ const reducer = (
 export const VenueWizard: React.FC = () => {
   const venueId = useVenueId();
 
-  console.log(venueId);
   return venueId ? (
     <VenueWizardEdit venueId={venueId} />
   ) : (
@@ -102,7 +101,6 @@ const VenueWizardCreate: React.FC = () => {
   const { user } = useUser();
   const queryParams = useQuery();
 
-  console.log("asd");
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const parentIdQuery = queryParams.get("parentId");
