@@ -6,21 +6,48 @@ import formatDate from "date-fns/format/index.js";
 
 import { Table } from "../../src/types/Table";
 
-export const makeSaveToBackupFile = (filenamePrefix: string) => (
-  data: string | {} | [],
-  type: string = "general",
-  ext: string = "backup.json"
-) => {
-  const backupDate = formatDate(new Date(), "yyyyMMdd-HHmmss");
-  const backupFilename = `${backupDate}-${filenamePrefix}-${type}.${ext}`;
+export interface CredentialFile {
+  type?: string;
+  project_id?: string;
+  private_key_id?: string;
+  private_key?: string;
+  client_email?: string;
+  client_id?: string;
+  auth_uri?: string;
+  token_uri?: string;
+  auth_provider_x509_cert_url?: string;
+  client_x509_cert_url?: string;
+}
 
-  const jsonData = JSON.stringify(data, null, 2);
-
-  writeFileSync(backupFilename, jsonData, "utf8");
-
-  console.log(`Saved backup (type='${type}') to ${backupFilename}`);
-};
-
+/**
+ * Initialise a new Firebase Admin App
+ *
+ * @param projectId Firebase project ID
+ * @param appName An arbitrary name to reference this app by within the script (mostly
+ *   useful when connecting to 2 projects in the same script, eg. to copy data between them)
+ * @param credentialPath Path to the Firebase credential file to be used
+ *
+ * @example Basic Usage
+ *   initFirebaseAdminApp(projectId);
+ *
+ * @example Resolving/using a specific credential file (if defined)
+ *   initFirebaseAdminApp(projectId, {
+ *     credentialPath: credentialPath
+ *       ? resolve(__dirname, credentialPath)
+ *       : undefined,
+ *   });
+ *
+ * @example Initialising two projects at once (eg. to copy data between them)
+ *   const sourceApp = initFirebaseAdminApp(SOURCE_PROJECT_ID, {
+ *     appName: "sourceApp",
+ *     credentialPath: resolve(__dirname, SOURCE_CREDENTIAL_FILE),
+ *   });
+ *
+ *   const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
+ *     appName: "destApp",
+ *     credentialPath: resolve(__dirname, DEST_CREDENTIAL_FILE),
+ *   });
+ */
 export const initFirebaseAdminApp = (
   projectId: string,
   {
@@ -42,23 +69,26 @@ export const initFirebaseAdminApp = (
   );
 };
 
+/**
+ * Resolve the absolute path to <repo>/scripts/prodAccountKey.json
+ */
+export const resolveDefaultCredentialPath = () =>
+  resolve(__dirname, "../prodAccountKey.json");
+
+/**
+ * Check if the supplied file path exists.
+ *
+ * @param path
+ */
 export const checkFileExists = (path: string) => existsSync(path);
 
-interface CredentialFile {
-  type?: string;
-  project_id?: string;
-  private_key_id?: string;
-  private_key?: string;
-  client_email?: string;
-  client_id?: string;
-  auth_uri?: string;
-  token_uri?: string;
-  auth_provider_x509_cert_url?: string;
-  client_x509_cert_url?: string;
-}
-
+/**
+ * Read/parse the supplied Firebase credential file into an object.
+ *
+ * @param credentialPath path to the credential file to be parsed
+ */
 export const parseCredentialFile = (
-  credentialPath = resolve(__dirname, "../prodAccountKey.json")
+  credentialPath: string = resolveDefaultCredentialPath()
 ): CredentialFile => JSON.parse(readFileSync(credentialPath, "utf8"));
 
 /**
@@ -84,6 +114,36 @@ export const ensureProjectIdMatchesCredentialProjectId = (
   }
 };
 
+/**
+ * Creates a saveToBackupFile function that uses the supplied filenamePrefix.
+ *
+ * @param filenamePrefix
+ *
+ * @example
+ *   const saveToDestBackupFile = makeSaveToBackupFile(DEST_PROJECT_ID);
+ *   // ..snip..
+ *   saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);
+ */
+export const makeSaveToBackupFile = (filenamePrefix: string) => (
+  data: string | {} | [],
+  type: string = "general",
+  ext: string = "backup.json"
+) => {
+  const backupDate = formatDate(new Date(), "yyyyMMdd-HHmmss");
+  const backupFilename = `${backupDate}-${filenamePrefix}-${type}.${ext}`;
+
+  const jsonData = JSON.stringify(data, null, 2);
+
+  writeFileSync(backupFilename, jsonData, "utf8");
+
+  console.log(`Saved backup (type='${type}') to ${backupFilename}`);
+};
+
+/**
+ * Look up a user in Firebase Auth by their email address.
+ *
+ * @param app Initialised Firebase Admin App instance
+ */
 export const findUserByEmail = (app: admin.app.App) => (
   email: string
 ): Promise<admin.auth.UserRecord | undefined> =>
