@@ -87,20 +87,23 @@ const createToken = async (venueId, uid, password, email, code) => {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
 
+  const token = uuid();
   const grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
-  const granted = grantedDoc.exists ? grantedDoc.data() : {};
+  let granted = grantedDoc.exists ? grantedDoc.data() : {};
 
   if (!granted.tokens) {
-    granted.tokens = {};
+    granted = { ...granted, tokens: {} };
   }
-  // Record the first time the token was created
-  const token = uuid();
-  granted.tokens[token] = {
+
+  const tokenData = {
     usedAt: [Date.now()],
     password: password || null,
     email: email || null,
     code: code || null,
   };
+
+  granted = { ...granted, tokens: { ...granted.tokens, [token]: tokenData } };
+
   await venue.ref.collection("accessgranted").doc(uid).set(granted);
   return { token };
 };
@@ -112,7 +115,7 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     context.auth &&
     context.auth.uid &&
     (await checkIsValidToken(data.venueId, context.auth.uid, data.token));
-  if (data.token && isValidToken) {
+  if (isValidToken) {
     console.log(`valid token, returning ${data.token}`);
     return { token: data.token };
   }

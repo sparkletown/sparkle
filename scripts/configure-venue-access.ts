@@ -2,14 +2,16 @@
 
 import fs from "fs";
 import admin from "firebase-admin";
-import serviceAccount from "./sparkle-7-firebase-adminsdk-f5a3m-482bebb057.json";
 import "firebase/firestore";
+
 import { Venue } from "../src/types/Venue";
 import {
   VenueAccessCodes,
   VenueAccessEmails,
   VenueAccessType,
 } from "../src/types/VenueAcccess";
+
+import { initFirebaseAdminApp } from "./lib/helpers";
 
 const mergeStringArrays = (
   arr1: string[] = [],
@@ -43,7 +45,10 @@ if (argv.length < 4) {
   usage();
 }
 
-const [projectId, venueId, method, accessDetail] = argv;
+const projectId = argv[0];
+const venueId = argv[1];
+const method = argv[2];
+const accessDetail = argv[3];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (!(Object as any).values(VenueAccessType).includes(method)) {
@@ -51,13 +56,7 @@ if (!(Object as any).values(VenueAccessType).includes(method)) {
   process.exit(1);
 }
 
-admin.initializeApp({
-  credential: admin.credential.cert((serviceAccount as unknown) as string),
-  databaseURL: `https://${projectId}.firebaseio.com`,
-  storageBucket: `${projectId}.appspot.com`,
-});
-
-(async () => {
+initFirebaseAdminApp(projectId)(async () => {
   console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
   const venueDoc = await admin.firestore().doc(`venues/${venueId}`).get();
   if (!venueDoc.exists) {
