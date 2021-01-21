@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import { resolve } from "path";
 
 import admin from "firebase-admin";
 import formatDate from "date-fns/format/index.js";
-import { resolve } from "path";
 
 export const makeSaveToBackupFile = (filenamePrefix: string) => (
   data: string | {} | [],
