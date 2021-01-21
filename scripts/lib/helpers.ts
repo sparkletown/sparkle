@@ -56,6 +56,29 @@ export const parseCredentialFile = (
   credentialPath = resolve(__dirname, "../prodAccountKey.json")
 ): CredentialFile => JSON.parse(readFileSync(credentialPath, "utf8"));
 
+/**
+ * Ensure the supplied projectId matches the projectId in the credential file,
+ * or exit with an error if not.
+ *
+ * @param projectId the firebase project ID to be checked
+ * @param credentialPath the firebase credential file to check against
+ */
+export const ensureProjectIdMatchesCredentialProjectId = (
+  projectId: string,
+  credentialPath: string
+) => {
+  const credentialData = parseCredentialFile(credentialPath);
+
+  if (projectId !== credentialData.project_id) {
+    console.error(
+      "Error: projectId doesn't match credentialData.project_id, did you choose the right file?"
+    );
+    console.error("  projectId                 :", projectId);
+    console.error("  credentialData.project_id :", credentialData.project_id);
+    process.exit(1);
+  }
+};
+
 export const findUserByEmail = (app: admin.app.App) => (
   email: string
 ): Promise<admin.auth.UserRecord | undefined> =>
