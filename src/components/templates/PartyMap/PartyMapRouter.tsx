@@ -10,9 +10,9 @@ export const PartyMapRouter: FC = () => {
 
   return (
     <Switch>
-      <Route exact path={`${match.url}/admin`} component={PartyMapAdmin} />
-      <Route path={`${match.url}/:roomTitle`} component={PartyMap} />
-      <Route path={`${match.url}/`} component={PartyMap} />
+      <Route exact path={`${match.path}/admin`} component={PartyMapAdmin} />
+      <Route path={`${match.path}/:roomTitle`} component={PartyMap} />
+      <Route path={`${match.path}/`} component={PartyMap} />
     </Switch>
   );
 };

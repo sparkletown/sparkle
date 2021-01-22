@@ -12,9 +12,9 @@ export const CampRouter: React.FunctionComponent = () => {
 
   return (
     <Switch>
-      <Route exact path={`${match.url}/admin`} component={CampAdmin} />
-      <Route path={`${match.url}/:roomTitle`} render={() => <Camp />} />
-      <Route path={`${match.url}/`} render={() => <Camp />} />
+      <Route exact path={`${match.path}/admin`} component={CampAdmin} />
+      <Route path={`${match.path}/:roomTitle`} component={Camp} />
+      <Route path={`${match.path}/`} component={Camp} />
     </Switch>
   );
 };
