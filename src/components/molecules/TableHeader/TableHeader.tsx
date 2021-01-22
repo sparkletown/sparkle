@@ -5,7 +5,7 @@ import { usePartygoers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
-import { experiencesSelector } from "utils/selectors";
+import { experienceSelector } from "utils/selectors";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -22,7 +22,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { user, profile } = useUser();
 
-  const experiences = useSelector(experiencesSelector);
+  const experience = useSelector(experienceSelector);
   const users = usePartygoers();
 
   const tableOfUser = seatedAtTable
@@ -59,13 +59,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       return false;
     }
     // Locked state is in the experience record
-    return experiences?.[venueName]?.tables?.[table]?.locked;
+    return experience?.tables?.[table]?.locked;
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
     const doc = `experiences/${venueName}`;
     const update = {
-      tables: { ...experiences?.[venueName]?.tables, [tableName]: { locked } },
+      tables: { ...experience?.tables, [tableName]: { locked } },
     };
     firestoreUpdate(doc, update);
   };
