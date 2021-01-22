@@ -109,7 +109,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({ venue }) => {
 
     updateVenue_v2(
       {
-        name: venue.name,
+        ...venue,
         ...data,
       },
       user

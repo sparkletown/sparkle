@@ -243,7 +243,7 @@ export const Map: React.FC<PropsType> = ({
           <img
             width="100%"
             className="party-map-background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+            src={venue.mapBackgroundImageUrl}
             alt=""
           />
 

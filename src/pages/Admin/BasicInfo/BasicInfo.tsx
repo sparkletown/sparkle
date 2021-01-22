@@ -43,7 +43,7 @@ const BasicInfo: React.FC<BasicInfoProps> = ({ venue, onSave }) => {
 
     updateVenue_v2(
       {
-        name: data.name!,
+        ...venue,
         ...data,
       },
       user

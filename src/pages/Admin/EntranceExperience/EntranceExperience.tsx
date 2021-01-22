@@ -74,7 +74,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
 
       await updateVenue_v2(
         {
-          name: venue.name,
+          ...venue,
           ...data,
         },
         user
@@ -82,7 +82,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
 
       onSave();
     },
-    [onSave, user, venue.name]
+    [onSave, user, venue]
   );
 
   return (
