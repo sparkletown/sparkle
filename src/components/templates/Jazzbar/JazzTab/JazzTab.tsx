@@ -6,7 +6,6 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
-import { ValidStoreAsKeys } from "types/Firestore";
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 
@@ -32,13 +31,13 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { usePartygoers } from "hooks/users";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
+import { useExperiences } from "hooks/useExperiences";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
@@ -65,17 +64,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
 
-  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
-  //   this should be something like `storeAs: "currentVenueExperiences"` or similar
-  useFirestoreConnect(
-    venueToUse?.name
-      ? {
-          collection: "experiences",
-          doc: venueToUse.name,
-          storeAs: "experiences" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
-        }
-      : undefined
-  );
+  useExperiences(venueToUse?.name);
 
   const { user } = useUser();
 

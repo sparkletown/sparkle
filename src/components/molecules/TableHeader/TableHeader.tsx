@@ -5,7 +5,7 @@ import { usePartygoers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
-import { experiencesSelector } from "utils/selectors";
+import { experienceSelector } from "utils/selectors";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -22,7 +22,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { user, profile } = useUser();
 
-  const experience = useSelector(experiencesSelector);
+  const experience = useSelector(experienceSelector);
   const users = usePartygoers();
 
   const tableOfUser = seatedAtTable

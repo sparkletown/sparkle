@@ -7,6 +7,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
+import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -33,6 +34,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
   useInterval(() => {
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
+
+  useExperiences(venue?.name);
 
   if (!venue) return <>Loading...</>;
 
