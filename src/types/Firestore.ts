@@ -18,7 +18,7 @@ export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
 interface Experience {
   reactions: Record<string, Reaction>;
-  tables: Record<string, Table>;
+  tables: Record<string, Record<string, Table>>;
 }
 
 export interface UserVisit {
@@ -65,7 +65,7 @@ export interface FirestoreData {
   currentVenueNG?: AnyVenue;
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
-  experiences: Record<string, Experience>;
+  experiences: Record<string, Record<string, Table>>;
   parentVenue?: AnyVenue;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   privatechats?: Record<string, PrivateChatMessage>;

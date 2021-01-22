@@ -62,23 +62,22 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
+  const firestoreVenue = useSelector(currentVenueSelectorData);
+  const venueToUse = venue ? venue : firestoreVenue;
+
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentVenueExperiences"` or similar
   useFirestoreConnect(
-    venue?.name
+    venueToUse?.name
       ? {
           collection: "experiences",
-          doc: venue.name,
+          doc: venueToUse.name,
           storeAs: "experiences" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );
 
   const { user } = useUser();
-
-  const firestoreVenue = useSelector(currentVenueSelectorData);
-
-  const venueToUse = venue ? venue : firestoreVenue;
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
