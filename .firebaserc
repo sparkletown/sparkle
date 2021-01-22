@@ -13,7 +13,9 @@
     "sparkle7": "sparkle-7",
     "sparkle8": "sparkle-8",
     "sparkle9": "sparkle-9",
-    "sparkle10": "sparkle-10"
+    "sparkle10": "sparkle-10",
+    "bigtop": "sparkle-bigtop",
+    "deloitte": "sparkle-deloitte"
   },
   "targets": {
     "co-reality-map": {
@@ -117,6 +119,20 @@
       "hosting": {
         "sparkle-10": [
           "sparkle-10"
+        ]
+      }
+    },
+    "sparkle-bigtop": {
+      "hosting": {
+        "sparkle-bigtop": [
+          "sparkle-bigtop"
+        ]
+      }
+    },
+    "sparkle-deloitte": {
+      "hosting": {
+        "sparkle-deloitte": [
+          "sparkle-deloitte"
         ]
       }
     }

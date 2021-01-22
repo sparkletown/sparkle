@@ -9,7 +9,7 @@ import { IS_BURN } from "secrets";
 import { CampRoomData } from "types/CampRoomData";
 import { CampVenue } from "types/CampVenue";
 
-import { useCampPartygoers } from "hooks/useCampPartygoers";
+import { usePartygoers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -38,7 +38,7 @@ const Camp: React.FC = () => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   const venue = useSelector(campVenueSelector);
-  const usersInCamp = useCampPartygoers(venue.name);
+  const usersInCamp = usePartygoers();
 
   const selectRoom = useCallback((campRoom: CampRoomData) => {
     setSelectedRoom(campRoom);

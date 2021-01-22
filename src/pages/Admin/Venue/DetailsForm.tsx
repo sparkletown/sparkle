@@ -129,7 +129,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         else await createVenue(vals as VenueInput, user);
 
         vals.name
-          ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
+          ? history.push(`/admin/${createUrlSafeName(vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
@@ -570,6 +570,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowZendeskToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show Zendesk support popup</h4>
+      <label id={"showZendesk"} className="switch">
+        <input
+          type="checkbox"
+          id={"showZendesk"}
+          name={"showZendesk"}
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -752,6 +767,33 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderRadioToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Enable venue radio</h4>
+      <label id="showRadio" className="switch">
+        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
+        <span className="slider round" />
+      </label>
+    </div>
+  );
+
+  const renderRadioStationInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Radio station stream URL:</h4>
+      <input
+        type="text"
+        disabled={disable}
+        name={`radioStations`}
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Radio station URL..."
+      />
+      {errors.radioStations && (
+        <span className="input-error">{errors.radioStations.message}</span>
+      )}
+    </div>
+  );
+
   return (
     <form className="full-height-container" onSubmit={onSubmit}>
       <input type="hidden" name="template" value={templateID} ref={register} />
@@ -816,6 +858,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
+        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
@@ -825,6 +868,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderSeatingNumberInput()}
+
+        {renderRadioToggle()}
+        {values.showRadio && renderRadioStationInput()}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&

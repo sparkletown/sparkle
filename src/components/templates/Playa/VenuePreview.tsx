@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FirebaseReducer, useFirestoreConnect } from "react-redux-firebase";
+import { FirebaseReducer } from "react-redux-firebase";
 import { Venue, VenuePlacementState } from "types/Venue";
 import { VenueEvent } from "types/VenueEvent";
 import "./VenuePreview.scss";
@@ -9,18 +9,20 @@ import {
   LOC_UPDATE_FREQ_MS,
 } from "settings";
 import UserList from "components/molecules/UserList";
-import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import { VenueTemplate } from "types/VenueTemplate";
 import firebase from "firebase/app";
-import "components/molecules/OnlineStats/OnlineStats.scss";
 import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
+
+import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
@@ -63,18 +65,15 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
 
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const partygoers = usePartygoers();
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 
-  const usersInVenue = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.lastSeenIn &&
-          partygoer.lastSeenIn[venue.name] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const usersInVenue = partygoers.filter(
+    (partygoer) =>
+      partygoer.lastSeenIn?.[venue.name] >
+      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   useFirestoreConnect([
     {

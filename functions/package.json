@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "firebase": "^7.15.0",
+    "firebase": "^8.2.0",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.0",
     "npm-force-resolutions": "0.0.3",
@@ -19,7 +19,7 @@
     "twilio": "^3.45.0"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
+    "eslint": "^7.17.0",
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.3",
     "firebase-tools": "^8.4.1"

@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-import { RestrictedChatMessage } from "components/context/ChatContext";
+import { RestrictedChatMessage } from "store/actions/Chat";
 import { Message } from "components/molecules/Message";
-import { useSelector } from "hooks/useSelector";
+import { useUsersById } from "hooks/users";
 import { WithId } from "utils/id";
 import { Modal } from "react-bootstrap";
-import { partygoersSelectorData } from "utils/selectors";
 
 interface MessageListProps {
   messages: WithId<RestrictedChatMessage>[];
@@ -19,7 +18,7 @@ export const MessageList: React.FC<MessageListProps> = ({
   allowDelete,
   deleteMessage,
 }) => {
-  const usersById = useSelector(partygoersSelectorData) ?? {};
+  const usersById = useUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -33,30 +32,29 @@ export const MessageList: React.FC<MessageListProps> = ({
   return (
     <>
       <div className="reaction-list small">
-        {usersById &&
-          messages.map((message) => (
-            <React.Fragment
-              key={`${message.from}-${message.to}-${message.ts_utc}`}
-            >
-              {message.from in usersById && (
-                <Message
-                  sender={{ ...usersById[message.from], id: message.from }}
-                  message={message}
-                  onClick={() =>
-                    setSelectedUserProfile({
-                      ...usersById[message.from],
-                      id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
-                    })
-                  }
-                  deletable={allowDelete}
-                  onDelete={() => {
-                    setMessageToDelete(message);
-                    setShowDeleteModal(true);
-                  }}
-                />
-              )}
-            </React.Fragment>
-          ))}
+        {messages.map((message) => (
+          <React.Fragment
+            key={`${message.from}-${message.to}-${message.ts_utc}`}
+          >
+            {message.from in usersById && (
+              <Message
+                sender={{ ...usersById[message.from], id: message.from }}
+                message={message}
+                onClick={() =>
+                  setSelectedUserProfile({
+                    ...usersById[message.from],
+                    id: message.from, // @debt typing -  User is typed incorrectly so it thinks the id is in usersById
+                  })
+                }
+                deletable={allowDelete}
+                onDelete={() => {
+                  setMessageToDelete(message);
+                  setShowDeleteModal(true);
+                }}
+              />
+            )}
+          </React.Fragment>
+        ))}
       </div>
       <UserProfileModal
         userProfile={selectedUserProfile}

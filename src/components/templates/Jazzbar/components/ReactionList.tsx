@@ -3,19 +3,18 @@ import {
   MessageToTheBandReaction,
   Reaction,
   ReactionsTextMap,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-
+import { useUsersById } from "hooks/users";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   REACTION_PROFILE_IMAGE_SIZE_LARGE,
   REACTION_PROFILE_IMAGE_SIZE_SMALL,
 } from "settings";
-import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
-import { ChatMessage } from "components/context/ChatContext";
+import { ChatMessage } from "store/actions/Chat";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -28,9 +27,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers ?? {},
-  }));
+  const usersById = useUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();

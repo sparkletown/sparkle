@@ -14,8 +14,9 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { updateTheme } from "pages/VenuePage/helpers";
 import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useParams } from "react-router-dom";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueId } from "hooks/useVenueId";
+
 import { Firestore } from "types/Firestore";
 import { VenueEvent } from "types/VenueEvent";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -28,9 +29,14 @@ import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+} from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { showZendeskWidget } from "utils/zendesk";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -41,7 +47,7 @@ export interface VenueLandingPageProps {
 }
 
 export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   useConnectCurrentVenue();
 
   const venue = useSelector(currentVenueSelectorData);
@@ -60,13 +66,17 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     window.location.hostname = redirectUrl;
   }
 
-  useFirestoreConnect({
-    collection: "venues",
-    doc: venueId,
-    subcollections: [{ collection: "events" }],
-    orderBy: ["start_utc_seconds", "asc"],
-    storeAs: "venueEvents",
-  });
+  useFirestoreConnect(
+    venueId
+      ? {
+          collection: "venues",
+          doc: venueId,
+          subcollections: [{ collection: "events" }],
+          orderBy: ["start_utc_seconds", "asc"],
+          storeAs: "venueEvents",
+        }
+      : undefined
+  );
 
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -98,6 +108,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
+  useEffect(() => {
+    if (venue?.showZendesk) {
+      showZendeskWidget();
+    }
+  }, [venue]);
+
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
@@ -123,6 +139,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   };
 
   const onJoinClick = () => {
+    if (!venueId) return;
+
     const venueEntrance = venue.entrance && venue.entrance.length;
     window.location.href =
       user && !venueEntrance
@@ -144,14 +162,18 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             rgba(0, 0, 0, 0) 98%
           ), url(${
             venue.config?.landingPageConfig.bannerImageUrl ??
-            venue.config?.landingPageConfig.coverImageUrl
+            DEFAULT_VENUE_BANNER
           }`,
             backgroundSize: "cover",
           }}
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img className="host-icon" src={venue.host?.icon} alt="host" />
+              <img
+                className="host-icon"
+                src={!venue.host?.icon ? DEFAULT_VENUE_LOGO : venue.host?.icon}
+                alt="host"
+              />
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">

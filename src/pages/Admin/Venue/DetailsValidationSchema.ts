@@ -12,6 +12,7 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -50,7 +51,7 @@ const urlIfNoFileValidation = (fieldName: string) =>
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
-    template: Yup.string().required(),
+    template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Required")
       .min(1, "Required")
@@ -84,6 +85,14 @@ export const validationSchema = Yup.object()
 
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
 
     attendeesTitle: Yup.string().notRequired().default("Guests"),
     chatTitle: Yup.string().notRequired().default("Party"),
@@ -140,6 +149,12 @@ export const validationSchema = Yup.object()
       .transform((val: Array<CodeOfConductQuestion>) =>
         val.filter((s) => !!s.name && !!s.text)
       ),
+
+    showRadio: Yup.bool().notRequired(),
+    radioStations: Yup.string().when("showRadio", {
+      is: true,
+      then: Yup.string().required("Radio station (stream) is required!"),
+    }),
 
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
