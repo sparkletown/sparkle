@@ -10,7 +10,7 @@ import { User } from "types/User";
 
 import { chatSort } from "utils/chat";
 import { WithId } from "utils/id";
-import { privateChatsSelector } from "utils/selectors";
+import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
 
 import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
