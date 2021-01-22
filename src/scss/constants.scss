@@ -49,6 +49,8 @@ $z-layers: (
   schedule-backdrop: 3,
   map-back-button: 3,
   sidebar: 2,
+  audience-video: 2,
+  chat-container: 2,
 );
 
 @function z($layer) {
