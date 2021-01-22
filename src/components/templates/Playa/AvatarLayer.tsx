@@ -19,11 +19,12 @@ import {
 } from "settings";
 import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { usePartygoers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
-import { useFirebase, useFirestoreConnect } from "react-redux-firebase";
+import { useFirebase } from "react-redux-firebase";
 import { MenuConfig, Shout } from "./Playa";
 import Switch from "react-switch";
 import "./AvatarLayer.scss";
@@ -77,8 +78,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   userRef,
   menuRef,
 }) => {
-  useConnectPartyGoers();
-
   const { user, profile } = useUser();
   const firebase = useFirebase();
   const [userStateMap, setUserStateMap] = useState<UserStateMap>({});
@@ -89,10 +88,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
-  // When joining the venue from /v/ to /in/ this is undefined and the prototypes throw an exception.
-  // Setting empty array as default value fixes the issue.
-  const partygoers =
-    useSelector((state) => state.firestore.ordered.partygoers) ?? [];
+  const partygoers = usePartygoers();
 
   const dispatch = useDispatch();
   const sendUpdatedState = useMemo(

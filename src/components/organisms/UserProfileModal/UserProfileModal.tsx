@@ -19,11 +19,10 @@ import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";
-import { isTruthy } from "utils/types";
 
 type PropTypes = {
   show: boolean;
@@ -70,8 +69,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
-
-  const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -125,7 +122,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {showBadges && <Badges user={userProfile} currentVenue={venue} />}
+          {venue?.showBadges && (
+            <Badges user={userProfile} currentVenue={venue} />
+          )}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <ChatBox

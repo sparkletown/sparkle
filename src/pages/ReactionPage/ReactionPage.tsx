@@ -1,42 +1,47 @@
 import React, { useMemo } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useFirestoreConnect } from "react-redux-firebase";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
-import "./ReactionPage.scss";
-import UserList from "components/molecules/UserList";
-import ReactionList from "components/templates/Jazzbar/components/ReactionList";
-import { useSelector } from "hooks/useSelector";
-import { MessageToTheBandReaction } from "utils/reactions";
+
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
-import { useVenueChats } from "hooks/useVenueChats";
+import { MessageToTheBandReaction } from "utils/reactions";
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
+import { useVenueChats } from "hooks/useVenueChats";
+
+import ReactionList from "components/templates/Jazzbar/components/ReactionList";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import UserList from "components/molecules/UserList";
+
+import "./ReactionPage.scss";
 
 const ReactionPage = () => {
-  useConnectPartyGoers();
-
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
-  const usersById = partygoers;
+  const partygoers = usePartygoers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
   const chats = useVenueChats(venueId);
   const filteredChats = useMemo(
-    () => chats?.filter((chat) => chat.deleted !== true),
+    () => chats?.filter((chat) => chat.deleted !== true) ?? [],
     [chats]
   );
 
-  useFirestoreConnect([
-    venue?.name
+  const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
+
+  useFirestoreConnect(
+    venue
       ? {
           collection: "experiences",
           doc: venue.name,
           subcollections: [{ collection: "reactions" }],
-          storeAs: "reactions",
           orderBy: ["created_at", "desc"],
+          storeAs: "reactions",
         }
-      : {},
-  ]);
+      : undefined
+  );
 
   const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
@@ -48,14 +53,14 @@ const ReactionPage = () => {
         <h1 className="title">Audience Reactions</h1>
         <div className="row">
           <div className="col-8">
-            {usersById && (
+            {hasPartygoers && (
               <ReactionList
                 reactions={messagesToTheBand}
                 chats={filteredChats}
               />
             )}
           </div>
-          {partygoers && (
+          {hasPartygoers && (
             <div className="col-4">
               <UserList
                 users={partygoers}

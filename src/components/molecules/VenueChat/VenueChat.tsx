@@ -1,13 +1,9 @@
 import React, { useEffect, useState, useMemo, FC, useCallback } from "react";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelectorData, venueChatsSelector } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
 import useRoles from "hooks/useRoles";
@@ -20,7 +16,7 @@ import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";
-import { useVenueChats } from "hooks/useVenueChats";
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -28,16 +24,12 @@ interface ChatOutDataType {
 
 const VenueChat: FC = () => {
   const venueId = useVenueId();
-  const venueChatUsersQuery: ReduxFirestoreQuerySetting = {
-    collection: "users",
-    where: ["enteredVenueIds", "array-contains", venueId],
-    storeAs: "venueChatUsers",
-  };
-  useFirestoreConnect(venueId ? venueChatUsersQuery : undefined);
+  useConnectVenueChats(venueId);
+
   const { userRoles } = useRoles();
   const { user } = useUser();
 
-  const chats = useVenueChats(venueId);
+  const chats = useSelector(venueChatsSelector) ?? [];
   const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);

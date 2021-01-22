@@ -3,13 +3,14 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import "./Venue.scss";
 import { TemplateForm } from "./TemplateForm";
 import { DetailsForm } from "./DetailsForm";
-import { Redirect, useHistory, useParams } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { venueInsideUrl } from "utils/url";
+import { useVenueId } from "hooks/useVenueId";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -52,7 +53,7 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const { venueId } = useParams<{ venueId?: string }>();
+  const venueId = useVenueId();
 
   return venueId ? (
     <VenueWizardEdit venueId={venueId} />

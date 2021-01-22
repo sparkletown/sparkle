@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
