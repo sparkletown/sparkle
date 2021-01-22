@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import firebase from "firebase/app";
 import { User } from "types/User";
+import { usePartygoers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
-import { experiencesSelector, partygoersSelector } from "utils/selectors";
+import { experiencesSelector } from "utils/selectors";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -22,18 +23,20 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const { user, profile } = useUser();
 
   const experiences = useSelector(experiencesSelector);
-  const users = useSelector(partygoersSelector);
+  const users = usePartygoers();
 
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
 
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[venueName]?.table === seatedAtTable
-    );
+  const usersAtCurrentTable = useMemo(
+    () =>
+      seatedAtTable &&
+      users.filter(
+        (user: User) => user.data?.[venueName]?.table === seatedAtTable
+      ),
+    [seatedAtTable, users, venueName]
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = (doc: string, update: any) => {

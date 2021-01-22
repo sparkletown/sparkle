@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
@@ -49,8 +48,10 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
@@ -450,23 +451,20 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const partygoers = usePartygoers();
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
+      peopleAttending(peopleByLastSeenIn(venueName, partygoers), hoveredVenue),
     [partygoers, hoveredVenue, venueName]
   );
 
-  const usersInCurrentVenue = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.lastSeenIn &&
-          partygoer.lastSeenIn[venueName] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const usersInCurrentVenue = partygoers.filter(
+    (partygoer) =>
+      partygoer.lastSeenIn?.[venueName] >
+      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -595,7 +593,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName);
+    const peopleByLastSeen = peopleByLastSeenIn(venueName, partygoers);
     return (
       <>
         <PlayaBackground
@@ -603,14 +601,11 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers
-            ? partygoers.filter(
-                (partygoer) =>
-                  partygoer.lastSeenIn &&
-                  partygoer.lastSeenIn[v.name] >
-                    (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-              )
-            : [];
+          const usersInVenue = partygoers.filter(
+            (partygoer) =>
+              partygoer.lastSeenIn?.[v.name] >
+              (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+          );
           return (
             <>
               <div

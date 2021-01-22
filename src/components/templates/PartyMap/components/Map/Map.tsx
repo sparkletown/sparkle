@@ -8,12 +8,13 @@ import { PartyMapRoomData } from "types/PartyMapRoomData";
 import { enterLocation } from "utils/useLocationUpdateEffect";
 import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { orderedVenuesSelector, partygoersSelector } from "utils/selectors";
+import { orderedVenuesSelector } from "utils/selectors";
 import { openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
+import { usePartygoers } from "hooks/users";
 
 import Sidebar from "components/molecules/Sidebar";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -27,6 +28,7 @@ import { hasElements } from "utils/types";
 import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
 import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
 import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -62,13 +64,13 @@ export const Map: React.FC<PropsType> = ({
   const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
 
   const venues = useSelector(orderedVenuesSelector);
-  const partygoers: readonly WithId<User>[] | undefined = useSelector(
-    partygoersSelector
-  );
+  const partygoers = usePartygoers();
 
   useEffect(() => {
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl ?? "";
+    img.src = !!venue.mapBackgroundImageUrl
+      ? venue.mapBackgroundImageUrl
+      : DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
       const calcRows = venue.columns
@@ -158,7 +160,7 @@ export const Map: React.FC<PropsType> = ({
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
     venueId,
-    partygoers: partygoers ?? [],
+    partygoers,
   });
 
   const enterSelectedRoom = useCallback(() => {
@@ -241,7 +243,7 @@ export const Map: React.FC<PropsType> = ({
           <img
             width="100%"
             className="party-map-background"
-            src={venue.mapBackgroundImageUrl}
+            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
             alt=""
           />
 

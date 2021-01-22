@@ -40,9 +40,9 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
  *
  * @param state the Redux store
  */
-export const currentVenueSelector: SparkleSelector<WithId<AnyVenue>> = (
-  state
-) => state.firestore.ordered.currentVenue?.[0];
+export const currentVenueSelector: SparkleSelector<
+  WithId<AnyVenue> | undefined
+> = (state) => state.firestore.ordered.currentVenue?.[0];
 
 // @debt can we merge this with currentVenueSelector and just use 1 canonical version?
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
@@ -50,22 +50,22 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
 ) => state.firestore.data.currentVenue;
 
 /**
- * Selector to retrieve partygoers from the Redux Firestore.
+ * Selector to retrieve array of users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const partygoersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+export const usersSelector: SparkleSelector<WithId<User>[] | undefined> = (
   state
-) => state.firestore.ordered.partygoers;
+) => state.firestore.ordered.users;
 
 /**
- * Selector to retrieve partygoers from the Redux Firestore.
+ * Selector to retrieve an object with users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const partygoersSelectorData: SparkleSelector<
-  Record<string, User> | undefined
-> = (state) => state.firestore.data.partygoers;
+export const usersByIdSelector: SparkleSelector<Record<string, User>> = (
+  state
+) => state.firestore.data.users ?? {};
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -103,11 +103,11 @@ export const makeVenueSelector = (venueId: string) => (
 };
 
 export const currentEventSelector: SparkleSelector<
-  WithId<VenueEvent>[]
+  WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");
 
 export const userPurchaseHistorySelector: SparkleSelector<
-  WithId<Purchase>[]
+  WithId<Purchase>[] | undefined
 > = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
@@ -151,9 +151,6 @@ export const privateChatsSelector = (state: RootState) =>
 
 export const chatUsersSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
-
-export const venueChatUsersSelector = (state: RootState) =>
-  state.firestore.data.venueChatUsers;
 
 export const experiencesSelector = (state: RootState) =>
   state.firestore.data.experiences;

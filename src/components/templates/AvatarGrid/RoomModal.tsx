@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 // Components
 import { Modal } from "react-bootstrap";
@@ -8,6 +8,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { usePartygoers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { isEventLive } from "utils/event";
@@ -27,11 +28,7 @@ import { retainAttendance } from "store/actions/Attendance";
 // Styles
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
-import {
-  partygoersSelector,
-  venueEventsSelector,
-  venueSelector,
-} from "utils/selectors";
+import { venueEventsSelector, venueSelector } from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -48,14 +45,20 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   miniAvatars,
 }) => {
-  const { user, profile } = useUser();
-  const partygoers = useSelector(partygoersSelector) ?? [];
-  const venueEvents = useSelector(venueEventsSelector);
-  const venue = useSelector(venueSelector);
-
   const dispatch = useDispatch();
 
+  const { user, profile } = useUser();
+  const partygoers = usePartygoers();
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venue = useSelector(venueSelector);
   const venueName = venue?.name;
+  const roomTitle = room?.title;
+
+  const usersInRoom = useMemo(
+    () =>
+      partygoers.filter((goer) => goer.room === `${venueName}/${roomTitle}`),
+    [partygoers, roomTitle, venueName]
+  );
 
   const enter = useCallback(() => {
     if (venue) {
@@ -67,18 +70,11 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
-      (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          getCurrentTimeInUTCSeconds()
-    );
-
-  const usersInRoom = partygoers.filter(
-    (goer) => goer.room === `${venueName}/${room.title}`
+  const roomEvents = venueEvents.filter(
+    (event) =>
+      event.room === room.title &&
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+        getCurrentTimeInUTCSeconds()
   );
 
   return (

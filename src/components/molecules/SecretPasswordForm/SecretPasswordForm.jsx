@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useFirebase } from "react-redux-firebase";
-import "./SecretPasswordForm.scss";
+
 import { venueEntranceUrl } from "utils/url";
+import { useVenueId } from "hooks/useVenueId";
+
+import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const firebase = useFirebase();
   const history = useHistory();
-  const { venueId } = useParams();
+  const venueId = useVenueId();
 
   const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();

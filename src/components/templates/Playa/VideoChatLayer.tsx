@@ -1,13 +1,14 @@
 import React from "react";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { useFirebase } from "react-redux-firebase";
+
+import { useUser } from "hooks/useUser";
+import { useUsersById } from "hooks/users";
+
 import Room from "./Video/Room";
 import { User, VideoState } from "types/User";
 import { WithId } from "utils/id";
 import { PROJECT_ID } from "secrets";
 import "./VideoChatLayer.scss";
-import { partygoersSelectorData } from "utils/selectors";
 
 type PropsType = {
   setSelectedUserProfile: (user: WithId<User>) => void;
@@ -20,7 +21,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
 }) => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
-  const partygoers = useSelector(partygoersSelectorData) ?? {};
+  const usersById = useUsersById();
 
   if (!user || !profile || !profile.video) return <></>;
   const roomOwnerUid = profile.video.inRoomOwnedBy;
@@ -34,7 +35,7 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
     profile.video = {};
     updateVideoState({});
   };
-  const roomOwner = partygoers[roomOwnerUid];
+  const roomOwner = usersById[roomOwnerUid];
   const removed = roomOwner?.video?.removedParticipantUids?.includes(user.uid);
 
   if (removed) {

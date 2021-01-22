@@ -1,6 +1,7 @@
-import { useDynamicInput } from "hooks/useDynamicInput";
 import React from "react";
+
 import { Button, Form } from "react-bootstrap";
+import { useDynamicInput } from "hooks/useDynamicInput";
 
 interface EntranceButtonInputProps {
   fieldName: string;
@@ -16,6 +17,7 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
     const baseName = `${fieldName}[${index}]`;
     const buttonText = `${baseName}text`;
     const buttonHref = `${baseName}href`;
+    const buttonIsProceed = `${baseName}isProceed`;
 
     return (
       <div className="dynamic-input-wrapper" key={`${fieldName}_${index}`}>
@@ -25,6 +27,14 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
 
           <Form.Label>Link</Form.Label>
           <Form.Control ref={register} name={buttonHref} custom />
+
+          <Form.Check
+            label="To venue"
+            ref={register}
+            name={buttonIsProceed}
+            custom
+            id={buttonIsProceed}
+          />
         </fieldset>
 
         <Button onClick={remove(index)} variant="secondary">
@@ -55,11 +65,13 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
 interface EntranceInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  showTitle?: boolean;
 }
 
 const EntranceInput: React.FC<EntranceInputProps> = ({
   fieldName,
   register,
+  showTitle = true,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput();
 
@@ -100,7 +112,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
 
   return (
     <div className="input-container" style={{ marginBottom: "1.5rem" }}>
-      <h4 className="italic input-header">Venue entrance</h4>
+      {showTitle && <h4 className="italic input-header">Venue entrance</h4>}
       {indexes.map((i) => renderEntranceInput(i))}
 
       <div className="dynamic-input__button-wrapper">
