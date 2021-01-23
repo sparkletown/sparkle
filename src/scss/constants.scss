@@ -42,6 +42,7 @@ $playa-venue-live: rgb(125, 223, 194);
 $profile-image-bg-color: #999999;
 
 $z-layers: (
+  nav-search-results: 380,
   header: 5,
   footer: 5,
   announcement: 3,
