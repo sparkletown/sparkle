@@ -22,14 +22,17 @@ interface SearchResult {
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
     users: [],
     events: [],
   });
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
+
   const [selectedRoom, setSelectedRoom] = useState<Room>();
 
   const venue = useSelector(currentVenueSelectorData);
@@ -81,72 +84,78 @@ const NavSearchBar = () => {
     <div className="nav-search-links">
       <div className="nav-search-icon" />
       <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
+
       {isTruthy(searchQuery) && (
         <div className="nav-search-close-icon" onClick={clearSearchQuery} />
       )}
-      {isTruthy(numberOfSearchResults) && (
-        <>
-          <div className="nav-search-results">
-            <div className="nav-search-result-number">
-              <b>{numberOfSearchResults}</b> search results
-            </div>
-            {searchResult.rooms.map((room, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedRoom(room)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${room.image_url})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div className="result-title">{room.title}</div>
-                    <div>Room</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.events.map((event, index) => {
-              return (
-                <div className="row" key={`event-${index}`}>
-                  <div>
-                    <div>{event.name}</div>
-                    <div>Event</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.users.map((user, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedUserProfile(user)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${user.pictureUrl})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div key={`user-${index}`}>{user.partyName}</div>
-                  </div>
-                </div>
-              );
-            })}
+
+      {numberOfSearchResults > 0 && (
+        <div className="nav-search-results">
+          <div className="nav-search-result-number">
+            <b>{numberOfSearchResults}</b> search results
           </div>
-        </>
+
+          {/* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */}
+          {searchResult.rooms.map((room, index) => {
+            return (
+              <div
+                className="row"
+                key={`room-${room.title}-${index}`}
+                onClick={() => setSelectedRoom(room)}
+              >
+                <div
+                  className="result-avatar"
+                  style={{
+                    backgroundImage: `url(${room.image_url})`,
+                  }}
+                />
+                <div className="result-info">
+                  <div className="result-title">{room.title}</div>
+                  <div>Room</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {searchResult.events.map((event) => {
+            return (
+              <div className="row" key={`event-${event.id ?? event.name}`}>
+                <div>
+                  <div>{event.name}</div>
+                  <div>Event</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {searchResult.users.map((user) => {
+            return (
+              <div
+                className="row"
+                key={`user-${user.id}`}
+                onClick={() => setSelectedUserProfile(user)}
+              >
+                <div
+                  className="result-avatar"
+                  style={{
+                    backgroundImage: `url(${user.pictureUrl})`,
+                  }}
+                />
+                <div className="result-info">
+                  <div>{user.partyName}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
+
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
+
       <RoomModal
         show={isTruthy(selectedRoom)}
         room={selectedRoom}

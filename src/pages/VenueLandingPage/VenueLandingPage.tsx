@@ -31,7 +31,11 @@ import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+} from "settings";
 import { isTruthy } from "utils/types";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { showZendeskWidget } from "utils/zendesk";
@@ -160,14 +164,18 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             rgba(0, 0, 0, 0) 98%
           ), url(${
             venue.config?.landingPageConfig.bannerImageUrl ??
-            venue.config?.landingPageConfig.coverImageUrl
+            DEFAULT_VENUE_BANNER
           }`,
             backgroundSize: "cover",
           }}
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img className="host-icon" src={venue.host?.icon} alt="host" />
+              <img
+                className="host-icon"
+                src={!venue.host?.icon ? DEFAULT_VENUE_LOGO : venue.host?.icon}
+                alt="host"
+              />
             </div>
             <div className="title">{venue.name}</div>
             <div className="subtitle">

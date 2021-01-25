@@ -28,3 +28,18 @@ export interface AvatarGridRoom {
   image_url?: string;
   isFull: boolean;
 }
+
+export interface RoomData_v2 {
+  title?: string;
+  subtitle?: string;
+  url?: string;
+  description?: string;
+  x_percent?: number;
+  y_percent?: number;
+  width_percent?: number;
+  height_percent?: number;
+  isEnabled?: boolean;
+  template?: string;
+  image_url?: string;
+  roomIndex?: number;
+}

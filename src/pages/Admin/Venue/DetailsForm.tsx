@@ -129,7 +129,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         else await createVenue(vals as VenueInput, user);
 
         vals.name
-          ? history.push(`/admin/venue/${createUrlSafeName(vals.name)}`)
+          ? history.push(`/admin/${createUrlSafeName(vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);

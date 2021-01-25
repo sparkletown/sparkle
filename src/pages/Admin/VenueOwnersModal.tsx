@@ -12,6 +12,7 @@ import { WithId } from "utils/id";
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
 import "./VenueOwnerModal.scss";
+import { Venue_v2 } from "types/venues";
 
 interface PartitionedOwnersOthers {
   owners: WithId<User>[];
@@ -38,7 +39,7 @@ const makePartyNameFilter = (searchText: string) => (user: WithId<User>) =>
 
 interface VenueOwnersModalProps {
   visible: boolean;
-  venue: WithId<AnyVenue>;
+  venue: WithId<AnyVenue> | Venue_v2;
   onHide?: () => void;
 }
 
@@ -107,7 +108,12 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
           <div className="row-container">
             <h4>Current Venue Owners</h4>
             {venueOwnerUsers.map((owner) => (
-              <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
+              <UserRow
+                key={owner.id}
+                user={owner}
+                venueId={venue.id!}
+                isOwner
+              />
             ))}
           </div>
           <FormControl
@@ -119,7 +125,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
           <div className="row-container">
             {hasResults &&
               (filteredUsers ?? []).map((user) => (
-                <UserRow key={user.id} user={user} venueId={venue.id} />
+                <UserRow key={user.id} user={user} venueId={venue.id!} />
               ))}
             {isEnterSearchText && (
               <div>Enter the users name in the text input above</div>

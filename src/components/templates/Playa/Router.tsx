@@ -13,9 +13,9 @@ export const PlayaRouter: React.FunctionComponent = () => {
 
   return (
     <Switch>
-      <Route exact path={`${match.url}/admin`} component={BannerAdmin} />
-      <Route path={`${match.url}/:camp`} component={Playa} />
-      <Route path={`${match.url}/`} component={Playa} />
+      <Route exact path={`${match.path}/admin`} component={BannerAdmin} />
+      <Route path={`${match.path}/:camp`} component={Playa} />
+      <Route path={`${match.path}/`} component={Playa} />
     </Switch>
   );
 };

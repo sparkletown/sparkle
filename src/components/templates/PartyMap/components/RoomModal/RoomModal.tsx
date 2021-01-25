@@ -43,6 +43,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const venueName = venue?.name;
   const roomTitle = room?.title;
+  const userLastSeenIn = profile?.lastSeenIn;
 
   const usersToDisplay = useMemo(
     () =>
@@ -67,12 +68,12 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
     trackRoomEntered(
       user,
       {
-        [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
+        [`${venueName}/${roomTitle}`]: nowInEpochSeconds,
         ...venueRoom,
       },
-      profile?.lastSeenIn
+      userLastSeenIn
     );
-  }, [profile?.lastSeenIn, room, roomVenue, user, venue?.name]);
+  }, [userLastSeenIn, room, roomTitle, roomVenue, user, venueName]);
 
   const roomEvents = useMemo(() => {
     if (!room) return [];

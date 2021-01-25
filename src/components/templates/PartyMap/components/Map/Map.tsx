@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
+import { DEFAULT_MAP_BACKGROUND } from "settings";
+
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
@@ -63,7 +65,9 @@ export const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl ?? "";
+    img.src = !!venue.mapBackgroundImageUrl
+      ? venue.mapBackgroundImageUrl
+      : DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
 
@@ -229,7 +233,7 @@ export const Map: React.FC<MapProps> = ({
           <img
             width="100%"
             className="party-map-background"
-            src={venue.mapBackgroundImageUrl}
+            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
             alt=""
           />
 

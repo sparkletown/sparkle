@@ -13,8 +13,8 @@ export const AvatarRouter: FC = () => {
 
   return (
     <Switch>
-      <Route exact path={`${match.url}/admin`} component={BannerAdmin} />
-      <Route path={`${match.url}/`} component={AvatarGrid} />
+      <Route exact path={`${match.path}/admin`} component={BannerAdmin} />
+      <Route path={`${match.path}/`} component={AvatarGrid} />
     </Switch>
   );
 };

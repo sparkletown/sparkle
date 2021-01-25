@@ -65,7 +65,7 @@ export const AdminVenueRoomDetails = ({
         user,
         index
       );
-      history.push(`/admin/venue/${venue.id}`);
+      history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {

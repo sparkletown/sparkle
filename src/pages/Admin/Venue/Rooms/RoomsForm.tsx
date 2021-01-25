@@ -138,7 +138,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       if (!user) return;
       try {
         await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
-        history.push(`/admin/venue/${venueId}`);
+        history.push(`/admin/${venueId}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
