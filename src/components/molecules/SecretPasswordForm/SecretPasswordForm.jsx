@@ -2,10 +2,9 @@ import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { venueEntranceUrl } from "utils/url";
+import { checkAccess, setLocalStorageToken } from "utils/localStorage";
 
 import { useVenueId } from "hooks/useVenueId";
-
-import { checkAccess, setLocalStorageToken } from "functions/auth";
 
 import "./SecretPasswordForm.scss";
 

@@ -50,12 +50,13 @@ const method = argv[2];
 const accessDetail = argv[3];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-if (!(Object as any).values(VenueAccessMode).includes(method)) {
+if (!VenueAccessMode[method]) {
   console.error(`Invalid access method ${method}`);
   process.exit(1);
 }
 
-initFirebaseAdminApp(projectId)(async () => {
+initFirebaseAdminApp(projectId);
+(async () => {
   console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
   const venueDoc = await admin.firestore().doc(`venues/${venueId}`).get();
   if (!venueDoc.exists) {
@@ -70,10 +71,11 @@ initFirebaseAdminApp(projectId)(async () => {
   console.log("Done");
 
   console.log(`Configuring access details for ${method}...`);
-  const accessDoc = await admin
+
+  const accessDocRef = admin
     .firestore()
-    .doc(`venues/${venueId}/access/${method}`)
-    .get();
+    .doc(`venues/${venueId}/access/${method}`);
+  const accessDoc = await accessDocRef.get();
   const access = accessDoc.exists ? accessDoc.data() : {};
 
   switch (method) {
@@ -81,10 +83,7 @@ initFirebaseAdminApp(projectId)(async () => {
       console.log(
         `Setting venues/${venueId}/access/${method} to {password: ${accessDetail.trim()}}...`
       );
-      await admin
-        .firestore()
-        .doc(`venues/${venueId}/access/${method}`)
-        .set({ password: accessDetail.trim() });
+      await accessDocRef.set({ password: accessDetail.trim() });
       break;
 
     case VenueAccessMode.Emails:
@@ -95,30 +94,16 @@ initFirebaseAdminApp(projectId)(async () => {
       console.log(
         `Setting venues/${venueId}/access/${method} to {emails: ${emails}}...`
       );
-      await admin
-        .firestore()
-        .doc(`venues/${venueId}/access/${method}`)
-        .set({
-          emails: mergeStringArrays(
-            emails,
-            (access as VenueAccessEmails).emails
-          ),
-        });
+      await accessDocRef.set({
+        emails: mergeStringArrays(emails, (access as VenueAccessEmails).emails),
+      });
       break;
 
     case VenueAccessMode.Codes:
-      fs.readFileSync(accessDetail, "utf-8")
-        .split(/\r?\n/)
-        .forEach((line) => {
-          emails.push(line.trim());
-        });
       console.log(`Setting venues/${venueId}/access/${method}...`);
-      await admin
-        .firestore()
-        .doc(`venues/${venueId}/access/${method}`)
-        .set({
-          codes: (access as VenueAccessCodes).codes,
-        });
+      await accessDocRef.set({
+        codes: (access as VenueAccessCodes).codes,
+      });
       break;
   }
   console.log("Done.");

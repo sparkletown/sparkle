@@ -5,11 +5,9 @@ import { useFirebase } from "react-redux-firebase";
 import { useSelector } from "hooks/useSelector";
 
 import { venueSelector } from "utils/selectors";
-import { accessTokenKey } from "utils/localStorage";
+import { checkAccess, setLocalStorageToken } from "utils/localStorage";
 
 import { VenueAccessMode } from "types/VenueAcccess";
-
-import { checkAccess, setLocalStorageToken } from "functions/auth";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -63,42 +61,33 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     try {
       await signIn(data);
 
-      if (venue.access?.includes(VenueAccessMode.Codes)) {
-        const result = await checkAccess({
-          venueId: venue.id,
-          code: data.code,
-        });
-        if (result.data === false) {
-          throw new Error("access denied");
-        }
-        console.log("result.data", result.data);
-        console.log(
-          "saving token to",
-          accessTokenKey(venue.id),
-          ": ",
-          result.data.token
-        );
-        setLocalStorageToken(venue.id, result.data.token);
+      let result = null;
+
+      switch (venue.access) {
+        case VenueAccessMode.Codes:
+          result = await checkAccess({
+            venueId: venue.id,
+            code: data.code,
+          });
+          break;
+        case VenueAccessMode.Emails:
+          result = await checkAccess({
+            venueId: venue.id,
+            email: data.email,
+          });
+          break;
+
+        default:
+          break;
       }
-      if (venue.access?.includes(VenueAccessMode.Emails)) {
-        console.log("emails");
-        const result = await checkAccess({
-          venueId: venue.id,
-          email: data.email,
-        });
-        console.log("result", result);
-        if (result.data === false) {
-          throw new Error("access denied");
-        }
-        console.log("result.data", result.data);
-        console.log(
-          "saving token to",
-          accessTokenKey(venue.id),
-          ": ",
-          result.data.token
-        );
-        setLocalStorageToken(venue.id, result.data.token);
+
+      if (!result) return;
+
+      if (result.data === false) {
+        throw new Error("access denied");
       }
+
+      setLocalStorageToken(venue.id, result.data.token);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 
@@ -170,7 +159,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access?.includes(VenueAccessMode.Codes) && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 

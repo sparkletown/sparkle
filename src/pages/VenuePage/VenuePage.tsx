@@ -55,7 +55,7 @@ import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
 import { showZendeskWidget } from "utils/zendesk";
 import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import { useVenueAccessToken } from "hooks/useVenueAccessToken";
+import { useVenueAccess } from "hooks/useVenueAccess";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -254,7 +254,7 @@ const VenuePage: React.FC = () => {
 
   const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
-  useVenueAccessToken(venue, handleAccessDenied);
+  useVenueAccess(venue, handleAccessDenied);
 
   if (!user) {
     return <Login formType="initial" />;

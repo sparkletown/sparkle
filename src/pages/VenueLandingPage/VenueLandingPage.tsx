@@ -148,8 +148,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         : venueEntranceUrl(venueId);
   };
 
-  const requiresPassword =
-    venue.access?.includes(VenueAccessMode.Password) ?? false;
+  const requiresPassword = venue.access === VenueAccessMode.Password;
 
   return (
     <WithNavigationBar>

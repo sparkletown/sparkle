@@ -5,47 +5,41 @@ const { passwordsMatch } = require("./auth");
 const { uuid } = require("uuidv4");
 
 const checkIsValidToken = async (venueId, uid, token) => {
-  console.log("asdasd");
-  if (!uid) return false;
+  if (!venueId || !uid || !token) return false;
 
-  console.log("asdasd");
   const venueRef = admin.firestore().collection("venues").doc(venueId);
   const accessRef = admin.firestore().collection("accessgranted").doc(uid);
 
-  try {
-    console.log("asdasd");
-    await admin.firestore().runTransaction(async (t) => {
-      const venue = await t.get(venueRef);
-      const granted = await t.get(accessRef);
+  return await admin
+    .firestore()
+    .runTransaction(async (transaction) => {
+      const venue = await transaction.get(venueRef);
+      const granted = await transaction.get(accessRef);
 
       if (!venue.exists) {
-        throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+        return false;
       }
       if (!granted.exists || !granted.tokens) {
         return false;
       }
 
-      console.log("v", venue);
-      console.log("g", granted);
       if (Object.keys(granted.tokens).includes(token)) {
         // Record that the token was checked
         if (!granted.tokens[token].usedAt) {
           granted.tokens[token].usedAt = [];
         }
         granted.tokens[token].usedAt.push(Date.now());
-        t.update(accessRef, granted);
+        transaction.update(accessRef, granted);
 
         return true;
-      } else {
-        return false;
       }
-    });
-  } catch (e) {
-    console.log("Transaction failure:", e);
-    return false;
-  }
 
-  return false;
+      return false;
+    })
+    .catch((e) => {
+      console.log("Transaction failure:", e);
+      return false;
+    });
 };
 
 const getAccessDoc = async (venueId, method) => {
@@ -82,6 +76,8 @@ const isValidCode = async (venueId, code) => {
 };
 
 const createToken = async (venueId, uid, password, email, code) => {
+  if (!venueId || !uid || !password || !email || !code) return {};
+
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
@@ -89,11 +85,6 @@ const createToken = async (venueId, uid, password, email, code) => {
 
   const token = uuid();
   const grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
-  let granted = grantedDoc.exists ? grantedDoc.data() : {};
-
-  if (!granted.tokens) {
-    granted = { ...granted, tokens: {} };
-  }
 
   const tokenData = {
     usedAt: [Date.now()],
@@ -102,9 +93,12 @@ const createToken = async (venueId, uid, password, email, code) => {
     code: code || null,
   };
 
-  granted = { ...granted, tokens: { ...granted.tokens, [token]: tokenData } };
-
-  await venue.ref.collection("accessgranted").doc(uid).set(granted);
+  if (grantedDoc.exists) {
+    await grantedDoc.update({ [`tokens.${token}`]: tokenData });
+  } else {
+    const granted = { tokens: { [token]: tokenData } };
+    await grantedDoc.set(granted);
+  }
   return { token };
 };
 

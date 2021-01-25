@@ -1,26 +1,31 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import firebase from "firebase/app";
 
 import { AnyVenue } from "types/Firestore";
 
 import { WithId } from "utils/id";
-import { accessTokenKey } from "utils/localStorage";
-import { isTruthy, notEmpty } from "utils/types";
-import { checkAccess, getLocalStorageToken } from "functions/auth";
+import {
+  accessTokenKey,
+  checkAccess,
+  getLocalStorageToken,
+} from "utils/localStorage";
+import { isTruthy } from "utils/types";
 
-export const useVenueAccessToken = (
+export const useVenueAccess = (
   venue?: WithId<AnyVenue>,
   onDenyAccess?: () => void
 ) => {
+  const denyAccess = useCallback(() => {
+    if (!venue) return;
+
+    localStorage.removeItem(accessTokenKey(venue.id));
+    onDenyAccess && onDenyAccess();
+  }, [onDenyAccess, venue]);
+
   useEffect(() => {
     if (!venue) return;
 
-    const denyAccess = () => {
-      localStorage.removeItem(accessTokenKey(venue.id));
-      onDenyAccess && onDenyAccess();
-    };
-
-    if (notEmpty(venue.access)) {
+    if (venue.access) {
       console.log("venue.access", venue.access);
       const token = getLocalStorageToken(venue.id) ?? undefined;
       console.log("found token:", token);
@@ -54,5 +59,5 @@ export const useVenueAccessToken = (
           });
       }
     }
-  }, [onDenyAccess, venue]);
+  }, [denyAccess, onDenyAccess, venue]);
 };

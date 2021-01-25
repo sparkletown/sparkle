@@ -5,8 +5,11 @@ import { useHistory } from "react-router-dom";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+import { checkAccess, setLocalStorageToken } from "utils/localStorage";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -15,9 +18,6 @@ import { updateUserPrivate } from "pages/Account/helpers";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { VenueAccessMode } from "types/VenueAcccess";
-import { accessTokenKey } from "utils/localStorage";
-import { checkAccess, setLocalStorageToken } from "functions/auth";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -92,34 +92,33 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       setShowLoginModal(false);
       const auth = await signUp(data);
 
-      if (venue.access?.includes(VenueAccessMode.Codes)) {
-        const result = await checkAccess({
-          venueId: venue.id,
-          code: data.code,
-        });
-        console.log("result.data", result.data);
-        console.log(
-          "saving token to",
-          accessTokenKey(venue.id),
-          ": ",
-          result.data.token
-        );
-        setLocalStorageToken(venue.id, result.data.token);
+      let result = null;
+
+      switch (venue.access) {
+        case VenueAccessMode.Codes:
+          result = await checkAccess({
+            venueId: venue.id,
+            code: data.code,
+          });
+          break;
+        case VenueAccessMode.Emails:
+          result = await checkAccess({
+            venueId: venue.id,
+            email: data.email,
+          });
+          break;
+
+        default:
+          break;
       }
-      if (venue.access?.includes(VenueAccessMode.Emails)) {
-        const result = await checkAccess({
-          venueId: venue.id,
-          email: data.email,
-        });
-        console.log("result.data", result.data);
-        console.log(
-          "saving token to",
-          accessTokenKey(venue.id),
-          ": ",
-          result.data.token
-        );
-        setLocalStorageToken(venue.id, result.data.token);
+
+      if (!result) return;
+
+      if (result.data === false) {
+        throw new Error("access denied");
       }
+
+      setLocalStorageToken(venue.id, result.data.token);
 
       if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
@@ -228,7 +227,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access?.includes(VenueAccessMode.Codes) && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
