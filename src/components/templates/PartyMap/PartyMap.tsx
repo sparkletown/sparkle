@@ -40,8 +40,8 @@ export const PartyMap: React.FC = () => {
     setRoomModalOpen(true);
   }, []);
 
+  // Note: we explicitly don't unset selectedRoom here as that would cause RoomModal to close abruptly
   const unselectRoom = useCallback(() => {
-    setSelectedRoom(undefined);
     setRoomModalOpen(false);
   }, []);
 
@@ -68,11 +68,13 @@ export const PartyMap: React.FC = () => {
     [profile, user, currentVenue, venues]
   );
 
+  // Note: since we explicitly don't unset selectedRoom in unselectRoom, we need to check if
+  //   the RoomModal is open to know if we have a room selected
   const enterSelectedRoom = useCallback(() => {
-    if (!selectedRoom) return;
+    if (!selectedRoom || !isRoomModalOpen) return;
 
     enterRoom(selectedRoom);
-  }, [enterRoom, selectedRoom]);
+  }, [enterRoom, isRoomModalOpen, selectedRoom]);
 
   // Find current room from url
   const { roomTitle } = useParams();
