@@ -34,8 +34,6 @@ interface RoomModalProps {
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
 
-  // const lastRoom = useRef(room);
-
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
@@ -92,7 +90,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   // TODO: I believe this is what causes the room image to have to reload when the modal is closed, among other things
   //   We want the modal to remember it's last room so that it can keep it's data while hiding/similar
   if (!room) {
-    return <></>;
+    return null;
   }
 
   return (
