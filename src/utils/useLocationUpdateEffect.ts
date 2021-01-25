@@ -9,7 +9,7 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
 
 import { WithId } from "./id";
-import { getCurrentTimeInUnixEpochSeconds } from "./time";
+import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 
 const LOCATION_INCREMENT_SECONDS = 10;
@@ -35,7 +35,7 @@ export const updateLocationData = (
       : null;
 
   updateUserProfile(user.uid, {
-    lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
+    lastSeenAt: getCurrentTimeInMilliseconds(),
     lastSeenIn:
       !locationName && !lastSeenIn
         ? null
@@ -73,7 +73,7 @@ export const trackRoomEnteredNG = ({
 
   enterLocation(
     user,
-    { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
+    { [`${venue.name}/${room.title}`]: getCurrentTimeInMilliseconds() },
     lastSeenIn
   );
 };
@@ -93,14 +93,14 @@ export const trackVenueEntered = ({
 
   enterLocation(
     user,
-    { [venue.name]: getCurrentTimeInUnixEpochSeconds() },
+    { [venue.name]: getCurrentTimeInMilliseconds() },
     lastSeenIn
   );
 };
 
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
-    lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
+    lastSeenAt: getCurrentTimeInMilliseconds(),
     lastSeenIn: {},
     room: null,
   });

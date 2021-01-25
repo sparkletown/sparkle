@@ -11,6 +11,7 @@ import {
   venueEventsSelector,
 } from "utils/selectors";
 import {
+  getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
@@ -50,16 +51,16 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       room.url.endsWith(`/${venue.id}`)
     );
 
-    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+    const nowInMilliseconds = getCurrentTimeInMilliseconds();
 
-    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+    const venueRoom = roomVenue ? { [roomVenue.name]: nowInMilliseconds } : {};
 
     room &&
       user &&
       enterLocation(
         user,
         {
-          [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
+          [`${venue?.name}/${room?.title}`]: nowInMilliseconds,
           ...venueRoom,
         },
         profile?.lastSeenIn

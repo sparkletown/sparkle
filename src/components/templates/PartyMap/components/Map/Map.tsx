@@ -6,7 +6,7 @@ import { PartyMapVenue } from "types/PartyMapVenue";
 import { PartyMapRoomData } from "types/PartyMapRoomData";
 
 import { enterLocation } from "utils/useLocationUpdateEffect";
-import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+import { getCurrentTimeInMilliseconds } from "utils/time";
 import { WithId } from "utils/id";
 import { orderedVenuesSelector } from "utils/selectors";
 import { openRoomUrl } from "utils/url";
@@ -145,11 +145,11 @@ export const Map: React.FC<PropsType> = ({
         room.url.endsWith(`/${venue.id}`)
       );
 
-      const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+      const nowInMilliseconds = getCurrentTimeInMilliseconds();
 
       const roomName = {
-        [`${venue.name}/${room.title}`]: nowInEpochSeconds,
-        ...(roomVenue ? { [venue.name]: nowInEpochSeconds } : {}),
+        [`${venue.name}/${room.title}`]: nowInMilliseconds,
+        ...(roomVenue ? { [venue.name]: nowInMilliseconds } : {}),
       };
 
       openRoomUrl(room.url);

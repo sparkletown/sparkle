@@ -9,6 +9,8 @@ export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
 export const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
+export const SECONDS_TIMESTAMP_MAX_LENGTH = 10;
+
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
 
@@ -132,7 +134,12 @@ export function getHoursAgoInSeconds(hours: number) {
   return nowInSec - hours * 60 * 60;
 }
 
+export const getHoursAgoInMilliseconds = (hours: number) =>
+  Date.now() - hours * 60 * 60 * 1000;
+
 export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
+
+export const getCurrentTimeInMilliseconds = () => Date.now();
 
 export function getDaysAgoInSeconds(days: number) {
   return getHoursAgoInSeconds(days * 24);
@@ -182,3 +189,10 @@ export const roundToNearestHour = (seconds: number) => {
 export function formatDateToWeekday(utcSeconds: number) {
   return format(new Date(utcSeconds * 1000), "E");
 }
+
+export const normalizeTimestampToMilliseconds = (timestamp: number) => {
+  const isTimestampInSeconds =
+    Math.floor(timestamp).toString().length <= SECONDS_TIMESTAMP_MAX_LENGTH;
+
+  return isTimestampInSeconds ? timestamp * 1000 : timestamp;
+};

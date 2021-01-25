@@ -19,7 +19,7 @@ import {
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  getCurrentTimeInUnixEpochSeconds,
+  getCurrentTimeInMilliseconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -90,12 +90,12 @@ const VenuePage: React.FC = () => {
 
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: getCurrentTimeInUnixEpochSeconds(),
+      [venueName]: getCurrentTimeInMilliseconds(),
     };
 
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
-      lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
+      lastSeenAt: getCurrentTimeInMilliseconds(),
       room: venueName,
     });
   }, [prevLocations, user, venueName]);
@@ -124,7 +124,7 @@ const VenuePage: React.FC = () => {
   const location = venueName;
   useLocationUpdateEffect(user, venueName);
 
-  const newLocation = { [location]: new Date().getTime() };
+  const newLocation = { [location]: getCurrentTimeInMilliseconds() };
   const isNewLocation = profile?.lastSeenIn
     ? !profile?.lastSeenIn[location]
     : false;

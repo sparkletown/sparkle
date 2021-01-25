@@ -8,6 +8,7 @@ import {
   sovereignVenueIdSelector,
 } from "utils/selectors";
 import { WithId } from "utils/id";
+import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { fetchSovereignVenueId } from "api/sovereignVenueId";
 
@@ -117,7 +118,8 @@ export const useRecentWorldUsers = (): {
   return useMemo(
     () => ({
       recentWorldUsers: worldUsers.filter(
-        (user) => user.lastSeenAt > lastSeenThreshold
+        (user) =>
+          normalizeTimestampToMilliseconds(user.lastSeenAt) > lastSeenThreshold
       ),
       isRecentWorldUsersLoaded: isWorldUsersLoaded,
     }),
@@ -133,7 +135,10 @@ export const useRecentLocationUsers = (locationName?: string) => {
     () => ({
       recentLocationUsers: locationName
         ? worldUsers.filter(
-            (user) => user.lastSeenIn?.[locationName] > lastSeenThreshold
+            (user) =>
+              user.lastSeenIn?.[locationName] &&
+              normalizeTimestampToMilliseconds(user.lastSeenIn[locationName]) >
+                lastSeenThreshold
           )
         : [],
       isRecentLocationUsersLoaded: isWorldUsersLoaded,
