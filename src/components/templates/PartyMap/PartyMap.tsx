@@ -31,7 +31,6 @@ export const PartyMap: React.FC = () => {
   const currentVenue = useSelector(partyMapVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
 
-  // TODO: can we just make this a boolean that is set from isTruthy(selectedRoom)?
   const [isRoomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
