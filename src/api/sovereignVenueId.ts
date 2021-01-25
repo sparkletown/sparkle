@@ -17,8 +17,6 @@ export const fetchSovereignVenueId = (
         return;
       }
 
-      console.log({ doc });
-
       const venue = doc.data();
 
       if (!venue || !doc.id) {
@@ -27,7 +25,6 @@ export const fetchSovereignVenueId = (
       }
 
       if (!venue.parentId) {
-        // console.log(doc.id);
         onSuccess(doc.id);
       } else {
         fetchSovereignVenueId(venue.parentId, onSuccess, onError);

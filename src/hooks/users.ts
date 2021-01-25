@@ -34,7 +34,6 @@ export const useSovereignVenueId = (venueId?: string) => {
   // NOTE: Force to fetch it only once
   if (!sovereignVenueId && !isSovereignVenueIdLoading && venueId) {
     const onSuccess = (sovereignVenueId: string) => {
-      console.log({ sovereignVenueId });
       dispatch(setSovereignVenueId(sovereignVenueId));
       dispatch(setSovereignVenueIdIsLoading(false));
     };
