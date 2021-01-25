@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import firebase from "firebase/app";
 import { User } from "types/User";
+import { usePartygoers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { Table } from "types/Table";
-import { experiencesSelector, partygoersSelector } from "utils/selectors";
+import { experienceSelector } from "utils/selectors";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -21,19 +22,21 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { user, profile } = useUser();
 
-  const experiences = useSelector(experiencesSelector);
-  const users = useSelector(partygoersSelector);
+  const experience = useSelector(experienceSelector);
+  const users = usePartygoers();
 
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
 
-  const usersAtCurrentTable =
-    seatedAtTable &&
-    users &&
-    users.filter(
-      (user: User) => user.data?.[venueName]?.table === seatedAtTable
-    );
+  const usersAtCurrentTable = useMemo(
+    () =>
+      seatedAtTable &&
+      users.filter(
+        (user: User) => user.data?.[venueName]?.table === seatedAtTable
+      ),
+    [seatedAtTable, users, venueName]
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = (doc: string, update: any) => {
@@ -56,13 +59,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       return false;
     }
     // Locked state is in the experience record
-    return experiences?.[venueName]?.tables?.[table]?.locked;
+    return experience?.tables?.[table]?.locked;
   };
 
   const onLockedChanged = (tableName: string, locked: boolean) => {
     const doc = `experiences/${venueName}`;
     const update = {
-      tables: { ...experiences?.[venueName]?.tables, [tableName]: { locked } },
+      tables: { ...experience?.tables, [tableName]: { locked } },
     };
     firestoreUpdate(doc, update);
   };

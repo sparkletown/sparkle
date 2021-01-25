@@ -6,13 +6,13 @@ import { VenueTemplate } from "types/VenueTemplate";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
   PLAYA_VENUE_SIZE,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
@@ -20,7 +20,8 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type Question = VenueInput["profileQuestions"][number];
+type ProfileQuestion = VenueInput["profile_questions"][number];
+type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>()
@@ -50,7 +51,7 @@ const urlIfNoFileValidation = (fieldName: string) =>
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
-    template: Yup.string().required(),
+    template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Required")
       .min(1, "Required")
@@ -85,17 +86,6 @@ export const validationSchema = Yup.object()
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
 
-    mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-    mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
-
-    mapBackgroundImageFile: Yup.mixed<FileList>().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? createFileSchema("mapBackgroundImageFile", false).notRequired()
-          : schema.notRequired()
-    ),
-
     mapBackgroundImageUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.StringSchema) =>
@@ -104,8 +94,8 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    attendeesTitle: Yup.string().notRequired(),
-    chatTitle: Yup.string().notRequired(),
+    attendeesTitle: Yup.string().notRequired().default("Guests"),
+    chatTitle: Yup.string().notRequired().default("Party"),
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
@@ -146,12 +136,25 @@ export const validationSchema = Yup.object()
 
     // @debt provide some validation error messages for invalid questions
     // advanced options
-    profileQuestions: Yup.array<Question>()
+    profile_questions: Yup.array<ProfileQuestion>()
       .ensure()
       .defined()
-      .transform((val: Array<Question>) =>
+      .transform((val: Array<ProfileQuestion>) =>
         val.filter((s) => !!s.name && !!s.text)
       ), // ensure questions are not empty strings
+
+    code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
+      .ensure()
+      .defined()
+      .transform((val: Array<CodeOfConductQuestion>) =>
+        val.filter((s) => !!s.name && !!s.text)
+      ),
+
+    showRadio: Yup.bool().notRequired(),
+    radioStations: Yup.string().when("showRadio", {
+      is: true,
+      then: Yup.string().required("Radio station (stream) is required!"),
+    }),
 
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
@@ -192,7 +195,9 @@ export const editVenueCastSchema = Yup.object()
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("auditoriumColumns", "auditoriumColumns")
   .from("auditoriumRows", "auditoriumRows")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("mapIconImageUrl", "mapIconImageUrl")
+  .from("code_of_conduct_questions", "code_of_conduct_questions")
+  .from("profile_questions", "profile_questions");
 
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})

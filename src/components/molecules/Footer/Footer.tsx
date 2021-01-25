@@ -17,7 +17,9 @@ export const Footer = () => (
 
     <div>|</div>
 
-    <a href={PRIVACY_POLICY}>Privacy Policy</a>
+    <a href={PRIVACY_POLICY} {...getExtraLinkProps(true)}>
+      Privacy Policy
+    </a>
 
     <div>|</div>
 

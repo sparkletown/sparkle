@@ -1,4 +1,4 @@
-import { useKeyedSelector, useSelector } from "hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User, VideoState } from "types/User";
 import { Venue } from "types/Venue";
@@ -8,12 +8,13 @@ import { WithId } from "utils/id";
 import * as S from "./FireBarrel.styled";
 import { useVideoState } from "./useVideo";
 import { useUser } from "hooks/useUser";
+import { usePartygoers, useUsersById } from "hooks/users";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 import firebase from "firebase/app";
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
@@ -24,7 +25,7 @@ const FireBarrel: React.FC = () => {
   >([]);
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const partygoers = usePartygoers();
 
   const chairs =
     currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS
@@ -33,7 +34,7 @@ const FireBarrel: React.FC = () => {
 
   const filterPartygoers = (
     venue: Venue,
-    partygoers: WithId<User>[]
+    partygoers: readonly WithId<User>[]
   ): WithId<User>[] =>
     partygoers?.filter((person) => person.room === venue?.name);
 
@@ -45,7 +46,7 @@ const FireBarrel: React.FC = () => {
     }
   }, [partygoers, venue]);
 
-  const { user, profile } = useUser();
+  const { user, profile, userWithId } = useUser();
 
   const { room, participants } = useVideoState({
     userUid: user?.uid,
@@ -55,12 +56,7 @@ const FireBarrel: React.FC = () => {
   const chairsArray = Array.from(Array(chairs));
 
   const [videoError, setVideoError] = useState<string>("");
-  const { users } = useKeyedSelector(
-    (state) => ({
-      users: state.firestore.data.partygoers ?? {},
-    }),
-    ["users"]
-  );
+  const users = useUsersById();
 
   const updateVideoState = useCallback(
     (update: VideoState) => {
@@ -93,7 +89,7 @@ const FireBarrel: React.FC = () => {
   );
 
   return useMemo(() => {
-    if (!currentPartygoers) return <LoadingPage />;
+    if (!currentPartygoers || !userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
@@ -114,7 +110,7 @@ const FireBarrel: React.FC = () => {
                 <LocalParticipant
                   showLeave={false}
                   participant={room.localParticipant}
-                  user={users[user!.uid]}
+                  user={userWithId}
                   setSelectedUserProfile={() => {}}
                   isHost={false}
                   leave={leave}
@@ -127,12 +123,16 @@ const FireBarrel: React.FC = () => {
 
           if (participants.length && !!participants[index]) {
             const participant = participants[index];
+            const participantUserData = users[participant.identity] && {
+              ...users[participant.identity],
+              id: participant.identity,
+            };
 
             return (
               <S.Chair key={participant.identity}>
                 <RemoteParticipant
                   participant={participant}
-                  user={users[participant.identity]}
+                  user={participantUserData}
                   setSelectedUserProfile={() => {}}
                   isHost={false}
                   showHostControls={false}
@@ -157,6 +157,7 @@ const FireBarrel: React.FC = () => {
   }, [
     chairsArray,
     currentPartygoers,
+    userWithId,
     leave,
     participants,
     removeParticipant,

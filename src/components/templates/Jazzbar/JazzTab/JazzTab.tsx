@@ -1,23 +1,21 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW, LOC_UPDATE_FREQ_MS } from "settings";
+import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
 import { Venue } from "types/Venue";
 
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import {
   EmojiReactionType,
-  ExperienceContext,
   Reactions,
   TextReactionType,
-} from "components/context/ExperienceContext";
+} from "utils/reactions";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import Room from "components/organisms/Room";
@@ -28,13 +26,18 @@ import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useInterval } from "hooks/useInterval";
+import { useVenueId } from "hooks/useVenueId";
+import { usePartygoers } from "hooks/users";
+
+import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
+import { useExperiences } from "hooks/useExperiences";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
@@ -58,52 +61,30 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => {
 };
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useFirestoreConnect(
-    venue?.name
-      ? {
-          collection: "experiences",
-          doc: venue.name,
-          storeAs: "experiences",
-        }
-      : undefined
-  );
+  const firestoreVenue = useSelector(currentVenueSelectorData);
+  const venueToUse = venue ? venue : firestoreVenue;
+
+  useExperiences(venueToUse?.name);
 
   const { user } = useUser();
 
-  const firestoreVenue = useSelector(currentVenueSelectorData);
-
-  const venueToUse = venue ? venue : firestoreVenue;
-
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  // TODO: this will break memo on venueUsers (below) every 5min, does that matter?
-  const [nowMs, setNowMs] = useState(Date.now());
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
-  // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
-  const venueToUseName = venueToUse?.name;
-  const users = useSelector(partygoersSelector);
-  const venueUsers = useMemo(() => {
-    if (!users) return [];
-
-    return users.filter(
-      (user) =>
-        !!user.lastSeenIn &&
-        user.lastSeenIn[venueToUseName ?? ""] >
-          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-    );
-  }, [nowMs, users, venueToUseName]);
-
-  const experienceContext = useContext(ExperienceContext);
+  const venueUsers = usePartygoers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
+  const dispatch = useDispatch();
+  const venueId = useVenueId();
+
   const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
-    experienceContext &&
-      experienceContext.addReaction(createReaction({ reaction }, user));
+    dispatch(
+      addReaction({
+        venueId,
+        reaction: createReaction({ reaction }, user),
+      })
+    );
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
@@ -127,13 +108,15 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const onBandMessageSubmit = async (data: ChatOutDataType) => {
     setIsMessageToTheBandSent(true);
-    experienceContext &&
-      user &&
-      experienceContext.addReaction(
-        createReaction(
-          { reaction: "messageToTheBand", text: data.messageToTheBand },
-          user
-        )
+    user &&
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createReaction(
+            { reaction: "messageToTheBand", text: data.messageToTheBand },
+            user
+          ),
+        })
       );
     reset();
   };

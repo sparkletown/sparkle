@@ -9,7 +9,6 @@ import mixpanel from "mixpanel-browser";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { ThemeProvider } from "styled-components";
 
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
@@ -54,6 +53,7 @@ import { User } from "types/User";
 
 import { useSelector } from "hooks/useSelector";
 import { authSelector } from "utils/selectors";
+import { initializeZendesk } from "utils/zendesk";
 
 import AppRouter from "components/organisms/AppRouter";
 
@@ -61,8 +61,11 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "bootstrap";
 import "scss/global.scss";
+import { ThemeProvider } from "styled-components";
+import { theme } from "theme/theme";
 
 activatePolyFills();
+initializeZendesk();
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
@@ -114,6 +117,8 @@ const store = createStore(
   )
 );
 
+export type AppDispatch = typeof store.dispatch;
+
 const rrfProps = {
   firebase,
   config: rrfConfig,
@@ -138,6 +143,8 @@ if (BUGSNAG_API_KEY) {
     "sparkle8",
     "sparkle9",
     "sparkle10",
+    "bigtop",
+    "deloitte",
   ];
 
   const releaseStage = () => {
@@ -238,7 +245,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 
 render(
   <BugsnagErrorBoundary>
-    <ThemeProvider theme={{}}>
+    <ThemeProvider theme={theme}>
       <Elements stripe={stripePromise}>
         <DndProvider backend={HTML5Backend}>
           <Provider store={store}>

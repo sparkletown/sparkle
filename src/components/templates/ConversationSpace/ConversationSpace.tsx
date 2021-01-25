@@ -2,10 +2,12 @@ import React, { useState } from "react";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
+import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -23,7 +25,7 @@ import "./ConversationSpace.scss";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const users = useSelector(partygoersSelector);
+  const users = usePartygoers();
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -33,17 +35,16 @@ export const ConversationSpace: React.FunctionComponent = () => {
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
 
+  useExperiences(venue?.name);
+
   if (!venue) return <>Loading...</>;
 
   const tables = venue?.config?.tables ?? TABLES;
 
-  const venueUsers = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn &&
-          user.lastSeenIn[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const venueUsers = users.filter(
+    (user) =>
+      user.lastSeenIn?.[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   return (
     <>

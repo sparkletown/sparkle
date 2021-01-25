@@ -10,7 +10,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-interface Question {
+export interface Question {
   name: string;
   text: string;
   link?: string;
@@ -96,7 +96,57 @@ export interface Venue {
   showRadio?: boolean;
   showBadges?: boolean;
   accessMode?: string;
+  showZendesk?: boolean;
 }
+
+// --- VENUE V2
+export interface Venue_v2_AdvancedConfig {
+  attendeesTitle?: string;
+  bannerMessage?: string;
+  chatTitle?: string;
+  columns?: number;
+  radioStations?: string | string[]; // single string on form, array in DB
+  requiresDateOfBirth?: boolean;
+  roomVisibility?: RoomVisibility;
+  showBadges?: boolean;
+  showGrid?: boolean;
+  showRadio?: boolean;
+  showRangers?: boolean;
+  showZendesk?: boolean;
+}
+
+export interface Venue_v2_EntranceConfig {
+  profile_questions?: Array<Question>;
+  code_of_conduct_questions?: Array<Question>;
+  entrance?: EntranceStepConfig[];
+}
+
+export interface Venue_v2_Base {
+  name: string;
+  config: {
+    landingPageConfig: {
+      subtitle: string;
+      description: string;
+      coverImageUrl: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners?: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+  id: string;
+  rooms?: AnyRoom[];
+  mapBackgroundImageUrl?: string;
+}
+
+export interface Venue_v2
+  extends Venue_v2_Base,
+    Venue_v2_AdvancedConfig,
+    Venue_v2_EntranceConfig {}
 
 export interface VenueConfig {
   theme: {
@@ -105,7 +155,7 @@ export interface VenueConfig {
   };
 
   landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
-
+  redirectUrl?: string;
   memberEmails?: string[];
   showRangers?: boolean;
   tables?: Table[];
@@ -185,7 +235,7 @@ export const createJazzbar = (values: FormValues): Venue => {
       icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
     },
     owners: [],
-    profile_questions: values.profileQuestions ?? [],
+    profile_questions: values.profile_questions ?? [],
     code_of_conduct_questions: [],
     termsAndConditions: [],
     adultContent: values.adultContent || false,

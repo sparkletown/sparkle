@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-} from "react";
+import React, { Fragment, useCallback, useMemo, useState } from "react";
 import { isEmpty } from "lodash";
 import { formatDistanceToNow } from "date-fns";
 
@@ -24,19 +18,18 @@ import { hasElements, isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useDispatch } from "hooks/useDispatch";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
-import {
-  ChatContext,
-  chatSort,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
+import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import ChatBox from "components/molecules/Chatbox";
 import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
 import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
-import { WhereOptions, useFirestoreConnect } from "react-redux-firebase";
+
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
 interface LastMessageByUser {
@@ -50,6 +43,7 @@ const noopHandler = () => {};
 
 const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
+  const dispatch = useDispatch();
 
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
@@ -64,20 +58,15 @@ const ChatsList: React.FunctionComponent = () => {
       .slice(0, NUM_CHAT_UIDS_TO_LOAD);
   }, [privateChats]);
 
-  const chatUsersOption: WhereOptions = [DOCUMENT_ID, "in", chatUserIds];
-
-  const chatQuery = useMemo(() => {
-    if (!hasElements(chatUserIds)) return undefined;
-    return [
-      {
-        collection: "users",
-        where: chatUsersOption,
-        storeAs: "chatUsers",
-      },
-    ];
-  }, [chatUserIds, chatUsersOption]);
-
-  useFirestoreConnect(chatQuery);
+  useFirestoreConnect(
+    hasElements(chatUserIds)
+      ? {
+          collection: "users",
+          where: [DOCUMENT_ID, "in", chatUserIds],
+          storeAs: "chatUsers",
+        }
+      : undefined
+  );
 
   const lastMessageByUserReducer = useCallback(
     (agg, item) => {
@@ -136,18 +125,19 @@ const ChatsList: React.FunctionComponent = () => {
     [privateChats, selectedUser]
   );
 
-  const chatContext = useContext(ChatContext);
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      chatContext &&
-        user &&
-        chatContext.sendPrivateChat(
-          user.uid,
-          selectedUser!.id,
-          data.messageToTheBand
-        );
+      if (!user) return;
+
+      return dispatch(
+        sendPrivateChat({
+          from: user.uid,
+          to: selectedUser!.id,
+          text: data.messageToTheBand,
+        })
+      );
     },
-    [chatContext, selectedUser, user]
+    [selectedUser, user, dispatch]
   );
 
   const hideUserChat = useCallback(() => setSelectedUser(undefined), []);

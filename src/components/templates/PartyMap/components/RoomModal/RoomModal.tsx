@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { PartyMapRoomData } from "types/PartyMapRoomData";
@@ -8,7 +8,7 @@ import { enterLocation } from "utils/useLocationUpdateEffect";
 import {
   currentVenueSelector,
   orderedVenuesSelector,
-  partygoersSelector,
+  venueEventsSelector,
 } from "utils/selectors";
 import {
   getCurrentTimeInUnixEpochSeconds,
@@ -17,6 +17,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { usePartygoers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -33,21 +34,21 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const users = usePartygoers();
+
+  const venueName = venue?.name;
+  const roomTitle = room?.title;
+
+  const usersToDisplay = useMemo(
+    () =>
+      users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
+    [users, venueName, roomTitle]
   );
-  const users = useSelector(partygoersSelector);
 
   if (!room) {
     return <></>;
   }
-
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
 
   // TODO: @debt refactor this to use openRoomWithCounting
   const enter = () => {
@@ -64,7 +65,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       enterLocation(
         user,
         {
-          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
+          [`${venue?.name}/${room?.title}`]: nowInEpochSeconds,
           ...venueRoom,
         },
         profile?.lastSeenIn

@@ -1,29 +1,34 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { isChatValid } from "validation";
 
-import ChatForm from "./ChatForm";
-import "./Chatbox.scss";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { User } from "types/User";
-import ChatMessage from "components/molecules/ChatMessage";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
+
+import { chatSort } from "utils/chat";
 import { WithId } from "utils/id";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { chatSort } from "components/context/ChatContext";
-import {
-  partygoersSelector,
-  partygoersSelectorData,
-  privateChatsSelector,
-  venueChatsSelector,
-} from "utils/selectors";
+import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
+
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { usePartygoers, useUsersById } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import ChatMessage from "components/molecules/ChatMessage";
+
+import ChatForm from "./ChatForm";
+
+import "./Chatbox.scss";
 
 // Don't pull everything
-// REVISIT: only grab most recent N from server
+// @debt REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
@@ -52,23 +57,27 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const users = useSelector(partygoersSelectorData);
-  const userArray = useSelector(partygoersSelector) ?? [];
+  const usersById = useUsersById();
+  const userArray = usePartygoers();
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user && user.uid
+    user?.uid
       ? {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );
+  const venueId = useVenueId();
+  useConnectVenueChats(venueId);
   const chats = useSelector(venueChatsSelector);
   const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {
@@ -163,7 +172,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
           </div>
         )}
 
-        {users && (
+        {usersById && (
           <>
             {!isInProfileModal && (
               <div className="dropdown-container">
@@ -287,7 +296,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                   <ChatMessage
                     key={`${chat.ts_utc.valueOf()}-${chat.id}`}
                     user={user}
-                    users={users}
+                    users={usersById}
                     setSelectedUserProfile={setSelectedUserProfile}
                     isInProfileModal={!!isInProfileModal}
                     chat={chat}

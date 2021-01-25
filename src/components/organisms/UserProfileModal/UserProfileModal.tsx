@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import {
@@ -19,13 +19,10 @@ import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { isCampVenue } from "types/CampVenue";
 import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "react-redux-firebase";
-import {
-  ChatContext,
-  PrivateChatMessage,
-} from "components/context/ChatContext";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
-import { isTruthy } from "utils/types";
+import { useDispatch } from "hooks/useDispatch";
 
 type PropTypes = {
   show: boolean;
@@ -45,19 +42,21 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   const { user } = useUser();
 
-  const chatContext = useContext(ChatContext);
+  const dispatch = useDispatch();
 
   const submitMessage = useCallback(
     async (data: { messageToTheBand: string }) => {
-      if (!chatContext || !user || !userProfile) return;
+      if (!user || !userProfile) return;
 
-      chatContext.sendPrivateChat(
-        user.uid,
-        userProfile?.id,
-        data.messageToTheBand
+      dispatch(
+        sendPrivateChat({
+          from: user.uid,
+          to: userProfile?.id,
+          text: data.messageToTheBand,
+        })
       );
     },
-    [chatContext, userProfile, user]
+    [userProfile, user, dispatch]
   );
 
   const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
@@ -70,8 +69,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
-
-  const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -125,7 +122,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {showBadges && <Badges user={userProfile} currentVenue={venue} />}
+          {venue?.showBadges && (
+            <Badges user={userProfile} currentVenue={venue} />
+          )}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <ChatBox
