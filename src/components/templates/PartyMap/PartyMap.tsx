@@ -99,33 +99,31 @@ export const PartyMap: React.FC = () => {
   if (!user || !profile?.data) return <>Loading..</>;
 
   return (
-    <>
-      <div className="party-venue-container">
-        <AnnouncementMessage message={currentVenue.bannerMessage} />
+    <div className="party-venue-container">
+      <AnnouncementMessage message={currentVenue.bannerMessage} />
 
-        <Map
-          user={user}
-          profileData={profile.data}
-          venue={currentVenue}
-          partygoers={usersInVenue}
-          selectRoom={selectRoom}
-          unselectRoom={unselectRoom}
-          enterSelectedRoom={enterSelectedRoom}
-        />
+      <Map
+        user={user}
+        profileData={profile.data}
+        venue={currentVenue}
+        partygoers={usersInVenue}
+        selectRoom={selectRoom}
+        unselectRoom={unselectRoom}
+        enterSelectedRoom={enterSelectedRoom}
+      />
 
-        <RoomModal
-          show={isRoomModalOpen}
-          room={selectedRoom}
-          onHide={unselectRoom}
-        />
+      <RoomModal
+        show={isRoomModalOpen}
+        room={selectedRoom}
+        onHide={unselectRoom}
+      />
 
-        {currentVenue?.config?.showRangers && (
-          <div className="sparkle-fairies">
-            <SparkleFairiesPopUp />
-          </div>
-        )}
-      </div>
-    </>
+      {currentVenue?.config?.showRangers && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp />
+        </div>
+      )}
+    </div>
   );
 };
 
