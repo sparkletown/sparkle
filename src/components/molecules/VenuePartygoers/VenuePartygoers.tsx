@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { useRecentWorldsUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -14,7 +14,7 @@ export const VenuePartygoers = () => {
     isCurrentVenueLoaded,
   } = useConnectRelatedVenues({ venueId });
 
-  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldsUsers();
+  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
@@ -24,7 +24,7 @@ export const VenuePartygoers = () => {
     const attendeesTitle =
       parentVenue?.attendeesTitle ??
       currentVenue?.attendeesTitle ??
-      "partygoers";
+      "attendees";
 
     return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
   }, [

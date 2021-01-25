@@ -2,7 +2,7 @@ import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CampRoomData } from "types/CampRoomData";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
@@ -21,9 +21,6 @@ interface SearchResult {
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const normalizedSearchQuery = useMemo(() => searchQuery.toLowerCase(), [
-    searchQuery,
-  ]);
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
     users: [],
@@ -40,6 +37,7 @@ const NavSearchBar = () => {
   const { worldUsers } = useWorldUsers();
 
   useEffect(() => {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
     if (!normalizedSearchQuery) {
       setSearchResult({
         rooms: [],
@@ -68,7 +66,7 @@ const NavSearchBar = () => {
       users: venueUsersResults,
       events: venueEventsResults,
     });
-  }, [normalizedSearchQuery, venue, venueEvents, worldUsers]);
+  }, [searchQuery, venue, venueEvents, worldUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +

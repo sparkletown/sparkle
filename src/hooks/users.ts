@@ -2,29 +2,67 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 
-import { worldUsersSelector, worldUsersByIdSelector } from "utils/selectors";
+import {
+  worldUsersSelector,
+  worldUsersByIdSelector,
+  sovereignVenueIdSelector,
+} from "utils/selectors";
 import { WithId } from "utils/id";
+
+import { fetchSovereignVenueId } from "api/sovereignVenueId";
+
+import {
+  setSovereignVenueId,
+  setSovereignVenueIdIsLoading,
+} from "store/actions/SovereignVenueId";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
+import { useDispatch } from "./useDispatch";
+
+export const useSovereignVenueId = (venueId?: string) => {
+  const dispatch = useDispatch();
+
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSelector(
+    sovereignVenueIdSelector
+  );
+
+  // NOTE: Force to fetch it only once
+  if (!sovereignVenueId && !isSovereignVenueIdLoading && venueId) {
+    const onSuccess = (sovereignVenueId: string) => {
+      console.log({ sovereignVenueId });
+      dispatch(setSovereignVenueId(sovereignVenueId));
+      dispatch(setSovereignVenueIdIsLoading(false));
+    };
+    const onError = () => dispatch(setSovereignVenueIdIsLoading(false));
+
+    dispatch(setSovereignVenueIdIsLoading(true));
+
+    fetchSovereignVenueId(venueId, onSuccess, onError);
+  }
+
+  return {
+    sovereignVenueId,
+    isSovereignVenueIdLoading,
+  };
+};
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
-  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId(
     venueId
   );
-
   useFirestoreConnect(() => {
-    if (!isCurrentVenueLoaded || !currentVenue || !venueId) return [];
+    if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
 
-    const relatedLocationIds = [currentVenue.id];
+    const relatedLocationIds = [venueId];
 
-    if (currentVenue.parentId) {
-      relatedLocationIds.push(currentVenue.parentId);
+    if (sovereignVenueId) {
+      relatedLocationIds.push(sovereignVenueId);
     }
 
     return [
@@ -68,7 +106,7 @@ export const useWorldUsersById = () => {
   );
 };
 
-export const useRecentWorldsUsers = (): {
+export const useRecentWorldUsers = (): {
   recentWorldUsers: readonly WithId<User>[];
   isRecentWorldUsersLoaded: boolean;
 } => {
@@ -87,73 +125,56 @@ export const useRecentWorldsUsers = (): {
   );
 };
 
-export const useRecentVenueUsers = (): {
-  recentVenueUsers: readonly WithId<User>[];
-  isRecentVenueUsersLoaded: boolean;
-} => {
+export const useRecentLocationUsers = (locationName?: string) => {
   const lastSeenThreshold = useUserLastSeenThreshold();
-  const venueId = useVenueId();
-
   const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
-
-  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
-    venueId
-  );
 
   return useMemo(
     () => ({
-      recentVenueUsers:
-        isCurrentVenueLoaded && currentVenue
-          ? worldUsers.filter(
-              (user) => user.lastSeenIn?.[currentVenue.name] > lastSeenThreshold
-            )
-          : [],
-      isRecentVenueUsersLoaded: isWorldUsersLoaded,
+      recentLocationUsers: locationName
+        ? worldUsers.filter(
+            (user) => user.lastSeenIn?.[locationName] > lastSeenThreshold
+          )
+        : [],
+      isRecentLocationUsersLoaded: isWorldUsersLoaded,
     }),
-    [
-      worldUsers,
-      isWorldUsersLoaded,
-      lastSeenThreshold,
-      isCurrentVenueLoaded,
-      currentVenue,
-    ]
+    [worldUsers, isWorldUsersLoaded, lastSeenThreshold, locationName]
   );
 };
 
-export const useRecentRoomUsers = (
-  roomTitle?: string
-): {
-  recentRoomUsers: readonly WithId<User>[];
-  isRecentRoomUsersLoaded: boolean;
-} => {
+export const useRecentVenueUsers = () => {
   const venueId = useVenueId();
-  const lastSeenThreshold = useUserLastSeenThreshold();
 
-  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
 
-  const { isCurrentVenueLoaded, currentVenue } = useConnectCurrentVenueNG(
-    venueId
-  );
+  const {
+    recentLocationUsers,
+    isRecentLocationUsersLoaded,
+  } = useRecentLocationUsers(currentVenue?.name);
 
-  return useMemo(
-    () => ({
-      recentRoomUsers:
-        isCurrentVenueLoaded && currentVenue && roomTitle
-          ? worldUsers.filter(
-              (user) =>
-                user.lastSeenIn?.[`${currentVenue.name}/${roomTitle}`] >
-                lastSeenThreshold
-            )
-          : [],
-      isRecentRoomUsersLoaded: isWorldUsersLoaded,
-    }),
-    [
-      worldUsers,
-      isWorldUsersLoaded,
-      isCurrentVenueLoaded,
-      currentVenue,
-      roomTitle,
-      lastSeenThreshold,
-    ]
-  );
+  return {
+    recentVenueUsers: recentLocationUsers,
+    isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
+  };
+};
+
+export const useRecentRoomUsers = (roomTitle?: string) => {
+  const venueId = useVenueId();
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+
+  let locationName;
+
+  if (currentVenue?.name && roomTitle) {
+    locationName = `${currentVenue.name}/${roomTitle}`;
+  }
+
+  const {
+    recentLocationUsers,
+    isRecentLocationUsersLoaded,
+  } = useRecentLocationUsers(locationName);
+
+  return {
+    recentRoomUsers: recentLocationUsers,
+    isRecentRoomUsersLoaded: isRecentLocationUsersLoaded,
+  };
 };

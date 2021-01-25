@@ -18,12 +18,13 @@ export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
   const { recentRoomUsers } = useRecentRoomUsers(room.title);
 
   const numberOfUsersInRoom = recentRoomUsers.length;
-  if (numberOfUsersInRoom < 1) return <></>;
+  if (numberOfUsersInRoom < 1) return null;
+
   return (
     <div className="attendance-avatars">
       {recentRoomUsers.map((user, index) => {
         return (
-          <div key={`user-avatar-${index}`}>
+          <div key={`user-avatar-${user.id}`}>
             {index < MAX_AVATARS_VISIBLE && (
               <div
                 className="attendance-avatar"

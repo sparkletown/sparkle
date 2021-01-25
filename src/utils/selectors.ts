@@ -9,6 +9,8 @@ import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 
+import { SovereignVenueIdState } from "store/reducers/SovereignVenueId";
+
 import { WithId } from "utils/id";
 
 import {
@@ -199,6 +201,15 @@ export const userModalVisitsSelector = (state: RootState) =>
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
+
+/**
+ * Selector to retrieve sovereignVenueId data: `id` and `isLoaded` state from the Redux state.
+ *
+ * @param state the Redux store
+ */
+export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueIdState> = (
+  state
+) => state.sovereignVenueId;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,
