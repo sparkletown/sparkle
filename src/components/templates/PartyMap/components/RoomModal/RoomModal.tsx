@@ -87,8 +87,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
-  // TODO: I believe this is what causes the room image to have to reload when the modal is closed, among other things
-  //   We want the modal to remember it's last room so that it can keep it's data while hiding/similar
+  // @debt Note: By not rendering like this when room isn't set, we prevent the 'modal closing' transition from running
   if (!room) {
     return null;
   }
