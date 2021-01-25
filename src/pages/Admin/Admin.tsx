@@ -97,7 +97,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "camp" : ""
             }`}
           >
-            <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
+            <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms?.map((room, idx) => (
@@ -105,7 +105,7 @@ const VenueList: React.FC<VenueListProps> = ({
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
-                    <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                    <Link to={`/admin/${venue.id}?roomIndex=${idx}`}>
                       {room.title}
                     </Link>
                   </li>

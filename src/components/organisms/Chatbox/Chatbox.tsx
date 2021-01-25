@@ -1,26 +1,31 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { isChatValid } from "validation";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { User } from "types/User";
 
-import ChatForm from "./ChatForm";
-import "./Chatbox.scss";
-import ChatMessage from "components/molecules/ChatMessage";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
-import { useConnectVenueChats } from "hooks/useConnectVenueChats";
-import { usePartygoers, useUsersById } from "hooks/users";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { WithId } from "utils/id";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { chatSort } from "utils/chat";
+import { WithId } from "utils/id";
 import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
+
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { usePartygoers, useUsersById } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import ChatMessage from "components/molecules/ChatMessage";
+
+import ChatForm from "./ChatForm";
+
+import "./Chatbox.scss";
 
 // Don't pull everything
 // @debt REVISIT: only grab most recent N from server
