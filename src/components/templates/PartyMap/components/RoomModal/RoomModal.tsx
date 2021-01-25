@@ -145,9 +145,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
           {roomEvents && roomEvents.length > 0 && (
             <div className="col schedule-container">
               <div className="schedule-title">Room Schedule</div>
-              {roomEvents.map((event, idx: number) => (
+              {roomEvents.map((event, index: number) => (
                 <ScheduleItem
-                  key={idx}
+                  // @debt Ideally event.id would always be a unique identifier, but our types suggest it
+                  //   can be undefined. Because we can't use index as a key by itself (as that is unstable
+                  //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
+                  //   is far less likely to clash
+                  key={event.id ?? `${event.room}-${event.name}-${index}`}
                   event={event}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
