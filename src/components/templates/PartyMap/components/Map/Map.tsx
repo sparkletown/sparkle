@@ -28,6 +28,7 @@ import { hasElements } from "utils/types";
 import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
 import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
 import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 interface PropsType {
   venue: PartyMapVenue;
@@ -67,7 +68,9 @@ export const Map: React.FC<PropsType> = ({
 
   useEffect(() => {
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl ?? "";
+    img.src = !!venue.mapBackgroundImageUrl
+      ? venue.mapBackgroundImageUrl
+      : DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
       const calcRows = venue.columns
@@ -239,7 +242,7 @@ export const Map: React.FC<PropsType> = ({
         <img
           width="100%"
           className="party-map-background"
-          src={venue.mapBackgroundImageUrl}
+          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
           alt=""
         />
 

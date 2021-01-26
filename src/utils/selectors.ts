@@ -155,8 +155,8 @@ export const userPrivateChatsSelector = (state: RootState) =>
 export const chatUsersByIdSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
 
-export const experiencesSelector = (state: RootState) =>
-  state.firestore.data.experiences;
+export const experienceSelector = (state: RootState) =>
+  state.firestore.data.experience;
 
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue
