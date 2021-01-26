@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+
 // --- Avatar
 type AvatarProps = {
   backgroundImage?: string;
@@ -9,7 +11,8 @@ export const Avatar = styled.div<AvatarProps>`
   background-size: cover;
   width: 4vh;
   height: 4vh;
-  background-image: url(${({ backgroundImage }) => backgroundImage ?? ""});
+  background-image: url(${({ backgroundImage }) =>
+    backgroundImage ?? DEFAULT_PROFILE_IMAGE});
 `;
 
 // --- Reaction

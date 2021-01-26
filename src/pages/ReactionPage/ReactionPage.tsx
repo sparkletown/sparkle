@@ -1,25 +1,33 @@
-import React from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import "./ReactionPage.scss";
-import UserList from "components/molecules/UserList";
-import ReactionList from "components/templates/Jazzbar/components/ReactionList";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
-import { MessageToTheBandReaction } from "utils/reactions";
+import React, { useMemo } from "react";
+
 import { WithId } from "utils/id";
+import { MessageToTheBandReaction } from "utils/reactions";
 import { currentVenueSelectorData } from "utils/selectors";
 
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useRecentVenueUsers } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
+import { useVenueChats } from "hooks/useVenueChats";
+
+import ReactionList from "components/templates/Jazzbar/components/ReactionList";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import UserList from "components/molecules/UserList";
+
+import "./ReactionPage.scss";
+
 const ReactionPage = () => {
+  const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats =
-    useSelector((state) =>
-      state.firestore.ordered.venueChats?.filter(
-        (chat) => chat.deleted !== true
-      )
-    ) ?? [];
+  const chats = useVenueChats(venueId);
+  const filteredChats = useMemo(
+    () => chats?.filter((chat) => chat.deleted !== true) ?? [],
+    [chats]
+  );
 
   const hasPartygoers = recentVenueUsers.length > 0;
 
@@ -46,7 +54,10 @@ const ReactionPage = () => {
         <div className="row">
           <div className="col-8">
             {hasPartygoers && (
-              <ReactionList reactions={messagesToTheBand} chats={chats} />
+              <ReactionList
+                reactions={messagesToTheBand}
+                chats={filteredChats}
+              />
             )}
           </div>
           {hasPartygoers && (

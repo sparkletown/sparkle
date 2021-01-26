@@ -4,6 +4,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
+import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import InformationLeftColumn from "components/organisms/InformationLeftColumn";
@@ -25,6 +26,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
+
+  useExperiences(venue?.name);
 
   if (!venue) return <>Loading...</>;
 

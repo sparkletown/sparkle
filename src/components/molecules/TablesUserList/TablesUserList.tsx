@@ -12,6 +12,7 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
+import { experienceSelector } from "utils/selectors";
 
 interface PropsType {
   venueName: string;
@@ -69,14 +70,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const { user, profile } = useUser();
-
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
-
-  const { experience } = useSelector((state) => ({
-    experience:
-      state.firestore.data.experiences &&
-      state.firestore.data.experiences[venueName],
-  }));
+  const experience = useSelector(experienceSelector);
 
   useEffect(() => {
     if (!profile) return;
