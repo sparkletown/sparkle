@@ -10,6 +10,7 @@ import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
+import ChatSidebar from "components/organisms/ChatSidebar";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -84,7 +85,10 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
   }
 
   return (
-    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
+    <WithNavigationBar fullscreen={fullscreen}>
+      {template}
+      <ChatSidebar />
+    </WithNavigationBar>
   );
 };
 

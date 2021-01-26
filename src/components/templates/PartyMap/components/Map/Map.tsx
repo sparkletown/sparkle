@@ -267,9 +267,9 @@ export const Map: React.FC<PropsType> = ({
         )}
       </div>
 
-      <div className="party-map-sidebar">
+      {/* <div className="party-map-sidebar">
         <Sidebar />
-      </div>
+      </div> */}
     </div>
   );
 };

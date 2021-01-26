@@ -9,6 +9,8 @@ import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { VenueEvent } from "types/VenueEvent";
 
+import { ChatState } from "store/reducers/Chat";
+
 import { WithId } from "utils/id";
 
 import {
@@ -212,6 +214,9 @@ export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
   ifTrue: boolean,
   selector: SparkleSelector<U[]>
 ) => (ifTrue ? selector : emptyArraySelector);
+
+export const chatUIStateSelector: SparkleSelector<ChatState> = (state) =>
+  state.chat;
 
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 

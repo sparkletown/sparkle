@@ -17,48 +17,50 @@ export const PrivateChat: React.FC = () => {
     setSelectedUser,
     selectedUser,
     privateChatList,
-    chatMessages,
+    // chatMessages,
   } = usePrivateChat();
 
   const { recentUniverseUsers } = useRecentUniverseUsers();
 
-  const groomedPrivateChatList = useMemo(
-    () =>
-      userSearchQuery
-        ? privateChatList
-            .filter((chat) => chat.user.name.includes(userSearchQuery))
-            .sort()
-        : privateChatList,
-    [privateChatList, userSearchQuery]
-  );
+  // const groomedPrivateChatList = useMemo(
+  //   () =>
+  //     userSearchQuery
+  //       ? privateChatList
+  //           .filter((chat) => chat.user.name.includes(userSearchQuery))
+  //           .sort()
+  //       : privateChatList,
+  //   [privateChatList, userSearchQuery]
+  // );
 
-  const groomedOnlineUserList = useMemo(
-    () =>
-      userSearchQuery
-        ? recentUniverseUsers
-            .filter((user) => user.name.includes(userSearchQuery))
-            .sort()
-        : recentUniverseUsers,
-    [recentUniverseUsers, userSearchQuery]
-  );
+  // const groomedOnlineUserList = useMemo(
+  //   () =>
+  //     userSearchQuery
+  //       ? recentUniverseUsers
+  //           .filter((user) => user.name.includes(userSearchQuery))
+  //           .sort()
+  //       : recentUniverseUsers,
+  //   [recentUniverseUsers, userSearchQuery]
+  // );
 
   if (selectedUser) {
     return (
       <Chat
         sendMessage={sendMessageToSelectedUser}
-        chatMessages={chatMessages}
+        // chatMessages={chatMessages}
       />
     );
   }
 
-  return (
-    <div className="chat-list-wrapper">
-      {!isEmpty(groomedPrivateChatList) && (
-        <PrivateChatList privateChatList={groomedPrivateChatList} onChatClick />
-      )}
-      {!isEmpty(groomedOnlineUserList) && (
-        <OnlineUserList onlineUserList={groomedOnlineUserList} onUserClick />
-      )}
-    </div>
-  );
+  return null;
+
+  // return (
+  //   <div className="chat-list-wrapper">
+  //     {!isEmpty(groomedPrivateChatList) && (
+  //       <PrivateChatList privateChatList={groomedPrivateChatList} onChatClick />
+  //     )}
+  //     {!isEmpty(groomedOnlineUserList) && (
+  //       <OnlineUserList onlineUserList={groomedOnlineUserList} onUserClick />
+  //     )}
+  //   </div>
+  // );
 };

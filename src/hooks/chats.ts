@@ -1,51 +1,51 @@
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
-import { useUser } from "./useUser";
+import { useMemo } from "react";
 
-import { CHAT_TYPES } from "types/Chat";
+import { CHAT_TYPES, SetAnyChatTabOptions } from "types/Chat";
+
 import {
   userPrivateChatsSelector,
   chatUsersByIdSelector,
+  chatUIStateSelector,
 } from "utils/selectors";
-import { useMemo } from "react";
 import { chatSort } from "utils/chat";
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
-import { DOCUMENT_ID, NUM_CHAT_UIDS_TO_LOAD } from "settings";
 import { hasElements } from "utils/types";
 
-export const useConnectVenueChat = (venueId?: string) => {
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "venueChats",
-        }
-      : undefined
-  );
-};
+import { setChatTab, setChatSidebarVisibility } from "store/actions/Chat";
+
+import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
+import { useSelector } from "./useSelector";
+import { useUser } from "./useUser";
+import { useDispatch } from "./useDispatch";
+
+import { DOCUMENT_ID, NUM_CHAT_UIDS_TO_LOAD } from "settings";
+
+/////////////// SHARED CHATS HOOKS ///////////////
 
 export const useChatControls = () => {
-  const openChat = (chatOptions?: {
-    chatType: CHAT_TYPES;
-    userId: "USER_ID";
-  }) => {};
-  const closeChat = () => {};
+  const dispatch = useDispatch();
 
-  const isChatOpened = true;
+  const openChat = (
+    chatOptions: SetAnyChatTabOptions = { chatType: CHAT_TYPES.VENUE_CHAT }
+  ) => {
+    dispatch(setChatSidebarVisibility(true));
+    dispatch(setChatTab(chatOptions));
+  };
 
-  const setSelectedTab = (chatType: CHAT_TYPES) => {};
-  const selectedTab = "private";
+  const closeChat = () => {
+    dispatch(setChatSidebarVisibility(false));
+  };
+
+  const { isChatSidebarVisible, openedChatType } = useSelector(
+    chatUIStateSelector
+  );
 
   return {
-    isChatOpened,
+    isChatSidebarVisible,
+    openedChatType,
 
     openChat,
     closeChat,
-
-    setSelectedTab,
-    selectedTab,
   };
 };
 
@@ -56,6 +56,8 @@ export const useChatInfo = () => {
     venueChatTabTitle: "Venue Chat",
   };
 };
+
+/////////////// PRIVATE CHAT HOOKS ///////////////
 
 export const useUserChatsConnect = () => {
   const { user } = useUser();
@@ -127,11 +129,6 @@ export const useChatUsersById = () => {
   );
 };
 
-// NOTE: Implement after we have world concept created;
-export const useWorldChat = () => {};
-
-export const useVenueChat = () => {};
-
 export const usePrivateChat = () => {
   // useFirestoreConnect(
   //   user && user.uid
@@ -173,3 +170,24 @@ export const usePrivateChat = () => {
     privateChatList,
   };
 };
+
+/////////////// WORLD CHAT HOOKS ///////////////
+
+export const useWorldChat = () => {};
+
+/////////////// LOCATION CHAT HOOKS ///////////////
+
+export const useConnectVenueChat = (venueId?: string) => {
+  useFirestoreConnect(
+    venueId
+      ? {
+          collection: "venues",
+          doc: venueId,
+          subcollections: [{ collection: "chats" }],
+          storeAs: "venueChats",
+        }
+      : undefined
+  );
+};
+
+export const useVenueChat = () => {};

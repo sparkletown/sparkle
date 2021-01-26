@@ -1,10 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import firebase from "firebase/app";
+import { SetAnyChatTabOptions } from "types/Chat";
 
-export const SEND_GLOBAL_CHAT: string = "SEND_GLOBAL_CHAT";
-export const SEND_ROOM_CHAT: string = "SEND_ROOM_CHAT";
-export const SEND_PRIVATE_CHAT: string = "SEND_PRIVATE_CHAT";
-export const SEND_TABLE_CHAT: string = "SEND_TABLE_CHAT";
+export enum ChatActionTypes {
+  SEND_GLOBAL_CHAT = "SEND_GLOBAL_CHAT",
+  SEND_ROOM_CHAT = "SEND_ROOM_CHAT",
+  SEND_PRIVATE_CHAT = "SEND_PRIVATE_CHAT",
+  SEND_TABLE_CHAT = "SEND_TABLE_CHAT",
+  SET_CHAT_SIDEBAR_VISIBILITY = "SET_CHAT_SIDEBAR_VISIBILITY",
+  SET_CHAT_TAB = "SET_CHAT_TAB",
+}
 
 interface BaseSendChatFields {
   venueId: string;
@@ -21,16 +26,16 @@ interface SendRoomChatFields extends BaseSendChatToFields {}
 interface SendTableChatFields extends BaseSendChatToFields {}
 
 interface SendGlobalChatAction extends SendGlobalChatFields {
-  type: typeof SEND_GLOBAL_CHAT;
+  type: ChatActionTypes.SEND_GLOBAL_CHAT;
 }
 interface SendPrivateChatAction extends SendPrivateChatFields {
-  type: typeof SEND_PRIVATE_CHAT;
+  type: ChatActionTypes.SEND_PRIVATE_CHAT;
 }
 interface SendRoomChatAction extends SendRoomChatFields {
-  type: typeof SEND_ROOM_CHAT;
+  type: ChatActionTypes.SEND_ROOM_CHAT;
 }
 interface SendTableChatAction extends SendTableChatFields {
-  type: typeof SEND_TABLE_CHAT;
+  type: ChatActionTypes.SEND_TABLE_CHAT;
 }
 
 enum ChatMessageType {
@@ -111,7 +116,7 @@ const saveMessage = async (venueId: string, message: ChatMessage) =>
     .add(buildMessage(message));
 
 export const sendGlobalChat = createAsyncThunk<void, SendGlobalChatFields>(
-  SEND_GLOBAL_CHAT,
+  ChatActionTypes.SEND_GLOBAL_CHAT,
   async ({ venueId, text, from }) => {
     await saveMessage(
       venueId,
@@ -121,7 +126,7 @@ export const sendGlobalChat = createAsyncThunk<void, SendGlobalChatFields>(
 );
 
 export const sendPrivateChat = createAsyncThunk<void, SendPrivateChatFields>(
-  SEND_PRIVATE_CHAT,
+  ChatActionTypes.SEND_PRIVATE_CHAT,
   async ({ text, from, to }) => {
     for (const messageUser of [from, to]) {
       await firebase
@@ -135,7 +140,7 @@ export const sendPrivateChat = createAsyncThunk<void, SendPrivateChatFields>(
 );
 
 export const sendRoomChat = createAsyncThunk<void, SendRoomChatFields>(
-  SEND_ROOM_CHAT,
+  ChatActionTypes.SEND_ROOM_CHAT,
   async ({ venueId, text, from, to }) => {
     await saveMessage(
       venueId,
@@ -145,7 +150,7 @@ export const sendRoomChat = createAsyncThunk<void, SendRoomChatFields>(
 );
 
 export const sendTableChat = createAsyncThunk<void, SendTableChatFields>(
-  SEND_TABLE_CHAT,
+  ChatActionTypes.SEND_TABLE_CHAT,
   async ({ venueId, text, from, to }) => {
     await saveMessage(
       venueId,
@@ -154,8 +159,34 @@ export const sendTableChat = createAsyncThunk<void, SendTableChatFields>(
   }
 );
 
+type ChatSidebarVisibilityAction = {
+  type: ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY;
+  payload: boolean;
+};
+
+type OpenChatAction = {
+  type: ChatActionTypes.SET_CHAT_TAB;
+  payload: SetAnyChatTabOptions;
+};
+
+export const setChatSidebarVisibility = (
+  isVisible: boolean
+): ChatSidebarVisibilityAction => ({
+  type: ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY,
+  payload: isVisible,
+});
+
+export const setChatTab = (
+  setChatTabOptions: SetAnyChatTabOptions
+): OpenChatAction => ({
+  type: ChatActionTypes.SET_CHAT_TAB,
+  payload: setChatTabOptions,
+});
+
 export type ChatActions =
   | SendGlobalChatAction
   | SendPrivateChatAction
   | SendRoomChatAction
-  | SendTableChatAction;
+  | SendTableChatAction
+  | ChatSidebarVisibilityAction
+  | OpenChatAction;
