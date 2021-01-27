@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/userLocation";
 import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
 import {
   getCurrentTimeInMilliseconds,
@@ -14,7 +14,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useRecentRoomUsers } from "hooks/users";
+import { useRecentLocationUsers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -36,8 +36,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const roomTitle = room?.title;
   const userLastSeenIn = profile?.lastSeenIn;
-
-  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
+  // console.log(room, roomTitle, { recentRoomUsers });
 
   const roomVenue = useMemo(() => {
     if (!room) return undefined;
@@ -47,8 +46,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const venueName = roomVenue?.name;
 
-  // TODO: @debt refactor this to use openRoomWithCounting
-  const enter = useCallback(() => {
+  const { recentLocationUsers } = useRecentLocationUsers(venueName);
+
+  const enterRoom = useCallback(() => {
     if (!room || !user) return;
 
     const nowInMilliseconds = getCurrentTimeInMilliseconds();
@@ -114,9 +114,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
               </div>
               <div className="col">
                 <RoomModalOngoingEvent
-                  room={room}
+                  roomTitle={room.title}
                   roomEvents={roomEvents}
-                  enterRoom={enter}
+                  onRoomEnter={enterRoom}
                 />
               </div>
             </div>
@@ -124,7 +124,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         </div>
 
         <UserList
-          users={recentRoomUsers}
+          users={recentLocationUsers}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}
@@ -147,7 +147,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
                   }
-                  enterRoom={enter}
+                  onRoomEnter={enterRoom}
                   roomUrl={room.url}
                 />
               ))}

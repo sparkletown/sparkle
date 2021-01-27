@@ -16,6 +16,8 @@ export const VenuePartygoers = () => {
 
   const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 
+  console.log({ recentWorldUsers });
+
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
   const title = useMemo<string>(() => {

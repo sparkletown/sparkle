@@ -13,7 +13,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
-import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { openRoomWithCounting } from "utils/userLocation";
 import { currentVenueSelector } from "utils/selectors";
 
 import { RoomModal } from "./RoomModal";

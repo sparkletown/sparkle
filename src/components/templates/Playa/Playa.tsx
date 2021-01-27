@@ -38,7 +38,7 @@ import {
 } from "types/venues";
 
 import { WithId } from "utils/id";
-import { updateLocationData } from "utils/useLocationUpdateEffect";
+import { updateLocationData } from "utils/userLocation";
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,

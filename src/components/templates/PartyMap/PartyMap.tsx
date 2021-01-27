@@ -12,9 +12,9 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 import { orderedVenuesSelector } from "utils/selectors";
-import { getCurrentTimeInUTCSeconds } from "utils/time";
+import { getCurrentTimeInMilliseconds } from "utils/time";
 import { openRoomUrl } from "utils/url";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { updateLocationData } from "utils/userLocation";
 
 import { Map, RoomModal } from "./components";
 
@@ -56,14 +56,14 @@ export const PartyMap: React.FC = () => {
         room.url.endsWith(`/${venue.id}`)
       );
 
-      const nowInUTCSeconds = getCurrentTimeInUTCSeconds();
+      const nowInMilliseconds = getCurrentTimeInMilliseconds();
 
       const roomName = {
-        [`${currentVenue.name}/${room.title}`]: nowInUTCSeconds,
-        ...(roomVenue ? { [currentVenue.name]: nowInUTCSeconds } : {}),
+        [`${currentVenue.name}/${room.title}`]: nowInMilliseconds,
+        ...(roomVenue ? { [currentVenue.name]: nowInMilliseconds } : {}),
       };
 
-      trackRoomEntered(user, roomName, profile?.lastSeenIn);
+      updateLocationData(user.uid, roomName, profile?.lastSeenIn);
       openRoomUrl(room.url);
     },
     [profile, user, currentVenue, venues]

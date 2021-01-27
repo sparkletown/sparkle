@@ -16,7 +16,7 @@ import {
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
-import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { openRoomWithCounting } from "utils/userLocation";
 import { venueEventsSelector, venueSelector } from "utils/selectors";
 
 import { retainAttendance } from "store/actions/Attendance";

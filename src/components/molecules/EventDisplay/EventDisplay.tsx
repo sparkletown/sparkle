@@ -4,7 +4,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { openEventRoomWithCounting } from "utils/userLocation";
 
 import { useUser } from "hooks/useUser";
 

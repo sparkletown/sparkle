@@ -24,8 +24,8 @@ import {
 } from "utils/time";
 import {
   updateLocationData,
-  useLocationUpdateEffect,
-} from "utils/useLocationUpdateEffect";
+  setUpdateTimeSpentInterval,
+} from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
@@ -122,7 +122,7 @@ const VenuePage: React.FC = () => {
   // Camp and PartyMap needs to be able to modify this
   // Currently does not work with roome
   const location = venueName;
-  useLocationUpdateEffect(user, venueName);
+  setUpdateTimeSpentInterval(user, venueName);
 
   const newLocation = { [location]: getCurrentTimeInMilliseconds() };
   const isNewLocation = profile?.lastSeenIn

@@ -3,7 +3,7 @@ import React, { FC, useCallback } from "react";
 import { Venue, VenueEvent } from "types/venues";
 
 import { formatHourAndMinute } from "utils/time";
-import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { openEventRoomWithCounting } from "utils/userLocation";
 import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";

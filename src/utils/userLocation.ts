@@ -1,4 +1,5 @@
 import firebase, { UserInfo } from "firebase/app";
+import { isEmpty } from "lodash";
 
 import { AnyRoom } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -14,94 +15,49 @@ import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 const LOCATION_INCREMENT_SECONDS = 10;
 const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
-export const updateLocationData = (
-  user: UserInfo,
-  locationName: { [key: string]: number },
-  lastSeenIn: { [key: string]: number } | undefined
-) => {
-  const location = locationName ?? {};
-  const prevRoomName =
-    lastSeenIn &&
-    Object.keys(lastSeenIn).find((lastSeen) => lastSeen.includes("/"));
+type LocationData = Record<string, number>;
 
-  if (lastSeenIn && prevRoomName) {
-    delete lastSeenIn[prevRoomName];
+export const updateLocationData = (
+  userId: string,
+  newLocationData: LocationData = {},
+  oldLocationData: LocationData | undefined
+) => {
+  const prevRoomName =
+    oldLocationData &&
+    Object.keys(oldLocationData).find((lastSeen) => lastSeen.includes("/"));
+
+  if (oldLocationData && prevRoomName) {
+    delete oldLocationData[prevRoomName];
   }
 
-  const roomVenue =
-    locationName && Object.keys(locationName).length
-      ? Object.keys(locationName)[0]
-      : null;
-
-  updateUserProfile(user.uid, {
+  updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn:
-      !locationName && !lastSeenIn
-        ? null
-        : lastSeenIn
-        ? { ...lastSeenIn, ...location }
-        : location,
-    room: !locationName && !lastSeenIn ? null : roomVenue,
+    lastSeenIn: { ...oldLocationData, ...newLocationData }
   });
 };
 
-// get Profile from the firebase
-// @debt rename this trackLocationEntered?
-export const trackRoomEntered = (
-  user: UserInfo,
-  locationName: { [key: string]: number },
-  lastSeenIn: { [key: string]: number } | undefined
-) => {
-  updateLocationData(user, locationName, lastSeenIn);
-};
-
-export interface TrackRoomEnteredNGProps {
-  user?: UserInfo;
-  venue: AnyVenue;
-  room: AnyRoom;
-  lastSeenIn?: Record<string, number>;
+export interface TrackLocationProps {
+  userId: string;
+  locationName: string,
+  lastSeenIn?: LocationData;
 }
 
-export const trackRoomEnteredNG = ({
-  user,
-  venue,
-  room,
+const trackLocationEntered = ({
+  userId,
+  locationName,
   lastSeenIn,
-}: TrackRoomEnteredNGProps) => {
-  if (!user) return;
-
-  trackRoomEntered(
-    user,
-    { [`${venue.name}/${room.title}`]: getCurrentTimeInMilliseconds() },
+}: TrackLocationProps) => {
+  updateLocationData(
+    userId,
+    { [locationName]: getCurrentTimeInMilliseconds() },
     lastSeenIn
   );
-};
-
-export interface TrackVenueEnteredProps {
-  user?: UserInfo;
-  venue: AnyVenue;
-  lastSeenIn?: Record<string, number>;
 }
 
-export const trackVenueEntered = ({
-  user,
-  venue,
-  lastSeenIn,
-}: TrackVenueEnteredProps) => {
-  if (!user) return;
-
-  trackRoomEntered(
-    user,
-    { [venue.name]: getCurrentTimeInMilliseconds() },
-    lastSeenIn
-  );
-};
-
-export const leaveRoom = (user: UserInfo) => {
-  updateUserProfile(user.uid, {
+export const deleteLocationData = (userId: string) => {
+  updateUserProfile(userId, {
     lastSeenAt: 0,
     lastSeenIn: {},
-    room: null,
   });
 };
 
@@ -115,7 +71,7 @@ export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
   room?: AnyRoom;
 }
 
-export const openRoomWithCounting = ({
+export const enterSparkleRoom = ({
   user,
   profile,
   venue,
@@ -133,15 +89,19 @@ export const openRoomWithCounting = ({
   }
 
   // Track room counting
+
+};
+
+export const enterExternalRoom = () => {
   trackRoomEnteredNG({
-    user,
+    user.uid,
     venue,
     room,
     lastSeenIn: profile?.lastSeenIn,
   });
 
   openRoomUrl(room.url);
-};
+  }
 
 export interface EnterEventRoomWithCounting
   extends BaseEnterRoomWithCountingProps {
@@ -159,7 +119,7 @@ export const openEventRoomWithCounting = ({
   openRoomWithCounting({ user, profile, venue, room });
 };
 
-export const useLocationUpdateEffect = (
+export const setUpdateTimeSpentInterval = (
   user: UserInfo | undefined,
   roomName: string
 ) => {
