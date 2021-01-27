@@ -59,13 +59,12 @@ const NavSearchBar = () => {
       event.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const roomsResults =
-      venue?.rooms?.filter((room) =>
-        room.title.toLowerCase().includes(searchQuery.toLowerCase())
-      ) ?? [];
+    const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
+      room.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
 
     setSearchResult({
-      rooms: roomsResults as Room[],
+      rooms: roomsResults,
       users: venueUsersResults,
       events: venueEventsResults,
     });
