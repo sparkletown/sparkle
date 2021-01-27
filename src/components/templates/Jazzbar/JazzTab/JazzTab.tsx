@@ -24,13 +24,11 @@ import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutM
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { usePartygoers } from "hooks/users";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -69,8 +67,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { user } = useUser();
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
-
-  const venueUsers = usePartygoers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -237,12 +233,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             </div>
           </div>
         </div>
-        <UserList
-          isAudioEffectDisabled={isAudioEffectDisabled}
-          users={venueUsers}
-          activity={venue?.activity ?? "here"}
-          disableSeeAll={false}
-        />
         <div className="seated-area">
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
