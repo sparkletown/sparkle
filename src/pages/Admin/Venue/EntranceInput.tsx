@@ -2,6 +2,7 @@ import React from "react";
 
 import { Button, Form } from "react-bootstrap";
 import { useDynamicInput } from "hooks/useDynamicInput";
+import { EntranceStepConfig } from "types/EntranceStep";
 
 interface EntranceButtonInputProps {
   fieldName: string;
@@ -66,14 +67,16 @@ interface EntranceInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   showTitle?: boolean;
+  editing?: EntranceStepConfig[];
 }
 
 const EntranceInput: React.FC<EntranceInputProps> = ({
   fieldName,
   register,
   showTitle = true,
+  editing,
 }) => {
-  const { indexes, add, remove, clear } = useDynamicInput();
+  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderEntranceInput = (index: number) => {
     const baseName = `${fieldName}[${index}]`;
@@ -119,7 +122,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
         <Button onClick={add}>Add entrance step</Button>
         {indexes.length > 0 && (
           <Button onClick={clear} variant="secondary">
-            Remvoe all entrance steps
+            Remove all entrance steps
           </Button>
         )}
       </div>

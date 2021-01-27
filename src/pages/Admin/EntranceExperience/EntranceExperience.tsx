@@ -128,6 +128,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
               register={register}
               fieldName="entrance"
               showTitle={false}
+              editing={venue.entrance}
             />
           </S.ItemBody>
         </S.ItemWrapper>
