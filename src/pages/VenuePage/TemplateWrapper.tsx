@@ -14,7 +14,6 @@ import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AvatarGrid } from "components/templates/AvatarGrid";
 
-
 type Props = {
   venue: Venue;
 };
