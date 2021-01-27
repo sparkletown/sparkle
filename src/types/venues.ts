@@ -46,7 +46,7 @@ export interface Venue_v2_Base {
   host: {
     icon: string;
   };
-  owners?: string[];
+  owners: string[];
   theme?: {
     primaryColor: string;
     backgroundColor?: string;
@@ -167,7 +167,7 @@ export interface PartyMapVenue extends Venue {
   map_viewbox?: string;
   password?: string;
   admin_password?: string;
-  owners?: string[];
+  owners: string[];
   rooms?: Room[];
 }
 
