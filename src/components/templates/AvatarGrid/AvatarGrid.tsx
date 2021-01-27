@@ -27,7 +27,7 @@ import "./AvatarGrid.scss";
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-const AvatarGrid = () => {
+export const AvatarGrid = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
 

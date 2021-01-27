@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "hooks/useSelector";
 import firebase from "firebase/app";
+
+import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
+import { useUserIsVenueOwner } from "hooks/useUserIsVenueOwner";
+
 import { currentVenueSelectorData } from "utils/selectors";
 
-// @debt refactor BannerAdmin and this to DRY the common parts.
-//   The only difference in pattern is the update function being called + placeholder/etc labels
-const VideoAdmin: React.FC = () => {
+import "./AdminVideo.scss";
+
+export const AdminVideo: React.FC = () => {
   const venueId = useVenueId();
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
 
   const venue = useSelector(currentVenueSelectorData);
+  const isVenueOwner = useUserIsVenueOwner();
 
   useEffect(() => {
     setIframeUrl(venue?.iframeUrl || "");
@@ -26,11 +30,12 @@ const VideoAdmin: React.FC = () => {
 
   const saveIframeUrl = () => updateIframeUrl(iframeUrl);
 
+  if (!isVenueOwner) {
+    return <>{`You don't have the permissions to access this page`}</>;
+  }
+
   return (
     <>
-      <div className="row">
-        <h4>Video Admin</h4>
-      </div>
       <div className="edit-banner">
         <label htmlFor="bannerMessage">iframe URL for {venue?.name}:</label>
         <input
@@ -54,5 +59,3 @@ const VideoAdmin: React.FC = () => {
     </>
   );
 };
-
-export default VideoAdmin;

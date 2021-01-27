@@ -1,19 +1,19 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
+import { Venue, VenueTemplate } from "types/venues";
+
+import { FriendShipPage } from "pages/FriendShipPage";
 import { ArtPiece } from "components/templates/ArtPiece";
-import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
-import { AvatarRouter } from "components/templates/AvatarGrid/Router";
 import { ConversationSpace } from "components/templates/ConversationSpace";
-import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
-
-import { FriendShipPage } from "pages/FriendShipPage";
+import { FireBarrel } from "components/templates/FireBarrel";
+import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+import { AvatarGrid } from "components/templates/AvatarGrid";
 
-import { Venue, VenueTemplate } from "types/venues";
 
 type Props = {
   venue: Venue;
@@ -64,11 +64,11 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
       );
       break;
     case VenueTemplate.audience:
-      template = <AudienceRouter />;
+      template = <Audience />;
       fullscreen = true;
       break;
     case VenueTemplate.avatargrid:
-      template = <AvatarRouter />;
+      template = <AvatarGrid />;
       break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;

@@ -3,8 +3,6 @@ import { useRouteMatch, Switch, Route } from "react-router-dom";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { BannerAdmin } from "components/organisms/BannerAdmin";
-
 import PartyMap from "./PartyMap";
 
 export const PartyMapRouter: FC = () => {
@@ -13,7 +11,6 @@ export const PartyMapRouter: FC = () => {
 
   return (
     <Switch>
-      <Route exact path={`${match.path}/admin`} component={BannerAdmin} />
       <Route path={`${match.path}/:roomTitle`} component={PartyMap} />
       <Route path={`${match.path}/`} component={PartyMap} />
     </Switch>

@@ -155,9 +155,7 @@ export const experienceSelector = (state: RootState) =>
   state.firestore.data.experience;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue
-    ? state.firestore.ordered.currentVenue[0]
-    : undefined;
+  state.firestore.ordered.currentVenue?.[0];
 
 export const parentVenueOrderedSelector: SparkleSelector<
   WithId<AnyVenue> | undefined

@@ -89,7 +89,7 @@ export interface Venue {
   };
   profile_questions: Question[];
   code_of_conduct_questions: Question[];
-  owners?: string[];
+  owners: string[];
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   mapIconImageUrl?: string;
@@ -178,6 +178,14 @@ export interface JazzbarVenue extends Venue {
   host: {
     icon: string;
   };
+  owners: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+  id: string;
+  rooms?: AnyRoom[];
+  mapBackgroundImageUrl?: string;
 }
 
 export interface Question {

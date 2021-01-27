@@ -19,7 +19,7 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-const FireBarrel: React.FC = () => {
+export const FireBarrel: React.FC = () => {
   const [currentPartygoers, setCurrentPartygoers] = useState<
     WithId<User>[] | []
   >([]);
