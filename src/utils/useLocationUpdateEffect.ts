@@ -1,9 +1,8 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom } from "types/Venue";
-import { AnyVenue } from "types/Firestore";
+import { AnyRoom } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
@@ -47,8 +46,8 @@ export const updateLocationData = (
 };
 
 // get Profile from the firebase
-// @debt rename this trackRoomEntered
-export const enterLocation = (
+// @debt rename this trackLocationEntered?
+export const trackRoomEntered = (
   user: UserInfo,
   locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
@@ -71,7 +70,7 @@ export const trackRoomEnteredNG = ({
 }: TrackRoomEnteredNGProps) => {
   if (!user) return;
 
-  enterLocation(
+  trackRoomEntered(
     user,
     { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
     lastSeenIn
@@ -91,7 +90,7 @@ export const trackVenueEntered = ({
 }: TrackVenueEnteredProps) => {
   if (!user) return;
 
-  enterLocation(
+  trackRoomEntered(
     user,
     { [venue.name]: getCurrentTimeInUnixEpochSeconds() },
     lastSeenIn

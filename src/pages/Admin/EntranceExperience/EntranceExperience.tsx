@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "hooks/useUser";
 
 // Typings
-import { Question, Venue_v2_EntranceConfig } from "types/Venue";
+import { Question, Venue_v2_EntranceConfig } from "types/venues";
 import { EntranceExperienceProps } from "./EntranceExperience.types";
 
 // Styles

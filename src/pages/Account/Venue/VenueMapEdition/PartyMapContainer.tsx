@@ -1,15 +1,19 @@
 import React, { useMemo } from "react";
 
-import { Container, SubVenueIconMap } from "./Container";
-import { CampVenue } from "types/CampVenue";
 import { ExtractProps } from "types/utility";
+import { PartyMapVenue } from "types/venues";
 
-type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
-  venue: CampVenue;
+import { Container, SubVenueIconMap } from "./Container";
+
+type PartyMapContainerProps = Omit<
+  ExtractProps<typeof Container>,
+  "otherIcons"
+> & {
+  venue: PartyMapVenue;
   currentRoomIndex?: number;
 };
 
-export const CampContainer: React.FC<PropsType> = (props) => {
+export const PartyMapContainer: React.FC<PartyMapContainerProps> = (props) => {
   const { currentRoomIndex, venue, ...rest } = props;
 
   const otherIcons: SubVenueIconMap = useMemo(() => {

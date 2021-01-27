@@ -1,15 +1,14 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyRoom, Room } from "types/rooms";
 import {
-  AnyRoom,
+  VenueEvent,
   VenuePlacement,
+  VenueTemplate,
   Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
-} from "types/Venue";
-import { CampRoomData } from "types/CampRoomData";
-import { VenueTemplate } from "types/VenueTemplate";
-import { RoomData_v2 } from "types/RoomData";
+} from "types/venues";
+import { RoomData_v2 } from "types/rooms";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -59,7 +58,7 @@ type RoomImageUrlKeys = "image_url";
 type VenueImageUrls = Partial<Record<VenueImageUrlKeys, string>>;
 type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
-export type RoomInput = Omit<CampRoomData, "image_url"> & {
+export type RoomInput = Omit<Room, "image_url"> & {
   image_url?: string;
   image_file?: FileList;
 };
@@ -83,7 +82,7 @@ export type VenueInput = AdvancedVenueInput &
     zoomUrl?: string;
     iframeUrl?: string;
     template: VenueTemplate;
-    rooms?: Array<CampRoomData>;
+    rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
     placementRequests?: string;
     adultContent: boolean;
@@ -123,12 +122,14 @@ export interface VenueInput_v2
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
   VenueImageUrls;
+
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
+
 type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
   RoomImageUrls & {
     url?: string;

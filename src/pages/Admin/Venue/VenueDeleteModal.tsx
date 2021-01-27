@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 
 import "./VenueDeleteModal.scss";
 import { useHistory } from "react-router-dom";

@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
 import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
-import { isVenueWithRooms } from "types/CampVenue";
+import { Room } from "types/rooms";
 import { canHaveSubvenues } from "utils/venue";
-import { Venue } from "types/Venue";
+import { isVenueWithRooms, Venue, VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 import { Link } from "react-router-dom";
 import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
-import { VenueEvent } from "types/VenueEvent";
 
 interface Props {
   venue: WithId<Venue>;
@@ -38,7 +36,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         </div>
       </div>
       {rooms &&
-        rooms.map((room: CampRoomData, idx: number) => (
+        rooms.map((room: Room, idx: number) => (
           <AdminVenueRoomDetails
             key={idx}
             index={idx}

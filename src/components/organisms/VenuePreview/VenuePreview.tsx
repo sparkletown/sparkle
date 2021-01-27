@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
+
+import { VenueTemplate } from "types/venues";
+
+import { createJazzbar } from "utils/venue";
+
 import JazzBar from "components/templates/Jazzbar";
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
-import { createJazzbar } from "types/JazzbarVenue";
-import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   values: FormValues;
