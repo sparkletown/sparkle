@@ -3,18 +3,15 @@ import firebase from "firebase/app";
 
 import { useSelector } from "hooks/useSelector";
 
-import { RootState } from "index";
+import { venueSelector } from "utils/selectors";
 
 import "./AdminBanner.scss";
-
-const currentVenueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue?.[0];
 
 export const AdminBanner: FC = () => {
   const [bannerMessage, setBannerMessage] = useState("");
   const [error, setError] = useState<string | null>();
 
-  const currentVenue = useSelector(currentVenueSelector);
+  const currentVenue = useSelector(venueSelector);
 
   useEffect(() => {
     setBannerMessage(currentVenue?.bannerMessage || "");
@@ -42,9 +39,10 @@ export const AdminBanner: FC = () => {
 
   return (
     <>
-      <div className="edit-banner">
+      <div className="admin-banner-container">
         <label htmlFor="bannerMessage">Banner Message:</label>
         <input
+          className="banner-input"
           type="text"
           value={bannerMessage}
           onChange={(e) => {

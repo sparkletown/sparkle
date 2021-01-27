@@ -36,9 +36,10 @@ export const AdminVideo: React.FC = () => {
 
   return (
     <>
-      <div className="edit-banner">
+      <div className="admin-video-container">
         <label htmlFor="bannerMessage">iframe URL for {venue?.name}:</label>
         <input
+          className="video-input"
           type="text"
           value={iframeUrl}
           onChange={(e) => {

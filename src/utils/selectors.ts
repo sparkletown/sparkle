@@ -12,6 +12,7 @@ import { WithId } from "utils/id";
 
 import {
   makeIsRequestedSelector,
+  makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
@@ -114,6 +115,10 @@ export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
 ) => state.attendance.retainAttendance;
 
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenue"
+);
+
+export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
   "currentVenue"
 );
 
