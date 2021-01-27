@@ -9,7 +9,10 @@ export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
 export const FIVE_MINUTES_MS = 5 * 60 * 1000;
 
-export const SECONDS_TIMESTAMP_MAX_LENGTH = 10;
+export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
+export const ONE_SECOND_IN_MILLISECONDS = 1000;
+export const ONE_HOUR_IN_MILLISECONDS =
+  ONE_SECOND_IN_MILLISECONDS * ONE_HOUR_IN_SECONDS;
 
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
@@ -131,11 +134,11 @@ export function entranceUnhosted(
 
 export function getHoursAgoInSeconds(hours: number) {
   const nowInSec = Date.now() / 1000;
-  return nowInSec - hours * 60 * 60;
+  return nowInSec - hours * ONE_HOUR_IN_SECONDS;
 }
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
-  Date.now() - hours * 60 * 60 * 1000;
+  Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
 export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
 
@@ -191,8 +194,9 @@ export function formatDateToWeekday(utcSeconds: number) {
 }
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
-  const isTimestampInSeconds =
-    Math.floor(timestamp).toString().length <= SECONDS_TIMESTAMP_MAX_LENGTH;
+  const isTimestampInSeconds = timestamp <= SECONDS_TIMESTAMP_MAX_VALUE;
 
-  return isTimestampInSeconds ? timestamp * 1000 : timestamp;
+  return isTimestampInSeconds
+    ? timestamp * ONE_SECOND_IN_MILLISECONDS
+    : timestamp;
 };

@@ -100,7 +100,7 @@ export const trackVenueEntered = ({
 
 export const leaveRoom = (user: UserInfo) => {
   updateUserProfile(user.uid, {
-    lastSeenAt: getCurrentTimeInMilliseconds(),
+    lastSeenAt: 0,
     lastSeenIn: {},
     room: null,
   });

@@ -1,32 +1,46 @@
 export enum SovereignVenueIdActionTypes {
   SET_SOVEREIGN_VENUE_ID = "SET_SOVEREIGN_VENUE_ID",
   SET_SOVEREIGN_VENUE_IS_LOADED = "SET_SOVEREIGN_VENUE_IS_LOADED",
+  SET_SOVEREIGN_VENUE_ERROR = "SET_SOVEREIGN_VENUE_ERROR",
 }
 
-type setSovereignVenueIdIsLoadingAction = {
+type SetSovereignVenueIdIsLoadingAction = {
   type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_IS_LOADED;
-  payload: boolean;
+  payload: { isLoading: boolean };
+};
+
+type SetSovereignVenueIdErrorAction = {
+  type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ERROR;
+  payload: { errorMsg: string };
 };
 
 type SetSovereignVenueIdAction = {
   type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ID;
-  payload: string;
+  payload: { sovereignVenueId: string };
 };
 
 export const setSovereignVenueIdIsLoading = (
   isLoading: boolean
-): setSovereignVenueIdIsLoadingAction => ({
+): SetSovereignVenueIdIsLoadingAction => ({
   type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_IS_LOADED,
-  payload: isLoading,
+  payload: { isLoading },
+});
+
+export const setSovereignVenueIdError = (
+  errorMsg: string
+): SetSovereignVenueIdErrorAction => ({
+  type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ERROR,
+  payload: { errorMsg },
 });
 
 export const setSovereignVenueId = (
   sovereignVenueId: string
 ): SetSovereignVenueIdAction => ({
   type: SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ID,
-  payload: sovereignVenueId,
+  payload: { sovereignVenueId },
 });
 
 export type SovereignVenueIdActions =
-  | setSovereignVenueIdIsLoadingAction
+  | SetSovereignVenueIdIsLoadingAction
+  | SetSovereignVenueIdErrorAction
   | SetSovereignVenueIdAction;

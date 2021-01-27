@@ -2,7 +2,7 @@ import { AttendanceActions } from "./Attendance";
 import { ChatActions } from "./Chat";
 import { LocationActions } from "./Location";
 import { RoomActions } from "./Room";
-import { SovereignVenueIdActions } from "./SovereignVenueId";
+import { SovereignVenueIdActions } from "./SovereignVenue";
 
 export type RootActions =
   | AttendanceActions

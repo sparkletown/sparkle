@@ -3,7 +3,7 @@ import { Reducer } from "redux";
 import { roomReducer } from "./Room";
 import { locationReducer } from "./Location";
 import { attendanceReducer } from "./Attendance";
-import { sovereignVenueIdReducer } from "./SovereignVenueId";
+import { sovereignVenueReducer } from "./SovereignVenue";
 
 // Reducers per VenueTemplate (eg. reducer for playa template)
 export const VenueTemplateReducers: { [key: string]: Reducer } = {};
@@ -13,5 +13,5 @@ export const MiscReducers = {
   room: roomReducer,
   location: locationReducer,
   attendance: attendanceReducer,
-  sovereignVenueId: sovereignVenueIdReducer,
+  sovereignVenue: sovereignVenueReducer,
 };

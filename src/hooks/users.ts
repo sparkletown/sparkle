@@ -2,53 +2,17 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 
-import {
-  worldUsersSelector,
-  worldUsersByIdSelector,
-  sovereignVenueIdSelector,
-} from "utils/selectors";
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { fetchSovereignVenueId } from "api/sovereignVenueId";
-
-import {
-  setSovereignVenueId,
-  setSovereignVenueIdIsLoading,
-} from "store/actions/SovereignVenueId";
+import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import { useDispatch } from "./useDispatch";
-
-export const useSovereignVenueId = (venueId?: string) => {
-  const dispatch = useDispatch();
-
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSelector(
-    sovereignVenueIdSelector
-  );
-
-  // NOTE: Force to fetch it only once
-  if (!sovereignVenueId && !isSovereignVenueIdLoading && venueId) {
-    const onSuccess = (sovereignVenueId: string) => {
-      dispatch(setSovereignVenueId(sovereignVenueId));
-      dispatch(setSovereignVenueIdIsLoading(false));
-    };
-    const onError = () => dispatch(setSovereignVenueIdIsLoading(false));
-
-    dispatch(setSovereignVenueIdIsLoading(true));
-
-    fetchSovereignVenueId(venueId, onSuccess, onError);
-  }
-
-  return {
-    sovereignVenueId,
-    isSovereignVenueIdLoading,
-  };
-};
+import { useSovereignVenueId } from "./useSovereignVenueId";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
@@ -125,7 +89,12 @@ export const useRecentWorldUsers = (): {
     [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
   );
 };
-
+/**
+ *
+ * @param locationName is a key for `lastSeenIn` firestore field in user's object
+ * @example useRecentLocationUsers(venue.name)
+ * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
+ */
 export const useRecentLocationUsers = (locationName?: string) => {
   const lastSeenThreshold = useUserLastSeenThreshold();
   const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
@@ -166,11 +135,10 @@ export const useRecentRoomUsers = (roomTitle?: string) => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
 
-  let locationName;
-
-  if (currentVenue?.name && roomTitle) {
-    locationName = `${currentVenue.name}/${roomTitle}`;
-  }
+  const locationName =
+    currentVenue?.name && roomTitle
+      ? `${currentVenue.name}/${roomTitle}`
+      : undefined;
 
   const {
     recentLocationUsers,
