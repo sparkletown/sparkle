@@ -92,9 +92,9 @@ interface UsersWithVisitsResult {
     })
   ).then((result) => result.flat());
 
-  const authUsersById = authUsers.reduce(
+  const authUsersById: Record<string, admin.auth.UserRecord> = authUsers.reduce(
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
-    {} as Record<string, admin.auth.UserRecord>
+    {}
   );
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
