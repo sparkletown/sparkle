@@ -25,6 +25,7 @@ import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
@@ -261,6 +262,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           chatInputPlaceholder="Chat to the bar"
         />
       </div>
+      <AnnouncementMessage message={venueToUse.bannerMessage} />
     </>
   );
 };

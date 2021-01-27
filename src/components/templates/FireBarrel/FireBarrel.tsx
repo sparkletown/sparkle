@@ -1,21 +1,24 @@
-import { useSelector } from "hooks/useSelector";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { User, VideoState } from "types/User";
-import { Venue } from "types/venues";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { WithId } from "utils/id";
+import firebase from "firebase/app";
 
-import * as S from "./FireBarrel.styled";
-import { useVideoState } from "./useVideo";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { usePartygoers, useUsersById } from "hooks/users";
 
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { User, VideoState } from "types/User";
+import { Venue } from "types/venues";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
+import { currentVenueSelector } from "utils/selectors";
+
+import { useVideoState } from "./useVideo";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
-import firebase from "firebase/app";
-import { currentVenueSelector } from "utils/selectors";
+import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
@@ -93,6 +96,7 @@ export const FireBarrel: React.FC = () => {
 
     return (
       <S.Wrapper>
+        <AnnouncementMessage message={venue?.bannerMessage} />
         <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
         {chairsArray.map((_, index) => {

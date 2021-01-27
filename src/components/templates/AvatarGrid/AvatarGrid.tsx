@@ -17,7 +17,7 @@ import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
 import { currentVenueSelector } from "utils/selectors";
 
 import { RoomModal } from "./RoomModal";
-import Announcement from "./Announcement";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
@@ -516,10 +516,7 @@ export const AvatarGrid = () => {
           setIsRoomModalOpen(false);
         }}
       />
-      <Announcement
-        message={venue.bannerMessage}
-        className="announcement-container"
-      />
+      <AnnouncementMessage message={venue.bannerMessage} />
     </>
   );
 };
