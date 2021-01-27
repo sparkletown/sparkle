@@ -1,6 +1,3 @@
-import { deleteLocationData } from "utils/userLocation";
-import { UserInfo } from "firebase/app";
-import { Dispatch } from "hooks/useDispatch";
 import { ToggleButtonGroup } from "react-bootstrap";
 
 export const PREVIEW_ROOM = "PREVIEW_ROOM";
@@ -21,10 +18,3 @@ interface ToggleMuteAction {
 }
 
 export type RoomActions = ExitRoomAction | PreviewRoomAction | ToggleMuteAction;
-
-export const exitPreviewRoom = (user: UserInfo) => {
-  return (dispatch: Dispatch) => {
-    deleteLocationData(user.uid);
-    dispatch({ type: EXIT_PREVIEW_ROOM });
-  };
-};

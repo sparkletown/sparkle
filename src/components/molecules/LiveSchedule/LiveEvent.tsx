@@ -18,7 +18,7 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
 
   const enterLiveEvent = useCallback(() => {
     if (venue && event) {
-      openEventRoomWithCounting({ user, profile, venue, event });
+      openEventRoomWithCounting();
     }
   }, [event, profile, user, venue]);
 

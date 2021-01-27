@@ -12,9 +12,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 import { orderedVenuesSelector } from "utils/selectors";
-import { getCurrentTimeInMilliseconds } from "utils/time";
-import { openRoomUrl } from "utils/url";
-import { updateLocationData } from "utils/userLocation";
+import { enterExternalRoom, enterVenueRoom } from "utils/userLocation";
 
 import { Map, RoomModal } from "./components";
 
@@ -46,25 +44,29 @@ export const PartyMap: React.FC = () => {
     setRoomModalOpen(false);
   }, []);
 
+  const userId = user?.uid;
+
+  console.log({ venues });
   // TODO: extract this into a reusable hook/similar
   const enterRoom = useCallback(
     (room: Room) => {
-      if (!room || !user) return;
+      if (!userId) return;
 
-      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
       const roomVenue = venues?.find((venue) =>
         room.url.endsWith(`/${venue.id}`)
       );
 
-      const nowInMilliseconds = getCurrentTimeInMilliseconds();
+      if (roomVenue !== undefined) {
+        enterVenueRoom({
+          userId,
+          venueName: roomVenue.name,
+          venueId: roomVenue.id,
+        });
 
-      const roomName = {
-        [`${currentVenue.name}/${room.title}`]: nowInMilliseconds,
-        ...(roomVenue ? { [currentVenue.name]: nowInMilliseconds } : {}),
-      };
+        return;
+      }
 
-      updateLocationData(user.uid, roomName, profile?.lastSeenIn);
-      openRoomUrl(room.url);
+      enterExternalRoom({ userId, room });
     },
     [profile, user, currentVenue, venues]
   );
@@ -94,7 +96,9 @@ export const PartyMap: React.FC = () => {
     }
   }, [currentRoom, selectRoom]);
 
-  if (!user || !profile?.data) return <>Loading..</>;
+  console.log({ user, profile });
+
+  if (!user || !profile) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">

@@ -21,7 +21,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const enterEvent = useCallback(() => {
     if (!venue) return;
 
-    openEventRoomWithCounting({ user, profile, venue, event });
+    openEventRoomWithCounting();
   }, [event, profile, user, venue]);
 
   const isLiveEvent =

@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
-import { trackRoomEntered } from "utils/userLocation";
+import { enterVenueRoom, enterExternalRoom } from "utils/userLocation";
 import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
 import {
   getCurrentTimeInMilliseconds,
@@ -14,7 +14,7 @@ import {
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useRecentLocationUsers } from "hooks/users";
+import { useRecentRoomUsers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -29,14 +29,11 @@ interface RoomModalProps {
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
-  const { user, profile } = useUser();
+  const { user } = useUser();
+  const userId = user?.uid;
 
   const venues = useSelector(orderedVenuesSelector);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-
-  const roomTitle = room?.title;
-  const userLastSeenIn = profile?.lastSeenIn;
-  // console.log(room, roomTitle, { recentRoomUsers });
 
   const roomVenue = useMemo(() => {
     if (!room) return undefined;
@@ -44,26 +41,27 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
     return venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
   }, [room, venues]);
 
-  const venueName = roomVenue?.name;
+  // const getRoomTitle = (room, venues) => {
+  //   const roomVenue = venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
+  // }
 
-  const { recentLocationUsers } = useRecentLocationUsers(venueName);
+  const { recentRoomUsers } = useRecentRoomUsers(room);
 
   const enterRoom = useCallback(() => {
-    if (!room || !user) return;
+    if (!userId || !room) return;
 
-    const nowInMilliseconds = getCurrentTimeInMilliseconds();
+    if (roomVenue !== undefined) {
+      enterVenueRoom({
+        userId,
+        venueName: roomVenue.name,
+        venueId: roomVenue.id,
+      });
 
-    const venueRoom = venueName ? { [venueName]: nowInMilliseconds } : {};
+      return;
+    }
 
-    trackRoomEntered(
-      user,
-      {
-        [`${venueName}/${roomTitle}`]: nowInMilliseconds,
-        ...venueRoom,
-      },
-      userLastSeenIn
-    );
-  }, [userLastSeenIn, room, roomTitle, user, venueName]);
+    enterExternalRoom({ userId, room });
+  }, [room, userId]);
 
   const roomEvents = useMemo(() => {
     if (!room) return [];
@@ -124,7 +122,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         </div>
 
         <UserList
-          users={recentLocationUsers}
+          users={recentRoomUsers}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}

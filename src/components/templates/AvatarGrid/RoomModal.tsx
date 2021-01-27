@@ -8,7 +8,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useRecentRoomUsers } from "hooks/users";
+// import { useRecentRoomUsers } from "hooks/users";
 
 import { isEventLive } from "utils/event";
 import {
@@ -16,7 +16,7 @@ import {
   getCurrentTimeInUTCSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
-import { openRoomWithCounting } from "utils/userLocation";
+// import { openRoomWithCounting } from "utils/userLocation";
 import { venueEventsSelector, venueSelector } from "utils/selectors";
 
 import { retainAttendance } from "store/actions/Attendance";
@@ -44,13 +44,13 @@ export const RoomModal: React.FC<PropsType> = ({
   const { user, profile } = useUser();
   const roomTitle = room?.title;
 
-  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
+  // const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const venue = useSelector(venueSelector);
 
   const enter = useCallback(() => {
     if (venue) {
-      openRoomWithCounting({ user, profile, venue, room });
+      // openRoomWithCounting({ user, profile, venue, room });
     }
   }, [room, profile, user, venue]);
 
@@ -74,7 +74,7 @@ export const RoomModal: React.FC<PropsType> = ({
         <h4 className="room-name">{room.title}</h4>
         <div className="room-description">{room.description}</div>
         <div className="room-people">
-          {recentRoomUsers.map((user, index) => {
+          {/* {recentRoomUsers.map((user, index) => {
             return (
               index + 1 <= MAX_SHOWN_AVATARS && (
                 <div key={index} className={"user"}>
@@ -92,7 +92,7 @@ export const RoomModal: React.FC<PropsType> = ({
             <div className="user">
               +{recentRoomUsers.length - MAX_SHOWN_AVATARS}
             </div>
-          )}
+          )} */}
         </div>
         <div>
           {roomEvents && roomEvents.length > 0 && (

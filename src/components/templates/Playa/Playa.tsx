@@ -360,12 +360,12 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user &&
-      updateLocationData(
-        user,
-        { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
-        profile?.lastSeenIn
-      );
+    // user &&
+    //   updateLocationData(
+    //     user,
+    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
+    //     profile?.lastSeenIn
+    //   );
   }, [setShowModal, user, profile]);
 
   const distanceToVenue = (

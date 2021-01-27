@@ -1,6 +1,6 @@
 import React, { FC, useMemo } from "react";
 
-import { useRecentLocationUsers } from "hooks/users";
+import { useRecentRoomUsers } from "hooks/users";
 
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
@@ -18,11 +18,9 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   venue,
   room,
 }) => {
-  const { recentLocationUsers } = useRecentLocationUsers(venue.name);
+  const { recentRoomUsers } = useRecentRoomUsers(room);
 
-  console.log(venue.name, room, { recentLocationUsers });
-
-  const numberOfRecentRoomUsers = recentLocationUsers.length;
+  const numberOfRecentRoomUsers = recentRoomUsers.length;
   const numberOfExtraUsersInRoom = Math.max(
     numberOfRecentRoomUsers - MAX_AVATARS_VISIBLE,
     0
@@ -32,7 +30,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   // @debt use a default image when user.pictureUrl is undefined
   const userAvatars = useMemo(
     () =>
-      recentLocationUsers.slice(0, MAX_AVATARS_VISIBLE).map((user, index) => (
+      recentRoomUsers.slice(0, MAX_AVATARS_VISIBLE).map((user, index) => (
         <div key={`user-avatar-${user.id}`}>
           <div
             className="attendance-avatar"
@@ -40,7 +38,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
           />
         </div>
       )),
-    [recentLocationUsers]
+    [recentRoomUsers]
   );
 
   return (

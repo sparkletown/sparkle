@@ -1,5 +1,5 @@
 import firebase, { UserInfo } from "firebase/app";
-import { isEmpty } from "lodash";
+import { isArray, isEmpty } from "lodash";
 
 import { AnyRoom } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -19,50 +19,28 @@ type LocationData = Record<string, number>;
 
 export const updateLocationData = (
   userId: string,
-  newLocationData: LocationData = {},
-  oldLocationData: LocationData | undefined
+  newLocationData: LocationData = {}
 ) => {
-  const prevRoomName =
-    oldLocationData &&
-    Object.keys(oldLocationData).find((lastSeen) => lastSeen.includes("/"));
-
-  if (oldLocationData && prevRoomName) {
-    delete oldLocationData[prevRoomName];
-  }
-
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn: { ...oldLocationData, ...newLocationData }
+    lastSeenIn: newLocationData,
   });
 };
 
 export interface TrackLocationProps {
   userId: string;
-  locationName: string,
+  locationName: string;
   lastSeenIn?: LocationData;
 }
 
-const trackLocationEntered = ({
-  userId,
-  locationName,
-  lastSeenIn,
-}: TrackLocationProps) => {
-  updateLocationData(
-    userId,
-    { [locationName]: getCurrentTimeInMilliseconds() },
-    lastSeenIn
-  );
-}
-
-export const deleteLocationData = (userId: string) => {
-  updateUserProfile(userId, {
-    lastSeenAt: 0,
-    lastSeenIn: {},
+const trackLocationEntered = ({ userId, locationName }: TrackLocationProps) => {
+  updateLocationData(userId, {
+    [locationName]: getCurrentTimeInMilliseconds(),
   });
 };
 
 export interface BaseEnterRoomWithCountingProps {
-  user?: UserInfo;
+  user: User;
   profile?: User;
   venue: WithId<AnyVenue>;
 }
@@ -71,55 +49,49 @@ export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
   room?: AnyRoom;
 }
 
-export const enterSparkleRoom = ({
-  user,
-  profile,
-  venue,
-  room,
-}: EnterRoomWithCounting) => {
-  if (!room) {
-    trackVenueEntered({
-      user,
-      venue,
-      lastSeenIn: profile?.lastSeenIn,
-    });
-
-    openUrl(venueInsideUrl(venue.id));
-    return;
-  }
-
-  // Track room counting
-
+type EnterVenueRoomProps = {
+  userId: string;
+  venueId: string;
+  venueName: string;
 };
 
-export const enterExternalRoom = () => {
-  trackRoomEnteredNG({
-    user.uid,
-    venue,
-    room,
-    lastSeenIn: profile?.lastSeenIn,
+export const enterVenueRoom = ({
+  userId,
+  venueName,
+  venueId,
+}: EnterVenueRoomProps) => {
+  trackLocationEntered({
+    userId,
+    locationName: venueName,
+  });
+  openUrl(venueInsideUrl(venueId));
+};
+
+type EnterExternalRoomProps = {
+  userId: string;
+  room: AnyRoom;
+};
+
+export const enterExternalRoom = ({ userId, room }: EnterExternalRoomProps) => {
+  trackLocationEntered({
+    userId,
+    locationName: `external/${room.title}`,
   });
 
   openRoomUrl(room.url);
-  }
+};
 
 export interface EnterEventRoomWithCounting
   extends BaseEnterRoomWithCountingProps {
   event: VenueEvent;
 }
 
-export const openEventRoomWithCounting = ({
-  user,
-  profile,
-  venue,
-  event,
-}: EnterEventRoomWithCounting) => {
-  const room = venue?.rooms?.find((room) => room.title === event.room);
-
-  openRoomWithCounting({ user, profile, venue, room });
+export const openEventRoomWithCounting = () => {
+  // const room = venue?.rooms?.find((room) => room.title === event.room);
+  // openRoomWithCounting({ user, profile, venue, room });
 };
 
-export const setUpdateTimeSpentInterval = (
+export const useUpdateTimespentPeriodically = (
   user: UserInfo | undefined,
   roomName: string
 ) => {

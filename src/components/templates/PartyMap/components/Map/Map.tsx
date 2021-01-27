@@ -34,7 +34,7 @@ export const DEFAULT_ROWS = 25;
 
 interface MapProps {
   user: FirebaseReducer.AuthState;
-  profileData: UserExperienceData;
+  profileData?: UserExperienceData;
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
   selectRoom: (room: Room) => void;
@@ -44,7 +44,7 @@ interface MapProps {
 
 export const Map: React.FC<MapProps> = ({
   user,
-  profileData,
+  profileData = {},
   venue,
   partygoers,
   selectRoom,
@@ -215,6 +215,8 @@ export const Map: React.FC<MapProps> = ({
       )),
     [selectRoom, venue]
   );
+
+  console.log(venue.rooms);
 
   const gridContainerStyles = useMemo(
     () => ({

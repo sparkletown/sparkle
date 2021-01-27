@@ -24,7 +24,7 @@ import {
 } from "utils/time";
 import {
   updateLocationData,
-  setUpdateTimeSpentInterval,
+  useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 
@@ -62,9 +62,10 @@ const VenuePage: React.FC = () => {
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
-  const [unmounted, setUnmounted] = useState(false);
 
   const { user, profile } = useUser();
+
+  const userId = user?.uid;
 
   const venue = useSelector(currentVenueSelector);
 
@@ -78,31 +79,8 @@ const VenuePage: React.FC = () => {
     isUserPurchaseHistoryRequestedSelector
   );
 
-  const retainAttendance = useSelector(shouldRetainAttendanceSelector);
-
   const venueName = venue?.name ?? "";
   const venueTemplate = venue?.template;
-
-  const prevLocations = retainAttendance ? profile?.lastSeenIn ?? {} : {};
-
-  const updateUserLocation = useCallback(() => {
-    if (!user || !venueName || (venueName && prevLocations[venueName])) return;
-
-    const updatedLastSeenIn = {
-      ...prevLocations,
-      [venueName]: getCurrentTimeInMilliseconds(),
-    };
-
-    updateUserProfile(user.uid, {
-      lastSeenIn: updatedLastSeenIn,
-      lastSeenAt: getCurrentTimeInMilliseconds(),
-      room: venueName,
-    });
-  }, [prevLocations, user, venueName]);
-
-  useInterval(() => {
-    updateUserLocation();
-  }, LOC_UPDATE_FREQ_MS);
 
   const event = currentEvent?.[0];
 
@@ -115,77 +93,47 @@ const VenuePage: React.FC = () => {
     currentTimestamp >
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
 
-  const isUserVenueOwner = user && venue?.owners?.includes(user.uid);
+  const isUserVenueOwner = userId && venue?.owners?.includes(userId);
   const isMember =
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
-  // Camp and PartyMap needs to be able to modify this
-  // Currently does not work with roome
-  const location = venueName;
-  setUpdateTimeSpentInterval(user, venueName);
+  const updateUserLocation = useCallback(() => {
+    if (!userId || !venueName) return;
 
-  const newLocation = { [location]: getCurrentTimeInMilliseconds() };
-  const isNewLocation = profile?.lastSeenIn
-    ? !profile?.lastSeenIn[location]
-    : false;
+    updateLocationData(userId, {
+      [venueName]: getCurrentTimeInMilliseconds(),
+    });
+  }, [user, venueName]);
 
-  const newLocations = {
-    ...prevLocations,
-    ...newLocation,
-  };
+  useInterval(() => {
+    updateUserLocation();
+  }, LOC_UPDATE_FREQ_MS);
 
-  useEffect(() => {
-    if (
-      user &&
-      location &&
-      isNewLocation &&
-      ((!unmounted && !retainAttendance) || retainAttendance) &&
-      (!profile?.lastSeenIn || !profile?.lastSeenIn[location])
-    ) {
-      updateLocationData(
-        user,
-        location ? newLocations : prevLocations,
-        profile?.lastSeenIn
-      );
-      setUnmounted(false);
-    }
-    if (
-      user &&
-      profile &&
-      (profile.lastSeenIn === null || profile?.lastSeenIn === undefined)
-    ) {
-      updateLocationData(
-        user,
-        location ? newLocations : prevLocations,
-        profile?.lastSeenIn
-      );
-    }
-  }, [
-    isNewLocation,
-    location,
-    newLocation,
-    newLocations,
-    prevLocations,
-    profile,
-    retainAttendance,
-    unmounted,
-    user,
-  ]);
+  useUpdateTimespentPeriodically(user, venueName);
 
   useEffect(() => {
-    const leaveRoomBeforeUnload = () => {
-      if (user && !retainAttendance) {
-        const locations = { ...prevLocations };
-        delete locations[venueName];
-        setUnmounted(true);
-        updateLocationData(user, locations, undefined);
+    if (!userId || !venueName) return;
+
+    updateLocationData(userId, {
+      [venueName]: getCurrentTimeInMilliseconds(),
+    });
+  }, [userId, venueName]);
+
+  useEffect(() => {
+    if (!userId || !venueName) return;
+
+    document.addEventListener("visibilitychange", function () {
+      if (document.visibilityState === "hidden") {
+        updateLocationData(userId, {});
       }
-    };
-    window.addEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    return () => {
-      window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
-    };
-  }, [prevLocations, retainAttendance, user, venueName]);
+
+      if (document.visibilityState === "visible") {
+        updateLocationData(userId, {
+          [venueName]: getCurrentTimeInMilliseconds(),
+        });
+      }
+    });
+  }, [userId, venueName]);
 
   useEffect(() => {
     if (
@@ -195,25 +143,22 @@ const VenuePage: React.FC = () => {
     )
       return;
     if (!venue || !user) return;
-    updateProfileEnteredVenueIds(
-      profile?.enteredVenueIds,
-      user?.uid,
-      venue?.id
-    );
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venue?.id);
   }, [profile, user, venue]);
 
   // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
+  useFirestoreConnect("venues");
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user?.uid
+    userId
       ? {
           collection: "privatechats",
-          doc: user.uid,
+          doc: userId,
           subcollections: [{ collection: "chats" }],
           storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
