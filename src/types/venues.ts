@@ -1,34 +1,81 @@
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { AvatarGridRoom } from "./AvatarGrid";
-import { CampRoomData } from "./CampRoomData";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { RoomData } from "./RoomData";
+import { AnyRoom, AvatarGridRoom, Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { VenueTemplate } from "./VenueTemplate";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-export interface Question {
+// TODO: should JazzBarVenue be added to this?
+export type AnyVenue = Venue | PartyMapVenue;
+
+export enum VenueTemplate {
+  jazzbar = "jazzbar",
+  friendship = "friendship",
+  partymap = "partymap",
+  zoomroom = "zoomroom",
+  themecamp = "themecamp",
+  artpiece = "artpiece",
+  artcar = "artcar",
+  performancevenue = "performancevenue",
+  preplaya = "preplaya",
+  playa = "playa",
+  audience = "audience",
+  avatargrid = "avatargrid",
+  conversationspace = "conversationspace",
+
+  firebarrel = "firebarrel",
+}
+
+// --- VENUE V2
+export interface Venue_v2
+  extends Venue_v2_Base,
+    Venue_v2_AdvancedConfig,
+    Venue_v2_EntranceConfig {}
+
+export interface Venue_v2_Base {
   name: string;
-  text: string;
-  link?: string;
+  config: {
+    landingPageConfig: {
+      subtitle: string;
+      description: string;
+      coverImageUrl: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners?: string[];
+  theme?: {
+    primaryColor: string;
+    backgroundColor?: string;
+  };
+  id: string;
+  rooms?: AnyRoom[];
+  mapBackgroundImageUrl?: string;
 }
 
-interface TermOfService {
-  name: string;
-  text: string;
-  link?: string;
+export interface Venue_v2_AdvancedConfig {
+  attendeesTitle?: string;
+  bannerMessage?: string;
+  chatTitle?: string;
+  columns?: number;
+  radioStations?: string | string[]; // single string on form, array in DB
+  requiresDateOfBirth?: boolean;
+  roomVisibility?: RoomVisibility;
+  showBadges?: boolean;
+  showGrid?: boolean;
+  showRadio?: boolean;
+  showRangers?: boolean;
+  showZendesk?: boolean;
 }
 
-export enum RoomVisibility {
-  hover = "hover",
-  count = "count",
-  nameCount = "count/name",
+export interface Venue_v2_EntranceConfig {
+  profile_questions?: Array<Question>;
+  code_of_conduct_questions?: Array<Question>;
+  entrance?: EntranceStepConfig[];
 }
-
-export type AnyRoom = RoomData | CampRoomData | AvatarGridRoom;
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 export interface Venue {
@@ -98,54 +145,58 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
-// --- VENUE V2
-export interface Venue_v2_AdvancedConfig {
-  attendeesTitle?: string;
-  bannerMessage?: string;
-  chatTitle?: string;
-  columns?: number;
-  radioStations?: string | string[]; // single string on form, array in DB
-  requiresDateOfBirth?: boolean;
-  roomVisibility?: RoomVisibility;
-  showBadges?: boolean;
-  showGrid?: boolean;
-  showRadio?: boolean;
-  showRangers?: boolean;
-  showZendesk?: boolean;
-}
-
-export interface Venue_v2_EntranceConfig {
-  profile_questions?: Array<Question>;
-  code_of_conduct_questions?: Array<Question>;
-  entrance?: EntranceStepConfig[];
-}
-
-export interface Venue_v2_Base {
-  name: string;
-  config: {
-    landingPageConfig: {
-      subtitle: string;
-      description: string;
-      coverImageUrl: string;
-    };
+// @debt which of these params are exactly the same as on Venue? Can we simplify this?
+export interface PartyMapVenue extends Venue {
+  id: string;
+  template: VenueTemplate.partymap;
+  host?: {
+    url: string;
+    icon: string;
+    name: string;
   };
+  description?: {
+    text: string;
+    program_url?: string;
+  };
+  start_utc_seconds?: number;
+  duration_hours?: number;
+  entrance_hosted_hours?: number;
+  party_name?: string;
+  unhosted_entry_video_url?: string;
+  map_url?: string;
+  map_viewbox?: string;
+  password?: string;
+  admin_password?: string;
+  owners?: string[];
+  rooms?: Room[];
+}
+
+export interface JazzbarVenue extends Venue {
+  template: VenueTemplate.jazzbar;
+  iframeUrl: string;
+  logoImageUrl: string;
   host: {
     icon: string;
   };
-  owners?: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
-  id: string;
-  rooms?: AnyRoom[];
-  mapBackgroundImageUrl?: string;
 }
 
-export interface Venue_v2
-  extends Venue_v2_Base,
-    Venue_v2_AdvancedConfig,
-    Venue_v2_EntranceConfig {}
+export interface Question {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+interface TermOfService {
+  name: string;
+  text: string;
+  link?: string;
+}
+
+export enum RoomVisibility {
+  hover = "hover",
+  count = "count",
+  nameCount = "count/name",
+}
 
 export interface VenueConfig {
   theme: {
@@ -153,7 +204,8 @@ export interface VenueConfig {
     backgroundColor?: string;
   };
 
-  landingPageConfig: VenueLandingPageConfig; // @debt should this be potentially undefined, or is it guaranteed to exist everywhere?
+  // @debt landingPageConfig should probably be undefined, or is it guaranteed to exist everywhere?
+  landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
   showRangers?: boolean;
@@ -195,6 +247,25 @@ export interface PlayaIcon {
   venueId: string;
 }
 
+export interface VenueEvent {
+  name: string;
+  start_utc_seconds: number;
+  description: string;
+  descriptions?: string[];
+  duration_minutes: number;
+  price: number;
+  collective_price: number;
+  host: string;
+  room?: string;
+  id?: string;
+}
+
+export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
+  HAS_ROOMS_TEMPLATES.includes(venue.template);
+
+export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+  venue.template === VenueTemplate.partymap;
+
 export const urlFromImage = (
   defaultValue: string,
   filesOrUrl?: FileList | string
@@ -203,42 +274,4 @@ export const urlFromImage = (
   return filesOrUrl && filesOrUrl.length > 0
     ? URL.createObjectURL(filesOrUrl[0])
     : defaultValue;
-};
-
-export const createJazzbar = (values: FormValues): Venue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    mapIconImageUrl: urlFromImage(
-      "/default-profile-pic.png",
-      values.mapIconImageFile
-    ),
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    profile_questions: values.profile_questions ?? [],
-    code_of_conduct_questions: [],
-    termsAndConditions: [],
-    adultContent: values.adultContent || false,
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-  };
 };

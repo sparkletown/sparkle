@@ -1,19 +1,23 @@
-import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useState, useMemo } from "react";
-import { VideoState } from "types/User";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import React, { useCallback, useMemo, useState } from "react";
+import firebase from "firebase/app";
 
-import * as S from "./FireBarrel.styled";
-import { useVideoState } from "./useVideo";
+import { VideoState } from "types/User";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { currentVenueSelector } from "utils/selectors";
+
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
-import firebase from "firebase/app";
-import { currentVenueSelector } from "utils/selectors";
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { useVideoState } from "./useVideo";
+
+import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 

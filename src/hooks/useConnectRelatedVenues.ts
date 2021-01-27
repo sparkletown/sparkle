@@ -2,11 +2,10 @@ import { useCallback, useMemo } from "react";
 
 import { RootState } from "index";
 
-import { AnyVenue, ValidStoreAsKeys } from "types/Firestore";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 import { ReactHook } from "types/utility";
-import { Venue } from "types/Venue";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, Venue, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId, withVenueId, WithVenueId } from "utils/id";

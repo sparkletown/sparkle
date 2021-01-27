@@ -138,6 +138,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     setSeatedAtTable(table);
   };
 
+  // @debt can we refactor this to make use of makeUpdateUserGridLocation ?
   const takeSeat = (table: string) => {
     if (!user) return;
     const doc = `users/${user.uid}`;

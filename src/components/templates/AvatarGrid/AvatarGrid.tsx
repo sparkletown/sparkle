@@ -1,31 +1,27 @@
 import React, { useCallback, useEffect, useState } from "react";
-import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-// Components
+import { AvatarGridRoom } from "types/rooms";
+import { User } from "types/User";
+
+import { makeUpdateUserGridLocation } from "api/profile";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
+
+import { WithId } from "utils/id";
+import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { currentVenueSelector } from "utils/selectors";
+
 import { RoomModal } from "./RoomModal";
 import Announcement from "./Announcement";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-import { useRecentVenueUsers } from "hooks/users";
-
-// Utils | Settings | Constants
-import { WithId } from "utils/id";
-import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
-import { currentVenueSelector } from "utils/selectors";
-
-// Typings
-import { AvatarGridRoom } from "types/AvatarGrid";
-import { User } from "types/User";
-
-// Styles
 import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
@@ -78,25 +74,11 @@ const AvatarGrid = () => {
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      if (!user || !profile || !venueId) return;
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row,
-            column,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid: user?.uid,
+        profileData: profile?.data,
+      })(row, column);
     },
     [profile, user, venueId]
   );

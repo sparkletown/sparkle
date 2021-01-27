@@ -10,9 +10,9 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 export const ArtPiece = () => {
@@ -31,7 +31,7 @@ export const ArtPiece = () => {
 
   return (
     <WithNavigationBar>
-      <BannerMessage venue={venue} />
+      <AnnouncementMessage message={venue?.bannerMessage} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
           venueLogoPath={venue?.host?.icon ?? ""}

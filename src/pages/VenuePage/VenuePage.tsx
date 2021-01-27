@@ -3,8 +3,8 @@ import { Redirect, useHistory } from "react-router-dom";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
+import { VenueTemplate } from "types/venues";
 import { ValidStoreAsKeys } from "types/Firestore";
-import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";

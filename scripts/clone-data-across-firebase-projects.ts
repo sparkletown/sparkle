@@ -2,7 +2,7 @@
 
 import { resolve } from "path";
 
-import { AnyVenue } from "../src/types/Firestore";
+import { AnyVenue } from "../src/types/venues";
 
 import { initFirebaseAdminApp } from "./lib/helpers";
 
