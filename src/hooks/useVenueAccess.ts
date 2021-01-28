@@ -5,9 +5,9 @@ import { AnyVenue } from "types/Firestore";
 
 import { WithId } from "utils/id";
 import {
-  accessTokenKey,
   checkAccess,
   getLocalStorageToken,
+  removeLocalStorageToken,
 } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
@@ -18,7 +18,7 @@ export const useVenueAccess = (
   const denyAccess = useCallback(() => {
     if (!venue) return;
 
-    localStorage.removeItem(accessTokenKey(venue.id));
+    removeLocalStorageToken(venue.id);
     onDenyAccess && onDenyAccess();
   }, [onDenyAccess, venue]);
 

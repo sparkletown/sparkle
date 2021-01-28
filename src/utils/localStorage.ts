@@ -18,3 +18,6 @@ export const setLocalStorageToken = (venueId: string, token: string) =>
 
 export const getLocalStorageToken = (venueId: string) =>
   localStorage.getItem(accessTokenKey(venueId));
+
+export const removeLocalStorageToken = (venueId: string) =>
+  localStorage.removeItem(accessTokenKey(venueId));

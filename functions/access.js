@@ -13,23 +13,30 @@ const checkIsValidToken = async (venueId, uid, token) => {
   return await admin
     .firestore()
     .runTransaction(async (transaction) => {
-      const venue = await transaction.get(venueRef);
-      const granted = await transaction.get(accessRef);
+      const [venue, granted] = await Promise.all([
+        transaction.get(venueRef),
+        transaction.get(accessRef),
+      ]);
 
-      if (!venue.exists) {
-        return false;
-      }
-      if (!granted.exists || !granted.tokens) {
+      if (!venue.exists || !granted.exists || !granted.tokens) {
         return false;
       }
 
       if (Object.keys(granted.tokens).includes(token)) {
         // Record that the token was checked
-        if (!granted.tokens[token].usedAt) {
-          granted.tokens[token].usedAt = [];
-        }
-        granted.tokens[token].usedAt.push(Date.now());
-        transaction.update(accessRef, granted);
+        const isTokenChecked = granted.tokens[token].usedAt;
+
+        const newToken = {
+          ...token,
+          usedAt: Date.now(),
+        };
+        // granted.tokens[token].usedAt.push(Date.now());
+        transaction.update(
+          accessRef,
+          admin.firestore.FieldValue.arrayUnion(
+            isTokenChecked ? token : newToken
+          )
+        );
 
         return true;
       }
@@ -52,31 +59,43 @@ const getAccessDoc = async (venueId, method) => {
 };
 
 const isValidPassword = async (venueId, password) => {
+  if (!venueId || !password) return false;
+
   const access = await getAccessDoc(venueId, "password");
+
   if (!access.exists || !access.data().password) {
     return false;
   }
+
   return passwordsMatch(access.data().password, password);
 };
 
 const isValidEmail = async (venueId, email) => {
+  if (!venueId || !email) return false;
+
   const access = await getAccessDoc(venueId, "emails");
+
   if (!access.exists || !access.data().emails) {
     return false;
   }
+
   return access.data().emails.includes(email.trim().toLowerCase());
 };
 
 const isValidCode = async (venueId, code) => {
+  if (!venueId || !code) return false;
+
   const access = getAccessDoc(venueId, "code");
+
   if (!access.exists || !access.data().codes) {
     return false;
   }
+
   return access.data().codes.includes(code.trim());
 };
 
 const createToken = async (venueId, uid, password, email, code) => {
-  if (!venueId || !uid || !password || !email || !code) return {};
+  if (!venueId || !uid || !password || !email || !code) return undefined;
 
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
@@ -99,7 +118,7 @@ const createToken = async (venueId, uid, password, email, code) => {
     const granted = { tokens: { [token]: tokenData } };
     await grantedDoc.set(granted);
   }
-  return { token };
+  return token;
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {

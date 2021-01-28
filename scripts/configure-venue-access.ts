@@ -4,27 +4,9 @@ import fs from "fs";
 import admin from "firebase-admin";
 import "firebase/firestore";
 
-import {
-  VenueAccessCodes,
-  VenueAccessEmails,
-  VenueAccessMode,
-} from "../src/types/VenueAcccess";
+import { VenueAccessMode } from "../src/types/VenueAcccess";
 
 import { initFirebaseAdminApp } from "./lib/helpers";
-
-const mergeStringArrays = (
-  arr1: string[] = [],
-  arr2: string[] = []
-): string[] => {
-  const result = arr1.map((val) => val.trim());
-  arr2.forEach((val) => {
-    const valTrimmed = val.trim();
-    if (!result.includes(valTrimmed)) {
-      result.push(valTrimmed);
-    }
-  });
-  return result;
-};
 
 function usage() {
   console.log(`
@@ -44,10 +26,7 @@ if (argv.length < 4) {
   usage();
 }
 
-const projectId = argv[0];
-const venueId = argv[1];
-const method = argv[2];
-const accessDetail = argv[3];
+const [projectId, venueId, method, accessDetail] = process.argv.slice(2);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (!VenueAccessMode[method]) {
@@ -56,6 +35,7 @@ if (!VenueAccessMode[method]) {
 }
 
 initFirebaseAdminApp(projectId);
+
 (async () => {
   console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
   const venueDoc = await admin.firestore().doc(`venues/${venueId}`).get();
@@ -94,16 +74,28 @@ initFirebaseAdminApp(projectId);
       console.log(
         `Setting venues/${venueId}/access/${method} to {emails: ${emails}}...`
       );
-      await accessDocRef.set({
-        emails: mergeStringArrays(emails, (access as VenueAccessEmails).emails),
-      });
+      await accessDocRef.set(
+        {
+          emails: emails,
+        },
+        { merge: true }
+      );
       break;
 
     case VenueAccessMode.Codes:
+      const codes = fs
+        .readFileSync(accessDetail, "utf-8")
+        .split(/\r?\n/)
+        .forEach((line) => {
+          access.codes.push(line.trim());
+        });
       console.log(`Setting venues/${venueId}/access/${method}...`);
-      await accessDocRef.set({
-        codes: (access as VenueAccessCodes).codes,
-      });
+      await accessDocRef.set(
+        {
+          codes: codes,
+        },
+        { merge: true }
+      );
       break;
   }
   console.log("Done.");
