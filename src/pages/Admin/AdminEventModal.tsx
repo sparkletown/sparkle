@@ -64,9 +64,13 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   setShowDeleteEventModal,
   roomName,
 }) => {
-  const { register, handleSubmit, errors, formState, reset } = useForm<
-    EventInput
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    reset,
+  } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
