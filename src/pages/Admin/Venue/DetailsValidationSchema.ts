@@ -158,6 +158,7 @@ export const validationSchema = Yup.object()
       then: Yup.string().required("Radio station (stream) is required!"),
     }),
 
+    owners: Yup.array<string>().required(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
