@@ -1,6 +1,6 @@
 import {
-  SovereignVenueIdActions,
-  SovereignVenueIdActionTypes,
+  SovereignVenueActions,
+  SovereignVenueActionTypes,
 } from "store/actions/SovereignVenue";
 
 export type SovereignVenueState = {
@@ -15,15 +15,25 @@ const initialSovereignVenueState: SovereignVenueState = {
 
 export const sovereignVenueReducer = (
   state = initialSovereignVenueState,
-  action: SovereignVenueIdActions
+  action: SovereignVenueActions
 ): SovereignVenueState => {
   switch (action.type) {
-    case SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ID:
-      return { ...state, id: action.payload.sovereignVenueId };
-    case SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_IS_LOADED:
+    case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ID:
+      return {
+        ...state,
+        id: action.payload.sovereignVenueId,
+        isLoading: false,
+        errorMsg: undefined,
+      };
+    case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_IS_LOADING:
       return { ...state, isLoading: action.payload.isLoading };
-    case SovereignVenueIdActionTypes.SET_SOVEREIGN_VENUE_ERROR:
-      return { ...state, errorMsg: action.payload.errorMsg };
+    case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ERROR:
+      return {
+        ...state,
+        errorMsg: action.payload.errorMsg,
+        isLoading: false,
+        id: undefined,
+      };
     default:
       return state;
   }

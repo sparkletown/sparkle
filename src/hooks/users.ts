@@ -89,9 +89,12 @@ export const useRecentWorldUsers = (): {
     [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
   );
 };
+
 /**
+ * @description this hook's filtering world users based on their @lastSeenIn location
  *
  * @param locationName is a key for `lastSeenIn` firestore field in user's object
+ *
  * @example useRecentLocationUsers(venue.name)
  * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
  */

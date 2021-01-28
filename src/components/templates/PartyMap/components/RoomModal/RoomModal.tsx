@@ -6,6 +6,7 @@ import { Room } from "types/rooms";
 import { getCurrentEvent } from "utils/event";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import {
   getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
@@ -63,6 +64,12 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       },
       userLastSeenIn
     );
+
+    if (roomVenue) {
+      openUrl(venueInsideUrl(roomVenue.id));
+      return;
+    }
+    openRoomUrl(room.url);
   }, [userLastSeenIn, room, roomTitle, user, venueName]);
 
   const roomEvents = useMemo(() => {

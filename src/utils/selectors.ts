@@ -209,7 +209,6 @@ export const radioStationsSelector = (state: RootState) =>
  * @see SovereignVenueState
  * @see RootState
  */
-
 export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;

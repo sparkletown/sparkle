@@ -13,7 +13,7 @@ import { useUser } from "hooks/useUser";
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { getCurrentTimeInUTCSeconds } from "utils/time";
-import { openRoomUrl } from "utils/url";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 import { Map, RoomModal } from "./components";
@@ -27,14 +27,14 @@ const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
-  const [isRoomModalOpen, setRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
-
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const currentVenue = useSelector(partyMapVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
+
+  const [isRoomModalOpen, setRoomModalOpen] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
   const selectRoom = useCallback((room: Room) => {
     setSelectedRoom(room);
@@ -64,6 +64,13 @@ export const PartyMap: React.FC = () => {
       };
 
       trackRoomEntered(user, roomName, profile?.lastSeenIn);
+
+      // console.log(room.title, { roomVenue });
+
+      if (roomVenue) {
+        openUrl(venueInsideUrl(roomVenue.id));
+        return;
+      }
       openRoomUrl(room.url);
     },
     [profile, user, currentVenue, venues]
@@ -94,7 +101,7 @@ export const PartyMap: React.FC = () => {
     }
   }, [currentRoom, selectRoom]);
 
-  if (!user || !profile?.data) return <>Loading..</>;
+  if (!user || !profile) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">
@@ -102,7 +109,7 @@ export const PartyMap: React.FC = () => {
 
       <Map
         user={user}
-        profileData={profile.data}
+        profileData={profile?.data}
         venue={currentVenue}
         partygoers={recentVenueUsers}
         selectRoom={selectRoom}
