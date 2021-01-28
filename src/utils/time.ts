@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, formatDuration } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -13,6 +13,45 @@ export const ONE_HOUR_IN_MILLISECONDS =
   ONE_SECOND_IN_MILLISECONDS * ONE_HOUR_IN_SECONDS;
 
 export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
+
+/**
+ * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
+ *
+ * @param totalSeconds
+ *
+ * @see https://date-fns.org/docs/Duration
+ *
+ * @debt replace this with better implementation using `intervalToDuration` (see link) once we upgrade date-fns beyond v2.13.0
+ * @see https://github.com/date-fns/date-fns/issues/229#issuecomment-646124041
+ */
+export const secondsToDuration = (totalSeconds: number): Duration => {
+  const days = Math.floor(totalSeconds / ONE_DAY_IN_SECONDS);
+  const remainingSecondsWithoutDays = totalSeconds % ONE_DAY_IN_SECONDS;
+
+  const hours = Math.floor(remainingSecondsWithoutDays / ONE_HOUR_IN_SECONDS);
+  const remainingSecondsWithoutHours =
+    remainingSecondsWithoutDays % ONE_HOUR_IN_SECONDS;
+
+  const minutes = Math.floor(
+    remainingSecondsWithoutHours / ONE_MINUTE_IN_SECONDS
+  );
+  const remainingSecondsWithoutMinutes =
+    remainingSecondsWithoutHours % ONE_MINUTE_IN_SECONDS;
+
+  return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
+};
+
+/**
+ * Format seconds as a string representing the Duration.
+ *
+ * @example
+ *   formatSecondsAsDuration(1000000)
+ *   // 11 days 13 hours 46 minutes 40 seconds
+ *
+ * @param seconds total seconds to be formatted as a duration
+ */
+export const formatSecondsAsDuration = (seconds: number): string =>
+  formatDuration(secondsToDuration(seconds));
 
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
@@ -98,6 +137,7 @@ export function getHoursAgoInSeconds(hours: number) {
 export const getHoursAgoInMilliseconds = (hours: number) =>
   Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
+// @debt this is a duplicate of getCurrentTimeInUTCSeconds
 export const getCurrentTimeInUnixEpochSeconds = () =>
   Date.now() / ONE_SECOND_IN_MILLISECONDS;
 

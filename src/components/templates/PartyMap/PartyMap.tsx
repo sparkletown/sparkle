@@ -10,6 +10,7 @@ import { PartyMapVenue } from "types/venues";
 import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { getCurrentTimeInUTCSeconds } from "utils/time";
@@ -18,7 +19,6 @@ import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 import { Map, RoomModal } from "./components";
 
-import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import "./PartyMap.scss";
@@ -27,6 +27,7 @@ const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
+  useConnectCurrentVenue();
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
@@ -105,8 +106,6 @@ export const PartyMap: React.FC = () => {
 
   return (
     <div className="party-venue-container">
-      <AnnouncementMessage message={currentVenue.bannerMessage} />
-
       <Map
         user={user}
         profileData={profile?.data}
