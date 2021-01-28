@@ -52,7 +52,7 @@ interface UsersWithVisitsResult {
 
 (async () => {
   // TODO: extract this as a generic helper function?
-  const usersWithVisits = await Promise.all(
+  const usersWithVisits: UsersWithVisitsResult[] = await Promise.all(
     await admin
       .firestore()
       .collection("users")
@@ -71,9 +71,7 @@ interface UsersWithVisitsResult {
               )
             );
 
-          const userWithVisits: UsersWithVisitsResult = { user, visits };
-
-          return userWithVisits;
+          return { user, visits };
         })
       )
   );
