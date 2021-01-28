@@ -7,10 +7,10 @@ import { PartyMapVenue } from "types/venues";
 
 import "./RoomAttendance.scss";
 
-interface RoomAttendanceProps {
+type RoomAttendanceProps = {
   venue: PartyMapVenue;
   room: Room;
-}
+};
 
 const MAX_AVATARS_VISIBLE = 2;
 
