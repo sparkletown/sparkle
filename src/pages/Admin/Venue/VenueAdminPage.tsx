@@ -13,7 +13,7 @@ import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminVideo } from "components/molecules/AdminVideo";
-import { AdminBanner } from "components/molecules/AdminBanner";
+import { BannerAdmin } from "components/organisms/BannerAdmin";
 
 import "./VenueAdminPage.scss";
 import { useVenueId } from "hooks/useVenueId";
@@ -56,7 +56,7 @@ export const VenueAdminPage: React.FC = () => {
   return (
     <>
       <h4 className="admin-page-title">You are editing venue: {venue.name}</h4>
-      <AdminBanner venueId={venueId} venue={venue} />
+      <BannerAdmin venueId={venueId} venue={venue} />
       {isVideoVenue && <AdminVideo venueId={venueId} venue={venue} />}
     </>
   );
