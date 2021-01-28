@@ -70,7 +70,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
       return;
     }
     openRoomUrl(room.url);
-  }, [userLastSeenIn, room, roomTitle, user, venueName]);
+  }, [userLastSeenIn, room, roomTitle, user, venueName, roomVenue]);
 
   const roomEvents = useMemo(() => {
     if (!room) return [];
