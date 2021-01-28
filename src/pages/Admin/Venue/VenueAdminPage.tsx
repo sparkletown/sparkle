@@ -20,8 +20,6 @@ import { BannerAdmin } from "components/organisms/BannerAdmin";
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
-  useConnectCurrentVenueNG();
-
   const { profile, user } = useUser();
   const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
