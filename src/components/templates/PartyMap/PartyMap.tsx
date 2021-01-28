@@ -108,7 +108,7 @@ export const PartyMap: React.FC = () => {
     <div className="party-venue-container">
       <Map
         user={user}
-        profileData={profile?.data}
+        profileData={profile.data}
         venue={currentVenue}
         partygoers={recentVenueUsers}
         selectRoom={selectRoom}

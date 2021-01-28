@@ -44,7 +44,7 @@ interface MapProps {
 
 export const Map: React.FC<MapProps> = ({
   user,
-  profileData,
+  profileData = {},
   venue,
   partygoers,
   selectRoom,
