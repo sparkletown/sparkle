@@ -2,16 +2,18 @@ import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { CampRoomData } from "types/CampRoomData";
-import { VenueEvent } from "types/VenueEvent";
+import { Room } from "types/rooms";
+import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
 import { getRoomUrl, openUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import "./RoomModalOngoingEvent.scss";
+
 interface RoomModalOngoingEventProps {
-  room: CampRoomData;
+  room: Room;
   roomEvents: VenueEvent[];
   enterRoom: () => void;
   joinButtonText?: string;
