@@ -1,15 +1,19 @@
-import { venueSelector } from "utils/selectors";
-
+import { parentVenueSelector } from "utils/selectors";
+import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
+import { useVenueId } from "./useVenueId";
 
 export const useUserIsVenueOwner = (): boolean => {
   const { user } = useUser();
-  const currentVenue = useSelector(venueSelector);
+
+  const currentVenueId = useVenueId();
+  const { currentVenue } = useConnectCurrentVenueNG(currentVenueId);
+  const parentVenue = useSelector(parentVenueSelector);
 
   if (!currentVenue || !user) return false;
 
-  const isVenueOwner = currentVenue.owners.includes(user.uid);
+  const venueOwners = parentVenue ? parentVenue.owners : currentVenue.owners;
 
-  return isVenueOwner;
+  return venueOwners.includes(user.uid);
 };

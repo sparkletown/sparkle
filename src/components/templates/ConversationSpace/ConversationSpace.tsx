@@ -22,7 +22,6 @@ import UserList from "components/molecules/UserList";
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
@@ -49,7 +48,6 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   return (
     <>
-      <AnnouncementMessage message={venue.bannerMessage} />
       <InformationLeftColumn
         venueLogoPath={venue?.host?.icon ?? ""}
         isLeftColumnExpanded={isLeftColumnExpanded}

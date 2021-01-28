@@ -178,14 +178,6 @@ export interface JazzbarVenue extends Venue {
   host: {
     icon: string;
   };
-  owners: string[];
-  theme?: {
-    primaryColor: string;
-    backgroundColor?: string;
-  };
-  id: string;
-  rooms?: AnyRoom[];
-  mapBackgroundImageUrl?: string;
 }
 
 export interface Question {

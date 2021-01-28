@@ -1,31 +1,33 @@
-import React, { FC } from "react";
+import React from "react";
 
 import {
-  isCurrentVenueRequestedSelector,
-  isCurrentVenueRequestingSelector,
-  venueSelector,
+  isCurrentVenueNGRequestedSelector,
+  isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
 import { IFRAME_TEMPLATES } from "settings";
 
 import { useSelector } from "hooks/useSelector";
 import { useUserIsVenueOwner } from "hooks/useUserIsVenueOwner";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useUser } from "hooks/useUser";
 
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminVideo } from "components/molecules/AdminVideo";
-import { AdminBanner } from "components/molecules/AdminBanner/AdminBanner";
+import { AdminBanner } from "components/molecules/AdminBanner";
 
 import "./VenueAdminPage.scss";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-export const VenueAdminPage: FC = () => {
-  useConnectCurrentVenue();
+export const VenueAdminPage: React.FC = () => {
+  useConnectCurrentVenueNG();
 
   const { profile, user } = useUser();
-  const venue = useSelector(venueSelector);
-  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
-  const venueRequestingStatus = useSelector(isCurrentVenueRequestingSelector);
+  const venueId = useVenueId();
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  console.log(venue);
+  const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
+  const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
 
   const isVenueOwner = useUserIsVenueOwner();
   const isLoadingVenue = venueRequestingStatus || !venueRequestStatus;
@@ -35,12 +37,12 @@ export const VenueAdminPage: FC = () => {
     return <LoadingPage />;
   }
 
-  if (!venue) {
-    return <div className="admin-page-title">This venue does not exist</div>;
-  }
-
   if (!isLoggedIn) {
     return <div className="admin-page-title">You need to log in first.</div>;
+  }
+
+  if (!venue) {
+    return <div className="admin-page-title">This venue does not exist</div>;
   }
 
   if (!isVenueOwner) {
@@ -54,8 +56,8 @@ export const VenueAdminPage: FC = () => {
   return (
     <>
       <h4 className="admin-page-title">You are editing venue: {venue.name}</h4>
-      <AdminBanner />
-      {isVideoVenue && <AdminVideo />}
+      <AdminBanner venueId={venueId} venue={venue} />
+      {isVideoVenue && <AdminVideo venueId={venueId} venue={venue} />}
     </>
   );
 };

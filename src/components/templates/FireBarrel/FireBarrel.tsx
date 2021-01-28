@@ -13,11 +13,10 @@ import { WithId } from "utils/id";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoState } from "./useVideo";
-import LocalParticipant from "../Playa/Video/LocalParticipant";
-import RemoteParticipant from "../Playa/Video/RemoteParticipant";
+import LocalParticipant from "components/templates/Playa/Video/LocalParticipant";
+import RemoteParticipant from "components/templates/Playa/Video/RemoteParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
@@ -96,7 +95,6 @@ export const FireBarrel: React.FC = () => {
 
     return (
       <S.Wrapper>
-        <AnnouncementMessage message={venue?.bannerMessage} />
         <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
         {chairsArray.map((_, index) => {
@@ -172,5 +170,3 @@ export const FireBarrel: React.FC = () => {
     venue,
   ]);
 };
-
-export default FireBarrel;

@@ -38,7 +38,6 @@ import { User } from "types/User";
 import "./Audience.scss";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { addReaction } from "store/actions/Reactions";
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -304,7 +303,6 @@ export const Audience: React.FunctionComponent = () => {
 
     const renderReactionsContainer = () => (
       <>
-        <AnnouncementMessage message={venue.bannerMessage} />
         <div className="emoji-container">
           {burningReactions.map((reaction) => (
             <button

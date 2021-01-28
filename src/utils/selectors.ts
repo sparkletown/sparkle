@@ -114,6 +114,14 @@ export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
 ) => state.attendance.retainAttendance;
 
+export const isCurrentVenueNGRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenueNG"
+);
+
+export const isCurrentVenueNGRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
+  "currentVenueNG"
+);
+
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "currentVenue"
 );
