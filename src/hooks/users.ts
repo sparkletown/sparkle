@@ -22,9 +22,8 @@ import { AnyRoom } from "types/rooms";
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId(
-    venueId
-  );
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId();
+
   useFirestoreConnect(() => {
     if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
 
@@ -94,9 +93,12 @@ export const useRecentWorldUsers = (): {
     [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
   );
 };
+
 /**
+ * @description this hook's filtering world users based on their @lastSeenIn location
  *
  * @param locationName is a key for `lastSeenIn` firestore field in user's object
+ *
  * @example useRecentLocationUsers(venue.name)
  * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
  */

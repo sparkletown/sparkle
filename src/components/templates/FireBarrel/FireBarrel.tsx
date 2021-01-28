@@ -21,7 +21,7 @@ import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-const FireBarrel: React.FC = () => {
+export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
 
@@ -155,5 +155,3 @@ const FireBarrel: React.FC = () => {
     isRecentVenueUsersLoaded,
   ]);
 };
-
-export default FireBarrel;

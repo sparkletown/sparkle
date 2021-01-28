@@ -2,14 +2,15 @@ import React, { useState, useCallback, useRef } from "react";
 
 import { makeUpdateBanner } from "api/bannerAdmin";
 
-import { currentVenueSelector } from "utils/selectors";
+import { AnyVenue } from "types/venues";
 
-import { useSelector } from "hooks/useSelector";
+interface BannerAdminProps {
+  venueId?: string;
+  venue: AnyVenue;
+}
 
-export const BannerAdmin: React.FC = () => {
-  const currentVenue = useSelector(currentVenueSelector);
-  const venueId = currentVenue?.id;
-  const existingBannerMessage = currentVenue?.bannerMessage ?? "";
+export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
+  const existingBannerMessage = venue?.bannerMessage ?? "";
 
   const inputFieldRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>();
@@ -44,8 +45,6 @@ export const BannerAdmin: React.FC = () => {
 
   return (
     <div className="container">
-      <h3>Banner Admin</h3>
-
       <div className="row">
         <div className="col">
           <form>

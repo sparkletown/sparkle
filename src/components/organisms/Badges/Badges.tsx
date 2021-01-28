@@ -33,9 +33,10 @@ export const Badges: React.FC<{
     const visits: WithId<UserVisit>[] =
       visitsSnapshot.docs.map(
         (visitSnapshot) =>
-          ({ ...visitSnapshot.data(), id: visitSnapshot.id } as WithId<
-            UserVisit
-          >)
+          ({
+            ...visitSnapshot.data(),
+            id: visitSnapshot.id,
+          } as WithId<UserVisit>)
       ) ?? [];
 
     const venuesRequests = chunk(visits, 10).map((visitChunk) =>

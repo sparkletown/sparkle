@@ -184,6 +184,10 @@ const VenuePage: React.FC = () => {
     return <Login formType="initial" />;
   }
 
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
+  }
+
   if (!venue || !venueId) {
     return <LoadingPage />;
   }
@@ -193,10 +197,6 @@ const VenuePage: React.FC = () => {
 
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
-  }
-
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
   }
 
   if (

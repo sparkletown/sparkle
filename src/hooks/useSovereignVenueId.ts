@@ -10,8 +10,10 @@ import { sovereignVenueIdSelector } from "utils/selectors";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
+import { useVenueId } from "./useVenueId";
 
-export const useSovereignVenueId = (venueId?: string) => {
+export const useSovereignVenueId = () => {
+  const venueId = useVenueId();
   const dispatch = useDispatch();
 
   const {
@@ -28,9 +30,7 @@ export const useSovereignVenueId = (venueId?: string) => {
         dispatch(setSovereignVenueId(sovereignVenueId));
       })
       .catch((errorMsg) => {
-        // NOTE: A workaround, if the sovereign venue errored while being fertched
-        dispatch(setSovereignVenueId(venueId));
-        // @debt Not used currently
+        // @debt Just to stop spamming firebase with requests
         dispatch(setSovereignVenueIdError(errorMsg));
       })
       .finally(() => {

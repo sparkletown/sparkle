@@ -7,7 +7,6 @@ import { getCurrentEvent } from "utils/event";
 import { enterVenueRoom, enterExternalRoom } from "utils/userLocation";
 import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
 import {
-  getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";

@@ -1,17 +1,57 @@
-import { format } from "date-fns";
+import { format, formatDuration } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
+export const ONE_SECOND_IN_MILLISECONDS = 1000;
 export const ONE_MINUTE_IN_SECONDS = 60;
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
-export const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
-export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
-export const ONE_SECOND_IN_MILLISECONDS = 1000;
+export const FIVE_MINUTES_MS =
+  5 * ONE_MINUTE_IN_SECONDS * ONE_SECOND_IN_MILLISECONDS;
 export const ONE_HOUR_IN_MILLISECONDS =
   ONE_SECOND_IN_MILLISECONDS * ONE_HOUR_IN_SECONDS;
+
+export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
+
+/**
+ * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
+ *
+ * @param totalSeconds
+ *
+ * @see https://date-fns.org/docs/Duration
+ *
+ * @debt replace this with better implementation using `intervalToDuration` (see link) once we upgrade date-fns beyond v2.13.0
+ * @see https://github.com/date-fns/date-fns/issues/229#issuecomment-646124041
+ */
+export const secondsToDuration = (totalSeconds: number): Duration => {
+  const days = Math.floor(totalSeconds / ONE_DAY_IN_SECONDS);
+  const remainingSecondsWithoutDays = totalSeconds % ONE_DAY_IN_SECONDS;
+
+  const hours = Math.floor(remainingSecondsWithoutDays / ONE_HOUR_IN_SECONDS);
+  const remainingSecondsWithoutHours =
+    remainingSecondsWithoutDays % ONE_HOUR_IN_SECONDS;
+
+  const minutes = Math.floor(
+    remainingSecondsWithoutHours / ONE_MINUTE_IN_SECONDS
+  );
+  const remainingSecondsWithoutMinutes =
+    remainingSecondsWithoutHours % ONE_MINUTE_IN_SECONDS;
+
+  return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
+};
+
+/**
+ * Format seconds as a string representing the Duration.
+ *
+ * @example
+ *   formatSecondsAsDuration(1000000)
+ *   // 11 days 13 hours 46 minutes 40 seconds
+ *
+ * @param seconds total seconds to be formatted as a duration
+ */
+export const formatSecondsAsDuration = (seconds: number): string =>
+  formatDuration(secondsToDuration(seconds));
 
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
@@ -25,7 +65,8 @@ const formatMeasurementInString = (value: number, measureUnit: string) => {
 export const getTimeBeforeParty = (startUtcSeconds?: number) => {
   if (startUtcSeconds === undefined) return "???";
 
-  const secondsBeforeParty = startUtcSeconds - Date.now() / 1000;
+  const secondsBeforeParty =
+    startUtcSeconds - Date.now() / ONE_SECOND_IN_MILLISECONDS;
 
   if (secondsBeforeParty < 0) {
     return 0;
@@ -60,7 +101,8 @@ export const getTimeBeforeParty = (startUtcSeconds?: number) => {
 };
 
 export const canUserJoinTheEvent = (event: VenueEvent) =>
-  event.start_utc_seconds - Date.now() / 1000 > ONE_HOUR_IN_SECONDS;
+  event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
+  ONE_HOUR_IN_SECONDS;
 
 export function formatMinute(
   minute: number | null | undefined,
@@ -74,7 +116,7 @@ export function formatMinute(
 }
 
 export function formatDate(utcSeconds: number) {
-  return format(new Date(utcSeconds * 1000), "MMM do");
+  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
 }
 
 export function oneHourAfterTimestamp(timestamp: number) {
@@ -82,18 +124,22 @@ export function oneHourAfterTimestamp(timestamp: number) {
 }
 
 export function formatUtcSeconds(utcSeconds?: number | null) {
-  return utcSeconds ? format(new Date(utcSeconds * 1000), "p") : "(unknown)";
+  return utcSeconds
+    ? format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "p")
+    : "(unknown)";
 }
 
 export function getHoursAgoInSeconds(hours: number) {
-  const nowInSec = Date.now() / 1000;
+  const nowInSec = Date.now() / ONE_SECOND_IN_MILLISECONDS;
   return nowInSec - hours * ONE_HOUR_IN_SECONDS;
 }
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
   Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
-export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
+// @debt this is a duplicate of getCurrentTimeInUTCSeconds
+export const getCurrentTimeInUnixEpochSeconds = () =>
+  Date.now() / ONE_SECOND_IN_MILLISECONDS;
 
 export const getCurrentTimeInMilliseconds = () => Date.now();
 
@@ -102,7 +148,7 @@ export function getDaysAgoInSeconds(days: number) {
 }
 
 export const formatHourAndMinute = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * 1000);
+  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const hh = String(date.getHours()).padStart(2, "0");
   const mm = String(date.getMinutes()).padStart(2, "0");
   return hh + ":" + mm;
@@ -113,17 +159,21 @@ export const daysFromEndOfEvent = (
   durationMinutes: number
 ) => {
   const dateNow = new Date();
-  const dateOfFinish = new Date((utcSeconds + durationMinutes * 60) * 1000);
+  const dateOfFinish = new Date(
+    (utcSeconds + durationMinutes * 60) * ONE_SECOND_IN_MILLISECONDS
+  );
   const differenceInTime = dateOfFinish.getTime() - dateNow.getTime();
-  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  const differenceInDays =
+    differenceInTime / (ONE_SECOND_IN_MILLISECONDS * 3600 * 24);
   return Math.round(differenceInDays);
 };
 
 export const daysFromStartOfEvent = (utcSeconds: number) => {
   const dateNow = new Date();
-  const dateOfStart = new Date(utcSeconds * 1000);
+  const dateOfStart = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const differenceInTime = dateNow.getTime() - dateOfStart.getTime();
-  const differenceInDays = differenceInTime / (1000 * 3600 * 24);
+  const differenceInDays =
+    differenceInTime / (ONE_SECOND_IN_MILLISECONDS * 3600 * 24);
   return Math.round(differenceInDays);
 };
 
@@ -135,7 +185,8 @@ export const dateEventTimeFormat = (date: Date) => {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
 //   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
-export const getCurrentTimeInUTCSeconds = () => Date.now() / 1000;
+export const getCurrentTimeInUTCSeconds = () =>
+  Date.now() / ONE_SECOND_IN_MILLISECONDS;
 
 export const roundToNearestHour = (seconds: number) => {
   const oneHour = 60 * 60;
@@ -143,13 +194,13 @@ export const roundToNearestHour = (seconds: number) => {
 };
 
 export function formatDateToWeekday(utcSeconds: number) {
-  return format(new Date(utcSeconds * 1000), "E");
+  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "E");
 }
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
-  const isTimestampInSeconds = timestamp <= SECONDS_TIMESTAMP_MAX_VALUE;
+  const isTimestampInMilliSeconds = timestamp > SECONDS_TIMESTAMP_MAX_VALUE;
 
-  return isTimestampInSeconds
-    ? timestamp * ONE_SECOND_IN_MILLISECONDS
-    : timestamp;
+  return isTimestampInMilliSeconds
+    ? timestamp
+    : timestamp * ONE_SECOND_IN_MILLISECONDS;
 };
