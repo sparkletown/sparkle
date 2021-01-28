@@ -4,7 +4,7 @@ import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
 import { useVenueId } from "./useVenueId";
 
-export const useUserIsVenueOwner = (): boolean => {
+export const useIsUserVenueOwner = (): boolean => {
   const { user } = useUser();
 
   const currentVenueId = useVenueId();

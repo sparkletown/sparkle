@@ -18,7 +18,7 @@ export const AdminVideo: React.FC<AdminVideoProps> = ({ venueId, venue }) => {
     setIframeUrl(venue?.iframeUrl || "");
   }, [venue]);
 
-  const updateIframeUrl = (iframeUrl: string | null) => {
+  const updateIframeUrl = (iframeUrl: string) => {
     firebase
       .functions()
       .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl })

@@ -8,16 +8,16 @@ import {
 import { IFRAME_TEMPLATES } from "settings";
 
 import { useSelector } from "hooks/useSelector";
-import { useUserIsVenueOwner } from "hooks/useUserIsVenueOwner";
+import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminVideo } from "components/molecules/AdminVideo";
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 
 import "./VenueAdminPage.scss";
-import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 export const VenueAdminPage: React.FC = () => {
   useConnectCurrentVenueNG();
@@ -25,15 +25,14 @@ export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
   const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  console.log(venue);
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
 
-  const isVenueOwner = useUserIsVenueOwner();
-  const isLoadingVenue = venueRequestingStatus || !venueRequestStatus;
+  const isVenueOwner = useIsUserVenueOwner();
+  const isVenueLoading = venueRequestingStatus || !venueRequestStatus;
   const isLoggedIn = profile && user;
 
-  if (isLoadingVenue) {
+  if (isVenueLoading) {
     return <LoadingPage />;
   }
 
