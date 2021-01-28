@@ -66,8 +66,6 @@ export const PartyMap: React.FC = () => {
 
       trackRoomEntered(user, roomName, profile?.lastSeenIn);
 
-      // console.log(room.title, { roomVenue });
-
       if (roomVenue) {
         openUrl(venueInsideUrl(roomVenue.id));
         return;
