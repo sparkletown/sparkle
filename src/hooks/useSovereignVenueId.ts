@@ -10,8 +10,10 @@ import { sovereignVenueIdSelector } from "utils/selectors";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
+import { useVenueId } from "./useVenueId";
 
-export const useSovereignVenueId = (venueId?: string) => {
+export const useSovereignVenueId = () => {
+  const venueId = useVenueId();
   const dispatch = useDispatch();
 
   const {
