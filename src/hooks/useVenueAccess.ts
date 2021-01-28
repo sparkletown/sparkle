@@ -26,21 +26,12 @@ export const useVenueAccess = (
     if (!venue) return;
 
     if (venue.access) {
-      console.log("venue.access", venue.access);
       const token = getLocalStorageToken(venue.id) ?? undefined;
-      console.log("found token:", token);
       if (!token) {
-        console.log("checking access");
         checkAccess({
           venueId: venue.id,
           token,
         }).then((result) => {
-          console.log(
-            "access check result:",
-            result,
-            "isTruthy result.data:",
-            isTruthy(result.data)
-          );
           if (!isTruthy(result.data)) {
             firebase
               .auth()

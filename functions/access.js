@@ -50,6 +50,7 @@ const checkIsValidToken = async (venueId, uid, token) => {
 };
 
 const getAccessDoc = async (venueId, method) => {
+  if (!venueId || !method) return undefined;
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
@@ -63,7 +64,7 @@ const isValidPassword = async (venueId, password) => {
 
   const access = await getAccessDoc(venueId, "password");
 
-  if (!access.exists || !access.data().password) {
+  if (!access || !access.exists || !access.data().password) {
     return false;
   }
 
@@ -75,7 +76,7 @@ const isValidEmail = async (venueId, email) => {
 
   const access = await getAccessDoc(venueId, "emails");
 
-  if (!access.exists || !access.data().emails) {
+  if (!access || !access.exists || !access.data().emails) {
     return false;
   }
 
@@ -87,7 +88,7 @@ const isValidCode = async (venueId, code) => {
 
   const access = getAccessDoc(venueId, "code");
 
-  if (!access.exists || !access.data().codes) {
+  if (!access || !access.exists || !access.data().codes) {
     return false;
   }
 
@@ -97,39 +98,57 @@ const isValidCode = async (venueId, code) => {
 const createToken = async (venueId, uid, password, email, code) => {
   if (!venueId || !uid || !password || !email || !code) return undefined;
 
-  const venue = await admin.firestore().collection("venues").doc(venueId).get();
-  if (!venue.exists) {
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const accessRef = admin.firestore().collection("accessgranted").doc(uid);
+
+  if (!venueRef.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);
   }
 
-  const token = uuid();
-  const grantedDoc = await venue.ref.collection("accessgranted").doc(uid).get();
+  return await admin
+    .firestore()
+    .runTransaction(async (transaction) => {
+      const [venue, granted] = await Promise.all([
+        transaction.get(venueRef),
+        transaction.get(accessRef),
+      ]);
 
-  const tokenData = {
-    usedAt: [Date.now()],
-    password: password || null,
-    email: email || null,
-    code: code || null,
-  };
+      if (!venue.exists) {
+        return undefined;
+      }
 
-  if (grantedDoc.exists) {
-    await grantedDoc.update({ [`tokens.${token}`]: tokenData });
-  } else {
-    const granted = { tokens: { [token]: tokenData } };
-    await grantedDoc.set(granted);
-  }
-  return token;
+      const token = uuid();
+
+      const tokenData = {
+        usedAt: [Date.now()],
+        password: password,
+        email: email,
+        code: code,
+      };
+
+      const newToken = { [token]: tokenData };
+      if (granted.exists) {
+        transaction.update(accessRef, newToken);
+      } else {
+        transaction.set(accessRef, newToken);
+      }
+
+      return token;
+    })
+    .catch((e) => {
+      console.log("Transaction failure:", e);
+      return undefined;
+    });
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
-  console.log("checkAccess", data, context.auth);
-  const isValidToken =
-    context &&
-    context.auth &&
-    context.auth.uid &&
-    (await checkIsValidToken(data.venueId, context.auth.uid, data.token));
-  if (isValidToken) {
-    console.log(`valid token, returning ${data.token}`);
+  if (!data || !context) return { token: undefined };
+  const isValidToken = await checkIsValidToken(
+    data.venueId,
+    context.auth.uid,
+    data.token
+  );
+  if (context && context.auth && context.auth.uid && isValidToken) {
     return { token: data.token };
   }
 
