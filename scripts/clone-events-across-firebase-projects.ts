@@ -87,9 +87,10 @@ const saveToDestBackupFile = makeSaveToBackupFile(DEST_PROJECT_ID);
     const destVenueEvents = await Promise.all(
       (await destVenueRef.collection("events").listDocuments()).map(
         async (eventRef) =>
-          ({ ...(await eventRef.get()).data(), id: eventRef.id } as WithId<
-            VenueEvent
-          >)
+          ({
+            ...(await eventRef.get()).data(),
+            id: eventRef.id,
+          } as WithId<VenueEvent>)
       )
     );
     saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);

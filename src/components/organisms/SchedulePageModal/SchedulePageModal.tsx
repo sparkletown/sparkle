@@ -39,10 +39,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedVenuesById: Partial<Record<
-    string,
-    WithId<AnyVenue>
-  >> = relatedVenues.reduce(itemsToObjectByIdReducer, {});
+  const relatedVenuesById: Partial<
+    Record<string, WithId<AnyVenue>>
+  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
