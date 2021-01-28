@@ -13,7 +13,7 @@ import { useUser } from "hooks/useUser";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { orderedVenuesSelector } from "utils/selectors";
-import { getCurrentTimeInUTCSeconds } from "utils/time";
+import { getCurrentTimeInMilliseconds } from "utils/time";
 import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
@@ -57,7 +57,7 @@ export const PartyMap: React.FC = () => {
         room.url.endsWith(`/${venue.id}`)
       );
 
-      const nowInUTCSeconds = getCurrentTimeInUTCSeconds();
+      const nowInUTCSeconds = getCurrentTimeInMilliseconds();
 
       const roomName = {
         [`${currentVenue.name}/${room.title}`]: nowInUTCSeconds,
