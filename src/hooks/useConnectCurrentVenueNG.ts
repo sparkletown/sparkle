@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 
-import { AnyVenue } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { withId } from "utils/id";
 

@@ -4,7 +4,6 @@ import { useHistory } from "react-router-dom";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
 import { AvatarRouter } from "components/templates/AvatarGrid/Router";
-import { CampRouter } from "components/templates/Camp/Router";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import FireBarrel from "components/templates/FireBarrel";
 import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
@@ -14,8 +13,7 @@ import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { FriendShipPage } from "pages/FriendShipPage";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { VenueTemplate } from "types/VenueTemplate";
-import { Venue } from "types/Venue";
+import { Venue, VenueTemplate } from "types/venues";
 
 type Props = {
   venue: Venue;
@@ -34,13 +32,11 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
       template = <FriendShipPage />;
       break;
     case VenueTemplate.partymap:
+    case VenueTemplate.themecamp:
       template = <PartyMapRouter />;
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
-      break;
-    case VenueTemplate.themecamp:
-      template = <CampRouter />;
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:

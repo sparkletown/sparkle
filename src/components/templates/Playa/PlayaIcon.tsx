@@ -1,7 +1,6 @@
 import React from "react";
-import { PlayaIcon, Venue } from "types/Venue";
+import { AnyVenue, PlayaIcon, Venue } from "types/venues";
 import { WithId } from "utils/id";
-import { AnyVenue } from "types/Firestore";
 
 type PropsType = {
   playaIcon?: PlayaIcon;

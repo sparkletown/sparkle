@@ -2,7 +2,7 @@ import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
-import { VenueTemplate } from "types/VenueTemplate";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -14,6 +14,8 @@ import {
   MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
 } from "settings";
+
+import { VenueTemplate } from "types/venues";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,

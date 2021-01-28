@@ -4,6 +4,8 @@ import firebase from "firebase/app";
 import { useVenueId } from "hooks/useVenueId";
 import { currentVenueSelectorData } from "utils/selectors";
 
+// @debt refactor BannerAdmin and this to DRY the common parts.
+//   The only difference in pattern is the update function being called + placeholder/etc labels
 const VideoAdmin: React.FC = () => {
   const venueId = useVenueId();
   const [iframeUrl, setIframeUrl] = useState("");

@@ -5,7 +5,7 @@ import { resolve } from "path";
 import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
-import { Venue } from "../src/types/Venue";
+import { Venue } from "../src/types/venues";
 
 import {
   generateTables,

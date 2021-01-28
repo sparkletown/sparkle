@@ -2,8 +2,7 @@ import React, { useState, useMemo, FC } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import { range } from "lodash";
 
-import { AnyVenue } from "types/Firestore";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { formatDate, formatDateToWeekday } from "utils/time";
 import { WithId, WithVenueId } from "utils/id";
@@ -13,7 +12,7 @@ import { isEventLiveOrFuture } from "utils/event";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
+import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
 type DatedEvents = Array<{
   dateDay: Date;

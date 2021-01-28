@@ -2,7 +2,7 @@
 
 import { resolve } from "path";
 
-import { VenueEvent } from "../src/types/VenueEvent";
+import { VenueEvent } from "../src/types/venues";
 import { WithId } from "../src/utils/id";
 
 import {
