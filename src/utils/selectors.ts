@@ -3,16 +3,16 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "index";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import {
   makeIsRequestedSelector,
+  makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
@@ -114,7 +114,19 @@ export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
 ) => state.attendance.retainAttendance;
 
+export const isCurrentVenueNGRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenueNG"
+);
+
+export const isCurrentVenueNGRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
+  "currentVenueNG"
+);
+
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenue"
+);
+
+export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
   "currentVenue"
 );
 
@@ -156,9 +168,7 @@ export const experienceSelector = (state: RootState) =>
   state.firestore.data.experience;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue
-    ? state.firestore.ordered.currentVenue[0]
-    : undefined;
+  state.firestore.ordered.currentVenue?.[0];
 
 export const parentVenueOrderedSelector: SparkleSelector<
   WithId<AnyVenue> | undefined

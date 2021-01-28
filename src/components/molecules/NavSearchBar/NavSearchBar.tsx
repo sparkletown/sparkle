@@ -1,11 +1,13 @@
+import React, { useCallback, useEffect, useState } from "react";
+
+import { VenueEvent } from "types/venues";
+
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
+import { Room } from "types/rooms";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
@@ -13,7 +15,7 @@ import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
-  rooms: CampRoomData[];
+  rooms: Room[];
   users: readonly WithId<User>[];
   events: VenueEvent[];
 }
@@ -31,7 +33,7 @@ const NavSearchBar = () => {
     WithId<User>
   >();
 
-  const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
 
   const venue = useSelector(currentVenueSelectorData);
 
@@ -47,6 +49,8 @@ const NavSearchBar = () => {
       });
       return;
     }
+
+    // TODO: rename these filteredVenueUsers, filteredVenueEvents, filteredRooms, etc?
     const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
       partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
@@ -55,12 +59,9 @@ const NavSearchBar = () => {
       event.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const roomsResults =
-      venue && venue.rooms
-        ? (venue?.rooms as CampRoomData[]).filter((room) =>
-            room.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+    const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
+      room.title.toLowerCase().includes(searchQuery.toLowerCase())
+    ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
 
     setSearchResult({
       rooms: roomsResults,

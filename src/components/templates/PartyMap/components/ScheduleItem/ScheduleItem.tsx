@@ -1,6 +1,8 @@
 import React from "react";
+
+import { VenueEvent } from "types/venues";
+
 import { formatUtcSeconds } from "utils/time";
-import { VenueEvent } from "types/VenueEvent";
 
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";

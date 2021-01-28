@@ -1,6 +1,6 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { VenueEvent } from "types/VenueEvent";
+import { VenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { venueSelector } from "utils/selectors";

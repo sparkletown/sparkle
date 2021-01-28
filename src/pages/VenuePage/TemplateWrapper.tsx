@@ -1,21 +1,19 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import { ArtPiece } from "components/templates/ArtPiece";
-import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
-import { AvatarRouter } from "components/templates/AvatarGrid/Router";
-import { CampRouter } from "components/templates/Camp/Router";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import FireBarrel from "components/templates/FireBarrel";
-import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
-import { PlayaRouter } from "components/templates/Playa/Router";
-import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
+import { Venue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
+import { ArtPiece } from "components/templates/ArtPiece";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { PlayaRouter } from "components/templates/Playa/Router";
+import { FireBarrel } from "components/templates/FireBarrel";
+import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { VenueTemplate } from "types/VenueTemplate";
-import { Venue } from "types/Venue";
+import { AvatarGrid } from "components/templates/AvatarGrid";
+import { PartyMap } from "components/templates/PartyMap";
+import { Jazzbar } from "components/templates/Jazzbar";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 type Props = {
   venue: Venue;
@@ -28,19 +26,17 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <JazzbarRouter />;
+      template = <Jazzbar />;
       break;
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
       break;
     case VenueTemplate.partymap:
-      template = <PartyMapRouter />;
+    case VenueTemplate.themecamp:
+      template = <PartyMap />;
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
-      break;
-    case VenueTemplate.themecamp:
-      template = <CampRouter />;
       break;
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
@@ -68,11 +64,11 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
       );
       break;
     case VenueTemplate.audience:
-      template = <AudienceRouter />;
+      template = <Audience />;
       fullscreen = true;
       break;
     case VenueTemplate.avatargrid:
-      template = <AvatarRouter />;
+      template = <AvatarGrid />;
       break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
@@ -84,7 +80,10 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
   }
 
   return (
-    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
+    <WithNavigationBar fullscreen={fullscreen}>
+      <AnnouncementMessage message={venue?.bannerMessage} />
+      {template}
+    </WithNavigationBar>
   );
 };
 

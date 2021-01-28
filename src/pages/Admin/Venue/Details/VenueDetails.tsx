@@ -10,8 +10,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
-import { AnyRoom } from "types/Venue";
-import { RoomData_v2 } from "types/RoomData";
+import { AnyRoom, RoomData_v2 } from "types/rooms";
 import { VenueDetailsProps } from "./VenueDetails.types";
 
 import VenueHero from "components/molecules/VenueHero";
