@@ -15,7 +15,7 @@ import { useIsAdminUser } from "hooks/roles";
 
 // Styles
 import "./Admin.scss";
-import { Venue_v2 } from "types/venues";
+import { Venue_v2 } from "types/Venue";
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import AdminSidebar from "./Sidebar/Sidebar";
 import { useVenueId } from "hooks/useVenueId";

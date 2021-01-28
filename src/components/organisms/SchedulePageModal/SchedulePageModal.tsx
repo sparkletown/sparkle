@@ -2,7 +2,8 @@ import React, { useState, useMemo, FC } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import { range } from "lodash";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
 
 import { formatDate, formatDateToWeekday } from "utils/time";
 import { WithId, WithVenueId } from "utils/id";
@@ -12,7 +13,7 @@ import { isEventLiveOrFuture } from "utils/event";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
+import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -39,9 +40,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedVenuesById: Partial<
-    Record<string, WithId<AnyVenue>>
-  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
+  const relatedVenuesById: Partial<Record<
+    string,
+    WithId<AnyVenue>
+  >> = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);

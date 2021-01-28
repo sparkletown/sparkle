@@ -1,24 +1,20 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
-
-import { Venue } from "types/venues";
-import { Room } from "types/rooms";
+import { CampRoomData } from "types/CampRoomData";
+import { Link, useHistory } from "react-router-dom";
+import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
-
+import "./Admin.scss";
 import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-
 import VenueEventDetails from "./VenueEventDetails";
-
-import "./Admin.scss";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 interface Props {
   index: number;
   venue: WithId<Venue>;
-  room: Room;
+  room: CampRoomData;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;

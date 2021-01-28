@@ -4,15 +4,13 @@ import { Modal, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-
+import { AnyVenue } from "types/Firestore";
 import { User } from "types/User";
-import { AnyVenue } from "types/venues";
-
 import { WithId } from "utils/id";
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
 import "./VenueOwnerModal.scss";
-import { Venue_v2 } from "types/venues";
+import { Venue_v2 } from "types/Venue";
 
 interface PartitionedOwnersOthers {
   owners: WithId<User>[];

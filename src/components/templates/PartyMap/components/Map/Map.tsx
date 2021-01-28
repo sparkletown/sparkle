@@ -1,67 +1,70 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FirebaseReducer } from "react-redux-firebase";
+import firebase from "firebase/app";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
+import { User } from "types/User";
+import { PartyMapVenue } from "types/PartyMapVenue";
+import { PartyMapRoomData } from "types/PartyMapRoomData";
 
-import { User, UserExperienceData } from "types/User";
-import { Room } from "types/rooms";
-import { PartyMapVenue } from "types/venues";
-
-import { makeUpdateUserGridLocation } from "api/profile";
-
-import { hasElements, isTruthy } from "utils/types";
-import { makeRoomHitFilter } from "utils/filter";
+import { enterLocation } from "utils/useLocationUpdateEffect";
+import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { WithId } from "utils/id";
+import { orderedVenuesSelector } from "utils/selectors";
+import { openRoomUrl } from "utils/url";
 
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
-
-// @debt refactor these hooks into somewhere more sensible
-import { useMapGrid } from "./hooks/useMapGrid";
-import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
-import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
-
-import UserProfileModal from "components/organisms/UserProfileModal";
+import { usePartygoers } from "hooks/users";
 
 import Sidebar from "components/molecules/Sidebar";
-
-import { MapRoom } from "./MapRoom";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import { PartyMapRoomOverlay } from "./PartyMapRoomOverlay";
 
 import "./Map.scss";
+import { makeCampRoomHitFilter } from "utils/filter";
+import { hasElements } from "utils/types";
 
-export const DEFAULT_COLUMNS = 40;
-export const DEFAULT_ROWS = 25;
+// @debt refactor these hooks into somewhere more sensible
+import { useMapGrid } from "../../../Camp/hooks/useMapGrid";
+import { usePartygoersOverlay } from "../../../Camp/hooks/usePartygoersOverlay";
+import { usePartygoersbySeat } from "../../../Camp/hooks/usePartygoersBySeat";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
-interface MapProps {
-  user: FirebaseReducer.AuthState;
-  profileData: UserExperienceData;
+interface PropsType {
   venue: PartyMapVenue;
-  partygoers: readonly WithId<User>[];
-  selectRoom: (room: Room) => void;
-  unselectRoom: () => void;
-  enterSelectedRoom: () => void;
+  attendances: { [location: string]: number };
+  selectedRoom: PartyMapRoomData | undefined;
+  setSelectedRoom: (room: PartyMapRoomData | undefined) => void;
+  setIsRoomModalOpen: (value: boolean) => void;
 }
 
-export const Map: React.FC<MapProps> = ({
-  user,
-  profileData,
+const DEFAULT_COLUMNS = 40;
+const DEFAULT_ROWS = 25;
+
+export const Map: React.FC<PropsType> = ({
   venue,
-  partygoers,
-  selectRoom,
-  unselectRoom,
-  enterSelectedRoom,
+  attendances,
+  selectedRoom,
+  setSelectedRoom,
+  setIsRoomModalOpen,
 }) => {
   const venueId = venue.id;
-  const userUid = user?.uid;
-  const showGrid = venue.showGrid;
+  const { user, profile } = useUser();
+  const [selectedUserProfile, setSelectedUserProfile] = useState<
+    WithId<User>
+  >();
+  const [rows, setRows] = useState<number>(0);
 
-  const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
-  const [totalRows, setTotalRows] = useState<number>(0);
+  const columns = venue.columns ?? DEFAULT_COLUMNS;
+  const currentPosition = profile?.data?.[venue.id];
 
-  const columnsArray = useMemo(
-    () => Array.from(Array<JSX.Element>(totalColumns)),
-    [totalColumns]
-  );
-  const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
+  const columnsArray = useMemo(() => Array.from(Array<JSX.Element>(columns)), [
+    columns,
+  ]);
+  const rowsArray = useMemo(() => Array.from(Array(rows)), [rows]);
+
+  const venues = useSelector(orderedVenuesSelector);
+  const partygoers = usePartygoers();
 
   useEffect(() => {
     const img = new Image();
@@ -70,89 +73,89 @@ export const Map: React.FC<MapProps> = ({
       : DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
-
       const calcRows = venue.columns
         ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
         : DEFAULT_ROWS;
-
-      setTotalRows(calcRows);
+      setRows(calcRows);
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
-  const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid: user?.uid,
-        profileData,
-      })(row, column);
-    },
-    [profileData, user, venueId]
-  );
-
-  const currentPosition = profileData?.[venue.id];
-
-  const checkForRoomHit = useCallback(
-    (row: number, column: number) => {
-      if (!venue) return;
-
-      const roomHitFilter = makeRoomHitFilter({
-        row,
-        column,
-        totalRows,
-        totalColumns,
-      });
-
-      // Only select the first room if we hit multiple (eg. overlapping)
-      const roomHit = venue.rooms?.find(roomHitFilter);
-      if (roomHit) {
-        selectRoom(roomHit);
-      }
-    },
-    [selectRoom, totalColumns, totalRows, venue]
-  );
-
   const roomsHit = useMemo(() => {
-    if (
-      !venue ||
-      !venue.rooms ||
-      !currentPosition?.row ||
-      !currentPosition?.column
-    )
-      return [];
+    if (!currentPosition?.row || !currentPosition?.column) return [];
 
     const { row, column } = currentPosition;
 
-    const roomHitFilter = makeRoomHitFilter({
+    const roomHitFilter = makeCampRoomHitFilter({
       row,
       column,
-      totalRows,
-      totalColumns,
+      totalRows: rows,
+      totalColumns: columns,
     });
 
-    return venue.rooms.filter(roomHitFilter);
-  }, [venue, currentPosition, totalRows, totalColumns]);
+    return venue.rooms?.filter(roomHitFilter);
+  }, [currentPosition, rows, columns, venue.rooms]);
 
-  useEffect(() => {
-    if (hasElements(roomsHit)) {
-      // Only select the first room if we hit multiple (eg. overlapping)
-      roomsHit.slice(0, 1).forEach((room) => {
-        selectRoom(room);
-      });
-    } else {
-      unselectRoom();
-    }
-  }, [roomsHit, selectRoom, unselectRoom]);
-
-  const onSeatClick = useCallback(
-    (row: number, column: number, seatedPartygoer?: WithId<User>) => {
-      if (!seatedPartygoer) {
-        takeSeat(row, column);
-      } else {
-        checkForRoomHit(row, column);
+  const detectRoomsOnMove = useCallback(() => {
+    if (selectedRoom) {
+      const noRoomHits = hasElements(roomsHit);
+      if (!noRoomHits && selectedRoom) {
+        setSelectedRoom(undefined);
+        setIsRoomModalOpen(false);
       }
+    }
+
+    roomsHit?.forEach((room) => {
+      setSelectedRoom(room);
+      setIsRoomModalOpen(true);
+    });
+  }, [roomsHit, selectedRoom, setIsRoomModalOpen, setSelectedRoom]);
+
+  const takeSeat = useCallback(
+    (row: number | null, column: number | null) => {
+      if (!user || !profile || !venueId) return;
+      const doc = `users/${user.uid}`;
+      const existingData = profile?.data;
+      const update = {
+        data: {
+          ...existingData,
+          [venueId]: {
+            row,
+            column,
+          },
+        },
+      };
+      const firestore = firebase.firestore();
+      firestore
+        .doc(doc)
+        .update(update)
+        .catch(() => {
+          firestore.doc(doc).set(update);
+        });
     },
-    [checkForRoomHit, takeSeat]
+    [profile, user, venueId]
+  );
+
+  // TODO: @debt refactor this to use openRoomWithCounting
+  const enterPartyMapRoom = useCallback(
+    (room: PartyMapRoomData) => {
+      if (!room || !user) return;
+
+      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
+      const roomVenue = venues?.find((venue) =>
+        room.url.endsWith(`/${venue.id}`)
+      );
+
+      const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+
+      const roomName = {
+        [`${venue.name}/${room.title}`]: nowInEpochSeconds,
+        ...(roomVenue ? { [venue.name]: nowInEpochSeconds } : {}),
+      };
+
+      openRoomUrl(room.url);
+      enterLocation(user, roomName, profile?.lastSeenIn);
+    },
+    [profile, user, venue.name, venues]
   );
 
   const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
@@ -160,26 +163,40 @@ export const Map: React.FC<MapProps> = ({
     partygoers,
   });
 
+  const enterSelectedRoom = useCallback(() => {
+    if (!selectedRoom) return;
+
+    enterPartyMapRoom(selectedRoom);
+  }, [enterPartyMapRoom, selectedRoom]);
+
+  const onSeatClick = useCallback(
+    (row: number, column: number, seatedPartygoer: WithId<User> | null) => {
+      if (!seatedPartygoer) {
+        takeSeat(row, column);
+      }
+    },
+    [takeSeat]
+  );
+
   useKeyboardControls({
     venueId,
-    totalRows,
-    totalColumns,
+    totalRows: rows,
+    totalColumns: columns,
     isSeatTaken,
     takeSeat,
     enterSelectedRoom,
+    onMove: detectRoomsOnMove,
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
+  const isUserProfileSelected: boolean = !!selectedUserProfile;
 
   const deselectUserProfile = useCallback(
     () => setSelectedUserProfile(undefined),
     []
   );
 
-  const isUserProfileSelected = isTruthy(selectedUserProfile);
-
+  const userUid = user?.uid;
+  const showGrid = venue.showGrid;
   const mapGrid = useMapGrid({
     showGrid,
     userUid,
@@ -189,14 +206,13 @@ export const Map: React.FC<MapProps> = ({
     onSeatClick,
   });
 
-  // TODO: this probably doesn't even need to be a hook.. it's more of a component if anything. We can clean this up later
   const partygoersOverlay = usePartygoersOverlay({
     showGrid,
     userUid,
     venueId,
     withMiniAvatars: venue.miniAvatars,
-    rows: totalRows,
-    columns: totalColumns,
+    rows,
+    columns,
     partygoers,
     setSelectedUserProfile,
   });
@@ -204,24 +220,18 @@ export const Map: React.FC<MapProps> = ({
   const roomOverlay = useMemo(
     () =>
       venue.rooms?.map((room) => (
-        <MapRoom
+        <PartyMapRoomOverlay
           key={room.title}
           venue={venue}
           room={room}
-          selectRoom={() => selectRoom(room)}
+          attendances={attendances}
+          setSelectedRoom={setSelectedRoom}
+          setIsRoomModalOpen={setIsRoomModalOpen}
+          // onEnterRoom={enterPartyMapRoom}
         />
       )),
-    [selectRoom, venue]
+    [attendances, setIsRoomModalOpen, setSelectedRoom, venue]
   );
-
-  const gridContainerStyles = useMemo(
-    () => ({
-      gridTemplateColumns: `repeat(${totalColumns}, calc(100% / ${totalColumns}))`,
-      gridTemplateRows: `repeat(${totalRows}, 1fr)`,
-    }),
-    [totalColumns, totalRows]
-  );
-
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -237,17 +247,25 @@ export const Map: React.FC<MapProps> = ({
             alt=""
           />
 
-          <div className="party-map-grid-container" style={gridContainerStyles}>
+          <div
+            className="party-map-grid-container"
+            style={{
+              gridTemplateColumns: `repeat(${columns}, calc(100% / ${columns}))`,
+              gridTemplateRows: `repeat(${rows}, 1fr)`,
+            }}
+          >
             {mapGrid}
             {partygoersOverlay}
             {roomOverlay}
           </div>
 
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={isUserProfileSelected}
-            onHide={deselectUserProfile}
-          />
+          {selectedUserProfile && (
+            <UserProfileModal
+              show={isUserProfileSelected}
+              onHide={deselectUserProfile}
+              userProfile={selectedUserProfile}
+            />
+          )}
         </div>
       </div>
 

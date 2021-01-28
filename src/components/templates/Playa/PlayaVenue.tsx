@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { Overlay } from "react-bootstrap";
 import { DEFAULT_MAP_ICON_URL, PLAYA_VENUE_SIZE } from "settings";
-import { AnyVenue } from "types/venues";
+import { AnyVenue } from "types/Firestore";
 import { WithId } from "utils/id";
 
 interface Props {

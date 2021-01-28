@@ -18,10 +18,10 @@ import { useUser } from "hooks/useUser";
 
 // Utils | Settings | Constants | Helpers
 import { venueLandingUrl } from "utils/url";
-import { createJazzbar } from "utils/venue";
 
 // Typings
-import { VenueTemplate } from "types/venues";
+import { createJazzbar } from "types/Venue";
+import { VenueTemplate } from "types/VenueTemplate";
 import { DetailsFormProps } from "./DetailsForm.types";
 import {
   setBannerURL,

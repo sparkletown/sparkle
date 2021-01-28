@@ -1,15 +1,16 @@
 import React, { useCallback, useMemo } from "react";
 
-import { AvatarGridRoom } from "types/rooms";
-
+// Components
 import { Modal } from "react-bootstrap";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
+// Hooks
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { usePartygoers } from "hooks/users";
 
+// Utils | Settings | Constants
 import { isEventLive } from "utils/event";
 import {
   formatUtcSeconds,
@@ -17,12 +18,17 @@ import {
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
-import { venueEventsSelector, venueSelector } from "utils/selectors";
 
+// Typings
+import { AvatarGridRoom } from "types/AvatarGrid";
+
+// Reducer | Actions
 import { retainAttendance } from "store/actions/Attendance";
 
+// Styles
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
+import { venueEventsSelector, venueSelector } from "utils/selectors";
 
 interface PropsType {
   show: boolean;

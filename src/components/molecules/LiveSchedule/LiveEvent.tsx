@@ -1,6 +1,7 @@
 import React, { FC, useCallback } from "react";
 
-import { Venue, VenueEvent } from "types/venues";
+import { Venue } from "types/Venue";
+import { VenueEvent } from "types/VenueEvent";
 
 import { formatHourAndMinute } from "utils/time";
 import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";

@@ -14,7 +14,7 @@ import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 // Styles
 import * as S from "../Admin.styles";
 import { updateVenue_v2 } from "api/admin";
-import { Venue_v2_AdvancedConfig } from "types/venues";
+import { Venue_v2_AdvancedConfig } from "types/Venue";
 import { useUser } from "hooks/useUser";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!

@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import firebase, { UserInfo } from "firebase/app";
-
-import { makeUpdateUserGridLocation } from "api/profile";
 
 // Components
 import {
@@ -13,12 +7,14 @@ import {
   Reactions,
   TextReactionType,
 } from "utils/reactions";
-
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
+import { useForm } from "react-hook-form";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -253,12 +249,29 @@ export const Audience: React.FunctionComponent = () => {
   );
 
   return useMemo(() => {
-    const takeSeat = (row: number | null, column: number | null) => {
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid: user?.uid,
-        profileData: profile?.data,
-      })(row, column);
+    const takeSeat = (
+      translatedRow: number | null,
+      translatedColumn: number | null
+    ) => {
+      if (!user || !profile || !venueId) return;
+      const doc = `users/${user.uid}`;
+      const existingData = profile?.data;
+      const update = {
+        data: {
+          ...existingData,
+          [venueId]: {
+            row: translatedRow,
+            column: translatedColumn,
+          },
+        },
+      };
+      const firestore = firebase.firestore();
+      firestore
+        .doc(doc)
+        .update(update)
+        .catch(() => {
+          firestore.doc(doc).set(update);
+        });
     };
 
     const leaveSeat = () => {

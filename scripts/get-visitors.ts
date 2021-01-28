@@ -1,21 +1,26 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
 import fs from "fs";
-import { resolve } from "path";
-
 import admin from "firebase-admin";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Print attendees' emails, based on codes_used
 
-const usage = makeScriptUsage({
-  description: "Print attendees' emails, based on codes_used.",
-  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
-  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
-});
+Usage: node ${scriptName} PROJECT_ID
 
-const [projectId, credentialPath] = process.argv.slice(2);
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
 
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId] = process.argv.slice(2);
 if (!projectId) {
   usage();
 }
@@ -27,11 +32,7 @@ const codes = fs
   .split("\n")
   .map((line) => line.toLowerCase());
 
-initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath
-    ? resolve(__dirname, credentialPath)
-    : undefined,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const userprivateCollection = await admin
@@ -39,7 +40,7 @@ initFirebaseAdminApp(projectId, {
     .collection("userprivate")
     .get();
 
-  const codesUsed: string[] = [];
+  const codesUsed = [];
 
   userprivateCollection.forEach((doc) => {
     if (!doc.exists || !doc.data().codes_used) return;

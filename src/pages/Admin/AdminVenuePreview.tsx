@@ -1,7 +1,9 @@
 import React, { CSSProperties, useMemo } from "react";
-import { PartyMapVenue, Venue, VenueTemplate } from "types/venues";
+import { Venue } from "types/Venue";
 import { WithId } from "utils/id";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { VenueTemplate } from "types/VenueTemplate";
+import { CampVenue } from "types/CampVenue";
+import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import {
   IFRAME_ALLOW,
@@ -67,13 +69,13 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         );
       case VenueTemplate.partymap:
       case VenueTemplate.themecamp:
-        const partyMapVenue = venue as WithId<PartyMapVenue>;
+        const campVenue = venue as WithId<CampVenue>;
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>
               This is a preview of your camp
             </span>
-            <PartyMapContainer
+            <CampContainer
               interactive={false}
               resizable
               coordinatesBoundary={{
@@ -84,7 +86,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
               draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venue={partyMapVenue}
+              venue={campVenue}
             />
           </div>
         );

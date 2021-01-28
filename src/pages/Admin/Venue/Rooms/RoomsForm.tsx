@@ -10,11 +10,11 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { PartyMapVenue, Venue } from "types/venues";
+import { Venue } from "types/Venue";
 import { useHistory } from "react-router-dom";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { CampVenue } from "types/CampVenue";
+import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
-import { Room } from "types/rooms";
 import { validationSchema } from "./RoomsValidationSchema";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
@@ -32,7 +32,7 @@ export const RoomsForm: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<PartyMapVenue>();
+  const [venue, setVenue] = useState<CampVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -40,16 +40,15 @@ export const RoomsForm: React.FC = () => {
     : undefined;
 
   useEffect(() => {
-    if (!venueId) return history.replace("/admin");
-
     const fetchVenueFromAPI = async () => {
+      if (!venueId) return history.replace("/admin");
+
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
 
       if (!venueSnapshot.exists) return history.replace("/admin");
-
       const data = venueSnapshot.data() as Venue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
@@ -59,20 +58,17 @@ export const RoomsForm: React.FC = () => {
       if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
-      setVenue(data as PartyMapVenue);
+      setVenue(data as CampVenue);
     };
     fetchVenueFromAPI();
   }, [firestore, venueId, history]);
-
   const room = useMemo(() => {
     if (
       typeof queryRoomIndex === "undefined" ||
       !venue ||
-      !venue.rooms ||
       venue.rooms.length - 1 < queryRoomIndex
     )
       return undefined;
-
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
@@ -96,8 +92,8 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerForm {
   venueId: string;
-  venue: PartyMapVenue;
-  editingRoom?: Room;
+  venue: CampVenue;
+  editingRoom?: CampVenue["rooms"][number];
   editingRoomIndex?: number;
 }
 
@@ -162,7 +158,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
 
   const iconPositionFieldName = "iconPosition";
   const onBoxChange: ExtractProps<
-    typeof PartyMapContainer
+    typeof CampContainer
   >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
@@ -367,7 +363,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
           </p>
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
-              <PartyMapContainer
+              <CampContainer
                 interactive
                 resizable
                 coordinatesBoundary={{

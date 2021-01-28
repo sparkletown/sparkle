@@ -2,7 +2,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { Room } from "types/rooms";
+import { CampRoomData } from "types/CampRoomData";
 
 import { chatSort } from "utils/chat";
 import { PrivateChatMessage } from "store/actions/Chat";
@@ -37,7 +37,7 @@ const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 export const isTruthyFilter = <T>(item?: T | false): item is T => !!item;
 
 /**
- * @see makeRoomHitFilter
+ * @see makeCampRoomHitFilter
  */
 export type RoomHitFilterProps = {
   row: number;
@@ -47,19 +47,19 @@ export type RoomHitFilterProps = {
 };
 
 /**
- * Make a PartyMapRoomData[] filter for rooms 'hit' by the supplied row/column.
+ * Make a CampRoomData[] filter for rooms 'hit' by the supplied row/column.
  *
  * @param row
  * @param column
  * @param totalRows
  * @param totalColumns
  */
-export const makeRoomHitFilter = ({
+export const makeCampRoomHitFilter = ({
   row,
   column,
   totalRows,
   totalColumns,
-}: RoomHitFilterProps) => (room: Room) => {
+}: RoomHitFilterProps) => (room: CampRoomData) => {
   const checkPercentRow = (row / totalRows) * 100;
   const checkPercentColumn = (column / totalColumns) * 100;
 

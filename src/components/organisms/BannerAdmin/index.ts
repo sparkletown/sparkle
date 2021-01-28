@@ -1,1 +1,0 @@
-export { BannerAdmin } from "./BannerAdmin";

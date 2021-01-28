@@ -5,7 +5,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
-import { VenuePlacementState } from "types/venues";
+import { VenuePlacementState } from "types/Venue";
 import { PLAYA_HEIGHT, PLAYA_WIDTH } from "settings";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {

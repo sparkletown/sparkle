@@ -1,8 +1,5 @@
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { VenueEvent } from "types/venues";
-
 import CountDown from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
@@ -21,6 +18,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
 
 import { Firestore } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";

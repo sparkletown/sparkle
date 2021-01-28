@@ -1,5 +1,4 @@
-import { CSSProperties } from "react";
-
+import { VenueTemplate } from "types/VenueTemplate";
 import {
   API_KEY,
   APP_ID,
@@ -7,9 +6,9 @@ import {
   BUCKET_URL,
   PROJECT_ID,
   IS_BURN,
-} from "secrets";
-import { VenueTemplate } from "types/venues";
-import { FIVE_MINUTES_MS } from "utils/time";
+} from "./secrets";
+import { CSSProperties } from "react";
+import { FIVE_MINUTES_MS } from "./utils/time";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =

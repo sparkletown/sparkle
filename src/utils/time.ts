@@ -1,51 +1,13 @@
-import { format, formatDuration } from "date-fns";
-
-import { VenueEvent } from "types/venues";
+import { format } from "date-fns";
+import { RoomData } from "types/RoomData";
+import { RoomEvent } from "types/RoomEventData";
+import { VenueEvent } from "types/VenueEvent";
 
 export const ONE_MINUTE_IN_SECONDS = 60;
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
 export const FIVE_MINUTES_MS = 5 * 60 * 1000;
-
-/**
- * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
- *
- * @param totalSeconds
- *
- * @see https://date-fns.org/docs/Duration
- *
- * @debt replace this with better implementation using `intervalToDuration` (see link) once we upgrade date-fns beyond v2.13.0
- * @see https://github.com/date-fns/date-fns/issues/229#issuecomment-646124041
- */
-export const secondsToDuration = (totalSeconds: number): Duration => {
-  const days = Math.floor(totalSeconds / ONE_DAY_IN_SECONDS);
-  const remainingSecondsWithoutDays = totalSeconds % ONE_DAY_IN_SECONDS;
-
-  const hours = Math.floor(remainingSecondsWithoutDays / ONE_HOUR_IN_SECONDS);
-  const remainingSecondsWithoutHours =
-    remainingSecondsWithoutDays % ONE_HOUR_IN_SECONDS;
-
-  const minutes = Math.floor(
-    remainingSecondsWithoutHours / ONE_MINUTE_IN_SECONDS
-  );
-  const remainingSecondsWithoutMinutes =
-    remainingSecondsWithoutHours % ONE_MINUTE_IN_SECONDS;
-
-  return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
-};
-
-/**
- * Format seconds as a string representing the Duration.
- *
- * @example
- *   formatSecondsAsDuration(1000000)
- *   // 11 days 13 hours 46 minutes 40 seconds
- *
- * @param seconds total seconds to be formatted as a duration
- */
-export const formatSecondsAsDuration = (seconds: number): string =>
-  formatDuration(secondsToDuration(seconds));
 
 const formatMeasurementInString = (value: number, measureUnit: string) => {
   const baseFormatted = `${value} ${measureUnit}`;
@@ -119,12 +81,57 @@ export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds ? format(new Date(utcSeconds * 1000), "p") : "(unknown)";
 }
 
+const getEventStartingTimeInSeconds = (
+  event: RoomEvent,
+  startUtcSeconds: number
+) => {
+  return event.start_minute * ONE_MINUTE_IN_SECONDS + startUtcSeconds;
+};
+
+const getEventEndingTimeInSeconds = (
+  event: RoomEvent,
+  startUtcSeconds: number
+) => {
+  return (
+    (event.start_minute + event.duration_minutes) * ONE_MINUTE_IN_SECONDS +
+    startUtcSeconds
+  );
+};
+
+export const getCurrentEvent = (room: RoomData, startUtcSeconds: number) => {
+  const currentTimeInSeconds = Date.now() / 1000;
+
+  return room.events.find((event) => {
+    const eventStart = getEventStartingTimeInSeconds(event, startUtcSeconds);
+    const eventEnd = getEventEndingTimeInSeconds(event, startUtcSeconds);
+
+    const hasEventStarted = eventStart < currentTimeInSeconds;
+    const hasEventEnded = eventEnd < currentTimeInSeconds;
+
+    return hasEventStarted && !hasEventEnded;
+  });
+};
+
+export const eventHappeningNow = (room: RoomData, startUtcSeconds: number) => {
+  return !!getCurrentEvent(room, startUtcSeconds);
+};
+
+export function entranceUnhosted(
+  startUtcSeconds: number,
+  hostedDurationHours: number
+) {
+  const currentTimeInSeconds = Date.now() / 1000;
+  return (
+    currentTimeInSeconds >
+    startUtcSeconds + hostedDurationHours * ONE_HOUR_IN_SECONDS
+  );
+}
+
 export function getHoursAgoInSeconds(hours: number) {
   const nowInSec = Date.now() / 1000;
   return nowInSec - hours * 60 * 60;
 }
 
-// @debt this is a duplicate of getCurrentTimeInUTCSeconds
 export const getCurrentTimeInUnixEpochSeconds = () => Date.now() / 1000;
 
 export function getDaysAgoInSeconds(days: number) {

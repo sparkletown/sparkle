@@ -4,8 +4,8 @@ import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { VenueTemplate } from "types/venues";
 import { ValidStoreAsKeys } from "types/Firestore";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -253,10 +253,6 @@ const VenuePage: React.FC = () => {
     return <Login formType="initial" />;
   }
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
-  }
-
   if (!venue || !venueId) {
     return <LoadingPage />;
   }
@@ -266,6 +262,10 @@ const VenuePage: React.FC = () => {
 
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
+  }
+
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
   }
 
   if (

@@ -6,7 +6,7 @@ export interface Experience {
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm
-export type UserExperienceData = Record<string, Experience>;
+type UserExperienceData = Record<string, Experience>;
 
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {

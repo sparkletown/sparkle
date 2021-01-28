@@ -1,27 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import firebase from "firebase/app";
-
 import { useSelector } from "hooks/useSelector";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { User, VideoState } from "types/User";
+import { Venue } from "types/Venue";
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
+
+import * as S from "./FireBarrel.styled";
+import { useVideoState } from "./useVideo";
 import { useUser } from "hooks/useUser";
 import { usePartygoers, useUsersById } from "hooks/users";
 
-import { User, VideoState } from "types/User";
-import { Venue } from "types/venues";
-
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { WithId } from "utils/id";
-import { currentVenueSelector } from "utils/selectors";
-
-import { useVideoState } from "./useVideo";
-import LocalParticipant from "components/templates/Playa/Video/LocalParticipant";
-import RemoteParticipant from "components/templates/Playa/Video/RemoteParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import LocalParticipant from "../Playa/Video/LocalParticipant";
+import RemoteParticipant from "../Playa/Video/RemoteParticipant";
+import firebase from "firebase/app";
+import { currentVenueSelector } from "utils/selectors";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-export const FireBarrel: React.FC = () => {
+const FireBarrel: React.FC = () => {
   const [currentPartygoers, setCurrentPartygoers] = useState<
     WithId<User>[] | []
   >([]);
@@ -170,3 +168,5 @@ export const FireBarrel: React.FC = () => {
     venue,
   ]);
 };
+
+export default FireBarrel;

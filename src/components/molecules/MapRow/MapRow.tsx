@@ -6,7 +6,7 @@ import { WithId } from "utils/id";
 interface MapRowProps {
   row: number;
   column: number;
-  seatedPartygoer?: WithId<User>;
+  seatedPartygoer: WithId<User> | null; // @debt changed this to be undefined?
 
   /** @default false **/
   showGrid?: boolean;
@@ -20,7 +20,7 @@ interface MapRowProps {
   onSeatClick?: (
     row: number,
     column: number,
-    seatedPartygoer?: WithId<User>
+    seatedPartygoer: WithId<User> | null
   ) => void;
 }
 
@@ -40,7 +40,6 @@ export const MapRow: React.FC<MapRowProps> = ({
   );
 
   if (!showGrid) return <div className="seat-row" />;
-
   return (
     <div className="seat-row">
       <div className="seat-container" onClick={handleSeatClick}>

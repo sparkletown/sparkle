@@ -1,16 +1,20 @@
-import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
+import { AdminRole } from "hooks/roles";
 
+import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import { WithId } from "utils/id";
 import { Reaction } from "utils/reactions";
 
-import { AdminRole } from "hooks/roles";
-
+import { CampVenue } from "./CampVenue";
 import { ChatRequest } from "./ChatRequest";
+import { PartyMapVenue } from "./PartyMapVenue";
 import { Purchase } from "./Purchase";
 import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
-import { AnyVenue, VenueEvent } from "./venues";
+import { Venue } from "./Venue";
+import { VenueEvent } from "./VenueEvent";
+
+export type AnyVenue = Venue | PartyMapVenue | CampVenue;
 
 interface Experience {
   reactions: Record<string, Reaction>;

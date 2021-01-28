@@ -1,38 +1,38 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
-import { resolve } from "path";
-
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-const usage = makeScriptUsage({
-  description: "Count documents at the second level of a Firestore collection.",
-  usageParams: "PROJECT_ID COLLECTION [CREDENTIAL_PATH]",
-  exampleParams: "co-reality-map venues [theMatchingAccountServiceKey.json]",
-});
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------
+${scriptName}: Count documents at the second level of a Firestore collection.
 
-const [projectId, collection, credentialPath] = process.argv.slice(2);
+Usage: node ${scriptName} PROJECT_ID
 
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
-if (!projectId || !collection) {
+Example: node ${scriptName} co-reality-map
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId, collection] = process.argv.slice(2);
+if (!projectId) {
   usage();
 }
 
-initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath
-    ? resolve(__dirname, credentialPath)
-    : undefined,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const topLevelDocs = await admin
     .firestore()
     .collection(collection)
     .listDocuments();
-
   console.log(`number of documents in ${collection}:`, topLevelDocs.length);
-
   let totalSecondLevelDocs = 0;
   await Promise.all(
     topLevelDocs.map(async (topLevelDoc) => {

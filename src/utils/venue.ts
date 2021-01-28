@@ -1,14 +1,11 @@
-import {
-  PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_TEMPLATES,
-  SUBVENUE_TEMPLATES,
-} from "settings";
-
+import { Venue } from "types/Venue";
 import { User } from "types/User";
-import { urlFromImage, Venue, VenueTemplate } from "types/venues";
-
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
-
+import { isCampVenue } from "types/CampVenue";
+import {
+  SUBVENUE_TEMPLATES,
+  PLAYA_TEMPLATES,
+  PLACEABLE_VENUE_TEMPLATES,
+} from "settings";
 import { WithId } from "./id";
 
 export const canHaveEvents = (venue: Venue): boolean =>
@@ -42,48 +39,8 @@ export const peopleByLastSeenIn = (
 export const peopleAttending = (
   peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
   venue: Venue
-) => {
-  const rooms = venue.rooms?.map((room) => room.title) ?? [];
-
-  const locations = [venue.name, ...rooms];
-
-  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
-};
-
-export const createJazzbar = (values: FormValues): Venue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    mapIconImageUrl: urlFromImage(
-      "/default-profile-pic.png",
-      values.mapIconImageFile
-    ),
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    profile_questions: values.profile_questions ?? [],
-    code_of_conduct_questions: [],
-    termsAndConditions: [],
-    adultContent: values.adultContent || false,
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-  };
-};
+) =>
+  [
+    venue.name,
+    ...(isCampVenue(venue) ? venue.rooms?.map((r) => r.title) : []),
+  ].flatMap((place) => peopleByLastSeenIn[place] ?? []);

@@ -1,7 +1,6 @@
 import React from "react";
 
-import { PartyMapVenue } from "types/venues";
-
+import { PartyMapVenue } from "types/PartyMapVenue";
 import { currentVenueSelectorData } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 

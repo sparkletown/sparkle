@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";

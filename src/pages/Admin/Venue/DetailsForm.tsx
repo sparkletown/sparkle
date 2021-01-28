@@ -17,8 +17,7 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { VenuePlacementState, VenueTemplate } from "types/venues";
-import { createJazzbar } from "utils/venue";
+import { createJazzbar, VenuePlacementState } from "types/Venue";
 import * as Yup from "yup";
 import {
   editVenueCastSchema,
@@ -45,6 +44,7 @@ import {
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ExtractProps } from "types/utility";
+import { VenueTemplate } from "types/VenueTemplate";
 import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
 import { Form } from "react-bootstrap";

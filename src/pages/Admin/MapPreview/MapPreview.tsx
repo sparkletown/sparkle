@@ -15,7 +15,7 @@ import Legend from "components/atoms/Legend";
 import * as S from "./MapPreview.styles";
 import BackgroundSelect from "../BackgroundSelect";
 import { MapPreviewProps } from "./MapPreview.types";
-import { RoomData_v2 } from "types/rooms";
+import { RoomData_v2 } from "types/RoomData";
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,

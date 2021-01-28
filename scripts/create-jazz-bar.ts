@@ -2,17 +2,26 @@
 
 import admin from "firebase-admin";
 
-import { JazzbarVenue, VenueTemplate } from "../src/types/venues";
+import { JazzbarVenue } from "../src/types/JazzbarVenue";
+import { VenueTemplate } from "../src/types/VenueTemplate";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-const usage = makeScriptUsage({
-  description: "Create jazz bar.",
-  usageParams:
-    "PROJECT_ID VENUE_NAME IFRAME_URL LOGO_IMAGE_URL PROFILE_QUESTIONS CODE_OF_CONDUCT_QUESTIONS",
-  exampleParams:
-    'co-reality-map jazzyjeff https://youtube.com/embed/abc /logo.png "question1?,question2?" "I will seek out the fun,I will add to the fun"',
-});
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Create jazz bar
+
+Usage: node ${scriptName} PROJECT_ID VENUE_NAME IFRAME_URL LOGO_IMAGE_URL PROFILE_QUESTIONS CODE_OF_CONDUCT_QUESTIONS
+
+Example: node ${scriptName} co-reality-map jazzyjeff https://youtube.com/embed/abc /logo.png "question1?,question2?" "I will seek out the fun,I will add to the fun"
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
 
 const [
   projectId,

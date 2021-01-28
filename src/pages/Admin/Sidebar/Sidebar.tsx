@@ -3,7 +3,7 @@ import { useVenueId } from "hooks/useVenueId";
 import React from "react";
 import { Button, Form, Nav } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 import { SidebarOption } from "../Admin_v2";
 
 import * as S from "./Sidebar.styles";

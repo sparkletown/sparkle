@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 import {
   currentVenueSelector,
@@ -9,16 +8,16 @@ import {
   privateChatsSelector,
 } from "utils/selectors";
 
-import { User } from "types/User";
-import { isVenueWithRooms } from "types/venues";
-
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
 import ChatBox from "components/molecules/Chatbox";
+import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
+import { isCampVenue } from "types/CampVenue";
+import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
@@ -143,26 +142,25 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   useFirestoreConnect("venues");
-  const currentVenue = useSelector(currentVenueSelectorData);
-  const allVenues = useSelector(orderedVenuesSelector);
+  const venue = useSelector(currentVenueSelectorData);
+  const venues = useSelector(orderedVenuesSelector);
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: allVenues?.find(
+      venue: venues?.find(
         (v) =>
-          (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
+          (user.lastSeenIn && user.lastSeenIn[venue?.name ?? ""]) ||
           v.name === user.room
       ),
-      room: allVenues?.find(
-        (v) =>
-          isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
+      camp: venues?.find(
+        (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)
       ),
     }),
-    [user, allVenues, currentVenue]
+    [user, venues, venue]
   );
 
-  if (!user.room || !allVenues) {
-    return null;
+  if (!user.room || !venues) {
+    return <></>;
   }
 
   if (suspectedLocation.venue) {
@@ -172,16 +170,14 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
       </Link>
     );
   }
-
-  if (suspectedLocation.room) {
+  if (suspectedLocation.camp) {
     return (
-      <Link to={venuePreviewUrl(suspectedLocation.room.id, user.room)}>
-        Room {user.room}, in camp {suspectedLocation.room.name}
+      <Link to={venuePreviewUrl(suspectedLocation.camp.id, user.room)}>
+        Room {user.room}, in camp {suspectedLocation.camp.name}
       </Link>
     );
   }
-
-  return <>This user has gone walkabout. Location unguessable</>;
+  return <>This burner has gone walkabout. Location unguessable</>;
 };
 
 export default UserProfileModal;

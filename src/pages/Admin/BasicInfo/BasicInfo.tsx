@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form } from "react-bootstrap";
 
 import { useForm } from "react-hook-form";
-import { Venue_v2 } from "types/venues";
+import { Venue_v2 } from "types/Venue";
 import * as S from "../Admin.styles";
 
 import ImageInput from "components/atoms/ImageInput";

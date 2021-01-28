@@ -7,7 +7,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
-import { Venue } from "types/venues";
+import { Venue } from "types/Venue";
 import { useUser } from "hooks/useUser";
 import { venueInsideUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";

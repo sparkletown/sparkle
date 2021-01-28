@@ -1,1 +1,1 @@
-export { AvatarGrid } from "./AvatarGrid";
+export { default } from "./AvatarGrid";

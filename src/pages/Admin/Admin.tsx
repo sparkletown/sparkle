@@ -1,63 +1,56 @@
 import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
   useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
 } from "react";
 import { shallowEqual } from "react-redux";
 import {
   Link,
-  Redirect,
   Route,
   Switch,
-  useHistory,
   useLocation,
   useRouteMatch,
+  useHistory,
+  Redirect,
 } from "react-router-dom";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import "firebase/storage";
 
-import { IS_BURN } from "secrets";
 import {
-  DEFAULT_VENUE,
   PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_HEIGHT,
   PLAYA_IMAGE,
-  PLAYA_VENUE_NAME,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_STYLES,
+  PLAYA_VENUE_NAME,
   PLAYA_WIDTH,
+  PLAYA_HEIGHT,
+  DEFAULT_VENUE,
 } from "settings";
+import { IS_BURN } from "secrets";
 
+import { isVenueWithRooms } from "types/CampVenue";
 import { ValidStoreAsKeys } from "types/Firestore";
-import {
-  isVenueWithRooms,
-  Venue,
-  VenueEvent,
-  VenueTemplate,
-} from "types/venues";
+import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 import {
+  canHaveSubvenues,
   canBeDeleted,
   canHaveEvents,
   canHavePlacement,
-  canHaveSubvenues,
 } from "utils/venue";
 
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
-import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
+import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -65,10 +58,13 @@ import AdminDeleteEvent from "./AdminDeleteEvent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueId } from "hooks/useVenueId";
 
 dayjs.extend(advancedFormat);
 
@@ -227,17 +223,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   );
 };
 
-export type VenueInfoComponentProps = {
-  venue: WithId<Venue>;
-  roomIndex?: number;
-  showCreateEventModal: boolean;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
-  editedEvent?: WithId<VenueEvent>;
-  setEditedEvent?: Function;
-};
-
-const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
+const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
   venue,
   roomIndex,
   showCreateEventModal,

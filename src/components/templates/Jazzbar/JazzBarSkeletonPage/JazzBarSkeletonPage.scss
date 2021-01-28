@@ -9,6 +9,9 @@
   padding: 0 0 0 75px;
 
   flex-wrap: wrap;
+  & > * + * {
+    margin-left: 10px;
+  }
 
   .navigation-container {
     display: flex;

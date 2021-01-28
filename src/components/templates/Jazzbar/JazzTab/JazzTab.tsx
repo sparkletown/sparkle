@@ -7,7 +7,7 @@ import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
-import { Venue } from "types/venues";
+import { Venue } from "types/Venue";
 
 import { currentVenueSelectorData } from "utils/selectors";
 

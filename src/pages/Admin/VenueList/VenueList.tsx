@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { isVenueWithRooms } from "types/venues";
-
-import { canHaveSubvenues } from "utils/venue";
-
+// Hooks
 import { useSelector } from "hooks/useSelector";
 
+// Typings
 import { VenueListProps } from "./VenueList.types";
+import { canHaveSubvenues } from "utils/venue";
+import { isCampVenue } from "types/CampVenue";
 
 const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
@@ -34,7 +34,7 @@ const VenueList: React.FC<VenueListProps> = ({
             }`}
           >
             <Link to={`/admin_v2/venue/${venue.id}`}>{venue.name}</Link>
-            {isVenueWithRooms(venue) && venue.rooms && (
+            {isCampVenue(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms.map((room, idx) => (
                   <li

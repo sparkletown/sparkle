@@ -3,12 +3,11 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import "firebase/functions";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
-import { AnyVenue, VenueEvent } from "types/venues";
-import { User } from "types/User";
-
 import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { AnyVenue } from "types/Firestore";
+import { VenueEvent } from "types/VenueEvent";
+import { User } from "types/User";
 import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

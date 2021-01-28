@@ -8,7 +8,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { useFirestore } from "react-redux-firebase";
 
 // Typings
-import { Venue_v2 } from "types/venues";
+import { Venue_v2 } from "types/Venue";
 import { VenueWizardEditProps } from "./VenueWizardEdit.types";
 
 // Reducer

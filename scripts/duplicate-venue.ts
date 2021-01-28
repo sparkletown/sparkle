@@ -1,35 +1,30 @@
 #!/usr/bin/env node -r esm -r ts-node/register
-
-import { resolve } from "path";
-
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import { initFirebaseAdminApp } from "./lib/helpers";
 
-const usage = makeScriptUsage({
-  description: "Duplicate a venue within the same environment.",
-  usageParams: "PROJECT_ID VENUE_ID TARGET_VENUE_ID [CREDENTIAL_PATH]",
-  exampleParams:
-    "co-reality-staging myspanishroom myenglishroom [theMatchingAccountServiceKey.json]",
-});
+const usage = () => {
+  const scriptName = process.argv[1];
+  const helpText = `
+---------------------------------------------------------  
+${scriptName}: Get venue details. Prints venue name, type and other details.
 
-const [
-  projectId,
-  sourceVenueId,
-  destVenueId,
-  credentialPath,
-] = process.argv.slice(2);
+Usage: node ${scriptName} PROJECT_ID VENUE_ID TARGET_VENUE_ID
 
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
+Example: node ${scriptName} co-reality-staging myspanishroom myenglishroom
+---------------------------------------------------------
+`;
+
+  console.log(helpText);
+  process.exit(1);
+};
+
+const [projectId, sourceVenueId, destVenueId] = process.argv.slice(2);
 if (!projectId || !sourceVenueId || !destVenueId) {
   usage();
 }
 
-initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath
-    ? resolve(__dirname, credentialPath)
-    : undefined,
-});
+initFirebaseAdminApp(projectId);
 
 (async () => {
   const sourceVenue = await admin

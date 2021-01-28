@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-
-import { VenueEvent } from "types/venues";
-
 import CardInput from "components/molecules/CardInput";
 import firebase from "firebase/app";
 import "firebase/functions";
+import { VenueEvent } from "types/VenueEvent";
 import TabNavigation from "components/molecules/TabNavigation";
 import { PAYMENT_FORM_TAB_ARRAY, INDIVIDUAL_TICKET_TAB } from "./constants";
 import { useUser } from "hooks/useUser";

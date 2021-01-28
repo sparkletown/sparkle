@@ -1,7 +1,7 @@
 import { useDynamicInput } from "hooks/useDynamicInput";
 import React from "react";
 import { Form, Button } from "react-bootstrap";
-import { Question } from "types/venues";
+import { Question } from "types/Venue";
 
 interface QuestionInputProps {
   fieldName: string;
