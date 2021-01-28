@@ -1,31 +1,39 @@
 import React, { useMemo } from "react";
 
-import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
-
-import { currentVenueSelector, parentVenueSelector } from "utils/selectors";
+import { useRecentWorldUsers } from "hooks/users";
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
 
 export const VenuePartygoers = () => {
-  const venue = useSelector(currentVenueSelector);
-  const parentVenue = useSelector(parentVenueSelector);
-  const partygoers = usePartygoers();
+  const venueId = useVenueId();
+  const {
+    parentVenue,
+    currentVenue,
+    isCurrentVenueLoaded,
+  } = useConnectRelatedVenues({ venueId });
 
-  const currentVenueTitle = venue?.attendeesTitle ?? "partygoers";
-  const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
-  const venueName = venue?.name;
+  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 
-  const currentVenuePartygoers = useMemo(() => {
-    if (!venueName) return [];
+  const numberOfRecentWorldUsers = recentWorldUsers.length;
 
-    return partygoers.filter((partygoer) => partygoer.lastSeenIn?.[venueName]);
-  }, [partygoers, venueName]);
-  const numberOfPartygoers = currentVenuePartygoers.length;
+  const title = useMemo<string>(() => {
+    if (!isCurrentVenueLoaded || !isRecentWorldUsersLoaded) return "";
 
-  return (
-    <div className="venue-partygoers-container">
-      {numberOfPartygoers} {attendeesTitle} online
-    </div>
-  );
+    const attendeesTitle =
+      parentVenue?.attendeesTitle ??
+      currentVenue?.attendeesTitle ??
+      "attendees";
+
+    return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
+  }, [
+    isCurrentVenueLoaded,
+    parentVenue,
+    currentVenue,
+    numberOfRecentWorldUsers,
+    isRecentWorldUsersLoaded,
+  ]);
+
+  return <div className="venue-partygoers-container">{title}</div>;
 };

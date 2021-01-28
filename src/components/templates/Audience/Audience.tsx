@@ -23,7 +23,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { usePartygoers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -140,7 +140,7 @@ export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = usePartygoers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
@@ -207,21 +207,21 @@ export const Audience: React.FunctionComponent = () => {
   // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
-  partygoers?.forEach((partygoer) => {
+  recentVenueUsers?.forEach((user) => {
     if (
       !venueId ||
-      !partygoer?.data ||
-      partygoer.data[venueId] === undefined ||
-      partygoer.data[venueId].row === undefined ||
-      partygoer.data[venueId].column === undefined
+      !user?.data ||
+      user.data[venueId] === undefined ||
+      user.data[venueId].row === undefined ||
+      user.data[venueId].column === undefined
     )
       return;
-    const row = partygoer.data[venueId].row || 0;
-    const column = partygoer.data[venueId].column || 0;
+    const row = user.data[venueId].row || 0;
+    const column = user.data[venueId].column || 0;
     if (!(row in partygoersBySeat)) {
       partygoersBySeat[row] = [];
     }
-    partygoersBySeat[row][column] = partygoer;
+    partygoersBySeat[row][column] = user;
     seatedPartygoers++;
   });
 
