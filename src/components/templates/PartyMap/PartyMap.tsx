@@ -97,13 +97,13 @@ export const PartyMap: React.FC = () => {
   //   but lost that functionality in #1042, so this may no longer be correct..
   const usersInVenue = usePartygoers();
 
-  if (!user || !profile?.data) return <>Loading..</>;
+  if (!user) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">
       <Map
         user={user}
-        profileData={profile.data}
+        profileData={profile?.data}
         venue={currentVenue}
         partygoers={usersInVenue}
         selectRoom={selectRoom}
