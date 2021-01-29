@@ -10,7 +10,7 @@ import {
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
 
-const CreateEditPopUp: React.FunctionComponent = () => {
+const CreateEditPopUp: React.FC = () => {
   return (
     <InformationLeftColumn iconNameOrPath="create">
       <InformationCard title={`Create & Edit on the ${PLAYA_VENUE_NAME}`}>

@@ -9,7 +9,7 @@ export interface InformationCardProps {
   className?: string;
 }
 
-const InformationCard: React.FunctionComponent<InformationCardProps> = ({
+const InformationCard: React.FC<InformationCardProps> = ({
   title,
   children,
   className,
