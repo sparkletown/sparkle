@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
-interface MapRowProps {
+interface MapCellProps {
   row: number;
   column: number;
   seatedPartygoer?: WithId<User>;
@@ -24,7 +24,7 @@ interface MapRowProps {
   ) => void;
 }
 
-export const MapRow: React.FC<MapRowProps> = ({
+export const _MapCell: React.FC<MapCellProps> = ({
   row,
   column,
   seatedPartygoer,
@@ -53,3 +53,5 @@ export const MapRow: React.FC<MapRowProps> = ({
     </div>
   );
 };
+
+export const MapCell = React.memo(_MapCell);
