@@ -35,7 +35,7 @@ interface InformationLeftColumnProps {
 export interface InformationLeftColumnControls {
   isExpanded: boolean;
   setExpanded: (isExpanded: boolean) => void;
-  toggleExpanded: () => void;
+  toggleExpanded: (e?: React.MouseEvent<HTMLElement>) => void;
 }
 
 export const InformationLeftColumn = forwardRef<
@@ -44,7 +44,9 @@ export const InformationLeftColumn = forwardRef<
 >(({ iconNameOrPath = "info", children }, controlsRef) => {
   const [isExpanded, setExpanded] = useState(false);
 
-  const toggleExpanded = useCallback(() => {
+  const toggleExpanded = useCallback((e?: React.MouseEvent<HTMLElement>) => {
+    e && e.stopPropagation();
+
     setExpanded((prev) => !prev);
   }, []);
 
