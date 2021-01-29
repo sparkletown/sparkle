@@ -76,7 +76,6 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         onMouseOut={clearAttendance}
         className="btn btn-primary room-entry-button"
         onClick={onRoomEnter}
-        id={`enter-room-in-ongoing-event-card-${roomTitle}`}
       >
         {joinButtonText ?? "Enter"}
       </button>
