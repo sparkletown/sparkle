@@ -14,6 +14,7 @@ import { makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 
 import { useKeyboardControls } from "hooks/useKeyboardControls";
+import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
 import { useMapGrid } from "./hooks/useMapGrid";
@@ -33,7 +34,7 @@ export const DEFAULT_ROWS = 25;
 
 interface MapProps {
   user: FirebaseReducer.AuthState;
-  profileData: UserExperienceData;
+  profileData?: UserExperienceData;
   venue: PartyMapVenue;
   partygoers: readonly WithId<User>[];
   selectRoom: (room: Room) => void;
@@ -43,7 +44,7 @@ interface MapProps {
 
 export const Map: React.FC<MapProps> = ({
   user,
-  profileData,
+  profileData = {},
   venue,
   partygoers,
   selectRoom,
@@ -57,6 +58,7 @@ export const Map: React.FC<MapProps> = ({
   const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
   const [totalRows, setTotalRows] = useState<number>(0);
 
+  const { recentVenueUsers } = useRecentVenueUsers();
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
     [totalColumns]
@@ -197,7 +199,7 @@ export const Map: React.FC<MapProps> = ({
     withMiniAvatars: venue.miniAvatars,
     rows: totalRows,
     columns: totalColumns,
-    partygoers,
+    partygoers: recentVenueUsers,
     setSelectedUserProfile,
   });
 

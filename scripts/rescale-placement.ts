@@ -2,23 +2,14 @@
 
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Move all hidden venues and venues outside the new map dimensions
-
-Usage: node ${scriptName} PROJECT_ID [DRY_RUN]
-
-Example: node ${scriptName} co-reality-map true
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description:
+    "Move all hidden venues and venues outside the new map dimensions",
+  usageParams: "PROJECT_ID [DRY_RUN]",
+  exampleParams: "co-reality-map true",
+});
 
 const [projectId, dryRunFlag] = process.argv.slice(2);
 if (!projectId) {

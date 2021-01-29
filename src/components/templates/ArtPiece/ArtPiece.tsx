@@ -12,7 +12,6 @@ import { SchedulePageModal } from "components/organisms/SchedulePageModal/Schedu
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 export const ArtPiece = () => {
@@ -31,7 +30,6 @@ export const ArtPiece = () => {
 
   return (
     <WithNavigationBar>
-      <AnnouncementMessage message={venue?.bannerMessage} />
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn
           venueLogoPath={venue?.host?.icon ?? ""}

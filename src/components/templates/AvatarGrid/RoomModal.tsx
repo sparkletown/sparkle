@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 
 import { AvatarGridRoom } from "types/rooms";
 
@@ -8,7 +8,7 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { usePartygoers } from "hooks/users";
+import { useRecentRoomUsers } from "hooks/users";
 
 import { isEventLive } from "utils/event";
 import {
@@ -42,17 +42,11 @@ export const RoomModal: React.FC<PropsType> = ({
   const dispatch = useDispatch();
 
   const { user, profile } = useUser();
-  const partygoers = usePartygoers();
-  const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const venue = useSelector(venueSelector);
-  const venueName = venue?.name;
   const roomTitle = room?.title;
 
-  const usersInRoom = useMemo(
-    () =>
-      partygoers.filter((goer) => goer.room === `${venueName}/${roomTitle}`),
-    [partygoers, roomTitle, venueName]
-  );
+  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venue = useSelector(venueSelector);
 
   const enter = useCallback(() => {
     if (venue) {
@@ -80,7 +74,7 @@ export const RoomModal: React.FC<PropsType> = ({
         <h4 className="room-name">{room.title}</h4>
         <div className="room-description">{room.description}</div>
         <div className="room-people">
-          {usersInRoom.map((user, index) => {
+          {recentRoomUsers.map((user, index) => {
             return (
               index + 1 <= MAX_SHOWN_AVATARS && (
                 <div key={index} className={"user"}>
@@ -94,9 +88,9 @@ export const RoomModal: React.FC<PropsType> = ({
               )
             );
           })}
-          {usersInRoom.length > MAX_SHOWN_AVATARS && (
+          {recentRoomUsers.length > MAX_SHOWN_AVATARS && (
             <div className="user">
-              +{usersInRoom.length - MAX_SHOWN_AVATARS}
+              +{recentRoomUsers.length - MAX_SHOWN_AVATARS}
             </div>
           )}
         </div>

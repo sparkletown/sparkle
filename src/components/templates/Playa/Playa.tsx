@@ -48,7 +48,7 @@ import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -58,7 +58,6 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -451,16 +450,20 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const partygoers = usePartygoers();
+  const { recentVenueUsers } = useRecentVenueUsers();
+
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(venueName, partygoers), hoveredVenue),
-    [partygoers, hoveredVenue, venueName]
+      peopleAttending(
+        peopleByLastSeenIn(venueName, recentVenueUsers),
+        hoveredVenue
+      ),
+    [recentVenueUsers, hoveredVenue, venueName]
   );
 
-  const usersInCurrentVenue = partygoers.filter(
+  const usersInCurrentVenue = recentVenueUsers.filter(
     (partygoer) =>
       partygoer.lastSeenIn?.[venueName] >
       (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
@@ -593,7 +596,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(venueName, partygoers);
+    const peopleByLastSeen = peopleByLastSeenIn(venueName, recentVenueUsers);
     return (
       <>
         <PlayaBackground
@@ -601,7 +604,7 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers.filter(
+          const usersInVenue = recentVenueUsers.filter(
             (partygoer) =>
               partygoer.lastSeenIn?.[v.name] >
               (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
@@ -783,7 +786,7 @@ const Playa = () => {
     venues,
     openVenues,
     showVenue,
-    partygoers,
+    recentVenueUsers,
     venueName,
   ]);
 
@@ -866,8 +869,6 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
-        <AnnouncementMessage message={venue?.bannerMessage} />
-
         {atEdge && (
           <div className="playa-banner">
             <>

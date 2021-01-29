@@ -1,50 +1,34 @@
-import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { User, VideoState } from "types/User";
-import { Venue } from "types/venues";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { WithId } from "utils/id";
+import React, { useCallback, useMemo, useState } from "react";
+import firebase from "firebase/app";
 
-import * as S from "./FireBarrel.styled";
-import { useVideoState } from "./useVideo";
+import { VideoState } from "types/User";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { currentVenueSelector } from "utils/selectors";
+
 import { useUser } from "hooks/useUser";
-import { usePartygoers, useUsersById } from "hooks/users";
+import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
-import firebase from "firebase/app";
-import { currentVenueSelector } from "utils/selectors";
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { useVideoState } from "./useVideo";
+
+import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-const FireBarrel: React.FC = () => {
-  const [currentPartygoers, setCurrentPartygoers] = useState<
-    WithId<User>[] | []
-  >([]);
-
+export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
-  const partygoers = usePartygoers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
 
   const chairs =
-    currentPartygoers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? currentPartygoers.length
+    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
+      ? recentVenueUsers.length
       : DEFAULT_BURN_BARREL_SEATS;
-
-  const filterPartygoers = (
-    venue: Venue,
-    partygoers: readonly WithId<User>[]
-  ): WithId<User>[] =>
-    partygoers?.filter((person) => person.room === venue?.name);
-
-  useEffect(() => {
-    if (venue) {
-      const partyPeople = filterPartygoers(venue, partygoers);
-
-      setCurrentPartygoers(partyPeople);
-    }
-  }, [partygoers, venue]);
 
   const { user, profile, userWithId } = useUser();
 
@@ -56,7 +40,7 @@ const FireBarrel: React.FC = () => {
   const chairsArray = Array.from(Array(chairs));
 
   const [videoError, setVideoError] = useState<string>("");
-  const users = useUsersById();
+  const { worldUsersById } = useWorldUsersById();
 
   const updateVideoState = useCallback(
     (update: VideoState) => {
@@ -89,18 +73,18 @@ const FireBarrel: React.FC = () => {
   );
 
   return useMemo(() => {
-    if (!currentPartygoers || !userWithId) return <LoadingPage />;
+    if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
         <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
 
         {chairsArray.map((_, index) => {
-          const partyPerson = currentPartygoers[index] ?? null;
+          const partyPerson = recentVenueUsers[index] ?? null;
 
           const isMe = partyPerson?.id === user?.uid;
 
-          if (!currentPartygoers[index]) {
+          if (!recentVenueUsers[index]) {
             return <S.Chair key={index} isEmpty />;
           }
 
@@ -123,8 +107,10 @@ const FireBarrel: React.FC = () => {
 
           if (participants.length && !!participants[index]) {
             const participant = participants[index];
-            const participantUserData = users[participant.identity] && {
-              ...users[participant.identity],
+            const participantUserData = worldUsersById[
+              participant.identity
+            ] && {
+              ...worldUsersById[participant.identity],
               id: participant.identity,
             };
 
@@ -156,17 +142,16 @@ const FireBarrel: React.FC = () => {
     );
   }, [
     chairsArray,
-    currentPartygoers,
+    recentVenueUsers,
     userWithId,
     leave,
     participants,
     removeParticipant,
     room,
     user,
-    users,
+    worldUsersById,
     videoError,
     venue,
+    isRecentVenueUsersLoaded,
   ]);
 };
-
-export default FireBarrel;

@@ -7,12 +7,10 @@ interface PropsType {
   venue?: Venue;
 }
 
-const JazzBar: React.FunctionComponent<PropsType> = ({ venue }) => {
+export const Jazzbar: React.FunctionComponent<PropsType> = ({ venue }) => {
   return (
     <JazzBarSkeletonPage>
       <JazzTab venue={venue} setUserList={() => null} />
     </JazzBarSkeletonPage>
   );
 };
-
-export default JazzBar;

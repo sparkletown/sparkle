@@ -2,7 +2,7 @@ import React, { useRef, useState, useMemo, useCallback } from "react";
 import { User } from "types/User";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
-import { usePartygoers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 import { WithId } from "utils/id";
 
 import "./PrivateRecipientSearchInput.scss";
@@ -25,18 +25,18 @@ const PrivateRecipientSearchInput: React.FunctionComponent<PropsType> = ({
     [setSelectedUser]
   );
 
-  const partygoers = usePartygoers();
+  const { worldUsers } = useWorldUsers();
 
   const privateRecipients = useMemo(
     () =>
-      partygoers
+      worldUsers
         .filter(
           (u) =>
             !u.anonMode &&
             u.partyName?.toLowerCase().includes(searchValue.toLowerCase())
         )
         .filter((u) => u.id !== undefined),
-    [partygoers, searchValue]
+    [worldUsers, searchValue]
   );
 
   const dropdownOptions = useMemo(

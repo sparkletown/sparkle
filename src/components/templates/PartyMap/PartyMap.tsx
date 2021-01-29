@@ -7,18 +7,18 @@ import { createUrlSafeName } from "api/admin";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
+import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { usePartygoers } from "hooks/users";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { orderedVenuesSelector } from "utils/selectors";
-import { getCurrentTimeInUTCSeconds } from "utils/time";
-import { openRoomUrl } from "utils/url";
+import { getCurrentTimeInMilliseconds } from "utils/time";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
 
 import { Map, RoomModal } from "./components";
 
-import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import "./PartyMap.scss";
@@ -27,7 +27,10 @@ const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
 
 export const PartyMap: React.FC = () => {
+  useConnectCurrentVenue();
   const { user, profile } = useUser();
+  const { recentVenueUsers } = useRecentVenueUsers();
+
   const currentVenue = useSelector(partyMapVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
 
@@ -54,7 +57,7 @@ export const PartyMap: React.FC = () => {
         room.url.endsWith(`/${venue.id}`)
       );
 
-      const nowInUTCSeconds = getCurrentTimeInUTCSeconds();
+      const nowInUTCSeconds = getCurrentTimeInMilliseconds();
 
       const roomName = {
         [`${currentVenue.name}/${room.title}`]: nowInUTCSeconds,
@@ -62,6 +65,11 @@ export const PartyMap: React.FC = () => {
       };
 
       trackRoomEntered(user, roomName, profile?.lastSeenIn);
+
+      if (roomVenue) {
+        openUrl(venueInsideUrl(roomVenue.id));
+        return;
+      }
       openRoomUrl(room.url);
     },
     [profile, user, currentVenue, venues]
@@ -92,21 +100,15 @@ export const PartyMap: React.FC = () => {
     }
   }, [currentRoom, selectRoom]);
 
-  // @debt We used to specify the explicit venue that we wanted the users for,
-  //   but lost that functionality in #1042, so this may no longer be correct..
-  const usersInVenue = usePartygoers();
-
-  if (!user || !profile?.data) return <>Loading..</>;
+  if (!user || !profile) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">
-      <AnnouncementMessage message={currentVenue.bannerMessage} />
-
       <Map
         user={user}
         profileData={profile.data}
         venue={currentVenue}
-        partygoers={usersInVenue}
+        partygoers={recentVenueUsers}
         selectRoom={selectRoom}
         unselectRoom={unselectRoom}
         enterSelectedRoom={enterSelectedRoom}
