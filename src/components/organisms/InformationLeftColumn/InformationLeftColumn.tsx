@@ -27,7 +27,6 @@ const logoMap = new Map<ValidLogoIconName, IconDefinition>([
   ["info", faInfoCircle],
 ]);
 
-// TODO: only allow isColumnExanded and setColumnExpanded to be provided together, or not at all; not one or the other
 interface InformationLeftColumnProps {
   iconNameOrPath?: ValidLogoIconName | string;
   children: React.ReactNode;

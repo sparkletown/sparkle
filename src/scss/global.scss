@@ -414,6 +414,8 @@ h4 {
     width: 100%;
   }
 
+  // @debt: this doesn't seem to exist anywhere else yet.. but can we move it into a more specific component-related SCSS file instead of here?
+  //   also referenced in src/pages/Account/Venue/VenueMapEdition.scss
   .right-column {
     display: flex;
     flex-grow: 1;
@@ -426,6 +428,7 @@ h4 {
     margin-bottom: 20px;
   }
 
+  // @debt: is this class even used anywhere?
   .right-column-content {
     overflow-y: scroll;
 
