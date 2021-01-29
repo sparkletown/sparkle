@@ -1,5 +1,3 @@
-export type AnyRoom = Room;
-
 export interface BaseRoom {
   about: string;
   subtitle: string;

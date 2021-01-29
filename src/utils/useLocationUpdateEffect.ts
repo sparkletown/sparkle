@@ -1,6 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom } from "types/rooms";
+import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 import { User } from "types/User";
 
@@ -58,7 +58,7 @@ export const trackRoomEntered = (
 export interface TrackRoomEnteredNGProps {
   user?: UserInfo;
   venue: AnyVenue;
-  room: AnyRoom;
+  room: Room;
   lastSeenIn?: Record<string, number>;
 }
 
@@ -112,7 +112,7 @@ export interface BaseEnterRoomWithCountingProps {
 }
 
 export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
-  room?: AnyRoom;
+  room?: Room;
 }
 
 export const openRoomWithCounting = ({

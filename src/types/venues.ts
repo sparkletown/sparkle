@@ -2,7 +2,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { AnyRoom, Room } from "./rooms";
+import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VideoAspectRatio } from "./VideoAspectRatio";
@@ -55,7 +55,7 @@ export interface Venue_v2_Base {
     backgroundColor?: string;
   };
   id: string;
-  rooms?: AnyRoom[];
+  rooms?: Room[];
   mapBackgroundImageUrl?: string;
 }
 
@@ -120,7 +120,7 @@ export interface Venue {
   showLiveSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
-  rooms?: AnyRoom[];
+  rooms?: Room[];
   width: number;
   height: number;
   description?: {
