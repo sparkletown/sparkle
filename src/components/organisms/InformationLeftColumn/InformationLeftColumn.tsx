@@ -13,21 +13,23 @@ import {
   faAngleDoubleRight,
   faHeart,
   faEdit,
+  faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "./InformationLeftColumn.scss";
 
-export type ValidLogoIconName = "ambulance" | "create" | "heart";
+export type ValidLogoIconName = "ambulance" | "create" | "heart" | "info";
 
 const logoMap = new Map<ValidLogoIconName, IconDefinition>([
   ["ambulance", faAmbulance],
   ["create", faEdit],
   ["heart", faHeart],
+  ["info", faInfoCircle],
 ]);
 
 // TODO: only allow isColumnExanded and setColumnExpanded to be provided together, or not at all; not one or the other
 interface InformationLeftColumnProps {
-  venueLogoPath: ValidLogoIconName | string;
+  iconNameOrPath?: ValidLogoIconName | string;
   children: React.ReactNode;
 }
 
@@ -40,7 +42,7 @@ export interface InformationLeftColumnControls {
 export const InformationLeftColumn = forwardRef<
   InformationLeftColumnControls,
   InformationLeftColumnProps
->(({ venueLogoPath, children }, controlsRef) => {
+>(({ iconNameOrPath = "info", children }, controlsRef) => {
   const [isExpanded, setExpanded] = useState(false);
 
   const toggleExpanded = useCallback(() => {
@@ -55,7 +57,7 @@ export const InformationLeftColumn = forwardRef<
   }));
 
   const leftColumnClasses = classNames("left-column", {
-    "expanded-donation": isExpanded && venueLogoPath === "heart",
+    "expanded-donation": isExpanded && iconNameOrPath === "heart",
     "expanded-popup": isExpanded,
   });
 
@@ -67,7 +69,7 @@ export const InformationLeftColumn = forwardRef<
     "expanded-popup": isExpanded,
   });
 
-  const iconPath = logoMap.get(venueLogoPath as ValidLogoIconName);
+  const iconPath = logoMap.get(iconNameOrPath as ValidLogoIconName);
 
   return (
     <div className="information-left-column-container">
@@ -87,7 +89,7 @@ export const InformationLeftColumn = forwardRef<
         ) : (
           <img
             className={venueLogoClasses}
-            src={venueLogoPath}
+            src={iconNameOrPath}
             alt="experience-logo"
           />
         )}

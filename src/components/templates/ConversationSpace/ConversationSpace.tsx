@@ -34,7 +34,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   return (
     <>
-      <InformationLeftColumn venueLogoPath={venue?.host?.icon ?? ""}>
+      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>

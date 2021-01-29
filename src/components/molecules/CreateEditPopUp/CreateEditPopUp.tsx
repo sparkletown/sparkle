@@ -12,7 +12,7 @@ import InformationCard from "components/molecules/InformationCard";
 
 const CreateEditPopUp: React.FunctionComponent = () => {
   return (
-    <InformationLeftColumn venueLogoPath="create">
+    <InformationLeftColumn iconNameOrPath="create">
       <InformationCard title={`Create & Edit on the ${PLAYA_VENUE_NAME}`}>
         <div style={{ textAlign: "center" }}>
           <p className="title-sidebar">

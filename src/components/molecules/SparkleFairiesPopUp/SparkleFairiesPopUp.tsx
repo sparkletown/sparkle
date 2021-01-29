@@ -14,7 +14,7 @@ import "./SparkleFairiesPopUp.scss";
 
 const SparkleFairiesPopUp: React.FC = () => {
   return (
-    <InformationLeftColumn venueLogoPath="ambulance">
+    <InformationLeftColumn iconNameOrPath="ambulance">
       <InformationCard title="Information">
         <div style={{ textAlign: "center" }}>
           <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>

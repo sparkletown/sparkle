@@ -19,7 +19,7 @@ export const DonatePopUp = () => {
   const { toggleExpanded } = controlsRef.current ?? {};
 
   return (
-    <InformationLeftColumn ref={controlsRef} venueLogoPath="heart">
+    <InformationLeftColumn ref={controlsRef} iconNameOrPath="heart">
       <InformationCard title={BURNING_MAN_DONATION_TITLE}>
         <p className="title-sidebar" style={{ fontSize: 15 }}>
           {BURNING_MAN_DONATION_TEXT}
