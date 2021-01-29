@@ -21,7 +21,12 @@ import {
 
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
-import { useFirestoreConnect, AnySparkleRFQuery } from "./useFirestoreConnect";
+import {
+  useFirestoreConnect,
+  AnySparkleRFQuery,
+  isLoaded,
+  SparkleRFSubcollectionQuery,
+} from "./useFirestoreConnect";
 
 const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
   withVenueId(event, venueId);
@@ -39,7 +44,7 @@ const venueEventsSelectorToEventsWithVenueIds = (
 const makeEventsQueryConfig = (
   doc: string,
   storeAs: ValidStoreAsKeys
-): AnySparkleRFQuery => ({
+): SparkleRFSubcollectionQuery => ({
   collection: "venues",
   doc,
   subcollections: [{ collection: "events" }],
@@ -64,13 +69,19 @@ interface UseConnectRelatedVenuesReturn {
   venueEvents: WithVenueId<VenueEvent>[];
   siblingVenueEvents: WithVenueId<VenueEvent>[];
   subvenueEvents: WithVenueId<VenueEvent>[];
+
+  isRelatedVenuesLoaded: boolean;
+  isParentVenueLoaded: boolean;
+  isCurrentVenueLoaded: boolean;
 }
 
 export const useConnectRelatedVenues: ReactHook<
   UseConnectRelatedVenuesProps,
   UseConnectRelatedVenuesReturn
 > = ({ venueId, withEvents = false }) => {
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
 
   const parentId: string | undefined = currentVenue?.parentId;
 
@@ -103,9 +114,18 @@ export const useConnectRelatedVenues: ReactHook<
     [venueId]
   );
 
-  const parentVenue = useSelector(parentVenueOrderedSelector);
-  const subvenues = useSelector(subvenuesSelector) ?? [];
-  const siblingVenues = useSelector(siblingNotVenueSelector) ?? [];
+  const parentVenueRaw = useSelector(parentVenueOrderedSelector);
+  const parentVenue = parentVenueRaw?.[0];
+
+  const subvenuesRaw = useSelector(subvenuesSelector);
+  const subvenues = subvenuesRaw ?? [];
+
+  const siblingVenuesRaw = useSelector(siblingNotVenueSelector);
+  const siblingVenues = siblingVenuesRaw ?? [];
+
+  const isParentVenueLoaded = isLoaded(parentVenueRaw);
+  const isSubvenuesLoaded = isLoaded(subvenuesRaw);
+  const isSiblingVenuesLoaded = isLoaded(siblingVenuesRaw);
 
   const maybeParentEventsSelector = useCallback(
     (state) =>
@@ -157,6 +177,15 @@ export const useConnectRelatedVenues: ReactHook<
   // Firestore Connect Configs/etc
   /////////////////////////////////
 
+  // Parent
+  const parentVenueQuery: AnySparkleRFQuery | undefined = !!parentId
+    ? {
+        collection: "venues",
+        doc: parentId,
+        storeAs: "parentVenue",
+      }
+    : undefined;
+
   // Sibling
   const siblingVenuesQuery: AnySparkleRFQuery | undefined = !!parentId
     ? {
@@ -203,6 +232,7 @@ export const useConnectRelatedVenues: ReactHook<
 
   // Combine / filter for valid queries
   const allValidQueries: AnySparkleRFQuery[] = [
+    parentVenueQuery,
     siblingVenuesQuery,
     subvenuesQuery,
     parentVenueEventsQuery,
@@ -236,6 +266,12 @@ export const useConnectRelatedVenues: ReactHook<
     [currentVenue, parentVenue, siblingVenues, subvenues]
   );
 
+  const isRelatedVenuesLoaded =
+    isCurrentVenueLoaded &&
+    isSubvenuesLoaded &&
+    isSiblingVenuesLoaded &&
+    (parentId ? isParentVenueLoaded : true);
+
   return useMemo(
     () => ({
       parentVenue,
@@ -246,16 +282,22 @@ export const useConnectRelatedVenues: ReactHook<
       venueEvents,
       siblingVenueEvents,
       subvenueEvents,
+      isRelatedVenuesLoaded,
+      isParentVenueLoaded,
+      isCurrentVenueLoaded,
     }),
     [
       parentVenue,
       currentVenue,
       relatedVenues,
+      isRelatedVenuesLoaded,
       relatedVenueEvents,
       parentVenueEvents,
       venueEvents,
       siblingVenueEvents,
       subvenueEvents,
+      isParentVenueLoaded,
+      isCurrentVenueLoaded,
     ]
   );
 };

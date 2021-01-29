@@ -5,19 +5,17 @@ import { Room } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
 import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import {
-  currentVenueSelector,
-  orderedVenuesSelector,
-  venueEventsSelector,
-} from "utils/selectors";
-import {
+  getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentRoomUsers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
@@ -34,20 +32,13 @@ interface RoomModalProps {
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
 
-  const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const users = usePartygoers();
 
-  const venueName = venue?.name;
   const roomTitle = room?.title;
   const userLastSeenIn = profile?.lastSeenIn;
 
-  const usersToDisplay = useMemo(
-    () =>
-      users?.filter((user) => user.lastSeenIn?.[`${venueName}/${roomTitle}`]),
-    [users, venueName, roomTitle]
-  );
+  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
 
   const roomVenue = useMemo(() => {
     if (!room) return undefined;
@@ -55,23 +46,31 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
     return venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
   }, [room, venues]);
 
+  const venueName = roomVenue?.name;
+
   // TODO: @debt refactor this to use openRoomWithCounting
   const enter = useCallback(() => {
     if (!room || !user) return;
 
-    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+    const nowInMilliseconds = getCurrentTimeInMilliseconds();
 
-    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+    const venueRoom = venueName ? { [venueName]: nowInMilliseconds } : {};
 
     trackRoomEntered(
       user,
       {
-        [`${venueName}/${roomTitle}`]: nowInEpochSeconds,
+        [`${venueName}/${roomTitle}`]: nowInMilliseconds,
         ...venueRoom,
       },
       userLastSeenIn
     );
-  }, [userLastSeenIn, room, roomTitle, roomVenue, user, venueName]);
+
+    if (roomVenue) {
+      openUrl(venueInsideUrl(roomVenue.id));
+      return;
+    }
+    openRoomUrl(room.url);
+  }, [userLastSeenIn, room, roomTitle, user, venueName, roomVenue]);
 
   const roomEvents = useMemo(() => {
     if (!room) return [];
@@ -132,7 +131,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
         </div>
 
         <UserList
-          users={usersToDisplay}
+          users={recentRoomUsers}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}

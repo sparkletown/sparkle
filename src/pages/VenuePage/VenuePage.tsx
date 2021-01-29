@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
 import { VenueTemplate } from "types/venues";
 import { ValidStoreAsKeys } from "types/Firestore";
 
-import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
@@ -21,7 +19,7 @@ import {
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  getCurrentTimeInUnixEpochSeconds,
+  getCurrentTimeInMilliseconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -37,7 +35,6 @@ import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useIsVenueUsersLoaded } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -61,7 +58,6 @@ const hasPaidEvents = (template: VenueTemplate) => {
 
 const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const firestore = useFirestore();
   const mixpanel = useMixpanel();
 
   const history = useHistory();
@@ -70,9 +66,8 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const isVenueUsersLoaded = useIsVenueUsersLoaded();
-
   const venue = useSelector(currentVenueSelector);
+
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const currentEvent = useSelector(currentEventSelector);
@@ -95,12 +90,12 @@ const VenuePage: React.FC = () => {
 
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: getCurrentTimeInUnixEpochSeconds(),
+      [venueName]: getCurrentTimeInMilliseconds(),
     };
 
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
-      lastSeenAt: new Date().getTime(),
+      lastSeenAt: getCurrentTimeInMilliseconds(),
       room: venueName,
     });
   }, [prevLocations, user, venueName]);
@@ -129,7 +124,7 @@ const VenuePage: React.FC = () => {
   const location = venueName;
   useLocationUpdateEffect(user, venueName);
 
-  const newLocation = { [location]: new Date().getTime() };
+  const newLocation = { [location]: getCurrentTimeInMilliseconds() };
   const isNewLocation = profile?.lastSeenIn
     ? !profile?.lastSeenIn[location]
     : false;
@@ -179,7 +174,7 @@ const VenuePage: React.FC = () => {
 
   useEffect(() => {
     const leaveRoomBeforeUnload = () => {
-      if (user) {
+      if (user && !retainAttendance) {
         const locations = { ...prevLocations };
         delete locations[venueName];
         setUnmounted(true);
@@ -190,7 +185,7 @@ const VenuePage: React.FC = () => {
     return () => {
       window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
     };
-  }, [prevLocations, user, venueName]);
+  }, [prevLocations, retainAttendance, user, venueName]);
 
   useEffect(() => {
     if (
@@ -207,19 +202,11 @@ const VenuePage: React.FC = () => {
     );
   }, [profile, user, venue]);
 
-  const venueIdFromParams = getQueryParameters(window.location.search)
-    ?.venueId as string;
-
+  // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
-  useEffect(() => {
-    firestore.get({
-      collection: "venues",
-      doc: venueId ? venueId : venueIdFromParams,
-      storeAs: "currentVenue",
-    });
-  }, [firestore, venueId, venueIdFromParams]);
+  useFirestoreConnect("venues");
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
@@ -277,12 +264,7 @@ const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (
-      !event ||
-      !venue ||
-      !userPurchaseHistoryRequestStatus ||
-      !isVenueUsersLoaded
-    ) {
+    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 

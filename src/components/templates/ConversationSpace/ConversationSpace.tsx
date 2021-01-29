@@ -1,12 +1,9 @@
 import React, { useState } from "react";
 
-import { LOC_UPDATE_FREQ_MS } from "settings";
-
 import { currentVenueSelectorData } from "utils/selectors";
 
-import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -25,26 +22,16 @@ import "./ConversationSpace.scss";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const users = usePartygoers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
 
   useExperiences(venue?.name);
 
   if (!venue) return <>Loading...</>;
 
   const tables = venue?.config?.tables ?? TABLES;
-
-  const venueUsers = users.filter(
-    (user) =>
-      user.lastSeenIn?.[venue.name] > (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-  );
 
   return (
     <>
@@ -113,7 +100,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             />
           </div>
           <UserList
-            users={venueUsers}
+            users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
             disableSeeAll={false}
           />

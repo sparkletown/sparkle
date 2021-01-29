@@ -4,7 +4,7 @@ import { VenueEvent } from "types/venues";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useVenueUsers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { Room } from "types/rooms";
 import { User } from "types/User";
@@ -38,10 +38,11 @@ const NavSearchBar = () => {
   const venue = useSelector(currentVenueSelectorData);
 
   const venueEvents = useSelector(venueEventsSelector) ?? [];
-  const venueUsers = useVenueUsers();
+  const { worldUsers } = useWorldUsers();
 
   useEffect(() => {
-    if (!searchQuery) {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    if (!normalizedSearchQuery) {
       setSearchResult({
         rooms: [],
         users: [],
@@ -49,18 +50,16 @@ const NavSearchBar = () => {
       });
       return;
     }
-
-    // TODO: rename these filteredVenueUsers, filteredVenueEvents, filteredRooms, etc?
-    const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
-      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    const venueUsersResults = worldUsers.filter((user) =>
+      user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
 
-    const venueEventsResults = Object.values(venueEvents).filter((event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const venueEventsResults = venueEvents.filter((event) =>
+      event.name.toLowerCase().includes(normalizedSearchQuery)
     );
 
     const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
-      room.title.toLowerCase().includes(searchQuery.toLowerCase())
+      room.title.toLowerCase().includes(normalizedSearchQuery)
     ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
 
     setSearchResult({
@@ -68,7 +67,7 @@ const NavSearchBar = () => {
       users: venueUsersResults,
       events: venueEventsResults,
     });
-  }, [searchQuery, venue, venueEvents, venueUsers]);
+  }, [searchQuery, venue, venueEvents, worldUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +
