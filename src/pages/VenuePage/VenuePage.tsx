@@ -109,8 +109,17 @@ const VenuePage: React.FC = () => {
   }, LOC_UPDATE_FREQ_MS);
 
   useEffect(() => {
+    if (!userId || !venueName) return;
     updateUserLocationToCurrentVenue();
-  }, [updateUserLocationToCurrentVenue]);
+
+    // NOTE: A suggestion on how to avoid location cleaning, when two tabs were opened and one of them was closed
+
+    // document.addEventListener("visibilitychange", () => {
+    //   if (document.visibilityState === "visible") {
+    //     updateUserLocationToCurrentVenue();
+    //   }
+    // });
+  }, [userId, venueName, updateUserLocationToCurrentVenue]);
 
   useEffect(() => {
     if (!userId) return;
