@@ -136,7 +136,7 @@ const VenuePage: React.FC = () => {
       profile?.enteredVenueIds.includes(venueId)
     )
       return;
-    if (!venueId || !user) return;
+    if (!venueId || !user || !profile) return;
 
     updateProfileEnteredVenueIds(profile?.enteredVenueIds, user?.uid, venueId);
   }, [profile, user, venueId]);
