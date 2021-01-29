@@ -87,11 +87,10 @@ export const Map: React.FC<MapProps> = ({
       makeUpdateUserGridLocation({
         venueId,
         userUid,
-        profileData,
       })(row, column);
       trackLocationEntered({ userId: userUid, locationName: venueName });
     },
-    [profileData, userUid, venueId, venueName]
+    [userUid, venueId, venueName]
   );
 
   const currentPosition = profileData?.[venue.id];
