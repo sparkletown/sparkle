@@ -14,7 +14,6 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
-  shouldRetainAttendanceSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
 import {
@@ -36,8 +35,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-
-import { updateUserProfile } from "pages/Account/helpers";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -65,8 +62,6 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
-  const userId = user?.uid;
-
   const venue = useSelector(currentVenueSelector);
 
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
@@ -78,6 +73,8 @@ const VenuePage: React.FC = () => {
   const userPurchaseHistoryRequestStatus = useSelector(
     isUserPurchaseHistoryRequestedSelector
   );
+
+  const userId = user?.uid;
 
   const venueName = venue?.name ?? "";
   const venueTemplate = venue?.template;
@@ -97,54 +94,43 @@ const VenuePage: React.FC = () => {
   const isMember =
     user && venue && isUserAMember(user.email, venue.config?.memberEmails);
 
-  const updateUserLocation = useCallback(() => {
+  // NOTE: User location updates
+
+  const updateUserLocationToCurrentVenue = useCallback(() => {
     if (!userId || !venueName) return;
 
     updateLocationData(userId, {
       [venueName]: getCurrentTimeInMilliseconds(),
     });
-  }, [user, venueName]);
+  }, [userId, venueName]);
 
   useInterval(() => {
-    updateUserLocation();
+    updateUserLocationToCurrentVenue();
   }, LOC_UPDATE_FREQ_MS);
 
-  useUpdateTimespentPeriodically(user, venueName);
+  useEffect(() => {
+    updateUserLocationToCurrentVenue();
+  }, [updateUserLocationToCurrentVenue]);
 
   useEffect(() => {
-    if (!userId || !venueName) return;
+    if (!userId) return;
 
-    updateLocationData(userId, {
-      [venueName]: getCurrentTimeInMilliseconds(),
-    });
-  }, [userId, venueName]);
-
-  useEffect(() => {
-    if (!userId || !venueName) return;
-
-    document.addEventListener("visibilitychange", function () {
-      if (document.visibilityState === "hidden") {
-        updateLocationData(userId, {});
-      }
-
-      if (document.visibilityState === "visible") {
-        updateLocationData(userId, {
-          [venueName]: getCurrentTimeInMilliseconds(),
-        });
-      }
-    });
-  }, [userId, venueName]);
+    // NOTE: Clear user location on page close
+    window.addEventListener("beforeunload", () =>
+      updateLocationData(userId, {})
+    );
+  }, [userId]);
 
   useEffect(() => {
-    if (
-      profile?.enteredVenueIds &&
-      venue?.id &&
-      profile?.enteredVenueIds.includes(venue?.id)
-    )
+    if (!venueId || !userId || profile?.enteredVenueIds?.includes(venueId))
       return;
-    if (!venue || !user) return;
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venue?.id);
-  }, [profile, user, venue]);
+
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
+  }, [profile, userId, venueId]);
+
+  // NOTE: User's timespent updates
+
+  useUpdateTimespentPeriodically(user, venueName);
 
   // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();

@@ -49,7 +49,7 @@ export const AvatarGrid = () => {
 
       // openRoomWithCounting({ user, profile, venue, room });
     },
-    [profile, user, venue]
+    [venue]
   );
 
   // FIXME: This is really bad, needs to be fixed ASAP

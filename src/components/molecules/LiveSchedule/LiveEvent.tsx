@@ -1,28 +1,24 @@
-import React, { FC, useCallback } from "react";
+import React from "react";
 
 import { Venue, VenueEvent } from "types/venues";
+import { Room } from "types/rooms";
 
 import { formatHourAndMinute } from "utils/time";
-import { openEventRoomWithCounting } from "utils/userLocation";
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
+import { useRoom } from "hooks/useRoom";
 
 interface LiveEventProps {
   venue?: WithId<Venue>;
   event?: VenueEvent;
 }
 
-export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
-  const { user, profile } = useUser();
-
-  const enterLiveEvent = useCallback(() => {
-    if (venue && event) {
-      openEventRoomWithCounting();
-    }
-  }, [event, profile, user, venue]);
+export const LiveEvent: React.FC<LiveEventProps> = ({ venue, event }) => {
+  const room = venue?.rooms?.find((room) => room.title === event?.room);
 
   if (!event) return null;
+
+  const buttonText = `${event.room ?? "Enter"} ${venue && `- ${venue.name}`}`;
 
   return (
     <div className="schedule-event-container schedule-event-container_live">
@@ -43,11 +39,26 @@ export const LiveEvent: FC<LiveEventProps> = ({ venue, event }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterLiveEvent}>
-            {event.room ?? "Enter"} {venue && `- ${venue.name}`}
-          </div>
+          {event.room && room ? (
+            <EnterRoomButton room={room as Room}>{buttonText}</EnterRoomButton>
+          ) : (
+            <div>{buttonText}</div>
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+type EnterRoomButtonProps = {
+  room: Room;
+};
+
+const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
+  room,
+  children,
+}) => {
+  const { enterRoom } = useRoom(room);
+
+  return <div onClick={enterRoom}>{children}</div>;
 };

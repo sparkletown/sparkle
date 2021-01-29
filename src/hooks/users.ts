@@ -5,11 +5,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import {
-  orderedVenuesSelector,
-  worldUsersByIdSelector,
-  worldUsersSelector,
-} from "utils/selectors";
+import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
@@ -17,7 +13,6 @@ import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useSovereignVenueId } from "./useSovereignVenueId";
-import { AnyRoom } from "types/rooms";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
@@ -135,27 +130,5 @@ export const useRecentVenueUsers = () => {
   return {
     recentVenueUsers: recentLocationUsers,
     isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
-  };
-};
-
-export const useRecentRoomUsers = (room?: AnyRoom) => {
-  const venues = useSelector(orderedVenuesSelector);
-
-  const roomVenue =
-    room && venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
-
-  const locationName =
-    room && roomVenue ? roomVenue.name : `external/${room?.title}`;
-
-  console.log({ room, locationName, roomVenue });
-
-  const {
-    recentLocationUsers,
-    isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(locationName);
-
-  return {
-    recentRoomUsers: recentLocationUsers,
-    isRecentRoomUsersLoaded: isRecentLocationUsersLoaded,
   };
 };

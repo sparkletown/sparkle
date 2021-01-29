@@ -38,12 +38,12 @@ import {
 } from "types/venues";
 
 import { WithId } from "utils/id";
-import { updateLocationData } from "utils/userLocation";
+// import { updateLocationData } from "utils/userLocation";
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+// import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
@@ -365,7 +365,7 @@ const Playa = () => {
     //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
     //     profile?.lastSeenIn
     //   );
-  }, [setShowModal, user, profile]);
+  }, [setShowModal]);
 
   const distanceToVenue = (
     x: number,

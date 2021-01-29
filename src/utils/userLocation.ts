@@ -1,14 +1,10 @@
 import firebase, { UserInfo } from "firebase/app";
-import { isArray, isEmpty } from "lodash";
 
 import { AnyRoom } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
-import { User } from "types/User";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
 
-import { WithId } from "./id";
 import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 
@@ -33,39 +29,16 @@ export interface TrackLocationProps {
   lastSeenIn?: LocationData;
 }
 
-const trackLocationEntered = ({ userId, locationName }: TrackLocationProps) => {
+export const trackLocationEntered = ({
+  userId,
+  locationName,
+}: TrackLocationProps) => {
   updateLocationData(userId, {
     [locationName]: getCurrentTimeInMilliseconds(),
   });
 };
 
-export interface BaseEnterRoomWithCountingProps {
-  user: User;
-  profile?: User;
-  venue: WithId<AnyVenue>;
-}
-
-export interface EnterRoomWithCounting extends BaseEnterRoomWithCountingProps {
-  room?: AnyRoom;
-}
-
-type EnterVenueRoomProps = {
-  userId: string;
-  venueId: string;
-  venueName: string;
-};
-
-export const enterVenueRoom = ({
-  userId,
-  venueName,
-  venueId,
-}: EnterVenueRoomProps) => {
-  trackLocationEntered({
-    userId,
-    locationName: venueName,
-  });
-  openUrl(venueInsideUrl(venueId));
-};
+export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 type EnterExternalRoomProps = {
   userId: string;
@@ -75,20 +48,10 @@ type EnterExternalRoomProps = {
 export const enterExternalRoom = ({ userId, room }: EnterExternalRoomProps) => {
   trackLocationEntered({
     userId,
-    locationName: `external/${room.title}`,
+    locationName: room.url,
   });
 
   openRoomUrl(room.url);
-};
-
-export interface EnterEventRoomWithCounting
-  extends BaseEnterRoomWithCountingProps {
-  event: VenueEvent;
-}
-
-export const openEventRoomWithCounting = () => {
-  // const room = venue?.rooms?.find((room) => room.title === event.room);
-  // openRoomWithCounting({ user, profile, venue, room });
 };
 
 export const useUpdateTimespentPeriodically = (

@@ -3,11 +3,11 @@ import React, { useCallback } from "react";
 import { AvatarGridRoom } from "types/rooms";
 
 import { Modal } from "react-bootstrap";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+// import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
+// import { useUser } from "hooks/useUser";
 // import { useRecentRoomUsers } from "hooks/users";
 
 import { isEventLive } from "utils/event";
@@ -31,7 +31,7 @@ interface PropsType {
   room: AvatarGridRoom | undefined;
 }
 
-const MAX_SHOWN_AVATARS = 5;
+// const MAX_SHOWN_AVATARS = 5;
 
 export const RoomModal: React.FC<PropsType> = ({
   show,
@@ -41,8 +41,8 @@ export const RoomModal: React.FC<PropsType> = ({
 }) => {
   const dispatch = useDispatch();
 
-  const { user, profile } = useUser();
-  const roomTitle = room?.title;
+  // const { user, profile } = useUser();
+  // const roomTitle = room?.title;
 
   // const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
@@ -52,7 +52,7 @@ export const RoomModal: React.FC<PropsType> = ({
     if (venue) {
       // openRoomWithCounting({ user, profile, venue, room });
     }
-  }, [room, profile, user, venue]);
+  }, [venue]);
 
   if (!room) {
     return <></>;
