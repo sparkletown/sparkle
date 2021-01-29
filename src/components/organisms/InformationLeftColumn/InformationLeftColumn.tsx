@@ -57,16 +57,15 @@ export const InformationLeftColumn = forwardRef<
   }));
 
   const leftColumnClasses = classNames("left-column", {
-    "expanded-donation": isExpanded && iconNameOrPath === "heart",
-    "expanded-popup": isExpanded,
+    "left-column--expanded": isExpanded,
   });
 
   const chevronIconClasses = classNames("chevron-icon", {
-    turned: isExpanded,
+    "chevron-icon--turned": isExpanded,
   });
 
-  const venueLogoClasses = classNames("band-logo", {
-    "expanded-popup": isExpanded,
+  const venueLogoClasses = classNames("left-column__logo", {
+    "left-column__logo--expanded": isExpanded,
   });
 
   const iconPath = logoMap.get(iconNameOrPath as ValidLogoIconName);

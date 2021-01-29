@@ -414,27 +414,6 @@ h4 {
     width: 100%;
   }
 
-  .left-column {
-    box-shadow: 0 0 30px $black;
-    transition: all 0.1s linear;
-    width: 70px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 10px;
-    background: $dark;
-    border-radius: 0 22px 22px 0;
-    cursor: pointer;
-    position: absolute;
-    top: 40px;
-    z-index: 1;
-  }
-
-  .left-column.expanded {
-    width: 300px;
-    height: calc(100% - 60px);
-  }
-
   .right-column {
     display: flex;
     flex-grow: 1;
