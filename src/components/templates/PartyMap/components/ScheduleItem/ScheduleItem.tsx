@@ -10,14 +10,14 @@ import { retainAttendance } from "store/actions/Attendance";
 interface PropsType {
   event: VenueEvent;
   isCurrentEvent?: boolean;
-  enterRoom: () => void;
+  onRoomEnter: () => void;
   roomUrl: string;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
   isCurrentEvent,
-  enterRoom,
+  onRoomEnter,
   roomUrl,
 }) => {
   const dispatch = useDispatch();
@@ -51,7 +51,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn room-entry-button"
-              onClick={enterRoom}
+              onClick={onRoomEnter}
               id={`enter-room-from-schedule-event-${event}`}
               href={roomUrl}
               target="_blank"

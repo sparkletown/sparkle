@@ -28,6 +28,7 @@ import Sidebar from "components/molecules/Sidebar";
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
+import { trackLocationEntered } from "utils/userLocation";
 
 export const DEFAULT_COLUMNS = 40;
 export const DEFAULT_ROWS = 25;
@@ -39,7 +40,6 @@ interface MapProps {
   partygoers: readonly WithId<User>[];
   selectRoom: (room: Room) => void;
   unselectRoom: () => void;
-  enterSelectedRoom: () => void;
 }
 
 export const Map: React.FC<MapProps> = ({
@@ -49,9 +49,9 @@ export const Map: React.FC<MapProps> = ({
   partygoers,
   selectRoom,
   unselectRoom,
-  enterSelectedRoom,
 }) => {
   const venueId = venue.id;
+  const venueName = venue.name;
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
 
@@ -83,12 +83,14 @@ export const Map: React.FC<MapProps> = ({
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
+      if (!userUid) return;
       makeUpdateUserGridLocation({
         venueId,
-        userUid: user?.uid,
+        userUid,
       })(row, column);
+      trackLocationEntered({ userId: userUid, locationName: venueName });
     },
-    [user, venueId]
+    [userUid, venueId, venueName]
   );
 
   const currentPosition = profileData?.[venue.id];
@@ -167,7 +169,6 @@ export const Map: React.FC<MapProps> = ({
     totalColumns,
     isSeatTaken,
     takeSeat,
-    enterSelectedRoom,
   });
 
   const [selectedUserProfile, setSelectedUserProfile] = useState<

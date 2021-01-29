@@ -19,7 +19,6 @@ interface UseKeyboardControlsProps {
   totalColumns: number;
   isSeatTaken: (row: number, column: number) => boolean;
   takeSeat: (row: number | null, column: number | null) => void;
-  enterSelectedRoom: () => void;
 }
 
 // TODO: use e.preventDefault() or return false or similar in the keyboard handlers (check mousetrap docs) so we don't scroll on arrow key presses
@@ -31,27 +30,9 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   totalColumns,
   isSeatTaken,
   takeSeat,
-  enterSelectedRoom,
 }) => {
   const { profile } = useUser();
   const { row, column } = profile?.data?.[venueId] ?? {};
-
-  /**
-   * enter
-   */
-  const enter = useCallback(() => {
-    if (!row || !column) return;
-
-    // TODO: implement: openRoomUrl(selectedRoom.url) ? can we do it in enterSelectedRoom?
-    enterSelectedRoom();
-  }, [row, column, enterSelectedRoom]);
-
-  useMousetrap({
-    keys: MovementKeys.enter,
-    callback: enter,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   /**
    * moveUp
