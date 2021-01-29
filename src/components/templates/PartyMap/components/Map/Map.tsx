@@ -86,7 +86,7 @@ export const Map: React.FC<MapProps> = ({
       if (!userUid) return;
       makeUpdateUserGridLocation({
         venueId,
-        userUid: userUid,
+        userUid,
         profileData,
       })(row, column);
       trackLocationEntered({ userId: userUid, locationName: venueName });
@@ -150,7 +150,6 @@ export const Map: React.FC<MapProps> = ({
 
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
-      console.log("on seat click", row, column, seatedPartygoer);
       if (!seatedPartygoer) {
         takeSeat(row, column);
       } else {
