@@ -86,10 +86,9 @@ export const Map: React.FC<MapProps> = ({
       makeUpdateUserGridLocation({
         venueId,
         userUid: user?.uid,
-        profileData,
       })(row, column);
     },
-    [profileData, user, venueId]
+    [user, venueId]
   );
 
   const currentPosition = profileData?.[venue.id];
