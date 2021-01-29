@@ -1,15 +1,14 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom } from "types/Venue";
-import { AnyVenue } from "types/Firestore";
+import { AnyRoom } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
 
 import { WithId } from "./id";
-import { getCurrentTimeInUnixEpochSeconds } from "./time";
+import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
 
 const LOCATION_INCREMENT_SECONDS = 10;
@@ -35,7 +34,7 @@ export const updateLocationData = (
       : null;
 
   updateUserProfile(user.uid, {
-    lastSeenAt: getCurrentTimeInUnixEpochSeconds(),
+    lastSeenAt: getCurrentTimeInMilliseconds(),
     lastSeenIn:
       !locationName && !lastSeenIn
         ? null
@@ -47,8 +46,8 @@ export const updateLocationData = (
 };
 
 // get Profile from the firebase
-// @debt rename this trackRoomEntered
-export const enterLocation = (
+// @debt rename this trackLocationEntered?
+export const trackRoomEntered = (
   user: UserInfo,
   locationName: { [key: string]: number },
   lastSeenIn: { [key: string]: number } | undefined
@@ -71,9 +70,9 @@ export const trackRoomEnteredNG = ({
 }: TrackRoomEnteredNGProps) => {
   if (!user) return;
 
-  enterLocation(
+  trackRoomEntered(
     user,
-    { [`${venue.name}/${room.title}`]: getCurrentTimeInUnixEpochSeconds() },
+    { [`${venue.name}/${room.title}`]: getCurrentTimeInMilliseconds() },
     lastSeenIn
   );
 };
@@ -91,9 +90,9 @@ export const trackVenueEntered = ({
 }: TrackVenueEnteredProps) => {
   if (!user) return;
 
-  enterLocation(
+  trackRoomEntered(
     user,
-    { [venue.name]: getCurrentTimeInUnixEpochSeconds() },
+    { [venue.name]: getCurrentTimeInMilliseconds() },
     lastSeenIn
   );
 };

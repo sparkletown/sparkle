@@ -2,7 +2,7 @@ import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
 import "firebase/functions";
 import * as Yup from "yup";
-import { VenueTemplate } from "types/VenueTemplate";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -12,7 +12,10 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
+  BACKGROUND_IMG_TEMPLATES,
 } from "settings";
+
+import { VenueTemplate } from "types/venues";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -50,7 +53,7 @@ const urlIfNoFileValidation = (fieldName: string) =>
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
-    template: Yup.string().required(),
+    template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Required")
       .min(1, "Required")
@@ -84,6 +87,14 @@ export const validationSchema = Yup.object()
 
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().notRequired().min(1).max(100),
+
+    mapBackgroundImageUrl: Yup.string().when(
+      "$template.template",
+      (template: VenueTemplate, schema: Yup.StringSchema) =>
+        BACKGROUND_IMG_TEMPLATES.includes(template)
+          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          : schema.notRequired()
+    ),
 
     attendeesTitle: Yup.string().notRequired().default("Guests"),
     chatTitle: Yup.string().notRequired().default("Party"),
@@ -147,6 +158,7 @@ export const validationSchema = Yup.object()
       then: Yup.string().required("Radio station (stream) is required!"),
     }),
 
+    owners: Yup.array<string>().required(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),

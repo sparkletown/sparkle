@@ -19,9 +19,13 @@ import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
-import { VenueEntrancePage } from "pages/VenueEntrancePage";
+import Admin_v2 from "pages/Admin/Admin_v2";
+
 import { VenueLandingPage } from "pages/VenueLandingPage";
+import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
+import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
+
 import { VersionPage } from "pages/VersionPage/VersionPage";
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
@@ -29,6 +33,7 @@ import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
+import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
 const AppRouter = () => {
   return (
@@ -51,12 +56,22 @@ const AppRouter = () => {
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
+
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
-        <Route path="/admin/venue/:venueId" component={Admin} />
+
+        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
+        <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
+
+        <Route path="/admin/:venueId" component={Admin} />
+        <Route path="/admin_v2/:venueId" component={Admin_v2} />
+
         <Route path="/admin" component={Admin} />
+        <Route path="/admin_v2" component={Admin_v2} />
+
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
+        <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
         <Route path="/playa/schedule" component={SchedulePage} />

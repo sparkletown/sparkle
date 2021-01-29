@@ -1,0 +1,61 @@
+# https://github.com/FirebaseExtended/action-hosting-deploy#options
+
+name: Deploy to Firebase Hosting Preview on PR
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+    branches:
+      - staging
+    paths:
+      - '.github/workflows/firebase-hosting-pull-request.yml'
+      - 'package-lock.json'
+      - 'public/**'
+      - 'src/**'
+
+jobs:
+  build_and_preview:
+    runs-on: ubuntu-latest
+    environment: feature-preview
+    env:
+      REACT_APP_BUILD_SHA1: '${{ github.sha }}'
+      REACT_APP_BUILD_TAG: '${{ github.ref }}'
+      REACT_APP_BUILD_BRANCH: '${{ github.head_ref }}'
+      REACT_APP_BUILD_PULL_REQUESTS: '${{ github.event.pull_request.url }}'
+      REACT_APP_BUILD_REPOSITORY_URL: 'https://github.com/${{ github.repository }}'
+      REACT_APP_PROJECT_ID: '${{ secrets.FIREBASE_PROJECT_ID }}'
+      REACT_APP_API_KEY: '${{ secrets.FIREBASE_API_KEY }}'
+      REACT_APP_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
+      REACT_APP_MEASUREMENT_ID: '${{ secrets.FIREBASE_MEASUREMENT_ID }}'
+      REACT_APP_BUCKET_URL: '${{ secrets.FIREBASE_BUCKET_URL }}'
+      REACT_APP_STRIPE_PUBLISHABLE_KEY: '${{ secrets.STRIPE_PUBLISHABLE_KEY }}'
+      REACT_APP_BUGSNAG_API_KEY: '${{ secrets.BUGSNAG_API_KEY }}'
+      REACT_APP_LOGROCKET_APP_ID: '${{ secrets.LOGROCKET_APP_ID }}'
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Build app
+        run: |
+          npm ci
+          npm run build
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CO_REALITY_STAGING }}'
+          channelId: 'preview-pr-${{ github.event.pull_request.number }}'
+          projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
+          target: staging
+          expires: 14d
+        env:
+          FIREBASE_CLI_PREVIEWS: hostingchannels

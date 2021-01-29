@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useFirestoreConnect, useFirestore } from "react-redux-firebase";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
-import { VenueTemplate } from "types/VenueTemplate";
+import { VenueTemplate } from "types/venues";
+import { ValidStoreAsKeys } from "types/Firestore";
 
-import { getQueryParameters } from "utils/getQueryParameters";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
@@ -15,13 +14,12 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
-  partygoersSelector,
   shouldRetainAttendanceSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
 import {
   canUserJoinTheEvent,
-  getCurrentTimeInUnixEpochSeconds,
+  getCurrentTimeInMilliseconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import {
@@ -31,36 +29,24 @@ import {
 import { venueEntranceUrl } from "utils/url";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import { useConnectPartyGoers } from "hooks/useConnectPartyGoers";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
-import { FriendShipPage } from "pages/FriendShipPage";
 import { updateUserProfile } from "pages/Account/helpers";
-
-import { ArtPiece } from "components/templates/ArtPiece";
-import { AudienceRouter } from "components/templates/Audience/AudienceRouter";
-import { AvatarRouter } from "components/templates/AvatarGrid/Router";
-import { CampRouter } from "components/templates/Camp/Router";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import FireBarrel from "components/templates/FireBarrel";
-import { JazzbarRouter } from "components/templates/Jazzbar/JazzbarRouter";
-import { PlayaRouter } from "components/templates/Playa/Router";
-
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { PartyMapRouter } from "components/templates/PartyMap/PartyMapRouter";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import Login from "pages/Account/Login";
@@ -70,9 +56,8 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const VenuePage = () => {
+const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const firestore = useFirestore();
   const mixpanel = useMixpanel();
 
   const history = useHistory();
@@ -81,9 +66,8 @@ const VenuePage = () => {
 
   const { user, profile } = useUser();
 
-  const users = useSelector(partygoersSelector);
-
   const venue = useSelector(currentVenueSelector);
+
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const currentEvent = useSelector(currentEventSelector);
@@ -106,12 +90,12 @@ const VenuePage = () => {
 
     const updatedLastSeenIn = {
       ...prevLocations,
-      [venueName]: getCurrentTimeInUnixEpochSeconds(),
+      [venueName]: getCurrentTimeInMilliseconds(),
     };
 
     updateUserProfile(user.uid, {
       lastSeenIn: updatedLastSeenIn,
-      lastSeenAt: new Date().getTime(),
+      lastSeenAt: getCurrentTimeInMilliseconds(),
       room: venueName,
     });
   }, [prevLocations, user, venueName]);
@@ -140,7 +124,7 @@ const VenuePage = () => {
   const location = venueName;
   useLocationUpdateEffect(user, venueName);
 
-  const newLocation = { [location]: new Date().getTime() };
+  const newLocation = { [location]: getCurrentTimeInMilliseconds() };
   const isNewLocation = profile?.lastSeenIn
     ? !profile?.lastSeenIn[location]
     : false;
@@ -190,7 +174,7 @@ const VenuePage = () => {
 
   useEffect(() => {
     const leaveRoomBeforeUnload = () => {
-      if (user) {
+      if (user && !retainAttendance) {
         const locations = { ...prevLocations };
         delete locations[venueName];
         setUnmounted(true);
@@ -201,11 +185,12 @@ const VenuePage = () => {
     return () => {
       window.removeEventListener("beforeunload", leaveRoomBeforeUnload, false);
     };
-  }, [prevLocations, user, venueName]);
+  }, [prevLocations, retainAttendance, user, venueName]);
 
   useEffect(() => {
     if (
       profile?.enteredVenueIds &&
+      venue?.id &&
       profile?.enteredVenueIds.includes(venue?.id)
     )
       return;
@@ -217,27 +202,21 @@ const VenuePage = () => {
     );
   }, [profile, user, venue]);
 
-  const venueIdFromParams = getQueryParameters(window.location.search)
-    ?.venueId as string;
-
+  // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();
-  useConnectPartyGoers();
   useConnectCurrentEvent();
   useConnectUserPurchaseHistory();
-  useEffect(() => {
-    firestore.get({
-      collection: "venues",
-      doc: venueId ? venueId : venueIdFromParams,
-      storeAs: "currentVenue",
-    });
-  }, [firestore, venueId, venueIdFromParams]);
+  useFirestoreConnect("venues");
+
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user
+    user?.uid
       ? {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );
@@ -261,6 +240,10 @@ const VenuePage = () => {
     return <Login formType="initial" />;
   }
 
+  if (venueRequestStatus && !venue) {
+    return <>This venue does not exist</>;
+  }
+
   if (!venue || !venueId) {
     return <LoadingPage />;
   }
@@ -272,10 +255,6 @@ const VenuePage = () => {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
-  }
-
   if (
     hasPaidEvents(venue.template) &&
     venue.hasPaidEvents &&
@@ -285,7 +264,7 @@ const VenuePage = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !users || !userPurchaseHistoryRequestStatus) {
+    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 
@@ -317,68 +296,7 @@ const VenuePage = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  let template;
-  let fullscreen = false;
-  switch (venue.template) {
-    case VenueTemplate.jazzbar:
-      template = <JazzbarRouter />;
-      break;
-    case VenueTemplate.friendship:
-      template = <FriendShipPage />;
-      break;
-    case VenueTemplate.partymap:
-      template = <PartyMapRouter />;
-      break;
-    case VenueTemplate.artpiece:
-      template = <ArtPiece />;
-      break;
-    case VenueTemplate.themecamp:
-      template = <CampRouter />;
-      break;
-    case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
-      template = <PlayaRouter />;
-      fullscreen = true;
-      break;
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artcar:
-      if (venue.zoomUrl) {
-        window.location.replace(venue.zoomUrl);
-      }
-      template = (
-        <p>
-          Venue {venue.name} should redirect to a URL, but none was set.
-          <br />
-          <button
-            role="link"
-            className="btn btn-primary"
-            onClick={() => history.goBack()}
-          >
-            Go Back
-          </button>
-        </p>
-      );
-      break;
-    case VenueTemplate.audience:
-      template = <AudienceRouter />;
-      fullscreen = true;
-      break;
-    case VenueTemplate.avatargrid:
-      template = <AvatarRouter />;
-      break;
-    case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
-      break;
-
-    case VenueTemplate.firebarrel:
-      template = <FireBarrel />;
-      break;
-  }
-
-  return (
-    <WithNavigationBar fullscreen={fullscreen}>{template}</WithNavigationBar>
-  );
+  return <TemplateWrapper venue={venue} />;
 };
 
 export default VenuePage;

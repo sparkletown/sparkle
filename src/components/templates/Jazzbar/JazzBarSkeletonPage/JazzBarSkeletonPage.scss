@@ -9,9 +9,6 @@
   padding: 0 0 0 75px;
 
   flex-wrap: wrap;
-  & > * + * {
-    margin-left: 10px;
-  }
 
   .navigation-container {
     display: flex;
@@ -36,7 +33,7 @@
     margin: 20px;
   }
   .userlist-container {
-    margin: 10px 0;
+    margin: 10px;
   }
   .table-item {
     .profile-icon {

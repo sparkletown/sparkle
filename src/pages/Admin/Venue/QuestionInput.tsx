@@ -1,14 +1,16 @@
 import { useDynamicInput } from "hooks/useDynamicInput";
 import React from "react";
 import { Form, Button } from "react-bootstrap";
-import { Question } from "types/Venue";
+import { Question } from "types/venues";
 
 interface QuestionInputProps {
   fieldName: string;
   hasLink?: boolean;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
-  title: string;
+  title?: string;
   editing?: Question[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  errors?: any;
 }
 
 const QuestionInput: React.FC<QuestionInputProps> = ({
@@ -17,6 +19,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   register,
   title,
   editing,
+  errors,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
@@ -31,14 +34,25 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
         <fieldset name={baseName}>
           <Form.Label>Title</Form.Label>
           <Form.Control ref={register} name={inputName} custom />
+          {errors && errors[index].name && (
+            <span className="input-error">{errors[index].name.message}</span>
+          )}
 
           <Form.Label>Text</Form.Label>
           <Form.Control ref={register} name={inputText} as="textarea" custom />
+          {errors && errors[index].text && (
+            <span className="input-error">{errors[index].text.message}</span>
+          )}
 
           {hasLink && (
             <>
               <Form.Label>Link</Form.Label>
               <Form.Control ref={register} name={inputLink} custom />
+              {errors && errors[index].link && (
+                <span className="input-error">
+                  {errors[index].link.message}
+                </span>
+              )}
             </>
           )}
         </fieldset>
@@ -51,7 +65,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
 
   return (
     <div className="input-container" style={{ marginBottom: "1.5rem" }}>
-      <h4 className="italic input-header">{title}</h4>
+      {title && <h4 className="italic input-header">{title}</h4>}
 
       {indexes.map((i) => renderFieldset(i))}
 

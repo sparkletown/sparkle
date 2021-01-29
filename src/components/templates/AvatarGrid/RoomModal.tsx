@@ -1,15 +1,15 @@
 import React, { useCallback } from "react";
 
-// Components
+import { AvatarGridRoom } from "types/rooms";
+
 import { Modal } from "react-bootstrap";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useRecentRoomUsers } from "hooks/users";
 
-// Utils | Settings | Constants
 import { isEventLive } from "utils/event";
 import {
   formatUtcSeconds,
@@ -17,21 +17,12 @@ import {
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { venueEventsSelector, venueSelector } from "utils/selectors";
 
-// Typings
-import { AvatarGridRoom } from "types/AvatarGrid";
-
-// Reducer | Actions
 import { retainAttendance } from "store/actions/Attendance";
 
-// Styles
 import "./RoomModal.scss";
 import "./AvatarGrid.scss";
-import {
-  partygoersSelector,
-  venueEventsSelector,
-  venueSelector,
-} from "utils/selectors";
 
 interface PropsType {
   show: boolean;
@@ -48,14 +39,14 @@ export const RoomModal: React.FC<PropsType> = ({
   room,
   miniAvatars,
 }) => {
-  const { user, profile } = useUser();
-  const partygoers = useSelector(partygoersSelector) ?? [];
-  const venueEvents = useSelector(venueEventsSelector);
-  const venue = useSelector(venueSelector);
-
   const dispatch = useDispatch();
 
-  const venueName = venue?.name;
+  const { user, profile } = useUser();
+  const roomTitle = room?.title;
+
+  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venue = useSelector(venueSelector);
 
   const enter = useCallback(() => {
     if (venue) {
@@ -67,18 +58,11 @@ export const RoomModal: React.FC<PropsType> = ({
     return <></>;
   }
 
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
-      (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          getCurrentTimeInUTCSeconds()
-    );
-
-  const usersInRoom = partygoers.filter(
-    (goer) => goer.room === `${venueName}/${room.title}`
+  const roomEvents = venueEvents.filter(
+    (event) =>
+      event.room === room.title &&
+      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+        getCurrentTimeInUTCSeconds()
   );
 
   return (
@@ -90,7 +74,7 @@ export const RoomModal: React.FC<PropsType> = ({
         <h4 className="room-name">{room.title}</h4>
         <div className="room-description">{room.description}</div>
         <div className="room-people">
-          {usersInRoom.map((user, index) => {
+          {recentRoomUsers.map((user, index) => {
             return (
               index + 1 <= MAX_SHOWN_AVATARS && (
                 <div key={index} className={"user"}>
@@ -104,9 +88,9 @@ export const RoomModal: React.FC<PropsType> = ({
               )
             );
           })}
-          {usersInRoom.length > MAX_SHOWN_AVATARS && (
+          {recentRoomUsers.length > MAX_SHOWN_AVATARS && (
             <div className="user">
-              +{usersInRoom.length - MAX_SHOWN_AVATARS}
+              +{recentRoomUsers.length - MAX_SHOWN_AVATARS}
             </div>
           )}
         </div>

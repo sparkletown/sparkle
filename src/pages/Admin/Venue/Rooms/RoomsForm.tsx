@@ -10,28 +10,29 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { Venue } from "types/Venue";
-import { useParams, useHistory } from "react-router-dom";
-import { CampVenue } from "types/CampVenue";
-import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
+import { PartyMapVenue, Venue } from "types/venues";
+import { useHistory } from "react-router-dom";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
+import { Room } from "types/rooms";
 import { validationSchema } from "./RoomsValidationSchema";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
 import { useUser } from "hooks/useUser";
 import { upsertRoom, RoomInput } from "api/admin";
 import { useQuery } from "hooks/useQuery";
+import { useVenueId } from "hooks/useVenueId";
 import { ExtractProps } from "types/utility";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import RoomDeleteModal from "./RoomDeleteModal";
 import Login from "pages/Account/Login";
 
 export const RoomsForm: React.FC = () => {
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<CampVenue>();
+  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -39,12 +40,16 @@ export const RoomsForm: React.FC = () => {
     : undefined;
 
   useEffect(() => {
+    if (!venueId) return history.replace("/admin");
+
     const fetchVenueFromAPI = async () => {
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+
       if (!venueSnapshot.exists) return history.replace("/admin");
+
       const data = venueSnapshot.data() as Venue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
@@ -54,21 +59,24 @@ export const RoomsForm: React.FC = () => {
       if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
         history.replace("/admin");
       }
-      setVenue(data as CampVenue);
+      setVenue(data as PartyMapVenue);
     };
     fetchVenueFromAPI();
   }, [firestore, venueId, history]);
+
   const room = useMemo(() => {
     if (
       typeof queryRoomIndex === "undefined" ||
       !venue ||
+      !venue.rooms ||
       venue.rooms.length - 1 < queryRoomIndex
     )
       return undefined;
+
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
-  if (!venue) return null;
+  if (!venue || !venueId) return null;
 
   if (!user) {
     return <Login formType="login" />;
@@ -88,8 +96,8 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerForm {
   venueId: string;
-  venue: CampVenue;
-  editingRoom?: CampVenue["rooms"][number];
+  venue: PartyMapVenue;
+  editingRoom?: Room;
   editingRoomIndex?: number;
 }
 
@@ -130,7 +138,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
       if (!user) return;
       try {
         await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
-        history.push(`/admin/venue/${venueId}`);
+        history.push(`/admin/${venueId}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
@@ -154,7 +162,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
 
   const iconPositionFieldName = "iconPosition";
   const onBoxChange: ExtractProps<
-    typeof CampContainer
+    typeof PartyMapContainer
   >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
@@ -359,7 +367,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
           </p>
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
-              <CampContainer
+              <PartyMapContainer
                 interactive
                 resizable
                 coordinatesBoundary={{

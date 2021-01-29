@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { RoomVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
+import { Venue, VenueEvent } from "types/venues";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
 import Fuse from "fuse.js";
@@ -9,7 +9,16 @@ import AdminEventModal from "./AdminEventModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import VenueEventDetails from "./VenueEventDetails";
 
-const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
+export type EventsComponentProps = {
+  venue: WithId<Venue>;
+  roomIndex?: number;
+  showCreateEventModal: boolean;
+  setShowCreateEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
+};
+
+const EventsComponent: React.FC<EventsComponentProps> = ({
   venue,
   showCreateEventModal,
   setShowCreateEventModal,

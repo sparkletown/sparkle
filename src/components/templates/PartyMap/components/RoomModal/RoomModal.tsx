@@ -1,90 +1,99 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { Room } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
-import { enterLocation } from "utils/useLocationUpdateEffect";
+import { trackRoomEntered } from "utils/useLocationUpdateEffect";
+import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
+import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
 import {
-  currentVenueSelector,
-  orderedVenuesSelector,
-  partygoersSelector,
-} from "utils/selectors";
-import {
+  getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useRecentRoomUsers } from "hooks/users";
 
 import UserList from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "../";
+import { RoomModalOngoingEvent, ScheduleItem } from "..";
+
+import "./RoomModal.scss";
 
 interface RoomModalProps {
   show: boolean;
   onHide: () => void;
-  room: PartyMapRoomData | undefined;
+  room?: Room;
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
   const { user, profile } = useUser();
 
-  const venue = useSelector(currentVenueSelector);
   const venues = useSelector(orderedVenuesSelector);
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
-  );
-  const users = useSelector(partygoersSelector);
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
 
-  if (!room) {
-    return <></>;
-  }
+  const roomTitle = room?.title;
+  const userLastSeenIn = profile?.lastSeenIn;
 
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
+  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
+
+  const roomVenue = useMemo(() => {
+    if (!room) return undefined;
+
+    return venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
+  }, [room, venues]);
+
+  const venueName = roomVenue?.name;
 
   // TODO: @debt refactor this to use openRoomWithCounting
-  const enter = () => {
-    const roomVenue = venues?.find((venue) =>
-      room.url.endsWith(`/${venue.id}`)
+  const enter = useCallback(() => {
+    if (!room || !user) return;
+
+    const nowInMilliseconds = getCurrentTimeInMilliseconds();
+
+    const venueRoom = venueName ? { [venueName]: nowInMilliseconds } : {};
+
+    trackRoomEntered(
+      user,
+      {
+        [`${venueName}/${roomTitle}`]: nowInMilliseconds,
+        ...venueRoom,
+      },
+      userLastSeenIn
     );
 
-    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
+    if (roomVenue) {
+      openUrl(venueInsideUrl(roomVenue.id));
+      return;
+    }
+    openRoomUrl(room.url);
+  }, [userLastSeenIn, room, roomTitle, user, venueName, roomVenue]);
 
-    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
+  const roomEvents = useMemo(() => {
+    if (!room) return [];
 
-    room &&
-      user &&
-      enterLocation(
-        user,
-        {
-          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
-          ...venueRoom,
-        },
-        profile?.lastSeenIn
-      );
-  };
-
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
+    return venueEvents.filter(
       (event) =>
         event.room === room.title &&
         event.start_utc_seconds +
           event.duration_minutes * ONE_MINUTE_IN_SECONDS >
           getCurrentTimeInUnixEpochSeconds()
     );
+  }, [room, venueEvents]);
+
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
+
+  // @debt Note: By not rendering like this when room isn't set, we prevent the 'modal closing' transition from running
+  if (!room) {
+    return null;
+  }
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="container room-container">
+      <div className="container room-modal-container">
         <div className="room-description">
           <div className="title-container">
             <div
@@ -98,6 +107,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
               <h2 className="room-modal-title">{room.title}</h2>
               <div className="room-modal-subtitle">{room.subtitle}</div>
             </div>
+
             <div className="row ongoing-event-row">
               <div className="col">
                 {room.image_url && (
@@ -119,20 +129,27 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
             </div>
           </div>
         </div>
+
         <UserList
-          users={usersToDisplay}
+          users={recentRoomUsers}
           limit={11}
           activity="in this room"
           attendanceBoost={room.attendanceBoost}
         />
+
         {room.about && <div className="about-this-room">{room.about}</div>}
+
         <div className="row">
           {roomEvents && roomEvents.length > 0 && (
             <div className="col schedule-container">
               <div className="schedule-title">Room Schedule</div>
-              {roomEvents.map((event, idx: number) => (
+              {roomEvents.map((event, index: number) => (
                 <ScheduleItem
-                  key={idx}
+                  // @debt Ideally event.id would always be a unique identifier, but our types suggest it
+                  //   can be undefined. Because we can't use index as a key by itself (as that is unstable
+                  //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
+                  //   is far less likely to clash
+                  key={event.id ?? `${event.room}-${event.name}-${index}`}
                   event={event}
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name

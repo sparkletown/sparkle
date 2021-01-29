@@ -9,7 +9,6 @@ import mixpanel from "mixpanel-browser";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
-import { ThemeProvider } from "styled-components";
 
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
@@ -62,6 +61,8 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "bootstrap";
 import "scss/global.scss";
+import { ThemeProvider } from "styled-components";
+import { theme } from "theme/theme";
 
 activatePolyFills();
 initializeZendesk();
@@ -81,8 +82,6 @@ const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
-  oneListenerPerPath: true,
-  allowMultipleListeners: false,
 };
 
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -144,6 +143,8 @@ if (BUGSNAG_API_KEY) {
     "sparkle8",
     "sparkle9",
     "sparkle10",
+    "bigtop",
+    "deloitte",
   ];
 
   const releaseStage = () => {
@@ -244,7 +245,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 
 render(
   <BugsnagErrorBoundary>
-    <ThemeProvider theme={{}}>
+    <ThemeProvider theme={theme}>
       <Elements stripe={stripePromise}>
         <DndProvider backend={HTML5Backend}>
           <Provider store={store}>

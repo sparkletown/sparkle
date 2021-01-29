@@ -2,10 +2,14 @@
 
 import { resolve } from "path";
 
-import { VenueEvent } from "../src/types/VenueEvent";
+import { VenueEvent } from "../src/types/venues";
 import { WithId } from "../src/utils/id";
 
-import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers";
+import {
+  initFirebaseAdminApp,
+  makeSaveToBackupFile,
+  makeScriptUsage,
+} from "./lib/helpers";
 
 // ---------------------------------------------------------
 // Configuration (this is the bit you should edit)
@@ -27,21 +31,12 @@ const VENUES_TO_CLONE = ["wayspace"];
 
 const CONFIRM_VALUE = "i-have-edited-the-script-and-am-sure-i-want-the-events";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Clone the event data for venue(s) between different firebase projects
-
-Usage: node ${scriptName} ${CONFIRM_VALUE}
-
-Example: node ${scriptName} ${CONFIRM_VALUE}
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description:
+    "Clone the event data for venue(s) between different firebase projects.",
+  usageParams: CONFIRM_VALUE,
+  exampleParams: CONFIRM_VALUE,
+});
 
 const [confirmationCheck] = process.argv.slice(2);
 if (confirmationCheck !== CONFIRM_VALUE) {
@@ -92,9 +87,10 @@ const saveToDestBackupFile = makeSaveToBackupFile(DEST_PROJECT_ID);
     const destVenueEvents = await Promise.all(
       (await destVenueRef.collection("events").listDocuments()).map(
         async (eventRef) =>
-          ({ ...(await eventRef.get()).data(), id: eventRef.id } as WithId<
-            VenueEvent
-          >)
+          ({
+            ...(await eventRef.get()).data(),
+            id: eventRef.id,
+          } as WithId<VenueEvent>)
       )
     );
     saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);

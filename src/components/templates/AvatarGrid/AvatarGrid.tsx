@@ -1,41 +1,37 @@
 import React, { useCallback, useEffect, useState } from "react";
-import firebase from "firebase/app";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-// Components
+import { AvatarGridRoom } from "types/rooms";
+import { User } from "types/User";
+
+import { makeUpdateUserGridLocation } from "api/profile";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
+
+import { WithId } from "utils/id";
+import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+import { currentVenueSelector } from "utils/selectors";
+
 import { RoomModal } from "./RoomModal";
-import Announcement from "./Announcement";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
-// Utils | Settings | Constants
-import { WithId } from "utils/id";
-import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
-import { currentVenueSelector, partygoersSelector } from "utils/selectors";
-
-// Typings
-import { AvatarGridRoom } from "types/AvatarGrid";
-import { User } from "types/User";
-
-// Styles
 import "./AvatarGrid.scss";
 
 const DEFAULT_COLUMNS = 40;
 const DEFAULT_ROWS = 25;
 
-const AvatarGrid = () => {
+export const AvatarGrid = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
 
   const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector);
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
@@ -49,51 +45,39 @@ const AvatarGrid = () => {
 
   const enterAvatarGridRoom = useCallback(
     (room: AvatarGridRoom) => {
+      if (!venue) return;
+
       openRoomWithCounting({ user, profile, venue, room });
     },
     [profile, user, venue]
   );
 
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
-  partygoers &&
-    partygoers.forEach((partygoer) => {
-      if (
-        !venueId ||
-        !partygoer?.data ||
-        partygoer.data[venueId] === undefined ||
-        partygoer.data[venueId].row === undefined ||
-        partygoer.data[venueId].column === undefined
-      )
-        return;
-      const row = partygoer.data[venueId].row || 0;
-      const column = partygoer.data[venueId].column || 0;
-      if (!(row in partygoersBySeat)) {
-        partygoersBySeat[row] = [];
-      }
-      partygoersBySeat[row][column] = partygoer;
-    });
+  recentVenueUsers.forEach((user) => {
+    if (
+      !venueId ||
+      !user?.data ||
+      user.data[venueId] === undefined ||
+      user.data[venueId].row === undefined ||
+      user.data[venueId].column === undefined
+    )
+      return;
+    const row = user.data[venueId].row || 0;
+    const column = user.data[venueId].column || 0;
+    if (!(row in partygoersBySeat)) {
+      partygoersBySeat[row] = [];
+    }
+    partygoersBySeat[row][column] = user;
+  });
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      if (!user || !profile || !venueId) return;
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row,
-            column,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid: user?.uid,
+        profileData: profile?.data,
+      })(row, column);
     },
     [profile, user, venueId]
   );
@@ -378,12 +362,9 @@ const AvatarGrid = () => {
       >
         <div className="grid-rooms-container">
           {venue.spaces?.map((room: AvatarGridRoom, index: number) => {
-            const peopleInRoom = partygoers
-              ? partygoers.filter(
-                  (partygoer) =>
-                    partygoer.lastSeenIn[`${venue.name}/${room.title}`]
-                )
-              : [];
+            const peopleInRoom = recentVenueUsers.filter(
+              (user) => user.lastSeenIn?.[`${venue.name}/${room.title}`]
+            );
             return (
               <div
                 style={{
@@ -530,12 +511,6 @@ const AvatarGrid = () => {
           setIsRoomModalOpen(false);
         }}
       />
-      <Announcement
-        message={venue.bannerMessage}
-        className="announcement-container"
-      />
     </>
   );
 };
-
-export default AvatarGrid;

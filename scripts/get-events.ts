@@ -1,31 +1,30 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { resolve } from "path";
+
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Get event details. Prints each event start and end time among other details.
+const usage = makeScriptUsage({
+  description:
+    "Get event details. Prints each event start and end time among other details.",
+  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
+  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
+});
 
-Usage: node ${scriptName} PROJECT_ID
+const [projectId, credentialPath] = process.argv.slice(2);
 
-Example: node ${scriptName} co-reality-map
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
-
-const [projectId] = process.argv.slice(2);
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId) {
   usage();
 }
 
-initFirebaseAdminApp(projectId);
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 (async () => {
   console.log(
