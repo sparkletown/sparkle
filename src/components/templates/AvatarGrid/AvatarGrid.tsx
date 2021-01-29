@@ -13,7 +13,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
-import { openRoomWithCounting } from "utils/useLocationUpdateEffect";
+// import { openRoomWithCounting } from "utils/userLocation";
 import { currentVenueSelector } from "utils/selectors";
 
 import { RoomModal } from "./RoomModal";
@@ -47,9 +47,9 @@ export const AvatarGrid = () => {
     (room: AvatarGridRoom) => {
       if (!venue) return;
 
-      openRoomWithCounting({ user, profile, venue, room });
+      // openRoomWithCounting({ user, profile, venue, room });
     },
-    [profile, user, venue]
+    [venue]
   );
 
   // FIXME: This is really bad, needs to be fixed ASAP
