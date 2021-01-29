@@ -86,7 +86,7 @@ export const validationSchema = Yup.object()
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
     showGrid: Yup.bool().notRequired(),
-    columns: Yup.number().notRequired().min(1).max(100),
+    columns: Yup.number().notRequired().min(5).max(100),
 
     mapBackgroundImageUrl: Yup.string().when(
       "$template.template",
