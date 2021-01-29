@@ -1,21 +1,18 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { Room } from "types/rooms";
 
 import { getCurrentEvent } from "utils/event";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
-import { orderedVenuesSelector, venueEventsSelector } from "utils/selectors";
-import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
+import { venueEventsSelector } from "utils/selectors";
 import {
-  getCurrentTimeInMilliseconds,
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 
-import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useRecentRoomUsers } from "hooks/users";
+import { useMousetrap } from "hooks/useMousetrap";
+import { useRoom } from "hooks/useRoom";
 
 import UserList from "components/molecules/UserList";
 
@@ -24,53 +21,21 @@ import { RoomModalOngoingEvent, ScheduleItem } from "..";
 import "./RoomModal.scss";
 
 interface RoomModalProps {
-  show: boolean;
   onHide: () => void;
-  room?: Room;
+  room: Room;
 }
 
-export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
-  const { user, profile } = useUser();
-
-  const venues = useSelector(orderedVenuesSelector);
+export const RoomModal: React.FC<RoomModalProps> = ({ onHide, room }) => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
 
-  const roomTitle = room?.title;
-  const userLastSeenIn = profile?.lastSeenIn;
+  const { enterRoom, recentRoomUsers } = useRoom(room);
 
-  const { recentRoomUsers } = useRecentRoomUsers(roomTitle);
-
-  const roomVenue = useMemo(() => {
-    if (!room) return undefined;
-
-    return venues?.find((venue) => room.url.endsWith(`/${venue.id}`));
-  }, [room, venues]);
-
-  const venueName = roomVenue?.name;
-
-  // TODO: @debt refactor this to use openRoomWithCounting
-  const enter = useCallback(() => {
-    if (!room || !user) return;
-
-    const nowInMilliseconds = getCurrentTimeInMilliseconds();
-
-    const venueRoom = venueName ? { [venueName]: nowInMilliseconds } : {};
-
-    trackRoomEntered(
-      user,
-      {
-        [`${venueName}/${roomTitle}`]: nowInMilliseconds,
-        ...venueRoom,
-      },
-      userLastSeenIn
-    );
-
-    if (roomVenue) {
-      openUrl(venueInsideUrl(roomVenue.id));
-      return;
-    }
-    openRoomUrl(room.url);
-  }, [userLastSeenIn, room, roomTitle, user, venueName, roomVenue]);
+  useMousetrap({
+    keys: "enter",
+    callback: enterRoom,
+    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
+    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
+  });
 
   const roomEvents = useMemo(() => {
     if (!room) return [];
@@ -86,13 +51,8 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
 
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
-  // @debt Note: By not rendering like this when room isn't set, we prevent the 'modal closing' transition from running
-  if (!room) {
-    return null;
-  }
-
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show onHide={onHide}>
       <div className="container room-modal-container">
         <div className="room-description">
           <div className="title-container">
@@ -121,9 +81,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
               </div>
               <div className="col">
                 <RoomModalOngoingEvent
-                  room={room}
+                  roomTitle={room.title}
                   roomEvents={roomEvents}
-                  enterRoom={enter}
+                  onRoomEnter={enterRoom}
                 />
               </div>
             </div>
@@ -154,7 +114,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
                   isCurrentEvent={
                     currentEvent && event.name === currentEvent.name
                   }
-                  enterRoom={enter}
+                  onRoomEnter={enterRoom}
                   roomUrl={room.url}
                 />
               ))}
