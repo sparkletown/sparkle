@@ -6,6 +6,7 @@ import React, {
 } from "react";
 import classNames from "classnames";
 
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAmbulance,
@@ -16,9 +17,17 @@ import {
 
 import "./InformationLeftColumn.scss";
 
+export type ValidLogoIconName = "ambulance" | "create" | "heart";
+
+const logoMap = new Map<ValidLogoIconName, IconDefinition>([
+  ["ambulance", faAmbulance],
+  ["create", faEdit],
+  ["heart", faHeart],
+]);
+
 // TODO: only allow isColumnExanded and setColumnExpanded to be provided together, or not at all; not one or the other
 interface InformationLeftColumnProps {
-  venueLogoPath: LogoMapTypes | string;
+  venueLogoPath: ValidLogoIconName | string;
   children: React.ReactNode;
 }
 
@@ -27,14 +36,6 @@ export interface InformationLeftColumnControls {
   setExpanded: (isExpanded: boolean) => void;
   toggleExpanded: () => void;
 }
-
-type LogoMapTypes = "ambulance" | "heart" | "create";
-
-const logoMap = new Map([
-  ["ambulance", faAmbulance],
-  ["heart", faHeart],
-  ["create", faEdit],
-]);
 
 export const InformationLeftColumn = forwardRef<
   InformationLeftColumnControls,
@@ -66,7 +67,7 @@ export const InformationLeftColumn = forwardRef<
     "expanded-popup": isExpanded,
   });
 
-  const iconPath = logoMap.get(venueLogoPath);
+  const iconPath = logoMap.get(venueLogoPath as ValidLogoIconName);
 
   return (
     <div className="information-left-column-container">
