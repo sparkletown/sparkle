@@ -682,8 +682,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           className="align-left"
           placeholder={`Number of grid columns`}
         />
-        {errors.name ? (
-          <span className="input-error">{errors.name.message}</span>
+        {errors.columns ? (
+          <span className="input-error">{errors.columns.message}</span>
         ) : null}
       </div>
       <div className="input-container">
