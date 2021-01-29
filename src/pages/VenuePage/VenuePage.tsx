@@ -16,13 +16,10 @@ import {
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import {
-  canUserJoinTheEvent,
-  getCurrentTimeInMilliseconds,
-  ONE_MINUTE_IN_SECONDS,
-} from "utils/time";
+import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
   updateLocationData,
+  trackLocationEntered,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
@@ -99,9 +96,7 @@ const VenuePage: React.FC = () => {
   const updateUserLocationToCurrentVenue = useCallback(() => {
     if (!userId || !venueName) return;
 
-    updateLocationData(userId, {
-      [venueName]: getCurrentTimeInMilliseconds(),
-    });
+    trackLocationEntered({ userId, locationName: venueName });
   }, [userId, venueName]);
 
   useInterval(() => {
@@ -109,17 +104,21 @@ const VenuePage: React.FC = () => {
   }, LOC_UPDATE_FREQ_MS);
 
   useEffect(() => {
-    if (!userId || !venueName) return;
     updateUserLocationToCurrentVenue();
+  }, [updateUserLocationToCurrentVenue]);
 
-    // NOTE: A suggestion on how to avoid location cleaning, when two tabs were opened and one of them was closed
+  // useEffect(() => {
+  //   if (!userId || !venueName) return;
+  //   updateUserLocationToCurrentVenue();
 
-    // document.addEventListener("visibilitychange", () => {
-    //   if (document.visibilityState === "visible") {
-    //     updateUserLocationToCurrentVenue();
-    //   }
-    // });
-  }, [userId, venueName, updateUserLocationToCurrentVenue]);
+  // NOTE: A suggestion on how to avoid location cleaning, when two tabs were opened and one of them was closed
+
+  // document.addEventListener("visibilitychange", () => {
+  //   if (document.visibilityState === "visible") {
+  //     updateUserLocationToCurrentVenue();
+  //   }
+  // });
+  // }, [userId, venueName, updateUserLocationToCurrentVenue]);
 
   useEffect(() => {
     if (!userId) return;
@@ -131,11 +130,16 @@ const VenuePage: React.FC = () => {
   }, [userId]);
 
   useEffect(() => {
-    if (!venueId || !userId || profile?.enteredVenueIds?.includes(venueId))
+    if (
+      profile?.enteredVenueIds &&
+      venueId &&
+      profile?.enteredVenueIds.includes(venueId)
+    )
       return;
+    if (!venueId || !user) return;
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
-  }, [profile, userId, venueId]);
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, user?.uid, venueId);
+  }, [profile, user, venueId]);
 
   // NOTE: User's timespent updates
 
