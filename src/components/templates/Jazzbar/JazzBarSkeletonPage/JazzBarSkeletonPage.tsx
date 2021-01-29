@@ -1,7 +1,7 @@
 import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData } from "utils/selectors";

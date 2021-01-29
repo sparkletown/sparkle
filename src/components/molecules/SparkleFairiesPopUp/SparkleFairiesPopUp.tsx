@@ -7,7 +7,7 @@ import {
   REALITY_RANGERS_URL,
 } from "settings";
 
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
 
 import "./SparkleFairiesPopUp.scss";

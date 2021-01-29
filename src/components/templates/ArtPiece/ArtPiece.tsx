@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ArtPiece.scss";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";

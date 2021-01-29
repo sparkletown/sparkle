@@ -7,7 +7,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";

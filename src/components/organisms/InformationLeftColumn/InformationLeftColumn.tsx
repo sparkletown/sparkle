@@ -98,5 +98,3 @@ export const InformationLeftColumn = forwardRef<
     </div>
   );
 });
-
-export default InformationLeftColumn;

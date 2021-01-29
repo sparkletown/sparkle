@@ -6,8 +6,10 @@ import {
   BURNING_MAN_DONATION_TITLE,
 } from "settings";
 
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import { InformationLeftColumnControls } from "components/organisms/InformationLeftColumn/InformationLeftColumn";
+import {
+  InformationLeftColumn,
+  InformationLeftColumnControls,
+} from "components/organisms/InformationLeftColumn";
 
 import InformationCard from "components/molecules/InformationCard";
 

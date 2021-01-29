@@ -7,7 +7,7 @@ import {
   PLAYA_VENUE_NAME,
 } from "settings";
 
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
 
 const CreateEditPopUp: React.FunctionComponent = () => {
