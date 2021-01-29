@@ -1,4 +1,4 @@
-export type AnyRoom = Room | AvatarGridRoom;
+export type AnyRoom = Room;
 
 export interface BaseRoom {
   about: string;
@@ -15,18 +15,6 @@ export interface Room extends BaseRoom {
   width_percent: number;
   x_percent: number;
   y_percent: number;
-}
-
-export interface AvatarGridRoom {
-  row: number;
-  column: number;
-  width: number;
-  height: number;
-  title: string;
-  description: string;
-  url: string;
-  image_url?: string;
-  isFull: boolean;
 }
 
 export interface RoomData_v2 {

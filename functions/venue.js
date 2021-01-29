@@ -17,9 +17,13 @@ const VenueTemplate = {
   preplaya: "preplaya",
   playa: "playa",
   audience: "audience",
-  avatargrid: "avatargrid",
   firebarrel: "firebarrel",
   conversationspace: "conversationspace",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  avatargrid: "avatargrid",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
