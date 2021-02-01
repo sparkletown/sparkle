@@ -50,9 +50,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   venue,
   onSave,
 }) => {
-  const { register, handleSubmit, getValues, errors } = useForm<
-    Venue_v2_EntranceConfig
-  >({
+  const { register, handleSubmit, errors } = useForm<Venue_v2_EntranceConfig>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: validationSchema,
@@ -87,9 +85,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
     },
     [onSave, user, venue.name]
   );
-  console.log(venue.entrance);
 
-  console.log(getValues());
   return (
     <div>
       <h1>Entrance Experience</h1>

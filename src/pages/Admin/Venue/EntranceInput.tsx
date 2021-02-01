@@ -114,7 +114,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
           />
           <Form.Label>Video URL</Form.Label>
           <Form.Control ref={register} name={videoUrl} custom />
-          {errors && errors[index].videoUrl && (
+          {errors?.[index]?.videoUrl && (
             <div className="input-error">{errors[index].videoUrl.message}</div>
           )}
         </fieldset>
