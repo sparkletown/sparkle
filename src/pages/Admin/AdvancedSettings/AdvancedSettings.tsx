@@ -58,7 +58,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   showGrid: Yup.boolean().notRequired(),
   columns: Yup.number().when("showGrid", {
     is: true,
-    then: Yup.number().required("At least 5 columns are required").min(5),
+    then: Yup.number()
+      .required("The columns need to be between 5 and 100.")
+      .min(5)
+      .max(100),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,
