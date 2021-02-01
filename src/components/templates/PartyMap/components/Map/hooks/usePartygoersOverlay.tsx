@@ -4,7 +4,6 @@ import { User } from "types/User";
 import { ReactHook } from "types/utility";
 
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 
 import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
 
@@ -15,7 +14,7 @@ interface UsePartygoersOverlay {
   withMiniAvatars?: boolean;
   rows: number;
   columns: number;
-  partygoers?: readonly WithId<User>[];
+  partygoers: readonly WithId<User>[];
   setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
@@ -39,12 +38,10 @@ export const usePartygoersOverlay: ReactHook<
 }) => {
   return useMemo(() => {
     // @debt partygoers can be undefined because our types are broken so check explicitly
-    if (!showGrid || !partygoers || !userUid) return <div />;
+    if (!showGrid || !userUid) return <div />;
 
     // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
-    const filteredPartygoers = partygoers.filter(
-      (partygoer) => partygoer && isTruthy(partygoer.id)
-    );
+    const filteredPartygoers = partygoers.filter((partygoer) => partygoer?.id);
 
     return filteredPartygoers.map((partygoer) => (
       <MapPartygoerOverlay

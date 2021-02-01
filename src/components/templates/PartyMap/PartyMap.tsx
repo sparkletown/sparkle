@@ -12,11 +12,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { orderedVenuesSelector } from "utils/selectors";
-import { getCurrentTimeInMilliseconds } from "utils/time";
-import { openRoomUrl, openUrl, venueInsideUrl } from "utils/url";
-import { trackRoomEntered } from "utils/useLocationUpdateEffect";
-
 import { Map, RoomModal } from "./components";
 
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -32,59 +27,20 @@ export const PartyMap: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const currentVenue = useSelector(partyMapVenueSelector);
-  const venues = useSelector(orderedVenuesSelector);
 
-  const [isRoomModalOpen, setRoomModalOpen] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
   const selectRoom = useCallback((room: Room) => {
     setSelectedRoom(room);
-    setRoomModalOpen(true);
   }, []);
 
-  // Note: we explicitly don't unset selectedRoom here as that would cause RoomModal to close abruptly
   const unselectRoom = useCallback(() => {
-    setRoomModalOpen(false);
+    setSelectedRoom(undefined);
   }, []);
-
-  // TODO: extract this into a reusable hook/similar
-  const enterRoom = useCallback(
-    (room: Room) => {
-      if (!room || !user) return;
-
-      // TODO: we could process this once to make it look uppable directly? What does the data key of venues look like?
-      const roomVenue = venues?.find((venue) =>
-        room.url.endsWith(`/${venue.id}`)
-      );
-
-      const nowInUTCSeconds = getCurrentTimeInMilliseconds();
-
-      const roomName = {
-        [`${currentVenue.name}/${room.title}`]: nowInUTCSeconds,
-        ...(roomVenue ? { [currentVenue.name]: nowInUTCSeconds } : {}),
-      };
-
-      trackRoomEntered(user, roomName, profile?.lastSeenIn);
-
-      if (roomVenue) {
-        openUrl(venueInsideUrl(roomVenue.id));
-        return;
-      }
-      openRoomUrl(room.url);
-    },
-    [profile, user, currentVenue, venues]
-  );
-
-  // Note: since we explicitly don't unset selectedRoom in unselectRoom, we need to check if
-  //   the RoomModal is open to know if we have a room selected
-  const enterSelectedRoom = useCallback(() => {
-    if (!selectedRoom || !isRoomModalOpen) return;
-
-    enterRoom(selectedRoom);
-  }, [enterRoom, isRoomModalOpen, selectedRoom]);
 
   // Find current room from url
   const { roomTitle } = useParams();
+
   const currentRoom = useMemo(() => {
     if (!currentVenue || !currentVenue.rooms || !roomTitle) return;
 
@@ -111,14 +67,9 @@ export const PartyMap: React.FC = () => {
         partygoers={recentVenueUsers}
         selectRoom={selectRoom}
         unselectRoom={unselectRoom}
-        enterSelectedRoom={enterSelectedRoom}
       />
 
-      <RoomModal
-        show={isRoomModalOpen}
-        room={selectedRoom}
-        onHide={unselectRoom}
-      />
+      {selectedRoom && <RoomModal room={selectedRoom} onHide={unselectRoom} />}
 
       {currentVenue?.config?.showRangers && (
         <div className="sparkle-fairies">

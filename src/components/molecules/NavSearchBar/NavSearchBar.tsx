@@ -154,11 +154,12 @@ const NavSearchBar = () => {
         onHide={() => setSelectedUserProfile(undefined)}
       />
 
-      <RoomModal
-        show={isTruthy(selectedRoom)}
-        room={selectedRoom}
-        onHide={() => setSelectedRoom(undefined)}
-      />
+      {selectedRoom && (
+        <RoomModal
+          room={selectedRoom}
+          onHide={() => setSelectedRoom(undefined)}
+        />
+      )}
     </div>
   );
 };

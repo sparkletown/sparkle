@@ -14,22 +14,18 @@ export interface MakeUpdateUserGridLocationProps {
 export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
-  profileData,
 }: MakeUpdateUserGridLocationProps) => (
   row: number | null,
   column: number | null
 ) => {
-  if (!userUid || !venueId || !profileData) return;
+  if (!userUid || !venueId) return;
 
   const doc = `users/${userUid}`;
 
   const newData = {
-    data: {
-      ...profileData,
-      [venueId]: {
-        row,
-        column,
-      },
+    [`data.${venueId}`]: {
+      row,
+      column,
     },
   };
 
