@@ -132,6 +132,11 @@ interface UsersWithVisitsResult {
 
     console.log(csvLine);
   });
-
-  process.exit(0);
-})();
+})()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => {
+    process.exit(0);
+  });
