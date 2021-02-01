@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { Modal } from "react-bootstrap";
 
 import { RootState } from "index";
 
@@ -29,7 +28,7 @@ export const PartyMap: React.FC = () => {
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
-  const isRoomSelected = !!selectedRoom;
+  const hasSelectedRoom = !!selectedRoom;
 
   const selectRoom = useCallback((room: Room) => {
     setSelectedRoom(room);
@@ -54,7 +53,7 @@ export const PartyMap: React.FC = () => {
 
       <RoomModal
         room={selectedRoom}
-        show={isRoomSelected}
+        show={hasSelectedRoom}
         onHide={unselectRoom}
       />
 
