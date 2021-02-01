@@ -26,6 +26,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const passwordSubmitted = useCallback(
     async (e) => {
       e.preventDefault();
+      setInvalidPassword(false);
       setMessage("Checking password...");
 
       try {
@@ -34,9 +35,6 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           password,
         });
         setLocalStorageToken(venueId, result.data.token);
-
-        setInvalidPassword(false);
-        setMessage("Password OK! Proceeding...");
         history.push(venueEntranceUrl(venueId));
       } catch (error) {
         setInvalidPassword(true);

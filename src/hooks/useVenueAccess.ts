@@ -22,23 +22,27 @@ export const useVenueAccess = (
     onDenyAccess && onDenyAccess();
   }, [onDenyAccess, venue]);
 
+  const logout = useCallback(() => {
+    firebase
+      .auth()
+      .signOut()
+      .finally(() => {
+        denyAccess();
+      });
+  }, [denyAccess]);
+
   useEffect(() => {
     if (!venue) return;
 
     if (venue.access) {
-      const token = getLocalStorageToken(venue.id) ?? undefined;
-      if (!token) {
+      const token = getLocalStorageToken(venue.id);
+      if (token) {
         checkAccess({
           venueId: venue.id,
           token,
         }).then((result) => {
           if (!isTruthy(result.data)) {
-            firebase
-              .auth()
-              .signOut()
-              .finally(() => {
-                denyAccess();
-              });
+            logout();
           }
         });
       } else {
@@ -46,9 +50,9 @@ export const useVenueAccess = (
           .auth()
           .signOut()
           .finally(() => {
-            denyAccess();
+            logout();
           });
       }
     }
-  }, [denyAccess, onDenyAccess, venue]);
+  }, [logout, venue]);
 };

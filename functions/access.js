@@ -18,19 +18,21 @@ const checkIsValidToken = async (venueId, uid, token) => {
         transaction.get(accessRef),
       ]);
 
-      if (!venue.exists || !granted.exists || !granted.tokens) {
+      console.log("asdasd granted", granted);
+      if (!venue.exists || !granted.exists) {
         return false;
       }
 
-      if (Object.keys(granted.tokens).includes(token)) {
-        // Record that the token was checked
-        const isTokenChecked = granted.tokens[token].usedAt;
+      if (Object.keys(granted).includes(token)) {
+        // @debt Add timelimit, concept of token expiration.
+        const isTokenChecked = granted[token].usedAt;
 
         const newToken = {
           ...token,
           usedAt: Date.now(),
         };
-        // granted.tokens[token].usedAt.push(Date.now());
+
+        // @debt Do this only when isTokenChecked is expired or doesn't exist
         transaction.update(
           accessRef,
           admin.firestore.FieldValue.arrayUnion(
@@ -64,6 +66,7 @@ const isValidPassword = async (venueId, password) => {
 
   const access = await getAccessDoc(venueId, "password");
 
+  console.log("11111", access.exists);
   if (!access || !access.exists || !access.data().password) {
     return false;
   }
@@ -96,14 +99,13 @@ const isValidCode = async (venueId, code) => {
 };
 
 const createToken = async (venueId, uid, password, email, code) => {
-  if (!venueId || !uid || !password || !email || !code) return undefined;
+  if (!venueId || !uid || (!password && !email && !code)) return undefined;
 
   const venueRef = admin.firestore().collection("venues").doc(venueId);
   const accessRef = admin.firestore().collection("accessgranted").doc(uid);
 
-  if (!venueRef.exists) {
-    throw new HttpsError("not-found", `venue ${venueId} does not exist`);
-  }
+  console.log("venueRef", venueRef.exists);
+  console.log("vaccessRef", accessRef.exists);
 
   return await admin
     .firestore()
@@ -114,16 +116,16 @@ const createToken = async (venueId, uid, password, email, code) => {
       ]);
 
       if (!venue.exists) {
-        return undefined;
+        throw new HttpsError("not-found", `venue ${venueId} does not exist`);
       }
 
       const token = uuid();
 
       const tokenData = {
         usedAt: [Date.now()],
-        password: password,
-        email: email,
-        code: code,
+        ...(password && { ...password }),
+        ...(email && { ...email }),
+        ...(code && { ...code }),
       };
 
       const newToken = { [token]: tokenData };
@@ -143,22 +145,28 @@ const createToken = async (venueId, uid, password, email, code) => {
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
   if (!data || !context) return { token: undefined };
-  const isValidToken = await checkIsValidToken(
-    data.venueId,
-    context.auth.uid,
-    data.token
-  );
-  if (context && context.auth && context.auth.uid && isValidToken) {
+
+  console.log("1");
+  if (
+    context &&
+    context.auth &&
+    context.auth.uid &&
+    (await checkIsValidToken(data.venueId, context.auth.uid, data.token))
+  ) {
+    console.log("IS VALID", data);
     return { token: data.token };
   }
 
+  console.log("2");
   const isPasswordValid =
     data.password && (await isValidPassword(data.venueId, data.password));
   const isEmailValid =
     data.email && (await isValidEmail(data.venueId, data.email));
   const isCodeValid = data.code && (await isValidCode(data.venueId, data.code));
 
+  console.log("3");
   if (isPasswordValid || isEmailValid || isCodeValid) {
+    console.log("3.5, creationg token");
     const token = await createToken(
       data.venueId,
       context.auth.uid,
@@ -170,5 +178,6 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     return { token };
   }
 
+  console.log("4");
   return false;
 });
