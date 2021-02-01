@@ -1,13 +1,13 @@
 import { ChatActions, ChatActionTypes } from "store/actions/Chat";
-import { CHAT_TYPES } from "types/Chat";
+import { ChatTypes } from "types/Chat";
 
 type PrivateChatState = {
-  openedChatType: CHAT_TYPES.PRIVATE_CHAT;
-  recipientId: string | null;
+  openedChatType: ChatTypes.PRIVATE_CHAT;
+  recipientId?: string;
 };
 
 type VenueChatState = {
-  openedChatType: CHAT_TYPES.VENUE_CHAT;
+  openedChatType: ChatTypes.VENUE_CHAT;
 };
 
 export type ChatState = {
@@ -15,7 +15,7 @@ export type ChatState = {
 } & (PrivateChatState | VenueChatState);
 
 const initialChatState: ChatState = {
-  openedChatType: CHAT_TYPES.VENUE_CHAT,
+  openedChatType: ChatTypes.VENUE_CHAT,
   isChatSidebarVisible: true,
 };
 
@@ -27,7 +27,7 @@ export const chatReducer = (
     case ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY:
       return { ...state, isChatSidebarVisible: action.payload };
     case ChatActionTypes.SET_CHAT_TAB:
-      return { ...state, ...action.payload };
+      return { ...state, openedChatType: action.payload.chatType };
     default:
       return state;
   }

@@ -6,7 +6,7 @@ $primary: #005ee5;
 .chat-messages-container {
   width: 100%;
   // flex-grow: 1;
-  flex: 0 1 auto;
+  flex: 1;
   overflow-y: scroll;
   display: flex;
   align-items: flex-end;

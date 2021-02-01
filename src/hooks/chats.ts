@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { CHAT_TYPES, SetAnyChatTabOptions } from "types/Chat";
+import { ChatTypes, SetAnyChatTabOptions } from "types/Chat";
 
 import {
   userPrivateChatsSelector,
@@ -26,7 +26,7 @@ export const useChatControls = () => {
   const dispatch = useDispatch();
 
   const openChat = (
-    chatOptions: SetAnyChatTabOptions = { chatType: CHAT_TYPES.VENUE_CHAT }
+    chatOptions: SetAnyChatTabOptions = { chatType: ChatTypes.VENUE_CHAT }
   ) => {
     dispatch(setChatSidebarVisibility(true));
     dispatch(setChatTab(chatOptions));
@@ -39,6 +39,8 @@ export const useChatControls = () => {
   const { isChatSidebarVisible, openedChatType } = useSelector(
     chatUIStateSelector
   );
+
+  console.log({ openedChatType });
 
   return {
     isChatSidebarVisible,

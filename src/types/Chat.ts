@@ -1,16 +1,16 @@
-export enum CHAT_TYPES {
+export enum ChatTypes {
   WORLD_CHAT = "WORLD_CHAT",
   VENUE_CHAT = "VENUE_CHAT",
   PRIVATE_CHAT = "PRIVATE_CHAT",
 }
 
 type SetPrivateChatTab = {
-  chatType: CHAT_TYPES.PRIVATE_CHAT;
-  recipientId: string | null;
+  chatType: ChatTypes.PRIVATE_CHAT;
+  recipientId?: string;
 };
 
 type SetVenueChatTab = {
-  chatType: CHAT_TYPES.VENUE_CHAT;
+  chatType: ChatTypes.VENUE_CHAT;
 };
 
 export type SetAnyChatTabOptions = SetPrivateChatTab | SetVenueChatTab;

@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
+import classnames from "classnames";
 
 import { WorldChat, VenueChat, PrivateChat } from "./components";
 
 import { useChatControls, useChatInfo } from "hooks/chats";
 
-import { CHAT_TYPES } from "types/Chat";
+import { ChatTypes } from "types/Chat";
 
 import "./ChatSidebar.scss";
 
@@ -17,16 +18,16 @@ export const ChatSidebar: React.FC = () => {
   } = useChatInfo();
 
   // const selectWorldChatTab = useCallback(() => {
-  //   setSelectedTab(CHAT_TYPES.WORLD_CHAT);
+  //   setSelectedTab(ChatTypes.WORLD_CHAT);
   // }, [setSelectedTab]);
 
-  // const selectPrivateChatTab = useCallback(() => {
-  //   setSelectedTab(CHAT_TYPES.PRIVATE_CHAT);
-  // }, [setSelectedTab]);
+  const selectPrivateChatTab = useCallback(() => {
+    openChat({ chatType: ChatTypes.PRIVATE_CHAT });
+  }, [openChat]);
 
-  // const selectVenueChatTab = useCallback(() => {
-  //   setSelectedTab(CHAT_TYPES.VENUE_CHAT);
-  // }, [setSelectedTab]);
+  const selectVenueChatTab = useCallback(() => {
+    openChat({ chatType: ChatTypes.VENUE_CHAT });
+  }, [openChat]);
 
   return (
     <div className="chat-sidebar-component">
@@ -45,23 +46,29 @@ export const ChatSidebar: React.FC = () => {
             {worldChatTabTitle}
           </div> */}
           <div
-            className="chat-sidebar-tab chat-sidebar-tab_venue"
-            // onClick={selectVenueChatTab}
+            className={classnames("chat-sidebar-tab chat-sidebar-tab_venue", {
+              "chat-sidebar-tab--selected":
+                openedChatType === ChatTypes.VENUE_CHAT,
+            })}
+            onClick={selectVenueChatTab}
           >
             {venueChatTabTitle}
           </div>
           <div
-            className="chat-sidebar-tab chat-sidebar-tab_private"
-            // onClick={selectPrivateChatTab}
+            className={classnames("chat-sidebar-tab chat-sidebar-tab_private", {
+              "chat-sidebar-tab--selected":
+                openedChatType === ChatTypes.PRIVATE_CHAT,
+            })}
+            onClick={selectPrivateChatTab}
           >
             {privateChatTabTitle}
           </div>
         </div>
       </div>
       <div className="chat-sidebar-content">
-        {openedChatType === CHAT_TYPES.VENUE_CHAT && <VenueChat />}
-        {openedChatType === CHAT_TYPES.PRIVATE_CHAT && <PrivateChat />}
-        {/* {openedChatType === CHAT_TYPES.WORLD_CHAT && <WorldChat />} */}
+        {openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
+        {openedChatType === ChatTypes.PRIVATE_CHAT && <PrivateChat />}
+        {/* {openedChatType === ChatTypes.WORLD_CHAT && <WorldChat />} */}
       </div>
     </div>
   );
