@@ -5,7 +5,7 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { AvatarGridRoom } from "types/rooms";
 import { User } from "types/User";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+// import { makeUpdateUserGridLocation } from "api/profile";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -73,11 +73,11 @@ export const AvatarGrid = () => {
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid: user?.uid,
-        profileData: profile?.data,
-      })(row, column);
+      // makeUpdateUserGridLocation({
+      //   venueId,
+      //   userUid: user?.uid,
+      //   profileData: profile?.data,
+      // })(row, column);
     },
     [profile, user, venueId]
   );

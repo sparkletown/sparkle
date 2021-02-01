@@ -10,7 +10,7 @@ import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
-import { LiveEvent } from "./LiveEvent";
+import { EventDisplay } from "../EventDisplay";
 
 import "./LiveSchedule.scss";
 import { hasElements } from "utils/types";
@@ -42,12 +42,8 @@ const LiveSchedule: FC = () => {
   const renderedEvents = useMemo(() => {
     if (!hasEvents) return null;
 
-    return events.map((event, index) => (
-      <LiveEvent
-        key={`live-event-${index}`}
-        venue={relatedVenueFor(event)}
-        event={event}
-      />
+    return events.map((event) => (
+      <EventDisplay venue={relatedVenueFor(event)} event={event} />
     ));
   }, [events, hasEvents, relatedVenueFor]);
 

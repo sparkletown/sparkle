@@ -12,6 +12,7 @@ import { makeUpdateUserGridLocation } from "api/profile";
 import { hasElements, isTruthy } from "utils/types";
 import { makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
+import { setNewLocationData } from "utils/userLocation";
 
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -28,7 +29,6 @@ import Sidebar from "components/molecules/Sidebar";
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
-import { trackLocationEntered } from "utils/userLocation";
 
 export const DEFAULT_COLUMNS = 40;
 export const DEFAULT_ROWS = 25;
@@ -84,11 +84,13 @@ export const Map: React.FC<MapProps> = ({
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
       if (!userUid) return;
+
       makeUpdateUserGridLocation({
         venueId,
         userUid,
       })(row, column);
-      trackLocationEntered({ userId: userUid, locationName: venueName });
+
+      setNewLocationData({ userId: userUid, locationName: venueName });
     },
     [userUid, venueId, venueName]
   );

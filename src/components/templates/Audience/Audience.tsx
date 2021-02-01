@@ -142,6 +142,7 @@ export const Audience: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const userId = user?.uid;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
@@ -254,10 +255,11 @@ export const Audience: React.FunctionComponent = () => {
 
   return useMemo(() => {
     const takeSeat = (row: number | null, column: number | null) => {
+      if (!venueId || !userId) return;
+
       makeUpdateUserGridLocation({
         venueId,
-        userUid: user?.uid,
-        profileData: profile?.data,
+        userUid: userId,
       })(row, column);
     };
 

@@ -11,14 +11,12 @@ import { useDispatch } from "hooks/useDispatch";
 import "./RoomModalOngoingEvent.scss";
 
 interface RoomModalOngoingEventProps {
-  roomTitle: string;
   roomEvents: VenueEvent[];
   onRoomEnter: () => void;
   joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
-  roomTitle,
   roomEvents,
   onRoomEnter,
   joinButtonText,

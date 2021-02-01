@@ -4,13 +4,10 @@ import firebase from "firebase/app";
 import { UserExperienceData } from "types/User";
 
 export interface MakeUpdateUserGridLocationProps {
-  venueId?: string;
-  userUid?: string;
-  profileData?: UserExperienceData;
+  venueId: string;
+  userUid: string;
 }
 
-// @debt this is a potential race condition. we should read the profileData + update
-// it in a transaction here (or a function) rather than using potentially stale data
 export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
@@ -18,8 +15,6 @@ export const makeUpdateUserGridLocation = ({
   row: number | null,
   column: number | null
 ) => {
-  if (!userUid || !venueId) return;
-
   const doc = `users/${userUid}`;
 
   const newData = {

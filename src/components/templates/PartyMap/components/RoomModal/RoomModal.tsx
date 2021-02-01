@@ -20,22 +20,16 @@ import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
-interface RoomModalProps {
+type RoomModalProps = {
   onHide: () => void;
-  room: Room;
-}
+  show: boolean;
+  room?: Room;
+};
 
-export const RoomModal: React.FC<RoomModalProps> = ({ onHide, room }) => {
+export const RoomModal: React.FC<RoomModalProps> = ({ onHide, room, show }) => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
 
   const { enterRoom, recentRoomUsers } = useRoom(room);
-
-  useMousetrap({
-    keys: "enter",
-    callback: enterRoom,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   const roomEvents = useMemo(() => {
     if (!room) return [];
@@ -52,7 +46,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({ onHide, room }) => {
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   return (
-    <Modal show onHide={onHide}>
+    <Modal show={show} onHide={onHide}>
       <div className="container room-modal-container">
         <div className="room-description">
           <div className="title-container">
@@ -81,7 +75,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({ onHide, room }) => {
               </div>
               <div className="col">
                 <RoomModalOngoingEvent
-                  roomTitle={room.title}
                   roomEvents={roomEvents}
                   onRoomEnter={enterRoom}
                 />

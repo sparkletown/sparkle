@@ -1,8 +1,7 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useCallback } from "react";
+import { Modal } from "react-bootstrap";
 
 import { RootState } from "index";
-import { createUrlSafeName } from "api/admin";
 
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
@@ -30,6 +29,8 @@ export const PartyMap: React.FC = () => {
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
+  const isRoomSelected = !!selectedRoom;
+
   const selectRoom = useCallback((room: Room) => {
     setSelectedRoom(room);
   }, []);
@@ -37,24 +38,6 @@ export const PartyMap: React.FC = () => {
   const unselectRoom = useCallback(() => {
     setSelectedRoom(undefined);
   }, []);
-
-  // Find current room from url
-  const { roomTitle } = useParams();
-
-  const currentRoom = useMemo(() => {
-    if (!currentVenue || !currentVenue.rooms || !roomTitle) return;
-
-    return currentVenue.rooms.find(
-      (venueRoom) =>
-        createUrlSafeName(venueRoom.title) === createUrlSafeName(roomTitle)
-    );
-  }, [currentVenue, roomTitle]);
-
-  useEffect(() => {
-    if (currentRoom) {
-      selectRoom(currentRoom);
-    }
-  }, [currentRoom, selectRoom]);
 
   if (!user || !profile) return <>Loading..</>;
 
@@ -69,7 +52,11 @@ export const PartyMap: React.FC = () => {
         unselectRoom={unselectRoom}
       />
 
-      {selectedRoom && <RoomModal room={selectedRoom} onHide={unselectRoom} />}
+      <RoomModal
+        room={selectedRoom}
+        show={isRoomSelected}
+        onHide={unselectRoom}
+      />
 
       {currentVenue?.config?.showRangers && (
         <div className="sparkle-fairies">
