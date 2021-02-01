@@ -55,7 +55,10 @@ export const Map: React.FC<MapProps> = ({
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
 
-  const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
+  const totalColumns = Math.max(
+    5,
+    Math.min(100, venue.columns ?? DEFAULT_COLUMNS)
+  );
   const [totalRows, setTotalRows] = useState<number>(0);
 
   const { recentVenueUsers } = useRecentVenueUsers();
