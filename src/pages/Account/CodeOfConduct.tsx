@@ -59,9 +59,13 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   const venue = useSelector(currentVenueSelectorData);
   const history = useHistory();
   const { venueId, returnUrl } = getQueryParameters(location.search);
-  const { register, handleSubmit, errors, formState, watch } = useForm<
-    CodeOfConductFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    watch,
+  } = useForm<CodeOfConductFormData>({
     mode: "onChange",
   });
 
