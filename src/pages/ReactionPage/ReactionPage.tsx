@@ -8,7 +8,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { usePartygoers } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
-import { useVenueChats } from "hooks/useVenueChats";
+import { useVenueChat } from "hooks/useVenueChat";
 
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 
@@ -23,10 +23,10 @@ const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
   const partygoers = usePartygoers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats = useVenueChats(venueId);
+  const { venueChatMessages } = useVenueChat();
   const filteredChats = useMemo(
-    () => chats?.filter((chat) => chat.deleted !== true) ?? [],
-    [chats]
+    () => venueChatMessages?.filter((chat) => chat.deleted !== true) ?? [],
+    [venueChatMessages]
   );
 
   const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);

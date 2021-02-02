@@ -15,7 +15,7 @@ import { chatSort } from "utils/chat";
 import ChatBox from "./Chatbox";
 
 import { sendRoomChat } from "store/actions/Chat";
-import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useConnectVenueChat } from "hooks/useVenueChat";
 
 import "./VenueChat.scss";
 
@@ -25,7 +25,7 @@ interface ChatOutDataType {
 
 export const VenueChat: FC = () => {
   const venueId = useVenueId();
-  useConnectVenueChats(venueId);
+  useConnectVenueChat(venueId);
 
   const { userRoles } = useRoles();
   const { user } = useUser();

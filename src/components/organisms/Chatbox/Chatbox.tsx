@@ -12,7 +12,7 @@ import { chatSort } from "utils/chat";
 import { WithId } from "utils/id";
 import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
 
-import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useConnectVenueChat } from "hooks/useVenueChat";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -77,7 +77,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       : undefined
   );
   const venueId = useVenueId();
-  useConnectVenueChats(venueId);
+  useConnectVenueChat(venueId);
   const chats = useSelector(venueChatsSelector);
   const privateChats = useSelector(privateChatsSelector);
   const chatsToDisplay = useMemo(() => {

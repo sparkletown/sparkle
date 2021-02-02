@@ -143,7 +143,7 @@ export const usePrivateChat = () => {
   //     : undefined
   // );
   // const venueId = useVenueId();
-  // useConnectVenueChats(venueId);
+  // useConnectVenueChat(venueId);
   // const chats = useSelector(venueChatsSelector);
   // const privateChats = useSelector(privateChatsSelector);
 
@@ -176,20 +176,3 @@ export const usePrivateChat = () => {
 /////////////// WORLD CHAT HOOKS ///////////////
 
 export const useWorldChat = () => {};
-
-/////////////// LOCATION CHAT HOOKS ///////////////
-
-export const useConnectVenueChat = (venueId?: string) => {
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "venueChats",
-        }
-      : undefined
-  );
-};
-
-export const useVenueChat = () => {};

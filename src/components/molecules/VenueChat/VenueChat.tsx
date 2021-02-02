@@ -16,7 +16,7 @@ import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";
-import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useConnectVenueChat } from "hooks/useVenueChat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -24,7 +24,7 @@ interface ChatOutDataType {
 
 const VenueChat: FC = () => {
   const venueId = useVenueId();
-  useConnectVenueChats(venueId);
+  useConnectVenueChat(venueId);
 
   const { userRoles } = useRoles();
   const { user } = useUser();

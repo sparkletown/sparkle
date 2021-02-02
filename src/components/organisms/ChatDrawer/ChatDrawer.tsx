@@ -19,7 +19,7 @@ import { getDaysAgoInSeconds } from "utils/time";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 import { currentVenueSelectorData } from "utils/selectors";
 import { sendRoomChat } from "store/actions/Chat";
-import { useVenueChats } from "hooks/useVenueChats";
+import { useVenueChat } from "hooks/useVenueChat";
 
 interface ChatOutDataType {
   messageToTheBand: string;
@@ -43,7 +43,9 @@ const ChatDrawer: React.FC<PropsType> = ({
   const { userRoles } = useRoles();
   const venue = useSelector(currentVenueSelectorData);
 
-  const chats = useVenueChats(venueId);
+  const { venueChatMessages } = useVenueChat();
+  // const venueChatMessages: [] = [];
+
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
   const [isChatDrawerExpanded, setIsChatDrawerExpanded] = useState(defaultShow);
 
@@ -85,8 +87,8 @@ const ChatDrawer: React.FC<PropsType> = ({
 
   const chatsToDisplay = useMemo(
     () =>
-      chats &&
-      chats
+      venueChatMessages &&
+      venueChatMessages
         .filter(
           (message) =>
             message.deleted !== true &&
@@ -95,7 +97,7 @@ const ChatDrawer: React.FC<PropsType> = ({
             message.ts_utc.seconds > HIDE_BEFORE
         )
         .sort(chatSort),
-    [chats, roomName, HIDE_BEFORE]
+    [venueChatMessages, roomName, HIDE_BEFORE]
   );
 
   const allowDelete =
