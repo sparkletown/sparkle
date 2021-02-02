@@ -8,7 +8,7 @@ import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 

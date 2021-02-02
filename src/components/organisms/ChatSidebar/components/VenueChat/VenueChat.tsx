@@ -9,6 +9,8 @@ import "./VenueChat.scss";
 export const VenueChat: React.FC = () => {
   const { venueChatMessages } = useVenueChat();
 
+  console.log(venueChatMessages);
+
   const sendMessage = () => {};
   const deleteMessage = () => {};
 

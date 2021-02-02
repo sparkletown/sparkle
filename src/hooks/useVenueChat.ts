@@ -32,21 +32,17 @@ export const useVenueChat = () => {
   const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
   const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
-  const displayChatMessages = chats
-  .filter(
-    (message) =>
-      message.deleted !== true &&
-      message.type === "room" &&
-      message.to === venueId &&
-      message.ts_utc.seconds > HIDE_BEFORE
-  )
-  .sort(chatSort)
-  .map(message => ({
-  }))
-
   return useMemo(
     () => ({
-      venueChatMessages:
+      venueChatMessages: chats
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.type === "room" &&
+            message.to === venueId &&
+            message.ts_utc.seconds > HIDE_BEFORE
+        )
+        .sort(chatSort),
     }),
     [chats, venueId, HIDE_BEFORE]
   );

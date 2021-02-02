@@ -1,20 +1,16 @@
-import { AdminRole } from "hooks/roles";
-
 import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
+
 import { WithId } from "utils/id";
 import { Reaction } from "utils/reactions";
 
-import { CampVenue } from "./CampVenue";
+import { AdminRole } from "hooks/roles";
+
 import { ChatRequest } from "./ChatRequest";
-import { PartyMapVenue } from "./PartyMapVenue";
 import { Purchase } from "./Purchase";
 import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
-import { Venue } from "./Venue";
-import { VenueEvent } from "./VenueEvent";
-
-export type AnyVenue = Venue | PartyMapVenue | CampVenue;
+import { AnyVenue, VenueEvent } from "./venues";
 
 interface Experience {
   reactions: Record<string, Reaction>;
@@ -73,7 +69,7 @@ export interface FirestoreData {
   userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
-  users?: Record<string, User>;
+  worldUsers?: Record<string, User>;
   venueChats?: Record<string, RestrictedChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
@@ -103,7 +99,7 @@ export interface FirestoreOrdered {
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
   userPrivateChats?: Array<WithId<PrivateChatMessage>>;
-  users?: Array<WithId<User>>;
+  worldUsers?: Array<WithId<User>>;
   venueChats?: Array<WithId<RestrictedChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;

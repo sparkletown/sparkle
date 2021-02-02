@@ -3,11 +3,12 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "index";
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { AnyVenue } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
+
+import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { ChatState } from "store/reducers/Chat";
 
@@ -15,6 +16,7 @@ import { WithId } from "utils/id";
 
 import {
   makeIsRequestedSelector,
+  makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
@@ -52,22 +54,22 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
 ) => state.firestore.data.currentVenue;
 
 /**
- * Selector to retrieve array of users from the Redux Firestore.
+ * Selector to retrieve array of world-related users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const usersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+export const worldUsersSelector: SparkleSelector<WithId<User>[] | undefined> = (
   state
-) => state.firestore.ordered.users;
+) => state.firestore.ordered.worldUsers;
 
 /**
- * Selector to retrieve an object with users from the Redux Firestore.
+ * Selector to retrieve an object with world-related users from the Redux Firestore.
  *
  * @param state the Redux store
  */
-export const usersByIdSelector: SparkleSelector<Record<string, User>> = (
-  state
-) => state.firestore.data.users ?? {};
+export const worldUsersByIdSelector: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.worldUsers;
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -116,7 +118,19 @@ export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
 ) => state.attendance.retainAttendance;
 
+export const isCurrentVenueNGRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenueNG"
+);
+
+export const isCurrentVenueNGRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
+  "currentVenueNG"
+);
+
 export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVenue"
+);
+
+export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
   "currentVenue"
 );
 
@@ -161,13 +175,11 @@ export const experienceSelector = (state: RootState) =>
   state.firestore.data.experience;
 
 export const venueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue
-    ? state.firestore.ordered.currentVenue[0]
-    : undefined;
+  state.firestore.ordered.currentVenue?.[0];
 
 export const parentVenueOrderedSelector: SparkleSelector<
-  WithId<AnyVenue> | undefined
-> = (state) => state.firestore.ordered.parentVenue?.[0];
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.parentVenue;
 
 export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
   state
@@ -204,6 +216,18 @@ export const userModalVisitsSelector = (state: RootState) =>
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
+
+/**
+ * Selector to retrieve sovereignVenueId state from the Redux store.
+ *
+ * @param state the Redux store
+ *
+ * @see SovereignVenueState
+ * @see RootState
+ */
+export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
+  state
+) => state.sovereignVenue;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,

@@ -6,7 +6,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { usePartygoers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
 import { useVenueChat } from "hooks/useVenueChat";
 
@@ -21,7 +21,7 @@ import "./ReactionPage.scss";
 const ReactionPage = () => {
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = usePartygoers();
+  const { recentVenueUsers } = useRecentVenueUsers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
   const { venueChatMessages } = useVenueChat();
   const filteredChats = useMemo(
@@ -29,7 +29,7 @@ const ReactionPage = () => {
     [venueChatMessages]
   );
 
-  const hasPartygoers = useMemo(() => partygoers.length > 0, [partygoers]);
+  const hasPartygoers = recentVenueUsers.length > 0;
 
   useFirestoreConnect(
     venue
@@ -63,7 +63,7 @@ const ReactionPage = () => {
           {hasPartygoers && (
             <div className="col-4">
               <UserList
-                users={partygoers}
+                users={recentVenueUsers}
                 isAudioEffectDisabled
                 imageSize={50}
               />
