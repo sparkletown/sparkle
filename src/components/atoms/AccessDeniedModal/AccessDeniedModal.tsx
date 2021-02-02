@@ -9,6 +9,8 @@ interface AccessDeniedModalProps {
   venueName: string;
 }
 
+const noop = () => {};
+
 export const AccessDeniedModal: React.FC<AccessDeniedModalProps> = ({
   show = true,
   venueId,
@@ -27,7 +29,7 @@ export const AccessDeniedModal: React.FC<AccessDeniedModalProps> = ({
   }, [history, venueId, hide]);
 
   return (
-    <Modal show={isVisible} onHide={hide}>
+    <Modal show={isVisible} onHide={noop}>
       <Modal.Body>
         <div className="confirmation-modal">
           <h2 className="confirm-header">Access Denied</h2>

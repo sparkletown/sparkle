@@ -21,12 +21,10 @@ Example: npx ts-node ${process.argv[1]} co-reality-map codes ticket-codes-one-pe
   process.exit(1);
 }
 
-const argv = process.argv.slice(2);
-if (argv.length < 4) {
+const [projectId, venueId, method, accessDetail] = process.argv.slice(2);
+if (!projectId || !venueId || !method || !accessDetail) {
   usage();
 }
-
-const [projectId, venueId, method, accessDetail] = process.argv.slice(2);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (!VenueAccessMode[method]) {

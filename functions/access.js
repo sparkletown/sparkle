@@ -18,7 +18,6 @@ const checkIsValidToken = async (venueId, uid, token) => {
         transaction.get(accessRef),
       ]);
 
-      console.log("asdasd granted", granted);
       if (!venue.exists || !granted.exists) {
         return false;
       }
@@ -45,8 +44,7 @@ const checkIsValidToken = async (venueId, uid, token) => {
 
       return false;
     })
-    .catch((e) => {
-      console.log("Transaction failure:", e);
+    .catch(() => {
       return false;
     });
 };
@@ -66,7 +64,6 @@ const isValidPassword = async (venueId, password) => {
 
   const access = await getAccessDoc(venueId, "password");
 
-  console.log("11111", access.exists);
   if (!access || !access.exists || !access.data().password) {
     return false;
   }
@@ -104,9 +101,6 @@ const createToken = async (venueId, uid, password, email, code) => {
   const venueRef = admin.firestore().collection("venues").doc(venueId);
   const accessRef = admin.firestore().collection("accessgranted").doc(uid);
 
-  console.log("venueRef", venueRef.exists);
-  console.log("vaccessRef", accessRef.exists);
-
   return await admin
     .firestore()
     .runTransaction(async (transaction) => {
@@ -123,9 +117,9 @@ const createToken = async (venueId, uid, password, email, code) => {
 
       const tokenData = {
         usedAt: [Date.now()],
-        ...(password && { ...password }),
-        ...(email && { ...email }),
-        ...(code && { ...code }),
+        ...(password && { password }),
+        ...(email && { email }),
+        ...(code && { code }),
       };
 
       const newToken = { [token]: tokenData };
@@ -137,8 +131,7 @@ const createToken = async (venueId, uid, password, email, code) => {
 
       return token;
     })
-    .catch((e) => {
-      console.log("Transaction failure:", e);
+    .catch(() => {
       return undefined;
     });
 };
@@ -146,27 +139,22 @@ const createToken = async (venueId, uid, password, email, code) => {
 exports.checkAccess = functions.https.onCall(async (data, context) => {
   if (!data || !context) return { token: undefined };
 
-  console.log("1");
   if (
     context &&
     context.auth &&
     context.auth.uid &&
     (await checkIsValidToken(data.venueId, context.auth.uid, data.token))
   ) {
-    console.log("IS VALID", data);
     return { token: data.token };
   }
 
-  console.log("2");
   const isPasswordValid =
     data.password && (await isValidPassword(data.venueId, data.password));
   const isEmailValid =
     data.email && (await isValidEmail(data.venueId, data.email));
   const isCodeValid = data.code && (await isValidCode(data.venueId, data.code));
 
-  console.log("3");
   if (isPasswordValid || isEmailValid || isCodeValid) {
-    console.log("3.5, creationg token");
     const token = await createToken(
       data.venueId,
       context.auth.uid,
@@ -174,10 +162,8 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
       data.email,
       data.code
     );
-    console.log(`create token: ${token}`);
-    return { token };
+    return { token: token || undefined };
   }
 
-  console.log("4");
-  return false;
+  return { token: undefined };
 });

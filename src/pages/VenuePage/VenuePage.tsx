@@ -29,6 +29,9 @@ import {
   useLocationUpdateEffect,
 } from "utils/useLocationUpdateEffect";
 import { venueEntranceUrl } from "utils/url";
+import { showZendeskWidget } from "utils/zendesk";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
+import { isTruthy } from "utils/types";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -39,6 +42,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useIsVenueUsersLoaded } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueAccess } from "hooks/useVenueAccess";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -49,13 +54,9 @@ import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+
 import Login from "pages/Account/Login";
-import { showZendeskWidget } from "utils/zendesk";
 import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import { useVenueAccess } from "hooks/useVenueAccess";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -260,7 +261,7 @@ const VenuePage: React.FC = () => {
     return <Login formType="initial" />;
   }
 
-  if (!venue || !venueId) {
+  if (!venue || !venueId || !profile) {
     return <LoadingPage />;
   }
 
