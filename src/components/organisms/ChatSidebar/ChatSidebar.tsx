@@ -46,7 +46,7 @@ export const ChatSidebar: React.FC = () => {
             {worldChatTabTitle}
           </div> */}
           <div
-            className={classnames("chat-sidebar-tab chat-sidebar-tab_venue", {
+            className={classnames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
                 openedChatType === ChatTypes.VENUE_CHAT,
             })}
@@ -55,7 +55,7 @@ export const ChatSidebar: React.FC = () => {
             {venueChatTabTitle}
           </div>
           <div
-            className={classnames("chat-sidebar-tab chat-sidebar-tab_private", {
+            className={classnames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
                 openedChatType === ChatTypes.PRIVATE_CHAT,
             })}

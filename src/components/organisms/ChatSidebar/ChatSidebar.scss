@@ -30,12 +30,16 @@ $header-height: 45px;
         border-bottom: rgba(0, 0, 0, 0) thin solid;
 
         &:hover {
-          border-bottom: white thin solid;
+          border-bottom: rgba(255, 255, 255, 0.5) thin solid;
         }
       }
 
       .chat-sidebar-tab--selected {
         border-bottom: white thin solid;
+
+        &:hover {
+          border-bottom: white thin solid;
+        }
       }
     }
   }

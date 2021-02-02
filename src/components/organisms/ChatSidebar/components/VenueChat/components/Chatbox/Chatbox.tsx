@@ -26,7 +26,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       messages.map((message) => (
         <ChatMessage
         // text={message.text}
-        // date={message.date}
+        // date={message.}
         // user={usersById[message.from]}
         // onDelete={deleteMessage}
         />

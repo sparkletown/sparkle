@@ -54,7 +54,7 @@ export const useChatControls = () => {
 export const useChatInfo = () => {
   return {
     worldChatTabTitle: "World chat",
-    privateChatTabTitle: "Private Chat",
+    privateChatTabTitle: "Private Chats",
     venueChatTabTitle: "Venue Chat",
   };
 };
