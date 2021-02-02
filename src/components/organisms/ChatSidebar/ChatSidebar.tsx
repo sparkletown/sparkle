@@ -1,5 +1,11 @@
 import React, { useCallback } from "react";
-import classnames from "classnames";
+import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronRight,
+  faChevronLeft,
+  faCommentDots,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { WorldChat, VenueChat, PrivateChat } from "./components";
 
@@ -10,7 +16,12 @@ import { ChatTypes } from "types/Chat";
 import "./ChatSidebar.scss";
 
 export const ChatSidebar: React.FC = () => {
-  const { isChatSidebarVisible, openChat, openedChatType } = useChatControls();
+  const {
+    isChatSidebarVisible,
+    openChat,
+    openedChatType,
+    closeChat,
+  } = useChatControls();
   const {
     worldChatTabTitle,
     privateChatTabTitle,
@@ -29,9 +40,55 @@ export const ChatSidebar: React.FC = () => {
     openChat({ chatType: ChatTypes.VENUE_CHAT });
   }, [openChat]);
 
+  const expandChat = () => {
+    openChat();
+  };
+
+  console.log({ isChatSidebarVisible });
+
   return (
-    <div className="chat-sidebar-component">
+    <div
+      className={classNames("chat-sidebar-component", {
+        "chat-sidebar-component--expanded": isChatSidebarVisible,
+      })}
+    >
       <div className="chat-sidebar-header">
+        <div
+          className="chat-sidebar-controller"
+          onClick={isChatSidebarVisible ? closeChat : expandChat}
+        >
+          {isChatSidebarVisible ? (
+            <FontAwesomeIcon
+              icon={faChevronRight}
+              className={classNames("chatbox-input-button_icon", {
+                "chatbox-input-button_icon--active": true,
+              })}
+              size="sm"
+            />
+          ) : (
+            <>
+              <FontAwesomeIcon
+                icon={faChevronLeft}
+                className={classNames(
+                  "chatbox-input-button_icon",
+                  "chatbox-input-button_icon-right-chevron",
+                  {
+                    "chatbox-input-button_icon--active": true,
+                  }
+                )}
+                size="sm"
+              />
+              <FontAwesomeIcon
+                icon={faCommentDots}
+                className={classNames("chatbox-input-button_icon", {
+                  "chatbox-input-button_icon--active": true,
+                })}
+                size="lg"
+              />
+            </>
+          )}
+        </div>
+
         {/* {isChatSidebarVisible ? (
           <div className="chat-sidebar-control_close">Close</div>
         ) : (
@@ -46,7 +103,7 @@ export const ChatSidebar: React.FC = () => {
             {worldChatTabTitle}
           </div> */}
           <div
-            className={classnames("chat-sidebar-tab", {
+            className={classNames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
                 openedChatType === ChatTypes.VENUE_CHAT,
             })}
@@ -55,7 +112,7 @@ export const ChatSidebar: React.FC = () => {
             {venueChatTabTitle}
           </div>
           <div
-            className={classnames("chat-sidebar-tab", {
+            className={classNames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
                 openedChatType === ChatTypes.PRIVATE_CHAT,
             })}
