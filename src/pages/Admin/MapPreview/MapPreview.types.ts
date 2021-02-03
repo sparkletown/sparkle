@@ -1,4 +1,4 @@
-import { RoomData_v2 } from "types/RoomData";
+import { RoomData_v2 } from "types/rooms";
 
 export interface MapPreviewProps {
   venueName: string;

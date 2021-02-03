@@ -1,20 +1,30 @@
-.room-container {
+.room-modal-container {
+  padding: 20px;
+  background-color: #19181a;
+  background-repeat: no-repeat;
+  background-size: cover;
+
   .about-this-room {
     font-size: 20px;
   }
+
   .room-page-image {
     width: 100%;
   }
+
   .room-image-container {
     display: flex;
     justify-content: center;
   }
+
   .ongoing-event-row {
     align-items: center;
   }
+
   .room-modal-title {
     margin-top: 20px;
   }
+
   .room-modal-title,
   .room-modal-subtitle,
   .about-this-room {

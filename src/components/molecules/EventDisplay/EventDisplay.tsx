@@ -1,13 +1,12 @@
-import React, { useCallback } from "react";
+import React from "react";
 
-import { AnyVenue } from "types/Firestore";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
+import { Room } from "types/rooms";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
 
-import { useUser } from "hooks/useUser";
+import { useRoom } from "hooks/useRoom";
 
 import "./EventDisplay.scss";
 
@@ -17,13 +16,8 @@ interface EventDisplayProps {
 }
 
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
-  const { user, profile } = useUser();
-
-  const enterEvent = useCallback(() => {
-    if (!venue) return;
-
-    openEventRoomWithCounting({ user, profile, venue, event });
-  }, [event, profile, user, venue]);
+  const room = venue?.rooms?.find((room) => room.title === event?.room);
+  const buttonText = `${event.room ?? "Enter"} ${venue && `- ${venue.name}`}`;
 
   const isLiveEvent =
     event.start_utc_seconds < getCurrentTimeInUTCSeconds() &&
@@ -54,11 +48,26 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterEvent}>
-            {event.room ?? "Enter"} {venue && `- ${venue.name}`}
-          </div>
+          {event.room && room ? (
+            <EnterRoomButton room={room as Room}>{buttonText}</EnterRoomButton>
+          ) : (
+            <div>{buttonText}</div>
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+type EnterRoomButtonProps = {
+  room: Room;
+};
+
+const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
+  room,
+  children,
+}) => {
+  const { enterRoom } = useRoom(room);
+
+  return <div onClick={enterRoom}>{children}</div>;
 };

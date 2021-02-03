@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form";
 import { useUser } from "hooks/useUser";
 
 // Typings
-import { Question, Venue_v2_EntranceConfig } from "types/Venue";
+import { Question, Venue_v2_EntranceConfig } from "types/venues";
 import { EntranceExperienceProps } from "./EntranceExperience.types";
 
 // Styles
@@ -33,7 +33,7 @@ const validationSchema = Yup.object().shape({
   entrance: Yup.array(
     Yup.object().shape({
       // template: Yup.string().matches(/welcomevideo/).required('Template is required'),
-      videoUrl: Yup.string().notRequired(),
+      videoUrl: Yup.string().required("Video url is required."),
       autoplay: Yup.boolean().notRequired(),
       buttons: Yup.array(
         Yup.object().shape({
@@ -50,12 +50,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   venue,
   onSave,
 }) => {
-  const {
-    formState: { dirty },
-    register,
-    handleSubmit,
-    errors,
-  } = useForm<Venue_v2_EntranceConfig>({
+  const { register, handleSubmit, errors } = useForm<Venue_v2_EntranceConfig>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: validationSchema,
@@ -72,10 +67,16 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
     async (data: Venue_v2_EntranceConfig) => {
       if (!user) return;
 
+      const entranceData = {
+        code_of_conduct_questions: data.code_of_conduct_questions ?? [],
+        profile_questions: data.profile_questions ?? [],
+        entrance: data.entrance ?? [],
+      };
+
       await updateVenue_v2(
         {
           name: venue.name,
-          ...data,
+          ...entranceData,
         },
         user
       );
@@ -128,13 +129,13 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
               register={register}
               fieldName="entrance"
               showTitle={false}
+              editing={venue.entrance}
+              errors={errors.entrance}
             />
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <Button type="submit" disabled={!dirty}>
-          Save
-        </Button>
+        <Button type="submit">Save</Button>
       </Form>
     </div>
   );

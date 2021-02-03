@@ -1,8 +1,10 @@
 import Bugsnag from "@bugsnag/js";
 import React, { useState, useCallback } from "react";
+
+import { AnyVenue } from "types/venues";
+
 import "./DustStorm.scss";
 import { WithId } from "utils/id";
-import { AnyVenue } from "types/Firestore";
 import firebase from "firebase/app";
 import { useHistory } from "react-router-dom";
 import { OnlineStatsData } from "types/OnlineStatsData";

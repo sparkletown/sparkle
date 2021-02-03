@@ -1,29 +1,42 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { resolve } from "path";
+
 import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
-import { Venue } from "../src/types/Venue";
+import { Venue } from "../src/types/venues";
 
-import { initFirebaseAdminApp, makeSaveToBackupFile } from "./lib/helpers";
+import {
+  generateTables,
+  initFirebaseAdminApp,
+  makeSaveToBackupFile,
+  makeScriptUsage,
+} from "./lib/helpers";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Upload table config
+// ---------------------------------------------------------
+// Configuration (this is the bit you should edit)
+// ---------------------------------------------------------
 
-Usage: node ${scriptName} PROJECT_ID VENUE_ID
+const newTables: Table[] = [
+  ...generateTables({ num: 5, capacity: 6 }),
+  ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
+];
 
-Example: node ${scriptName} co-reality-map myvenue
----------------------------------------------------------
-`;
+// ---------------------------------------------------------
+// HERE THERE BE DRAGONS (edit below here at your own risk)
+// ---------------------------------------------------------
 
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description:
+    "Generate/upload table config (from newTables const, edit the script)",
+  usageParams: "PROJECT_ID VENUE_ID [CREDENTIAL_PATH]",
+  exampleParams: "co-reality-map myvenue [theMatchingAccountServiceKey.json]",
+});
 
-const [projectId, venueId] = process.argv.slice(2);
+const [projectId, venueId, credentialPath] = process.argv.slice(2);
+
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !venueId) {
   usage();
 }
@@ -32,39 +45,11 @@ const saveToBackupFile = makeSaveToBackupFile(
   `${projectId}-upload-table-config`
 );
 
-initFirebaseAdminApp(projectId);
-
-const generateTables: (props: {
-  num: number;
-  capacity: number;
-  startFrom?: number;
-  rows?: number;
-  columns?: number;
-  titlePrefix?: string;
-}) => Table[] = ({
-  num,
-  capacity,
-  startFrom = 0,
-  rows = 2,
-  columns = 3,
-  titlePrefix = "Table",
-}) =>
-  Array.from(Array(num)).map((_, idx) => {
-    const tableNumber = startFrom + 1 + idx;
-
-    return {
-      title: `${titlePrefix} ${tableNumber}`,
-      reference: `${titlePrefix} ${tableNumber}`,
-      capacity,
-      rows,
-      columns,
-    };
-  });
-
-const newTables: Table[] = [
-  ...generateTables({ num: 5, capacity: 6 }),
-  ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
-];
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 const asSingleTablePerLine = (table: Table) => JSON.stringify(table, null, 0);
 

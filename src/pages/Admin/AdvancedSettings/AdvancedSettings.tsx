@@ -14,7 +14,7 @@ import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 // Styles
 import * as S from "../Admin.styles";
 import { updateVenue_v2 } from "api/admin";
-import { Venue_v2_AdvancedConfig } from "types/Venue";
+import { Venue_v2_AdvancedConfig } from "types/venues";
 import { useUser } from "hooks/useUser";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
@@ -74,7 +74,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   // roomVisibility: Yup.string().notRequired()
 });
 
-const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({ venue }) => {
+const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
+  venue,
+  onSave,
+}) => {
   const {
     watch,
     formState: { dirty, isSubmitting },
@@ -114,6 +117,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({ venue }) => {
       },
       user
     );
+
+    onSave();
   };
 
   const renderShowGridToggle = () => (

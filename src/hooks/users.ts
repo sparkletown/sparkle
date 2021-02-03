@@ -1,63 +1,134 @@
 import { useMemo } from "react";
-import { isLoaded } from "react-redux-firebase";
 
 import { User } from "types/User";
-import { ValidStoreAsKeys } from "types/Firestore";
 
-import { usersSelector, usersByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
+import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { useSelector } from "hooks/useSelector";
-import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
-import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
-const useConnectVenueUsers = () => {
+import { useSelector } from "./useSelector";
+import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
+import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
+import { useVenueId } from "./useVenueId";
+import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
+import { useSovereignVenueId } from "./useSovereignVenueId";
+
+export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
-  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
-  //   this should be something like `storeAs: "currentVenueUsers"` or similar
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "users",
-          where: ["enteredVenueIds", "array-contains", venueId],
-          storeAs: "users" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
-        }
-      : undefined
-  );
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId();
+
+  useFirestoreConnect(() => {
+    if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
+
+    const relatedLocationIds = [venueId];
+
+    if (sovereignVenueId) {
+      relatedLocationIds.push(sovereignVenueId);
+    }
+
+    return [
+      {
+        collection: "users",
+        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
+        storeAs: "worldUsers",
+      },
+    ];
+  });
 };
 
-export const useVenueUsers = (): readonly WithId<User>[] => {
-  useConnectVenueUsers();
+export const useWorldUsers = (): {
+  worldUsers: readonly WithId<User>[];
+  isWorldUsersLoaded: boolean;
+} => {
+  useConnectWorldUsers();
 
-  return useSelector(usersSelector) ?? [];
-};
-
-export const usePartygoers = (): readonly WithId<User>[] => {
-  const lastSeenThreshold = useUserLastSeenThreshold();
-
-  const venueUsers = useVenueUsers();
+  const selectedWorldUsers = useSelector(worldUsersSelector);
 
   return useMemo(
-    () => venueUsers.filter((user) => user.lastSeenAt > lastSeenThreshold),
-    [venueUsers, lastSeenThreshold]
+    () => ({
+      worldUsers: selectedWorldUsers ?? [],
+      isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+    }),
+    [selectedWorldUsers]
   );
 };
 
-export const useIsVenueUsersLoaded = () => {
-  // @debt The reason for this useConnect to be here is that we have entry point components,
-  // which have useConnects calls. And there are checks for the data loaded statuses.
-  // We want to gradualy move from that approach to a more modular one, where the specific data is connected where it is required
-  useConnectVenueUsers();
+export const useWorldUsersById = () => {
+  useConnectWorldUsers();
 
-  const users = useSelector(usersSelector);
+  const worldUsersById = useSelector(worldUsersByIdSelector);
 
-  return isLoaded(users);
+  return useMemo(
+    () => ({
+      worldUsersById: worldUsersById ?? {},
+      isWorldUsersLoaded: isLoaded(worldUsersById),
+    }),
+    [worldUsersById]
+  );
 };
 
-export const useUsersById = () => {
-  useConnectVenueUsers();
+export const useRecentWorldUsers = (): {
+  recentWorldUsers: readonly WithId<User>[];
+  isRecentWorldUsersLoaded: boolean;
+} => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
 
-  return useSelector(usersByIdSelector);
+  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+
+  return useMemo(
+    () => ({
+      recentWorldUsers: worldUsers.filter(
+        (user) =>
+          normalizeTimestampToMilliseconds(user.lastSeenAt) > lastSeenThreshold
+      ),
+      isRecentWorldUsersLoaded: isWorldUsersLoaded,
+    }),
+    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
+  );
+};
+
+/**
+ * @description this hook's filtering world users based on their @lastSeenIn location
+ *
+ * @param locationName is a key for `lastSeenIn` firestore field in user's object
+ *
+ * @example useRecentLocationUsers(venue.name)
+ * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
+ */
+export const useRecentLocationUsers = (locationName?: string) => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
+  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+
+  return useMemo(
+    () => ({
+      recentLocationUsers: locationName
+        ? worldUsers.filter(
+            (user) =>
+              user.lastSeenIn?.[locationName] &&
+              normalizeTimestampToMilliseconds(user.lastSeenIn[locationName]) >
+                lastSeenThreshold
+          )
+        : [],
+      isRecentLocationUsersLoaded: isWorldUsersLoaded,
+    }),
+    [worldUsers, isWorldUsersLoaded, lastSeenThreshold, locationName]
+  );
+};
+
+export const useRecentVenueUsers = () => {
+  const venueId = useVenueId();
+
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+
+  const {
+    recentLocationUsers,
+    isRecentLocationUsersLoaded,
+  } = useRecentLocationUsers(currentVenue?.name);
+
+  return {
+    recentVenueUsers: recentLocationUsers,
+    isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
+  };
 };

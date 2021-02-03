@@ -4,7 +4,7 @@ import Video from "twilio-video";
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";
 import { useUser } from "hooks/useUser";
-import { useUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
@@ -29,7 +29,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
-  const usersById = useUsersById();
+  const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
@@ -96,13 +96,18 @@ const Room: React.FC<RoomProps> = ({
     return room && user ? (
       <LocalParticipant
         participant={room.localParticipant}
-        user={usersById[user.uid] && { ...usersById[user.uid], id: user.uid }}
+        user={
+          worldUsersById[user.uid] && {
+            ...worldUsersById[user.uid],
+            id: user.uid,
+          }
+        }
         setSelectedUserProfile={setSelectedUserProfile}
         isHost={hostUid === user.uid}
         leave={leave}
       />
     ) : null;
-  }, [room, user, usersById, setSelectedUserProfile, hostUid, leave]);
+  }, [room, user, worldUsersById, setSelectedUserProfile, hostUid, leave]);
 
   const others = useMemo(
     () =>
@@ -113,8 +118,8 @@ const Room: React.FC<RoomProps> = ({
               <RemoteParticipant
                 participant={participant}
                 user={
-                  usersById[participant.identity] && {
-                    ...usersById[participant.identity],
+                  worldUsersById[participant.identity] && {
+                    ...worldUsersById[participant.identity],
                     id: participant.identity,
                   }
                 }
@@ -129,7 +134,7 @@ const Room: React.FC<RoomProps> = ({
     [
       participants,
       user,
-      usersById,
+      worldUsersById,
       hostUid,
       setSelectedUserProfile,
       removeParticipant,
