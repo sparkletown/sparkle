@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
 
 import { AnyVenue } from "types/Firestore";
 
@@ -16,7 +16,6 @@ export const useVenueAccess = (
   venue?: WithId<AnyVenue>,
   onDenyAccess?: () => void
 ) => {
-  const [isCheckingAccess, setCheckingAccess] = useState<boolean>(false);
   const { user } = useUser();
 
   const denyAccess = useCallback(() => {
@@ -27,10 +26,9 @@ export const useVenueAccess = (
   }, [onDenyAccess, venue]);
 
   const checkVenueAccess = useCallback(async () => {
-    if (!venue || isCheckingAccess) return;
+    if (!venue) return;
 
     if (venue.access && user) {
-      setCheckingAccess(true);
       const token = getLocalStorageToken(venue.id) ?? undefined;
 
       await checkAccess({
@@ -46,11 +44,9 @@ export const useVenueAccess = (
           denyAccess();
         });
     }
-  }, [denyAccess, isCheckingAccess, user, venue]);
+  }, [denyAccess, user, venue]);
 
   useEffect(() => {
     checkVenueAccess();
   }, [checkVenueAccess]);
-
-  return isCheckingAccess;
 };
