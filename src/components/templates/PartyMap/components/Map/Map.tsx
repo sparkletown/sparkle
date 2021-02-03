@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
+import {
+  DEFAULT_MAP_BACKGROUND,
+  MAXIMUM_COLUMNS,
+  MINIMUM_COLUMNS,
+} from "settings";
 
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
@@ -56,8 +60,8 @@ export const Map: React.FC<MapProps> = ({
   const showGrid = venue.showGrid;
 
   const totalColumns = Math.max(
-    5,
-    Math.min(100, venue.columns ?? DEFAULT_COLUMNS)
+    MINIMUM_COLUMNS,
+    Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
   );
   const [totalRows, setTotalRows] = useState<number>(0);
 

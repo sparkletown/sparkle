@@ -13,6 +13,8 @@ import {
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
+  MINIMUM_COLUMNS,
+  MAXIMUM_COLUMNS,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -89,9 +91,11 @@ export const validationSchema = Yup.object()
     columns: Yup.number().when("showGrid", {
       is: true,
       then: Yup.number()
-        .required("The columns need to be between 5 and 100.")
-        .min(5)
-        .max(100),
+        .required(
+          `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        )
+        .min(MINIMUM_COLUMNS)
+        .max(MAXIMUM_COLUMNS),
     }),
 
     mapBackgroundImageUrl: Yup.string().when(
