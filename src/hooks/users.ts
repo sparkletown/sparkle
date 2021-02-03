@@ -132,23 +132,3 @@ export const useRecentVenueUsers = () => {
     isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
   };
 };
-
-export const useRecentRoomUsers = (roomTitle?: string) => {
-  const venueId = useVenueId();
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
-
-  const locationName =
-    currentVenue?.name && roomTitle
-      ? `${currentVenue.name}/${roomTitle}`
-      : undefined;
-
-  const {
-    recentLocationUsers,
-    isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(locationName);
-
-  return {
-    recentRoomUsers: recentLocationUsers,
-    isRecentRoomUsersLoaded: isRecentLocationUsersLoaded,
-  };
-};

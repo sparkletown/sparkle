@@ -4,7 +4,6 @@ import { SPARKLE_ICON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Room } from "types/rooms";
 import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
@@ -14,16 +13,16 @@ import { useDispatch } from "hooks/useDispatch";
 import "./RoomModalOngoingEvent.scss";
 
 interface RoomModalOngoingEventProps {
-  room: Room;
+  roomTitle: string;
   roomEvents: VenueEvent[];
-  enterRoom: () => void;
+  onRoomEnter: () => void;
   joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
-  room,
+  roomTitle,
   roomEvents,
-  enterRoom,
+  onRoomEnter,
   joinButtonText,
 }) => {
   const dispatch = useDispatch();
@@ -78,8 +77,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         onMouseOver={triggerAttendance}
         onMouseOut={clearAttendance}
         className="btn btn-primary room-entry-button"
-        onClick={enterRoom}
-        id={`enter-room-in-ongoing-event-card-${room.title}`}
+        onClick={onRoomEnter}
       >
         {joinButtonText ?? "Enter"}
       </button>
