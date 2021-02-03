@@ -7,7 +7,7 @@ import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
-import { Venue } from "types/Venue";
+import { Venue } from "types/venues";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
@@ -30,7 +30,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { usePartygoers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -70,7 +70,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
-  const venueUsers = usePartygoers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -239,7 +239,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
         <UserList
           isAudioEffectDisabled={isAudioEffectDisabled}
-          users={venueUsers}
+          users={recentVenueUsers}
           activity={venue?.activity ?? "here"}
           disableSeeAll={false}
         />

@@ -2,25 +2,25 @@ import React, { useCallback } from "react";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { CampRoomData } from "types/CampRoomData";
-import { VenueEvent } from "types/VenueEvent";
+import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
-import { getRoomUrl, openUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import "./RoomModalOngoingEvent.scss";
+
 interface RoomModalOngoingEventProps {
-  room: CampRoomData;
+  roomTitle: string;
   roomEvents: VenueEvent[];
-  enterRoom: () => void;
+  onRoomEnter: () => void;
   joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
-  room,
+  roomTitle,
   roomEvents,
-  enterRoom,
+  onRoomEnter,
   joinButtonText,
 }) => {
   const dispatch = useDispatch();
@@ -29,11 +29,6 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
     roomEvents &&
     roomEvents.length > 0 &&
     (currentEvent ? currentEvent : roomEvents[0]);
-
-  const joinRoom = useCallback(() => {
-    enterRoom();
-    openUrl(getRoomUrl(room.url));
-  }, [enterRoom, room.url]);
 
   const triggerAttendance = useCallback(() => {
     dispatch(retainAttendance(true));
@@ -80,8 +75,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         onMouseOver={triggerAttendance}
         onMouseOut={clearAttendance}
         className="btn btn-primary room-entry-button"
-        onClick={joinRoom}
-        id={`enter-room-in-ongoing-event-card-${room.title}`}
+        onClick={onRoomEnter}
       >
         {joinButtonText ?? "Enter"}
       </button>

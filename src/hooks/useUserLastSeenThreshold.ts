@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
-import { getHoursAgoInSeconds } from "utils/time";
+import { getHoursAgoInMilliseconds } from "utils/time";
 import { useInterval } from "./useInterval";
 
-const calcDefaultThreshold = () => getHoursAgoInSeconds(3);
+const calcDefaultThreshold = () => getHoursAgoInMilliseconds(3);
 
 export const useUserLastSeenThreshold = (
   calcThreshold = calcDefaultThreshold

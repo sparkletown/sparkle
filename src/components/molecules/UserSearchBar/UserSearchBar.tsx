@@ -1,7 +1,7 @@
 import UserProfileModal from "components/organisms/UserProfileModal";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
-import { usePartygoers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
@@ -18,7 +18,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
     WithId<User>
   >();
 
-  const partygoers = usePartygoers();
+  const { worldUsers } = useWorldUsers();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -26,12 +26,12 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
       return;
     }
 
-    const filteredPartygoers = partygoers.filter((partygoer) =>
+    const filteredPartygoers = worldUsers.filter((partygoer) =>
       partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
     );
 
     setSearchResults(filteredPartygoers);
-  }, [partygoers, searchQuery]);
+  }, [worldUsers, searchQuery]);
 
   const numberOfSearchResults = searchResults.length;
 

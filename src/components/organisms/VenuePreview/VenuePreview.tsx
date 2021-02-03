@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
-import JazzBar from "components/templates/Jazzbar";
+
+import { VenueTemplate } from "types/venues";
+
+import { createJazzbar } from "utils/venue";
+
+import { Jazzbar } from "components/templates/Jazzbar";
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
-import { createJazzbar } from "types/JazzbarVenue";
-import { VenueTemplate } from "types/VenueTemplate";
 
 interface PropsType {
   values: FormValues;
@@ -14,7 +17,7 @@ const VenuePreview: React.FunctionComponent<PropsType> = ({ values }) => {
   let venueComponent;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      venueComponent = <JazzBar venue={venue} />;
+      venueComponent = <Jazzbar venue={venue} />;
       break;
     // case VenueTemplate.friendship:
     //   return <>Friendship Page not supported</>;

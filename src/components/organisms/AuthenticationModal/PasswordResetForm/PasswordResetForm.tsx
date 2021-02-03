@@ -15,9 +15,13 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   closeAuthenticationModal,
 }) => {
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    PasswordResetFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+  } = useForm<PasswordResetFormData>({
     mode: "onChange",
   });
 

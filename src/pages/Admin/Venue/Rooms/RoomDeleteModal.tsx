@@ -2,14 +2,13 @@ import React, { useState, useCallback } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import { CampRoomData } from "types/CampRoomData";
-import { RoomData_v2 } from "types/RoomData";
+import { Room, RoomData_v2 } from "types/rooms";
 
 import "./RoomDeleteModal.scss";
 
 interface PropsType {
   venueId: string;
-  room: CampRoomData | RoomData_v2;
+  room: Room | RoomData_v2;
   show: boolean;
   onHide: () => void;
   onDelete?: () => void;
