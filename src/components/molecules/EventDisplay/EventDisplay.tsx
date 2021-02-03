@@ -11,17 +11,17 @@ import { useRoom } from "hooks/useRoom";
 
 import "./EventDisplay.scss";
 
-interface EventDisplayProps {
+export type EventDisplayProps = {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
-}
+};
 
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const eventRoomTitle = event.room;
 
   const room = useMemo(
     () => venue?.rooms?.find((room) => room.title === eventRoomTitle),
-    [eventRoomTitle]
+    [venue, eventRoomTitle]
   );
 
   const buttonText = `${event.room ?? "Enter"} ${venue && `- ${venue.name}`}`;
@@ -32,11 +32,11 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
       getCurrentTimeInUTCSeconds();
 
   const containerClasses = classNames("schedule-event-container", {
-    "schedule-event-container_live": isLiveEvent,
+    "schedule-event-container--live": isLiveEvent,
   });
 
   return (
-    <div key={event.name} className={containerClasses}>
+    <div className={containerClasses}>
       <div className="schedule-event-time">
         <div className="schedule-event-time-start">
           {formatHourAndMinute(event.start_utc_seconds)}
@@ -54,8 +54,10 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          {event.room && room ? (
-            <EnterRoomButton room={room as Room}>{buttonText}</EnterRoomButton>
+          {event.room && room && venue ? (
+            <EnterRoomButton room={room as Room} currentVenue={venue}>
+              {buttonText}
+            </EnterRoomButton>
           ) : (
             <div>{buttonText}</div>
           )}
@@ -67,13 +69,15 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
 
 type EnterRoomButtonProps = {
   room: Room;
+  currentVenue: WithId<AnyVenue>;
 };
 
 const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
   room,
+  currentVenue,
   children,
 }) => {
-  const { enterRoom } = useRoom(room);
+  const { enterRoom } = useRoom(room, currentVenue.name);
 
   return <div onClick={enterRoom}>{children}</div>;
 };

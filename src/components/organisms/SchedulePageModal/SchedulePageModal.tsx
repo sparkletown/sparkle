@@ -94,7 +94,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     () =>
       orderedEvents[date]?.events.map((event) => (
         <EventDisplay
-          key={event.id}
+          key={event.id ?? event.name}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />

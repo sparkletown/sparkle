@@ -53,6 +53,7 @@ export const PartyMap: React.FC = () => {
 
       <RoomModal
         room={selectedRoom}
+        currentVenue={currentVenue}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />

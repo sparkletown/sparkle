@@ -1,8 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { UserExperienceData } from "types/User";
-
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userUid: string;

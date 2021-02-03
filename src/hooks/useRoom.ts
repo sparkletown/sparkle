@@ -5,12 +5,13 @@ import { Room } from "types/rooms";
 import { enterExternalRoom } from "utils/userLocation";
 import { orderedVenuesSelector } from "utils/selectors";
 import { enterVenue } from "utils/url";
+import { getExternalRoomSlug } from "utils/room";
 
 import { useSelector } from "hooks/useSelector";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-export const useRoom = (room: Room) => {
+export const useRoom = (room: Room, currentVenueName: string) => {
   const { user } = useUser();
   const userId = user?.uid;
 
@@ -22,15 +23,21 @@ export const useRoom = (room: Room) => {
     () => venues?.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
     [roomUrl, venues]
   );
-  const roomId = roomVenue ? roomVenue.name : room.url;
+
+  // @debt we should replace externalRoomSlug with preferrably room id
+  const roomId = roomVenue
+    ? roomVenue.name
+    : getExternalRoomSlug({ roomTitle: room.title, currentVenueName });
 
   const { recentLocationUsers } = useRecentLocationUsers(roomId);
 
   const enterRoom = useCallback(() => {
     if (!userId) return;
 
-    roomVenue ? enterVenue(roomVenue.id) : enterExternalRoom({ userId, room });
-  }, [room, userId, roomVenue]);
+    roomVenue
+      ? enterVenue(roomVenue.id)
+      : enterExternalRoom({ userId, roomUrl, roomId });
+  }, [roomId, roomUrl, userId, roomVenue]);
 
   return {
     enterRoom,

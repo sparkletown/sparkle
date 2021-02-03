@@ -83,9 +83,11 @@ const NavSearchBar = () => {
     <div className="nav-search-links">
       <div className="nav-search-icon" />
       <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
+
       {isTruthy(searchQuery) && (
         <div className="nav-search-close-icon" onClick={clearSearchQuery} />
       )}
+
       {numberOfSearchResults > 0 && (
         <div className="nav-search-results">
           <div className="nav-search-result-number">
@@ -146,14 +148,18 @@ const NavSearchBar = () => {
           })}
         </div>
       )}
+
+      {/* @debt use only one UserProfileModal per project */}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
+      {/* @debt use only one RoomModal per project */}
       <RoomModal
         show={hasSelectedRoom}
         room={selectedRoom}
+        currentVenue={venue}
         onHide={() => setSelectedRoom(undefined)}
       />
     </div>

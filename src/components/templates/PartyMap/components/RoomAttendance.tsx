@@ -18,7 +18,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   venue,
   room,
 }) => {
-  const { recentRoomUsers } = useRoom(room);
+  const { recentRoomUsers } = useRoom(room, venue.name);
 
   const numberOfRecentRoomUsers = recentRoomUsers.length;
   const numberOfExtraUsersInRoom = Math.max(

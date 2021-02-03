@@ -43,7 +43,11 @@ const LiveSchedule: FC = () => {
     if (!hasEvents) return null;
 
     return events.map((event) => (
-      <EventDisplay venue={relatedVenueFor(event)} event={event} />
+      <EventDisplay
+        key={event.id ?? event.name}
+        venue={relatedVenueFor(event)}
+        event={event}
+      />
     ));
   }, [events, hasEvents, relatedVenueFor]);
 

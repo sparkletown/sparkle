@@ -16,7 +16,7 @@ import { WithId } from "utils/id";
 // import { openRoomWithCounting } from "utils/userLocation";
 import { currentVenueSelector } from "utils/selectors";
 
-import { RoomModal } from "./RoomModal";
+// import { RoomModal } from "./RoomModal";
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
@@ -33,7 +33,7 @@ export const AvatarGrid = () => {
   const venue = useSelector(currentVenueSelector);
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
+  // const [isRoomModalOpen, setIsRoomModalOpen] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<AvatarGridRoom | undefined>(
     undefined
   );
@@ -71,16 +71,13 @@ export const AvatarGrid = () => {
     partygoersBySeat[row][column] = user;
   });
 
-  const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
-      // makeUpdateUserGridLocation({
-      //   venueId,
-      //   userUid: user?.uid,
-      //   profileData: profile?.data,
-      // })(row, column);
-    },
-    [profile, user, venueId]
-  );
+  const takeSeat = useCallback((row: number | null, column: number | null) => {
+    // makeUpdateUserGridLocation({
+    //   venueId,
+    //   userUid: user?.uid,
+    //   profileData: profile?.data,
+    // })(row, column);
+  }, []);
 
   const onSeatClick = (
     row: number,
@@ -99,7 +96,7 @@ export const AvatarGrid = () => {
         column <= room.column + room.width - 1
       ) {
         setSelectedRoom(room);
-        setIsRoomModalOpen(true);
+        // setIsRoomModalOpen(true);
       } else {
         if (isHittingRoom && selectedRoom) {
           setSelectedRoom(undefined);
@@ -387,7 +384,7 @@ export const AvatarGrid = () => {
                   <FontAwesomeIcon
                     onClick={() => {
                       setSelectedRoom(room);
-                      setIsRoomModalOpen(true);
+                      // setIsRoomModalOpen(true);
                     }}
                     className={"search-icon"}
                     icon={faInfoCircle}
@@ -502,7 +499,7 @@ export const AvatarGrid = () => {
           defaultShow={false}
         />
       </div>
-      <RoomModal
+      {/* <RoomModal
         show={isRoomModalOpen}
         room={selectedRoom}
         miniAvatars={venue.miniAvatars}
@@ -510,7 +507,7 @@ export const AvatarGrid = () => {
           setSelectedRoom(undefined);
           setIsRoomModalOpen(false);
         }}
-      />
+      /> */}
     </>
   );
 };

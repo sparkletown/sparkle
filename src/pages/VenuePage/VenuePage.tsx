@@ -19,7 +19,7 @@ import {
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
   clearLocationData,
-  setNewLocationData,
+  setLocationData,
   updateCurrentLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
@@ -106,13 +106,13 @@ const VenuePage: React.FC = () => {
   useEffect(() => {
     if (!userId || !venueName) return;
 
-    setNewLocationData({ userId, locationName: venueName });
+    setLocationData({ userId, locationName: venueName });
   }, [userId, venueName]);
 
   useEffect(() => {
     if (!userId) return;
 
-    const onBeforeUnloadHandler = () => clearLocationData({ userId });
+    const onBeforeUnloadHandler = () => clearLocationData(userId);
 
     // NOTE: Clear user location on page close
     window.addEventListener("beforeunload", onBeforeUnloadHandler);
@@ -124,19 +124,19 @@ const VenuePage: React.FC = () => {
   useEffect(() => {
     if (
       !venueId ||
-      !user ||
+      !userId ||
       !profile ||
       profile?.enteredVenueIds?.includes(venueId)
     ) {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, user?.uid, venueId);
-  }, [profile, user, venueId]);
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
+  }, [profile, userId, venueId]);
 
   // NOTE: User's timespent updates
 
-  useUpdateTimespentPeriodically(venueName, userId);
+  useUpdateTimespentPeriodically({ locationName: venueName, userId });
 
   // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();

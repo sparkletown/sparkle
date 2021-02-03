@@ -12,7 +12,7 @@ import { makeUpdateUserGridLocation } from "api/profile";
 import { hasElements, isTruthy } from "utils/types";
 import { makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { setNewLocationData } from "utils/userLocation";
+import { setLocationData } from "utils/userLocation";
 
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -90,7 +90,7 @@ export const Map: React.FC<MapProps> = ({
         userUid,
       })(row, column);
 
-      setNewLocationData({ userId: userUid, locationName: venueName });
+      setLocationData({ userId: userUid, locationName: venueName });
     },
     [userUid, venueId, venueName]
   );

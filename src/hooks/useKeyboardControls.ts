@@ -4,14 +4,12 @@ import { ReactHook } from "types/utility";
 
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";
-import { useRoom } from "hooks/useRoom";
 
 export const MovementKeys = {
   up: ["up", "w"],
   down: ["down", "s"],
   left: ["left", "a"],
   right: ["right", "d"],
-  enter: ["enter"],
 };
 
 interface UseKeyboardControlsProps {
@@ -34,15 +32,6 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
 }) => {
   const { profile } = useUser();
   const { row, column } = profile?.data?.[venueId] ?? {};
-
-  const { enterRoom } = useRoom(room);
-
-  useMousetrap({
-    keys: "enter",
-    callback: enterRoom,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   /**
    * moveUp

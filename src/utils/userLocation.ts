@@ -1,19 +1,16 @@
 import firebase from "firebase/app";
 
-import { AnyRoom } from "types/rooms";
-
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
+
+import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
 import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl } from "./url";
 
-const LOCATION_INCREMENT_SECONDS = 10;
-const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
+export type LocationData = Record<string, number>;
 
-type LocationData = Record<string, number>;
-
-type UpdateLocationDataProps = {
+export type UpdateLocationDataProps = {
   userId: string;
   newLocationData: LocationData;
 };
@@ -28,16 +25,15 @@ export const updateLocationData = ({
   });
 };
 
-type SetNewLocationDataProps = {
+export type SetLocationDataProps = {
   userId: string;
   locationName: string;
-  lastSeenIn?: LocationData;
 };
 
-export const setNewLocationData = ({
+export const setLocationData = ({
   userId,
   locationName,
-}: SetNewLocationDataProps) => {
+}: SetLocationDataProps) => {
   updateLocationData({
     userId,
     newLocationData: {
@@ -46,7 +42,7 @@ export const setNewLocationData = ({
   });
 };
 
-type UpdateCurrentLocationDataProps = {
+export type UpdateCurrentLocationDataProps = {
   userId: string;
   profileLocationData: LocationData;
 };
@@ -63,44 +59,54 @@ export const updateCurrentLocationData = ({
   });
 };
 
-type ClearLocationData = {
-  userId: string;
-};
-
-export const clearLocationData = ({ userId }: ClearLocationData) => {
+export const clearLocationData = (userId: string) => {
   updateLocationData({ userId, newLocationData: {} });
 };
 
-type EnterExternalRoomProps = {
+export type EnterExternalRoomProps = {
   userId: string;
-  room: AnyRoom;
+  roomUrl: string;
+  roomId: string;
 };
 
-export const enterExternalRoom = ({ userId, room }: EnterExternalRoomProps) => {
-  setNewLocationData({
+export const enterExternalRoom = ({
+  userId,
+  roomId,
+  roomUrl,
+}: EnterExternalRoomProps) => {
+  setLocationData({
     userId,
-    locationName: room.url,
+    locationName: roomId,
   });
 
-  openRoomUrl(room.url);
+  openRoomUrl(roomUrl);
 };
 
-export const useUpdateTimespentPeriodically = (
-  roomName: string,
-  userId?: string
-) => {
-  const shouldUseInterval = userId && roomName;
+export type UseUpdateTimespentPeriodicallyProps = {
+  locationName: string;
+  userId?: string;
+};
+
+// @dept I don't think this functinality works correctly, since we only log `internal venues` in this piece of code
+// Could be also beneficial to log external rooms' timespent
+export const useUpdateTimespentPeriodically = ({
+  locationName,
+  userId,
+}: UseUpdateTimespentPeriodicallyProps) => {
+  const shouldUseInterval = userId && locationName;
 
   useInterval(
     () => {
-      // @debt time spent is currently counted multiple time if multiple tabs are open
-      if (!userId || !roomName) return;
+      // @debt time spent is currently counted multiple times if multiple tabs are open
+      if (!userId || !locationName) return;
 
       const firestore = firebase.firestore();
-      const doc = `users/${userId}/visits/${roomName}`;
 
       return firestore
-        .doc(doc)
+        .collection("users")
+        .doc(userId)
+        .collection("visits")
+        .doc(locationName)
         .update({
           timeSpent: firebase.firestore.FieldValue.increment(
             LOCATION_INCREMENT_SECONDS
@@ -112,7 +118,12 @@ export const useUpdateTimespentPeriodically = (
             and so we are defaulting it to LOCATION_INCREMENT_SECONDS
             since that's how often this code runs
           */
-          firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
+          firestore
+            .collection("users")
+            .doc(userId)
+            .collection("visits")
+            .doc(locationName)
+            .set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
     },
     shouldUseInterval ? LOCATION_INCREMENT_MS : undefined
