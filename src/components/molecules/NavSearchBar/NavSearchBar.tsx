@@ -149,13 +149,13 @@ const NavSearchBar = () => {
         </div>
       )}
 
-      {/* @debt use only one UserProfileModal per project */}
+      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
-      {/* @debt use only one RoomModal per project */}
+      {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
         show={hasSelectedRoom}
         room={selectedRoom}
