@@ -22,7 +22,7 @@ const checkIsValidToken = async (venueId, uid, token) => {
         return false;
       }
 
-      if (Object.keys(granted).includes(token)) {
+      if (granted[token]) {
         // @debt Add timelimit, concept of token expiration.
         const isTokenChecked = granted[token].usedAt;
 
@@ -148,11 +148,11 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     return { token: data.token };
   }
 
-  const isPasswordValid =
-    data.password && (await isValidPassword(data.venueId, data.password));
-  const isEmailValid =
-    data.email && (await isValidEmail(data.venueId, data.email));
-  const isCodeValid = data.code && (await isValidCode(data.venueId, data.code));
+  const [isPasswordValid, isEmailValid, isCodeValid] = Promise.all([
+    isValidPassword(data.venueId, data.password),
+    isValidEmail(data.venueId, data.email),
+    isValidCode(data.venueId, data.code),
+  ]);
 
   if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(

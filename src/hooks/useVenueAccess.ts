@@ -42,7 +42,7 @@ export const useVenueAccess = (
             denyAccess();
           }
         })
-        .catch((e) => {
+        .catch(() => {
           denyAccess();
         });
     }
