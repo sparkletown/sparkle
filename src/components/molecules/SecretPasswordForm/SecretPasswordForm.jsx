@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { venueEntranceUrl } from "utils/url";
 import { checkAccess, setLocalStorageToken } from "utils/localStorage";
+import { isTruthy } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";
 
@@ -12,36 +13,38 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const venueId = useVenueId();
 
-  const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();
   const [password, setPassword] = useState();
   const [message, setMessage] = useState();
 
   function passwordChanged(e) {
     setPassword(e.target.value);
-    setInvalidPassword(false);
+    setMessage("");
     setError(false);
   }
 
   const passwordSubmitted = useCallback(
     async (e) => {
       e.preventDefault();
-      setInvalidPassword(false);
       setMessage("Checking password...");
 
-      try {
-        const result = await checkAccess({
-          venueId,
-          password,
+      await checkAccess({
+        venueId,
+        password,
+      })
+        .then((result) => {
+          if (isTruthy(result?.data?.token)) {
+            setLocalStorageToken(venueId, result.data.token);
+            history.push(venueEntranceUrl(venueId));
+          } else {
+            setMessage(`Wrong password!`);
+          }
+        })
+        .catch(() => {
+          setMessage(`Password error: ${error.toString()}`);
         });
-        setLocalStorageToken(venueId, result.data.token);
-        history.push(venueEntranceUrl(venueId));
-      } catch (error) {
-        setInvalidPassword(true);
-        setMessage(`Password error: ${error.toString()}`);
-      }
     },
-    [history, password, venueId]
+    [error, history, password, venueId]
   );
 
   return (
@@ -51,9 +54,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           Got an invite? Join in with the secret password
         </p>
         <input
-          className={
-            "secret-password-input " + (invalidPassword ? " is-invalid" : "")
-          }
+          className="secret-password-input"
           required
           placeholder="password"
           autoFocus
@@ -67,9 +68,6 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         />
         <div className="form-group">
           {message && <small>{message}</small>}
-          {invalidPassword && (
-            <small className="error-message">Wrong password!</small>
-          )}
           {error && <small className="error-message">An error occured</small>}
         </div>
       </form>

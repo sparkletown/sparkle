@@ -22,22 +22,19 @@ const checkIsValidToken = async (venueId, uid, token) => {
         return false;
       }
 
-      if (granted[token]) {
+      // @debt Add additional password check to see if it has changed.
+      const grantedToken = granted.get(token);
+      if (grantedToken) {
         // @debt Add timelimit, concept of token expiration.
-        const isTokenChecked = granted[token].usedAt;
-
         const newToken = {
-          ...token,
-          usedAt: Date.now(),
+          [token]: {
+            ...grantedToken,
+            usedAt: Date.now(),
+          },
         };
 
         // @debt Do this only when isTokenChecked is expired or doesn't exist
-        transaction.update(
-          accessRef,
-          admin.firestore.FieldValue.arrayUnion(
-            isTokenChecked ? token : newToken
-          )
-        );
+        transaction.update(accessRef, newToken);
 
         return true;
       }
@@ -148,7 +145,7 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     return { token: data.token };
   }
 
-  const [isPasswordValid, isEmailValid, isCodeValid] = Promise.all([
+  const [isPasswordValid, isEmailValid, isCodeValid] = await Promise.all([
     isValidPassword(data.venueId, data.password),
     isValidEmail(data.venueId, data.email),
     isValidCode(data.venueId, data.code),
