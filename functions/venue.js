@@ -17,9 +17,13 @@ const VenueTemplate = {
   preplaya: "preplaya",
   playa: "playa",
   audience: "audience",
-  avatargrid: "avatargrid",
   firebarrel: "firebarrel",
   conversationspace: "conversationspace",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  avatargrid: "avatargrid",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -163,7 +167,7 @@ const createVenueData_v2 = (data, context) => ({
   },
   owners: [context.auth.token.user_id],
   showGrid: data.showGrid || false,
-  columns: data.columns || 1,
+  ...(showGrid && { columns: data.columns }),
   template: data.template || VenueTemplate.partymap,
   rooms: [],
 });

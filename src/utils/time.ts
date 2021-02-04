@@ -104,17 +104,6 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
   event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
   ONE_HOUR_IN_SECONDS;
 
-export function formatMinute(
-  minute: number | null | undefined,
-  startUtcSeconds: number
-) {
-  if (minute === null || minute === undefined) {
-    return "(unknown)";
-  }
-  const utcSeconds = startUtcSeconds + minute * ONE_MINUTE_IN_SECONDS;
-  return formatUtcSeconds(utcSeconds);
-}
-
 export function formatDate(utcSeconds: number) {
   return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
 }
