@@ -2,16 +2,19 @@ import React from "react";
 
 import { Button, Form } from "react-bootstrap";
 import { useDynamicInput } from "hooks/useDynamicInput";
+import { EntranceStepConfig } from "types/EntranceStep";
 
 interface EntranceButtonInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  editing?: EntranceStepConfig[];
 }
 const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
   fieldName,
   register,
+  editing,
 }) => {
-  const { indexes, add, remove, clear } = useDynamicInput();
+  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderButtonInput = (index: number) => {
     const baseName = `${fieldName}[${index}]`;
@@ -62,18 +65,28 @@ const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
   );
 };
 
+type EntranceErrorTypes = {
+  videoUrl: {
+    message: string;
+  };
+};
+
 interface EntranceInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   showTitle?: boolean;
+  editing?: EntranceStepConfig[];
+  errors?: Record<number, EntranceErrorTypes>;
 }
 
 const EntranceInput: React.FC<EntranceInputProps> = ({
   fieldName,
   register,
   showTitle = true,
+  editing,
+  errors,
 }) => {
-  const { indexes, add, remove, clear } = useDynamicInput();
+  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderEntranceInput = (index: number) => {
     const baseName = `${fieldName}[${index}]`;
@@ -101,6 +114,9 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
           />
           <Form.Label>Video URL</Form.Label>
           <Form.Control ref={register} name={videoUrl} custom />
+          {errors?.[index]?.videoUrl && (
+            <div className="input-error">{errors[index].videoUrl.message}</div>
+          )}
         </fieldset>
 
         <Button onClick={remove(index)} variant="secondary">
@@ -119,7 +135,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
         <Button onClick={add}>Add entrance step</Button>
         {indexes.length > 0 && (
           <Button onClick={clear} variant="secondary">
-            Remvoe all entrance steps
+            Remove all entrance steps
           </Button>
         )}
       </div>

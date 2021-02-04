@@ -5,7 +5,7 @@ import { ReactHook } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { MapRow } from "components/molecules/MapRow";
+import { MapCell } from "components/molecules/MapCell";
 
 interface UseMapGrid {
   showGrid?: boolean;
@@ -46,7 +46,7 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
             const isMe = seatedPartygoer?.id === userUid;
 
             return (
-              <MapRow
+              <MapCell
                 key={`row${rowIndex}`}
                 row={row}
                 column={column}

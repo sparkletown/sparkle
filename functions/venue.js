@@ -652,8 +652,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  } else {
-    updated.mapBackgroundImageUrl = "";
   }
 
   if (data.roomVisibility) {
