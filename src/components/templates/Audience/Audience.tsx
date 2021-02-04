@@ -253,6 +253,7 @@ export const Audience: React.FunctionComponent = () => {
     [columnsForSizedAuditorium, rowsForSizedAuditorium]
   );
 
+  // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     const takeSeat = (row: number | null, column: number | null) => {
       if (!venueId || !userUid) return;
