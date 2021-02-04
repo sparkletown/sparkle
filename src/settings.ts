@@ -428,7 +428,6 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
-  VenueTemplate.avatargrid,
 ];
 
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
@@ -438,7 +437,6 @@ export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
-  VenueTemplate.avatargrid,
   VenueTemplate.themecamp,
   VenueTemplate.artpiece,
 ];
@@ -452,7 +450,6 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
-  VenueTemplate.avatargrid,
 ];
 
 export const FIREBASE_CONFIG = {

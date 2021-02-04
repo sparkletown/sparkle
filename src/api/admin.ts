@@ -1,6 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
-import { AnyRoom, Room } from "types/rooms";
+import { Room } from "types/rooms";
 import {
   VenueEvent,
   VenuePlacement,
@@ -114,7 +114,7 @@ export interface VenueInput_v2
   bannerImageUrl?: string;
   logoImageFile?: FileList;
   logoImageUrl?: string;
-  rooms?: AnyRoom[];
+  rooms?: Room[];
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;

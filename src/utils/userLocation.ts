@@ -1,6 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 
-import { AnyRoom } from "types/rooms";
+import { Room } from "types/rooms";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
@@ -42,7 +42,7 @@ export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 type EnterExternalRoomProps = {
   userId: string;
-  room: AnyRoom;
+  room: Room;
 };
 
 export const enterExternalRoom = ({ userId, room }: EnterExternalRoomProps) => {
