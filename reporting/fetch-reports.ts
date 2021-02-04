@@ -4,7 +4,7 @@
 //   https://nodejs.org/docs/latest-v14.x/api/fs.html#fs_promise_example
 // import { readFile, writeFile } from "fs/promises";
 import { promises as fsPromises } from "fs";
-import puppeteer from "puppeteer";
+import puppeteer, { Page } from "puppeteer";
 
 import { makeScriptUsage } from "../scripts/lib/helpers";
 
@@ -21,7 +21,7 @@ const to = "10/08/2020";
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = true;
+const newLogin = false;
 
 // The correct URL for accessing the reports is different for admin users who can
 // access reports for all accounts under the zoom account. If you are trying to get
@@ -31,6 +31,10 @@ const isAdmin = true;
 // If the process crashes halfway through, set this to the page it was on to skip
 // some pages - and hopefully avoid another crash.
 const resumeFromPage = 1;
+
+// If this is set, then the script will attempt to enable the 'Add tracking field to columns -> Event'
+// column and then only download .csv reports that match the string defined here.
+const desiredEventTrackingFieldValue: string | undefined = undefined;
 
 // Login credentials (only needed if newLogin is true)
 const username: string = "";
@@ -43,6 +47,27 @@ const password: string = "";
 const reportPageUrl = isAdmin
   ? `https://zoom.us/account/report/user?from=${from}&to=${to}`
   : `https://zoom.us/account/my/report?from=${from}&to=${to}`;
+
+const loginEmailFieldSelector = ".form > #login-form #email";
+const loginPasswordFieldSelector = ".form > #login-form #password";
+const loginButtonSelector =
+  "#login-form > .form-group > .controls > .signin > .btn";
+
+const numberOfReportsTotalSelector = "#meetingList span[name=totalRecords]";
+const addTrackingFieldToColumnsButtonSelector =
+  "#meetingList #trackfieldDropdownMenu > button";
+const addEventTrackingFieldColumnCheckboxSelector =
+  "#meetingList #trackfieldDropdownMenu label[alt=Event] > input[type=checkbox]";
+const nextPageLinkSelector =
+  "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2) > a";
+
+const meetingListTableRowsSelector = "#meeting_list > tbody > tr";
+
+const modalExportWithMeetingDataSelector =
+  ".modal-dialog #contentDiv #withMeetingHeaderDiv input#withMeetingHeader";
+const modalExportButtonSelector =
+  ".modal-dialog #contentDiv button#btnExportParticipants";
+const modalMeetingInfoSelector = ".modal-dialog #contentDiv #meetingInfo";
 
 const COOKIES_PATH = "./cookies.json";
 
@@ -60,9 +85,7 @@ if (confirmationCheck !== CONFIRM_VALUE) {
   usage();
 }
 
-const isNewLoginValid = newLogin && username !== "" && password !== "";
-
-if (!isNewLoginValid) {
+if (newLogin && username === "" && password === "") {
   console.error("Error: username/password are required when newLogin=true.");
   process.exit(1);
 }
@@ -77,14 +100,57 @@ const keypress = async () => {
   );
 };
 
+const makeHandleLogin = (page: Page) => async (
+  username: string,
+  password: string
+) => {
+  // Enter email address
+  await page.waitForSelector(loginEmailFieldSelector);
+  await page.type(loginEmailFieldSelector, username);
+
+  // Enter password
+  await page.type(loginPasswordFieldSelector, password);
+
+  // Click login
+  await page.waitForSelector(loginButtonSelector);
+  await page.click(loginButtonSelector);
+
+  await page.waitForNavigation();
+};
+
+const makeGetNumberOfReportsTotal = (
+  page: Page
+) => async (): Promise<string> => {
+  await page.waitForSelector(numberOfReportsTotalSelector, {
+    visible: true,
+  });
+
+  const numberOfReportsTotal = await page.$eval(
+    numberOfReportsTotalSelector,
+    (el) => el.innerHTML
+  );
+  console.log(`Number of reports total: ${numberOfReportsTotal}`);
+
+  return numberOfReportsTotal;
+};
+
 // Log in to zoom, and download all participants reports from the above selected dates.
 (async () => {
   const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
 
-  const navigationPromise = page.waitForNavigation();
-
   await page.setViewport({ width: 1400, height: 900 });
+
+  // Setup our helpers
+  const handleLogin = makeHandleLogin(page);
+  const getNumberOfReportsTotal = makeGetNumberOfReportsTotal(page);
+
+  const waitForVisibleSelector = async (selector: string) =>
+    page.waitForSelector(selector, {
+      visible: true,
+    });
+
+  const navigationPromise = page.waitForNavigation();
 
   if (!newLogin) {
     console.log("Loading cookies");
@@ -96,22 +162,11 @@ const keypress = async () => {
     await page.setCookie(...cookies);
   }
 
+  console.log("Loading reports page");
   await page.goto(reportPageUrl);
 
-  await navigationPromise;
-
   if (newLogin) {
-    await page.waitForSelector(".form > #login-form #email");
-    await page.type(".form > #login-form #email", username);
-
-    await page.type(".form > #login-form #password", password);
-
-    await page.waitForSelector(
-      "#login-form > .form-group > .controls > .signin > .btn"
-    );
-    await page.click("#login-form > .form-group > .controls > .signin > .btn");
-
-    await navigationPromise;
+    await handleLogin(username, password);
   }
 
   console.log("Press any key to continue...");
@@ -125,52 +180,88 @@ const keypress = async () => {
 
   console.log("Beginning export");
 
+  await getNumberOfReportsTotal();
+
   let onLastPageAndExportedAll = false;
   let pageNum = 1;
+  let reportsDownloaded = 0;
   while (!onLastPageAndExportedAll) {
-    await page.waitForSelector("#meeting_list > tbody > tr");
-    const numberOfReports = (await page.$$("#meeting_list > tbody > tr"))
+    await page.waitForSelector(meetingListTableRowsSelector);
+
+    const numberOfReportsOnPage = (await page.$$(meetingListTableRowsSelector))
       .length;
-    console.log(`Number of reports on page ${pageNum}: ${numberOfReports}`);
+    console.log(
+      `Number of reports on page ${pageNum}: ${numberOfReportsOnPage}`
+    );
 
     await page.waitFor(2000);
 
     if (pageNum >= resumeFromPage) {
       let i = 1;
+      let shouldDownloadCsv = true;
 
-      while (i <= numberOfReports) {
-        console.log(`Page ${pageNum}: exporting report ${i}...`);
+      if (desiredEventTrackingFieldValue) {
+        // Click the 'Add tracking field to columns' button
+        await waitForVisibleSelector(addTrackingFieldToColumnsButtonSelector);
+        await page.click(addTrackingFieldToColumnsButtonSelector);
 
-        await page.waitForSelector(`#meeting_list > tbody > tr`, {
-          visible: true,
-        });
-
-        await page.waitForSelector(
-          `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`,
-          { visible: true }
+        // Select the 'Event' column
+        await waitForVisibleSelector(
+          addEventTrackingFieldColumnCheckboxSelector
         );
-        await page.click(
-          `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`
-        );
+        await page.click(addEventTrackingFieldColumnCheckboxSelector);
+      }
 
-        await page.waitForSelector(
-          "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input",
-          { visible: true }
-        );
-        await page.click(
-          "#contentDiv > .clearfix > div > #withMeetingHeaderDiv input"
-        );
+      while (i <= numberOfReportsOnPage) {
+        console.log(`Page ${pageNum}: row ${i}...`);
 
-        await page.waitFor(100);
+        await waitForVisibleSelector(meetingListTableRowsSelector);
 
-        await page.waitForSelector(
-          ".modal-body > #contentDiv #btnExportParticipants"
-        );
-        await page.click(".modal-body > #contentDiv #btnExportParticipants");
+        if (desiredEventTrackingFieldValue) {
+          // @debt use the id from the 'tracking field column checkbox' to match the correct td[data-column="XXX"] value
+          const eventFieldColumnSelector = `#meeting_list > tbody > tr:nth-child(${i}) > td.trackfieldcol`;
 
-        await page.mouse.click(10, 10);
+          await waitForVisibleSelector(eventFieldColumnSelector);
+          const event = await page.$eval(
+            eventFieldColumnSelector,
+            (el) => el.innerHTML
+          );
 
-        await page.waitFor(1000);
+          // Only download the CSV if the event matches what we want
+          shouldDownloadCsv =
+            event.trim() === desiredEventTrackingFieldValue.trim();
+
+          console.log(
+            "  Event:",
+            event,
+            `(matchesDesiredEventTrackingField=${shouldDownloadCsv})`
+          );
+        }
+
+        if (shouldDownloadCsv) {
+          console.log(`  Exporting report...`);
+
+          // Click the download link on this row
+          const participantsColumnLinkSelector = `#meeting_list > tbody > tr:nth-child(${i}) > .col6 > a`;
+          await waitForVisibleSelector(participantsColumnLinkSelector);
+          await page.click(participantsColumnLinkSelector);
+
+          // Select the 'export with meeting data' checkbox on the modal
+          await waitForVisibleSelector(modalExportWithMeetingDataSelector);
+          await page.click(modalExportWithMeetingDataSelector);
+          await waitForVisibleSelector(modalMeetingInfoSelector);
+
+          // Click the export button
+          await waitForVisibleSelector(modalExportButtonSelector);
+          await page.click(modalExportButtonSelector);
+
+          // ?Confirm the file download?
+          await page.mouse.click(10, 10);
+
+          await page.waitFor(1000);
+
+          reportsDownloaded += 1;
+        }
 
         i += 1;
       }
@@ -178,12 +269,8 @@ const keypress = async () => {
 
     console.log("Moving on to next page...");
 
-    await page.waitForSelector(
-      "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2) > a"
-    );
-    await page.click(
-      "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2) > a"
-    );
+    await page.waitForSelector(nextPageLinkSelector);
+    await page.click(nextPageLinkSelector);
 
     await navigationPromise;
 
@@ -194,8 +281,14 @@ const keypress = async () => {
 
     onLastPageAndExportedAll = nextButtonDisabled;
 
+    if (onLastPageAndExportedAll) {
+      console.log("Looks like that was the last page!");
+    }
+
     pageNum += 1;
   }
+
+  console.log("Reports Downloaded:", reportsDownloaded);
 
   console.log("Press any key to continue...");
   await keypress();
