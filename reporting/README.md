@@ -21,7 +21,7 @@ Below are the steps you need to take to make use of these scripts.
 3. Run the script:
 
 ```
-$ node fetch-reports.js
+$ ./fetch-reports.ts
 ```
 
 4. Puppeteer will pop up a Chrome browser with a login prompt; log in with the admin credentials for zoom. You may be able to find these in a password store; at Sparkle, we keep them in 1Password.
