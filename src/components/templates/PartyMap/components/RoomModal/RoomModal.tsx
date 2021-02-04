@@ -12,7 +12,6 @@ import {
 } from "utils/time";
 
 import { useSelector } from "hooks/useSelector";
-import { useMousetrap } from "hooks/useMousetrap";
 import { useRoom } from "hooks/useRoom";
 
 import UserList from "components/molecules/UserList";
@@ -55,13 +54,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const venueEvents = useSelector(venueEventsSelector) ?? [];
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
-
-  useMousetrap({
-    keys: "enter",
-    callback: enterRoom,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   const roomEvents = useMemo(
     () =>
