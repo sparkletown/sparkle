@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { AnyVenue, VenueEvent } from "types/venues";
-import { Room } from "types/rooms";
+import { AnyRoom } from "types/rooms";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
@@ -55,7 +55,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
         </div>
         <div className="schedule-event-info-room">
           {event.room && room && venue ? (
-            <EnterRoomButton room={room as Room} currentVenue={venue}>
+            <EnterRoomButton room={room} venue={venue}>
               {buttonText}
             </EnterRoomButton>
           ) : (
@@ -68,16 +68,16 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
 };
 
 interface EnterRoomButtonProps {
-  room: Room;
-  currentVenue: WithId<AnyVenue>;
+  room: AnyRoom;
+  venue: WithId<AnyVenue>;
 }
 
 const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
   room,
-  currentVenue,
+  venue,
   children,
 }) => {
-  const { enterRoom } = useRoom(room, currentVenue.name);
+  const { enterRoom } = useRoom({ room, venueName: venue.name });
 
   return <div onClick={enterRoom}>{children}</div>;
 };

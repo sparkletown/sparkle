@@ -24,37 +24,37 @@ import "./RoomModal.scss";
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  currentVenue?: AnyVenue;
+  venue?: AnyVenue;
   room?: Room;
 }
 
 export interface RoomModalContentProps {
   room: Room;
-  currentVenueName: string;
+  venueName: string;
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({
   onHide,
   room,
   show,
-  currentVenue,
+  venue,
 }) => {
-  if (!room || !currentVenue) return null;
+  if (!room || !venue) return null;
 
   return (
     <Modal show={show} onHide={onHide}>
-      <RoomModalContent room={room} currentVenueName={currentVenue.name} />
+      <RoomModalContent room={room} venueName={venue.name} />
     </Modal>
   );
 };
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  currentVenueName,
+  venueName,
 }) => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
 
-  const { enterRoom, recentRoomUsers } = useRoom(room, currentVenueName);
+  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
   useMousetrap({
     keys: "enter",

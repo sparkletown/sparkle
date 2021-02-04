@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 
-import { Room } from "types/rooms";
+import { AnyRoom } from "types/rooms";
 
 import { enterExternalRoom } from "utils/userLocation";
 import { orderedVenuesSelector } from "utils/selectors";
@@ -12,7 +12,7 @@ import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 export type UseRoomProps = {
-  room: Room;
+  room: AnyRoom;
   venueName: string;
 };
 
