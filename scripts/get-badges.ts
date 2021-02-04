@@ -90,7 +90,10 @@ interface UsersWithVisitsResult {
     })
   ).then((result) => result.flat());
 
-  const authUsersById: Record<string, admin.auth.UserRecord> = authUsers.reduce(
+  const authUsersById: Record<
+    string,
+    admin.auth.UserRecord | undefined
+  > = authUsers.reduce(
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
     {}
   );
@@ -99,7 +102,7 @@ interface UsersWithVisitsResult {
   const result = usersWithVisits.map((userWithVisits) => {
     const { user, visits } = userWithVisits;
     const { id, partyName, enteredVenueIds = [] } = user;
-    const { email } = authUsersById[id];
+    const { email } = authUsersById[id] ?? {};
 
     const visitsTimeSpent = visits.map(
       (visit) => `${visit.id} (${formatSecondsAsDuration(visit.timeSpent)})`
@@ -129,6 +132,11 @@ interface UsersWithVisitsResult {
 
     console.log(csvLine);
   });
-
-  process.exit(0);
-})();
+})()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => {
+    process.exit(0);
+  });
