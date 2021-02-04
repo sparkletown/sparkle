@@ -37,15 +37,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
-}) => {
-  if (!room || !venue) return null;
-
-  return (
-    <Modal show={show} onHide={onHide}>
-      <RoomModalContent room={room} venueName={venue.name} />
-    </Modal>
-  );
-};
+}) => (
+  <Modal show={show} onHide={onHide}>
+    <div className="container room-modal-container">
+      {room && venue && <RoomModalContent room={room} venueName={venue.name} />}
+    </div>
+  </Modal>
+);
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
@@ -70,7 +68,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const currentEvent = roomEvents && getCurrentEvent(roomEvents);
 
   return (
-    <div className="container room-modal-container">
+    <>
       <div className="room-description">
         <div className="title-container">
           <div
@@ -137,6 +135,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
