@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { AnyVenue, VenueEvent } from "types/venues";
-import { AnyRoom } from "types/rooms";
+import { Room } from "types/rooms";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
@@ -68,7 +68,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
 };
 
 interface EnterRoomButtonProps {
-  room: AnyRoom;
+  room: Room;
   venue: WithId<AnyVenue>;
 }
 
