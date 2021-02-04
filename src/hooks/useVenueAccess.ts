@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import {
