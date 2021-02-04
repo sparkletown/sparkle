@@ -30,19 +30,19 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
   );
 
   // @debt we should replace externalRoomSlug with preferrably room id
-  const roomId = roomVenue
+  const roomSlug = roomVenue
     ? roomVenue.name
     : getExternalRoomSlug({ roomTitle: room.title, venueName });
 
-  const { recentLocationUsers } = useRecentLocationUsers(roomId);
+  const { recentLocationUsers } = useRecentLocationUsers(roomSlug);
 
   const enterRoom = useCallback(() => {
     if (!userId) return;
 
     roomVenue
       ? enterVenue(roomVenue.id)
-      : enterExternalRoom({ userId, roomUrl, roomId });
-  }, [roomId, roomUrl, userId, roomVenue]);
+      : enterExternalRoom({ userId, roomUrl, roomSlug });
+  }, [roomSlug, roomUrl, userId, roomVenue]);
 
   return {
     enterRoom,

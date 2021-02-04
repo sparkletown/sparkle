@@ -66,17 +66,17 @@ export const clearLocationData = (userId: string) => {
 export type EnterExternalRoomProps = {
   userId: string;
   roomUrl: string;
-  roomId: string;
+  roomSlug: string;
 };
 
 export const enterExternalRoom = ({
   userId,
-  roomId,
+  roomSlug,
   roomUrl,
 }: EnterExternalRoomProps) => {
   setLocationData({
     userId,
-    locationName: roomId,
+    locationName: roomSlug,
   });
 
   openRoomUrl(roomUrl);
@@ -87,7 +87,7 @@ export type UseUpdateTimespentPeriodicallyProps = {
   userId?: string;
 };
 
-// @dept I don't think this functionality works correctly, since we only log `internal venues` in this piece of code
+// @dept I don't think this functinality works correctly, since we only log `internal venues` in this piece of code
 // Could be also beneficial to log external rooms' timespent
 export const useUpdateTimespentPeriodically = ({
   locationName,
