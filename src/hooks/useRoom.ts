@@ -11,7 +11,12 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-export const useRoom = (room: Room, currentVenueName: string) => {
+export type UseRoomProps = {
+  room: Room;
+  venueName: string;
+};
+
+export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
   const userId = user?.uid;
 
@@ -27,7 +32,7 @@ export const useRoom = (room: Room, currentVenueName: string) => {
   // @debt we should replace externalRoomSlug with preferrably room id
   const roomId = roomVenue
     ? roomVenue.name
-    : getExternalRoomSlug({ roomTitle: room.title, currentVenueName });
+    : getExternalRoomSlug({ roomTitle: room.title, venueName });
 
   const { recentLocationUsers } = useRecentLocationUsers(roomId);
 

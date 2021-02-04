@@ -1,9 +1,9 @@
 export type GetExternalRoomSlugProps = {
-  currentVenueName: string;
+  venueName: string;
   roomTitle: string;
 };
 
 export const getExternalRoomSlug = ({
-  currentVenueName,
+  venueName,
   roomTitle,
-}: GetExternalRoomSlugProps) => `${currentVenueName}/${roomTitle}`;
+}: GetExternalRoomSlugProps) => `${venueName}/${roomTitle}`;
