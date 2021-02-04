@@ -17,7 +17,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
 
   return (
     <WithNavigationBar>
-      <div className="full-page-container jazz-bar-container">
+      <div className="jazz-bar-container">
         <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
             <p>
@@ -73,7 +73,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
             )}
           </InformationCard>
         </InformationLeftColumn>
-        <div className="content-container">{children}</div>
+        {children}
       </div>
     </WithNavigationBar>
   );
