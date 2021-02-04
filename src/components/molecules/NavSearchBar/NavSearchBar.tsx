@@ -159,7 +159,7 @@ const NavSearchBar = () => {
       <RoomModal
         show={hasSelectedRoom}
         room={selectedRoom}
-        currentVenue={venue}
+        venue={venue}
         onHide={() => setSelectedRoom(undefined)}
       />
     </div>
