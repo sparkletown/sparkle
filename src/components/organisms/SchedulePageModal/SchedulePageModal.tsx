@@ -92,9 +92,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
   const events = useMemo(
     () =>
-      orderedEvents[date]?.events.map((event) => (
+      orderedEvents[date]?.events.map((event, index) => (
         <EventDisplay
-          key={event.id ?? event.name}
+          key={event.id ?? `${index}-${event.name}`}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />

@@ -21,17 +21,17 @@ import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
-export type RoomModalProps = {
+export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
   currentVenue?: AnyVenue;
   room?: Room;
-};
+}
 
-export type RoomModalContentProps = {
+export interface RoomModalContentProps {
   room: Room;
   currentVenueName: string;
-};
+}
 
 export const RoomModal: React.FC<RoomModalProps> = ({
   onHide,

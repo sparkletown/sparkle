@@ -42,9 +42,9 @@ const LiveSchedule: FC = () => {
   const renderedEvents = useMemo(() => {
     if (!hasEvents) return null;
 
-    return events.map((event) => (
+    return events.map((event, index) => (
       <EventDisplay
-        key={event.id ?? event.name}
+        key={event.id ?? `${index}-${event.name}`}
         venue={relatedVenueFor(event)}
         event={event}
       />

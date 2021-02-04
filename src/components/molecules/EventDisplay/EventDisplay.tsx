@@ -11,10 +11,10 @@ import { useRoom } from "hooks/useRoom";
 
 import "./EventDisplay.scss";
 
-export type EventDisplayProps = {
+export interface EventDisplayProps {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
-};
+}
 
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const eventRoomTitle = event.room;
@@ -67,10 +67,10 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   );
 };
 
-type EnterRoomButtonProps = {
+interface EnterRoomButtonProps {
   room: Room;
   currentVenue: WithId<AnyVenue>;
-};
+}
 
 const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
   room,

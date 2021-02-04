@@ -87,7 +87,7 @@ export type UseUpdateTimespentPeriodicallyProps = {
   userId?: string;
 };
 
-// @dept I don't think this functinality works correctly, since we only log `internal venues` in this piece of code
+// @dept I don't think this functionality works correctly, since we only log `internal venues` in this piece of code
 // Could be also beneficial to log external rooms' timespent
 export const useUpdateTimespentPeriodically = ({
   locationName,
@@ -101,12 +101,13 @@ export const useUpdateTimespentPeriodically = ({
       if (!userId || !locationName) return;
 
       const firestore = firebase.firestore();
-
-      return firestore
+      const locationRef = firestore
         .collection("users")
         .doc(userId)
         .collection("visits")
-        .doc(locationName)
+        .doc(locationName);
+
+      return locationRef
         .update({
           timeSpent: firebase.firestore.FieldValue.increment(
             LOCATION_INCREMENT_SECONDS
@@ -118,12 +119,7 @@ export const useUpdateTimespentPeriodically = ({
             and so we are defaulting it to LOCATION_INCREMENT_SECONDS
             since that's how often this code runs
           */
-          firestore
-            .collection("users")
-            .doc(userId)
-            .collection("visits")
-            .doc(locationName)
-            .set({ timeSpent: LOCATION_INCREMENT_SECONDS });
+          locationRef.set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
     },
     shouldUseInterval ? LOCATION_INCREMENT_MS : undefined
