@@ -1,1 +1,0 @@
-export { AvatarGrid } from "./AvatarGrid";

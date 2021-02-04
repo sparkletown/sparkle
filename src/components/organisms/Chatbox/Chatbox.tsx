@@ -2,7 +2,11 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  SPARKLE_ICON,
+} from "settings";
 import { isChatValid } from "validation";
 
 import { ValidStoreAsKeys } from "types/Firestore";
@@ -216,7 +220,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         ) : (
           <div className="chatbox-title">
             <img
-              src="/sparkle-icon.png"
+              src={SPARKLE_ICON}
               className="side-title-icon"
               alt="sparkle icon"
               width="20"
