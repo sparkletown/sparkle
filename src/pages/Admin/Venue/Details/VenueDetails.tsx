@@ -10,7 +10,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
-import { AnyRoom, RoomData_v2 } from "types/rooms";
+import { Room, RoomData_v2 } from "types/rooms";
 import { VenueDetailsProps } from "./VenueDetails.types";
 
 import VenueHero from "components/molecules/VenueHero";
@@ -234,7 +234,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
         {!!rooms && !!mapBackgroundImageUrl && (
           <S.RoomWrapper>
-            {rooms.map((room: AnyRoom, index: number) => (
+            {rooms.map((room: Room, index: number) => (
               <RoomCard
                 key={room.title}
                 room={room}
