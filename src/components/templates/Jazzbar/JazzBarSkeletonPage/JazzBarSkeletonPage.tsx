@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import "./JazzBarSkeletonPage.scss";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -15,16 +15,10 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
 }) => {
   const venue = useSelector(currentVenueSelectorData);
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-
   return (
     <WithNavigationBar>
       <div className="full-page-container jazz-bar-container">
-        <InformationLeftColumn
-          venueLogoPath={venue?.host?.icon ?? ""}
-          isLeftColumnExpanded={isLeftColumnExpanded}
-          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-        >
+        <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
             <p>
               {venue?.name ? (
