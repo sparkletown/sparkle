@@ -1,1 +1,3 @@
-export { default } from "./InformationLeftColumn";
+export { InformationLeftColumn } from "./InformationLeftColumn";
+
+export type { InformationLeftColumnControls } from "./InformationLeftColumn";
