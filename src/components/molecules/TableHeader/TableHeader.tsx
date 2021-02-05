@@ -109,12 +109,21 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           </button>
         </div>
         <div className="table-title-container">
-          <div className="private-table-title" style={{ fontSize: "20px" }}>
+          <div
+            className="private-table-title"
+            style={{ fontSize: "16px", fontWeight: 700 }}
+          >
             {tableOfUser?.title ?? "abc" /*seatedAtTable*/}
             {tableOfUser && tableOfUser.capacity && (
               <>
                 {" "}
-                <span style={{ fontSize: "12px" }}>
+                <span
+                  style={{
+                    fontSize: "16px",
+                    marginLeft: "20px",
+                    fontWeight: 400,
+                  }}
+                >
                   {usersAtCurrentTable &&
                     `${
                       tableOfUser.capacity - usersAtCurrentTable.length >= 1
@@ -134,7 +143,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             {!!tableLocked(seatedAtTable) ? (
               <p className="locked-text">Table is locked</p>
             ) : (
-              <p className="unlocked-text">Others can join this table</p>
+              <p className="unlocked-text">Lock table?</p>
             )}
           </div>
           <label className="switch">
