@@ -96,7 +96,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   return (
     <div className="row no-margin at-table table-header">
-      <div className="header" style={{ marginRight: "60px" }}>
+      <div className="header">
         <div className="back-button-container">
           <button
             type="button"

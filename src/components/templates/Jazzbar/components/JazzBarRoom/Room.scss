@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.jazzbar-participant-container {
+  background: $black;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.empty-chair-image {
+  height: 100%;
+  object-fit: contain;
+  width: 80%;
+}
