@@ -38,6 +38,7 @@ import {
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { showZendeskWidget } from "utils/zendesk";
 import { JoinVenueModal } from "components/organisms/JoinVenueModal";
+import { VenueAccessMode } from "types/VenueAcccess";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -45,14 +46,6 @@ export interface VenueLandingPageProps {
   venueRequestStatus: Firestore["status"]["requested"]["currentVenue"];
   purchaseHistory?: Firestore["ordered"]["userPurchaseHistory"];
   venueId?: string;
-}
-
-enum VenueAccessMode {
-  open = "open",
-  email = "email",
-  password = "password",
-  ticket = "ticket",
-  parent = "parent",
 }
 
 export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
@@ -140,7 +133,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   const renderJoinButton = useCallback(() => {
     switch (venue?.accessMode) {
-      case VenueAccessMode.password:
+      case VenueAccessMode.Password:
         return (
           <div className="secret-password-form-wrapper">
             <SecretPasswordForm
@@ -153,10 +146,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           </div>
         );
 
-      case VenueAccessMode.email:
-      case VenueAccessMode.ticket:
-      case VenueAccessMode.parent:
-      case VenueAccessMode.open:
+      case VenueAccessMode.Emails:
+      case VenueAccessMode.Codes:
       default:
         return (
           <button

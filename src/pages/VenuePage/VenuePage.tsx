@@ -24,6 +24,9 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
+import { showZendeskWidget } from "utils/zendesk";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
+import { isTruthy } from "utils/types";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -33,19 +36,19 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueAccess } from "hooks/useVenueAccess";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+
 import Login from "pages/Account/Login";
-import { showZendeskWidget } from "utils/zendesk";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
@@ -57,6 +60,7 @@ const VenuePage: React.FC = () => {
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
+  const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
 
@@ -172,6 +176,10 @@ const VenuePage: React.FC = () => {
     }
   }, [venue]);
 
+  const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
+
+  useVenueAccess(venue, handleAccessDenied);
+
   if (!user) {
     return <Login formType="initial" />;
   }
@@ -180,13 +188,16 @@ const VenuePage: React.FC = () => {
     return <>This venue does not exist</>;
   }
 
-  if (!venue || !venueId) {
+  if (!venue || !venueId || !profile) {
     return <LoadingPage />;
+  }
+
+  if (isAccessDenied) {
+    return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   }
 
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
-
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
