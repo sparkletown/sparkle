@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
@@ -18,8 +18,9 @@ import {
 } from "utils/selectors";
 import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
-  updateLocationData,
-  trackLocationEntered,
+  clearLocationData,
+  setLocationData,
+  updateCurrentLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
@@ -93,57 +94,49 @@ const VenuePage: React.FC = () => {
 
   // NOTE: User location updates
 
-  const updateUserLocationToCurrentVenue = useCallback(() => {
-    if (!userId || !venueName) return;
-
-    trackLocationEntered({ userId, locationName: venueName });
-  }, [userId, venueName]);
-
   useInterval(() => {
-    updateUserLocationToCurrentVenue();
+    if (!userId || !profile?.lastSeenIn) return;
+
+    updateCurrentLocationData({
+      userId,
+      profileLocationData: profile.lastSeenIn,
+    });
   }, LOC_UPDATE_FREQ_MS);
 
   useEffect(() => {
-    updateUserLocationToCurrentVenue();
-  }, [updateUserLocationToCurrentVenue]);
+    if (!userId || !venueName) return;
 
-  // useEffect(() => {
-  //   if (!userId || !venueName) return;
-  //   updateUserLocationToCurrentVenue();
-
-  // NOTE: A suggestion on how to avoid location cleaning, when two tabs were opened and one of them was closed
-
-  // document.addEventListener("visibilitychange", () => {
-  //   if (document.visibilityState === "visible") {
-  //     updateUserLocationToCurrentVenue();
-  //   }
-  // });
-  // }, [userId, venueName, updateUserLocationToCurrentVenue]);
+    setLocationData({ userId, locationName: venueName });
+  }, [userId, venueName]);
 
   useEffect(() => {
     if (!userId) return;
 
+    const onBeforeUnloadHandler = () => clearLocationData(userId);
+
     // NOTE: Clear user location on page close
-    window.addEventListener("beforeunload", () =>
-      updateLocationData(userId, {})
-    );
+    window.addEventListener("beforeunload", onBeforeUnloadHandler);
+
+    return () =>
+      window.removeEventListener("beforeunload", onBeforeUnloadHandler);
   }, [userId]);
 
   useEffect(() => {
     if (
-      profile?.enteredVenueIds &&
-      venueId &&
-      profile?.enteredVenueIds.includes(venueId)
-    )
+      !venueId ||
+      !userId ||
+      !profile ||
+      profile?.enteredVenueIds?.includes(venueId)
+    ) {
       return;
-    if (!venueId || !user || !profile) return;
+    }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, user?.uid, venueId);
-  }, [profile, user, venueId]);
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
+  }, [profile, userId, venueId]);
 
   // NOTE: User's timespent updates
 
-  useUpdateTimespentPeriodically(user, venueName);
+  useUpdateTimespentPeriodically({ locationName: venueName, userId });
 
   // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
   useConnectCurrentVenue();

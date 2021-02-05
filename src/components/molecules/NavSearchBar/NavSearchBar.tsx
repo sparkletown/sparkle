@@ -34,6 +34,7 @@ const NavSearchBar = () => {
   >();
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
 
@@ -148,18 +149,19 @@ const NavSearchBar = () => {
         </div>
       )}
 
+      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
-
-      {selectedRoom && (
-        <RoomModal
-          room={selectedRoom}
-          onHide={() => setSelectedRoom(undefined)}
-        />
-      )}
+      {/* @debt use only one RoomModal instance with state controlled with redux */}
+      <RoomModal
+        show={hasSelectedRoom}
+        room={selectedRoom}
+        venue={venue}
+        onHide={() => setSelectedRoom(undefined)}
+      />
     </div>
   );
 };
