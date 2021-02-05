@@ -1,81 +1,127 @@
-import firebase, { UserInfo } from "firebase/app";
-
-import { Room } from "types/rooms";
+import firebase from "firebase/app";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { useInterval } from "hooks/useInterval";
 
+import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
+
 import { getCurrentTimeInMilliseconds } from "./time";
-import { openRoomUrl, openUrl, venueInsideUrl } from "./url";
+import { openRoomUrl } from "./url";
 
-const LOCATION_INCREMENT_SECONDS = 10;
-const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
+export type LocationData = Record<string, number>;
 
-type LocationData = Record<string, number>;
+export interface UpdateLocationDataProps {
+  userId: string;
+  newLocationData: LocationData;
+}
 
-export const updateLocationData = (
-  userId: string,
-  newLocationData: LocationData = {}
-) => {
+export const updateLocationData = ({
+  userId,
+  newLocationData,
+}: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
     lastSeenIn: newLocationData,
   });
 };
 
-export interface TrackLocationProps {
+export interface SetLocationDataProps {
   userId: string;
   locationName: string;
-  lastSeenIn?: LocationData;
 }
 
-export const trackLocationEntered = ({
+export const setLocationData = ({
   userId,
   locationName,
-}: TrackLocationProps) => {
-  updateLocationData(userId, {
-    [locationName]: getCurrentTimeInMilliseconds(),
-  });
-};
-
-export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
-
-type EnterExternalRoomProps = {
-  userId: string;
-  room: Room;
-};
-
-export const enterExternalRoom = ({ userId, room }: EnterExternalRoomProps) => {
-  trackLocationEntered({
+}: SetLocationDataProps) => {
+  updateLocationData({
     userId,
-    locationName: room.url,
+    newLocationData: {
+      [locationName]: getCurrentTimeInMilliseconds(),
+    },
   });
-
-  openRoomUrl(room.url);
 };
 
-export const useUpdateTimespentPeriodically = (
-  user: UserInfo | undefined,
-  roomName: string
-) => {
-  const shouldUseInterval = user && roomName;
+export interface UpdateCurrentLocationDataProps {
+  userId: string;
+  profileLocationData: LocationData;
+}
+
+// NOTE: The intended effect is to update the current location, without rewriting it.
+// profileLocationData can only have 1 key at any point of time
+export const updateCurrentLocationData = ({
+  userId,
+  profileLocationData,
+}: UpdateCurrentLocationDataProps) => {
+  const [locationName] = Object.keys(profileLocationData);
+
+  updateLocationData({
+    userId,
+    newLocationData: { [locationName]: getCurrentTimeInMilliseconds() },
+  });
+};
+
+export const clearLocationData = (userId: string) => {
+  updateLocationData({ userId, newLocationData: {} });
+};
+
+export interface EnterExternalRoomProps {
+  userId: string;
+  roomUrl: string;
+  locationName: string;
+}
+
+export const enterExternalRoom = ({
+  userId,
+  locationName,
+  roomUrl,
+}: EnterExternalRoomProps) => {
+  setLocationData({
+    userId,
+    locationName,
+  });
+
+  openRoomUrl(roomUrl);
+};
+
+export interface UseUpdateTimespentPeriodicallyProps {
+  locationName: string;
+  userId?: string;
+}
+
+// @debt I don't think this functionality works correctly, since we only log 'internal venues' in this piece of code
+//   Could also be beneficial to log external rooms' timespent
+export const useUpdateTimespentPeriodically = ({
+  locationName,
+  userId,
+}: UseUpdateTimespentPeriodicallyProps) => {
+  const shouldUseInterval = userId && locationName;
 
   useInterval(
     () => {
-      // Time spent is currently counted multiple time if multiple tabs are open
-      if (!user || !roomName) return;
+      // @debt time spent is currently counted multiple times if multiple tabs are open
+      if (!userId || !locationName) return;
 
       const firestore = firebase.firestore();
-      const doc = `users/${user.uid}/visits/${roomName}`;
-      const increment = firebase.firestore.FieldValue.increment(
-        LOCATION_INCREMENT_SECONDS
-      );
+      const locationRef = firestore
+        .collection("users")
+        .doc(userId)
+        .collection("visits")
+        .doc(locationName);
 
-      return firestore
-        .doc(doc)
-        .update({ timeSpent: increment })
+      return locationRef
+        .update({
+          timeSpent: firebase.firestore.FieldValue.increment(
+            LOCATION_INCREMENT_SECONDS
+          ),
+        })
         .catch(() => {
-          firestore.doc(doc).set({ timeSpent: LOCATION_INCREMENT_SECONDS });
+          /*
+            NOTE: it's (intended to be) because there was no document to update,
+            and so we are defaulting it to LOCATION_INCREMENT_SECONDS
+            since that's how often this code runs
+          */
+          locationRef.set({ timeSpent: LOCATION_INCREMENT_SECONDS });
         });
     },
     shouldUseInterval ? LOCATION_INCREMENT_MS : undefined
