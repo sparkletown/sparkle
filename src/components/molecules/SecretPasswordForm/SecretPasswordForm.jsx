@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import { checkAccess } from "api/auth";
+
 import { venueEntranceUrl } from "utils/url";
-import { checkAccess, setLocalStorageToken } from "utils/localStorage";
+import { setLocalStorageToken } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";

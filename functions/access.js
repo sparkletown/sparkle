@@ -47,7 +47,9 @@ const checkIsValidToken = async (venueId, uid, token) => {
 };
 
 const getAccessDoc = async (venueId, method) => {
-  if (!venueId || !method) return undefined;
+  if (!venueId || !method) {
+    return undefined;
+  }
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
     throw new HttpsError("not-found", `venue ${venueId} does not exist`);

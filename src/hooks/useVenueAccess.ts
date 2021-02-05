@@ -2,9 +2,10 @@ import { useCallback, useEffect } from "react";
 
 import { AnyVenue } from "types/venues";
 
+import { checkAccess } from "api/auth";
+
 import { WithId } from "utils/id";
 import {
-  checkAccess,
   getLocalStorageToken,
   removeLocalStorageToken,
 } from "utils/localStorage";
@@ -19,14 +20,18 @@ export const useVenueAccess = (
   const { user } = useUser();
 
   const denyAccess = useCallback(() => {
-    if (!venue) return;
+    if (!venue) {
+      return;
+    }
     onDenyAccess && onDenyAccess();
 
     removeLocalStorageToken(venue.id);
   }, [onDenyAccess, venue]);
 
   const checkVenueAccess = useCallback(async () => {
-    if (!venue) return;
+    if (!venue) {
+      return;
+    }
 
     if (venue.access && user) {
       const token = getLocalStorageToken(venue.id) ?? undefined;

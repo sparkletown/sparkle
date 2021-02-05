@@ -2,10 +2,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
+import { checkAccess } from "api/auth";
+
 import { useSelector } from "hooks/useSelector";
 
 import { venueSelector } from "utils/selectors";
-import { checkAccess, setLocalStorageToken } from "utils/localStorage";
+import { setLocalStorageToken } from "utils/localStorage";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 

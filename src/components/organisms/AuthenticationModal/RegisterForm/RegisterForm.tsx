@@ -3,13 +3,15 @@ import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
+import { checkAccess } from "api/auth";
+
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import { checkAccess, setLocalStorageToken } from "utils/localStorage";
+import { setLocalStorageToken } from "utils/localStorage";
 
 import { useSelector } from "hooks/useSelector";
 

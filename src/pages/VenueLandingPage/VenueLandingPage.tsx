@@ -150,7 +150,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         : venueEntranceUrl(venueId);
   };
 
-  const requiresPassword = venue.access === VenueAccessMode.Password;
+  const isPasswordRequired = venue.access === VenueAccessMode.Password;
 
   return (
     <WithNavigationBar>
@@ -182,14 +182,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
-          {requiresPassword && (
+          {isPasswordRequired && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
                 buttonText={venue.config?.landingPageConfig.joinButtonText}
               />
             </div>
           )}
-          {!requiresPassword &&
+          {!isPasswordRequired &&
             (!futureOrOngoingVenueEvents ||
               futureOrOngoingVenueEvents.length === 0) && (
               <button
