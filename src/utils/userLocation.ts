@@ -47,6 +47,8 @@ export interface UpdateCurrentLocationDataProps {
   profileLocationData: LocationData;
 }
 
+// NOTE: The intended effect is to update the current location, without rewriting it.
+// profileLocationData can only have 1 key at any point of time
 export const updateCurrentLocationData = ({
   userId,
   profileLocationData,
