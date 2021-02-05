@@ -1,7 +1,7 @@
-export type GetExternalRoomSlugProps = {
+export interface GetExternalRoomSlugProps {
   venueName: string;
   roomTitle: string;
-};
+}
 
 export const getExternalRoomSlug = ({
   venueName,

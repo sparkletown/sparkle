@@ -11,10 +11,10 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-export type UseRoomProps = {
+export interface UseRoomProps {
   room: Room;
   venueName: string;
-};
+}
 
 export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
@@ -41,7 +41,7 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
 
     roomVenue
       ? enterVenue(roomVenue.id)
-      : enterExternalRoom({ userId, roomUrl, roomSlug });
+      : enterExternalRoom({ userId, roomUrl, locationName: roomSlug });
   }, [roomSlug, roomUrl, userId, roomVenue]);
 
   return {

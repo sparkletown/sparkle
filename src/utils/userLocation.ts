@@ -10,10 +10,10 @@ import { openRoomUrl } from "./url";
 
 export type LocationData = Record<string, number>;
 
-export type UpdateLocationDataProps = {
+export interface UpdateLocationDataProps {
   userId: string;
   newLocationData: LocationData;
-};
+}
 
 export const updateLocationData = ({
   userId,
@@ -25,10 +25,10 @@ export const updateLocationData = ({
   });
 };
 
-export type SetLocationDataProps = {
+export interface SetLocationDataProps {
   userId: string;
   locationName: string;
-};
+}
 
 export const setLocationData = ({
   userId,
@@ -42,10 +42,10 @@ export const setLocationData = ({
   });
 };
 
-export type UpdateCurrentLocationDataProps = {
+export interface UpdateCurrentLocationDataProps {
   userId: string;
   profileLocationData: LocationData;
-};
+}
 
 export const updateCurrentLocationData = ({
   userId,
@@ -63,32 +63,32 @@ export const clearLocationData = (userId: string) => {
   updateLocationData({ userId, newLocationData: {} });
 };
 
-export type EnterExternalRoomProps = {
+export interface EnterExternalRoomProps {
   userId: string;
   roomUrl: string;
-  roomSlug: string;
-};
+  locationName: string;
+}
 
 export const enterExternalRoom = ({
   userId,
-  roomSlug,
+  locationName,
   roomUrl,
 }: EnterExternalRoomProps) => {
   setLocationData({
     userId,
-    locationName: roomSlug,
+    locationName,
   });
 
   openRoomUrl(roomUrl);
 };
 
-export type UseUpdateTimespentPeriodicallyProps = {
+export interface UseUpdateTimespentPeriodicallyProps {
   locationName: string;
   userId?: string;
-};
+}
 
-// @dept I don't think this functinality works correctly, since we only log `internal venues` in this piece of code
-// Could be also beneficial to log external rooms' timespent
+// @debt I don't think this functionality works correctly, since we only log 'internal venues' in this piece of code
+//   Could also be beneficial to log external rooms' timespent
 export const useUpdateTimespentPeriodically = ({
   locationName,
   userId,
