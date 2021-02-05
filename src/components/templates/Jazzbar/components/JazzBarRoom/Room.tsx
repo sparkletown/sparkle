@@ -8,13 +8,17 @@ import React, {
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
-import LocalParticipant from "./LocalParticipant";
-import Participant from "./Participant";
-import "./Room.scss";
+
+import { User } from "types/User";
+
+import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import Participant from "components/organisms/Room/Participant";
+import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
-import { User } from "types/User";
-import VideoErrorModal from "./VideoErrorModal";
+
+import "./Room.scss";
 
 interface RoomProps {
   roomName: string;
@@ -27,6 +31,10 @@ interface RoomProps {
   defaultMute?: boolean;
 }
 
+// @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
+// The reason to copy it was the lack of time to refactor the whole thing, so the
+// safest approch (not to break other Venues that rely on TableComponent) is to copy this component
+// It needs to get deleted in the future
 const Room: React.FC<RoomProps> = ({
   roomName,
   venueName,

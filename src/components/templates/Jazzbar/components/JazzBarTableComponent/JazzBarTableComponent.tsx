@@ -7,7 +7,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 import "./JazzBarTableComponent.scss";
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
-// The reason to copy this was the lack of time to refactor the whole thing, so the
+// The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
