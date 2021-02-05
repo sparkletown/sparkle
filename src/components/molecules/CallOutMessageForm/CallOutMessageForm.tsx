@@ -16,12 +16,7 @@ const CallOutMessageForm = React.forwardRef<HTMLInputElement, PropsType>(
     const venue = useSelector(currentVenueSelectorData);
     return (
       <form onSubmit={onSubmit} className="form-message">
-        <input
-          name="messageToTheBand"
-          placeholder={placeholder}
-          ref={ref}
-          style={{ marginBottom: "10px" }}
-        />
+        <input name="messageToTheBand" placeholder={placeholder} ref={ref} />
         {venue && (
           <input
             className={`btn btn-primary btn-block btn-centered ${

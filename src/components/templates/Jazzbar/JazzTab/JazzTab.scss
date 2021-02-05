@@ -68,16 +68,33 @@
         padding: 0 10px 10px;
         border-radius: 0px 0px 28px 28px;
         .emoji-container {
-          width: 400px;
           display: flex;
           justify-content: space-around;
           margin: 20px 0;
           font-size: 27px;
+          letter-spacing: 0.5rem;
+          overflow-x: auto;
+          width: 100%;
 
           .reaction > span {
             cursor: pointer;
             height: 30px;
             width: 30px;
+          }
+        }
+        .form-message {
+          display: flex;
+          margin-bottom: 5px;
+          justify-content: space-between;
+
+          input[type="submit"] {
+            margin-bottom: 0px;
+            margin-left: 10px;
+            width: 100px;
+            &[type="submit"]:disabled {
+              color: rgba($white, 0.2);
+              background-color: rgba(green, 0.5);
+            }
           }
         }
       }
@@ -351,22 +368,6 @@
       outline: none;
       box-shadow: none;
       animation: pulse 0.5s ease 2;
-    }
-  }
-
-  .form-message {
-    display: flex;
-    margin-bottom: 5px;
-    justify-content: space-between;
-
-    input[type="submit"] {
-      margin-bottom: 0px;
-      margin-left: 10px;
-      width: 100px;
-      &[type="submit"]:disabled {
-        color: rgba($white, 0.2);
-        background-color: rgba(green, 0.5);
-      }
     }
   }
 
