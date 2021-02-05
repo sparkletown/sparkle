@@ -5,6 +5,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 // TODO: should JazzBarVenue be added to this?
@@ -85,6 +86,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
+  access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
   host?: {
@@ -129,11 +131,8 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
-  showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
-  requiresTicketCode?: boolean;
   requiresDateOfBirth?: boolean;
-  requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
   chatTitle?: string;

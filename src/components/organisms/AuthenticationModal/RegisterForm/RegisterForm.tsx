@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
+
+import { checkAccess } from "api/auth";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { codeCheckUrl } from "utils/url";
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+import { setLocalStorageToken } from "utils/localStorage";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -40,7 +43,6 @@ export interface CodeOfConductQuestion {
 }
 
 export interface RegisterData {
-  codes_used: string[];
   date_of_birth: string;
 }
 
@@ -90,17 +92,38 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
-      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
-      if (venue.requiresEmailVerification)
-        await axios.get(codeCheckUrl(data.email));
-
       const auth = await signUp(data);
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
+
+      let result = null;
+
+      switch (venue.access) {
+        case VenueAccessMode.Codes:
+          result = await checkAccess({
+            venueId: venue.id,
+            code: data.code,
+          });
+          break;
+        case VenueAccessMode.Emails:
+          result = await checkAccess({
+            venueId: venue.id,
+            email: data.email,
+          });
+          break;
+
+        default:
+          break;
+      }
+
+      if (!result) return;
+
+      if (result.data === false) {
+        throw new Error("access denied");
+      }
+
+      setLocalStorageToken(venue.id, result.data.token);
+
+      if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.email],
           date_of_birth: data.date_of_birth,
         });
       }
@@ -206,7 +229,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
