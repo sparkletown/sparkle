@@ -1,23 +1,20 @@
-import React, { useState } from "react";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
-import "./SparkleFairiesPopUp.scss";
+import React from "react";
+
 import {
   PLAYA_INFO_NAME,
   PLAYA_INFO_URL,
   REALITY_RANGERS_NAME,
   REALITY_RANGERS_URL,
-} from "../../../../src/settings";
+} from "settings";
 
-const SparkleFairiesPopUp: React.FunctionComponent = () => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
 
+import "./SparkleFairiesPopUp.scss";
+
+const SparkleFairiesPopUp: React.FC = () => {
   return (
-    <InformationLeftColumn
-      venueLogoPath={"ambulance"}
-      isLeftColumnExpanded={isLeftColumnExpanded}
-      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-    >
+    <InformationLeftColumn iconNameOrPath="ambulance">
       <InformationCard title="Information">
         <div style={{ textAlign: "center" }}>
           <p className="title-sidebar">{`If you're looking for information, please check out these resources:`}</p>

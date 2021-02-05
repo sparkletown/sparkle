@@ -7,7 +7,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
@@ -24,7 +24,6 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
@@ -35,11 +34,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   return (
     <>
-      <InformationLeftColumn
-        venueLogoPath={venue?.host?.icon ?? ""}
-        isLeftColumnExpanded={isLeftColumnExpanded}
-        setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-      >
+      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>

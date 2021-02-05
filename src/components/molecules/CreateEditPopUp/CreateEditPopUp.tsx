@@ -1,22 +1,18 @@
-import React, { useState } from "react";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
+import React from "react";
+
 import {
   CREATE_EDIT_URL,
   SPARKLEVERSITY_URL,
   SPARKLEVERSE_COMMUNITY_URL,
   PLAYA_VENUE_NAME,
-} from "../../../settings";
+} from "settings";
 
-const CreateEditPopUp: React.FunctionComponent = () => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
 
+const CreateEditPopUp: React.FC = () => {
   return (
-    <InformationLeftColumn
-      venueLogoPath={"create"}
-      isLeftColumnExpanded={isLeftColumnExpanded}
-      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-    >
+    <InformationLeftColumn iconNameOrPath="create">
       <InformationCard title={`Create & Edit on the ${PLAYA_VENUE_NAME}`}>
         <div style={{ textAlign: "center" }}>
           <p className="title-sidebar">

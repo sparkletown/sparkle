@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 
+import { SPARKLE_ICON } from "settings";
+
 import { retainAttendance } from "store/actions/Attendance";
 
 import { VenueEvent } from "types/venues";
@@ -42,7 +44,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         <>
           <div className="title-container">
             <img
-              src="/sparkle-icon.png"
+              src={SPARKLE_ICON}
               className="sparkle-icon"
               alt="sparkle-icon"
             />
@@ -61,7 +63,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         <>
           <div className="event-description">
             <img
-              src="/sparkle-icon.png"
+              src={SPARKLE_ICON}
               className="sparkle-icon"
               alt="sparkle-icon"
             />
