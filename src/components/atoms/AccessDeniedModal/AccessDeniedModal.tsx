@@ -3,7 +3,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { venueLandingUrl } from "utils/url";
 
-interface AccessDeniedModalProps {
+export interface AccessDeniedModalProps {
   show?: boolean;
   venueId: string;
   venueName: string;

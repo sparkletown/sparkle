@@ -40,6 +40,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
@@ -47,7 +48,6 @@ import { updateTheme } from "./helpers";
 import "./VenuePage.scss";
 
 import Login from "pages/Account/Login";
-import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;

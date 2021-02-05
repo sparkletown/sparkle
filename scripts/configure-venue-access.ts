@@ -1,38 +1,44 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { resolve } from "path";
+
 import fs from "fs";
 import admin from "firebase-admin";
 import "firebase/firestore";
 
 import { VenueAccessMode } from "../src/types/VenueAcccess";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-function usage() {
-  console.log(`
-${process.argv[1]}: Configure venue access. Supports configuring a secret password, list of emails which can access the venue, or ticket codes.
+const usage = makeScriptUsage({
+  description: "Configures the venue access with the selected method and value",
+  usageParams:
+    "PROJECT_ID VENUE_ID [password|emaillist|codelist] [password | emails file path | codes file path] [CREDENTIAL_PATH]",
+  exampleParams:
+    "co-reality-map password abc123 [theMatchingAccountServiceKey.json] / co-reality-map emails emails-one-per-line.txt [theMatchingAccountServiceKey.json] / co-reality-map codes ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]",
+});
 
-Usage: npx ts-node ${process.argv[1]} PROJECT_ID VENUE_ID [password|emaillist|codelist] [password | emails file path | codes file path]
-
-Example: npx ts-node ${process.argv[1]} co-reality-map password abc123
-Example: npx ts-node ${process.argv[1]} co-reality-map emails emails-one-per-line.txt
-Example: npx ts-node ${process.argv[1]} co-reality-map codes ticket-codes-one-per-line.txt
-`);
-  process.exit(1);
-}
-
-const [projectId, venueId, method, accessDetail] = process.argv.slice(2);
+const [
+  projectId,
+  venueId,
+  method,
+  accessDetail,
+  credentialPath,
+] = process.argv.slice(2);
 if (!projectId || !venueId || !method || !accessDetail) {
   usage();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 if (!VenueAccessMode[method]) {
   console.error(`Invalid access method ${method}`);
   process.exit(1);
 }
 
-initFirebaseAdminApp(projectId);
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 (async () => {
   console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
@@ -42,10 +48,7 @@ initFirebaseAdminApp(projectId);
     process.exit(1);
   }
 
-  await admin
-    .firestore()
-    .doc(`venues/${venueId}`)
-    .update({ access: method ?? "" });
+  await admin.firestore().doc(`venues/${venueId}`).update({ access: method });
   console.log("Done");
 
   console.log(`Configuring access details for ${method}...`);
@@ -58,10 +61,11 @@ initFirebaseAdminApp(projectId);
 
   switch (method) {
     case VenueAccessMode.Password:
+      const password = accessDetail.trim();
       console.log(
-        `Setting venues/${venueId}/access/${method} to {password: ${accessDetail.trim()}}...`
+        `Setting venues/${venueId}/access/${method} to {password: ${password}}...`
       );
-      await accessDocRef.set({ password: accessDetail.trim() });
+      await accessDocRef.set({ password });
       break;
 
     case VenueAccessMode.Emails:
@@ -99,4 +103,11 @@ initFirebaseAdminApp(projectId);
   console.log("Done.");
 
   process.exit(0);
-})();
+})()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => {
+    process.exit(0);
+  });
