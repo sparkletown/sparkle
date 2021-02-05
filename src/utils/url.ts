@@ -37,6 +37,8 @@ export const openRoomUrl = (url: string) => {
   openUrl(getRoomUrl(url));
 };
 
+export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
+
 export const openUrl = (url: string) => {
   if (!isValidUrl(url)) {
     Bugsnag.notify(
