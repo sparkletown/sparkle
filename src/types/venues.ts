@@ -2,9 +2,10 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
 import { Quotation } from "./Quotation";
-import { AnyRoom, AvatarGridRoom, Room } from "./rooms";
+import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 // TODO: should JazzBarVenue be added to this?
@@ -22,10 +23,13 @@ export enum VenueTemplate {
   preplaya = "preplaya",
   playa = "playa",
   audience = "audience",
-  avatargrid = "avatargrid",
   conversationspace = "conversationspace",
-
   firebarrel = "firebarrel",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  avatargrid = "avatargrid",
 }
 
 // --- VENUE V2
@@ -52,7 +56,7 @@ export interface Venue_v2_Base {
     backgroundColor?: string;
   };
   id: string;
-  rooms?: AnyRoom[];
+  rooms?: Room[];
   mapBackgroundImageUrl?: string;
 }
 
@@ -82,6 +86,7 @@ export interface Venue {
   parentId?: string;
   template: VenueTemplate;
   name: string;
+  access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
   host?: {
@@ -111,14 +116,13 @@ export interface Venue {
   columns?: number;
   rows?: number;
   nightCycle?: boolean;
-  spaces?: AvatarGridRoom[];
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
-  rooms?: AnyRoom[];
+  rooms?: Room[];
   width: number;
   height: number;
   description?: {
@@ -127,11 +131,8 @@ export interface Venue {
   showLearnMoreLink?: boolean;
   liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
-  showSecretPasswordForm?: boolean;
   attendeesTitle?: string;
-  requiresTicketCode?: boolean;
   requiresDateOfBirth?: boolean;
-  requiresEmailVerification?: boolean;
   ticketUrl?: string;
   showRangers?: boolean;
   chatTitle?: string;
