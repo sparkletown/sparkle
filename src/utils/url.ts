@@ -1,5 +1,4 @@
 import Bugsnag from "@bugsnag/js";
-import { CODE_CHECK_URL } from "secrets";
 import { VALID_URL_PROTOCOLS } from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
@@ -81,5 +80,3 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
-
-export const codeCheckUrl = (code: string) => CODE_CHECK_URL + code;
