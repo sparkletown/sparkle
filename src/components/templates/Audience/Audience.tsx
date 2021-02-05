@@ -142,6 +142,7 @@ export const Audience: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const userUid = user?.uid;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
@@ -252,12 +253,14 @@ export const Audience: React.FunctionComponent = () => {
     [columnsForSizedAuditorium, rowsForSizedAuditorium]
   );
 
+  // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     const takeSeat = (row: number | null, column: number | null) => {
+      if (!venueId || !userUid) return;
+
       makeUpdateUserGridLocation({
         venueId,
-        userUid: user?.uid,
-        profileData: profile?.data,
+        userUid,
       })(row, column);
     };
 
@@ -467,6 +470,7 @@ export const Audience: React.FunctionComponent = () => {
     rowsForSizedAuditorium,
     selectedUserProfile,
     user,
+    userUid,
     reset,
     reactionClicked,
     columnsForSizedAuditorium,
