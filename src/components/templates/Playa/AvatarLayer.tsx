@@ -25,7 +25,7 @@ import { WithId } from "utils/id";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
-import { MenuConfig, Shout } from "./Playa";
+// import { MenuConfig, Shout } from "./Playa";
 import Switch from "react-switch";
 import "./AvatarLayer.scss";
 import {
@@ -36,6 +36,9 @@ import {
 import { useDispatch } from "hooks/useDispatch";
 import { UPDATE_LOCATION } from "store/actions/Location";
 import { playaAddress } from "utils/address";
+
+type MenuConfig = never;
+type Shout = never;
 
 interface PropsType {
   useProfilePicture: boolean;

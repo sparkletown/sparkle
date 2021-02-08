@@ -3,7 +3,7 @@ import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { DEFAULT_PARTY_NAME, PLAYA_AVATAR_SIZE } from "settings";
-import { Shout } from "./Playa";
+// import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
 import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
@@ -15,7 +15,8 @@ interface PropsType {
   y: number;
   videoState: string | undefined;
   bike: boolean;
-  shouts: Shout[];
+  // shouts: Shout[];
+  shouts: never[];
   onClick: (event: React.MouseEvent) => void;
   onMouseOver: (event: React.MouseEvent) => void;
   onMouseLeave: (event: React.MouseEvent) => void;

@@ -13,7 +13,7 @@ import {
   PLAYA_WIDTH,
 } from "settings";
 import { useUser } from "hooks/useUser";
-import { Shout } from "./Playa";
+// import { Shout } from "./Playa";
 import { getLinkFromText } from "utils/getLinkFromText";
 import AvatarPartygoers from "./AvatarPartygoers";
 import AvatarImage from "./AvatarImage";
@@ -23,7 +23,7 @@ interface PropsType {
   serverSentState: UserState | undefined;
   bike: boolean | undefined;
   videoState: string | undefined;
-  shouts: Shout[];
+  shouts: never[];
   movingUp: boolean;
   movingDown: boolean;
   movingLeft: boolean;
