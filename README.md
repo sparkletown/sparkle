@@ -8,38 +8,47 @@ Codebase for Sparkle, brought to you by Sparkle.
 
 Clone the repo and cd into it
 
-```
+```bash
 git clone https://github.com/sparkletown/sparkle
 cd sparkle
 ```
 
-Now, obtain the `.env` file for the environemnt (eg. staging) and save it (eg. `.env.staging`)
+<!-- Now, obtain the `.env` file for the environemnt (eg. staging) and save it (eg. `.env.staging`) -->
 
-```
+Now, obtain the `.env` file for the environment (ask someone on the engineering team) and save it.
+
+<!-- ```
 # copy in the .env files
 # symlink the staging .env file
 ln -s .env.staging.local .env
-```
+``` -->
 
-Now you're ready to start the server
+Install the npm modules
 
-```
+```bash
 npm i
+```
+
+Now you're ready to start the server! ✨
+
+```bash
 npm test
 npm start
 ```
 
 You won't need to in dev, but you can also test builds:
 
-```
+```bash
 npm run build
 ```
 
 ### Firebase functions
 
+To do this, you must first be added to the firebase environment.
+In a new terminal enter the following commands.
+
 ```bash
 npm install -g firebase-tools@latest
-
 cd functions
 npm install
 firebase login
@@ -47,7 +56,10 @@ firebase use staging
 firebase functions:config:get
 ```
 
-Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with:
+Create a new file `functions/.runtimeconfig.json` and paste the output of this command into it.
+
+Now you can launch the server! ✨
+<!-- Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with: -->
 
 ```bash
 firebase emulators:start --only functions
