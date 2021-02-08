@@ -13,7 +13,7 @@ export enum AuthOptions {
   initial = "initial",
 }
 
-interface PropsType {
+interface AuthenticationModalProps {
   show: boolean;
   onHide: () => void;
   headerMessage?: string;
@@ -21,7 +21,7 @@ interface PropsType {
   showAuth: AuthOptions;
 }
 
-export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
+export const AuthenticationModal: React.FunctionComponent<AuthenticationModalProps> = ({
   show,
   onHide,
   headerMessage,
@@ -50,9 +50,7 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   return (
     <Modal show={show} onHide={closeAuthenticationModal}>
       <div className="authentication-modal-container">
-        {headerMessage && (
-          <div className="authentication-modal-title">{headerMessage}</div>
-        )}
+        <div className="authentication-modal-title">{headerMessage}</div>
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}

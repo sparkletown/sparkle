@@ -1,5 +1,8 @@
 import Bugsnag from "@bugsnag/js";
+
 import { VALID_URL_PROTOCOLS } from "settings";
+
+import { EntranceStepConfig } from "types/EntranceStep";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -38,6 +41,21 @@ export const openRoomUrl = (url: string) => {
 };
 
 export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
+
+export const joinVenue = (
+  venueId?: string,
+  venueEntrance?: EntranceStepConfig[]
+) => {
+  if (!venueId) return;
+
+  const hasVenueEntrance = venueEntrance ? !!venueEntrance.length : false;
+
+  const url = hasVenueEntrance
+    ? venueEntranceUrl(venueId)
+    : venueInsideUrl(venueId);
+
+  openUrl(url);
+};
 
 export const openUrl = (url: string) => {
   if (!isValidUrl(url)) {

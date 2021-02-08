@@ -1,44 +1,47 @@
+import React, { useCallback, useEffect, useState } from "react";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { VenueEvent } from "types/venues";
-
-import CountDown from "components/molecules/CountDown";
-import EventPaymentButton from "components/molecules/EventPaymentButton";
-import InformationCard from "components/molecules/InformationCard";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import PaymentModal from "components/organisms/PaymentModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+
+import { VenueEvent } from "types/venues";
+import { Firestore } from "types/Firestore";
+
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { updateTheme } from "pages/VenuePage/helpers";
-import React, { useCallback, useEffect, useState } from "react";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
-import { Firestore } from "types/Firestore";
+
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
-import { getTimeBeforeParty, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import "./VenueLandingPage.scss";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import {
-  currentVenueSelectorData,
-  userPurchaseHistorySelector,
-} from "utils/selectors";
+import { ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { showZendeskWidget } from "utils/zendesk";
+
 import {
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
 } from "settings";
+
+import {
+  currentVenueSelectorData,
+  userPurchaseHistorySelector,
+} from "utils/selectors";
+
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import { showZendeskWidget } from "utils/zendesk";
-import { VenueAccessMode } from "types/VenueAcccess";
 import { JoinVenueModal } from "components/organisms/JoinVenueModal";
+import { VenueJoinButton } from "components/molecules/VenueJoinButton/VenueJoinButton";
+import CountDown from "components/molecules/CountDown";
+import EventPaymentButton from "components/molecules/EventPaymentButton";
+import InformationCard from "components/molecules/InformationCard";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PaymentModal from "components/organisms/PaymentModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import "./VenueLandingPage.scss";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -88,7 +91,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
     false
   );
-  const [isJoinVenueModalOpen, setIsJoinVenueModalOpen] = useState(true);
+  const [isJoinVenueModalOpen, setJoinVenueModalOpen] = useState(true);
   const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
   const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
     string | undefined
@@ -96,15 +99,15 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   const { user } = useUser();
 
+  const showJoinVenueModal = useCallback(() => {
+    setJoinVenueModalOpen(true);
+  }, []);
+
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) =>
       event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
         new Date().getTime() / 1000 && event.price > 0
   );
-
-  const showJoinVenueModal = useCallback(() => {
-    setIsJoinVenueModalOpen(true);
-  }, []);
 
   venue && updateTheme(venue);
 
@@ -121,52 +124,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [venue]);
 
-  const onJoinClick = useCallback(() => {
-    if (venueId) {
-      const venueEntrance = venue?.entrance && venue.entrance.length;
-      window.location.href =
-        user && !venueEntrance
-          ? venueInsideUrl(venueId)
-          : venueEntranceUrl(venueId);
-    }
-  }, [user, venue, venueId]);
-
-  const renderJoinButton = useCallback(() => {
-    switch (venue?.accessMode) {
-      case VenueAccessMode.Password:
-        return (
-          <div className="secret-password-form-wrapper">
-            <SecretPasswordForm
-              buttonText={
-                venue.config?.landingPageConfig.joinButtonText ??
-                "Join the party"
-              }
-              onSuccess={showJoinVenueModal}
-            />
-          </div>
-        );
-
-      case VenueAccessMode.Emails:
-      case VenueAccessMode.Codes:
-      default:
-        return (
-          <button
-            className="btn btn-primary btn-block btn-centered"
-            onClick={onJoinClick}
-          >
-            Join the event
-            {(venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
-              <span className="countdown">
-                Begins in {getTimeBeforeParty(venue?.start_utc_seconds)}
-              </span>
-            )}
-          </button>
-        );
-    }
-  }, [onJoinClick, showJoinVenueModal, venue]);
-
   const hideJoinVenueModal = useCallback(() => {
-    setIsJoinVenueModalOpen(false);
+    setJoinVenueModalOpen(false);
   }, []);
 
   if (venueRequestStatus && !venue) {
@@ -225,7 +184,11 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
-          {renderJoinButton()}
+          <VenueJoinButton
+            venueId={venueId}
+            venue={venue}
+            onPasswordSuccess={showJoinVenueModal}
+          />
         </div>
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">

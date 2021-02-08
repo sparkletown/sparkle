@@ -1,42 +1,37 @@
 import React, { FC, Fragment, useCallback } from "react";
 import { Modal } from "react-bootstrap";
-import { useHistory } from "react-router-dom";
 
-import { AnyVenue } from "types/Firestore";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import { AnyVenue } from "types/venues";
+
+import { joinVenue } from "utils/url";
 
 import "./JoinVenueModal.scss";
 
-interface JoinVenueModal {
+interface JoinVenueModalProps {
   venueId?: string;
   venue: AnyVenue;
   show: boolean;
   isLoggedIn: boolean;
-  onHide: () => void;
+  onHide?: () => void;
 }
 
-export const JoinVenueModal: FC<JoinVenueModal> = ({
+export const JoinVenueModal: FC<JoinVenueModalProps> = ({
   show,
   venueId,
   venue,
   isLoggedIn,
   onHide,
 }) => {
-  const history = useHistory();
+  const handleJoinVenue = useCallback(() => {
+    joinVenue(venueId, venue.entrance);
+  }, [venue.entrance, venueId]);
 
-  const joinVenue = useCallback(() => {
-    if (venueId) {
-      const venueEntrance = venue?.entrance && venue.entrance.length;
-
-      const url = !venueEntrance
-        ? venueInsideUrl(venueId)
-        : venueEntranceUrl(venueId);
-      history.push(url);
-    }
-  }, [history, venue, venueId]);
+  const hideModal = useCallback(() => {
+    onHide && onHide();
+  }, [onHide]);
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={hideModal}>
       <Modal.Body>
         <Fragment>
           <div className="join-venue-title">
@@ -46,7 +41,7 @@ export const JoinVenueModal: FC<JoinVenueModal> = ({
           </div>
           <button
             className="btn btn-primary btn-block btn-centered"
-            onClick={joinVenue}
+            onClick={handleJoinVenue}
           >
             {`Let's go`}
           </button>
