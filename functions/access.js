@@ -138,6 +138,7 @@ const createToken = async (venueId, uid, password, email, code) => {
 exports.checkAccess = functions.https.onCall(async (data, context) => {
   if (!data || !context) return { token: undefined };
 
+  console.log("1");
   if (
     context &&
     context.auth &&
@@ -146,12 +147,16 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
   ) {
     return { token: data.token };
   }
-
+  console.log("2");
   const [isPasswordValid, isEmailValid, isCodeValid] = await Promise.all([
     isValidPassword(data.venueId, data.password),
     isValidEmail(data.venueId, data.email),
     isValidCode(data.venueId, data.code),
   ]);
+
+  if (!context.auth) {
+    return { token: undefined };
+  }
 
   if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(
@@ -163,6 +168,6 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     );
     return { token: token || undefined };
   }
-
+  console.log("4");
   return { token: undefined };
 });

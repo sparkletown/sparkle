@@ -8,18 +8,21 @@ import { SecretPasswordForm } from "../SecretPasswordForm";
 interface VenueJoinButtonProps {
   venueId?: string;
   venue: AnyVenue;
+  onPasswordSubmit: () => void;
   onPasswordSuccess: () => void;
 }
 
 export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
   venueId,
   venue,
+  onPasswordSubmit,
   onPasswordSuccess,
 }) => {
   const handleJoinVenue = useCallback(() => {
     joinVenue(venueId, venue?.entrance);
-  }, [venue?.entrance, venueId]);
+  }, [venue, venueId]);
 
+  // @debt Handle emails and codes as well.
   if (venue.access === VenueAccessMode.Password) {
     return (
       <div className="secret-password-form-wrapper">
@@ -27,7 +30,8 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
           buttonText={
             venue.config?.landingPageConfig.joinButtonText ?? "Join the party"
           }
-          onPasswordAccess={onPasswordSuccess}
+          onPasswordSubmit={onPasswordSubmit}
+          onPasswordSuccess={onPasswordSuccess}
         />
       </div>
     );

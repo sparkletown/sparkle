@@ -53,6 +53,9 @@ export interface VenueLandingPageProps {
 
 export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
   const venueId = useVenueId();
+  const { user } = useUser();
+
+  const isLoggedIn = !!user;
   useConnectCurrentVenue();
 
   const venue = useSelector(currentVenueSelectorData);
@@ -84,24 +87,44 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   );
 
   dayjs.extend(advancedFormat);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isPaymentModalOpen, setPaymentModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<
     WithId<VenueEvent> | undefined
   >();
-  const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
+  const [isAuthenticationModalOpen, setAuthenticationModalOpen] = useState(
     false
   );
-  const [isJoinVenueModalOpen, setJoinVenueModalOpen] = useState(true);
+  const [isJoinVenueModalOpen, setJoinVenueModalOpen] = useState(false);
   const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
   const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
     string | undefined
   >();
 
-  const { user } = useUser();
+  const closePaymentModal = () => {
+    setPaymentModalOpen(false);
+  };
+
+  const openAuthenticationModal = () => {
+    setAuthenticationModalOpen(true);
+  };
+
+  const closeAuthenticationModal = () => {
+    setAuthenticationModalOpen(false);
+  };
 
   const showJoinVenueModal = useCallback(() => {
     setJoinVenueModalOpen(true);
   }, []);
+
+  const hideJoinVenueModal = useCallback(() => {
+    setJoinVenueModalOpen(false);
+  }, []);
+
+  const handlePasswordSubmit = () => {
+    if (user) return;
+
+    openAuthenticationModal();
+  };
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) =>
@@ -113,7 +136,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   useEffect(() => {
     if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {
-      setIsPaymentModalOpen(true);
+      setPaymentModalOpen(true);
       setShouldOpenPaymentModal(false);
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
@@ -123,10 +146,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
       showZendeskWidget();
     }
   }, [venue]);
-
-  const hideJoinVenueModal = useCallback(() => {
-    setJoinVenueModalOpen(false);
-  }, []);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
@@ -139,20 +158,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);
 
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
-
-  const closePaymentModal = () => {
-    setIsPaymentModalOpen(false);
-  };
-
-  const openAuthenticationModal = () => {
-    setIsAuthenticationModalOpen(true);
-  };
-
-  const closeAuthenticationModal = () => {
-    setIsAuthenticationModalOpen(false);
-  };
-
-  const isLoggedIn = !!user;
 
   return (
     <WithNavigationBar>
@@ -187,6 +192,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           <VenueJoinButton
             venueId={venueId}
             venue={venue}
+            onPasswordSubmit={handlePasswordSubmit}
             onPasswordSuccess={showJoinVenueModal}
           />
         </div>
@@ -325,7 +331,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                               venueId={venueId}
                               isUserVenueOwner={!!isUserVenueOwner}
                               selectEvent={() => setSelectedEvent(venueEvent)}
-                              setIsPaymentModalOpen={setIsPaymentModalOpen}
+                              setIsPaymentModalOpen={setPaymentModalOpen}
                               paymentConfirmationPending={
                                 eventPaidSuccessfully === venueEvent.id
                               }
@@ -359,13 +365,15 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           eventPaidSuccessfully={eventPaidSuccessfully}
         />
       )}
-      <AuthenticationModal
-        show={isAuthenticationModalOpen}
-        onHide={closeAuthenticationModal}
-        headerMessage={"You need an account to join this party"}
-        afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
-        showAuth={AuthOptions.initial}
-      />
+      {!isLoggedIn && (
+        <AuthenticationModal
+          show={isAuthenticationModalOpen}
+          onHide={closeAuthenticationModal}
+          headerMessage={"You need an account to join this party"}
+          afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
+          showAuth={AuthOptions.initial}
+        />
+      )}
       <JoinVenueModal
         venueId={venueId}
         venue={venue}

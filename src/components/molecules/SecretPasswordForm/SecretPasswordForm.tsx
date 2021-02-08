@@ -1,37 +1,51 @@
 import React, { useCallback, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import { checkAccess } from "api/auth";
 
-import { venueEntranceUrl } from "utils/url";
 import { setLocalStorageToken } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
 
 import "./SecretPasswordForm.scss";
 
-export const SecretPasswordForm = ({
+interface SecretPasswordFormProps {
+  buttonText: string;
+  onPasswordSubmit?: () => void;
+  onPasswordSuccess?: () => void;
+}
+
+export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
   buttonText = "Join the party",
-  onPasswordAccess,
+  onPasswordSubmit,
+  onPasswordSuccess,
 }) => {
-  const history = useHistory();
+  const { user } = useUser();
   const venueId = useVenueId();
 
-  const [error, setError] = useState();
-  const [password, setPassword] = useState();
-  const [message, setMessage] = useState();
+  const [error, setError] = useState(false);
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
-  function passwordChanged(e) {
+  const passwordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     setMessage("");
     setError(false);
-  }
+  };
 
   const passwordSubmitted = useCallback(
     async (e) => {
+      if (!venueId) return;
+
       e.preventDefault();
       setMessage("Checking password...");
+      onPasswordSubmit && onPasswordSubmit();
+
+      if (!user) {
+        setMessage("");
+        return;
+      }
 
       await checkAccess({
         venueId,
@@ -39,9 +53,9 @@ export const SecretPasswordForm = ({
       })
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
-            onPasswordAccess && onPasswordAccess();
             setLocalStorageToken(venueId, result.data.token);
-            history.push(venueEntranceUrl(venueId));
+            onPasswordSuccess && onPasswordSuccess();
+            setMessage("Success!");
           } else {
             setMessage(`Wrong password!`);
           }
@@ -50,7 +64,7 @@ export const SecretPasswordForm = ({
           setMessage(`Password error: ${error.toString()}`);
         });
     },
-    [error, history, onPasswordAccess, password, venueId]
+    [error, onPasswordSubmit, onPasswordSuccess, password, user, venueId]
   );
 
   return (
