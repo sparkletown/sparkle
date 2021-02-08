@@ -6,7 +6,6 @@ import { Venue, VenueTemplate } from "types/venues";
 import { FriendShipPage } from "pages/FriendShipPage";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { ConversationSpace } from "components/templates/ConversationSpace";
-import { PlayaRouter } from "components/templates/Playa/Router";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -36,11 +35,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
-      break;
-    case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
-      template = <PlayaRouter />;
-      fullscreen = true;
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
@@ -75,6 +69,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.avatargrid:
+    case VenueTemplate.playa:
+    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform

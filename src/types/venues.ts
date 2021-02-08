@@ -20,8 +20,6 @@ export enum VenueTemplate {
   artpiece = "artpiece",
   artcar = "artcar",
   performancevenue = "performancevenue",
-  preplaya = "preplaya",
-  playa = "playa",
   audience = "audience",
   conversationspace = "conversationspace",
   firebarrel = "firebarrel",
@@ -30,6 +28,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // --- VENUE V2
