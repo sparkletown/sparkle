@@ -28,17 +28,16 @@ Install the platform dependencies with `npm`:
 (**Note:** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions)
 
 ```bash
-npm i
+npm install
 ```
 
 Now you're ready to start the server! ✨
 
 ```bash
-npm test
 npm start
 ```
 
-You won't need to in dev, but you can also test builds:
+While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
 ```bash
 npm run build
@@ -46,25 +45,38 @@ npm run build
 
 ### Firebase functions
 
-To do this, you must first be added to the firebase environment.
-In a new terminal enter the following commands.
+**Note:** Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
+
+In a new terminal, from the directory you cloned the code to, enter the following commands:
 
 ```bash
-npm install -g firebase-tools@latest
+# While not necessary (as we already include it in our devDependencies), you can install the firebase-tools globally if desired
+# npm install -g firebase-tools@latest
+
+# Move into the firebase functions directory
 cd functions
+
+# Install the function dependencies
 npm install
+
+# Login to firebase with the account that has access to this project
 firebase login
+
+# Switch to the 'staging' project in our local configuration (or whichever environment you are developing against)
 firebase use staging
-firebase functions:config:get
+
+# Copy the runtime config locally
+npm run firebase functions:config:get > .runtimeconfig.json
 ```
 
-Create a new file `functions/.runtimeconfig.json` and paste the output of this command into it.
-
-Now you can launch the server! ✨
+Now you're ready to launch the backend function emulator! ✨
 <!-- Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with: -->
 
 ```bash
-firebase emulators:start --only functions
+npm run firebase:emulate-functions
+
+# Or if you don't want to use our helper scripts, you can do this directly:
+# firebase emulators:start --only functions
 ```
 
 ### Stripe
