@@ -23,7 +23,7 @@ export const JoinVenueModal: React.FC<JoinVenueModalProps> = ({
   onHide,
 }) => {
   const handleJoinVenue = useCallback(() => {
-    joinVenue(venueId, venue.entrance ? !!venue.entrance.length : false);
+    joinVenue(venueId, !!venue?.entrance?.length);
   }, [venue.entrance, venueId]);
 
   const hideModal = useCallback(() => {
