@@ -23,7 +23,9 @@ Now, obtain the `.env` file for the environment (ask someone on the engineering 
 ln -s .env.staging.local .env
 ``` -->
 
-Install the npm modules
+Install the platform dependencies with `npm`:
+
+(**Note:** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions)
 
 ```bash
 npm i
