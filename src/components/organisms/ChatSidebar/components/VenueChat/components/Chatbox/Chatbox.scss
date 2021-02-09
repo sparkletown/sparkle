@@ -6,6 +6,11 @@
 
   .chatbox-messages-container {
     flex: 1;
+    display: flex;
+    flex-flow: column-reverse;
+    justify-self: flex-end;
+    padding: 24px 16px 0;
+    overflow-x: auto;
   }
 
   .chatbox-input-container {

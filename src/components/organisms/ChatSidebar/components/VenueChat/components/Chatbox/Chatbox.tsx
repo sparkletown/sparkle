@@ -5,13 +5,14 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
 import { WithId } from "utils/id";
+import { DisplayMessage } from "hooks/useVenueChat";
 
 import { ChatMessage } from "../ChatMessage";
 
 import "./Chatbox.scss";
 
 export type ChatboxProps = {
-  messages: WithId<RestrictedChatMessage>[];
+  messages: DisplayMessage[];
   sendMessage: (message: {}) => void;
   deleteMessage: (message: {}) => void;
 };
@@ -22,15 +23,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   deleteMessage,
 }) => {
   const rendreredMessages = useMemo(
-    () =>
-      messages.map((message) => (
-        <ChatMessage
-        // text={message.text}
-        // date={message.}
-        // user={usersById[message.from]}
-        // onDelete={deleteMessage}
-        />
-      )),
+    () => messages.map((message) => <ChatMessage {...message} />),
     [messages]
   );
 

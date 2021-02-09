@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { venueChatsSelector } from "utils/selectors";
+import { venueChatsSelector, worldUsersByIdSelector } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 
@@ -28,22 +28,22 @@ export const useConnectVenueChat = (venueId?: string) => {
   );
 };
 
-type DisplayMessage = {
+export type DisplayMessage = {
   text: string;
   author: WithId<User>;
-  displayDate: firebase.firestore.Timestamp;
-  isMyMessage: boolean;
+  timestamp: number;
+  isMine: boolean;
 };
 
 const getDisplayChatMessage = (
   message: ChatMessage,
   authorsById: Record<string, User>,
-  userId?: string
+  myUserId?: string
 ): DisplayMessage => ({
   text: message.text,
   author: { ...authorsById[message.from], id: message.from },
-  displayDate: message.ts_utc,
-  isMyMessage: userId === message.from,
+  timestamp: message.ts_utc.toMillis(),
+  isMine: myUserId === message.from,
 });
 
 export const useVenueChat = () => {
@@ -60,17 +60,27 @@ export const useVenueChat = () => {
   const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
   const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
+  const filteredMessages = chats
+    .filter(
+      (message) =>
+        message.deleted !== true &&
+        message.type === "room" &&
+        message.to === venueId &&
+        message.ts_utc.seconds > HIDE_BEFORE
+    )
+    .sort(chatSort);
+
+  const sendMessage = () => {};
+  const deleteMessage = () => {};
+
   return useMemo(
     () => ({
-      venueChatMessages: chats
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            message.type === "room" &&
-            message.to === venueId &&
-            message.ts_utc.seconds > HIDE_BEFORE
-        )
-        .sort(chatSort),
+      venueChatMessages: filteredMessages,
+      displayMessages: filteredMessages.map((message) =>
+        getDisplayChatMessage(message, worldUsersById, userId)
+      ),
+      sendMessage,
+      deleteMessage,
     }),
     [chats, venueId, HIDE_BEFORE]
   );

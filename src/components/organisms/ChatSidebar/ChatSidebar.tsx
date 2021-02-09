@@ -44,8 +44,6 @@ export const ChatSidebar: React.FC = () => {
     openChat();
   };
 
-  console.log({ isChatSidebarVisible });
-
   return (
     <div
       className={classNames("chat-sidebar-component", {

@@ -40,8 +40,6 @@ export const useChatControls = () => {
     chatUIStateSelector
   );
 
-  console.log({ openedChatType });
-
   return {
     isChatSidebarVisible,
     openedChatType,

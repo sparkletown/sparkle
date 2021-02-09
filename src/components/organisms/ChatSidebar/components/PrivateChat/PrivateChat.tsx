@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 
-import { Chat } from "components/organisms/Chat";
+// import { Chat } from "components/organisms/Chat";
 
 import { PrivateChatList, OnlineUserList } from "./components";
 
@@ -43,12 +43,13 @@ export const PrivateChat: React.FC = () => {
   // );
 
   if (selectedUser) {
-    return (
-      <Chat
-        sendMessage={sendMessageToSelectedUser}
-        // chatMessages={chatMessages}
-      />
-    );
+    return null;
+    // (
+    // <Chat
+    // sendMessage={sendMessageToSelectedUser}
+    // chatMessages={chatMessages}
+    // />
+    // );
   }
 
   return null;
