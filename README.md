@@ -13,15 +13,9 @@ git clone https://github.com/sparkletown/sparkle
 cd sparkle
 ```
 
-<!-- Now, obtain the `.env` file for the environemnt (eg. staging) and save it (eg. `.env.staging`) -->
+In the main `sparkle` folder, copy `.env.example` to a new file `.env`, and fill it with the appropriate details.
 
-Now, obtain the `.env` file for the environment (ask someone on the engineering team) and save it.
-
-<!-- ```
-# copy in the .env files
-# symlink the staging .env file
-ln -s .env.staging.local .env
-``` -->
+You can read more about `.env` files here: https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env
 
 Install the platform dependencies with `npm`:
 
@@ -70,7 +64,6 @@ npm run firebase functions:config:get > .runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
-<!-- Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with: -->
 
 ```bash
 npm run firebase:emulate-functions
@@ -78,10 +71,12 @@ npm run firebase:emulate-functions
 # Or if you don't want to use our helper scripts, you can do this directly:
 # firebase emulators:start --only functions
 ```
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
+
 
 ### Stripe
 
-Note: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
+**Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
 
 First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
 
