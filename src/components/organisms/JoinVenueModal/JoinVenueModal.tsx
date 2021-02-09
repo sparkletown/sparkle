@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 
 import { AnyVenue } from "types/venues";
@@ -15,7 +15,7 @@ interface JoinVenueModalProps {
   onHide?: () => void;
 }
 
-export const JoinVenueModal: FC<JoinVenueModalProps> = ({
+export const JoinVenueModal: React.FC<JoinVenueModalProps> = ({
   show,
   venueId,
   venue,
@@ -23,7 +23,7 @@ export const JoinVenueModal: FC<JoinVenueModalProps> = ({
   onHide,
 }) => {
   const handleJoinVenue = useCallback(() => {
-    joinVenue(venueId, venue.entrance);
+    joinVenue(venueId, venue.entrance ? !!venue.entrance.length : false);
   }, [venue.entrance, venueId]);
 
   const hideModal = useCallback(() => {
@@ -33,7 +33,7 @@ export const JoinVenueModal: FC<JoinVenueModalProps> = ({
   return (
     <Modal show={show} onHide={hideModal}>
       <Modal.Body>
-        <Fragment>
+        <>
           <div className="join-venue-title">
             {isLoggedIn
               ? `You are now attending ${venue.name}`
@@ -45,7 +45,7 @@ export const JoinVenueModal: FC<JoinVenueModalProps> = ({
           >
             {`Let's go`}
           </button>
-        </Fragment>
+        </>
       </Modal.Body>
     </Modal>
   );

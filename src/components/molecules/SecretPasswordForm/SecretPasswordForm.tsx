@@ -28,11 +28,14 @@ export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
 
-  const passwordChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setMessage("");
-    setError(false);
-  };
+  const changePassword = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setPassword(e.target.value);
+      setMessage("");
+      setError(false);
+    },
+    []
+  );
 
   const passwordSubmitted = useCallback(
     async (e) => {
@@ -57,7 +60,7 @@ export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
             onPasswordSuccess && onPasswordSuccess();
             setMessage("Success!");
           } else {
-            setMessage(`Wrong password!`);
+            setMessage("Wrong password!");
           }
         })
         .catch(() => {
@@ -78,7 +81,7 @@ export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
           required
           placeholder="password"
           autoFocus
-          onChange={passwordChanged}
+          onChange={changePassword}
           id="password"
         />
         <input

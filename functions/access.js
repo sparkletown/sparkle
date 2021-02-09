@@ -136,7 +136,7 @@ const createToken = async (venueId, uid, password, email, code) => {
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
-  if (!data || !context) return { token: undefined };
+  if (!data || !context || !context.auth) return { token: undefined };
 
   if (
     context &&
@@ -152,10 +152,6 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     isValidEmail(data.venueId, data.email),
     isValidCode(data.venueId, data.code),
   ]);
-
-  if (!context.auth) {
-    return { token: undefined };
-  }
 
   if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(

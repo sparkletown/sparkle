@@ -19,7 +19,7 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
   onPasswordSuccess,
 }) => {
   const handleJoinVenue = useCallback(() => {
-    joinVenue(venueId, venue?.entrance);
+    joinVenue(venueId, venue.entrance ? !!venue.entrance.length : false);
   }, [venue, venueId]);
 
   // @debt Handle emails and codes as well.

@@ -21,7 +21,7 @@ interface AuthenticationModalProps {
   showAuth: AuthOptions;
 }
 
-export const AuthenticationModal: React.FunctionComponent<AuthenticationModalProps> = ({
+export const AuthenticationModal: React.FC<AuthenticationModalProps> = ({
   show,
   onHide,
   headerMessage,
