@@ -12,16 +12,15 @@ import ChatSidebar from "components/organisms/ChatSidebar";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-import { AvatarGrid } from "components/templates/AvatarGrid";
 import { PartyMap } from "components/templates/PartyMap";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
-type Props = {
+type TemplateWrapperProps = {
   venue: Venue;
 };
 
-const TemplateWrapper: React.FC<Props> = ({ venue }) => {
+const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
 
   let template;
@@ -69,9 +68,6 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
       template = <Audience />;
       fullscreen = true;
       break;
-    case VenueTemplate.avatargrid:
-      template = <AvatarGrid />;
-      break;
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
       break;
@@ -79,6 +75,17 @@ const TemplateWrapper: React.FC<Props> = ({ venue }) => {
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
       break;
+
+    case VenueTemplate.avatargrid:
+      template = (
+        <div>
+          Legacy Template: ${venue.template} has been removed from the platform
+        </div>
+      );
+      break;
+
+    default:
+      template = <div>Unknown Template: ${venue.template}</div>;
   }
 
   return (

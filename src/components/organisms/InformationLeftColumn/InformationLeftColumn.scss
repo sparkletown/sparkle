@@ -4,53 +4,57 @@
   flex: 0 0 auto;
   position: relative;
 
-  .band-logo {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    object-fit: cover;
-
-    &.expanded {
-      width: 100px;
-      height: 100px;
-    }
-  }
-  .chevron-icon {
-    margin-bottom: 10px;
-    transition: all 0.2s linear;
-  }
-  .chevron-icon.turned {
-    transform: rotate(-180deg);
-  }
   .chevron-icon-container {
     width: 100%;
     display: flex;
     justify-content: flex-start;
     margin-left: 30px;
+
+    .chevron-icon {
+      margin-bottom: 10px;
+      transition: all 0.2s linear;
+
+      &--turned {
+        transform: rotate(-180deg);
+      }
+    }
   }
-}
-.left-column {
-  box-shadow: 0 0 30px $black;
-  transition: all 0.1s linear;
-  width: 70px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
-  background: $dark;
-  border-radius: 0 22px 22px 0;
-  cursor: pointer;
-  position: absolute;
-  top: 40px;
-  z-index: 1;
-}
 
-.left-column.expanded-popup {
-  width: 300px;
-  height: 480px;
-}
+  .left-column {
+    z-index: z(left-column);
 
-.left-column.expanded-donation {
-  width: 300px;
-  height: 430px;
+    position: absolute;
+    top: 50px;
+    width: 70px;
+
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background: $dark;
+    box-shadow: 0 0 30px $black;
+    border-radius: 0 22px 22px 0;
+    cursor: pointer;
+
+    transition: all 0.1s linear;
+
+    &--expanded {
+      width: 300px;
+      height: auto;
+    }
+  }
+
+  .left-column__logo {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    &--expanded {
+      width: 100px;
+      height: 100px;
+    }
+  }
 }
