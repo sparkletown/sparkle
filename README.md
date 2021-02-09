@@ -6,7 +6,7 @@ Codebase for Sparkle, brought to you by Sparkle.
 
 ### Frontend
 
-Clone the repo and cd into it
+First, clone the repo and `cd` into it:
 
 ```bash
 git clone https://github.com/sparkletown/sparkle
