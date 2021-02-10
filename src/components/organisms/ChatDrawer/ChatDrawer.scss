@@ -29,6 +29,17 @@
     align-items: center;
   }
 
+  .chatdot{
+    background:red;
+    width:10px;
+    height:10px;
+    display:block;
+    border-radius: 20px;
+    position: absolute;
+    right: 20px;
+    top: 50px;
+    display:block;
+  }
   .form-message {
     margin-bottom: 10px;
   }

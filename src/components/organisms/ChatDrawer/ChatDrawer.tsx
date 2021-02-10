@@ -97,6 +97,18 @@ const ChatDrawer: React.FC<PropsType> = ({
         .sort(chatSort),
     [chats, roomName, HIDE_BEFORE]
   );
+  let noofchats : number = chatsToDisplay? chatsToDisplay.length:0;
+
+  if(typeof window.localStorage.noofchats =='undefined'){
+    window.localStorage.noofchats=noofchats;
+  }
+  let notificationAlert=0;
+  console.log(window.localStorage.noofchats);
+  console.log(noofchats);
+  if(parseInt(window.localStorage.noofchats) !== noofchats){
+    notificationAlert=1;
+  }
+  window.localStorage.noofchats=noofchats;
 
   const allowDelete =
     ((userRoles && userRoles.includes("admin")) ||
@@ -133,6 +145,7 @@ const ChatDrawer: React.FC<PropsType> = ({
       {!isChatDrawerExpanded ? (
         <div className="chat-icon-container">
           <FontAwesomeIcon icon={faCommentDots} className="chat-icon" />
+          {notificationAlert ? (<><span className="chatdot"></span><audio autoPlay ><source src="/sounds/notification.mp3" /></audio></>) : ''}
         </div>
       ) : (
         <div className="band-reaction-container">
