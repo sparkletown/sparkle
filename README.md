@@ -13,9 +13,11 @@ git clone https://github.com/sparkletown/sparkle
 cd sparkle
 ```
 
-In the main `sparkle` folder, copy `.env.example` to a new file `.env`, and fill it with the appropriate details.
+In the main `sparkle` folder, copy `.env.example` to a new file `.env.local`, and fill it with the appropriate details.
 
-You can read more about `.env` files here: https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env
+You can read more about the various `.env` files that you can use at:
+
+- https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env
 
 Install the platform dependencies with `npm`:
 
@@ -71,6 +73,7 @@ npm run firebase:emulate-functions
 # Or if you don't want to use our helper scripts, you can do this directly:
 # firebase emulators:start --only functions
 ```
+
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
 
