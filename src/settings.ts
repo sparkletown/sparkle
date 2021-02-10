@@ -66,6 +66,10 @@ export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
+export const DEFAULT_PARTY_BUTTON_TEXT = "Join the party";
+export const DEFAULT_EVENT_BUTTON_TEXT = "Join the event";
+export const DEFAULT_PARTY_JOIN_MESSAGE =
+  "You need an account to join this party";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins

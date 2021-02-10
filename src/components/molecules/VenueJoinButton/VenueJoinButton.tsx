@@ -1,15 +1,20 @@
 import React, { useCallback } from "react";
+
+import { DEFAULT_PARTY_BUTTON_TEXT } from "settings";
+
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
+
 import { getCurrentTimeInUTCSeconds, getTimeBeforeParty } from "utils/time";
 import { joinVenue } from "utils/url";
+
 import { SecretPasswordForm } from "../SecretPasswordForm";
 
-interface VenueJoinButtonProps {
+export interface VenueJoinButtonProps {
   venueId?: string;
   venue: AnyVenue;
-  onPasswordSubmit: () => void;
-  onPasswordSuccess: () => void;
+  onPasswordSubmit?: () => void;
+  onPasswordSuccess?: () => void;
 }
 
 export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
@@ -19,17 +24,20 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
   onPasswordSuccess,
 }) => {
   const handleJoinVenue = useCallback(() => {
-    joinVenue(venueId, !!venue?.entrance?.length);
+    if (!venueId) return;
+
+    joinVenue(venueId, { hasVenueEntrance: !!venue?.entrance?.length });
   }, [venue, venueId]);
 
   // @debt Handle emails and codes as well.
   if (venue.access === VenueAccessMode.Password) {
+    const buttonText =
+      venue.config?.landingPageConfig.joinButtonText ??
+      DEFAULT_PARTY_BUTTON_TEXT;
     return (
       <div className="secret-password-form-wrapper">
         <SecretPasswordForm
-          buttonText={
-            venue.config?.landingPageConfig.joinButtonText ?? "Join the party"
-          }
+          buttonText={buttonText}
           onPasswordSubmit={onPasswordSubmit}
           onPasswordSuccess={onPasswordSuccess}
         />
@@ -42,7 +50,7 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
       className="btn btn-primary btn-block btn-centered"
       onClick={handleJoinVenue}
     >
-      Join the event
+      {DEFAULT_PARTY_BUTTON_TEXT}
       {(venue?.start_utc_seconds ?? 0) > getCurrentTimeInUTCSeconds() && (
         <span className="countdown">
           Begins in {getTimeBeforeParty(venue?.start_utc_seconds)}

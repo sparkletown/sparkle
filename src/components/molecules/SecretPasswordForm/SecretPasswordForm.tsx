@@ -2,6 +2,8 @@ import React, { useCallback, useState } from "react";
 
 import { checkAccess } from "api/auth";
 
+import { DEFAULT_PARTY_BUTTON_TEXT } from "settings";
+
 import { setLocalStorageToken } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 
@@ -10,14 +12,14 @@ import { useUser } from "hooks/useUser";
 
 import "./SecretPasswordForm.scss";
 
-interface SecretPasswordFormProps {
+export interface SecretPasswordFormProps {
   buttonText: string;
   onPasswordSubmit?: () => void;
   onPasswordSuccess?: () => void;
 }
 
 export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
-  buttonText = "Join the party",
+  buttonText = DEFAULT_PARTY_BUTTON_TEXT,
   onPasswordSubmit,
   onPasswordSuccess,
 }) => {

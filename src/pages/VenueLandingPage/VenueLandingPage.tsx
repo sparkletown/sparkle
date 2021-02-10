@@ -20,6 +20,7 @@ import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import { showZendeskWidget } from "utils/zendesk";
 
 import {
+  DEFAULT_PARTY_JOIN_MESSAGE,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
@@ -31,7 +32,7 @@ import {
 } from "utils/selectors";
 
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import { JoinVenueModal } from "components/organisms/JoinVenueModal";
+import { VenueJoinModal } from "components/organisms/VenueJoinModal";
 import { VenueJoinButton } from "components/molecules/VenueJoinButton/VenueJoinButton";
 import CountDown from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
@@ -99,6 +100,10 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
     string | undefined
   >();
+
+  const openPaymentModal = useCallback(() => {
+    setShouldOpenPaymentModal(true);
+  }, []);
 
   const closePaymentModal = useCallback(() => {
     setPaymentModalOpen(false);
@@ -366,13 +371,13 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         />
       )}
       <AuthenticationModal
-        show={isLoggedIn && isAuthenticationModalOpen}
+        show={!isLoggedIn && isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
-        headerMessage={"You need an account to join this party"}
-        afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
+        headerMessage={DEFAULT_PARTY_JOIN_MESSAGE}
+        afterUserIsLoggedIn={openPaymentModal}
         showAuth={AuthOptions.initial}
       />
-      <JoinVenueModal
+      <VenueJoinModal
         venueId={venueId}
         venue={venue}
         show={isJoinVenueModalOpen}

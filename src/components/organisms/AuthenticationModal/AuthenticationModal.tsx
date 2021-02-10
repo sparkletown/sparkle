@@ -13,7 +13,7 @@ export enum AuthOptions {
   initial = "initial",
 }
 
-interface AuthenticationModalProps {
+export interface AuthenticationModalProps {
   show: boolean;
   onHide: () => void;
   headerMessage?: string;

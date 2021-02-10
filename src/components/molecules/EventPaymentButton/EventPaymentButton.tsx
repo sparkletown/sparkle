@@ -1,22 +1,27 @@
 import React from "react";
 import "firebase/functions";
+import { Link } from "react-router-dom";
 
 import { VenueEvent } from "types/venues";
 
-import "./EventPaymentButton.scss";
-import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
-import { Link } from "react-router-dom";
+import { DEFAULT_EVENT_BUTTON_TEXT } from "settings";
+
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { canUserJoinTheEvent } from "utils/time";
+
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
+
 import { WithId } from "utils/id";
 import { venueEntranceUrl } from "utils/url";
 import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
 } from "utils/selectors";
+
+import "./EventPaymentButton.scss";
 
 interface PropsType {
   event: WithId<VenueEvent>;
@@ -59,7 +64,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
             className="btn btn-primary buy-tickets-button"
             disabled={!canUserJoinTheEvent(event)}
           >
-            Join the event
+            {DEFAULT_EVENT_BUTTON_TEXT}
           </button>
         </Link>
       ) : (

@@ -2,6 +2,10 @@ import Bugsnag from "@bugsnag/js";
 
 import { VALID_URL_PROTOCOLS } from "settings";
 
+export interface JoinVenueOptions {
+  hasVenueEntrance?: boolean;
+}
+
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
 };
@@ -40,9 +44,10 @@ export const openRoomUrl = (url: string) => {
 
 export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
-export const joinVenue = (venueId?: string, hasVenueEntrance?: boolean) => {
-  if (!venueId) return;
-
+export const joinVenue = (
+  venueId: string,
+  { hasVenueEntrance }: JoinVenueOptions
+) => {
   const url = hasVenueEntrance
     ? venueEntranceUrl(venueId)
     : venueInsideUrl(venueId);

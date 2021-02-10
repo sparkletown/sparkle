@@ -136,10 +136,9 @@ const createToken = async (venueId, uid, password, email, code) => {
 };
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
-  if (!data || !context || !context.auth) return { token: undefined };
+  if (!data || !context) return { token: undefined };
 
   if (
-    context &&
     context.auth &&
     context.auth.uid &&
     (await checkIsValidToken(data.venueId, context.auth.uid, data.token))
