@@ -6,13 +6,16 @@ import { DisplayMessage } from "hooks/useVenueChat";
 
 import "./ChatMessage.scss";
 
-type ChatProps = {};
+type ChatProps = {
+  onAuthorClick: () => void;
+};
 
-export const ChatMessage: React.FC<DisplayMessage> = ({
+export const ChatMessage: React.FC<DisplayMessage & ChatProps> = ({
   text,
   timestamp,
   isMine,
   author,
+  onAuthorClick,
 }) => {
   const containerStyles = classNames("chat-message-container", {
     "chat-message-container--isme": isMine,
@@ -30,8 +33,14 @@ export const ChatMessage: React.FC<DisplayMessage> = ({
     <div className={containerStyles}>
       <div className={textStyles}>{text}</div>
       <div className={messageInfoStyles}>
-        <img className="chat-message-author-pic" src={author.pictureUrl} />
-        <p className="chat-message-author-name">{author.partyName}</p>
+        <img
+          onClick={onAuthorClick}
+          className="chat-message-author-pic"
+          src={author.pictureUrl}
+        />
+        <p onClick={onAuthorClick} className="chat-message-author-name">
+          {author.partyName}
+        </p>
         <p className="chat-message-time">{dayjs(timestamp).format("h:MM A")}</p>
       </div>
     </div>

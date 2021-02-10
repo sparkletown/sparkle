@@ -4,7 +4,7 @@ import React, { useState, useMemo } from "react";
 
 import { PrivateChatList, OnlineUserList } from "./components";
 
-import { usePrivateChat } from "hooks/chats";
+import { usePrivateChat } from "hooks/usePrivateChats";
 import { isEmpty } from "lodash";
 
 const useRecentUniverseUsers = () => ({ recentUniverseUsers: [] });

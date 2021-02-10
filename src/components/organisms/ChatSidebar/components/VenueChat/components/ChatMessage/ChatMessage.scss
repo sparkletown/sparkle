@@ -47,6 +47,10 @@
       opacity: 0.8;
       color: #fff;
       margin: 0 8px 4px;
+
+      &:hover {
+        opacity: 1;
+      }
     }
 
     .chat-message-time {

@@ -1,5 +1,5 @@
 import { ChatActions, ChatActionTypes } from "store/actions/Chat";
-import { ChatTypes } from "types/Chat";
+import { ChatTypes } from "types/chat";
 
 type PrivateChatState = {
   openedChatType: ChatTypes.PRIVATE_CHAT;

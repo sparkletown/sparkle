@@ -1,63 +1,18 @@
 import { useMemo } from "react";
 
-import { ChatTypes, SetAnyChatTabOptions } from "types/Chat";
-
 import {
   userPrivateChatsSelector,
   chatUsersByIdSelector,
-  chatUIStateSelector,
 } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
 import { hasElements } from "utils/types";
 
-import { setChatTab, setChatSidebarVisibility } from "store/actions/Chat";
-
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
-import { useDispatch } from "./useDispatch";
 
 import { DOCUMENT_ID, NUM_CHAT_UIDS_TO_LOAD } from "settings";
-
-/////////////// SHARED CHATS HOOKS ///////////////
-
-export const useChatControls = () => {
-  const dispatch = useDispatch();
-
-  const openChat = (
-    chatOptions: SetAnyChatTabOptions = { chatType: ChatTypes.VENUE_CHAT }
-  ) => {
-    dispatch(setChatSidebarVisibility(true));
-    dispatch(setChatTab(chatOptions));
-  };
-
-  const closeChat = () => {
-    dispatch(setChatSidebarVisibility(false));
-  };
-
-  const { isChatSidebarVisible, openedChatType } = useSelector(
-    chatUIStateSelector
-  );
-
-  return {
-    isChatSidebarVisible,
-    openedChatType,
-
-    openChat,
-    closeChat,
-  };
-};
-
-export const useChatInfo = () => {
-  return {
-    worldChatTabTitle: "World chat",
-    privateChatTabTitle: "Private Chats",
-    venueChatTabTitle: "Venue Chat",
-  };
-};
-
-/////////////// PRIVATE CHAT HOOKS ///////////////
 
 export const useUserChatsConnect = () => {
   const { user } = useUser();
@@ -170,7 +125,3 @@ export const usePrivateChat = () => {
     privateChatList,
   };
 };
-
-/////////////// WORLD CHAT HOOKS ///////////////
-
-export const useWorldChat = () => {};

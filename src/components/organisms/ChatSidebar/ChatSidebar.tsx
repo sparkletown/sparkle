@@ -9,9 +9,12 @@ import {
 
 import { WorldChat, VenueChat, PrivateChat } from "./components";
 
-import { useChatControls, useChatInfo } from "hooks/chats";
+import {
+  useChatsSidebarControls,
+  useChatsSidebarInfo,
+} from "hooks/useChatsSidebar";
 
-import { ChatTypes } from "types/Chat";
+import { ChatTypes } from "types/chat";
 
 import "./ChatSidebar.scss";
 
@@ -21,16 +24,12 @@ export const ChatSidebar: React.FC = () => {
     openChat,
     openedChatType,
     closeChat,
-  } = useChatControls();
+  } = useChatsSidebarControls();
   const {
     worldChatTabTitle,
     privateChatTabTitle,
     venueChatTabTitle,
-  } = useChatInfo();
-
-  // const selectWorldChatTab = useCallback(() => {
-  //   setSelectedTab(ChatTypes.WORLD_CHAT);
-  // }, [setSelectedTab]);
+  } = useChatsSidebarInfo();
 
   const selectPrivateChatTab = useCallback(() => {
     openChat({ chatType: ChatTypes.PRIVATE_CHAT });
@@ -87,19 +86,7 @@ export const ChatSidebar: React.FC = () => {
           )}
         </div>
 
-        {/* {isChatSidebarVisible ? (
-          <div className="chat-sidebar-control_close">Close</div>
-        ) : (
-          <div className="chat-sidebar-control_open">Open</div>
-        )} */}
-
         <div className="chat-sidebar-tabs">
-          {/* <div
-            className="chat-sidebar-tab chat-sidebar-tab_world"
-            // onClick={selectWorldChatTab}
-          >
-            {worldChatTabTitle}
-          </div> */}
           <div
             className={classNames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
@@ -123,7 +110,6 @@ export const ChatSidebar: React.FC = () => {
       <div className="chat-sidebar-content">
         {openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
         {openedChatType === ChatTypes.PRIVATE_CHAT && <PrivateChat />}
-        {/* {openedChatType === ChatTypes.WORLD_CHAT && <WorldChat />} */}
       </div>
     </div>
   );

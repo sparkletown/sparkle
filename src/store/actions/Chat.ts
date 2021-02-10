@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import firebase from "firebase/app";
-import { SetAnyChatTabOptions } from "types/Chat";
+import { SetAnyChatTabOptions } from "types/chat";
 
 export enum ChatActionTypes {
   SEND_GLOBAL_CHAT = "SEND_GLOBAL_CHAT",

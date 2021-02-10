@@ -1,17 +1,21 @@
 import { useMemo } from "react";
 
-import { venueChatsSelector, worldUsersByIdSelector } from "utils/selectors";
-import { chatSort } from "utils/chat";
-import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
-
 import { VENUE_CHAT_AGE_DAYS } from "settings";
-import { ChatMessage } from "store/actions/Chat";
+
+import { sendVenueMessage } from "api/chat";
+
+import { buildMessage } from "utils/chat";
+import { venueChatsSelector } from "utils/selectors";
+import { chatSort } from "utils/chat";
+import { getDaysAgoInSeconds } from "utils/time";
+import { WithId } from "utils/id";
+
+import { ChatMessage } from "types/chat";
+import { User } from "types/User";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
-import { WithId } from "utils/id";
-import { User } from "types/User";
 import { useUser } from "./useUser";
 import { useWorldUsersById } from "./users";
 
@@ -57,20 +61,25 @@ export const useVenueChat = () => {
 
   const chats = useSelector(venueChatsSelector) ?? [];
 
-  const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-  const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+  const DAYS_AGO_IN_SECONDS = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
   const filteredMessages = chats
     .filter(
       (message) =>
-        message.deleted !== true &&
-        message.type === "room" &&
-        message.to === venueId &&
-        message.ts_utc.seconds > HIDE_BEFORE
+        message.deleted !== true && message.ts_utc.seconds > DAYS_AGO_IN_SECONDS
     )
     .sort(chatSort);
 
-  const sendMessage = () => {};
+  const sendMessage = (text: string) => {
+    if (!venueId || !user?.uid) return;
+
+    const message = buildMessage({ from: user?.uid, text });
+
+    console.log({ message });
+
+    sendVenueMessage({ venueId, message });
+  };
+
   const deleteMessage = () => {};
 
   return useMemo(
@@ -82,6 +91,6 @@ export const useVenueChat = () => {
       sendMessage,
       deleteMessage,
     }),
-    [chats, venueId, HIDE_BEFORE]
+    [filteredMessages]
   );
 };
