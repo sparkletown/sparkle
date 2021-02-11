@@ -114,13 +114,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           break;
       }
 
-      if (!result) return;
-
-      if (result.data === false) {
+      if (result?.data === false) {
         throw new Error("access denied");
       }
 
-      setLocalStorageToken(venue.id, result.data.token);
+      if (result?.data?.token) {
+        setLocalStorageToken(venue.id, result.data.token);
+      }
 
       if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
