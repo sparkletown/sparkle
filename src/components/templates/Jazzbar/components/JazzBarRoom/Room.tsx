@@ -305,8 +305,6 @@ const Room: React.FC<RoomProps> = ({
     [hasChairs, participants.length, participantContainerClassName]
   );
 
-  console.log({ emptyComponents, hasChairs });
-
   if (!token) {
     return <></>;
   }
