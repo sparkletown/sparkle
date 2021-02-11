@@ -32,18 +32,18 @@ export const useConnectVenueChat = (venueId?: string) => {
   );
 };
 
-export type DisplayMessage = {
+export type MessageToDisplay = {
   text: string;
   author: WithId<User>;
   timestamp: number;
   isMine: boolean;
 };
 
-const getDisplayChatMessage = (
+const getMessagesToDisplay = (
   message: ChatMessage,
   authorsById: Record<string, User>,
   myUserId?: string
-): DisplayMessage => ({
+): MessageToDisplay => ({
   text: message.text,
   author: { ...authorsById[message.from], id: message.from },
   timestamp: message.ts_utc.toMillis(),
@@ -75,8 +75,6 @@ export const useVenueChat = () => {
 
     const message = buildMessage({ from: user?.uid, text });
 
-    console.log({ message });
-
     sendVenueMessage({ venueId, message });
   };
 
@@ -85,8 +83,8 @@ export const useVenueChat = () => {
   return useMemo(
     () => ({
       venueChatMessages: filteredMessages,
-      displayMessages: filteredMessages.map((message) =>
-        getDisplayChatMessage(message, worldUsersById, userId)
+      messagesToDisplay: filteredMessages.map((message) =>
+        getMessagesToDisplay(message, worldUsersById, userId)
       ),
       sendMessage,
       deleteMessage,

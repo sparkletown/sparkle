@@ -19,7 +19,7 @@ export const sendVenueMessage = async ({
     .add(message);
 
 export const sendPrivateMessage = async (message: PrivateChatMessage) => {
-  // @debt This is legacy way of saving private messages. Would be nice to have it in one operation
+  // @debt This is the legacy way of saving private messages. Would be nice to have it saved in one operation
   for (const messageUser of [message.from, message.to]) {
     await firebase
       .firestore()
