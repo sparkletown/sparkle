@@ -167,7 +167,7 @@ const createVenueData_v2 = (data, context) => ({
   },
   owners: [context.auth.token.user_id],
   showGrid: data.showGrid || false,
-  ...(showGrid && { columns: data.columns }),
+  ...(data.showGrid && { columns: data.columns }),
   template: data.template || VenueTemplate.partymap,
   rooms: [],
 });
