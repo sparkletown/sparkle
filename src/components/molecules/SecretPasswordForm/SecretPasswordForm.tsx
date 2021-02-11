@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { useForm } from "react-hook-form";
 
 import { checkAccess } from "api/auth";
 
@@ -18,6 +19,10 @@ export interface SecretPasswordFormProps {
   onPasswordSuccess?: () => void;
 }
 
+export interface SecretPasswordFormData {
+  password: string;
+}
+
 export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
   buttonText = DEFAULT_PARTY_BUTTON_TEXT,
   onPasswordSubmit,
@@ -26,24 +31,31 @@ export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
   const { user } = useUser();
   const venueId = useVenueId();
 
-  const [error, setError] = useState(false);
-  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    setError,
+    clearError,
+  } = useForm<SecretPasswordFormData>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   const changePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPassword(e.target.value);
       setMessage("");
-      setError(false);
+      clearError();
     },
-    []
+    [clearError]
   );
 
-  const passwordSubmitted = useCallback(
-    async (e) => {
+  const submitPassword = useCallback(
+    async ({ password }) => {
       if (!venueId) return;
 
-      e.preventDefault();
       setMessage("Checking password...");
       onPasswordSubmit && onPasswordSubmit();
 
@@ -62,40 +74,43 @@ export const SecretPasswordForm: React.FC<SecretPasswordFormProps> = ({
             onPasswordSuccess && onPasswordSuccess();
             setMessage("Success!");
           } else {
-            setMessage("Wrong password!");
+            setMessage("");
+            setError("password", "required", `Wrong password!`);
           }
         })
-        .catch(() => {
+        .catch((error) => {
           setMessage(`Password error: ${error.toString()}`);
         });
     },
-    [error, onPasswordSubmit, onPasswordSuccess, password, user, venueId]
+    [onPasswordSubmit, onPasswordSuccess, setError, user, venueId]
   );
 
   return (
-    <>
-      <form className="secret-password-form" onSubmit={passwordSubmitted}>
-        <p className="small-text">
-          Got an invite? Join in with the secret password
-        </p>
-        <input
-          className="secret-password-input"
-          required
-          placeholder="password"
-          autoFocus
-          onChange={changePassword}
-          id="password"
-        />
-        <input
-          className="btn btn-primary btn-block btn-centered"
-          type="submit"
-          value={buttonText}
-        />
-        <div className="form-group">
-          {message && <small>{message}</small>}
-          {error && <small className="error-message">An error occured</small>}
-        </div>
-      </form>
-    </>
+    <form
+      className="secret-password-form"
+      onSubmit={handleSubmit(submitPassword)}
+    >
+      <p className="small-text">
+        Got an invite? Join in with the secret password
+      </p>
+      <input
+        className="secret-password-input"
+        name="password"
+        ref={register({ required: true })}
+        placeholder="password"
+        autoFocus
+        onChange={changePassword}
+        id="password"
+      />
+      <input
+        className="btn btn-primary btn-block btn-centered"
+        type="submit"
+        value={buttonText}
+      />
+      <div className="form-group">{message}</div>
+      {errors.password && errors.password.type === "required" && (
+        <span className="input-error">Password is required</span>
+      )}
+    </form>
   );
 };
