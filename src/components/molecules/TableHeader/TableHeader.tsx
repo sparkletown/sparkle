@@ -75,6 +75,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     [venueName, allTables, seatedAtTable]
   );
 
+  const toggleIsCurrentTableLocked = useCallback(
+    () => setIsCurrentTableLocked(!isCurrentTableLocked),
+    [setIsCurrentTableLocked, isCurrentTableLocked]
+  );
+
   useEffect(() => {
     if (isCurrentTableLocked && currentTableHasSeatedUsers) {
       setIsCurrentTableLocked(false);
@@ -169,7 +174,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             <input
               type="checkbox"
               checked={!!isCurrentTableLocked}
-              onChange={() => setIsCurrentTableLocked(!isCurrentTableLocked)}
+              onChange={toggleIsCurrentTableLocked}
             />
             <span className="slider" />
           </label>
