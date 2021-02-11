@@ -34,7 +34,7 @@ export const Reaction = styled.div<ReactionProps>`
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
-  z-index: 1000;
+  z-index: 10;
 
   font-size: 50px;
 
@@ -48,6 +48,8 @@ export const Container = styled.div`
 
   background-position: center;
   background-size: cover;
+  // @debt Since this is not a css file, I can't use constants here
+  z-index: 10;
 
   ${Avatar} {
     border-radius: 10rem;
@@ -111,7 +113,7 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
   padding: 6px 10px;
 
   position: absolute;
-  top: -50px;
+  bottom: 0;
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? messageRight : messageLeft};
