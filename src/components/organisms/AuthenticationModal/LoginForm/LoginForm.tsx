@@ -2,12 +2,9 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
-import { checkAccess } from "api/auth";
-
 import { useSelector } from "hooks/useSelector";
 
 import { venueSelector } from "utils/selectors";
-import { setLocalStorageToken } from "utils/localStorage";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -62,34 +59,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     if (!venue) return;
     try {
       await signIn(data);
-
-      let result = null;
-
-      switch (venue.access) {
-        case VenueAccessMode.Codes:
-          result = await checkAccess({
-            venueId: venue.id,
-            code: data.code,
-          });
-          break;
-        case VenueAccessMode.Emails:
-          result = await checkAccess({
-            venueId: venue.id,
-            email: data.email,
-          });
-          break;
-
-        default:
-          break;
-      }
-
-      if (!result) return;
-
-      if (result.data === false) {
-        throw new Error("access denied");
-      }
-
-      setLocalStorageToken(venue.id, result.data.token);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 
