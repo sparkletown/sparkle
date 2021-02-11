@@ -25,6 +25,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const experience = useSelector(experienceSelector);
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const allTables = experience?.tables;
+
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
@@ -37,6 +39,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       ),
     [seatedAtTable, recentVenueUsers, venueName]
   );
+
+  const numberOfUsersAtCurrentTable = usersAtCurrentTable.length;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = (doc: string, update: any) => {
@@ -59,16 +63,19 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       return false;
     }
     // Locked state is in the experience record
-    return experience?.tables?.[table]?.locked;
+    return allTables?.[table]?.locked;
   };
 
-  const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${venueName}`;
-    const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
-    };
-    firestoreUpdate(doc, update);
-  };
+  const onLockedChanged = useCallback(
+    (tableName: string, locked: boolean) => {
+      const doc = `experiences/${venueName}`;
+      const update = {
+        tables: { ...allTables, [tableName]: { locked } },
+      };
+      firestoreUpdate(doc, update);
+    },
+    [venueName, allTables]
+  );
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
@@ -84,8 +91,22 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       },
     };
     await firestoreUpdate(doc, update);
+
+    // NOTE: Unlock the table, if you are the last leaving this table
+    if (numberOfUsersAtCurrentTable === 0) {
+      onLockedChanged(seatedAtTable, false);
+    }
+
     setSeatedAtTable("");
-  }, [user, profile, venueName, setSeatedAtTable]);
+  }, [
+    user,
+    profile,
+    venueName,
+    setSeatedAtTable,
+    onLockedChanged,
+    seatedAtTable,
+    numberOfUsersAtCurrentTable,
+  ]);
 
   useEffect(() => {
     window.addEventListener("beforeunload", leaveSeat);
