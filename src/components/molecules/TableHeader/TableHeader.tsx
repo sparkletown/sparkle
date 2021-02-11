@@ -60,7 +60,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     () =>
       recentVenueUsers.filter(
         (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ).length === 0,
+      ).length !== 0,
     [venueName, recentVenueUsers, seatedAtTable]
   );
 
@@ -81,7 +81,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 
   useEffect(() => {
-    if (isCurrentTableLocked && currentTableHasSeatedUsers) {
+    if (isCurrentTableLocked && !currentTableHasSeatedUsers) {
       setIsCurrentTableLocked(false);
     }
   }, [
