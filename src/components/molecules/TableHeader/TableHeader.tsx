@@ -43,9 +43,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const numberOfUsersAtCurrentTable = usersAtCurrentTable.length;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const firestoreUpdate = (doc: string, update: any) => {
+  const firestoreUpdate = async (doc: string, update: any) => {
     const firestore = firebase.firestore();
-    firestore
+    await firestore
       .doc(doc)
       .update(update)
       .catch(() => {
@@ -79,6 +79,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
+
+    // NOTE: Unlock the table, if you are the last leaving this table
+    if (numberOfUsersAtCurrentTable === 1) {
+      onLockedChanged(seatedAtTable, false);
+    }
+
     const doc = `users/${user.uid}`;
     const existingData = profile.data;
     const update = {
@@ -91,11 +97,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       },
     };
     await firestoreUpdate(doc, update);
-
-    // NOTE: Unlock the table, if you are the last leaving this table
-    if (numberOfUsersAtCurrentTable === 0) {
-      onLockedChanged(seatedAtTable, false);
-    }
 
     setSeatedAtTable("");
   }, [
