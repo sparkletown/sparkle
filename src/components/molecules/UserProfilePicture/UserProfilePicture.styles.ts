@@ -111,12 +111,12 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
   padding: 6px 10px;
 
   position: absolute;
-  top: 0;
+  top: -50px;
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? messageRight : messageLeft};
 
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
 
   color: #000;
   font-size: 20px;
