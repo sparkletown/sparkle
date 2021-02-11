@@ -34,6 +34,7 @@ export const Reaction = styled.div<ReactionProps>`
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
+  z-index: 10;
 
   font-size: 50px;
 
