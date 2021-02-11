@@ -26,14 +26,14 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
   const handleJoinVenue = useCallback(() => {
     if (!venueId) return;
 
-    joinVenue(venueId, { hasVenueEntrance: !!venue?.entrance?.length });
+    joinVenue(venueId, { hasVenueEntrance: !!venue.entrance?.length });
   }, [venue, venueId]);
+
+  const buttonText =
+    venue.config?.landingPageConfig.joinButtonText ?? DEFAULT_PARTY_BUTTON_TEXT;
 
   // @debt Handle emails and codes as well.
   if (venue.access === VenueAccessMode.Password) {
-    const buttonText =
-      venue.config?.landingPageConfig.joinButtonText ??
-      DEFAULT_PARTY_BUTTON_TEXT;
     return (
       <div className="secret-password-form-wrapper">
         <SecretPasswordForm
@@ -50,10 +50,10 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
       className="btn btn-primary btn-block btn-centered"
       onClick={handleJoinVenue}
     >
-      {DEFAULT_PARTY_BUTTON_TEXT}
-      {(venue?.start_utc_seconds ?? 0) > getCurrentTimeInUTCSeconds() && (
+      {buttonText}
+      {(venue.start_utc_seconds ?? 0) > getCurrentTimeInUTCSeconds() && (
         <span className="countdown">
-          Begins in {getTimeBeforeParty(venue?.start_utc_seconds)}
+          Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
         </span>
       )}
     </button>

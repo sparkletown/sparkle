@@ -37,7 +37,7 @@ export const VenueJoinModal: React.FC<VenueJoinModalProps> = ({
     <Modal show={show} onHide={hideModal}>
       <Modal.Body>
         <>
-          <div className="join-venue-title">
+          <div className="venue-join-modal__title">
             {isLoggedIn
               ? `You are now attending ${venue.name}`
               : DEFAULT_PARTY_JOIN_MESSAGE}
