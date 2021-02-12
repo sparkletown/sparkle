@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 .user-search-links {
   display: flex;
   position: relative;
@@ -16,7 +18,7 @@
   .user-search-close-icon {
     position: absolute;
     align-self: center;
-    z-index: 1;
+    z-index: z(user-search-close-icon);
     cursor: pointer;
     right: 5px;
     height: 30px;
@@ -36,7 +38,7 @@
     display: none;
     content: "";
     position: absolute;
-    z-index: 1;
+    z-index: z(user-search-input-close-btn);
     cursor: pointer;
     right: 5px;
     top: 5px;
@@ -70,7 +72,7 @@
 .user-search-results {
   position: absolute;
   width: 100%;
-  z-index: 380;
+  z-index: z(user-search-results);
   top: 105%;
   height: auto;
   padding: 20px;

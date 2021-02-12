@@ -1,4 +1,4 @@
-@import "scss/constants.scss";
+@import "scss/constants";
 
 .private-recipient-search-input-container {
   .private-recipient {
@@ -20,7 +20,7 @@
   .floating-dropdown {
     position: absolute;
     background: $dark;
-    z-index: 1;
+    z-index: z(private-recipient-search-input-dropdown);
     width: 100%;
     border: 2px solid $light-grey;
   }
