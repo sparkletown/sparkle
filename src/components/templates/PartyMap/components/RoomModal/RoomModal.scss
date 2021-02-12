@@ -58,8 +58,8 @@ $spacing: 20px;
 
   &__events {
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
-    //   We should just clean it up there instead. Typo intended, as it matches the classname.
-    .shedule-item-container {
+    //   We should just clean it up there instead.
+    .schedule-item-container {
       margin: -10px;
       padding: 10px $spacing;
 
