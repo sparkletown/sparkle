@@ -212,20 +212,17 @@ export const Map: React.FC<MapProps> = ({
     setSelectedUserProfile,
   });
 
-  const roomOverlay = useMemo(
-    () =>
-      venue.rooms?.map((room) =>
-        room.isEnabled ? (
-          <MapRoom
-            key={room.title}
-            venue={venue}
-            room={room}
-            selectRoom={() => selectRoom(room)}
-          />
-        ) : null
-      ),
-    [selectRoom, venue]
-  );
+  const roomOverlay = useMemo(() => {
+    const enabledRooms = venue?.rooms?.filter((room) => room.isEnabled) ?? [];
+    return enabledRooms.map((room) => (
+      <MapRoom
+        key={room.title}
+        venue={venue}
+        room={room}
+        selectRoom={() => selectRoom(room)}
+      />
+    ));
+  }, [selectRoom, venue]);
 
   const gridContainerStyles = useMemo(
     () => ({
