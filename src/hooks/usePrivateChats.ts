@@ -1,20 +1,17 @@
 import { useMemo } from "react";
 
-import {
-  userPrivateChatsSelector,
-  chatUsersByIdSelector,
-} from "utils/selectors";
+import { myPrivateChatsSelector } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
 import { hasElements } from "utils/types";
+
+import { MessageToDisplay } from "types/chat";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
 
-import { DOCUMENT_ID, NUM_CHAT_UIDS_TO_LOAD } from "settings";
-
-export const useUserChatsConnect = () => {
+export const useMyPrivateChatsConnect = () => {
   const { user } = useUser();
 
   useFirestoreConnect(() => {
@@ -25,103 +22,45 @@ export const useUserChatsConnect = () => {
         collection: "privatechats",
         doc: user.uid,
         subcollections: [{ collection: "chats" }],
-        storeAs: "userPrivateChats",
+        storeAs: "myPrivateChats",
       },
     ];
   });
 };
 
-export const useUserChats = () => {
-  useUserChatsConnect();
+export const useMyPrivateChats = () => {
+  useMyPrivateChatsConnect();
 
-  const userChats = useSelector(userPrivateChatsSelector);
-
-  return useMemo(
-    () => ({
-      userChats: userChats ?? [],
-      isUserChatsLoaded: isLoaded(userChats),
-    }),
-    [userChats]
-  );
-};
-
-// @debt We can replace this by worldUsersById since we already fetch them
-export const useChatUsersByIdConnect = () => {
-  const { userChats } = useUserChats();
-
-  const chatUserIds = useMemo(() => {
-    return [...userChats]
-      .sort(chatSort)
-      .flatMap((chat) => [chat.from, chat.to])
-      .filter(filterUniqueKeys)
-      .slice(0, NUM_CHAT_UIDS_TO_LOAD);
-  }, [userChats]);
-
-  useFirestoreConnect(() => {
-    if (!hasElements(chatUserIds)) return [];
-
-    return [
-      {
-        collection: "users",
-        where: [DOCUMENT_ID, "in", chatUserIds],
-        storeAs: "chatUsers",
-      },
-    ];
-  });
-};
-
-export const useChatUsersById = () => {
-  useChatUsersByIdConnect();
-
-  const chatUsersById = useSelector(chatUsersByIdSelector);
+  const userPrivateChats = useSelector(myPrivateChatsSelector);
 
   return useMemo(
     () => ({
-      chatUsersById: chatUsersById ?? {},
-      isChatUsersByIdLoaded: isLoaded(chatUsersById),
+      userPrivateChats: userPrivateChats ?? [],
+      isUserPrivateChatsLoaded: isLoaded(userPrivateChats),
     }),
-    []
+    [userPrivateChats]
   );
 };
 
-export const usePrivateChat = () => {
-  // useFirestoreConnect(
-  //   user && user.uid
-  //     ? {
-  //         collection: "privatechats",
-  //         doc: user.uid,
-  //         subcollections: [{ collection: "chats" }],
-  //         storeAs: "privatechats",
-  //       }
-  //     : undefined
-  // );
-  // const venueId = useVenueId();
-  // useConnectVenueChat(venueId);
-  // const chats = useSelector(venueChatsSelector);
-  // const privateChats = useSelector(privateChatsSelector);
+export const usePrivateChatList = () => {
+  const chatsToDisplay = [];
+  const onlineUsers = [];
 
-  const selectedUser = {};
+  return {};
+};
 
-  const sendMessageToSelectedUser = (message: string) => {
-    //   if (!user) return;
-    //   return dispatch(
-    //     sendPrivateChat({
-    //       from: user.uid,
-    //       to: selectedUser!.id,
-    //       text: data.messageToTheBand,
-    //     })
-    //   );
-    // },
-  };
+export const useRecipientChat = (recipientId: string) => {
+  const { userPrivateChats } = useMyPrivateChats();
 
-  const setSelectedUser = () => {};
+  const sendMessageToSelectedRecipient = (message: string) => {};
 
-  const privateChatList = [{ user: {}, lastMessage: {} }];
+  const messagesToDisplay = [] as MessageToDisplay[];
+
+  const deleteMessage = () => {};
 
   return {
-    sendMessageToSelectedUser,
-    setSelectedUser,
-    selectedUser,
-    privateChatList,
+    sendMessageToSelectedRecipient,
+    deleteMessage,
+    messages: messagesToDisplay,
   };
 };

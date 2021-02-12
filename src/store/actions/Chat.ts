@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import firebase from "firebase/app";
-import { SetAnyChatTabOptions } from "types/chat";
+import { VenueChatSettings, PrivateChatSettings, ChatTypes } from "types/chat";
+import { ReduxAction } from "types/redux";
 
 export enum ChatActionTypes {
   SEND_GLOBAL_CHAT = "SEND_GLOBAL_CHAT",
@@ -8,7 +9,8 @@ export enum ChatActionTypes {
   SEND_PRIVATE_CHAT = "SEND_PRIVATE_CHAT",
   SEND_TABLE_CHAT = "SEND_TABLE_CHAT",
   SET_CHAT_SIDEBAR_VISIBILITY = "SET_CHAT_SIDEBAR_VISIBILITY",
-  SET_CHAT_TAB = "SET_CHAT_TAB",
+  SET_VENUE_CHAT_TAB_OPENED = "SET_VENUE_CHAT_TAB_OPENED",
+  SET_PRIVATE_CHAT_TAB_OPENED = "SET_PRIVATE_CHAT_TAB_OPENED",
 }
 
 interface BaseSendChatFields {
@@ -159,28 +161,43 @@ export const sendTableChat = createAsyncThunk<void, SendTableChatFields>(
   }
 );
 
-type ChatSidebarVisibilityAction = {
-  type: ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY;
-  payload: boolean;
-};
+type SetChatsSidebarVisibilityAction = ReduxAction<
+  ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY,
+  { isVisible: boolean }
+>;
 
-type OpenChatAction = {
-  type: ChatActionTypes.SET_CHAT_TAB;
-  payload: SetAnyChatTabOptions;
-};
+type SetVenueChatTabOpenedAction = ReduxAction<
+  ChatActionTypes.SET_VENUE_CHAT_TAB_OPENED,
+  VenueChatSettings
+>;
+
+type SetPrivateChatTabOpenedAction = ReduxAction<
+  ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
+  PrivateChatSettings
+>;
 
 export const setChatSidebarVisibility = (
   isVisible: boolean
-): ChatSidebarVisibilityAction => ({
+): SetChatsSidebarVisibilityAction => ({
   type: ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY,
-  payload: isVisible,
+  payload: { isVisible },
 });
 
-export const setChatTab = (
-  setChatTabOptions: SetAnyChatTabOptions
-): OpenChatAction => ({
-  type: ChatActionTypes.SET_CHAT_TAB,
-  payload: setChatTabOptions,
+export const setVenueChatTabOpened = (): SetVenueChatTabOpenedAction => ({
+  type: ChatActionTypes.SET_VENUE_CHAT_TAB_OPENED,
+  payload: {
+    openedChatType: ChatTypes.VENUE_CHAT,
+  },
+});
+
+export const setPrivateChatTabOpened = (
+  recipientId?: string
+): SetPrivateChatTabOpenedAction => ({
+  type: ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
+  payload: {
+    openedChatType: ChatTypes.PRIVATE_CHAT,
+    recipientId,
+  },
 });
 
 export type ChatActions =
@@ -188,5 +205,6 @@ export type ChatActions =
   | SendPrivateChatAction
   | SendRoomChatAction
   | SendTableChatAction
-  | ChatSidebarVisibilityAction
-  | OpenChatAction;
+  | SetChatsSidebarVisibilityAction
+  | SetVenueChatTabOpenedAction
+  | SetPrivateChatTabOpenedAction;

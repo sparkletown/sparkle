@@ -7,7 +7,7 @@ import {
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { WorldChat, VenueChat, PrivateChat } from "./components";
+import { VenueChat, PrivateChats } from "./components";
 
 import {
   useChatsSidebarControls,
@@ -21,27 +21,19 @@ import "./ChatSidebar.scss";
 export const ChatSidebar: React.FC = () => {
   const {
     isChatSidebarVisible,
-    openChat,
-    openedChatType,
+    chatSettings,
+
+    openVenueChat,
+    openPrivateChats,
     closeChat,
+    expandChat,
   } = useChatsSidebarControls();
+
   const {
     worldChatTabTitle,
     privateChatTabTitle,
     venueChatTabTitle,
   } = useChatsSidebarInfo();
-
-  const selectPrivateChatTab = useCallback(() => {
-    openChat({ chatType: ChatTypes.PRIVATE_CHAT });
-  }, [openChat]);
-
-  const selectVenueChatTab = useCallback(() => {
-    openChat({ chatType: ChatTypes.VENUE_CHAT });
-  }, [openChat]);
-
-  const expandChat = () => {
-    openChat();
-  };
 
   return (
     <div
@@ -90,26 +82,28 @@ export const ChatSidebar: React.FC = () => {
           <div
             className={classNames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
-                openedChatType === ChatTypes.VENUE_CHAT,
+                chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
             })}
-            onClick={selectVenueChatTab}
+            onClick={openVenueChat}
           >
             {venueChatTabTitle}
           </div>
           <div
             className={classNames("chat-sidebar-tab", {
               "chat-sidebar-tab--selected":
-                openedChatType === ChatTypes.PRIVATE_CHAT,
+                chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
             })}
-            onClick={selectPrivateChatTab}
+            onClick={openPrivateChats}
           >
             {privateChatTabTitle}
           </div>
         </div>
       </div>
       <div className="chat-sidebar-content">
-        {openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
-        {openedChatType === ChatTypes.PRIVATE_CHAT && <PrivateChat />}
+        {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
+        {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
+          <PrivateChats recipientId={chatSettings.recipientId} />
+        )}
       </div>
     </div>
   );

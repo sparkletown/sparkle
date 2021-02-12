@@ -15,7 +15,7 @@ import { isVenueWithRooms } from "types/venues";
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
-import ChatBox from "components/molecules/Chatbox";
+import ChatBox from "components/molecules/Chatbox_OLD";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";

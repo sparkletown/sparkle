@@ -8,8 +8,7 @@ $border-radius: 28px;
 
 .chat-container {
   z-index: z(chat-container);
-  // height: calc(100% - #{$chat-input-height + $footer-height});
-  height: 100%;
+  height: calc(100% - #{$chat-input-height + $footer-height});
   flex-direction: column;
   align-items: flex-end;
   display: none;
@@ -30,18 +29,9 @@ $border-radius: 28px;
     align-items: center;
     .chat-input-message {
       flex-grow: 1;
-
-      text-align: left;
-
-      &::placeholder {
-        text-align: left;
-        font-size: 14px;
-      }
     }
     .chat-input-submit {
       margin-left: 10px;
-      min-height: 44px;
-      min-width: 44px;
       height: 44px;
       width: 44px;
       border-radius: 22px;

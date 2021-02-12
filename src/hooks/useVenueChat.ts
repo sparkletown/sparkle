@@ -8,9 +8,8 @@ import { buildMessage } from "utils/chat";
 import { venueChatsSelector } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
-import { WithId } from "utils/id";
 
-import { ChatMessage } from "types/chat";
+import { ChatMessage, MessageToDisplay } from "types/chat";
 import { User } from "types/User";
 
 import { useSelector } from "./useSelector";
@@ -30,13 +29,6 @@ export const useConnectVenueChat = (venueId?: string) => {
         }
       : undefined
   );
-};
-
-export type MessageToDisplay = {
-  text: string;
-  author: WithId<User>;
-  timestamp: number;
-  isMine: boolean;
 };
 
 const getMessagesToDisplay = (

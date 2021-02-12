@@ -1,26 +1,23 @@
 import React, { useState, useMemo } from "react";
 
-// import { Chat } from "components/organisms/Chat";
+import { PrivateChatList, OnlineUserList, RecipientChat } from "./components";
 
-import { PrivateChatList, OnlineUserList } from "./components";
+import { usePrivateChatList } from "hooks/usePrivateChats";
 
-import { usePrivateChat } from "hooks/usePrivateChats";
-import { isEmpty } from "lodash";
+export interface PrivateChatsProps {
+  recipientId?: string;
+}
 
-const useRecentUniverseUsers = () => ({ recentUniverseUsers: [] });
-
-export const PrivateChat: React.FC = () => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
 
   const {
-    sendMessageToSelectedUser,
-    setSelectedUser,
-    selectedUser,
-    privateChatList,
+    // sendMessageToSelectedUser,
+    // setSelectedRecipient,
+    // selectedRecipient,
+    // privateChatList,
     // chatMessages,
-  } = usePrivateChat();
-
-  const { recentUniverseUsers } = useRecentUniverseUsers();
+  } = usePrivateChatList();
 
   // const groomedPrivateChatList = useMemo(
   //   () =>
@@ -42,14 +39,8 @@ export const PrivateChat: React.FC = () => {
   //   [recentUniverseUsers, userSearchQuery]
   // );
 
-  if (selectedUser) {
-    return null;
-    // (
-    // <Chat
-    // sendMessage={sendMessageToSelectedUser}
-    // chatMessages={chatMessages}
-    // />
-    // );
+  if (recipientId) {
+    return <RecipientChat recipientId={recipientId} />;
   }
 
   return null;

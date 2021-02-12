@@ -1,65 +1,63 @@
-@import "scss/constants.scss";
+.chatbox-container {
+  all: unset;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
 
-$primary: #005ee5;
-$black: #000000;
-$white: #fff;
-$dark: #19181a;
-$border-radius: 28px;
-
-.chat-container {
-  z-index: z(chat-container);
-  height: calc(100% - #{$chat-input-height + $footer-height});
-  flex-direction: column;
-  align-items: flex-end;
-  display: none;
-  &.show {
+  .chatbox-messages-container {
+    flex: 1;
     display: flex;
+    flex-flow: column-reverse;
+    justify-self: flex-end;
+    padding: 24px 16px 0;
+    overflow-x: auto;
   }
 
-  .chat-form {
-    width: 100%;
-  }
-
-  .chat-input-container {
-    width: 100%;
+  .chatbox-input-container {
+    background-color: #000;
     height: 74px;
-    padding: 10px 10px;
-    background-color: $black;
+    padding: 10px;
     display: flex;
     align-items: center;
-    .chat-input-message {
-      flex-grow: 1;
+
+    .chatbox-input {
+      all: unset;
+      outline: none;
+      background-color: #19181a;
+      flex: 1;
+      cursor: pointer;
+      font-size: 0.9em;
+      padding: 12px 12px;
+      border-radius: 28px;
+      color: #fff;
+      border: solid 2px rgba(0, 0, 0, 0.13);
+
+      &:hover {
+        border: solid 2px rgba(0, 94, 229, 0.3);
+      }
+
+      &:focus {
+        border: solid 2px rgba(0, 94, 229, 0.6);
+      }
     }
-    .chat-input-submit {
-      margin-left: 10px;
-      height: 44px;
-      width: 44px;
-      border-radius: 22px;
-      background-image: url(/icons/chat-input-submit-inactive.png);
-      background-size: cover;
+
+    .chatbox-input-button {
+      outline: none;
+
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 50%;
       border: none;
-      transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
-      &.active {
-        background-image: url(/icons/chat-input-submit.png);
-        background-color: $primary;
-        &:hover {
-          background-color: lighten($primary, 4%);
-          border: none;
-        }
-        &:active {
-          background-color: lighten($primary, 6%);
-          border: none;
-          transform: scale(0.8);
-        }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 10px;
+
+      background-color: #005ee5;
+
+      .chatbox-input-button_icon {
+        color: white;
       }
     }
   }
-}
-
-.chat-messages-empty {
-  width: 100%;
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }

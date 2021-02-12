@@ -24,7 +24,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { chatSort } from "utils/chat";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-import ChatBox from "components/molecules/Chatbox";
+import ChatBox from "components/molecules/Chatbox_OLD";
 import { setPrivateChatMessageIsRead } from "components/molecules/ChatsList/helpers";
 import UserSearchBar from "../UserSearchBar/UserSearchBar";
 

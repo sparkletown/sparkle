@@ -7,10 +7,9 @@ import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
+import { ChatSettings } from "types/chat";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
-
-import { ChatState } from "store/reducers/Chat";
 
 import { WithId } from "utils/id";
 
@@ -165,8 +164,8 @@ export const venueChatsSelector = (state: RootState) =>
 export const privateChatsSelector = (state: RootState) =>
   state.firestore.ordered.privatechats;
 
-export const userPrivateChatsSelector = (state: RootState) =>
-  state.firestore.ordered.userPrivateChats;
+export const myPrivateChatsSelector = (state: RootState) =>
+  state.firestore.ordered.myPrivateChats;
 
 export const chatUsersByIdSelector = (state: RootState) =>
   state.firestore.data.chatUsers;
@@ -239,8 +238,12 @@ export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
   selector: SparkleSelector<U[]>
 ) => (ifTrue ? selector : emptyArraySelector);
 
-export const chatUIStateSelector: SparkleSelector<ChatState> = (state) =>
-  state.chat;
+export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
+  state.chat.isChatSidebarVisible;
+
+export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
+  state
+) => state.chat.settings;
 
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 

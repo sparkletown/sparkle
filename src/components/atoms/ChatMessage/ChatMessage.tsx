@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 
-import { DisplayMessage } from "hooks/useVenueChat";
+import { MessageToDisplay } from "types/chat";
 
 import "./ChatMessage.scss";
 
@@ -10,7 +10,7 @@ type ChatProps = {
   onAuthorClick: () => void;
 };
 
-export const ChatMessage: React.FC<DisplayMessage & ChatProps> = ({
+export const ChatMessage: React.FC<MessageToDisplay & ChatProps> = ({
   text,
   timestamp,
   isMine,

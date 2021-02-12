@@ -1,3 +1,2 @@
-export { PrivateChat } from "./PrivateChat/PrivateChat";
-export { WorldChat } from "./WorldChat/WorldChat";
+export { PrivateChats } from "./PrivateChats/PrivateChats";
 export { VenueChat } from "./VenueChat/VenueChat";

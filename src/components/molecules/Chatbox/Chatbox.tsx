@@ -1,106 +1,80 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
+import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-import { WithId } from "utils/id";
-import { chatUsersByIdSelector } from "utils/selectors";
+import { MessageToDisplay } from "types/chat";
 
-import { useVenueId } from "hooks/useVenueId";
-import { useWorldUsersById } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-
-import { PrivateChatMessage, RestrictedChatMessage } from "store/actions/Chat";
-import ChatList from "../ChatList";
+import { ChatMessage } from "components/atoms/ChatMessage";
 
 import "./Chatbox.scss";
 
-interface ChatOutDataType {
-  messageToTheBand: string;
-}
+export type ChatboxProps = {
+  messages: MessageToDisplay[];
+  sendMessage: (text: string) => void;
+  deleteMessage: (message: {}) => void;
+};
 
-interface ChatboxProps {
-  chats: WithId<PrivateChatMessage | RestrictedChatMessage>[];
-  onMessageSubmit: (data: ChatOutDataType) => void;
-  allowDelete?: boolean;
-  emptyListMessage?: string;
-  showSenderImage?: boolean;
-  isVenueChat?: boolean;
-}
-
-// @debt TODO: we have a ChatBox in organisms but also in molecules.. are they the same? Can we de-dupe them?
-const ChatBox: React.FC<ChatboxProps> = ({
-  allowDelete,
-  chats,
-  onMessageSubmit,
-  emptyListMessage,
-  showSenderImage,
-  isVenueChat,
+export const Chatbox: React.FC<ChatboxProps> = ({
+  messages,
+  sendMessage,
+  deleteMessage,
 }) => {
-  const venueId = useVenueId();
-  const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);
+  const onAuthorClick = () => {};
 
-  const { worldUsersById } = useWorldUsersById();
-  const chatUsersById = useSelector(chatUsersByIdSelector) ?? {};
-
-  const usersById = isVenueChat ? worldUsersById : chatUsersById;
+  const [isMessageBeingSent, setIsMessageBeingSent] = useState(false);
 
   useEffect(() => {
-    if (isMessageToTheBarSent) {
+    if (isMessageBeingSent) {
       setTimeout(() => {
-        setIsMessageToTheBarSent(false);
+        setIsMessageBeingSent(false);
       }, 2000);
     }
-  }, [isMessageToTheBarSent]);
+  }, [isMessageBeingSent]);
 
-  const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
+  const { register, handleSubmit, reset } = useForm<{ message: string }>({
     mode: "onSubmit",
   });
 
-  const submitChatMessage = useCallback(
-    async (data: ChatOutDataType) => {
-      setIsMessageToTheBarSent(true);
-      onMessageSubmit(data);
-      reset();
-    },
-    [onMessageSubmit, reset]
-  );
+  const onSubmit = handleSubmit(({ message }) => {
+    setIsMessageBeingSent(true);
+    sendMessage(message);
+    reset();
+  });
 
-  const deleteMessage = useCallback(
-    async (id: string) => {
-      await firebase
-        .firestore()
-        .doc(`venues/${venueId}/chats/${id}`)
-        .update({ deleted: true });
-    },
-    [venueId]
+  const rendreredMessages = useMemo(
+    () =>
+      messages.map((message) => (
+        <ChatMessage {...message} onAuthorClick={onAuthorClick} />
+      )),
+    [messages]
   );
 
   return (
-    <div className="chat-container show">
-      {chats && (
-        <ChatList
-          usersById={usersById}
-          messages={chats}
-          emptyListMessage={emptyListMessage}
-          allowDelete={allowDelete}
-          deleteMessage={deleteMessage}
-          showSenderImage={showSenderImage}
-        />
-      )}
-      <form className="chat-form" onSubmit={handleSubmit(submitChatMessage)}>
-        <div className="chat-input-container">
-          <input
-            ref={register({ required: true })}
-            className="chat-input-message"
-            type="text"
-            name="messageToTheBand"
-            placeholder="Type your message..."
+    <div className="chatbox-container">
+      <div className="chatbox-messages-container">{rendreredMessages}</div>
+      <form className="chatbox-input-container" onSubmit={onSubmit}>
+        <input
+          className="chatbox-input"
+          ref={register({ required: true })}
+          name="message"
+          placeholder="Type your message..."
+        ></input>
+        <button
+          className="chatbox-input-button"
+          type="submit"
+          disabled={isMessageBeingSent}
+        >
+          <FontAwesomeIcon
+            icon={faPaperPlane}
+            className={classNames("chatbox-input-button_icon", {
+              "chatbox-input-button_icon--active": true,
+            })}
+            size="lg"
           />
-          <input className="chat-input-submit" name="" value="" type="submit" />
-        </div>
+        </button>
       </form>
     </div>
   );
 };
-
-export default ChatBox;

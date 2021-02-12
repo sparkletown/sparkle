@@ -1,8 +1,13 @@
-import { ChatTypes, SetAnyChatTabOptions } from "types/chat";
+import {
+  chatVisibilitySelector,
+  selectedChatSettingsSelector,
+} from "utils/selectors";
 
-import { chatUIStateSelector } from "utils/selectors";
-
-import { setChatTab, setChatSidebarVisibility } from "store/actions/Chat";
+import {
+  setPrivateChatTabOpened,
+  setVenueChatTabOpened,
+  setChatSidebarVisibility,
+} from "store/actions/Chat";
 
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
@@ -10,26 +15,41 @@ import { useDispatch } from "./useDispatch";
 export const useChatsSidebarControls = () => {
   const dispatch = useDispatch();
 
-  const openChat = (
-    chatOptions: SetAnyChatTabOptions = { chatType: ChatTypes.VENUE_CHAT }
-  ) => {
+  const expandChat = () => {
     dispatch(setChatSidebarVisibility(true));
-    dispatch(setChatTab(chatOptions));
   };
 
   const closeChat = () => {
     dispatch(setChatSidebarVisibility(false));
   };
 
-  const { isChatSidebarVisible, openedChatType } = useSelector(
-    chatUIStateSelector
-  );
+  const openVenueChat = () => {
+    expandChat();
+    dispatch(setVenueChatTabOpened());
+  };
+
+  const openPrivateChats = () => {
+    expandChat();
+    dispatch(setPrivateChatTabOpened());
+  };
+
+  const openPrivateRecipientChat = (recipientId: string) => {
+    expandChat();
+    dispatch(setPrivateChatTabOpened(recipientId));
+  };
+
+  const isChatSidebarVisible = useSelector(chatVisibilitySelector);
+
+  const chatSettings = useSelector(selectedChatSettingsSelector);
 
   return {
     isChatSidebarVisible,
-    openedChatType,
+    chatSettings,
 
-    openChat,
+    expandChat,
+    openVenueChat,
+    openPrivateChats,
+    openPrivateRecipientChat,
     closeChat,
   };
 };
