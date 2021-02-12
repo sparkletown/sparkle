@@ -18,7 +18,7 @@
   .nav-search-close-icon {
     position: absolute;
     align-self: center;
-    z-index: z(nav-search-close-icon);
+    z-index: z(navbar-nav-search-close-icon);
     cursor: pointer;
     right: 5px;
     height: 30px;
@@ -38,7 +38,7 @@
     display: none;
     content: "";
     position: absolute;
-    z-index: z(nav-search-input-close-btn);
+    z-index: z(navbar-nav-search-input-close-btn);
     cursor: pointer;
     right: 5px;
     top: 5px;
@@ -70,7 +70,7 @@
 }
 
 .nav-search-results {
-  z-index: z(nav-search-results);
+  z-index: z(navbar-nav-search-results);
 
   position: fixed;
   top: 60px;
