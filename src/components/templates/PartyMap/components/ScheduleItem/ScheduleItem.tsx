@@ -7,6 +7,8 @@ import { formatUtcSeconds } from "utils/time";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
+import "./ScheduleItem.scss";
+
 interface PropsType {
   event: VenueEvent;
   isCurrentEvent?: boolean;
