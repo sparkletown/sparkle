@@ -15,10 +15,10 @@ import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description:
-    "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
-  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]",
+    "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each. Note due to database schema this script accepts venue NAMES, NOT venue IDs.",
+  usageParams: "PROJECT_ID VENUE_NAMES [CREDENTIAL_PATH]",
   exampleParams:
-    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
+    'co-reality-map "venue Name 1,venue Name 2,venue Name 3" [theMatchingAccountServiceKey.json]',
 });
 
 const [projectId, venueIds, credentialPath] = process.argv.slice(2);
@@ -28,16 +28,9 @@ if (!projectId || !venueIds) {
   usage();
 }
 
-const venueIdsArray = venueIds.split(",");
-
-// Note: if we ever need to handle this, we can split our firestore query into 'chunks', each with 10 items per array-contains-any
-if (venueIdsArray.length > 10) {
-  console.error(
-    "Error: This script can only handle up to 10 venueIds at once at the moment."
-  );
-  console.error("  venueIdsArray.length :", venueIdsArray.length);
-  process.exit(1);
-}
+const venueIdsArray = venueIds
+  .split(",")
+  .map((venueId) => venueId.toLocaleLowerCase()); // Case insensitive venue NAME comparison (not venueId)
 
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
@@ -56,7 +49,6 @@ interface UsersWithVisitsResult {
     await admin
       .firestore()
       .collection("users")
-      .where("enteredVenueIds", "array-contains-any", venueIdsArray)
       .get()
       .then((usersSnapshot) =>
         usersSnapshot.docs.map(async (userDoc) => {
@@ -99,23 +91,29 @@ interface UsersWithVisitsResult {
   );
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
-  const result = usersWithVisits.map((userWithVisits) => {
-    const { user, visits } = userWithVisits;
-    const { id, partyName, enteredVenueIds = [] } = user;
-    const { email } = authUsersById[id] ?? {};
+  const result = usersWithVisits
+    .filter((userWithVisits) => {
+      return userWithVisits.visits.find((visit) =>
+        venueIdsArray.includes(visit.id.toLocaleLowerCase())
+      );
+    })
+    .map((userWithVisits) => {
+      const { user, visits } = userWithVisits;
+      const { id, partyName, enteredVenueIds = [] } = user;
+      const { email } = authUsersById[id] ?? {};
 
-    const visitsTimeSpent = visits.map(
-      (visit) => `${visit.id} (${formatSecondsAsDuration(visit.timeSpent)})`
-    );
+      const visitsTimeSpent = visits.map(
+        (visit) => `${visit.id} (${formatSecondsAsDuration(visit.timeSpent)})`
+      );
 
-    return {
-      id,
-      email,
-      partyName,
-      enteredVenueIds: enteredVenueIds.sort().join(", "),
-      visitsTimeSpent: visitsTimeSpent.sort().join(", "),
-    };
-  });
+      return {
+        id,
+        email,
+        partyName,
+        enteredVenueIds: enteredVenueIds.sort().join(", "),
+        visitsTimeSpent: visitsTimeSpent.sort().join(", "),
+      };
+    });
 
   // Display CSV headings
   console.log(
