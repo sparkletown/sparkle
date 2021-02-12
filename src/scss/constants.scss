@@ -47,6 +47,7 @@ $room-info-bg: #005ee5;
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
+$z-layer-sidebar: 15;
 $z-layers: (
   // Admin
   admin-navbar: 100,
@@ -59,8 +60,8 @@ $z-layers: (
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   // Chat
-  chat-container: 2,
-  chat-drawer-container: 2,
+  chatbox-chat-container: $z-layer-sidebar,
+  chat-drawer-container: $z-layer-sidebar,
   chatbox-submit-button: 1,
   chatslist-private-container-back-button: 1,
   user-search-close-icon: 1,
@@ -74,8 +75,8 @@ $z-layers: (
   schedule-backdrop: 3,
   // Sidebars + similar
   sidebar-slide-btn: -1,
-  sidebar: 2,
-  left-column: 2,
+  sidebar: $z-layer-sidebar,
+  left-column: $z-layer-sidebar,
   // Map
   map-back-button: 3,
   map-room-hovered: 3,
@@ -86,8 +87,8 @@ $z-layers: (
   duststorm-modal-content: 220,
   header: 5,
   // Unsorted
-  announcement: 3,
-  footer: 5,
+  announcement: $z-layer-sidebar,
+  footer: $z-layer-sidebar,
   global-profile-icon: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
