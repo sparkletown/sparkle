@@ -1,4 +1,5 @@
-@import "scss/constants.scss";
+@import "scss/constants";
+
 $sand: #937c63;
 $white: #ffffff;
 $border-radius: 28px;
@@ -19,7 +20,7 @@ $border-radius: 28px;
   }
 
   .party-map-map-sidebar {
-    min-width: 300px;
+    min-width: $map-sidebar-width;
     box-shadow: 0 0 60px 10px rgba(0, 0, 0, 0.8);
   }
 }
@@ -188,7 +189,7 @@ $border-radius: 28px;
   position: fixed;
   top: 70px;
   left: 0px;
-  z-index: 2;
+  z-index: z(left-column);
 }
 
 .info-drawer-camp {

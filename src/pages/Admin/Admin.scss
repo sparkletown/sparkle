@@ -19,7 +19,7 @@ $page-max-width: 1240px;
 
   .navbar {
     position: fixed;
-    z-index: 100;
+    z-index: z(admin-navbar);
     top: 0;
     left: 0;
     width: 100%;
@@ -173,7 +173,7 @@ $page-max-width: 1240px;
         .page-container-adminpanel-content,
         .page-container-adminpanel-placement {
           position: relative;
-          z-index: 10;
+          z-index: z(admin-placement);
           overflow-y: scroll;
 
           .edit-rooms-container {
@@ -196,7 +196,7 @@ $page-max-width: 1240px;
           .venue-header {
             position: absolute;
             top: 0;
-            z-index: -1;
+            z-index: z(admin-venue-header);
             background-color: $black;
             width: 100%;
             height: 500px;
@@ -206,7 +206,7 @@ $page-max-width: 1240px;
             &:after {
               content: "";
               position: absolute;
-              z-index: 2;
+              z-index: z(admin-venue-header-after);
               left: 0;
               width: 100%;
               height: 500px;
