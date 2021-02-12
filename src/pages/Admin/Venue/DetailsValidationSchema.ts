@@ -168,7 +168,7 @@ export const validationSchema = Yup.object()
       then: Yup.string().required("Radio station (stream) is required!"),
     }),
 
-    owners: Yup.array<string>().required(),
+    owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),
@@ -199,6 +199,7 @@ export const editVenueCastSchema = Yup.object()
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")
   .from("chatTitle", "chatTitle")
+  .from("owners", "owners")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
