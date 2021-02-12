@@ -32,7 +32,6 @@ import {
 } from "utils/selectors";
 
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import { VenueJoinModal } from "components/organisms/VenueJoinModal";
 import { VenueJoinButton } from "components/molecules/VenueJoinButton/VenueJoinButton";
 import CountDown from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
@@ -95,7 +94,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const [isAuthenticationModalOpen, setAuthenticationModalOpen] = useState(
     false
   );
-  const [isJoinVenueModalOpen, setJoinVenueModalOpen] = useState(false);
+
   const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
   const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
     string | undefined
@@ -115,14 +114,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
 
   const closeAuthenticationModal = useCallback(() => {
     setAuthenticationModalOpen(false);
-  }, []);
-
-  const showJoinVenueModal = useCallback(() => {
-    setJoinVenueModalOpen(true);
-  }, []);
-
-  const hideJoinVenueModal = useCallback(() => {
-    setJoinVenueModalOpen(false);
   }, []);
 
   const handlePasswordSubmit = useCallback(() => {
@@ -198,7 +189,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
             venueId={venueId}
             venue={venue}
             onPasswordSubmit={handlePasswordSubmit}
-            onPasswordSuccess={showJoinVenueModal}
           />
         </div>
         <div className="row">
@@ -376,13 +366,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         headerMessage={DEFAULT_PARTY_JOIN_MESSAGE}
         afterUserIsLoggedIn={openPaymentModal}
         showAuth={AuthOptions.initial}
-      />
-      <VenueJoinModal
-        venueId={venueId}
-        venue={venue}
-        show={isJoinVenueModalOpen}
-        isLoggedIn={isLoggedIn}
-        onHide={hideJoinVenueModal}
       />
     </WithNavigationBar>
   );
