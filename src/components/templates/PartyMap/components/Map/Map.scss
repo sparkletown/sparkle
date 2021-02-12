@@ -1,4 +1,5 @@
-@import "scss/constants.scss";
+@import "scss/constants";
+
 $sand: #937c63;
 $white: #ffffff;
 $border-radius: 28px;
@@ -186,7 +187,7 @@ $border-radius: 28px;
   position: fixed;
   top: 70px;
   left: 0px;
-  z-index: 2;
+  z-index: z(left-column);
 }
 
 .info-drawer-camp {

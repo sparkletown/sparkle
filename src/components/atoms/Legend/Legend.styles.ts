@@ -18,6 +18,7 @@ export const Legend = styled.div<LegendProps>`
   position: absolute;
   top: 0;
   ${({ position }) => (position === "left" ? legendLeft : legendRight)};
+  // @debt convert this to scss then use our z-index layer helper here
   z-index: 5;
 
   background: rgba(0, 0, 0, 0.4);
