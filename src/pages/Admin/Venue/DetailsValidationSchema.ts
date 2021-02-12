@@ -199,7 +199,6 @@ export const editVenueCastSchema = Yup.object()
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")
   .from("chatTitle", "chatTitle")
-  .from("owners", "owners")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")

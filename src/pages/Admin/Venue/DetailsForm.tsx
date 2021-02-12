@@ -300,7 +300,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   setValue,
   formError,
 }) => {
-  console.log(errors, formError);
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
