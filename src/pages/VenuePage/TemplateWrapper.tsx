@@ -88,7 +88,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     <WithNavigationBar fullscreen={fullscreen}>
-      <AnnouncementMessage message={venue?.bannerMessage} />
+      <AnnouncementMessage
+        message={venue?.bannerMessage}
+        template={venue.template}
+      />
       {template}
     </WithNavigationBar>
   );

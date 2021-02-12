@@ -11,6 +11,10 @@
   width: 500px;
   margin: 0 auto 0 -250px;
 
+  &.center {
+    left: 50%;
+  }
+
   padding: 15px;
   border-radius: 0 0 50px 50px;
   text-align: center;
