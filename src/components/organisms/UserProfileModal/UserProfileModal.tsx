@@ -2,28 +2,30 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
+import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
+
 import {
   currentVenueSelector,
   currentVenueSelectorData,
   orderedVenuesSelector,
   privateChatsSelector,
 } from "utils/selectors";
+import { WithId } from "utils/id";
+import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
 import { isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useDispatch } from "hooks/useDispatch";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+
+import { Badges } from "components/organisms/Badges";
+import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
-import ChatBox from "components/molecules/Chatbox_OLD";
-import { useSelector } from "hooks/useSelector";
-import { WithId } from "utils/id";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
-import { Badges } from "../Badges";
-import { useDispatch } from "hooks/useDispatch";
 
 type PropTypes = {
   show: boolean;
@@ -39,35 +41,22 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   userProfile,
 }) => {
   const venue = useSelector(currentVenueSelector);
-  const privateChats = useSelector(privateChatsSelector) ?? [];
 
   const { user } = useUser();
 
-  const dispatch = useDispatch();
+  const chosenUserId = userProfile?.id;
 
-  const submitMessage = useCallback(
-    async (data: { messageToTheBand: string }) => {
-      if (!user || !userProfile) return;
+  const { openPrivateRecipientChat } = useChatsSidebarControls();
 
-      dispatch(
-        sendPrivateChat({
-          from: user.uid,
-          to: userProfile?.id,
-          text: data.messageToTheBand,
-        })
-      );
-    },
-    [userProfile, user, dispatch]
-  );
+  const openChosenUserChat = useCallback(() => {
+    if (!chosenUserId) return;
 
-  const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
-    if (!userProfile || !userProfile.id) return [];
-    return privateChats.filter(
-      (chat) => chat.from === userProfile.id || chat.to === userProfile.id
-    );
-  }, [privateChats, userProfile]);
+    openPrivateRecipientChat(chosenUserId);
+    // NOTE: Hide the modal, after the chat is opened;
+    onHide();
+  }, [openPrivateRecipientChat]);
 
-  if (!userProfile || !userProfile.id || !user) {
+  if (!userProfile || !chosenUserId || !user) {
     return <></>;
   }
 
@@ -88,7 +77,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                       "/avatars/" +
                       RANDOM_AVATARS[
                         Math.floor(
-                          userProfile.id.charCodeAt(0) % RANDOM_AVATARS.length
+                          chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
                         )
                       ];
                   }}
@@ -126,14 +115,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
           {venue?.showBadges && (
             <Badges user={userProfile} currentVenue={venue} />
           )}
-          {userProfile.id !== user.uid && (
-            <div className="private-chat-container">
-              <ChatBox
-                chats={chats}
-                onMessageSubmit={submitMessage}
-                showSenderImage={false}
-              />
-            </div>
+          {chosenUserId !== user.uid && (
+            <Button onClick={openChosenUserChat}>Send message</Button>
           )}
         </div>
       </Modal.Body>

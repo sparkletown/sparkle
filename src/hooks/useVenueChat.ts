@@ -4,13 +4,12 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { sendVenueMessage } from "api/chat";
 
-import { buildMessage } from "utils/chat";
+import { VenueChatMessage } from "types/chat";
+
+import { buildMessage, getMessagesToDisplay } from "utils/chat";
 import { venueChatsSelector } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
-
-import { ChatMessage, MessageToDisplay } from "types/chat";
-import { User } from "types/User";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
@@ -30,17 +29,6 @@ export const useConnectVenueChat = (venueId?: string) => {
       : undefined
   );
 };
-
-const getMessagesToDisplay = (
-  message: ChatMessage,
-  authorsById: Record<string, User>,
-  myUserId?: string
-): MessageToDisplay => ({
-  text: message.text,
-  author: { ...authorsById[message.from], id: message.from },
-  timestamp: message.ts_utc.toMillis(),
-  isMine: myUserId === message.from,
-});
 
 export const useVenueChat = () => {
   const venueId = useVenueId();
@@ -65,7 +53,7 @@ export const useVenueChat = () => {
   const sendMessage = (text: string) => {
     if (!venueId || !user?.uid) return;
 
-    const message = buildMessage({ from: user?.uid, text });
+    const message = buildMessage<VenueChatMessage>({ from: user?.uid, text });
 
     sendVenueMessage({ venueId, message });
   };

@@ -1,16 +1,27 @@
 import firebase from "firebase/app";
 
-import { BaseChatMessage, ChatMessage } from "types/chat";
+import { BaseChatMessage, ChatMessage, MessageToDisplay } from "types/chat";
+import { User } from "types/User";
 
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export const buildMessage = (
-  message: Pick<ChatMessage, Exclude<keyof ChatMessage, "ts_utc">>
-): ChatMessage => {
-  const ts_utc = firebase.firestore.Timestamp.fromDate(new Date());
+export const getMessagesToDisplay = (
+  message: ChatMessage,
+  authorsById: Record<string, User>,
+  myUserId?: string
+): MessageToDisplay => ({
+  text: message.text,
+  author: { ...authorsById[message.from], id: message.from },
+  timestamp: message.ts_utc.toMillis(),
+  isMine: myUserId === message.from,
+});
 
-  return { ...message, ts_utc };
-};
+export const buildMessage = <T extends ChatMessage>(
+  message: Pick<T, Exclude<keyof T, "ts_utc">>
+) => ({
+  ...message,
+  ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+});

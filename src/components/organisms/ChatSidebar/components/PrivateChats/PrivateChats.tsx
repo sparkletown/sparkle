@@ -43,7 +43,12 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     return <RecipientChat recipientId={recipientId} />;
   }
 
-  return null;
+  return (
+    <>
+      <div>private chats</div>
+      <div>online users</div>
+    </>
+  );
 
   // return (
   //   <div className="chat-list-wrapper">

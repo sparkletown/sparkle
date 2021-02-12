@@ -1,0 +1,24 @@
+.user-avatar-container {
+  height: 25px;
+  width: 25px;
+  position: relative;
+
+  .user-avatar-pic {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+  }
+
+  .user-avatar-status-dot {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    border-radius: 50%;
+    background-color: #4bff40;
+
+    &--isOnline {
+      height: 5px;
+      width: 5px;
+    }
+  }
+}

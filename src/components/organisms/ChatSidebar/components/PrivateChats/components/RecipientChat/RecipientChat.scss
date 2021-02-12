@@ -1,0 +1,35 @@
+.recipient-chat-container {
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  .recipient-chat-back-container {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 45px;
+    background-color: #090909;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 10;
+    padding: 0 8px;
+
+    .recipient-chat-back-icon {
+      cursor: pointer;
+      margin-right: 8px;
+      opacity: 0.8;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+
+    .recipient-chat-back-nickname {
+      margin-left: 6px;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+  }
+}

@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 
 import { MessageToDisplay } from "types/chat";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
+
 import "./ChatMessage.scss";
 
 type ChatProps = {
@@ -33,15 +35,11 @@ export const ChatMessage: React.FC<MessageToDisplay & ChatProps> = ({
     <div className={containerStyles}>
       <div className={textStyles}>{text}</div>
       <div className={messageInfoStyles}>
-        <img
-          onClick={onAuthorClick}
-          className="chat-message-author-pic"
-          src={author.pictureUrl}
-        />
+        <UserAvatar onClick={onAuthorClick} avatarSrc={author.pictureUrl} />
         <p onClick={onAuthorClick} className="chat-message-author-name">
           {author.partyName}
         </p>
-        <p className="chat-message-time">{dayjs(timestamp).format("h:MM A")}</p>
+        <p className="chat-message-time">{dayjs(timestamp).format("h:mm A")}</p>
       </div>
     </div>
   );
