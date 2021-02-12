@@ -47,6 +47,7 @@ $room-info-bg: #005ee5;
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
+$z-layer-navbar: 20;
 $z-layer-sidebar: 15;
 $z-layers: (
   // Admin
@@ -74,7 +75,7 @@ $z-layers: (
   navbar-nav-search-results: 380,
   navbar-schedule-backdrop: 3,
   navbar-schedule: 4,
-  navbar: 5,
+  navbar: $z-layer-navbar,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
