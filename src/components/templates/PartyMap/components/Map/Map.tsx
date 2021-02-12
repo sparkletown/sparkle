@@ -14,7 +14,7 @@ import { PartyMapVenue } from "types/venues";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { hasElements, isTruthy } from "utils/types";
-import { makeRoomHitFilter } from "utils/filter";
+import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { setLocationData } from "utils/userLocation";
 
@@ -214,14 +214,16 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
-        <MapRoom
-          key={room.title}
-          venue={venue}
-          room={room}
-          selectRoom={() => selectRoom(room)}
-        />
-      )),
+      venue?.rooms
+        ?.filter(filterEnabledRooms)
+        .map((room) => (
+          <MapRoom
+            key={room.title}
+            venue={venue}
+            room={room}
+            selectRoom={() => selectRoom(room)}
+          />
+        )),
     [selectRoom, venue]
   );
 
