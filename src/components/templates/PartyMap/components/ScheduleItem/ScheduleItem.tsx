@@ -7,6 +7,8 @@ import { formatUtcSeconds } from "utils/time";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
+import "./ScheduleItem.scss";
+
 interface PropsType {
   event: VenueEvent;
   isCurrentEvent?: boolean;
@@ -22,7 +24,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
 }) => {
   const dispatch = useDispatch();
   return (
-    <div className="shedule-item-container">
+    <div className="schedule-item-container">
       <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
         <div>
           <b>{formatUtcSeconds(event.start_utc_seconds)}</b>

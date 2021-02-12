@@ -34,6 +34,7 @@ export const Reaction = styled.div<ReactionProps>`
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
+  // @debt convert this to scss then use our z-index layer helper here
   z-index: 10;
 
   font-size: 50px;
@@ -48,7 +49,7 @@ export const Container = styled.div`
 
   background-position: center;
   background-size: cover;
-  // @debt Since this is not a css file, I can't use constants here
+  // @debt convert this to scss then use our z-index layer helper here
   z-index: 10;
 
   ${Avatar} {
