@@ -214,14 +214,16 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
-        <MapRoom
-          key={room.title}
-          venue={venue}
-          room={room}
-          selectRoom={() => selectRoom(room)}
-        />
-      )),
+      venue.rooms?.map((room) =>
+        room.isEnabled ? (
+          <MapRoom
+            key={room.title}
+            venue={venue}
+            room={room}
+            selectRoom={() => selectRoom(room)}
+          />
+        ) : null
+      ),
     [selectRoom, venue]
   );
 
