@@ -56,7 +56,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   if (!usersSanitized || attendance < 1) return <></>;
   return (
     <>
-      <div className="userlist-container">
+      <div className="container userlist-container">
         <div className="row header no-margin">
           <p>
             <span className="bold">{attendance}</span>{" "}
