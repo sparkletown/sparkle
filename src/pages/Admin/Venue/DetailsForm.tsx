@@ -81,21 +81,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
-  const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
-    {
-      mode: "onSubmit",
-      reValidateMode: "onChange",
-      validationSchema: validationSchema,
-      validationContext: {
-        template: state.templatePage?.template,
-        editing: !!venueId,
-      },
-      defaultValues: {
-        ...defaultValues,
-        parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
-      },
-    }
-  );
+  const {
+    watch,
+    formState,
+    register,
+    setValue,
+    control,
+    handleSubmit,
+    errors,
+  } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    validationSchema: validationSchema,
+    validationContext: {
+      template: state.templatePage?.template,
+      editing: !!venueId,
+    },
+    defaultValues: {
+      ...defaultValues,
+      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+    },
+  });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
@@ -206,7 +212,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               onSubmit={onSubmit}
               editing={!!venueId}
               formError={formError}
-              {...rest}
+              control={control}
+              handleSubmit={handleSubmit}
+              errors={errors}
             />
           </div>
         </div>
