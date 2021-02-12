@@ -82,7 +82,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         <li
           key={formatDate(day.dateDay.getTime())}
           className={`button ${idx === date ? "active" : ""}`}
-          onClick={() => setDate(idx)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setDate(idx);
+          }}
         >
           {formatDateToWeekday(day.dateDay.getTime() / 1000)}
         </li>

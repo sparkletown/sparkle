@@ -47,7 +47,8 @@ $room-info-bg: #005ee5;
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
-$z-layer-navbar: 20;
+$z-layer-navbar: 30;
+$z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
 $z-layers: (
   // Admin
@@ -73,8 +74,8 @@ $z-layers: (
   navbar-nav-search-close-icon: 1,
   navbar-nav-search-input-close-btn: 1,
   navbar-nav-search-results: 380,
-  navbar-schedule-backdrop: 3,
-  navbar-schedule: 4,
+  navbar-schedule-backdrop: $z-layer-live-schedule,
+  navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
   // Sidebars + similar
   sidebar-slide-btn: -1,
