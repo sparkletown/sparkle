@@ -1,14 +1,12 @@
-@import "scss/constants.scss";
+@import "scss/constants";
 
-$black: #000000;
-$white: #fff;
 $dark: #19181a;
 
 .sidebar-container {
   position: fixed;
   z-index: z(sidebar);
   right: 0;
-  top: 60px;
+  top: $navbar-height;
   width: 360px;
   height: 100%;
   display: block;
