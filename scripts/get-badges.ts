@@ -9,7 +9,6 @@ import { UserVisit } from "../src/types/Firestore";
 import { User } from "../src/types/User";
 
 import { WithId, withId } from "../src/utils/id";
-import { formatSecondsAsDuration } from "../src/utils/time";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
@@ -97,34 +96,35 @@ interface UsersWithVisitsResult {
         venueIdsArray.includes(visit.id.toLocaleLowerCase())
       );
     })
-    .map((userWithVisits) => {
+    .flatMap((userWithVisits) => {
       const { user, visits } = userWithVisits;
-      const { id, partyName, enteredVenueIds = [] } = user;
+      const { id, partyName } = user;
       const { email } = authUsersById[id] ?? {};
 
-      const visitsTimeSpent = visits.map(
-        (visit) => `${visit.id} (${formatSecondsAsDuration(visit.timeSpent)})`
-      );
-
-      return {
+      return visits.map((visit) => ({
         id,
         email,
         partyName,
-        enteredVenueIds: enteredVenueIds.sort().join(", "),
-        visitsTimeSpent: visitsTimeSpent.sort().join(", "),
-      };
+        venueName: visit.id,
+        timeSpent: visit.timeSpent,
+      }));
     });
 
   // Display CSV headings
   console.log(
-    ["Email", "Party Name", "Entered Venues (Time Spent)"]
+    ["Email", "Party Name", "Venue Visited", "Time Spent"]
       .map((heading) => `"${heading}"`)
       .join(",")
   );
 
   // Display CSV lines
-  result.forEach((user) => {
-    const csvLine = [user.email, user.partyName, user.visitsTimeSpent]
+  result.forEach((visit) => {
+    const csvLine = [
+      visit.email,
+      visit.partyName,
+      visit.venueName,
+      visit.timeSpent,
+    ]
       .map((s) => `"${s}"`)
       .join(",");
 
