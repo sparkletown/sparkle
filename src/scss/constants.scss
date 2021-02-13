@@ -47,6 +47,8 @@ $room-info-bg: #005ee5;
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
+$z-layer-navbar: 30;
+$z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
 $z-layers: (
   // Admin
@@ -68,24 +70,24 @@ $z-layers: (
   user-search-input-close-btn: 1,
   user-search-results: 380,
   // Nav
-  nav-search-close-icon: 1,
-  nav-search-input-close-btn: 1,
-  nav-search-results: 380,
-  schedule: 4,
-  schedule-backdrop: 3,
+  navbar-map-back-button: 3,
+  navbar-nav-search-close-icon: 1,
+  navbar-nav-search-input-close-btn: 1,
+  navbar-nav-search-results: 380,
+  navbar-schedule-backdrop: $z-layer-live-schedule,
+  navbar-schedule: $z-layer-live-schedule,
+  navbar: $z-layer-navbar,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // Map
-  map-back-button: 3,
   map-room-hovered: 3,
   map-room: 2,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,
   duststorm-modal-content: 220,
-  header: 5,
   // Unsorted
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
