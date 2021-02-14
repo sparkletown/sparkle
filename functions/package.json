@@ -15,7 +15,7 @@
     "firebase-functions": "^3.13.1",
     "npm-force-resolutions": "0.0.3",
     "prettier": "^2.2.1",
-    "stripe": "^8.71.0",
+    "stripe": "^8.135.0",
     "twilio": "^3.45.0",
     "uuidv4": "^6.2.6"
   },
