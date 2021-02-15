@@ -9,6 +9,7 @@ import { UserVisit } from "../src/types/Firestore";
 import { User } from "../src/types/User";
 
 import { WithId, withId } from "../src/utils/id";
+import { formatSecondsAsDuration } from "../src/utils/time";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
@@ -112,7 +113,13 @@ interface UsersWithVisitsResult {
 
   // Display CSV headings
   console.log(
-    ["Email", "Party Name", "Venue Visited", "Time Spent"]
+    [
+      "Email",
+      "Party Name",
+      "Venue Visited",
+      "Time Spent (seconds)",
+      "Time Spent (formatted)",
+    ]
       .map((heading) => `"${heading}"`)
       .join(",")
   );
@@ -124,6 +131,7 @@ interface UsersWithVisitsResult {
       visit.partyName,
       visit.venueName,
       visit.timeSpent,
+      formatSecondsAsDuration(visit.timeSpent),
     ]
       .map((s) => `"${s}"`)
       .join(",");
