@@ -8,7 +8,6 @@ import {
   currentVenueSelector,
   currentVenueSelectorData,
   orderedVenuesSelector,
-  privateChatsSelector,
 } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
@@ -18,7 +17,6 @@ import { isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { useDispatch } from "hooks/useDispatch";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatsSidebarControls } from "hooks/useChatsSidebar";
 
@@ -54,7 +52,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     openPrivateRecipientChat(chosenUserId);
     // NOTE: Hide the modal, after the chat is opened;
     onHide();
-  }, [openPrivateRecipientChat]);
+  }, [openPrivateRecipientChat, onHide, chosenUserId]);
 
   if (!userProfile || !chosenUserId || !user) {
     return <></>;

@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 
-import { ChatMessage as TChatMessage, MessageToDisplay } from "types/chat";
+import { MessageToDisplay } from "types/chat";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 

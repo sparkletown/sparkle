@@ -28,8 +28,6 @@ import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import Sidebar from "components/molecules/Sidebar";
-
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -262,9 +260,5 @@ export const Map: React.FC<MapProps> = ({
         />
       </div>
     </div>
-
-    /* <div className="party-map-sidebar">
-        <Sidebar />
-      </div> */
   );
 };

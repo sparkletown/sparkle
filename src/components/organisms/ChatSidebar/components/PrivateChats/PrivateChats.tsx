@@ -1,10 +1,6 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
 
-import {
-  PrivateChatPreview,
-  OnlineUserList,
-  RecipientChat,
-} from "./components";
+import { PrivateChatPreview, RecipientChat } from "./components";
 
 import { usePrivateChatList } from "hooks/usePrivateChats";
 import { useChatsSidebarControls } from "hooks/useChatsSidebar";
@@ -16,7 +12,7 @@ export interface PrivateChatsProps {
 }
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
-  const [userSearchQuery, setUserSearchQuery] = useState("");
+  // const [userSearchQuery, setUserSearchQuery] = useState("");
 
   const { privateChatList } = usePrivateChatList();
   const { openPrivateRecipientChat } = useChatsSidebarControls();
@@ -52,7 +48,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
           key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
         />
       )),
-    [privateChatList]
+    [privateChatList, openPrivateRecipientChat]
   );
 
   if (recipientId) {
@@ -65,7 +61,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     <div className="private-chats-container">
       {/* <input className="private-chats-search" placeholder="Search for people" /> */}
       <div>{renderedPrivateChatPreviews}</div>
-      {/* <div>online users</div> */}
     </div>
   );
 

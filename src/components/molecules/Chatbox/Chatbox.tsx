@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,11 +16,7 @@ export type ChatboxProps = {
   deleteMessage: (message: {}) => void;
 };
 
-export const Chatbox: React.FC<ChatboxProps> = ({
-  messages,
-  sendMessage,
-  deleteMessage,
-}) => {
+export const Chatbox: React.FC<ChatboxProps> = ({ messages, sendMessage }) => {
   const onAuthorClick = () => {};
 
   const [isMessageBeingSent, setIsMessageBeingSent] = useState(false);
@@ -46,7 +42,11 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const rendreredMessages = useMemo(
     () =>
       messages.map((message) => (
-        <ChatMessage {...message} onAuthorClick={onAuthorClick} />
+        <ChatMessage
+          {...message}
+          onAuthorClick={onAuthorClick}
+          key={`${message.ts_utc}-${message.from}`}
+        />
       )),
     [messages]
   );

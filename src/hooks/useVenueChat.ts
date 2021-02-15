@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -50,15 +50,18 @@ export const useVenueChat = () => {
     )
     .sort(chatSort);
 
-  const sendMessage = (text: string) => {
-    if (!venueId || !user?.uid) return;
+  const sendMessage = useCallback(
+    (text: string) => {
+      if (!venueId || !userId) return;
 
-    const message = buildMessage<VenueChatMessage>({ from: user?.uid, text });
+      const message = buildMessage<VenueChatMessage>({ from: userId, text });
 
-    sendVenueMessage({ venueId, message });
-  };
+      sendVenueMessage({ venueId, message });
+    },
+    [venueId, userId]
+  );
 
-  const deleteMessage = () => {};
+  const deleteMessage = useCallback(() => {}, []);
 
   return useMemo(
     () => ({
@@ -69,6 +72,6 @@ export const useVenueChat = () => {
       sendMessage,
       deleteMessage,
     }),
-    [filteredMessages]
+    [filteredMessages, sendMessage, deleteMessage, worldUsersById, userId]
   );
 };

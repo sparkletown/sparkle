@@ -4,9 +4,9 @@ import { formatDistanceToNow } from "date-fns";
 
 import {
   DEFAULT_PARTY_NAME,
-  NUM_CHAT_UIDS_TO_LOAD,
+  // NUM_CHAT_UIDS_TO_LOAD,
   VENUE_CHAT_AGE_DAYS,
-  DOCUMENT_ID,
+  // DOCUMENT_ID,
 } from "settings";
 
 import { User } from "types/User";
@@ -14,12 +14,12 @@ import { User } from "types/User";
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
 import { chatUsersByIdSelector, privateChatsSelector } from "utils/selectors";
-import { hasElements, isTruthy } from "utils/types";
+import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useDispatch } from "hooks/useDispatch";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+// import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { chatSort } from "utils/chat";
@@ -30,7 +30,7 @@ import UserSearchBar from "../UserSearchBar/UserSearchBar";
 
 import "./ChatsList.scss";
 
-import { filterUniqueKeys } from "utils/filterUniqueKeys";
+// import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
 interface LastMessageByUser {
   [userId: string]: PrivateChatMessage;

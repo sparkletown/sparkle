@@ -2,7 +2,7 @@ import React from "react";
 import dayjs from "dayjs";
 import classNames from "classnames";
 
-import { PrivateChatMessage, PreviewChatMessageToDisplay } from "types/chat";
+import { PreviewChatMessageToDisplay } from "types/chat";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 

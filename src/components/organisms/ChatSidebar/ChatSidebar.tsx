@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -29,11 +29,7 @@ export const ChatSidebar: React.FC = () => {
     expandChat,
   } = useChatsSidebarControls();
 
-  const {
-    worldChatTabTitle,
-    privateChatTabTitle,
-    venueChatTabTitle,
-  } = useChatsSidebarInfo();
+  const { privateChatTabTitle, venueChatTabTitle } = useChatsSidebarInfo();
 
   return (
     <div

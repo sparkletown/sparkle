@@ -9,8 +9,6 @@ import {
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
 } from "utils/chat";
-// import { filterUniqueKeys } from "utils/filterUniqueKeys";
-// import { hasElements } from "utils/types";
 
 import { PreviewChatMessage, PrivateChatMessage } from "types/chat";
 
@@ -92,7 +90,7 @@ export const usePrivateChatList = () => {
           [counterPartyUserId]: { ...message, counterPartyUserId },
         };
       }, {}),
-    [myPrivateMessages, userId]
+    [myPrivateMessages, userId, worldUsersById]
   );
 
   return useMemo(
@@ -137,7 +135,7 @@ export const useRecipientChat = (recipientId: string) => {
         )
         .sort(chatSort)
         .map((message) => getMessageToDisplay(message, worldUsersById, userId)),
-    [myPrivateMessages, recipientId]
+    [myPrivateMessages, recipientId, worldUsersById, userId]
   );
 
   const deleteMessage = () => {};
