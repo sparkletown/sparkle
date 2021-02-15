@@ -19,6 +19,8 @@ import { setLocalStorageToken } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 import { joinVenue } from "utils/url";
 
+import "./VenueJoinButton.scss";
+
 export interface VenueJoinButtonProps {
   venueId?: string;
   venue: AnyVenue;
