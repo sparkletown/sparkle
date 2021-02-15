@@ -32,7 +32,8 @@ export interface RoomSchemaShape {
   title: string;
   venueName?: string;
   url?: string;
-  useUrl: boolean;
+  useUrl?: boolean;
+  image_url: string;
 }
 
 const createFileSchema = (
@@ -160,6 +161,17 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       .required("Url is required!")
       .min(3, ({ min }) => `Url must be at least ${min} characters`),
   }),
+  image_url: Yup.string().required("Room image is required"),
+});
+
+export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
+  title: Yup.string()
+    .required("Room name is required")
+    .min(3, ({ min }) => `Name must be at least ${min} characters`),
+  url: Yup.string()
+    .required("Url is required!")
+    .min(3, ({ min }) => `Url must be at least ${min} characters`),
+  image_url: Yup.string().required("Room image is required"),
 });
 
 export const venueEditSchema = Yup.object()
