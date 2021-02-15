@@ -54,6 +54,7 @@ interface PropsType {
   backgroundImageStyle?: CSSProperties;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
+  isLoading?: boolean;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -73,9 +74,15 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImageStyle,
     containerStyle,
     lockAspectRatio,
+    isLoading,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
+  const [dragBoxId, setDragBoxId] = useState<number>(0);
+
+  const setDragItemId = useCallback((id: number) => {
+    setDragBoxId(id);
+  }, []);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -271,6 +278,8 @@ export const Container: React.FC<PropsType> = (props) => {
             {...boxes[key]}
             onChangeSize={resizeBox(key)}
             lockAspectRatio={lockAspectRatio}
+            onDragStart={setDragItemId}
+            isLoading={isLoading}
           />
         ))}
       </div>
@@ -278,7 +287,7 @@ export const Container: React.FC<PropsType> = (props) => {
         <CustomDragLayer
           snapToGrid={!!snapToGrid}
           rounded={!!rounded}
-          iconSize={boxes[Object.keys(boxes)[0]]} // @debt - this gets the size from the first box
+          iconSize={boxes[Object.keys(boxes)[dragBoxId]]}
         />
       )}
     </>

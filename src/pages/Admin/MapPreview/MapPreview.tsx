@@ -27,6 +27,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -69,6 +70,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   };
 
   const handleSavePositions = async () => {
+    setLoading(true);
     const roomArr = Object.values(roomRef.current);
 
     let roomIndex = 0;
@@ -86,6 +88,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
       roomIndex++;
     }
 
+    setLoading(false);
     setIsEditing(false);
   };
 
@@ -171,12 +174,13 @@ const MapPreview: React.FC<MapPreviewProps> = ({
               height: 100,
             }}
             otherIconsStyle={{ opacity: 0.4 }}
-            // lockAspectRatio
+            lockAspectRatio
+            isLoading={isLoading}
           />
         )}
 
-        <S.EditButton onClick={handleEditButton}>
-          {isEditing ? "Save layout" : "Edit layout"}
+        <S.EditButton disabled={isLoading} onClick={handleEditButton}>
+          {isLoading ? "Saving..." : isEditing ? "Save layout" : "Edit layout"}
         </S.EditButton>
       </S.Wrapper>
     </DndProvider>
