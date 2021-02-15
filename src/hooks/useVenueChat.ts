@@ -6,7 +6,7 @@ import { sendVenueMessage } from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
 
-import { buildMessage, getMessagesToDisplay } from "utils/chat";
+import { buildMessage, getMessageToDisplay } from "utils/chat";
 import { venueChatsSelector } from "utils/selectors";
 import { chatSort } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
@@ -64,7 +64,7 @@ export const useVenueChat = () => {
     () => ({
       venueChatMessages: filteredMessages,
       messagesToDisplay: filteredMessages.map((message) =>
-        getMessagesToDisplay(message, worldUsersById, userId)
+        getMessageToDisplay(message, worldUsersById, userId)
       ),
       sendMessage,
       deleteMessage,

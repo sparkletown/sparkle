@@ -1,6 +1,12 @@
 import firebase from "firebase/app";
 
-import { BaseChatMessage, ChatMessage, MessageToDisplay } from "types/chat";
+import {
+  BaseChatMessage,
+  ChatMessage,
+  MessageToDisplay,
+  PreviewChatMessageToDisplay,
+  PreviewChatMessage,
+} from "types/chat";
 import { User } from "types/User";
 
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
@@ -8,14 +14,26 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export const getMessagesToDisplay = (
+export const getMessageToDisplay = (
   message: ChatMessage,
-  authorsById: Record<string, User>,
+  usersById: Record<string, User>,
   myUserId?: string
 ): MessageToDisplay => ({
-  text: message.text,
-  author: { ...authorsById[message.from], id: message.from },
-  timestamp: message.ts_utc.toMillis(),
+  ...message,
+  author: { ...usersById[message.from], id: message.from },
+  isMine: myUserId === message.from,
+});
+
+export const getPreviewChatMessageToDisplay = (
+  message: PreviewChatMessage,
+  usersById: Record<string, User>,
+  myUserId?: string
+): PreviewChatMessageToDisplay => ({
+  ...message,
+  counterPartyUser: {
+    ...usersById[message.counterPartyUserId],
+    id: message.counterPartyUserId,
+  },
   isMine: myUserId === message.from,
 });
 

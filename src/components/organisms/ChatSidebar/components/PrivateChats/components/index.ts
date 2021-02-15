@@ -1,3 +1,3 @@
 export { OnlineUserList } from "./OnlineUserList";
-export { PrivateChatList } from "./PrivateChatList";
+export { PrivateChatPreview } from "./PrivateChatPreview";
 export { RecipientChat } from "./RecipientChat";

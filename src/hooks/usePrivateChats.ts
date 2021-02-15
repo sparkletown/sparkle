@@ -3,16 +3,23 @@ import { useMemo } from "react";
 import { sendPrivateMessage } from "api/chat";
 
 import { myPrivateChatsSelector } from "utils/selectors";
-import { chatSort, buildMessage, getMessagesToDisplay } from "utils/chat";
-import { filterUniqueKeys } from "utils/filterUniqueKeys";
-import { hasElements } from "utils/types";
+import {
+  chatSort,
+  buildMessage,
+  getPreviewChatMessageToDisplay,
+  getMessageToDisplay,
+} from "utils/chat";
+// import { filterUniqueKeys } from "utils/filterUniqueKeys";
+// import { hasElements } from "utils/types";
 
-import { MessageToDisplay, PrivateChatMessage } from "types/chat";
+import { PreviewChatMessage, PrivateChatMessage } from "types/chat";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
 import { useWorldUsersById } from "./users";
+
+export type ChatToDisplay = {};
 
 export const useMyPrivateChatsConnect = () => {
   const { user } = useUser();
@@ -31,30 +38,78 @@ export const useMyPrivateChatsConnect = () => {
   });
 };
 
-export const useMyPrivateChats = () => {
+export const useMyPrivateMessages = () => {
   useMyPrivateChatsConnect();
 
-  const userPrivateChats = useSelector(myPrivateChatsSelector);
+  const myPrivateMessages = useSelector(myPrivateChatsSelector);
 
   return useMemo(
     () => ({
-      userPrivateChats: userPrivateChats ?? [],
-      isUserPrivateChatsLoaded: isLoaded(userPrivateChats),
+      myPrivateMessages: myPrivateMessages ?? [],
+      isUserPrivateChatsLoaded: isLoaded(myPrivateMessages),
     }),
-    [userPrivateChats]
+    [myPrivateMessages]
   );
 };
 
 export const usePrivateChatList = () => {
-  const chatsToDisplay = [];
-  const onlineUsers = [];
+  const { user } = useUser();
+  const { worldUsersById } = useWorldUsersById();
+  const { myPrivateMessages } = useMyPrivateMessages();
 
-  return {};
+  const userId = user?.uid;
+
+  const recentPreviewChatMessagesMap = useMemo(
+    () =>
+      myPrivateMessages.reduce<{
+        [key: string]: PreviewChatMessage;
+      }>((acc, message) => {
+        if (!userId) return acc;
+
+        const { from: fromUserId, to: toUserId } = message;
+
+        // NOTE: Either `from` author or `to` author is Me. Filter me out
+        const counterPartyUserId =
+          fromUserId === userId ? toUserId : fromUserId;
+
+        // NOTE: Filter out not existent users
+        if (!worldUsersById[counterPartyUserId]) return acc;
+
+        if (counterPartyUserId in acc) {
+          const previousMessage = acc[counterPartyUserId];
+
+          // NOTE: If the message is older, replace it with the more recent one
+          if (previousMessage.ts_utc > message.ts_utc) return acc;
+
+          return {
+            ...acc,
+            [counterPartyUserId]: { ...message, counterPartyUserId },
+          };
+        }
+
+        return {
+          ...acc,
+          [counterPartyUserId]: { ...message, counterPartyUserId },
+        };
+      }, {}),
+    [myPrivateMessages, userId]
+  );
+
+  return useMemo(
+    () => ({
+      privateChatList: Object.values(recentPreviewChatMessagesMap)
+        .sort(chatSort)
+        .map((message) =>
+          getPreviewChatMessageToDisplay(message, worldUsersById, userId)
+        ),
+    }),
+    [recentPreviewChatMessagesMap, worldUsersById, userId]
+  );
 };
 
 export const useRecipientChat = (recipientId: string) => {
   const { worldUsersById } = useWorldUsersById();
-  const { userPrivateChats } = useMyPrivateChats();
+  const { myPrivateMessages } = useMyPrivateMessages();
   const { user } = useUser();
 
   const userId = user?.uid;
@@ -74,17 +129,15 @@ export const useRecipientChat = (recipientId: string) => {
 
   const messagesToDisplay = useMemo(
     () =>
-      userPrivateChats
+      myPrivateMessages
         .filter(
           (message) =>
             message.deleted !== true &&
             (message.to === recipientId || message.from === recipientId)
         )
         .sort(chatSort)
-        .map((message) =>
-          getMessagesToDisplay(message, worldUsersById, userId)
-        ),
-    [userPrivateChats, recipientId]
+        .map((message) => getMessageToDisplay(message, worldUsersById, userId)),
+    [myPrivateMessages, recipientId]
   );
 
   const deleteMessage = () => {};

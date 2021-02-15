@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 $header-height: 45px;
 
 .chat-sidebar-component {
@@ -11,7 +13,7 @@ $header-height: 45px;
   width: 360px;
   height: calc(100vh - 96px);
   background-color: #1a191b;
-  z-index: 100;
+  z-index: z(sidebar);
 
   .chat-sidebar-header {
     height: $header-height;

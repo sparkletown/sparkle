@@ -1,0 +1,45 @@
+.private-chat-preview-container {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px 24px;
+  width: 100%;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    background-color: black;
+  }
+
+  .private-chat-preview-content {
+    margin-left: 16px;
+
+    .private-chat-preview-username {
+      font-size: 13px;
+      font-weight: 400;
+      color: #b2b2b3;
+
+      &--highlight {
+        font-weight: 500;
+        color: white;
+      }
+    }
+    .private-chat-preview-text {
+      font-size: 11px;
+      color: #444345;
+
+      &--highlight {
+        color: white;
+      }
+    }
+  }
+
+  .private-chat-preview-time {
+    margin-left: auto;
+    font-size: 10px;
+    color: #656466;
+
+    &--highlight {
+      color: #a0a0a0;
+    }
+  }
+}

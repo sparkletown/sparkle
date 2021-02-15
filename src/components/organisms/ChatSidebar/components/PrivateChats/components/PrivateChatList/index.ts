@@ -1,1 +1,0 @@
-export { PrivateChatList } from "./PrivateChatList";

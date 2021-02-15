@@ -1,8 +1,15 @@
 import React, { useState, useMemo } from "react";
 
-import { PrivateChatList, OnlineUserList, RecipientChat } from "./components";
+import {
+  PrivateChatPreview,
+  OnlineUserList,
+  RecipientChat,
+} from "./components";
 
 import { usePrivateChatList } from "hooks/usePrivateChats";
+import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+
+import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
@@ -11,13 +18,8 @@ export interface PrivateChatsProps {
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
 
-  const {
-    // sendMessageToSelectedUser,
-    // setSelectedRecipient,
-    // selectedRecipient,
-    // privateChatList,
-    // chatMessages,
-  } = usePrivateChatList();
+  const { privateChatList } = usePrivateChatList();
+  const { openPrivateRecipientChat } = useChatsSidebarControls();
 
   // const groomedPrivateChatList = useMemo(
   //   () =>
@@ -39,15 +41,32 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   //   [recentUniverseUsers, userSearchQuery]
   // );
 
+  const renderedPrivateChatPreviews = useMemo(
+    () =>
+      privateChatList.map((chatMessage) => (
+        <PrivateChatPreview
+          {...chatMessage}
+          onClick={() =>
+            openPrivateRecipientChat(chatMessage.counterPartyUser.id)
+          }
+          key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+        />
+      )),
+    [privateChatList]
+  );
+
   if (recipientId) {
     return <RecipientChat recipientId={recipientId} />;
   }
 
+  console.log({ renderedPrivateChatPreviews });
+
   return (
-    <>
-      <div>private chats</div>
-      <div>online users</div>
-    </>
+    <div className="private-chats-container">
+      {/* <input className="private-chats-search" placeholder="Search for people" /> */}
+      <div>{renderedPrivateChatPreviews}</div>
+      {/* <div>online users</div> */}
+    </div>
   );
 
   // return (

@@ -6,6 +6,8 @@ import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
+import dayjs from "dayjs";
+import relativeTimePlugin from "dayjs/plugin/relativeTime";
 
 import { render } from "react-dom";
 import { Provider } from "react-redux";
@@ -63,6 +65,8 @@ import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
+
+dayjs.extend(relativeTimePlugin);
 
 activatePolyFills();
 initializeZendesk();

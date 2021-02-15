@@ -10,16 +10,24 @@ export type BaseChatMessage = {
 
 export type PrivateChatMessage = BaseChatMessage & {
   to: string;
+  isRead?: boolean;
 };
 
 export type VenueChatMessage = BaseChatMessage & {};
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
-export type MessageToDisplay = {
-  text: string;
+export type MessageToDisplay = ChatMessage & {
   author: WithId<User>;
-  timestamp: number;
+  isMine: boolean;
+};
+
+export type PreviewChatMessage = PrivateChatMessage & {
+  counterPartyUserId: string;
+};
+
+export type PreviewChatMessageToDisplay = PrivateChatMessage & {
+  counterPartyUser: WithId<User>;
   isMine: boolean;
 };
 

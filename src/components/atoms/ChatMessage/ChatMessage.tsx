@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 
-import { MessageToDisplay } from "types/chat";
+import { ChatMessage as TChatMessage, MessageToDisplay } from "types/chat";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -14,11 +14,13 @@ type ChatProps = {
 
 export const ChatMessage: React.FC<MessageToDisplay & ChatProps> = ({
   text,
-  timestamp,
+  ts_utc,
   isMine,
   author,
   onAuthorClick,
 }) => {
+  const timestamp = ts_utc.toMillis();
+
   const containerStyles = classNames("chat-message-container", {
     "chat-message-container--isme": isMine,
   });
