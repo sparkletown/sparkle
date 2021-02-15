@@ -99,8 +99,6 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
     }
   }, [editValues, onSubmitHandler, template, useUrl, user, values, venueId]);
 
-  console.log(values, errors);
-
   const handleOnChange = (val: string) => setValue("image_url", val);
 
   const handleUrlToggle = useCallback(() => {
