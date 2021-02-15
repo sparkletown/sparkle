@@ -1,17 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { getLinkFromText } from "utils/getLinkFromText";
 
+import { VenueTemplate } from "types/venues";
+
 import "./AnnouncementMessage.scss";
 
 type AnnouncementMessageProps = {
   message?: string;
+  template: VenueTemplate;
 };
 
 export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
+  template,
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
 
@@ -27,8 +32,14 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   if (!isVisible || !message) return null;
 
+  const isBannerCentered = template !== VenueTemplate.partymap;
+
   return (
-    <div className="announcement-container">
+    <div
+      className={classNames("announcement-container", {
+        center: isBannerCentered,
+      })}
+    >
       {getLinkFromText(message)}
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />

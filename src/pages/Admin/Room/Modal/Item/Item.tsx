@@ -83,13 +83,15 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       };
 
       try {
-        if (!editValues || !useUrl) {
+        if (!editValues && !useUrl) {
           await createVenue_v2(venueInput, user);
         }
         await createRoom(valuesWithTemplate, venueId, user);
 
         onSubmitHandler();
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     } catch (err) {
       console.error(err);
     }
