@@ -40,7 +40,7 @@
     .chat-message-author-name {
       opacity: 0.8;
       color: #fff;
-      margin: 0 8px 4px;
+      margin: 0 8px 0 4px;
 
       &:hover {
         opacity: 1;
@@ -48,7 +48,6 @@
     }
 
     .chat-message-time {
-      all: unset;
       opacity: 0.6;
       font-weight: 300;
     }

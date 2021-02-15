@@ -38,10 +38,12 @@ export const ChatMessage: React.FC<MessageToDisplay & ChatProps> = ({
       <div className={textStyles}>{text}</div>
       <div className={messageInfoStyles}>
         <UserAvatar onClick={onAuthorClick} avatarSrc={author.pictureUrl} />
-        <p onClick={onAuthorClick} className="chat-message-author-name">
+        <span onClick={onAuthorClick} className="chat-message-author-name">
           {author.partyName}
-        </p>
-        <p className="chat-message-time">{dayjs(timestamp).format("h:mm A")}</p>
+        </span>
+        <span className="chat-message-time">
+          {dayjs(timestamp).format("h:mm A")}
+        </span>
       </div>
     </div>
   );
