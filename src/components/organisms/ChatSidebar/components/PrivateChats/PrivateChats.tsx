@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 
 import { PrivateChatPreview, RecipientChat } from "./components";
 
+import { OnAvatarClick } from "types/User";
+
 import { usePrivateChatList } from "hooks/usePrivateChats";
 import { useChatsSidebarControls } from "hooks/useChatsSidebar";
 
@@ -9,23 +11,17 @@ import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
+  onAvatarClick: OnAvatarClick;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({
+  recipientId,
+  onAvatarClick,
+}) => {
   // const [userSearchQuery, setUserSearchQuery] = useState("");
 
   const { privateChatList } = usePrivateChatList();
   const { openPrivateRecipientChat } = useChatsSidebarControls();
-
-  // const groomedPrivateChatList = useMemo(
-  //   () =>
-  //     userSearchQuery
-  //       ? privateChatList
-  //           .filter((chat) => chat.user.name.includes(userSearchQuery))
-  //           .sort()
-  //       : privateChatList,
-  //   [privateChatList, userSearchQuery]
-  // );
 
   // const groomedOnlineUserList = useMemo(
   //   () =>
@@ -52,10 +48,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   );
 
   if (recipientId) {
-    return <RecipientChat recipientId={recipientId} />;
+    return (
+      <RecipientChat recipientId={recipientId} onAvatarClick={onAvatarClick} />
+    );
   }
-
-  console.log({ renderedPrivateChatPreviews });
 
   return (
     <div className="private-chats-container">

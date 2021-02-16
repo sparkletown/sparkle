@@ -54,22 +54,25 @@ $header-height: 45px;
       .chat-sidebar-tab {
         display: flex;
         flex: 1;
-        font-size: 13px;
+        font-size: 0.9rem;
         justify-content: center;
         align-items: center;
         cursor: pointer;
         border-bottom: rgba(0, 0, 0, 0) thin solid;
+        color: rgba(255, 255, 255, 0.6);
 
         &:hover {
-          border-bottom: rgba(255, 255, 255, 0.5) thin solid;
+          color: rgba(255, 255, 255, 0.7);
         }
       }
 
       .chat-sidebar-tab--selected {
-        border-bottom: white thin solid;
+        border-bottom: white 2px solid;
+        color: white;
 
         &:hover {
-          border-bottom: white thin solid;
+          color: white;
+          border-bottom: white 2px solid;
         }
       }
     }

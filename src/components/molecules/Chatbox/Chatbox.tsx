@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
+import { OnAvatarClick } from "types/User";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
 
@@ -14,11 +15,14 @@ export type ChatboxProps = {
   messages: MessageToDisplay[];
   sendMessage: (text: string) => void;
   deleteMessage: (message: {}) => void;
+  onAvatarClick: OnAvatarClick;
 };
 
-export const Chatbox: React.FC<ChatboxProps> = ({ messages, sendMessage }) => {
-  const onAuthorClick = () => {};
-
+export const Chatbox: React.FC<ChatboxProps> = ({
+  messages,
+  sendMessage,
+  onAvatarClick,
+}) => {
   const [isMessageBeingSent, setIsMessageBeingSent] = useState(false);
 
   useEffect(() => {
@@ -44,11 +48,11 @@ export const Chatbox: React.FC<ChatboxProps> = ({ messages, sendMessage }) => {
       messages.map((message) => (
         <ChatMessage
           {...message}
-          onAuthorClick={onAuthorClick}
+          onAuthorClick={() => onAvatarClick(message.author)}
           key={`${message.ts_utc}-${message.from}`}
         />
       )),
-    [messages]
+    [messages, onAvatarClick]
   );
 
   return (

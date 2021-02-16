@@ -5,6 +5,7 @@
   width: 100%;
   align-items: center;
   cursor: pointer;
+  color: white;
 
   &:hover {
     background-color: black;
@@ -15,20 +16,21 @@
 
     .private-chat-preview-username {
       font-size: 13px;
-      font-weight: 400;
-      color: #b2b2b3;
+      opacity: 0.7;
 
       &--highlight {
         font-weight: 500;
         color: white;
+        opacity: 1;
       }
     }
     .private-chat-preview-text {
       font-size: 11px;
-      color: #444345;
+      opacity: 0.35;
 
       &--highlight {
         color: white;
+        opacity: 0.7;
       }
     }
   }
@@ -36,10 +38,10 @@
   .private-chat-preview-time {
     margin-left: auto;
     font-size: 10px;
-    color: #656466;
+    opacity: 0.35;
 
     &--highlight {
-      color: #a0a0a0;
+      opacity: 0.7;
     }
   }
 }

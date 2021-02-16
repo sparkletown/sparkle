@@ -14,11 +14,11 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export const getMessageToDisplay = (
-  message: ChatMessage,
+export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>(
+  message: T,
   usersById: Record<string, User>,
   myUserId?: string
-): MessageToDisplay => ({
+): MessageToDisplay<T> => ({
   ...message,
   author: { ...usersById[message.from], id: message.from },
   isMine: myUserId === message.from,

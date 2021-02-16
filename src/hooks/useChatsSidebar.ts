@@ -11,6 +11,7 @@ import {
 
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
+import { useNumberOfUnreadChats } from "./usePrivateChats";
 
 export const useChatsSidebarControls = () => {
   const dispatch = useDispatch();
@@ -55,9 +56,12 @@ export const useChatsSidebarControls = () => {
 };
 
 export const useChatsSidebarInfo = () => {
+  const numberOfUnreadChats = useNumberOfUnreadChats();
+
   return {
-    worldChatTabTitle: "World chat",
-    privateChatTabTitle: "Private Chats",
+    privateChatTabTitle: `Direct Messages ${
+      numberOfUnreadChats ? `(${numberOfUnreadChats})` : ""
+    }`,
     venueChatTabTitle: "Venue Chat",
   };
 };

@@ -17,7 +17,7 @@ export type VenueChatMessage = BaseChatMessage & {};
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
-export type MessageToDisplay = ChatMessage & {
+export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
 };

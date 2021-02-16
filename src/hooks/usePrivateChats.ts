@@ -105,6 +105,15 @@ export const usePrivateChatList = () => {
   );
 };
 
+export const useNumberOfUnreadChats = () => {
+  const { privateChatList } = usePrivateChatList();
+
+  return useMemo(
+    () => privateChatList.filter((chatMessage) => chatMessage.isRead).length,
+    [privateChatList]
+  );
+};
+
 export const useRecipientChat = (recipientId: string) => {
   const { worldUsersById } = useWorldUsersById();
   const { myPrivateMessages } = useMyPrivateMessages();
@@ -134,7 +143,13 @@ export const useRecipientChat = (recipientId: string) => {
             (message.to === recipientId || message.from === recipientId)
         )
         .sort(chatSort)
-        .map((message) => getMessageToDisplay(message, worldUsersById, userId)),
+        .map((message) =>
+          getMessageToDisplay<PrivateChatMessage>(
+            message,
+            worldUsersById,
+            userId
+          )
+        ),
     [myPrivateMessages, recipientId, worldUsersById, userId]
   );
 

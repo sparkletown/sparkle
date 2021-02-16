@@ -1,3 +1,5 @@
+import { WithId } from "utils/id";
+
 export interface Experience {
   bartender: User;
   table: string;
@@ -33,3 +35,5 @@ export interface User {
   anonMode: boolean;
   enteredVenueIds?: string[];
 }
+
+export type OnAvatarClick = (user: WithId<User>) => void;

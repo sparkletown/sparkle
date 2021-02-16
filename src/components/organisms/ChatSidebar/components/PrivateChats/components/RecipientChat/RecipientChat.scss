@@ -26,10 +26,15 @@
     }
 
     .recipient-chat-back-nickname {
+      cursor: pointer;
       margin-left: 6px;
       color: #fff;
       font-size: 0.8rem;
       font-weight: 500;
+
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 }
