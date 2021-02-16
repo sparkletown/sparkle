@@ -28,6 +28,8 @@ const Sidebar = () => {
   const notificationSound = "/sounds/notification.m4a";
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
+  const { user, profile } = useUser();
+  const privateChats = useSelector(privateChatsSelector);
 
   const [tab, setTab] = useState(0);
 
