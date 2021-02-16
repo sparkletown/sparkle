@@ -151,10 +151,10 @@ const VenuePage: React.FC = () => {
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user
+    userId
       ? {
           collection: "privatechats",
-          doc: user.uid,
+          doc: userId,
           subcollections: [{ collection: "chats" }],
           storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }

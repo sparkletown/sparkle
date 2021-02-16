@@ -49,7 +49,6 @@ const ChatsList: React.FunctionComponent = () => {
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
   const privateChats = useSelector(privateChatsSelector) ?? [];
-
   const chatUserIds = useMemo(() => {
     return [...privateChats]
       .sort(chatSort)

@@ -140,10 +140,6 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
-export const isPrivateChatsRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
-  "privatechats"
-);
-
 const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
