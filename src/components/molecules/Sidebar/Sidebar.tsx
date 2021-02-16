@@ -15,6 +15,7 @@ import { isChatValid } from "validation";
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
+import notificationSound from "assets/sounds/notification.m4a";
 
 import "./Sidebar.scss";
 
@@ -25,7 +26,6 @@ enum TABS {
 }
 
 const Sidebar = () => {
-  const notificationSound = "/sounds/notification.m4a";
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
   const { user, profile } = useUser();
@@ -85,7 +85,7 @@ const Sidebar = () => {
         >
           {hasUnreadMessages && <div className="notification"></div>}
           <span>Messages</span>
-          
+
           {numberOfUnreadMessages > 0 && (
                         <span>
                           ({numberOfUnreadMessages}) <audio autoPlay ><source src={notificationSound} /></audio>
