@@ -41,7 +41,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
       title: room.title,
       url: room.url,
       description: room.description,
-      tempalte: room.template,
+      template: room.template,
       image_url: room.image_url,
     },
   });
@@ -121,7 +121,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
         <Form.Control
           as="select"
           custom
-          name="tempalte"
+          name="template"
           ref={register}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setSelectedTemplate(e.target.value)
