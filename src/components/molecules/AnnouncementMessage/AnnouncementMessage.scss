@@ -1,5 +1,4 @@
 @import "scss/constants.scss";
-
 .announcement-container {
   display: block;
   z-index: z(announcement);
@@ -10,15 +9,12 @@
   left: calc((100% - #{$map-sidebar-width}) / 2);
   width: 500px;
   margin: 0 auto 0 -250px;
-
   &.center {
     left: 50%;
   }
-
-  padding: 15px;
+  padding: 15px 30px 15px 20px;
   border-radius: 0 0 50px 50px;
   text-align: center;
-
   .close-button {
     cursor: pointer;
     position: absolute;
