@@ -85,6 +85,8 @@ interface NavBarPropsType {
 }
 
 const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
+  const notificationSound = "/sounds/notification.m4a";
+  
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
@@ -264,7 +266,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     <span className="private-chat-icon">
                       {numberOfUnreadMessages > 0 && (
                         <div className="notification-card">
-                          {numberOfUnreadMessages}
+                          {numberOfUnreadMessages} <audio autoPlay ><source src={notificationSound} /></audio>
                         </div>
                       )}
                       <div className="navbar-link-message" />
