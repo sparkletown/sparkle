@@ -4,7 +4,6 @@ import { Redirect, useHistory } from "react-router-dom";
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
 import { VenueTemplate } from "types/venues";
-import { ValidStoreAsKeys } from "types/Firestore";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -150,16 +149,6 @@ const VenuePage: React.FC = () => {
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
-  useFirestoreConnect(
-    userId
-      ? {
-          collection: "privatechats",
-          doc: userId,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
-        }
-      : undefined
-  );
 
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {

@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
+import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
@@ -182,12 +183,10 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     []
   );
 
-  if (!venueId || !venue) return null;
-
-  const isVenueUsingPartyMap = venue.template === VenueTemplate.partymap;
+  const isVenueUsingPartyMap = venue?.template === VenueTemplate.partymap;
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? venue.name;
+  const navbarTitle = parentVenue?.name ?? venue?.name;
 
   const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
 
@@ -211,22 +210,26 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               >
                 <div />
               </div>
-              <div
-                className={`nav-party-logo ${
-                  isEventScheduleVisible && "clicked"
-                }`}
-                onClick={toggleEventSchedule}
-              >
-                {navbarTitle} Schedule
-              </div>
-              <VenuePartygoers />
+              {venueId && venue && (
+                <>
+                  <div
+                    className={classNames("nav-party-logo", {
+                      clicked: isEventScheduleVisible,
+                    })}
+                    onClick={toggleEventSchedule}
+                  >
+                    {navbarTitle} Schedule
+                  </div>
+                  <VenuePartygoers />
+                </>
+              )}
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar />
+                {venueId && venue && <NavSearchBar />}
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger

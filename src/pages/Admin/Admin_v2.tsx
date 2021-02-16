@@ -23,6 +23,7 @@ import { orderedVenuesSelector } from "utils/selectors";
 import { useAdminVenues } from "hooks/useAdminVenues";
 import EntranceExperience from "./EntranceExperience";
 import AdvancedSettings from "./AdvancedSettings";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 // import TicketingAndAccess from "./TicketingAndAccess";
 
 import * as S from "./Admin.styles";
@@ -139,7 +140,7 @@ const Admin_v2: React.FC = () => {
   };
 
   return (
-    <>
+    <WithNavigationBar fullscreen>
       <S.Wrapper>
         <AdminSidebar
           sidebarOptions={sidebarOptions}
@@ -163,7 +164,7 @@ const Admin_v2: React.FC = () => {
         onHide={() => {}}
         showAuth={AuthOptions.login}
       />
-    </>
+    </WithNavigationBar>
   );
 };
 
