@@ -1,18 +1,6 @@
-import { FirebaseReducer } from "react-redux-firebase";
+import { Room } from "types/rooms";
 
-import { VENUE_CHAT_AGE_DAYS } from "settings";
-
-import { CampRoomData } from "types/CampRoomData";
-
-import { chatSort } from "utils/chat";
-import { PrivateChatMessage } from "store/actions/Chat";
-
-import { WithId } from "./id";
 import { isWithinBounds } from "./isWithinBounds";
-import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
-
-const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
 /**
  * To be used with Array Filter ([].filter()) and similar.
@@ -37,7 +25,7 @@ const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 export const isTruthyFilter = <T>(item?: T | false): item is T => !!item;
 
 /**
- * @see makeCampRoomHitFilter
+ * @see makeRoomHitFilter
  */
 export type RoomHitFilterProps = {
   row: number;
@@ -47,19 +35,19 @@ export type RoomHitFilterProps = {
 };
 
 /**
- * Make a CampRoomData[] filter for rooms 'hit' by the supplied row/column.
+ * Make a PartyMapRoomData[] filter for rooms 'hit' by the supplied row/column.
  *
  * @param row
  * @param column
  * @param totalRows
  * @param totalColumns
  */
-export const makeCampRoomHitFilter = ({
+export const makeRoomHitFilter = ({
   row,
   column,
   totalRows,
   totalColumns,
-}: RoomHitFilterProps) => (room: CampRoomData) => {
+}: RoomHitFilterProps) => (room: Room) => {
   const checkPercentRow = (row / totalRows) * 100;
   const checkPercentColumn = (column / totalColumns) * 100;
 
@@ -76,20 +64,4 @@ export const makeCampRoomHitFilter = ({
   return isWithinBounds(checkPercent, roomBounds);
 };
 
-export const filterUnreadPrivateChats = (
-  chats: readonly WithId<PrivateChatMessage>[],
-  user?: FirebaseReducer.AuthState
-) => {
-  if (!chats) return [];
-
-  return chats
-    ?.filter(
-      (message) =>
-        message.from !== user?.uid &&
-        message.deleted !== true &&
-        message.type === "private" &&
-        message.ts_utc.seconds > HIDE_BEFORE &&
-        message.isRead === false
-    )
-    .sort(chatSort);
-};
+export const filterEnabledRooms = (room: Room) => room.isEnabled;

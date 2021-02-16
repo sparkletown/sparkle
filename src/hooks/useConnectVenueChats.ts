@@ -1,4 +1,4 @@
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const useConnectVenueChats = (venueId?: string) => {
   useFirestoreConnect(

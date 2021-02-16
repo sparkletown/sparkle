@@ -1,42 +1,42 @@
-import React, { useCallback } from "react";
+import React, { useMemo } from "react";
+import classNames from "classnames";
 
-import { AnyVenue } from "types/Firestore";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
+import { Room } from "types/rooms";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
-import { openEventRoomWithCounting } from "utils/useLocationUpdateEffect";
 
-import { useUser } from "hooks/useUser";
+import { useRoom } from "hooks/useRoom";
 
 import "./EventDisplay.scss";
 
-interface EventDisplayProps {
+export interface EventDisplayProps {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
 }
 
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
-  const { user, profile } = useUser();
+  const eventRoomTitle = event.room;
 
-  const enterEvent = useCallback(() => {
-    if (!venue) return;
+  const room = useMemo(
+    () => venue?.rooms?.find((room) => room.title === eventRoomTitle),
+    [venue, eventRoomTitle]
+  );
 
-    openEventRoomWithCounting({ user, profile, venue, event });
-  }, [event, profile, user, venue]);
+  const buttonText = `${event.room ?? "Enter"} ${venue && `- ${venue.name}`}`;
 
   const isLiveEvent =
     event.start_utc_seconds < getCurrentTimeInUTCSeconds() &&
     event.start_utc_seconds + event.duration_minutes * 60 >
       getCurrentTimeInUTCSeconds();
 
+  const containerClasses = classNames("schedule-event-container", {
+    "schedule-event-container--live": isLiveEvent,
+  });
+
   return (
-    <div
-      key={event.name + Math.random().toString()}
-      className={`schedule-event-container ${
-        isLiveEvent && "schedule-event-container_live"
-      }`}
-    >
+    <div className={containerClasses}>
       <div className="schedule-event-time">
         <div className="schedule-event-time-start">
           {formatHourAndMinute(event.start_utc_seconds)}
@@ -54,11 +54,30 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
           {event.description}
         </div>
         <div className="schedule-event-info-room">
-          <div onClick={enterEvent}>
-            {event.room ?? "Enter"} {venue && `- ${venue.name}`}
-          </div>
+          {event.room && room && venue ? (
+            <EnterRoomButton room={room} venue={venue}>
+              {buttonText}
+            </EnterRoomButton>
+          ) : (
+            <div>{buttonText}</div>
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+interface EnterRoomButtonProps {
+  room: Room;
+  venue: WithId<AnyVenue>;
+}
+
+const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
+  room,
+  venue,
+  children,
+}) => {
+  const { enterRoom } = useRoom({ room, venueName: venue.name });
+
+  return <div onClick={enterRoom}>{children}</div>;
 };

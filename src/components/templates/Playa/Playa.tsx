@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { useFirestoreConnect } from "react-redux-firebase";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
 import { throttle } from "lodash";
@@ -36,28 +35,29 @@ import {
   Venue,
   VenuePlacement,
   VenuePlacementState,
-} from "types/Venue";
+} from "types/venues";
 
 import { WithId } from "utils/id";
-import { updateLocationData } from "utils/useLocationUpdateEffect";
+// import { updateLocationData } from "utils/userLocation";
 import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+// import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
+import { useRecentVenueUsers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import BannerMessage from "components/molecules/BannerMessage";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -359,13 +359,13 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    user &&
-      updateLocationData(
-        user,
-        { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
-        profile?.lastSeenIn
-      );
-  }, [setShowModal, user, profile]);
+    // user &&
+    //   updateLocationData(
+    //     user,
+    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
+    //     profile?.lastSeenIn
+    //   );
+  }, [setShowModal]);
 
   const distanceToVenue = (
     x: number,
@@ -450,23 +450,24 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const partygoers = useSelector((state) => state.firestore.ordered.partygoers);
+  const { recentVenueUsers } = useRecentVenueUsers();
+
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
     () =>
       hoveredVenue &&
-      peopleAttending(peopleByLastSeenIn(partygoers, venueName), hoveredVenue),
-    [partygoers, hoveredVenue, venueName]
+      peopleAttending(
+        peopleByLastSeenIn(venueName, recentVenueUsers),
+        hoveredVenue
+      ),
+    [recentVenueUsers, hoveredVenue, venueName]
   );
 
-  const usersInCurrentVenue = partygoers
-    ? partygoers.filter(
-        (partygoer) =>
-          partygoer.lastSeenIn &&
-          partygoer.lastSeenIn[venueName] >
-            (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-      )
-    : [];
+  const usersInCurrentVenue = recentVenueUsers.filter(
+    (partygoer) =>
+      partygoer.lastSeenIn?.[venueName] >
+      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+  );
 
   useEffect(() => {
     setCenteredOnMe(myX === centerX && myY === centerY);
@@ -595,7 +596,7 @@ const Playa = () => {
 
   const playaContent = useMemo(() => {
     const now = new Date().getTime();
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venueName);
+    const peopleByLastSeen = peopleByLastSeenIn(venueName, recentVenueUsers);
     return (
       <>
         <PlayaBackground
@@ -603,14 +604,11 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = partygoers
-            ? partygoers.filter(
-                (partygoer) =>
-                  partygoer.lastSeenIn &&
-                  partygoer.lastSeenIn[v.name] >
-                    (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-              )
-            : [];
+          const usersInVenue = recentVenueUsers.filter(
+            (partygoer) =>
+              partygoer.lastSeenIn?.[v.name] >
+              (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+          );
           return (
             <>
               <div
@@ -788,7 +786,7 @@ const Playa = () => {
     venues,
     openVenues,
     showVenue,
-    partygoers,
+    recentVenueUsers,
     venueName,
   ]);
 
@@ -871,7 +869,6 @@ const Playa = () => {
   return useMemo(() => {
     return (
       <>
-        <BannerMessage venue={venue} />
         {atEdge && (
           <div className="playa-banner">
             <>

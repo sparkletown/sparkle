@@ -1,24 +1,73 @@
-.room-container {
-  .about-this-room {
-    font-size: 20px;
+@import "scss/constants";
+
+$border-radius: 22px;
+$spacing: 20px;
+
+.room-modal {
+  padding: $spacing;
+
+  background-color: #19181a;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  h2 {
+    text-align: center;
   }
-  .room-page-image {
-    width: 100%;
+
+  &__title {
+    font-weight: 700;
+
+    margin-top: $spacing;
+    margin-bottom: $spacing;
   }
-  .room-image-container {
+
+  &__main {
     display: flex;
-    justify-content: center;
-  }
-  .ongoing-event-row {
+    flex-direction: row;
+    justify-content: space-around;
     align-items: center;
+
+    > img {
+      width: 60%;
+      height: auto;
+
+      border-radius: $border-radius;
+    }
+
+    > * {
+      flex: 1;
+      height: fit-content;
+      margin-left: $spacing;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
   }
-  .room-modal-title {
-    margin-top: 20px;
+
+  .userlist-container {
+    margin-top: $spacing;
   }
-  .room-modal-title,
-  .room-modal-subtitle,
-  .about-this-room {
-    text-overflow: ellipsis;
-    overflow: hidden;
+
+  &__description {
+    margin-top: $spacing;
+    padding: 10px $spacing;
+
+    background: $dark;
+    border-radius: $border-radius;
+
+    max-height: 25vh;
+    overflow-y: scroll;
+  }
+
+  &__events {
+    // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
+    //   We should just clean it up there instead.
+    .schedule-item-container {
+      margin: -10px;
+      padding: 10px $spacing;
+
+      border-radius: $border-radius;
+    }
   }
 }

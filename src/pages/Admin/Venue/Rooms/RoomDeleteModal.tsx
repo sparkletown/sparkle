@@ -1,16 +1,17 @@
 import React, { useState, useCallback } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
-import { CampRoomData } from "types/CampRoomData";
+
+import { Room, RoomData_v2 } from "types/rooms";
 
 import "./RoomDeleteModal.scss";
-import { useHistory } from "react-router-dom";
 
 interface PropsType {
   venueId: string;
-  room: CampRoomData;
+  room: Room | RoomData_v2;
   show: boolean;
   onHide: () => void;
+  onDelete?: () => void;
 }
 
 const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
@@ -18,19 +19,16 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
   room,
   show,
   onHide,
+  onDelete,
 }) => {
   const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string>();
-  const history = useHistory();
 
   const closeDeleteModal = () => {
-    if (deleted) {
-      history.push(`/admin/venue/${venueId}`);
-    } else {
-      onHide();
-      setDeleted(false);
-    }
+    if (!!onDelete) onDelete();
+    onHide();
+    setDeleted(false);
   };
 
   const deleteRoom = useCallback(async () => {

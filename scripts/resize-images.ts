@@ -31,6 +31,8 @@
     once configured, in a terminal, run: npx ts-node resize-images.ts
 */
 
+import { resolve } from "path";
+
 import admin from "firebase-admin";
 import { uuid } from "uuidv4";
 import jimp from "jimp";
@@ -38,25 +40,17 @@ import fs from "fs";
 import { GifUtil } from "gifwrap";
 import p from "phin";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Backup or resize images (see code comments for further usage)
+const usage = makeScriptUsage({
+  description: "Backup or resize images (see code comments for further usage)",
+  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
+  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
+});
 
-Usage: node ${scriptName} PROJECT_ID
+const [projectId, credentialPath] = process.argv.slice(2);
 
-Example: node ${scriptName} co-reality-map
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
-
-const [projectId] = process.argv.slice(2);
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId) {
   usage();
 }
@@ -83,7 +77,11 @@ const ACCEPTED_MIME_TYPES = [
   "image/gif",
 ];
 
-initFirebaseAdminApp(projectId);
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 const backupFile = async (
   remotePath: string,

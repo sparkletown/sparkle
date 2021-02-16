@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import {
   currentVenueSelector,
@@ -8,22 +9,21 @@ import {
   privateChatsSelector,
 } from "utils/selectors";
 
+import { User } from "types/User";
+import { isVenueWithRooms } from "types/venues";
+
 import { useUser } from "hooks/useUser";
 
 import "./UserProfileModal.scss";
 import ChatBox from "components/molecules/Chatbox";
-import { User } from "types/User";
 import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { isCampVenue } from "types/CampVenue";
-import { Link } from "react-router-dom";
 import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "react-redux-firebase";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
 import { Badges } from "../Badges";
 import { useDispatch } from "hooks/useDispatch";
-import { isTruthy } from "utils/types";
 
 type PropTypes = {
   show: boolean;
@@ -70,8 +70,6 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   if (!userProfile || !userProfile.id || !user) {
     return <></>;
   }
-
-  const showBadges = isTruthy(venue?.showBadges);
 
   // REVISIT: remove the hack to cast to any below
   return (
@@ -125,7 +123,9 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
             )}
           </div>
-          {showBadges && <Badges user={userProfile} currentVenue={venue} />}
+          {venue?.showBadges && (
+            <Badges user={userProfile} currentVenue={venue} />
+          )}
           {userProfile.id !== user.uid && (
             <div className="private-chat-container">
               <ChatBox
@@ -143,25 +143,26 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   useFirestoreConnect("venues");
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
+  const currentVenue = useSelector(currentVenueSelectorData);
+  const allVenues = useSelector(orderedVenuesSelector);
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: venues?.find(
+      venue: allVenues?.find(
         (v) =>
-          (user.lastSeenIn && user.lastSeenIn[venue?.name ?? ""]) ||
+          (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
           v.name === user.room
       ),
-      camp: venues?.find(
-        (v) => isCampVenue(v) && v.rooms.find((r) => r.title === user.room)
+      room: allVenues?.find(
+        (v) =>
+          isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
       ),
     }),
-    [user, venues, venue]
+    [user, allVenues, currentVenue]
   );
 
-  if (!user.room || !venues) {
-    return <></>;
+  if (!user.room || !allVenues) {
+    return null;
   }
 
   if (suspectedLocation.venue) {
@@ -171,14 +172,16 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
       </Link>
     );
   }
-  if (suspectedLocation.camp) {
+
+  if (suspectedLocation.room) {
     return (
-      <Link to={venuePreviewUrl(suspectedLocation.camp.id, user.room)}>
-        Room {user.room}, in camp {suspectedLocation.camp.name}
+      <Link to={venuePreviewUrl(suspectedLocation.room.id, user.room)}>
+        Room {user.room}, in camp {suspectedLocation.room.name}
       </Link>
     );
   }
-  return <>This burner has gone walkabout. Location unguessable</>;
+
+  return <>This user has gone walkabout. Location unguessable</>;
 };
 
 export default UserProfileModal;

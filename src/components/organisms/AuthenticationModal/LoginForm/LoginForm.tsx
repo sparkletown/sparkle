@@ -1,11 +1,14 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import axios from "axios";
-import { codeCheckUrl } from "utils/url";
-import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { useSelector } from "hooks/useSelector";
+
 import { venueSelector } from "utils/selectors";
+
+import { VenueAccessMode } from "types/VenueAcccess";
+
+import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 interface PropsType {
   displayRegisterForm: () => void;
@@ -18,7 +21,6 @@ interface LoginFormData {
   email: string;
   password: string;
   code: string;
-  date_of_birth: string;
   backend?: string;
 }
 
@@ -56,32 +58,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
-      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
-      if (venue.requiresEmailVerification)
-        await axios.get(codeCheckUrl(data.email));
-
-      const auth = await signIn(data);
-
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
-        firebase
-          .firestore()
-          .doc(`userprivate/${auth.user.uid}`)
-          .get()
-          .then((doc) => {
-            if (auth.user && doc.exists) {
-              firebase
-                .firestore()
-                .doc(`userprivate/${auth.user.uid}`)
-                .update({
-                  codes_used: [...(doc.data()?.codes_used || []), data.code],
-                  date_of_birth: data.date_of_birth,
-                });
-            }
-          });
-      }
+      await signIn(data);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 
@@ -153,7 +130,7 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 

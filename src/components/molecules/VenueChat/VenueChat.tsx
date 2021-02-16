@@ -10,7 +10,6 @@ import useRoles from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
-import { useConnectVenueUsers } from "hooks/useConnectVenueUsers";
 
 import { chatSort } from "utils/chat";
 import ChatBox from "components/molecules/Chatbox";
@@ -24,15 +23,13 @@ interface ChatOutDataType {
 }
 
 const VenueChat: FC = () => {
-  useConnectVenueUsers();
-
   const venueId = useVenueId();
   useConnectVenueChats(venueId);
 
   const { userRoles } = useRoles();
   const { user } = useUser();
 
-  const chats = useSelector(venueChatsSelector);
+  const chats = useSelector(venueChatsSelector) ?? [];
   const venue = useSelector(currentVenueSelectorData);
 
   const [isMessageToTheBarSent, setIsMessageToTheBarSent] = useState(false);

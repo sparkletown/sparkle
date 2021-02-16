@@ -1,31 +1,38 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  SPARKLE_ICON,
+} from "settings";
 import { isChatValid } from "validation";
 
-import ChatForm from "./ChatForm";
-import "./Chatbox.scss";
+import { ValidStoreAsKeys } from "types/Firestore";
 import { User } from "types/User";
-import ChatMessage from "components/molecules/ChatMessage";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
-import { useConnectVenueChats } from "hooks/useConnectVenueChats";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { WithId } from "utils/id";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
 import { chatSort } from "utils/chat";
-import {
-  partygoersSelector,
-  partygoersSelectorData,
-  privateChatsSelector,
-  venueChatsSelector,
-} from "utils/selectors";
+import { WithId } from "utils/id";
+import { privateChatsSelector, venueChatsSelector } from "utils/selectors";
+
+import { useConnectVenueChats } from "hooks/useConnectVenueChats";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useWorldUsers, useWorldUsersById } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
+
+import ChatMessage from "components/molecules/ChatMessage";
+
+import ChatForm from "./ChatForm";
+
+import "./Chatbox.scss";
 
 // Don't pull everything
-// REVISIT: only grab most recent N from server
+// @debt REVISIT: only grab most recent N from server
 const RECENT_MESSAGE_COUNT = 200;
 
 interface PropsType {
@@ -54,20 +61,22 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
   );
 
   const { user } = useUser();
-  const users = useSelector(partygoersSelectorData);
-  const userArray = useSelector(partygoersSelector) ?? [];
+  const { worldUsersById, isWorldUsersLoaded } = useWorldUsersById();
+  const { worldUsers } = useWorldUsers();
 
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearch = debounce((v) => setSearchValue(v), 500);
   const searchRef = useRef<HTMLInputElement>(null);
 
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "currentUserPrivateChats"` or similar
   useFirestoreConnect(
-    user && user.uid
+    user?.uid
       ? {
           collection: "privatechats",
           doc: user.uid,
           subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats",
+          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
         }
       : undefined
   );
@@ -122,9 +131,9 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
       setPrivateRecipient(undefined);
       if (!isInProfileModal && lastChat && lastChat.type === "private") {
         if (lastChat?.to === user.uid) {
-          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.from));
+          setPrivateRecipient(worldUsers.find((u) => u.id === lastChat?.from));
         } else {
-          setPrivateRecipient(userArray.find((u) => u.id === lastChat?.to));
+          setPrivateRecipient(worldUsers.find((u) => u.id === lastChat?.to));
         }
       }
     }
@@ -134,8 +143,61 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
     isInProfileModal,
     isRecipientChangeBlocked,
     user,
-    userArray,
+    worldUsers,
   ]);
+
+  const privateRecipientOptions = useMemo(
+    () =>
+      worldUsers
+        .filter(
+          (user) =>
+            user.id &&
+            !user.anonMode &&
+            user.partyName?.toLowerCase().includes(searchValue.toLowerCase())
+        )
+        .map((user) => (
+          <Dropdown.Item
+            onClick={() => setPrivateRecipient(user)}
+            id="chatbox-dropdown-private-recipient"
+            key={user.id}
+          >
+            <img
+              src={user.pictureUrl}
+              className="picture-logo"
+              alt={user.partyName}
+              width="20"
+              height="20"
+            />
+            {user.partyName}
+          </Dropdown.Item>
+        )),
+    [worldUsers, searchValue, setPrivateRecipient]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      chatsToDisplay &&
+      user &&
+      chatsToDisplay.map((chat) => (
+        <ChatMessage
+          key={`${chat.ts_utc.valueOf()}-${chat.id}`}
+          user={user}
+          users={worldUsersById}
+          setSelectedUserProfile={setSelectedUserProfile}
+          isInProfileModal={!!isInProfileModal}
+          chat={chat}
+          withoutSenderInformation={displayNameOfDiscussionPartnerAsTitle}
+        />
+      )),
+    [
+      chatsToDisplay,
+      user,
+      worldUsersById,
+      setSelectedUserProfile,
+      isInProfileModal,
+      displayNameOfDiscussionPartnerAsTitle,
+    ]
+  );
 
   return (
     <>
@@ -158,7 +220,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
         ) : (
           <div className="chatbox-title">
             <img
-              src="/sparkle-icon.png"
+              src={SPARKLE_ICON}
               className="side-title-icon"
               alt="sparkle icon"
               width="20"
@@ -167,7 +229,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
           </div>
         )}
 
-        {users && (
+        {isWorldUsersLoaded && (
           <>
             {!isInProfileModal && (
               <div className="dropdown-container">
@@ -241,31 +303,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
                     />
                     {searchValue && (
                       <ul className="list-unstyled">
-                        {userArray
-                          .filter(
-                            (u) =>
-                              !u.anonMode &&
-                              u.partyName
-                                ?.toLowerCase()
-                                .includes(searchValue.toLowerCase())
-                          )
-                          .filter((u) => u.id !== undefined)
-                          .map((u) => (
-                            <Dropdown.Item
-                              onClick={() => setPrivateRecipient(u)}
-                              id="chatbox-dropdown-private-recipient"
-                              key={u.id}
-                            >
-                              <img
-                                src={u.pictureUrl}
-                                className="picture-logo"
-                                alt={u.partyName}
-                                width="20"
-                                height="20"
-                              />
-                              {u.partyName}
-                            </Dropdown.Item>
-                          ))}
+                        {privateRecipientOptions}
                       </ul>
                     )}
                   </Dropdown.Menu>
@@ -284,23 +322,7 @@ const Chatbox: React.FunctionComponent<PropsType> = ({
               room={room}
               setIsRecipientChangeBlocked={setIsRecipientChangeBlocked}
             />
-            <div className="message-container">
-              {chatsToDisplay &&
-                user &&
-                chatsToDisplay.map((chat) => (
-                  <ChatMessage
-                    key={`${chat.ts_utc.valueOf()}-${chat.id}`}
-                    user={user}
-                    users={users}
-                    setSelectedUserProfile={setSelectedUserProfile}
-                    isInProfileModal={!!isInProfileModal}
-                    chat={chat}
-                    withoutSenderInformation={
-                      displayNameOfDiscussionPartnerAsTitle
-                    }
-                  />
-                ))}
-            </div>
+            <div className="message-container">{messagesToDisplay}</div>
           </>
         )}
       </div>

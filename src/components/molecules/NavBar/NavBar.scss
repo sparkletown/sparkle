@@ -394,7 +394,7 @@ $border-radius: 28px;
   position: fixed;
   left: 0;
   top: 0;
-  z-index: z(schedule-backdrop);
+  z-index: z(navbar-schedule-backdrop);
   width: 100%;
   height: 100%;
   background-color: rgba($black, 0.8);
@@ -413,7 +413,7 @@ $border-radius: 28px;
 .back-map-btn {
   position: fixed;
   top: 60px;
-  z-index: z(map-back-button);
+  z-index: z(navbar-map-back-button);
   left: 0px;
   height: 52px;
   width: auto;
@@ -487,7 +487,7 @@ $border-radius: 28px;
     &:nth-child(odd) {
       background-color: rgba($black, 0.3);
     }
-    &.schedule-event-container_live {
+    &.schedule-event-container--live {
       background-color: rgba($primary, 0.2);
     }
 

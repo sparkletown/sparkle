@@ -1,48 +1,52 @@
-import React, { FC } from "react";
+import React, { useMemo } from "react";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { useRoom } from "hooks/useRoom";
 
-import { partygoersSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { Room } from "types/rooms";
+import { PartyMapVenue } from "types/venues";
 
 import "./RoomAttendance.scss";
 
-interface PropsType {
+type RoomAttendanceProps = {
   venue: PartyMapVenue;
-  room: PartyMapRoomData;
-}
+  room: Room;
+};
 
 const MAX_AVATARS_VISIBLE = 2;
 
-export const RoomAttendance: FC<PropsType> = ({ venue, room }) => {
-  const partygoers = useSelector(partygoersSelector);
-  const usersInRoom =
-    partygoers?.filter(
-      (partygoer) => partygoer.lastSeenIn[`${venue.name}/${room.title}`]
-    ) ?? [];
-  const numberOfUsersInRoom = usersInRoom?.length;
-  if (numberOfUsersInRoom < 1) return <></>;
+export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
+  venue,
+  room,
+}) => {
+  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+
+  const numberOfRecentRoomUsers = recentRoomUsers.length;
+  const numberOfExtraUsersInRoom = Math.max(
+    numberOfRecentRoomUsers - MAX_AVATARS_VISIBLE,
+    0
+  );
+  const hasExtraUsersInRoom = numberOfExtraUsersInRoom > 0;
+
+  // @debt use a default image when user.pictureUrl is undefined
+  const userAvatars = useMemo(
+    () =>
+      recentRoomUsers.slice(0, MAX_AVATARS_VISIBLE).map((user) => (
+        <div key={`user-avatar-${user.id}`}>
+          <div
+            className="attendance-avatar"
+            style={{ backgroundImage: `url(${user.pictureUrl})` }}
+          />
+        </div>
+      )),
+    [recentRoomUsers]
+  );
+
   return (
     <div className="attendance-avatars">
-      {usersInRoom.map((user, index) => {
-        return (
-          <div key={`user-avatar-${index}`}>
-            {index < MAX_AVATARS_VISIBLE && (
-              <div
-                className="attendance-avatar"
-                style={{ backgroundImage: `url(${user.pictureUrl})` }}
-              />
-            )}
-            <div></div>
-          </div>
-        );
-      })}
-      {numberOfUsersInRoom > MAX_AVATARS_VISIBLE && (
-        <div className="avatars-inside">
-          +{numberOfUsersInRoom - MAX_AVATARS_VISIBLE}
-        </div>
+      {userAvatars}
+
+      {hasExtraUsersInRoom && (
+        <div className="avatars-inside">+{numberOfExtraUsersInRoom}</div>
       )}
     </div>
   );

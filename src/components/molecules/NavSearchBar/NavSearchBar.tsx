@@ -1,47 +1,49 @@
+import React, { useCallback, useEffect, useState } from "react";
+
+import { VenueEvent } from "types/venues";
+
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
-import { useConnectVenueUsers } from "hooks/useConnectVenueUsers";
+import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
+import { Room } from "types/rooms";
 import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
 import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  venueEventsSelector,
-  venueUsersSelector,
-} from "utils/selectors";
+import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
 interface SearchResult {
-  rooms: CampRoomData[];
+  rooms: Room[];
   users: readonly WithId<User>[];
   events: VenueEvent[];
 }
 
 const NavSearchBar = () => {
-  useConnectVenueUsers();
-
   const [searchQuery, setSearchQuery] = useState("");
+
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
     users: [],
     events: [],
   });
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
-  const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
+
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
-  const venueUsers = useSelector(venueUsersSelector) ?? [];
+
   const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const { worldUsers } = useWorldUsers();
 
   useEffect(() => {
-    if (!searchQuery) {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    if (!normalizedSearchQuery) {
       setSearchResult({
         rooms: [],
         users: [],
@@ -49,27 +51,24 @@ const NavSearchBar = () => {
       });
       return;
     }
-    const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
-      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+    const venueUsersResults = worldUsers.filter((user) =>
+      user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
 
-    const venueEventsResults = Object.values(venueEvents).filter((event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const venueEventsResults = venueEvents.filter((event) =>
+      event.name.toLowerCase().includes(normalizedSearchQuery)
     );
 
-    const roomsResults =
-      venue && venue.rooms
-        ? (venue?.rooms as CampRoomData[]).filter((room) =>
-            room.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+    const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
+      room.title.toLowerCase().includes(normalizedSearchQuery)
+    ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
 
     setSearchResult({
       rooms: roomsResults,
       users: venueUsersResults,
       events: venueEventsResults,
     });
-  }, [searchQuery, venue, venueEvents, venueUsers]);
+  }, [searchQuery, venue, venueEvents, worldUsers]);
 
   const numberOfSearchResults =
     searchResult.rooms.length +
@@ -84,75 +83,83 @@ const NavSearchBar = () => {
     <div className="nav-search-links">
       <div className="nav-search-icon" />
       <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
+
       {isTruthy(searchQuery) && (
         <div className="nav-search-close-icon" onClick={clearSearchQuery} />
       )}
-      {isTruthy(numberOfSearchResults) && (
-        <>
-          <div className="nav-search-results">
-            <div className="nav-search-result-number">
-              <b>{numberOfSearchResults}</b> search results
-            </div>
-            {searchResult.rooms.map((room, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedRoom(room)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${room.image_url})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div className="result-title">{room.title}</div>
-                    <div>Room</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.events.map((event, index) => {
-              return (
-                <div className="row" key={`event-${index}`}>
-                  <div>
-                    <div>{event.name}</div>
-                    <div>Event</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.users.map((user, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedUserProfile(user)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${user.pictureUrl})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div key={`user-${index}`}>{user.partyName}</div>
-                  </div>
-                </div>
-              );
-            })}
+
+      {numberOfSearchResults > 0 && (
+        <div className="nav-search-results">
+          <div className="nav-search-result-number">
+            <b>{numberOfSearchResults}</b> search results
           </div>
-        </>
+
+          {/* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */}
+          {searchResult.rooms.map((room, index) => {
+            return (
+              <div
+                className="row"
+                key={`room-${room.title}-${index}`}
+                onClick={() => setSelectedRoom(room)}
+              >
+                <div
+                  className="result-avatar"
+                  style={{
+                    backgroundImage: `url(${room.image_url})`,
+                  }}
+                />
+                <div className="result-info">
+                  <div className="result-title">{room.title}</div>
+                  <div>Room</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {searchResult.events.map((event) => {
+            return (
+              <div className="row" key={`event-${event.id ?? event.name}`}>
+                <div>
+                  <div>{event.name}</div>
+                  <div>Event</div>
+                </div>
+              </div>
+            );
+          })}
+
+          {searchResult.users.map((user) => {
+            return (
+              <div
+                className="row"
+                key={`user-${user.id}`}
+                onClick={() => setSelectedUserProfile(user)}
+              >
+                <div
+                  className="result-avatar"
+                  style={{
+                    backgroundImage: `url(${user.pictureUrl})`,
+                  }}
+                />
+                <div className="result-info">
+                  <div>{user.partyName}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       )}
+
+      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
+      {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
-        show={isTruthy(selectedRoom)}
+        show={hasSelectedRoom}
         room={selectedRoom}
+        venue={venue}
         onHide={() => setSelectedRoom(undefined)}
       />
     </div>

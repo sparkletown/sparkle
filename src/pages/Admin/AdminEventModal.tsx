@@ -5,8 +5,7 @@ import * as Yup from "yup";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 
-import { VenueEvent } from "types/VenueEvent";
-import { VenueTemplate } from "types/VenueTemplate";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -65,9 +64,13 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   setShowDeleteEventModal,
   roomName,
 }) => {
-  const { register, handleSubmit, errors, formState, reset } = useForm<
-    EventInput
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    reset,
+  } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,

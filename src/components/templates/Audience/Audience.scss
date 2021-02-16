@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 $light: #ffffff;
 
 .audience-container {
@@ -10,6 +12,7 @@ $light: #ffffff;
   -ms-flex: 1;
 
   .video-container {
+    z-index: z(audience-video);
     position: fixed;
     left: 50%;
     top: 28%;
@@ -79,7 +82,7 @@ $light: #ffffff;
           right: -20px;
           width: 50px;
           animation: sway 2200ms 1200ms ease-in-out;
-          z-index: 1000;
+          z-index: z(audience-emoji-reaction);
         }
 
         .leave-seat-button {

@@ -27,6 +27,7 @@ export interface SubVenueIconMap {
     url: string;
     width: number;
     height: number;
+    roomIndex?: number;
   };
 }
 
@@ -39,8 +40,8 @@ interface PropsType {
   snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
-  iconImageStyle: CSSProperties;
-  draggableIconImageStyle: CSSProperties;
+  iconImageStyle?: CSSProperties; // This is not being used ATM
+  draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   onOtherIconClick?: (key: string) => void;
@@ -52,6 +53,7 @@ interface PropsType {
   rounded?: boolean;
   backgroundImageStyle?: CSSProperties;
   containerStyle?: CSSProperties;
+  lockAspectRatio?: boolean;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -70,6 +72,7 @@ export const Container: React.FC<PropsType> = (props) => {
     otherIconsStyle,
     backgroundImageStyle,
     containerStyle,
+    lockAspectRatio,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
@@ -112,6 +115,7 @@ export const Container: React.FC<PropsType> = (props) => {
       }),
       {}
     );
+
     onChange && onChange(unscaledBoxes);
   }, [
     boxes,
@@ -266,6 +270,7 @@ export const Container: React.FC<PropsType> = (props) => {
             rounded={!!rounded}
             {...boxes[key]}
             onChangeSize={resizeBox(key)}
+            lockAspectRatio={lockAspectRatio}
           />
         ))}
       </div>

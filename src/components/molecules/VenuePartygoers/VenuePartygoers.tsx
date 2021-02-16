@@ -1,37 +1,39 @@
-import React from "react";
+import React, { useMemo } from "react";
 
-import { useSelector } from "hooks/useSelector";
-
-import {
-  currentVenueSelector,
-  parentVenueSelector,
-  partygoersSelector,
-} from "utils/selectors";
-
-import { Venue } from "types/Venue";
-import { User } from "types/User";
+import { useRecentWorldUsers } from "hooks/users";
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
 
-const filterVenuePartygoers = (partygoers: User[], venue: Venue) => {
-  return (
-    partygoers?.filter((partygoer) => partygoer.lastSeenIn[venue.name]) ?? []
-  );
-};
-
 export const VenuePartygoers = () => {
-  const venue = useSelector(currentVenueSelector);
-  const partygoers = useSelector(partygoersSelector) ?? [];
-  const parentVenue = useSelector(parentVenueSelector);
+  const venueId = useVenueId();
+  const {
+    parentVenue,
+    currentVenue,
+    isCurrentVenueLoaded,
+  } = useConnectRelatedVenues({ venueId });
 
-  const currentVenueTitle = venue.attendeesTitle ?? "partygoers";
-  const attendeesTitle = parentVenue?.attendeesTitle ?? currentVenueTitle;
-  const currentVenuePartygoers = filterVenuePartygoers(partygoers, venue);
-  const numberOfPartygoers = currentVenuePartygoers.length;
+  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 
-  return (
-    <div className="venue-partygoers-container">
-      {numberOfPartygoers} {attendeesTitle} online
-    </div>
-  );
+  const numberOfRecentWorldUsers = recentWorldUsers.length;
+
+  const title = useMemo<string>(() => {
+    if (!isCurrentVenueLoaded || !isRecentWorldUsersLoaded) return "";
+
+    const attendeesTitle =
+      parentVenue?.attendeesTitle ??
+      currentVenue?.attendeesTitle ??
+      "attendees";
+
+    return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
+  }, [
+    isCurrentVenueLoaded,
+    parentVenue,
+    currentVenue,
+    numberOfRecentWorldUsers,
+    isRecentWorldUsersLoaded,
+  ]);
+
+  return <div className="venue-partygoers-container">{title}</div>;
 };

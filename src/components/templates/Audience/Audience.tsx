@@ -1,5 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import firebase, { UserInfo } from "firebase/app";
+
+import { makeUpdateUserGridLocation } from "api/profile";
 
 // Components
 import {
@@ -7,24 +13,23 @@ import {
   Reactions,
   TextReactionType,
 } from "utils/reactions";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import ChatDrawer from "components/organisms/ChatDrawer";
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
-import { useForm } from "react-hook-form";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -135,8 +140,9 @@ export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector);
+  const { recentVenueUsers } = useRecentVenueUsers();
 
+  const userUid = user?.uid;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
@@ -198,23 +204,25 @@ export const Audience: React.FunctionComponent = () => {
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
+
+  // FIXME: This is really bad, needs to be fixed ASAP
   const partygoersBySeat: WithId<User>[][] = [];
   let seatedPartygoers = 0;
-  partygoers?.forEach((partygoer) => {
+  recentVenueUsers?.forEach((user) => {
     if (
       !venueId ||
-      !partygoer?.data ||
-      partygoer.data[venueId] === undefined ||
-      partygoer.data[venueId].row === undefined ||
-      partygoer.data[venueId].column === undefined
+      !user?.data ||
+      user.data[venueId] === undefined ||
+      user.data[venueId].row === undefined ||
+      user.data[venueId].column === undefined
     )
       return;
-    const row = partygoer.data[venueId].row || 0;
-    const column = partygoer.data[venueId].column || 0;
+    const row = user.data[venueId].row || 0;
+    const column = user.data[venueId].column || 0;
     if (!(row in partygoersBySeat)) {
       partygoersBySeat[row] = [];
     }
-    partygoersBySeat[row][column] = partygoer;
+    partygoersBySeat[row][column] = user;
     seatedPartygoers++;
   });
 
@@ -245,30 +253,15 @@ export const Audience: React.FunctionComponent = () => {
     [columnsForSizedAuditorium, rowsForSizedAuditorium]
   );
 
+  // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
-    const takeSeat = (
-      translatedRow: number | null,
-      translatedColumn: number | null
-    ) => {
-      if (!user || !profile || !venueId) return;
-      const doc = `users/${user.uid}`;
-      const existingData = profile?.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueId]: {
-            row: translatedRow,
-            column: translatedColumn,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
+    const takeSeat = (row: number | null, column: number | null) => {
+      if (!venueId || !userUid) return;
+
+      makeUpdateUserGridLocation({
+        venueId,
+        userUid,
+      })(row, column);
     };
 
     const leaveSeat = () => {
@@ -477,6 +470,7 @@ export const Audience: React.FunctionComponent = () => {
     rowsForSizedAuditorium,
     selectedUserProfile,
     user,
+    userUid,
     reset,
     reactionClicked,
     columnsForSizedAuditorium,

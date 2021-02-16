@@ -2,8 +2,7 @@ import React, { useState, useMemo, FC } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import { range } from "lodash";
 
-import { AnyVenue } from "types/Firestore";
-import { VenueEvent } from "types/VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { formatDate, formatDateToWeekday } from "utils/time";
 import { WithId, WithVenueId } from "utils/id";
@@ -13,7 +12,7 @@ import { isEventLiveOrFuture } from "utils/event";
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { EventDisplay } from "../../molecules/EventDisplay/EventDisplay";
+import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
 type DatedEvents = Array<{
   dateDay: Date;
@@ -40,10 +39,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedVenuesById: Partial<Record<
-    string,
-    WithId<AnyVenue>
-  >> = relatedVenues.reduce(itemsToObjectByIdReducer, {});
+  const relatedVenuesById: Partial<
+    Record<string, WithId<AnyVenue>>
+  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
@@ -84,7 +82,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         <li
           key={formatDate(day.dateDay.getTime())}
           className={`button ${idx === date ? "active" : ""}`}
-          onClick={() => setDate(idx)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setDate(idx);
+          }}
         >
           {formatDateToWeekday(day.dateDay.getTime() / 1000)}
         </li>
@@ -94,9 +95,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
   const events = useMemo(
     () =>
-      orderedEvents[date]?.events.map((event) => (
+      orderedEvents[date]?.events.map((event, index) => (
         <EventDisplay
-          key={event.id}
+          key={event.id ?? `${index}-${event.name}`}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />

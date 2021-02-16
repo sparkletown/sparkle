@@ -1,150 +1,131 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
+import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
-import { enterLocation } from "utils/useLocationUpdateEffect";
-import {
-  currentVenueSelector,
-  orderedVenuesSelector,
-  partygoersSelector,
-} from "utils/selectors";
+import { venueEventsSelector } from "utils/selectors";
 import {
   getCurrentTimeInUnixEpochSeconds,
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 
-import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useRoom } from "hooks/useRoom";
 
 import UserList from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "../";
+import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
-interface RoomModalProps {
-  show: boolean;
+import "./RoomModal.scss";
+
+export interface RoomModalProps {
   onHide: () => void;
-  room: PartyMapRoomData | undefined;
+  show: boolean;
+  venue?: AnyVenue;
+  room?: Room;
 }
 
-export const RoomModal: React.FC<RoomModalProps> = ({ show, onHide, room }) => {
-  const { user, profile } = useUser();
+export interface RoomModalContentProps {
+  room: Room;
+  venueName: string;
+}
 
-  const venue = useSelector(currentVenueSelector);
-  const venues = useSelector(orderedVenuesSelector);
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
+export const RoomModal: React.FC<RoomModalProps> = ({
+  onHide,
+  room,
+  show,
+  venue,
+}) => (
+  <Modal show={show} onHide={onHide}>
+    <div className="room-modal">
+      {room && venue && <RoomModalContent room={room} venueName={venue.name} />}
+    </div>
+  </Modal>
+);
+
+export const RoomModalContent: React.FC<RoomModalContentProps> = ({
+  room,
+  venueName,
+}) => {
+  const venueEvents = useSelector(venueEventsSelector) ?? [];
+
+  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+
+  const roomEvents = useMemo(
+    () =>
+      venueEvents.filter(
+        (event) =>
+          event.room === room.title &&
+          event.start_utc_seconds +
+            event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+            getCurrentTimeInUnixEpochSeconds()
+      ),
+    [room, venueEvents]
   );
-  const users = useSelector(partygoersSelector);
 
-  if (!room) {
-    return <></>;
-  }
+  const currentEvent = getCurrentEvent(roomEvents);
 
-  const usersToDisplay = users
-    ? users.filter(
-        (user) =>
-          user.lastSeenIn && user.lastSeenIn[`${venue?.name}/${room?.title}`]
-      )
-    : [];
+  const renderedRoomEvents = useMemo(
+    () =>
+      roomEvents.map((event, index: number) => (
+        <ScheduleItem
+          // @debt Ideally event.id would always be a unique identifier, but our types suggest it
+          //   can be undefined. Because we can't use index as a key by itself (as that is unstable
+          //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
+          //   is far less likely to clash
+          key={event.id ?? `${event.room}-${event.name}-${index}`}
+          event={event}
+          isCurrentEvent={currentEvent && event.name === currentEvent.name}
+          onRoomEnter={enterRoom}
+          roomUrl={room.url}
+        />
+      )),
+    [currentEvent, enterRoom, room.url, roomEvents]
+  );
 
-  // TODO: @debt refactor this to use openRoomWithCounting
-  const enter = () => {
-    const roomVenue = venues?.find((venue) =>
-      room.url.endsWith(`/${venue.id}`)
-    );
-
-    const nowInEpochSeconds = getCurrentTimeInUnixEpochSeconds();
-
-    const venueRoom = roomVenue ? { [roomVenue.name]: nowInEpochSeconds } : {};
-
-    room &&
-      user &&
-      enterLocation(
-        user,
-        {
-          [`${venue.name}/${room?.title}`]: nowInEpochSeconds,
-          ...venueRoom,
-        },
-        profile?.lastSeenIn
-      );
-  };
-
-  const roomEvents =
-    venueEvents &&
-    venueEvents.filter(
-      (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          getCurrentTimeInUnixEpochSeconds()
-    );
-  const currentEvent = roomEvents && getCurrentEvent(roomEvents);
+  const hasRoomEvents = renderedRoomEvents?.length > 0;
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <div className="container room-container">
-        <div className="room-description">
-          <div className="title-container">
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                flexWrap: "wrap",
-                marginTop: 10,
-              }}
-            >
-              <h2 className="room-modal-title">{room.title}</h2>
-              <div className="room-modal-subtitle">{room.subtitle}</div>
-            </div>
-            <div className="row ongoing-event-row">
-              <div className="col">
-                {room.image_url && (
-                  <img
-                    src={room.image_url}
-                    className="room-page-image"
-                    alt={room.title}
-                  />
-                )}
-                {!room.image_url && room.title}
-              </div>
-              <div className="col">
-                <RoomModalOngoingEvent
-                  room={room}
-                  roomEvents={roomEvents}
-                  enterRoom={enter}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <UserList
-          users={usersToDisplay}
-          limit={11}
-          activity="in this room"
-          attendanceBoost={room.attendanceBoost}
+    <>
+      <h2>{room.title}</h2>
+
+      {room.subtitle && (
+        <div className="room-modal__title">{room.subtitle}</div>
+      )}
+
+      <div className="room-modal__main">
+        {room.image_url ? (
+          <img src={room.image_url} alt={room.title} />
+        ) : (
+          <span>{room.title}</span>
+        )}
+
+        <RoomModalOngoingEvent
+          roomEvents={roomEvents}
+          onRoomEnter={enterRoom}
         />
-        {room.about && <div className="about-this-room">{room.about}</div>}
-        <div className="row">
-          {roomEvents && roomEvents.length > 0 && (
-            <div className="col schedule-container">
-              <div className="schedule-title">Room Schedule</div>
-              {roomEvents.map((event, idx: number) => (
-                <ScheduleItem
-                  key={idx}
-                  event={event}
-                  isCurrentEvent={
-                    currentEvent && event.name === currentEvent.name
-                  }
-                  enterRoom={enter}
-                  roomUrl={room.url}
-                />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
-    </Modal>
+
+      <UserList
+        users={recentRoomUsers}
+        limit={11}
+        activity="in this room"
+        attendanceBoost={room.attendanceBoost}
+      />
+
+      {room.about && (
+        <div className="room-modal__description">{room.about}</div>
+      )}
+
+      {hasRoomEvents && (
+        <div className="room-modal__events">
+          <div className="room-modal__title">Room Schedule</div>
+
+          {renderedRoomEvents}
+        </div>
+      )}
+    </>
   );
 };

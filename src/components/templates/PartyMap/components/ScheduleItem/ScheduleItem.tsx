@@ -1,26 +1,30 @@
 import React from "react";
+
+import { VenueEvent } from "types/venues";
+
 import { formatUtcSeconds } from "utils/time";
-import { VenueEvent } from "types/VenueEvent";
 
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
+import "./ScheduleItem.scss";
+
 interface PropsType {
   event: VenueEvent;
   isCurrentEvent?: boolean;
-  enterRoom: () => void;
+  onRoomEnter: () => void;
   roomUrl: string;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
   isCurrentEvent,
-  enterRoom,
+  onRoomEnter,
   roomUrl,
 }) => {
   const dispatch = useDispatch();
   return (
-    <div className="shedule-item-container">
+    <div className="schedule-item-container">
       <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
         <div>
           <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
@@ -49,7 +53,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn room-entry-button"
-              onClick={enterRoom}
+              onClick={onRoomEnter}
               id={`enter-room-from-schedule-event-${event}`}
               href={roomUrl}
               target="_blank"

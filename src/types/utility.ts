@@ -1,3 +1,8 @@
+/**
+ * Type helper representing all types of T except undefined
+ */
+export type Defined<T> = T & Exclude<T, undefined>;
+
 export type ExtractProps<T> = T extends React.FunctionComponent<infer U>
   ? U
   : never;

@@ -26,7 +26,6 @@ type Track = VideoTracks[number] | AudioTracks[number];
 const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   participant,
   profileData,
-  profileDataId,
   bartender,
   children,
   defaultMute = false,
@@ -136,6 +135,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             setSelectedUserProfile={() => setShowProfile(true)}
+            reactionPosition="right"
           />
         </div>
       )}

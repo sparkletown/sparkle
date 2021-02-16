@@ -1,5 +1,7 @@
 import styled, { css, keyframes } from "styled-components";
 
+import { DEFAULT_PROFILE_IMAGE } from "settings";
+
 // --- Avatar
 type AvatarProps = {
   backgroundImage?: string;
@@ -9,7 +11,8 @@ export const Avatar = styled.div<AvatarProps>`
   background-size: cover;
   width: 4vh;
   height: 4vh;
-  background-image: url(${({ backgroundImage }) => backgroundImage ?? ""});
+  background-image: url(${({ backgroundImage }) =>
+    backgroundImage ?? DEFAULT_PROFILE_IMAGE});
 `;
 
 // --- Reaction
@@ -31,7 +34,8 @@ export const Reaction = styled.div<ReactionProps>`
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
-  z-index: 1000;
+  // @debt convert this to scss then use our z-index layer helper here
+  z-index: 10;
 
   font-size: 50px;
 
@@ -45,6 +49,8 @@ export const Container = styled.div`
 
   background-position: center;
   background-size: cover;
+  // @debt convert this to scss then use our z-index layer helper here
+  z-index: 10;
 
   ${Avatar} {
     border-radius: 10rem;
@@ -128,12 +134,12 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
   padding: 6px 10px;
 
   position: absolute;
-  top: 0;
+  bottom: 0;
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? messageRight : messageLeft};
 
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 1);
 
   color: #000;
   font-size: 20px;

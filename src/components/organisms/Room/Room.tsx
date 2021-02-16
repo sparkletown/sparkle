@@ -12,10 +12,9 @@ import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
 import "./Room.scss";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+import { useWorldUsersById } from "hooks/users";
 import { User } from "types/User";
 import VideoErrorModal from "./VideoErrorModal";
-import { partygoersSelectorData } from "utils/selectors";
 
 interface RoomProps {
   roomName: string;
@@ -44,7 +43,7 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user, profile } = useUser();
-  const users = useSelector(partygoersSelectorData) ?? {};
+  const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
@@ -185,10 +184,16 @@ const Room: React.FC<RoomProps> = ({
     if (!room) return;
 
     setUserList([
-      ...participants.map((p) => users[p.identity]),
-      users[room.localParticipant.identity],
+      ...participants.map((p) => worldUsersById[p.identity]),
+      worldUsersById[room.localParticipant.identity],
     ]);
-  }, [participants, setUserList, users, room]);
+  }, [participants, setUserList, worldUsersById, room]);
+
+  const getIsUserBartender = (userIdentity?: string) => {
+    if (!userIdentity) return;
+
+    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
+  };
 
   // Ordering of participants:
   // 1. Me
@@ -197,15 +202,15 @@ const Room: React.FC<RoomProps> = ({
 
   // Only allow the first bartender to appear as bartender
   const userIdentity = room?.localParticipant?.identity;
-  const meIsBartender =
-    users && userIdentity
-      ? users[userIdentity]?.data?.[roomName]?.bartender
-      : undefined;
+
+  const meIsBartender = getIsUserBartender(userIdentity);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
 
-  const profileData = room ? users[room.localParticipant.identity] : undefined;
+  const profileData = room
+    ? worldUsersById[room.localParticipant.identity]
+    : undefined;
 
   const participantContainerClassName = useMemo(() => {
     const attendeeCount = (participants.length ?? 0) + 1; // Include yourself
@@ -244,7 +249,7 @@ const Room: React.FC<RoomProps> = ({
         }
 
         const bartender = !!meIsBartender
-          ? users[participant.identity]?.data?.[roomName]?.bartender
+          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
         return (
@@ -255,7 +260,7 @@ const Room: React.FC<RoomProps> = ({
             <Participant
               key={`${participant.sid}-${index}`}
               participant={participant}
-              profileData={users[participant.identity]}
+              profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
               bartender={bartender}
             />
@@ -266,7 +271,7 @@ const Room: React.FC<RoomProps> = ({
       meIsBartender,
       participants,
       roomName,
-      users,
+      worldUsersById,
       participantContainerClassName,
     ]
   );

@@ -123,6 +123,12 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle10" ]; then
               ENV=sparkle-10
             fi
+            if [ $CIRCLE_BRANCH = "bigtop" ]; then
+              ENV=sparkle-bigtop
+            fi
+            if [ $CIRCLE_BRANCH = "deloitte" ]; then
+              ENV=sparkle-deloitte
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -215,6 +221,18 @@ jobs:
               TARGET=sparkle-10
               RELEASE_STAGE=sparkle10
             fi
+            if [ $CIRCLE_BRANCH = "bigtop" ]; then
+              PREFIX=BIGTOP_
+              ENV=sparkle-bigtop
+              TARGET=sparkle-bigtop
+              RELEASE_STAGE=bigtop
+            fi
+            if [ $CIRCLE_BRANCH = "deloitte" ]; then
+              PREFIX=DELOITTE_
+              ENV=sparkle-deloitte
+              TARGET=sparkle-deloitte
+              RELEASE_STAGE=deloitte
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -266,6 +284,8 @@ workflows:
                 - sparkle8
                 - sparkle9
                 - sparkle10
+                - bigtop
+                - deloitte
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -285,6 +305,8 @@ workflows:
                 - sparkle8
                 - sparkle9
                 - sparkle10
+                - bigtop
+                - deloitte
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

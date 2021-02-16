@@ -1,9 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import { CODE_CHECK_URL } from "secrets";
 import { VALID_URL_PROTOCOLS } from "settings";
-import { CampVenue } from "types/CampVenue";
-import { AnyVenue } from "types/Firestore";
-import { WithId } from "./id";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -19,13 +15,6 @@ export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
 
 export const venueEntranceUrl = (venueId: string, step?: number) => {
   return `/e/${step ?? 1}/${venueId}`;
-};
-
-export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
-  const venueRoom = (venue as CampVenue)?.rooms.find(
-    (r) => r.title === roomTitle
-  );
-  return venueRoom ? venueRoom.url : venueInsideUrl(venue.id);
 };
 
 export const isExternalUrl = (url: string) => {
@@ -47,6 +36,8 @@ export const getRoomUrl = (roomUrl: string) =>
 export const openRoomUrl = (url: string) => {
   openUrl(getRoomUrl(url));
 };
+
+export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 export const openUrl = (url: string) => {
   if (!isValidUrl(url)) {
@@ -89,5 +80,3 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
-
-export const codeCheckUrl = (code: string) => CODE_CHECK_URL + code;

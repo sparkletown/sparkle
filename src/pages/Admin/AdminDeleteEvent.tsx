@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { VenueEvent } from "types/VenueEvent";
 import dayjs from "dayjs";
+
+import { VenueEvent } from "types/venues";
+
 import { deleteEvent, EventInput } from "api/admin";
 import { WithId } from "utils/id";
 

@@ -1,26 +1,32 @@
-import React, { useState } from "react";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import InformationCard from "../InformationCard";
-import "./DonatePopUp.scss";
+import React, { useRef } from "react";
+
 import {
   BURNING_MAN_DONATION_SITE,
   BURNING_MAN_DONATION_TEXT,
   BURNING_MAN_DONATION_TITLE,
-} from "../../../../src/settings";
+} from "settings";
+
+import {
+  InformationLeftColumn,
+  InformationLeftColumnControls,
+} from "components/organisms/InformationLeftColumn";
+
+import InformationCard from "components/molecules/InformationCard";
+
+import "./DonatePopUp.scss";
 
 export const DonatePopUp = () => {
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
+  const controlsRef = useRef<InformationLeftColumnControls>(null);
+
+  const { toggleExpanded } = controlsRef.current ?? {};
 
   return (
-    <InformationLeftColumn
-      venueLogoPath={"heart"}
-      isLeftColumnExpanded={isLeftColumnExpanded}
-      setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-    >
+    <InformationLeftColumn ref={controlsRef} iconNameOrPath="heart">
       <InformationCard title={BURNING_MAN_DONATION_TITLE}>
         <p className="title-sidebar" style={{ fontSize: 15 }}>
           {BURNING_MAN_DONATION_TEXT}
         </p>
+
         <div className="donate-container">
           <a
             className="btn btn-primary join-button"
@@ -31,11 +37,10 @@ export const DonatePopUp = () => {
           >
             Make a donation
           </a>
+
           <br />
-          <button
-            className="not-yet-button"
-            onClick={() => setIsLeftColumnExpanded((prev) => !prev)}
-          >
+
+          <button className="not-yet-button" onClick={toggleExpanded}>
             Not yet
           </button>
         </div>

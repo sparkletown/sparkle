@@ -77,9 +77,13 @@ export const TEN_PRINCIPLES_LIST: PrincipleDefinition[] = [
 const Step3 = () => {
   const { user } = useUser();
   const history = useHistory();
-  const { register, handleSubmit, errors, formState, watch } = useForm<
-    CodeOfConductFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    watch,
+  } = useForm<CodeOfConductFormData>({
     mode: "onChange",
   });
 

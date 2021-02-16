@@ -17,9 +17,13 @@ const VenueTemplate = {
   preplaya: "preplaya",
   playa: "playa",
   audience: "audience",
-  avatargrid: "avatargrid",
   firebarrel: "firebarrel",
   conversationspace: "conversationspace",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  avatargrid: "avatargrid",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -41,6 +45,14 @@ const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
   Hidden: "HIDDEN",
+};
+
+const checkUserIsAdminOrOwner = async (venueId, uid) => {
+  try {
+    return await checkUserIsOwner(venueId, uid);
+  } catch (e) {
+    return e.toString();
+  }
 };
 
 const createVenueData = (data, context) => {
@@ -91,6 +103,10 @@ const createVenueData = (data, context) => {
     showNametags: data.showNametags || false,
   };
 
+  if (data.mapBackgroundImageUrl) {
+    venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   if (data.template === VenueTemplate.audience) {
     venueData.showReactions = data.showReactions;
 
@@ -134,6 +150,28 @@ const createVenueData = (data, context) => {
 
   return venueData;
 };
+
+const createVenueData_v2 = (data, context) => ({
+  name: data.name,
+  config: {
+    landingPageConfig: {
+      coverImageUrl: data.bannerImageUrl,
+      subtitle: data.subtitle,
+      description: data.description,
+    },
+  },
+  theme: {
+    primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
+  },
+  host: {
+    icon: data.logoImageUrl,
+  },
+  owners: [context.auth.token.user_id],
+  showGrid: data.showGrid || false,
+  ...(data.showGrid && { columns: data.columns }),
+  template: data.template || VenueTemplate.partymap,
+  rooms: [],
+});
 
 const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
@@ -264,6 +302,17 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 
   // @debt this should be typed
   const venueData = createVenueData(data, context);
+  const venueId = getVenueId(data.name);
+
+  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+
+  return venueData;
+});
+
+exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
 
   await admin.firestore().collection("venues").doc(venueId).set(venueData);
@@ -531,6 +580,116 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   await admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+
+  const updated = doc.data();
+
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+  if (data.subtitle) {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+  if (data.description) {
+    updated.config.landingPageConfig.description = data.description;
+  }
+  if (data.primaryColor) {
+    if (!updated.theme) {
+      updated.theme = {};
+    }
+    updated.theme.primaryColor = data.primaryColor;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (typeof data.showGrid === "boolean") {
+    updated.showGrid = data.showGrid;
+    updated.columns = data.columns;
+  }
+
+  if (typeof data.showLiveSchedule === "boolean") {
+    updated.showLiveSchedule = data.showLiveSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showZendesk === "boolean") {
+    updated.showZendesk = data.showZendesk;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.requiresDateOfBirth === "boolean") {
+    updated.requiresDateOfBirth = data.requiresDateOfBirth;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+    updated.radioStations = [data.radioStations];
+  }
+
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.bannerMessage) {
+    updated.bannerMessage = data.bannerMessage;
+  }
+
+  admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
   checkAuth(context);
@@ -657,6 +816,14 @@ exports.getVenueEvents = functions.https.onCall(
     }
   }
 );
+
+exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
+  const user = (
+    await admin.firestore().collection("users").doc(userId).get()
+  ).data();
+
+  return user;
+});
 
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||

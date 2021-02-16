@@ -32,8 +32,7 @@ const VideoErrorModal: FC<PropsType> = ({
       <div className="modal-container">
         <div className="modal-title">
           {errorMessage &&
-            (errorMessages[errorMessage] ??
-              "Unknown video error, please try again.")}
+            (errorMessages[errorMessage] ?? "Please, retry video")}
         </div>
 
         <div>

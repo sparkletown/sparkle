@@ -6,7 +6,7 @@ export interface Experience {
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm
-type UserExperienceData = Record<string, Experience>;
+export type UserExperienceData = Record<string, Experience>;
 
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {
@@ -22,6 +22,7 @@ export interface User {
   pictureUrl?: string;
   data?: UserExperienceData;
   lastSeenIn: { [key: string]: number };
+  lastSeenAt: number;
   room?: string;
   // @debt typing - user also has a dynamic set of attributes for the question answers
   // currently not possible to type them properly

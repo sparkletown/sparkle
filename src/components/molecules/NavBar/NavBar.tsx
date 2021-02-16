@@ -1,8 +1,4 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
@@ -16,7 +12,7 @@ import { IS_BURN } from "secrets";
 import { isChatValid } from "validation";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { VenueTemplate } from "types/VenueTemplate";
+import { VenueTemplate } from "types/venues";
 
 import {
   currentVenueSelectorData,
@@ -31,6 +27,7 @@ import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -91,20 +88,20 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
+  const venueParentId = venue?.parentId;
   const privateChats = useSelector(privateChatsSelector);
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentId = venue?.parentId;
-  const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "venues",
-      doc: venueParentId,
-      storeAs: "parentVenue",
-    }),
-    [venueParentId]
+  useFirestoreConnect(
+    venueParentId
+      ? {
+          collection: "venues",
+          doc: venueParentId,
+          storeAs: "parentVenue",
+        }
+      : undefined
   );
-  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
 
   const numberOfUnreadMessages = useMemo(() => {
     if (!user || !privateChats) return 0;
@@ -347,14 +344,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         </div>
       </header>
 
-      <SchedulePageModal isVisible={isEventScheduleVisible} />
-
       <div
         className={`schedule-dropdown-backdrop ${
           isEventScheduleVisible ? "show" : ""
         }`}
         onClick={hideEventSchedule}
-      />
+      >
+        <SchedulePageModal isVisible={isEventScheduleVisible} />
+      </div>
 
       {venue?.parentId && parentVenue?.name && (
         <div className="back-map-btn">

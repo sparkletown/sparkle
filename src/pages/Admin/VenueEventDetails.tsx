@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import React from "react";
-import { VenueEvent } from "types/VenueEvent";
+
+import { VenueEvent } from "types/venues";
+
 import { WithId } from "utils/id";
 import { dateEventTimeFormat } from "utils/time";
 

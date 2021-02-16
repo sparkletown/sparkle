@@ -1,41 +1,53 @@
-import React, { useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { useFirebase } from "react-redux-firebase";
-import "./SecretPasswordForm.scss";
+import React, { useCallback, useState } from "react";
+import { useHistory } from "react-router-dom";
+
+import { checkAccess } from "api/auth";
+
 import { venueEntranceUrl } from "utils/url";
+import { setLocalStorageToken } from "utils/localStorage";
+import { isTruthy } from "utils/types";
+
+import { useVenueId } from "hooks/useVenueId";
+
+import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
-  const firebase = useFirebase();
   const history = useHistory();
-  const { venueId } = useParams();
+  const venueId = useVenueId();
 
-  const [invalidPassword, setInvalidPassword] = useState();
   const [error, setError] = useState();
   const [password, setPassword] = useState();
   const [message, setMessage] = useState();
 
   function passwordChanged(e) {
     setPassword(e.target.value);
-    setInvalidPassword(false);
+    setMessage("");
     setError(false);
   }
 
-  function passwordSubmitted(e) {
-    e.preventDefault();
-    setMessage("Checking password...");
+  const passwordSubmitted = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setMessage("Checking password...");
 
-    const checkPassword = firebase.functions().httpsCallable("checkPassword");
-    checkPassword({ venue: venueId, password: password })
-      .then(() => {
-        setInvalidPassword(false);
-        setMessage("Password OK! Proceeding...");
-        history.push(venueEntranceUrl(venueId));
+      await checkAccess({
+        venueId,
+        password,
       })
-      .catch(() => {
-        setInvalidPassword(true);
-        setMessage(null);
-      });
-  }
+        .then((result) => {
+          if (isTruthy(result?.data?.token)) {
+            setLocalStorageToken(venueId, result.data.token);
+            history.push(venueEntranceUrl(venueId));
+          } else {
+            setMessage(`Wrong password!`);
+          }
+        })
+        .catch(() => {
+          setMessage(`Password error: ${error.toString()}`);
+        });
+    },
+    [error, history, password, venueId]
+  );
 
   return (
     <>
@@ -44,9 +56,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           Got an invite? Join in with the secret password
         </p>
         <input
-          className={
-            "secret-password-input " + (invalidPassword ? " is-invalid" : "")
-          }
+          className="secret-password-input"
           required
           placeholder="password"
           autoFocus
@@ -60,9 +70,6 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         />
         <div className="form-group">
           {message && <small>{message}</small>}
-          {invalidPassword && (
-            <small className="error-message">Wrong password!</small>
-          )}
           {error && <small className="error-message">An error occured</small>}
         </div>
       </form>

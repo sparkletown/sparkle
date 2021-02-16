@@ -16,9 +16,10 @@ $page-max-width: 1240px;
 
 $sand: #937c63;
 
+// @debt Refactor the relevant parts of this file into ./NavBar.scss
 .navbar.navbar_playa {
   position: fixed;
-  z-index: z(header);
+  z-index: z(navbar);
   top: 0;
   left: 0;
   width: 100%;

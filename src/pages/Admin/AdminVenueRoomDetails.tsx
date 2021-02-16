@@ -1,20 +1,24 @@
 import React from "react";
-import Bugsnag from "@bugsnag/js";
-import { CampRoomData } from "types/CampRoomData";
 import { Link, useHistory } from "react-router-dom";
-import { Venue } from "types/Venue";
+import Bugsnag from "@bugsnag/js";
+
+import { Venue } from "types/venues";
+import { Room } from "types/rooms";
 import { WithId } from "utils/id";
-import "./Admin.scss";
+
 import { RoomInput, upsertRoom } from "api/admin";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+
 import VenueEventDetails from "./VenueEventDetails";
-import { useFirestoreConnect } from "react-redux-firebase";
+
+import "./Admin.scss";
 
 interface Props {
   index: number;
   venue: WithId<Venue>;
-  room: CampRoomData;
+  room: Room;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
@@ -61,7 +65,7 @@ export const AdminVenueRoomDetails = ({
         user,
         index
       );
-      history.push(`/admin/venue/${venue.id}`);
+      history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {

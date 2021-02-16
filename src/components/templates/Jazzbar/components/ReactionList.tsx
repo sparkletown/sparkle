@@ -6,14 +6,13 @@ import {
 } from "utils/reactions";
 import { User } from "types/User";
 import UserProfileModal from "components/organisms/UserProfileModal";
-
+import { useWorldUsersById } from "hooks/users";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   REACTION_PROFILE_IMAGE_SIZE_LARGE,
   REACTION_PROFILE_IMAGE_SIZE_SMALL,
 } from "settings";
-import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { ChatMessage } from "store/actions/Chat";
 
@@ -28,9 +27,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
   chats,
   small = false,
 }) => {
-  const { usersById } = useSelector((state) => ({
-    usersById: state.firestore.data.partygoers ?? {},
-  }));
+  const { worldUsersById } = useWorldUsersById();
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
@@ -60,35 +57,35 @@ const ReactionList: React.FC<ReactionListProps> = ({
           >
             <img
               onClick={() =>
-                usersById[message.created_by] &&
+                worldUsersById[message.created_by] &&
                 setSelectedUserProfile({
-                  ...usersById[message.created_by],
+                  ...worldUsersById[message.created_by],
                   id: message.created_by,
                 })
               }
               key={`${message.created_by}-messaging-the-band`}
               className="profile-icon"
               src={
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.pictureUrl) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.pictureUrl) ||
                 DEFAULT_PROFILE_IMAGE
               }
               title={
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.partyName) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME
               }
               alt={`${
-                (!usersById[message.created_by]?.anonMode &&
-                  usersById[message.created_by]?.partyName) ||
+                (!worldUsersById[message.created_by]?.anonMode &&
+                  worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME
               } profile`}
               width={profileImageSize}
               height={profileImageSize}
             />
             <div className="partyname-bubble">
-              {(!usersById[message.created_by]?.anonMode &&
-                usersById[message.created_by]?.partyName) ||
+              {(!worldUsersById[message.created_by]?.anonMode &&
+                worldUsersById[message.created_by]?.partyName) ||
                 DEFAULT_PARTY_NAME}
             </div>
             <div

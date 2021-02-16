@@ -6,6 +6,7 @@ import {
   checkFileExists,
   findUserByEmail,
   initFirebaseAdminApp,
+  makeScriptUsage,
   parseCredentialFile,
 } from "./lib/helpers";
 
@@ -19,21 +20,11 @@ const EMAIL_ADDRESSES: string[] = [];
 // HERE THERE BE DRAGONS (edit below here at your own risk)
 // ---------------------------------------------------------
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Bulk register users based on the supplied email address(es)
-
-Usage: node ${scriptName} CREDENTIAL_FILE EMAIL1 EMAIL2 EMAIlN...
-
-Example: node ${scriptName} fooAccountKey.json foouser@example.com baruser@example.com
----------------------------------------------------------
-`;
-
-  console.log(helpText);
-  process.exit(1);
-};
+const usage = makeScriptUsage({
+  description: "Bulk register users based on the supplied email address(es).",
+  usageParams: "CREDENTIAL_PATH EMAIL1 EMAIL2 EMAIlN...",
+  exampleParams: "fooAccountKey.json foouser@example.com baruser@example.com",
+});
 
 const [credentialPath, ...extraEmailAddresses] = process.argv.slice(2);
 if (!credentialPath) {

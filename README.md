@@ -6,56 +6,80 @@ Codebase for Sparkle, brought to you by Sparkle.
 
 ### Frontend
 
-Clone the repo and cd into it
+First, clone the repo and `cd` into it:
 
-```
+```bash
 git clone https://github.com/sparkletown/sparkle
 cd sparkle
 ```
 
-Now, obtain the `.env` file for the environemnt (eg. staging) and save it (eg. `.env.staging`)
+In the main `sparkle` folder, copy `.env.example` to a new file `.env.local`, and fill it with the appropriate details.
 
-```
-# copy in the .env files
-# symlink the staging .env file
-ln -s .env.staging.local .env
+You can read more about the various `.env` files that you can use at:
+
+- https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env
+
+Install the platform dependencies with `npm`:
+
+(**Note:** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions)
+
+```bash
+npm install
 ```
 
-Now you're ready to start the server
+Now you're ready to start the server! ✨
 
-```
-npm i
-npm test
+```bash
 npm start
 ```
 
-You won't need to in dev, but you can also test builds:
+While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
-```
+```bash
 npm run build
 ```
 
 ### Firebase functions
 
-```bash
-npm install -g firebase-tools@latest
+**Note:** Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
 
+In a new terminal, from the directory you cloned the code to, enter the following commands:
+
+```bash
+# While not necessary (as we already include it in our devDependencies), you can install the firebase-tools globally if desired
+# npm install -g firebase-tools@latest
+
+# Move into the firebase functions directory
 cd functions
+
+# Install the function dependencies
 npm install
+
+# Login to firebase with the account that has access to this project
 firebase login
+
+# Switch to the 'staging' project in our local configuration (or whichever environment you are developing against)
 firebase use staging
-firebase functions:config:get
+
+# Copy the runtime config locally
+npm run firebase functions:config:get > .runtimeconfig.json
 ```
 
-Copy the output of this command and paste it in `functions/.runtimeconfig.json`. Then, launch the server with:
+Now you're ready to launch the backend function emulator! ✨
 
 ```bash
-firebase emulators:start --only functions
+npm run firebase:emulate-functions
+
+# Or if you don't want to use our helper scripts, you can do this directly:
+# firebase emulators:start --only functions
 ```
+
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
+
 
 ### Stripe
 
-Note: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
+**Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
 
 First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
 
@@ -129,4 +153,4 @@ Paste into a google sheet. Leftmost column is the [UNIX timestamp](https://en.wi
 
 Sparkle is using Bugsnag! We are proud to be part of Bugsnag's open source program and are glad that Bugsnag supports open source.
 
-![Bugsnag Logo](https://avatars3.githubusercontent.com/u/1058895?s=200&v=4)
+[![Bugsnag Logo](https://avatars3.githubusercontent.com/u/1058895?s=200&v=4)](https://www.bugsnag.com)

@@ -10,3 +10,12 @@ exports.checkAuth = (context) => {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 };
+
+// Case-insensitive first character for iDevices
+const lowercaseFirstChar = (password) =>
+  password.charAt(0).toLowerCase() + password.substring(1);
+
+exports.passwordsMatch = (submittedPassword, actualPassword) =>
+  submittedPassword.trim() === actualPassword.trim() ||
+  lowercaseFirstChar(submittedPassword.trim()) ===
+    lowercaseFirstChar(actualPassword.trim());

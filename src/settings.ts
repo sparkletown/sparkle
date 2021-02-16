@@ -1,4 +1,5 @@
-import { VenueTemplate } from "types/VenueTemplate";
+import { CSSProperties } from "react";
+
 import {
   API_KEY,
   APP_ID,
@@ -6,9 +7,9 @@ import {
   BUCKET_URL,
   PROJECT_ID,
   IS_BURN,
-} from "./secrets";
-import { CSSProperties } from "react";
-import { FIVE_MINUTES_MS } from "./utils/time";
+} from "secrets";
+import { VenueTemplate } from "types/venues";
+import { FIVE_MINUTES_MS } from "utils/time";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -34,13 +35,14 @@ export const PRIVACY_POLICY = IS_BURN
   ? SPARKLEVERSE_PRIVACY_POLICY
   : SPARKLE_PRIVACY_POLICY;
 
+export const SPARKLE_ICON = "/sparkle-icon.png";
+export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
+export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
-export const SPARKLE_LOGO_URL = "/sparkle-header.png";
-export const MEMRISE_LOGO_URL = "/memrise-logo.png";
-export const BURN_START_UTC_SECONDS = 1598770800; // Sunday Aug 30th, 2020 (easy to change later)
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
@@ -71,6 +73,10 @@ export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
+// How often to increment user's timespent
+export const LOCATION_INCREMENT_SECONDS = 10;
+export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
+
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
@@ -83,6 +89,8 @@ export const GIF_IMAGE_WIDTH_PX = 300;
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
+export const MINIMUM_COLUMNS = 5;
+export const MAXIMUM_COLUMNS = 100;
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
@@ -94,9 +102,6 @@ export const REACTION_PROFILE_IMAGE_SIZE_LARGE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
 export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
-export const PLAYA_HD_IMAGE = "/maps/playa16k.jpg";
-// Add for Jam demo event, used for admin placement background.
-export const JAM_IMAGE = "/maps/jam.jpg";
 export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   iconImage: {
     width: PLAYA_VENUE_SIZE,
@@ -170,6 +175,13 @@ export interface Template {
   description: Array<string>;
 }
 
+export interface Template_v2 {
+  template?: VenueTemplate;
+  name: string;
+  subtitle?: string;
+  description: Array<string>;
+}
+
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
@@ -188,6 +200,49 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Party Map",
     description: [
       "An explorable party map into which you can place all your party rooms.",
+    ],
+  },
+  {
+    template: VenueTemplate.artpiece,
+    name: "Art Piece",
+    description: [
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+    ],
+  },
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Music Venue",
+    description: [
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    ],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description: [
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    ],
+  },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Fire Barrel",
+    description: ["Huddle around a fire barrel with your close friends"],
+  },
+];
+
+export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
+  {
+    template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
+    name: "Experience",
+    description: [
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    ],
+  },
+  {
+    template: VenueTemplate.themecamp,
+    name: "Theme Camp",
+    description: [
+      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
     ],
   },
   {
@@ -250,6 +305,126 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
+  ...BURN_VENUE_TEMPLATES,
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Jazz Bar",
+    description: ["Create a jazzbar."],
+  },
+
+  {
+    template: VenueTemplate.artcar,
+    name: "Art Car",
+    description: ["Create a space on the Jam that moves around."],
+  },
+  {
+    template: VenueTemplate.performancevenue,
+    name: "Performance Venue",
+    description: [
+      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
+    ],
+  },
+  {
+    template: VenueTemplate.partymap,
+    name: "Party Map",
+    description: [""],
+  },
+];
+
+export type CustomInputsType = {
+  name: string;
+  title: string;
+  type: "text" | "textarea" | "number" | "switch";
+  // ? Maybe add a field for specific regex patterns
+  // ? if we want the field to be a zoom url
+  // ? it must include `zoom.com/`
+};
+export type RoomTemplate = {
+  template: VenueTemplate;
+  name: string;
+  description: string;
+  icon: string;
+  url?: string;
+  customInputs?: CustomInputsType[];
+};
+export const ROOM_TEMPLATES: RoomTemplate[] = [
+  {
+    template: VenueTemplate.artpiece,
+    name: "Art Piece",
+    description:
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+    icon: "/venues/pickspace-thumbnail_art.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description:
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.zoomroom,
+    name: "Experience",
+    description:
+      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    icon: "/venues/pickspace-thumbnail_zoom.png",
+  },
+  {
+    template: VenueTemplate.firebarrel,
+    name: "Burn Barrel (Campfire?)",
+    description: "Huddle around a fire barrel with your close friends",
+    icon: "/rooms/room-icon-fire.png",
+  },
+  {
+    template: VenueTemplate.jazzbar,
+    name: "Music Bar",
+    description:
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    icon: "/rooms/room-icon-musicbar.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.partymap,
+    name: "Partymap",
+    description:
+      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
+    icon: "/venues/pickspace-thumbnail_camp.png",
+    customInputs: [
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+];
+
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
@@ -259,7 +434,6 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
-  VenueTemplate.avatargrid,
 ];
 
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
@@ -269,7 +443,6 @@ export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
-  VenueTemplate.avatargrid,
   VenueTemplate.themecamp,
   VenueTemplate.artpiece,
 ];
@@ -283,7 +456,6 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
-  VenueTemplate.avatargrid,
 ];
 
 export const FIREBASE_CONFIG = {

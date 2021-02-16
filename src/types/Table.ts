@@ -15,7 +15,7 @@ export interface TableComponentPropsType {
   table: Table;
   tableLocked: (table: string) => boolean;
   experienceName: string;
-  users: Array<WithId<User>>;
+  users: readonly WithId<User>[];
   setSelectedUserProfile: (user: WithId<User>) => void;
   tableCapacity?: number;
   onJoinClicked: (table: string, locked: boolean, videoRoom: string) => void;

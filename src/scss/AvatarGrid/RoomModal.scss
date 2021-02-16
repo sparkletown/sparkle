@@ -1,0 +1,91 @@
+// TODO: this wasn't scoped specifically to AvatarGrid, so might be used by something else in the platform accidentally
+//$primary: #d0021b;
+//$secondary: #69000d;
+//$white: #ffffff;
+//
+//.room-container {
+//  padding: 20px;
+//  background-color: #19181a;
+//  background-repeat: no-repeat;
+//  background-size: cover;
+//}
+//
+//.room-name {
+//  position: relative;
+//  z-index: 2;
+//  font-size: 2rem;
+//  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+//}
+//.room-description {
+//  position: relative;
+//  z-index: 2;
+//  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+//}
+//
+//.room-people {
+//  display: flex;
+//  flex-direction: row;
+//  padding-top: 10px;
+//  padding-bottom: 10px;
+//}
+//
+//.room-button {
+//  padding-top: 20px;
+//  display: flex;
+//  justify-content: center;
+//}
+//
+//.room-entry-button {
+//  background-color: $primary;
+//}
+//
+//.live {
+//  color: $primary;
+//}
+//
+//.profile-avatar {
+//  border-radius: 100%;
+//  width: 100%;
+//  height: 100%;
+//}
+//
+//.user {
+//  width: 3vh;
+//  height: 3vh;
+//  border-radius: 100%;
+//}
+//
+//a.btn,
+//button.btn {
+//  &.btn-block {
+//    display: block;
+//  }
+//  &.btn-disabled {
+//    background-color: black;
+//    box-shadow: none;
+//    color: rgba(white, 0.6);
+//    pointer-events: none;
+//  }
+//
+//  &.btn-active {
+//    background-color: $primary;
+//    color: $white;
+//    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+//
+//    &:hover {
+//      color: $white;
+//      background-color: darken($primary, 5%);
+//    }
+//  }
+//
+//  &.btn-live {
+//    background-color: $secondary;
+//    color: $white;
+//    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+//
+//    &:hover {
+//      color: $white;
+//      background-color: darken($secondary, 5%);
+//    }
+//  }
+//}

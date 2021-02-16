@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./ArtPiece.scss";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
 import ChatDrawer from "components/organisms/ChatDrawer";
@@ -10,7 +10,6 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import BannerMessage from "components/molecules/BannerMessage";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
@@ -18,7 +17,6 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
@@ -31,13 +29,8 @@ export const ArtPiece = () => {
 
   return (
     <WithNavigationBar>
-      <BannerMessage venue={venue} />
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn
-          venueLogoPath={venue?.host?.icon ?? ""}
-          isLeftColumnExpanded={isLeftColumnExpanded}
-          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-        >
+        <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}</p>
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
@@ -57,7 +50,7 @@ export const ArtPiece = () => {
               frameBorder="0"
               allow={IFRAME_ALLOW}
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <div className="video-chat-wrapper">
             <Room

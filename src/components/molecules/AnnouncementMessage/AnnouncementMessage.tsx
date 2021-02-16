@@ -1,16 +1,22 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-import "./AnnouncementMessage.scss";
 import { getLinkFromText } from "utils/getLinkFromText";
+
+import { VenueTemplate } from "types/venues";
+
+import "./AnnouncementMessage.scss";
 
 type AnnouncementMessageProps = {
   message?: string;
+  template: VenueTemplate;
 };
 
-const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
+export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
+  template,
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
 
@@ -24,18 +30,25 @@ const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
     }
   }, [message]);
 
+  if (!isVisible || !message) return null;
+
+  const isBannerCentered = template !== VenueTemplate.partymap;
+
   return (
-    <>
-      {isVisible && message && (
-        <div className={"announcement-container"}>
-          {getLinkFromText(message)}
-          <span className="close-button" onClick={hideAnnouncement}>
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
-        </div>
-      )}
-    </>
+    <div
+      className={classNames("announcement-container", {
+        center: isBannerCentered,
+      })}
+    >
+      {getLinkFromText(message)}
+      <span className="close-button" onClick={hideAnnouncement}>
+        <FontAwesomeIcon icon={faTimesCircle} />
+      </span>
+    </div>
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default AnnouncementMessage;

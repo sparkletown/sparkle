@@ -1,7 +1,6 @@
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { AnyVenue } from "./Firestore";
-import { VenueEvent } from "./VenueEvent";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 export interface OnlineStatsData {
   onlineUsers: Array<WithId<User>>;

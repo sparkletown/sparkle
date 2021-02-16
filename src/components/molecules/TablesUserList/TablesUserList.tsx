@@ -9,8 +9,10 @@ import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useRecentVenueUsers } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
+import { experienceSelector } from "utils/selectors";
 
 interface PropsType {
   venueName: string;
@@ -68,13 +70,8 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const { user, profile } = useUser();
-  const { users, experience, usersById } = useSelector((state) => ({
-    users: state.firestore.ordered.partygoers,
-    usersById: state.firestore.data.users,
-    experience:
-      state.firestore.data.experiences &&
-      state.firestore.data.experiences[venueName],
-  }));
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+  const experience = useSelector(experienceSelector);
 
   useEffect(() => {
     if (!profile) return;
@@ -84,11 +81,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     } else {
       setSeatedAtTable("");
     }
-  }, [profile, setSeatedAtTable, user, usersById, venueName]);
+  }, [profile, setSeatedAtTable, user, venueName]);
 
-  if (!users) {
-    return <>Loading...</>;
-  }
+  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
   const usersAtTables: Record<string, Array<User>> = {};
@@ -96,7 +91,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     usersAtTables[table.reference] = [];
   }
   const unseatedUsers = [];
-  for (const u of users.filter((u: User) =>
+  for (const u of recentVenueUsers.filter((u: User) =>
     u.lastSeenIn ? u.lastSeenIn[venueName] : ""
   )) {
     if (
@@ -116,9 +111,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const tableLocked = (table: string) => {
     // Empty tables are never locked
     if (
-      users &&
-      users.filter((user: User) => user.data?.[venueName]?.table === table)
-        .length === 0
+      recentVenueUsers.filter(
+        (user: User) => user.data?.[venueName]?.table === table
+      ).length === 0
     ) {
       return false;
     }
@@ -143,10 +138,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     setSeatedAtTable(table);
   };
 
+  // @debt can we refactor this to make use of makeUpdateUserGridLocation ?
   const takeSeat = (table: string) => {
     if (!user) return;
     const doc = `users/${user.uid}`;
-    const existingData = users.find((u) => u.id === user.uid)?.data;
+    const existingData = recentVenueUsers.find((u) => u.id === user.uid)?.data;
+
     const update = {
       data: {
         ...existingData,
@@ -177,7 +174,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
             <TableComponent
               key={table.title}
               experienceName={venueName}
-              users={users}
+              users={recentVenueUsers}
               table={table}
               tableLocked={tableLocked}
               setSelectedUserProfile={setSelectedUserProfile}

@@ -11,7 +11,7 @@ updates:
     time: "05:00"
     timezone: Australia/Sydney
   reviewers:
-    - "sparkletown/tech-leads"
+    - "sparkletown/engineering-leads"
   open-pull-requests-limit: 2
   target-branch: staging
   versioning-strategy: auto
@@ -25,7 +25,21 @@ updates:
     time: "05:00"
     timezone: Australia/Sydney
   reviewers:
-    - "sparkletown/tech-leads"
+    - "sparkletown/engineering-leads"
+  open-pull-requests-limit: 2
+  target-branch: staging
+  versioning-strategy: auto
+
+# Sparkle Platform - Reporting Tools
+- package-ecosystem: npm
+  directory: "/reporting"
+  schedule:
+    interval: weekly
+    day: "monday"
+    time: "05:00"
+    timezone: Australia/Sydney
+  reviewers:
+    - "sparkletown/engineering-leads"
   open-pull-requests-limit: 2
   target-branch: staging
   versioning-strategy: auto

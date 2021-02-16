@@ -41,7 +41,7 @@ $borderWidth: 5px;
     position: absolute;
     top: -25px;
     right: -20px;
-    z-index: 1000;
+    z-index: z(user-profile-picture-reaction);
 
     font-size: 50px;
 
@@ -50,7 +50,7 @@ $borderWidth: 5px;
 
   .heart {
     fill: red;
-    z-index: 99999;
+    z-index: z(user-profile-picture-heart);
   }
 
   @keyframes expand-bounce {
