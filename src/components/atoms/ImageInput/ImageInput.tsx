@@ -51,7 +51,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         as="label"
       >
         <input
-          accept="image/x-png,image/gif,image/jpeg"
+          accept="image/png,image/x-png,image/gif,image/jpeg"
           className={customClass}
           hidden
           id={name}
