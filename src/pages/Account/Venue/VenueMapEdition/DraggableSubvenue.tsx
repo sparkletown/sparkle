@@ -28,7 +28,7 @@ export type PropsType = SubVenueIconMap[string] & {
   isResizable?: boolean;
   rounded: boolean;
   lockAspectRatio?: boolean;
-  isLoading?: boolean;
+  isSaving?: boolean;
   onDragStart?: (id: number) => void;
 };
 
@@ -44,7 +44,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     isResizable,
     rounded,
     lockAspectRatio = false,
-    isLoading,
+    isSaving,
     onDragStart,
   } = props;
   const [{ isDragging }, drag, preview] = useDrag({
@@ -76,8 +76,8 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
         }}
         lockAspectRatio={lockAspectRatio}
       >
-        <div ref={!isLoading ? drag : null} style={styles.dragContainer}>
-          {!isLoading && (
+        <div ref={!isSaving ? drag : null} style={styles.dragContainer}>
+          {!isSaving && (
             <>
               <div
                 style={{

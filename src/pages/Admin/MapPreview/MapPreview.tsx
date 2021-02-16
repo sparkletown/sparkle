@@ -27,7 +27,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
+  const [isSaving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -70,7 +70,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   };
 
   const handleSavePositions = async () => {
-    setLoading(true);
+    setSaving(true);
     const roomArr = Object.values(roomRef.current);
 
     let roomIndex = 0;
@@ -88,7 +88,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
       roomIndex++;
     }
 
-    setLoading(false);
+    setSaving(false);
     setIsEditing(false);
   };
 
@@ -111,6 +111,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 
     return setIsEditing(true);
   };
+
+  const editButtonText = isEditing ? "Save layout" : "Edit layout";
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -175,12 +177,13 @@ const MapPreview: React.FC<MapPreviewProps> = ({
             }}
             otherIconsStyle={{ opacity: 0.4 }}
             lockAspectRatio
-            isLoading={isLoading}
+            isSaving={isSaving}
           />
         )}
 
-        <S.EditButton disabled={isLoading} onClick={handleEditButton}>
-          {isLoading ? "Saving..." : isEditing ? "Save layout" : "Edit layout"}
+        <S.EditButton disabled={isSaving} onClick={handleEditButton}>
+          {isSaving && <div>Saving...</div>}
+          {!isSaving && <div>{editButtonText}</div>}
         </S.EditButton>
       </S.Wrapper>
     </DndProvider>

@@ -54,7 +54,7 @@ interface PropsType {
   backgroundImageStyle?: CSSProperties;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
-  isLoading?: boolean;
+  isSaving?: boolean;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -74,7 +74,7 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImageStyle,
     containerStyle,
     lockAspectRatio,
-    isLoading,
+    isSaving,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
@@ -279,7 +279,7 @@ export const Container: React.FC<PropsType> = (props) => {
             onChangeSize={resizeBox(key)}
             lockAspectRatio={lockAspectRatio}
             onDragStart={setDragItemId}
-            isLoading={isLoading}
+            isSaving={isSaving}
           />
         ))}
       </div>
