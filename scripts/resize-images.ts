@@ -70,6 +70,7 @@ const SELECTIVELY_PROCESS_FILE_NAME_PARTS: string[] = [
 
 const ACCEPTED_MIME_TYPES = [
   "image/png",
+  "image/x-png",
   "image/jpg",
   "image/jpeg",
   "image/tiff",
