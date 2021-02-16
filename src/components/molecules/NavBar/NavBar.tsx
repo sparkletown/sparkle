@@ -33,6 +33,7 @@ import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicket
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import notificationSound from "assets/sounds/notification.m4a";
 
 import ChatsList from "components/molecules/ChatsList";
 import NavSearchBar from "components/molecules/NavSearchBar";
@@ -85,8 +86,6 @@ interface NavBarPropsType {
 }
 
 const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
-  const notificationSound = "/sounds/notification.m4a";
-  
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
@@ -184,6 +183,11 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     []
   );
 
+  const playAudio = useMemo(()=> {
+    const audioObj = new Audio(notificationSound);
+    numberOfUnreadMessages && audioObj.play();
+  }, [numberOfUnreadMessages]);
+
   if (!venueId || !venue) return null;
 
   const isVenueUsingPartyMap = venue.template === VenueTemplate.partymap;
@@ -266,7 +270,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     <span className="private-chat-icon">
                       {numberOfUnreadMessages > 0 && (
                         <div className="notification-card">
-                          {numberOfUnreadMessages} <audio autoPlay ><source src={notificationSound} /></audio>
+                          {numberOfUnreadMessages} {playAudio}
                         </div>
                       )}
                       <div className="navbar-link-message" />

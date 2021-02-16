@@ -60,6 +60,11 @@ const Sidebar = () => {
     isEnabled && setTab(TABS.LIVE_SCHEDULE);
   }, [isEnabled]);
 
+  const playAudio = useMemo(()=> {
+    const audioObj = new Audio(notificationSound);
+    numberOfUnreadMessages && audioObj.play();
+  }, [numberOfUnreadMessages]);
+
   return (
     <div className="sidebar-container">
       <div className="sidebar-slide-btn">
@@ -87,10 +92,10 @@ const Sidebar = () => {
           <span>Messages</span>
 
           {numberOfUnreadMessages > 0 && (
-                        <span>
-                          ({numberOfUnreadMessages}) <audio autoPlay ><source src={notificationSound} /></audio>
-                        </span>
-                      )}
+            <span>
+              ({numberOfUnreadMessages})
+            </span>
+          )}
         </div>
 
         <div
