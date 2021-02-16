@@ -1,6 +1,6 @@
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { AnyVenue } from "types/Firestore";
+import { AnyVenue } from "types/venues";
 
 export interface UserProfilePictureProp {
   isAudioEffectDisabled?: boolean;

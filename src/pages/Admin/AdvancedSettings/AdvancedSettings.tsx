@@ -73,6 +73,7 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
+  showNametags: Yup.bool().notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
   showZendesk: Yup.bool().notRequired(),
@@ -100,6 +101,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
+      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
       showZendesk: venue.showZendesk,
@@ -289,6 +291,13 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           isChecked={values.showBadges}
           name="showBadges"
           title="Show badges"
+        />
+
+        <ToggleElement
+          forwardRef={register}
+          isChecked={values.showNametags}
+          name="showNametags"
+          title="Show nametags"
         />
 
         <ToggleElement
