@@ -10,15 +10,10 @@ import {
 } from "settings";
 
 import { User } from "types/User";
-import { ValidStoreAsKeys } from "types/Firestore";
 
 import { getDaysAgoInSeconds, roundToNearestHour } from "utils/time";
 import { WithId } from "utils/id";
-import {
-  chatUsersSelector,
-  privateChatsSelector,
-  isPrivateChatsRequestingSelector,
-} from "utils/selectors";
+import { chatUsersSelector, privateChatsSelector } from "utils/selectors";
 import { hasElements, isTruthy } from "utils/types";
 import { filterUniqueKeys } from "utils/filterUniqueKeys";
 
@@ -49,23 +44,11 @@ const ChatsList: React.FunctionComponent = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
 
-  useFirestoreConnect(
-    user
-      ? {
-          collection: "privatechats",
-          doc: user.uid,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "privatechats" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
-        }
-      : undefined
-  );
-
   const chatUsers = useSelector(chatUsersSelector) ?? {};
 
   const [selectedUser, setSelectedUser] = useState<WithId<User>>();
 
   const privateChats = useSelector(privateChatsSelector) ?? [];
-  const isRequestingChats = useSelector(isPrivateChatsRequestingSelector);
 
   const chatUserIds = useMemo(() => {
     return [...privateChats]
@@ -227,10 +210,6 @@ const ChatsList: React.FunctionComponent = () => {
     onClickOnSender,
     userUid,
   ]);
-
-  if (isRequestingChats) {
-    return <div className="private-messages-loading-title">Loading...</div>;
-  }
 
   if (selectedUser) {
     return (

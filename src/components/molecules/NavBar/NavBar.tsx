@@ -210,7 +210,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               >
                 <div />
               </div>
-              {venueId && venue && (
+              {venue && (
                 <>
                   <div
                     className={classNames("nav-party-logo", {
@@ -229,7 +229,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
             {user && (
               <div className="navbar-links">
-                {venueId && venue && <NavSearchBar />}
+                {venue && <NavSearchBar />}
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -257,7 +257,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {!isVenueUsingPartyMap && (
+                {!isVenueUsingPartyMap && venue && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
