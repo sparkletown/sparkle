@@ -5,9 +5,12 @@ import {
   currentVenueSelector,
   parentVenueSelector,
   unreadMessagesSelector,
+  privateChatsSelector,
 } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { isChatValid } from "validation";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
@@ -22,6 +25,7 @@ enum TABS {
 }
 
 const Sidebar = () => {
+  const notificationSound = "/sounds/notification.m4a";
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
@@ -30,6 +34,13 @@ const Sidebar = () => {
   const chatUsers = useSelector(chatUsersSelector) ?? [];
   const hasUnreadMessages = useSelector(unreadMessagesSelector);
 
+  const numberOfUnreadMessages = useMemo(() => {
+    if (!user || !privateChats) return 0;
+
+    return privateChats
+      .filter(isChatValid)
+      .filter((chat) => chat.to === user.uid && !chat.isRead).length;
+  }, [privateChats, user]);
   const isEnabled = chatUsers;
 
   const currentVenueChatTitle = venue?.chatTitle ?? "Party";
@@ -72,6 +83,12 @@ const Sidebar = () => {
         >
           {hasUnreadMessages && <div className="notification"></div>}
           <span>Messages</span>
+          
+          {numberOfUnreadMessages > 0 && (
+                        <span>
+                          ({numberOfUnreadMessages}) <audio autoPlay ><source src={notificationSound} /></audio>
+                        </span>
+                      )}
         </div>
 
         <div
