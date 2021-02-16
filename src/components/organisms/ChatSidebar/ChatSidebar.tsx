@@ -41,13 +41,23 @@ export const ChatSidebar: React.FC = () => {
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatsSidebarInfo();
 
+  const containerStyles = classNames("chat-sidebar-component", {
+    "chat-sidebar-component--expanded": isChatSidebarVisible,
+  });
+
+  const venueChatTabStyles = classNames("chat-sidebar-tab", {
+    "chat-sidebar-tab--selected":
+      chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
+  });
+
+  const privateChatTabStyles = classNames("chat-sidebar-tab", {
+    "chat-sidebar-tab--selected":
+      chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
+  });
+
   return (
     <>
-      <div
-        className={classNames("chat-sidebar-component", {
-          "chat-sidebar-component--expanded": isChatSidebarVisible,
-        })}
-      >
+      <div className={containerStyles}>
         <div className="chat-sidebar-header">
           <div
             className="chat-sidebar-controller"
@@ -56,29 +66,19 @@ export const ChatSidebar: React.FC = () => {
             {isChatSidebarVisible ? (
               <FontAwesomeIcon
                 icon={faChevronRight}
-                className={classNames("chatbox-input-button_icon", {
-                  "chatbox-input-button_icon--active": true,
-                })}
+                className="chatbox-input-button_icon"
                 size="sm"
               />
             ) : (
               <>
                 <FontAwesomeIcon
                   icon={faChevronLeft}
-                  className={classNames(
-                    "chatbox-input-button_icon",
-                    "chatbox-input-button_icon-right-chevron",
-                    {
-                      "chatbox-input-button_icon--active": true,
-                    }
-                  )}
+                  className="chatbox-input-button_icon chatbox-input-button_icon-left-chevron"
                   size="sm"
                 />
                 <FontAwesomeIcon
                   icon={faCommentDots}
-                  className={classNames("chatbox-input-button_icon", {
-                    "chatbox-input-button_icon--active": true,
-                  })}
+                  className="chatbox-input-button_icon"
                   size="lg"
                 />
               </>
@@ -86,22 +86,10 @@ export const ChatSidebar: React.FC = () => {
           </div>
 
           <div className="chat-sidebar-tabs">
-            <div
-              className={classNames("chat-sidebar-tab", {
-                "chat-sidebar-tab--selected":
-                  chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
-              })}
-              onClick={openVenueChat}
-            >
+            <div className={venueChatTabStyles} onClick={openVenueChat}>
               {venueChatTabTitle}
             </div>
-            <div
-              className={classNames("chat-sidebar-tab", {
-                "chat-sidebar-tab--selected":
-                  chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
-              })}
-              onClick={openPrivateChats}
-            >
+            <div className={privateChatTabStyles} onClick={openPrivateChats}>
               {privateChatTabTitle}
             </div>
           </div>

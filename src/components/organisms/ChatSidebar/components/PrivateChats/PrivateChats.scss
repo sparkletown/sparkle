@@ -2,4 +2,46 @@
   height: 100%;
   width: 100%;
   position: relative;
+
+  .private-chats-search-container {
+    margin: 15px;
+    height: 32px;
+    position: relative;
+
+    .private-chats-search-search-icon-container {
+      display: flex;
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 40px;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+
+      .private-chats-search-search-icon {
+        opacity: 0.2;
+      }
+    }
+
+    .private-chats-search-input {
+      text-align: left;
+      font-size: 14px;
+      background-color: black;
+      padding-left: 40px;
+      height: 100%;
+      width: 100%;
+
+      &::placeholder {
+        color: white;
+        opacity: 0.2;
+      }
+
+      &:focus ~ .private-chats-search-search-icon-container {
+        .private-chats-search-search-icon {
+          opacity: 0.6;
+        }
+      }
+    }
+  }
 }

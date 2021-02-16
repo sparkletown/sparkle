@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
-import { sendPrivateMessage } from "api/chat";
+import { sendPrivateMessage, setChatMessageIsRead } from "api/chat";
 
 import { myPrivateChatsSelector } from "utils/selectors";
 import {
@@ -9,6 +9,7 @@ import {
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
 } from "utils/chat";
+import { WithId } from "utils/id";
 
 import { PreviewChatMessage, PrivateChatMessage } from "types/chat";
 
@@ -106,11 +107,17 @@ export const usePrivateChatList = () => {
 };
 
 export const useNumberOfUnreadChats = () => {
+  const { user } = useUser();
   const { privateChatList } = usePrivateChatList();
 
+  const userId = user?.uid;
+
   return useMemo(
-    () => privateChatList.filter((chatMessage) => chatMessage.isRead).length,
-    [privateChatList]
+    () =>
+      privateChatList.filter(
+        (chatMessage) => !chatMessage.isRead && chatMessage.from !== userId
+      ).length,
+    [privateChatList, userId]
   );
 };
 
@@ -122,17 +129,20 @@ export const useRecipientChat = (recipientId: string) => {
   const userId = user?.uid;
   const recipient = worldUsersById[recipientId];
 
-  const sendMessageToSelectedRecipient = (text: string) => {
-    if (!userId) return;
+  const sendMessageToSelectedRecipient = useCallback(
+    (text: string) => {
+      if (!userId) return;
 
-    const message = buildMessage<PrivateChatMessage>({
-      from: userId,
-      text,
-      to: recipientId,
-    });
+      const message = buildMessage<PrivateChatMessage>({
+        from: userId,
+        text,
+        to: recipientId,
+      });
 
-    sendPrivateMessage(message);
-  };
+      sendPrivateMessage(message);
+    },
+    [userId, recipientId]
+  );
 
   const messagesToDisplay = useMemo(
     () =>
@@ -144,7 +154,7 @@ export const useRecipientChat = (recipientId: string) => {
         )
         .sort(chatSort)
         .map((message) =>
-          getMessageToDisplay<PrivateChatMessage>(
+          getMessageToDisplay<WithId<PrivateChatMessage>>(
             message,
             worldUsersById,
             userId
@@ -153,11 +163,21 @@ export const useRecipientChat = (recipientId: string) => {
     [myPrivateMessages, recipientId, worldUsersById, userId]
   );
 
-  const deleteMessage = () => {};
+  const deleteMessage = useCallback(() => {}, []);
+
+  const readMessage = useCallback(
+    (messageId: string) => {
+      if (!userId) return;
+
+      setChatMessageIsRead({ userId, messageId });
+    },
+    [userId]
+  );
 
   return {
     sendMessageToSelectedRecipient,
     deleteMessage,
+    readMessage,
     messagesToDisplay,
     recipient,
   };

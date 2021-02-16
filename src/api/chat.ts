@@ -2,10 +2,10 @@ import firebase from "firebase/app";
 
 import { VenueChatMessage, PrivateChatMessage } from "types/chat";
 
-export interface SendVenueMessageProps {
+export type SendVenueMessageProps = {
   venueId: string;
   message: VenueChatMessage;
-}
+};
 
 export const sendVenueMessage = async ({
   venueId,
@@ -29,3 +29,20 @@ export const sendPrivateMessage = async (message: PrivateChatMessage) => {
       .add(message);
   }
 };
+
+export type SetChatMessageIsReadProps = {
+  userId: string;
+  messageId: string;
+};
+
+export const setChatMessageIsRead = ({
+  userId,
+  messageId,
+}: SetChatMessageIsReadProps) =>
+  firebase
+    .firestore()
+    .collection("privatechats")
+    .doc(userId)
+    .collection("chats")
+    .doc(messageId)
+    .update({ isRead: true });

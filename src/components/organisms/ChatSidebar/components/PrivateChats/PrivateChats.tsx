@@ -1,4 +1,6 @@
 import React, { useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { PrivateChatPreview, RecipientChat } from "./components";
 
@@ -23,16 +25,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const { privateChatList } = usePrivateChatList();
   const { openPrivateRecipientChat } = useChatsSidebarControls();
 
-  // const groomedOnlineUserList = useMemo(
-  //   () =>
-  //     userSearchQuery
-  //       ? recentUniverseUsers
-  //           .filter((user) => user.name.includes(userSearchQuery))
-  //           .sort()
-  //       : recentUniverseUsers,
-  //   [recentUniverseUsers, userSearchQuery]
-  // );
-
   const renderedPrivateChatPreviews = useMemo(
     () =>
       privateChatList.map((chatMessage) => (
@@ -55,19 +47,20 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   return (
     <div className="private-chats-container">
-      {/* <input className="private-chats-search" placeholder="Search for people" /> */}
+      <div className="private-chats-search-container">
+        <input
+          className="private-chats-search-input"
+          placeholder="Search for people"
+        />
+        <div className="private-chats-search-search-icon-container">
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="private-chats-search-search-icon"
+            size="1x"
+          />
+        </div>
+      </div>
       <div>{renderedPrivateChatPreviews}</div>
     </div>
   );
-
-  // return (
-  //   <div className="chat-list-wrapper">
-  //     {!isEmpty(groomedPrivateChatList) && (
-  //       <PrivateChatList privateChatList={groomedPrivateChatList} onChatClick />
-  //     )}
-  //     {!isEmpty(groomedOnlineUserList) && (
-  //       <OnlineUserList onlineUserList={groomedOnlineUserList} onUserClick />
-  //     )}
-  //   </div>
-  // );
 };
