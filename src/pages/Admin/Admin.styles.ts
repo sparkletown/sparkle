@@ -1,23 +1,19 @@
 import styled from "styled-components";
 import { Wrapper as ToggleSwitch } from "components/atoms/ToggleSwitch/ToggleSwitch.styles";
 
-export const Wrapper = styled.div`
+interface WrapperProps {
+  hasSelectedVenue?: boolean;
+}
+
+export const Wrapper = styled.div<WrapperProps>`
   display: grid;
   height: 100vh;
-  grid-template-columns: 240px auto;
+  grid-template-columns: ${({ hasSelectedVenue }) =>
+    hasSelectedVenue ? "240px auto" : "auto"};
 
   position: relative;
   overflow-y: scroll;
-
   scrollbar-width: thin;
-
-  .no-venue-selected {
-    display: flex;
-    justify-self: center;
-    align-self: center;
-
-    font-size: 3rem;
-  }
 
   input:disabled {
     cursor: not-allowed;
