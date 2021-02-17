@@ -29,6 +29,18 @@ $label-visible: flex;
     }
   }
 
+  &.maproom--always-show-label-count {
+    .maproom__label {
+      display: $label-visible;
+    }
+  }
+
+  &.maproom--always-show-label-count {
+    .maproom__roomtitle {
+      display: $label-hidden;
+    }
+  }
+
   img.maproom__image {
     position: relative;
 
