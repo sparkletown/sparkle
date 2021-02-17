@@ -81,21 +81,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
-  const { watch, formState, register, setValue, ...rest } = useForm<FormValues>(
-    {
-      mode: "onSubmit",
-      reValidateMode: "onChange",
-      validationSchema: validationSchema,
-      validationContext: {
-        template: state.templatePage?.template,
-        editing: !!venueId,
-      },
-      defaultValues: {
-        ...defaultValues,
-        parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
-      },
-    }
-  );
+  const {
+    watch,
+    formState,
+    register,
+    setValue,
+    control,
+    handleSubmit,
+    errors,
+  } = useForm<FormValues>({
+    mode: "onSubmit",
+    reValidateMode: "onChange",
+    validationSchema: validationSchema,
+    validationContext: {
+      template: state.templatePage?.template,
+      editing: !!venueId,
+    },
+    defaultValues: {
+      ...defaultValues,
+      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+    },
+  });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
@@ -144,7 +150,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [user, venueId, history]
   );
 
-  const onFormSubmit = rest.handleSubmit(onSubmit);
   const mapIconUrl = useMemo(() => {
     const file = values.mapIconImageFile;
     if (file && file.length > 0) return URL.createObjectURL(file[0]);
@@ -204,10 +209,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               isSubmitting={isSubmitting}
               register={register}
               watch={watch}
-              {...rest}
-              onSubmit={onFormSubmit}
+              onSubmit={onSubmit}
               editing={!!venueId}
               formError={formError}
+              control={control}
+              handleSubmit={handleSubmit}
+              errors={errors}
             />
           </div>
         </div>
@@ -279,7 +286,8 @@ interface DetailsFormLeftProps {
   register: ReturnType<typeof useForm>["register"];
   watch: ReturnType<typeof useForm>["watch"];
   control: ReturnType<typeof useForm>["control"];
-  onSubmit: ReturnType<ReturnType<typeof useForm>["handleSubmit"]>;
+  onSubmit: (vals: Partial<FormValues>) => Promise<void>;
+  handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
@@ -296,6 +304,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   errors,
   previous,
   onSubmit,
+  handleSubmit,
   setValue,
   formError,
 }) => {
@@ -795,7 +804,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   return (
-    <form className="full-height-container" onSubmit={onSubmit}>
+    <form className="full-height-container" onSubmit={handleSubmit(onSubmit)}>
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${

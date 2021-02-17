@@ -65,7 +65,7 @@
 }
 
 .chat-submit-button {
-  z-index: 1;
+  z-index: z(chatbox-submit-button);
   background-color: #000000;
   border: none;
   padding: 10px 15px;

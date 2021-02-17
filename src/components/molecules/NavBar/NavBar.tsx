@@ -350,14 +350,14 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         </div>
       </header>
 
-      <SchedulePageModal isVisible={isEventScheduleVisible} />
-
       <div
         className={`schedule-dropdown-backdrop ${
           isEventScheduleVisible ? "show" : ""
         }`}
         onClick={hideEventSchedule}
-      />
+      >
+        <SchedulePageModal isVisible={isEventScheduleVisible} />
+      </div>
 
       {venue?.parentId && parentVenue?.name && (
         <div className="back-map-btn">

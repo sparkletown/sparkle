@@ -30,8 +30,9 @@ $danger-gradient: linear-gradient(
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
+$map-sidebar-width: 20%;
 $navbar-height: 66px;
-$footer-height: 66px;
+$footer-height: 30px;
 $chat-input-height: 114px;
 $ripple-color: chocolate;
 $playa-width-and-height: 2000px;
@@ -42,20 +43,60 @@ $playa-venue-live: rgb(125, 223, 194);
 $profile-image-bg-color: #999999;
 $room-info-bg: #005ee5;
 
+// @debt the following locations are using styled-components, so can't use our helper function yet
+//   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
+//   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
+//   components/atoms/Legend/Legend.styles.ts (z-index: 5)
+$z-layer-navbar: 30;
+$z-layer-live-schedule: 20;
+$z-layer-sidebar: 15;
 $z-layers: (
-  nav-search-results: 380,
-  header: 5,
-  footer: 5,
-  announcement: 3,
-  schedule: 4,
-  schedule-backdrop: 3,
-  map-back-button: 3,
+  // Admin
+  admin-navbar: 100,
+  admin-placement: 10,
+  admin-venue-header-after: 2,
+  admin-venue-header: -1,
+  // Audience
+  audience-emoji-reaction: 1000,
+  audience-video: 2,
+  // JazzBar
+  jazzbar-participant-profile-icon: 1,
+  // Chat
+  chatbox-chat-container: $z-layer-sidebar,
+  chat-drawer-container: $z-layer-sidebar,
+  chatbox-submit-button: 1,
+  chatslist-private-container-back-button: 1,
+  user-search-close-icon: 1,
+  user-search-input-close-btn: 1,
+  user-search-results: 380,
+  // Nav
+  navbar-map-back-button: 3,
+  navbar-nav-search-close-icon: 1,
+  navbar-nav-search-input-close-btn: 1,
+  navbar-nav-search-results: 380,
+  navbar-schedule-backdrop: $z-layer-live-schedule,
+  navbar-schedule: $z-layer-live-schedule,
+  navbar: $z-layer-navbar,
+  // Sidebars + similar
+  sidebar-slide-btn: -1,
+  sidebar: $z-layer-sidebar,
+  left-column: $z-layer-sidebar,
+  // Map
   map-room-hovered: 3,
   map-room: 2,
-  sidebar: 2,
-  audience-video: 2,
-  chat-container: 2,
-  left-column: 2,
+  // Legacy
+  account-profile-picture-preview: 1,
+  duststorm-container: 100,
+  duststorm-modal-content: 220,
+  // Unsorted
+  announcement: $z-layer-sidebar,
+  footer: $z-layer-sidebar,
+  global-profile-icon: 1,
+  loading-page-sparkle: 10,
+  private-recipient-search-input-dropdown: 1,
+  user-profile-picture-heart: 99999,
+  user-profile-picture-reaction: 1000,
+  venuepage-preview-indication: 1
 );
 
 @function z($layer) {
