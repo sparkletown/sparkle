@@ -60,7 +60,7 @@ const Sidebar = () => {
     isEnabled && setTab(TABS.LIVE_SCHEDULE);
   }, [isEnabled]);
 
-  const playAudio = useMemo(()=> {
+  const playAudio = useMemo(() => {
     const audioObj = new Audio(notificationSound);
     numberOfUnreadMessages && audioObj.play();
   }, [numberOfUnreadMessages]);
@@ -92,9 +92,7 @@ const Sidebar = () => {
           <span>Messages</span>
 
           {numberOfUnreadMessages > 0 && (
-            <span>
-              ({numberOfUnreadMessages})
-            </span>
+            <span>({numberOfUnreadMessages})</span>
           )}
         </div>
 
