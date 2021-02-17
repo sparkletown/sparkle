@@ -26,6 +26,7 @@ import VenueDetails from "./Venue/Details";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 dayjs.extend(advancedFormat);
 
@@ -84,7 +85,7 @@ const Admin_v2: React.FC = () => {
   const { isAdminUser } = useIsAdminUser(user?.uid);
 
   if (!venues || !roles) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   if (!user) {
