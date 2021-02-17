@@ -52,5 +52,15 @@
       opacity: 0.6;
       font-weight: 300;
     }
+
+    .chat-message-delete-icon {
+      margin-left: 5px;
+      opacity: 0.6;
+      cursor: pointer;
+
+      &:hover {
+        opacity: 0.8;
+      }
+    }
   }
 }

@@ -1,6 +1,10 @@
 import { useCallback, useMemo } from "react";
 
-import { sendPrivateMessage, setChatMessageIsRead } from "api/chat";
+import {
+  sendPrivateMessage,
+  setChatMessageRead,
+  deletePrivateMessage,
+} from "api/chat";
 
 import { myPrivateChatsSelector } from "utils/selectors";
 import {
@@ -163,13 +167,20 @@ export const useRecipientChat = (recipientId: string) => {
     [myPrivateMessages, recipientId, worldUsersById, userId]
   );
 
-  const deleteMessage = useCallback(() => {}, []);
-
-  const readMessage = useCallback(
+  const deleteMessage = useCallback(
     (messageId: string) => {
       if (!userId) return;
 
-      setChatMessageIsRead({ userId, messageId });
+      deletePrivateMessage({ userId, messageId });
+    },
+    [userId]
+  );
+
+  const markMessageRead = useCallback(
+    (messageId: string) => {
+      if (!userId) return;
+
+      setChatMessageRead({ userId, messageId });
     },
     [userId]
   );
@@ -177,7 +188,7 @@ export const useRecipientChat = (recipientId: string) => {
   return {
     sendMessageToSelectedRecipient,
     deleteMessage,
-    readMessage,
+    markMessageRead,
     messagesToDisplay,
     recipient,
   };

@@ -19,14 +19,12 @@
 
   .user-avatar-status-dot {
     position: absolute;
-    bottom: 2px;
-    right: 2px;
+    bottom: -1px;
+    right: -1px;
     border-radius: 50%;
     background-color: #4bff40;
-
-    &--isOnline {
-      height: 5px;
-      width: 5px;
-    }
+    height: 8px;
+    width: 8px;
+    z-index: 1;
   }
 }

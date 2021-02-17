@@ -8,18 +8,19 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./PrivateChatPreview.scss";
 
-type PrivateChatPreviewProps = PreviewChatMessageToDisplay & {
+export interface PrivateChatPreviewProps {
+  message: PreviewChatMessageToDisplay;
+  isOnline: boolean;
   onClick: () => void;
-};
+}
 
 export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
-  isRead,
-  isMine,
-  counterPartyUser,
-  text,
-  ts_utc,
+  message,
+  isOnline,
   onClick,
 }) => {
+  const { isRead, isMine, counterPartyUser, text, ts_utc } = message;
+
   const timestamp = ts_utc.toMillis();
 
   const usernameStyles = classNames("private-chat-preview-username", {
@@ -36,7 +37,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 
   return (
     <div className="private-chat-preview-container" onClick={onClick}>
-      <UserAvatar avatarSrc={counterPartyUser.pictureUrl} />
+      <UserAvatar avatarSrc={counterPartyUser.pictureUrl} isOnline={isOnline} />
       <div className="private-chat-preview-content">
         <div className={usernameStyles}>{counterPartyUser.partyName}</div>
         <div className={messageStyles}>{text}</div>

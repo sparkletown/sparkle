@@ -13,6 +13,7 @@
 
   .private-chat-preview-content {
     margin-left: 16px;
+    max-width: 60%;
 
     .private-chat-preview-username {
       font-size: 13px;
@@ -27,6 +28,9 @@
     .private-chat-preview-text {
       font-size: 11px;
       opacity: 0.35;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
 
       &--highlight {
         color: white;

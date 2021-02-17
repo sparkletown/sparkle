@@ -17,12 +17,18 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
 export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>(
   message: T,
   usersById: Record<string, User>,
+  // isAdmin: boolean,
   myUserId?: string
-): MessageToDisplay<T> => ({
-  ...message,
-  author: { ...usersById[message.from], id: message.from },
-  isMine: myUserId === message.from,
-});
+): MessageToDisplay<T> => {
+  const isMine = myUserId === message.from;
+
+  return {
+    ...message,
+    author: { ...usersById[message.from], id: message.from },
+    canBeDeleted: false,
+    isMine,
+  };
+};
 
 export const getPreviewChatMessageToDisplay = (
   message: PreviewChatMessage,

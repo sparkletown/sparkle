@@ -19,6 +19,7 @@ export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
+  canBeDeleted: boolean;
   isMine: boolean;
 };
 

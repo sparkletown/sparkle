@@ -25,7 +25,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     messagesToDisplay,
     sendMessageToSelectedRecipient,
     deleteMessage,
-    readMessage,
+    markMessageRead,
     recipient,
   } = useRecipientChat(recipientId);
 
@@ -40,9 +40,11 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     );
 
     if (unreadCounterpartyMessages.length > 0) {
-      unreadCounterpartyMessages.forEach((message) => readMessage(message.id));
+      unreadCounterpartyMessages.forEach((message) =>
+        markMessageRead(message.id)
+      );
     }
-  }, [messagesToDisplay, recipientId, readMessage]);
+  }, [messagesToDisplay, recipientId, markMessageRead]);
 
   const { openPrivateChats } = useChatsSidebarControls();
 

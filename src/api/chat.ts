@@ -35,7 +35,7 @@ export type SetChatMessageIsReadProps = {
   messageId: string;
 };
 
-export const setChatMessageIsRead = ({
+export const setChatMessageRead = async ({
   userId,
   messageId,
 }: SetChatMessageIsReadProps) =>
@@ -46,3 +46,37 @@ export const setChatMessageIsRead = ({
     .collection("chats")
     .doc(messageId)
     .update({ isRead: true });
+
+export type DeleteVenueMessageProps = {
+  venueId: string;
+  messageId: string;
+};
+
+export const deleteVenueMessage = async ({
+  venueId,
+  messageId,
+}: DeleteVenueMessageProps) =>
+  await firebase
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("chats")
+    .doc(messageId)
+    .update({ deleted: true });
+
+export type DeletePrivateMessageProps = {
+  userId: string;
+  messageId: string;
+};
+
+export const deletePrivateMessage = async ({
+  userId,
+  messageId,
+}: DeletePrivateMessageProps) =>
+  await firebase
+    .firestore()
+    .collection("privatechats")
+    .doc(userId)
+    .collection("chats")
+    .doc(messageId)
+    .update({ deleted: true });

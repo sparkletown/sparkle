@@ -2,7 +2,7 @@ import { useMemo, useCallback } from "react";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { sendVenueMessage } from "api/chat";
+import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
 
@@ -61,7 +61,14 @@ export const useVenueChat = () => {
     [venueId, userId]
   );
 
-  const deleteMessage = useCallback(() => {}, []);
+  const deleteMessage = useCallback(
+    (messageId: string) => {
+      if (!venueId) return;
+
+      deleteVenueMessage({ venueId, messageId });
+    },
+    [venueId]
+  );
 
   return useMemo(
     () => ({

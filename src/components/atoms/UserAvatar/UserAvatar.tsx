@@ -12,6 +12,7 @@ export interface UserAvatarProps {
 export const UserAvatar: React.FC<UserAvatarProps> = ({
   onClick,
   avatarSrc,
+  isOnline,
 }) => {
   const hasOnclick = onClick !== undefined;
 
@@ -27,7 +28,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         src={avatarSrc}
         alt="user avatar"
       />
-      <span className="user-avatar-status-dot" />
+      {isOnline && <span className="user-avatar-status-dot" />}
     </div>
   );
 };

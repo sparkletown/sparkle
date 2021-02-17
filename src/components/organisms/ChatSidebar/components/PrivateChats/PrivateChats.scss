@@ -2,6 +2,7 @@
   height: 100%;
   width: 100%;
   position: relative;
+  overflow: auto;
 
   .private-chats-search-container {
     margin: 15px;
@@ -43,5 +44,16 @@
         }
       }
     }
+  }
+
+  .private-chats-chat-previews {
+    margin-bottom: 35px;
+  }
+
+  .private-chats-title-text {
+    font-size: 14px;
+    opacity: 0.4;
+    // width: 100%;
+    margin: 0 24px 10px;
   }
 }
