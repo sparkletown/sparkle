@@ -4,7 +4,7 @@ notify-on-fail: &notify-on-fail
     steps:
       - run:
           command: |
-            if [ "$CIRCLE_BRANCH" = "develop" ]; then
+            if [ -z "$SLACK_ACCESS_TOKEN" ]; then
               circleci-agent step halt
             fi
       - slack/notify:
