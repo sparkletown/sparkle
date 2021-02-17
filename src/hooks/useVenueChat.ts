@@ -16,6 +16,8 @@ import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
 import { useWorldUsersById } from "./users";
+import { useRoles } from "./useRoles";
+import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
 export const useConnectVenueChat = (venueId?: string) => {
   useFirestoreConnect(
@@ -33,6 +35,8 @@ export const useConnectVenueChat = (venueId?: string) => {
 export const useVenueChat = () => {
   const venueId = useVenueId();
   const { worldUsersById } = useWorldUsersById();
+  const { userRoles } = useRoles();
+  const { currentVenue } = useConnectCurrentVenueNG();
   const { user } = useUser();
 
   const userId = user?.uid;
@@ -40,6 +44,11 @@ export const useVenueChat = () => {
   useConnectVenueChat(venueId);
 
   const chats = useSelector(venueChatsSelector) ?? [];
+
+  const isAdmin = !!(
+    userRoles?.includes("admin") ||
+    (userId && currentVenue?.owners?.includes(userId))
+  );
 
   const DAYS_AGO_IN_SECONDS = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
@@ -74,11 +83,23 @@ export const useVenueChat = () => {
     () => ({
       venueChatMessages: filteredMessages,
       messagesToDisplay: filteredMessages.map((message) =>
-        getMessageToDisplay(message, worldUsersById, userId)
+        getMessageToDisplay({
+          message,
+          usersById: worldUsersById,
+          myUserId: userId,
+          isAdmin,
+        })
       ),
       sendMessage,
       deleteMessage,
     }),
-    [filteredMessages, sendMessage, deleteMessage, worldUsersById, userId]
+    [
+      filteredMessages,
+      sendMessage,
+      deleteMessage,
+      worldUsersById,
+      userId,
+      isAdmin,
+    ]
   );
 };

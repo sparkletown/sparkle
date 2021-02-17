@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { Chatbox } from "components/molecules/Chatbox";
+import { Chatbox } from "components/molecules/Chatbox_NEW";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { useRecipientChat } from "hooks/usePrivateChats";

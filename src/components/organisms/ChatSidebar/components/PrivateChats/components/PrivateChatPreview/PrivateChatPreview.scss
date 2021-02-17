@@ -12,8 +12,12 @@
   }
 
   .private-chat-preview-content {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
     margin-left: 16px;
-    max-width: 60%;
+    width: 60%;
+    // flex: 1;
 
     .private-chat-preview-username {
       font-size: 13px;
@@ -30,7 +34,7 @@
       opacity: 0.35;
       text-overflow: ellipsis;
       overflow: hidden;
-      white-space: nowrap;
+      width: 100%;
 
       &--highlight {
         color: white;
@@ -42,7 +46,9 @@
   .private-chat-preview-time {
     margin-left: auto;
     font-size: 10px;
+    flex-shrink: 0;
     opacity: 0.35;
+    width: 20%;
 
     &--highlight {
       opacity: 0.7;

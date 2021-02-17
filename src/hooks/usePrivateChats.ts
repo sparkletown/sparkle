@@ -158,11 +158,11 @@ export const useRecipientChat = (recipientId: string) => {
         )
         .sort(chatSort)
         .map((message) =>
-          getMessageToDisplay<WithId<PrivateChatMessage>>(
+          getMessageToDisplay<WithId<PrivateChatMessage>>({
             message,
-            worldUsersById,
-            userId
-          )
+            usersById: worldUsersById,
+            myUserId: userId,
+          })
         ),
     [myPrivateMessages, recipientId, worldUsersById, userId]
   );

@@ -12,7 +12,7 @@ import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
 import { chatSort } from "utils/chat";
-import ChatBox from "components/molecules/Chatbox_OLD";
+import ChatBox from "components/molecules/Chatbox";
 
 import "./VenueChat.scss";
 import { sendRoomChat } from "store/actions/Chat";

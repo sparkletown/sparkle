@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Chatbox } from "components/molecules/Chatbox";
+import { Chatbox } from "components/molecules/Chatbox_NEW";
 
 import { useVenueChat } from "hooks/useVenueChat";
 
