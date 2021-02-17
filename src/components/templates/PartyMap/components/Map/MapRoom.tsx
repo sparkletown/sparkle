@@ -34,8 +34,10 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--always-show-label": venue.roomVisibility === RoomVisibility.nameCount,
-    "maproom--always-show-label-count": venue.roomVisibility === RoomVisibility.count
+    "maproom--always-show-label":
+      venue.roomVisibility === RoomVisibility.nameCount,
+    "maproom--always-show-label-count":
+      venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomPositionStyles = useMemo(
