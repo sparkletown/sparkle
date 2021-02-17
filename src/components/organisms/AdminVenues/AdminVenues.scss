@@ -6,6 +6,14 @@ $primary: #6f43ff;
   width: 100%;
   height: 100%;
 
+  .admin-venue__empty-venues {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   .admin-venue__create-button {
     display: flex;
     align-items: center;
@@ -15,10 +23,17 @@ $primary: #6f43ff;
   .admin-venue__cards {
     display: grid;
     width: 100%;
-    height: 100%;
     grid-template-columns: repeat(6, 1fr);
     grid-gap: 1rem;
     margin: 1rem 0;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @media (max-width: 800px) {
+      grid-template-columns: repeat(1, 1fr);
+    }
 
     .card {
       overflow: hidden;
@@ -77,9 +92,6 @@ $primary: #6f43ff;
           background-color: #000;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
         }
-
-        .card__text {
-        }
       }
 
       .card__button {
@@ -92,6 +104,7 @@ $primary: #6f43ff;
         &:hover {
           color: $white;
           background-color: darken($primary, 5%);
+          box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
         }
       }
     }
