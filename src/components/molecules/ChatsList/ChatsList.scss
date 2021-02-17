@@ -93,7 +93,7 @@ $primary: #005ee5;
 }
 
 .private-container-back-btn {
-  z-index: 1;
+  z-index: z(chatslist-private-container-back-button);
   position: absolute;
   background-size: cover;
   background-position: center;

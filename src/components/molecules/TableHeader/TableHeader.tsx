@@ -25,6 +25,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const experience = useSelector(experienceSelector);
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const allTables = experience?.tables;
+
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
@@ -39,9 +41,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const firestoreUpdate = (doc: string, update: any) => {
+  const firestoreUpdate = async (doc: string, update: any) => {
     const firestore = firebase.firestore();
-    firestore
+    await firestore
       .doc(doc)
       .update(update)
       .catch(() => {
@@ -49,29 +51,50 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  const tableLocked = (table: string) => {
-    // Empty tables are never locked
-    if (
-      recentVenueUsers.filter(
-        (user: User) => user.data?.[venueName]?.table === table
-      ).length === 0
-    ) {
-      return false;
-    }
-    // Locked state is in the experience record
-    return experience?.tables?.[table]?.locked;
-  };
+  const isCurrentTableLocked = useMemo(() => {
+    // @debt Why does `locked` has Table type?
+    return !!allTables?.[seatedAtTable]?.locked;
+  }, [allTables, seatedAtTable]);
 
-  const onLockedChanged = (tableName: string, locked: boolean) => {
-    const doc = `experiences/${venueName}`;
-    const update = {
-      tables: { ...experience?.tables, [tableName]: { locked } },
-    };
-    firestoreUpdate(doc, update);
-  };
+  const currentTableHasSeatedUsers = useMemo(
+    () =>
+      recentVenueUsers.filter(
+        (user: User) => user.data?.[venueName]?.table === seatedAtTable
+      ).length !== 0,
+    [venueName, recentVenueUsers, seatedAtTable]
+  );
+
+  const setIsCurrentTableLocked = useCallback(
+    (locked: boolean) => {
+      const doc = `experiences/${venueName}`;
+      const update = {
+        tables: { ...allTables, [seatedAtTable]: { locked } },
+      };
+      firestoreUpdate(doc, update);
+    },
+    [venueName, allTables, seatedAtTable]
+  );
+
+  const toggleIsCurrentTableLocked = useCallback(
+    () => setIsCurrentTableLocked(!isCurrentTableLocked),
+    [setIsCurrentTableLocked, isCurrentTableLocked]
+  );
+
+  useEffect(() => {
+    if (isCurrentTableLocked && !currentTableHasSeatedUsers) {
+      setIsCurrentTableLocked(false);
+    }
+  }, [
+    recentVenueUsers,
+    seatedAtTable,
+    isCurrentTableLocked,
+    currentTableHasSeatedUsers,
+    setIsCurrentTableLocked,
+  ]);
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
+
     const doc = `users/${user.uid}`;
     const existingData = profile.data;
     const update = {
@@ -84,6 +107,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       },
     };
     await firestoreUpdate(doc, update);
+
     setSeatedAtTable("");
   }, [user, profile, venueName, setSeatedAtTable]);
 
@@ -140,7 +164,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </div>
         <div className="lock-button-container">
           <div className="lock-table-checbox-indication">
-            {!!tableLocked(seatedAtTable) ? (
+            {isCurrentTableLocked ? (
               <p className="locked-text">Table is locked</p>
             ) : (
               <p className="unlocked-text">Lock table?</p>
@@ -149,10 +173,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           <label className="switch">
             <input
               type="checkbox"
-              checked={!!tableLocked(seatedAtTable)}
-              onChange={() =>
-                onLockedChanged(seatedAtTable, !tableLocked(seatedAtTable))
-              }
+              checked={!!isCurrentTableLocked}
+              onChange={toggleIsCurrentTableLocked}
             />
             <span className="slider" />
           </label>

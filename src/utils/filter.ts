@@ -1,18 +1,6 @@
-import { FirebaseReducer } from "react-redux-firebase";
-
-import { VENUE_CHAT_AGE_DAYS } from "settings";
-
 import { Room } from "types/rooms";
 
-import { chatSort } from "utils/chat";
-import { PrivateChatMessage } from "store/actions/Chat";
-
-import { WithId } from "./id";
 import { isWithinBounds } from "./isWithinBounds";
-import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
-
-const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
 
 /**
  * To be used with Array Filter ([].filter()) and similar.
@@ -76,20 +64,4 @@ export const makeRoomHitFilter = ({
   return isWithinBounds(checkPercent, roomBounds);
 };
 
-export const filterUnreadPrivateChats = (
-  chats: readonly WithId<PrivateChatMessage>[],
-  user?: FirebaseReducer.AuthState
-) => {
-  if (!chats) return [];
-
-  return chats
-    ?.filter(
-      (message) =>
-        message.from !== user?.uid &&
-        message.deleted !== true &&
-        message.type === "private" &&
-        message.ts_utc.seconds > HIDE_BEFORE &&
-        message.isRead === false
-    )
-    .sort(chatSort);
-};
+export const filterEnabledRooms = (room: Room) => room.isEnabled;
