@@ -86,6 +86,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
         start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
         duration_hours: event.duration_minutes / 60,
+        host: event.host,
         room: event.room,
       });
     }
