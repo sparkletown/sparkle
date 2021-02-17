@@ -35,8 +35,8 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
 
   return (
     <S.Wrapper>
-      <Button as={Link} to="/admin_v2/venue/creation">
-        Create new venue
+      <Button as={Link} to="/admin_v2/venue">
+        Back
       </Button>
 
       <S.InnerWrapper>
