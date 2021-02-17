@@ -28,7 +28,7 @@ enum TABS {
 const Sidebar = () => {
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
-  const { user, profile } = useUser();
+  const { user } = useUser();
   const privateChats = useSelector(privateChatsSelector);
 
   const [tab, setTab] = useState(0);
@@ -92,7 +92,10 @@ const Sidebar = () => {
           <span>Messages</span>
 
           {numberOfUnreadMessages > 0 && (
-            <span>({numberOfUnreadMessages})</span>
+            <span>
+              ({numberOfUnreadMessages}
+              {playAudio})
+            </span>
           )}
         </div>
 
