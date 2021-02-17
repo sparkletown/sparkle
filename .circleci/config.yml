@@ -1,6 +1,6 @@
 notify-on-fail: &notify-on-fail
   when:
-    condition: always
+    condition: on_fail
     steps:
       - slack/notify:
           event: fail
