@@ -15,7 +15,6 @@ import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
 import { useWorldUsersById } from "./users";
-import { useRoles } from "./useRoles";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
 export const useConnectVenueChatMessages = (venueId?: string) => {
@@ -34,7 +33,6 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
 export const useVenueChat = () => {
   const venueId = useVenueId();
   const { worldUsersById } = useWorldUsersById();
-  const { userRoles } = useRoles();
   const { currentVenue } = useConnectCurrentVenueNG();
   const { user } = useUser();
 
@@ -44,10 +42,7 @@ export const useVenueChat = () => {
 
   const chatMessages = useSelector(venueChatMessagesSelector) ?? [];
 
-  const isAdmin = !!(
-    userRoles?.includes("admin") ||
-    (userId && currentVenue?.owners?.includes(userId))
-  );
+  const isAdmin = Boolean(userId && currentVenue?.owners?.includes(userId));
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 

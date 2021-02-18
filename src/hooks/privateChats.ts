@@ -56,7 +56,10 @@ export const usePrivateChatMessages = () => {
 export const usePrivateChatPreviews = () => {
   const { user } = useUser();
   const { worldUsersById } = useWorldUsersById();
-  const { privateChatMessages } = usePrivateChatMessages();
+  const {
+    privateChatMessages,
+    isUserPrivateChatsLoaded,
+  } = usePrivateChatMessages();
 
   const userId = user?.uid;
 
@@ -75,13 +78,13 @@ export const usePrivateChatPreviews = () => {
 
         const counterPartyUser = worldUsersById[counterPartyUserId];
 
-        // NOTE: Filter out not existent users
+        // Filter out not existent users
         if (!counterPartyUser) return acc;
 
         if (counterPartyUserId in acc) {
           const previousMessage = acc[counterPartyUserId];
 
-          // NOTE: If the message is older, replace it with the more recent one
+          // If the message is older, replace it with the more recent one
           if (previousMessage.ts_utc > message.ts_utc) return acc;
 
           return {
@@ -111,8 +114,9 @@ export const usePrivateChatPreviews = () => {
         .map((message) =>
           getPreviewChatMessageToDisplay({ message, myUserId: userId })
         ),
+      isPrivateChatPreviewsLoaded: isUserPrivateChatsLoaded,
     }),
-    [privateChatPreviewsMap, userId]
+    [privateChatPreviewsMap, userId, isUserPrivateChatsLoaded]
   );
 };
 

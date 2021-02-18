@@ -1,3 +1,5 @@
+import { useCallback } from "react";
+
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -15,33 +17,42 @@ import { useNumberOfUnreadChats } from "./privateChats";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
+  const isExpanded = useSelector(chatVisibilitySelector);
+  const chatSettings = useSelector(selectedChatSettingsSelector);
 
-  const expandSidebar = () => {
+  const expandSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(true));
-  };
+  }, [dispatch]);
 
-  const collapseSidebar = () => {
+  const collapseSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(false));
-  };
+  }, [dispatch]);
 
-  const selectVenueChat = () => {
+  const toggleSidebar = useCallback(() => {
+    if (isExpanded) {
+      collapseSidebar();
+    } else {
+      expandSidebar();
+    }
+  }, [expandSidebar, collapseSidebar, isExpanded]);
+
+  const selectVenueChat = useCallback(() => {
     expandSidebar();
     dispatch(setVenueChatTabOpened());
-  };
+  }, [dispatch, expandSidebar]);
 
-  const selectPrivateChat = () => {
+  const selectPrivateChat = useCallback(() => {
     expandSidebar();
     dispatch(setPrivateChatTabOpened());
-  };
+  }, [dispatch, expandSidebar]);
 
-  const selectRecipientChat = (recipientId: string) => {
-    expandSidebar();
-    dispatch(setPrivateChatTabOpened(recipientId));
-  };
-
-  const isExpanded = useSelector(chatVisibilitySelector);
-
-  const chatSettings = useSelector(selectedChatSettingsSelector);
+  const selectRecipientChat = useCallback(
+    (recipientId: string) => {
+      expandSidebar();
+      dispatch(setPrivateChatTabOpened(recipientId));
+    },
+    [dispatch, expandSidebar]
+  );
 
   return {
     isExpanded,
@@ -52,6 +63,7 @@ export const useChatSidebarControls = () => {
     selectPrivateChat,
     selectRecipientChat,
     collapseSidebar,
+    toggleSidebar,
   };
 };
 

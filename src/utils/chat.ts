@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 
+import { withId } from "utils/id";
+
 import {
   BaseChatMessage,
   ChatMessage,
@@ -31,7 +33,7 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
 
   return {
     ...message,
-    author: { ...usersById[message.from], id: message.from },
+    author: withId(usersById[message.from], message.from),
     isMine,
     ...(isAdmin && { canBeDeleted: isAdmin }),
   };
