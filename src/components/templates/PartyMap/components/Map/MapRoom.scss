@@ -31,20 +31,20 @@ $label-visible: flex;
     }
   }
 
-  &.maproom--always-show-label {
+  &--always-show-label {
     .maproom__label {
       display: $label-visible;
     }
   }
 
-  img.maproom__image {
+  &__image {
     position: relative;
 
     width: 100%;
     height: 100%;
   }
 
-  .maproom__label {
+  &__label {
     display: $label-hidden;
     flex-direction: column;
     align-items: center;
