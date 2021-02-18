@@ -183,9 +183,10 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     []
   );
 
-  const playAudio = useMemo(() => {
-    const audioObj = new Audio(notificationSound);
-    numberOfUnreadMessages && audioObj.play();
+  useEffect(() => {
+    if (numberOfUnreadMessages <= 0) return
+    
+    new Audio(notificationSound).play();
   }, [numberOfUnreadMessages]);
 
   if (!venueId || !venue) return null;
