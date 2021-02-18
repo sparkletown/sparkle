@@ -7,6 +7,7 @@ import { Room } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useRoom } from "hooks/useRoom";
 
 import RoomAttendance from "../RoomAttendance";
 
@@ -23,6 +24,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
+  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+  const hasRecentRoomUsers = recentRoomUsers.length > 0;
+
   const dispatch = useDispatch();
 
   const handleRoomHovered = useCallback(() => {
@@ -36,7 +40,11 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const containerClasses = classNames("maproom", {
     "maproom--always-show-label":
       venue.roomVisibility === RoomVisibility.nameCount ||
-      venue.roomVisibility === RoomVisibility.count,
+      (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers),
+  });
+
+  const titleClasses = classNames("maproom__title", {
+    "maproom__title--count": venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomPositionStyles = useMemo(
@@ -60,7 +68,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       <img className="maproom__image" src={room.image_url} alt={room.title} />
 
       <div className="maproom__label">
-        {venue.roomVisibility !== RoomVisibility.count && room.title}
+        <span className={titleClasses}>{room.title}</span>
         <RoomAttendance venue={venue} room={room} />
       </div>
     </div>

@@ -21,6 +21,10 @@ $label-visible: flex;
       box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
         0 2px 4px rgba($black, 0.2);
     }
+
+    .maproom__title--count {
+      display: $label-visible;
+    }
   }
 
   &.maproom--always-show-label {
@@ -50,5 +54,9 @@ $label-visible: flex;
     font-size: 0.9rem;
     background-color: darken($primary, 50%);
     opacity: 0.5;
+  }
+
+  &__title--count {
+    display: $label-hidden;
   }
 }
