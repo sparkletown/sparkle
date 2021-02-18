@@ -1,7 +1,7 @@
 {
   "projects": {
     "default": "co-reality-map",
-    "staging": "ohbm2021",
+    "staging": "co-reality-staging",
     "prod": "co-reality-map",
     "sparkleverse": "sparkle-verse",
     "sparkle1": "sparkle-1",
