@@ -143,7 +143,6 @@ export interface Venue {
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
-  showNametags?: boolean;
   showBadges?: boolean;
   showNametags?: boolean;
   showZendesk?: boolean;
