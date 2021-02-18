@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from "react";
+import { Button, Nav } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
@@ -9,8 +11,6 @@ import VenueDetails from "pages/Admin/Venue/Details";
 import { Venue_v2 } from "types/venues";
 
 import "./AdminVenueView.scss";
-import { Button, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
 
 export interface SidebarOption {
   id: string;
