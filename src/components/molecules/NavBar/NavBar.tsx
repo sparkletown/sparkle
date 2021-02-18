@@ -271,7 +271,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     <span className="private-chat-icon">
                       {numberOfUnreadMessages > 0 && (
                         <div className="notification-card">
-                          {numberOfUnreadMessages} {playAudio}
+                          {numberOfUnreadMessages}
                         </div>
                       )}
                       <div className="navbar-link-message" />
