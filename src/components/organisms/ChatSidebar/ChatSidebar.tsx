@@ -30,13 +30,14 @@ export const ChatSidebar: React.FC = () => {
   const hasSelectedProfile = selectedProfile !== undefined;
 
   const {
-    isChatSidebarVisible,
+    isExpanded,
+    collapseSidebar,
+    expandSidebar,
+    
     chatSettings,
 
-    openVenueChat,
-    openPrivateChats,
-    closeChat,
-    expandChat,
+    selectVenueChat,
+    selectPrivateChat,
   } = useChatsSidebarControls();
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatsSidebarInfo();

@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 
 import { VenueChatMessage, PrivateChatMessage } from "types/chat";
 
-export type SendVenueMessageProps = {
+export interface SendVenueMessageProps {
   venueId: string;
   message: VenueChatMessage;
 };

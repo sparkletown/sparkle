@@ -176,9 +176,7 @@ type SetPrivateChatTabOpenedAction = ReduxAction<
   PrivateChatSettings
 >;
 
-export const setChatSidebarVisibility = (
-  isVisible: boolean
-): SetChatsSidebarVisibilityAction => ({
+export const setChatSidebarVisibility = (isVisible): SetChatsSidebarVisibilityAction => ({
   type: ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY,
   payload: { isVisible },
 });

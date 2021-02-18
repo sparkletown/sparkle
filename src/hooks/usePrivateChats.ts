@@ -71,7 +71,7 @@ export const usePrivateChatList = () => {
 
         const { from: fromUserId, to: toUserId } = message;
 
-        // NOTE: Either `from` author or `to` author is Me. Filter me out
+        // Either `from` author or `to` author is Me. Filter me out
         const counterPartyUserId =
           fromUserId === userId ? toUserId : fromUserId;
 
@@ -86,7 +86,7 @@ export const usePrivateChatList = () => {
 
           return {
             ...acc,
-            [counterPartyUserId]: { ...message, counterPartyUserId },
+            [counterPartyUserId]: withId(message, counterPartyUserId),
           };
         }
 

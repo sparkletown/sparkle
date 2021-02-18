@@ -6,9 +6,8 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
 
-import { buildMessage, getMessageToDisplay } from "utils/chat";
+import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
 import { venueChatsSelector } from "utils/selectors";
-import { chatSort } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
 
 import { useSelector } from "./useSelector";
@@ -50,7 +49,7 @@ export const useVenueChat = () => {
     (userId && currentVenue?.owners?.includes(userId))
   );
 
-  const DAYS_AGO_IN_SECONDS = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
   const filteredMessages = chats
     .filter(

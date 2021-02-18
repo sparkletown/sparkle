@@ -30,7 +30,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
   } = useRecipientChat(recipientId);
 
   const handleAvatarClick = useCallback(
-    () => onAvatarClick({ ...recipient, id: recipientId }),
+    () => onAvatarClick(withId(recipient, recipientId)),
     [onAvatarClick, recipient, recipientId]
   );
 

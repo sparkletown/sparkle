@@ -1,5 +1,5 @@
 import React from "react";
-import classnames from "classnames";
+import classNames from "classnames";
 
 import "./UserAvatar.scss";
 
@@ -14,10 +14,8 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   avatarSrc,
   isOnline,
 }) => {
-  const hasOnclick = onClick !== undefined;
-
   const imageStyles = classnames("user-avatar-pic", {
-    "user-avatar-pic--hasOnClick": hasOnclick,
+    "user-avatar-pic--hasOnClick": onClick !== undefined,
   });
 
   return (

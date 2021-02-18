@@ -39,7 +39,7 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
 
 export const getPreviewChatMessageToDisplay = (
   message: PreviewChatMessage,
-  usersById: Record<string, User>,
+  usersById: Record<string, User | undefined>,
   myUserId?: string
 ): PreviewChatMessageToDisplay => ({
   ...message,

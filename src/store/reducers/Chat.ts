@@ -16,23 +16,26 @@ const initialChatState: ChatState = {
 export const chatReducer = (
   state = initialChatState,
   action: ChatActions
-): ChatState => {
+): ChatState => {  
   switch (action.type) {
     case ChatActionTypes.SET_CHAT_SIDEBAR_VISIBILITY:
-      return { ...state, isChatSidebarVisible: action.payload.isVisible };
+      const { isVisible: isChatSidebarVisible } = action.payload;
+      return { ...state, isChatSidebarVisible };
+
     case ChatActionTypes.SET_VENUE_CHAT_TAB_OPENED:
+      const { openedChatType } = action.payload;
       return {
         ...state,
-        settings: { openedChatType: action.payload.openedChatType },
+        settings: { openedChatType },
       };
+
     case ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED:
+      const { openedChatType, recipientId } = action.payload;
       return {
         ...state,
-        settings: {
-          openedChatType: action.payload.openedChatType,
-          recipientId: action.payload.recipientId,
-        },
+        settings: { openedChatType, recipientId },
       };
+
     default:
       return state;
   }

@@ -1,4 +1,4 @@
-.chat-message-container {
+.chat-message {
   align-self: flex-start;
   display: flex;
   flex-direction: column;
@@ -8,7 +8,7 @@
     align-self: flex-end;
   }
 
-  .chat-message-text {
+  &__text {
     margin-bottom: 6px;
     width: auto;
     background: #37393b;
@@ -28,7 +28,7 @@
     }
   }
 
-  .chat-message-info {
+  &__info {
     display: flex;
     align-items: center;
     font-size: 0.8rem;
@@ -37,7 +37,7 @@
       align-self: flex-end;
     }
 
-    .chat-message-author-name {
+    &__author {
       opacity: 0.8;
       color: #fff;
       margin: 0 8px 0 4px;
@@ -48,7 +48,7 @@
       }
     }
 
-    .chat-message-time {
+    &__time {
       opacity: 0.6;
       font-weight: 300;
     }
