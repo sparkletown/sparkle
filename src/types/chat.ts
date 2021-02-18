@@ -24,11 +24,10 @@ export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
 };
 
 export type PreviewChatMessage = PrivateChatMessage & {
-  counterPartyUserId: string;
+  counterPartyUser: WithId<User>;
 };
 
-export type PreviewChatMessageToDisplay = PrivateChatMessage & {
-  counterPartyUser: WithId<User>;
+export type PreviewChatMessageToDisplay = PreviewChatMessage & {
   isMine: boolean;
 };
 

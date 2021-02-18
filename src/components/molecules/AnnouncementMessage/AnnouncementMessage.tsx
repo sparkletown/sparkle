@@ -5,7 +5,7 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { getLinkFromText } from "utils/getLinkFromText";
 
-import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import "./AnnouncementMessage.scss";
 
@@ -17,7 +17,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
-  const { isChatSidebarVisible } = useChatsSidebarControls();
+  const { isExpanded } = useChatSidebarControls();
 
   const hideAnnouncement = useCallback(() => {
     setVisibility(false);
@@ -34,7 +34,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   return (
     <div
       className={classNames("announcement-container", {
-        centered: !isChatSidebarVisible,
+        centered: !isExpanded,
       })}
     >
       {getLinkFromText(message)}

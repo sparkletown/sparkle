@@ -1,4 +1,4 @@
-.private-chat-preview-container {
+.chat-preview {
   display: flex;
   justify-content: flex-start;
   padding: 8px 24px;
@@ -11,46 +11,48 @@
     background-color: black;
   }
 
-  .private-chat-preview-content {
+  &__content {
     display: flex;
     flex-direction: column;
     white-space: nowrap;
     margin-left: 16px;
     width: 60%;
-    // flex: 1;
-
-    .private-chat-preview-username {
-      font-size: 13px;
-      opacity: 0.7;
-
-      &--highlight {
-        font-weight: 500;
-        color: white;
-        opacity: 1;
-      }
-    }
-    .private-chat-preview-text {
-      font-size: 11px;
-      opacity: 0.35;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      width: 100%;
-
-      &--highlight {
-        color: white;
-        opacity: 0.7;
-      }
-    }
   }
 
-  .private-chat-preview-time {
+  &__username {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  &__text {
+    font-size: 11px;
+    opacity: 0.35;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  &__time {
     margin-left: auto;
     font-size: 10px;
     flex-shrink: 0;
     opacity: 0.35;
     width: 20%;
+  }
 
-    &--highlight {
+  &--highlight {
+    .chat-preview__username {
+      font-weight: 500;
+      color: white;
+      opacity: 1;
+    }
+
+    .chat-preview__text {
+      color: white;
+      opacity: 0.7;
+    }
+
+    .chat-preview__time {
       opacity: 0.7;
     }
   }

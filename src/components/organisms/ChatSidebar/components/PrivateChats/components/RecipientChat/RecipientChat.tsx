@@ -2,11 +2,13 @@ import React, { useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { Chatbox } from "components/molecules/Chatbox_NEW";
+import { withId } from "utils/id";
+
+import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useRecipientChat } from "hooks/usePrivateChats";
-import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+import { useRecipientChat } from "hooks/privateChats";
+import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import { OnAvatarClick } from "types/User";
 
@@ -46,26 +48,23 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     }
   }, [messagesToDisplay, recipientId, markMessageRead]);
 
-  const { openPrivateChats } = useChatsSidebarControls();
+  const { selectPrivateChat } = useChatSidebarControls();
 
   return (
-    <div className="recipient-chat-container">
-      <div className="recipient-chat-back-container">
+    <div className="recipient-chat">
+      <div className="recipient-chat__breadcrumbs">
         <FontAwesomeIcon
           icon={faChevronLeft}
-          className="recipient-chat-back-icon"
+          className="recipient-chat__back-icon"
           size="sm"
-          onClick={openPrivateChats}
+          onClick={selectPrivateChat}
         />
 
         <UserAvatar
           avatarSrc={recipient.pictureUrl}
           onClick={handleAvatarClick}
         />
-        <div
-          className="recipient-chat-back-nickname"
-          onClick={handleAvatarClick}
-        >
+        <div className="recipient-chat__nickname" onClick={handleAvatarClick}>
           {recipient.partyName}
         </div>
       </div>

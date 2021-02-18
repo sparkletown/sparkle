@@ -23,26 +23,20 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 
   const timestamp = ts_utc.toMillis();
 
-  const usernameStyles = classNames("private-chat-preview-username", {
-    "private-chat-preview-username--highlight": !isRead && !isMine,
-  });
-
-  const messageStyles = classNames("private-chat-preview-text", {
-    "private-chat-preview-text--highlight": !isRead && !isMine,
-  });
-
-  const timeStyles = classNames("private-chat-preview-time", {
-    "private-chat-preview-time--highlight": !isRead && !isMine,
+  const containerStyles = classNames("chat-preview", {
+    "chat-preview--highlight": !isRead && !isMine,
   });
 
   return (
-    <div className="private-chat-preview-container" onClick={onClick}>
+    <div className={containerStyles} onClick={onClick}>
       <UserAvatar avatarSrc={counterPartyUser.pictureUrl} isOnline={isOnline} />
-      <div className="private-chat-preview-content">
-        <div className={usernameStyles}>{counterPartyUser.partyName}</div>
-        <div className={messageStyles}>{text}</div>
+      <div className="chat-preview__content">
+        <div className="chat-preview__username">
+          {counterPartyUser.partyName}
+        </div>
+        <div className="chat-preview__text">{text}</div>
       </div>
-      <div className={timeStyles}>{dayjs(timestamp).fromNow()}</div>
+      <div className="chat-preview__time">{dayjs(timestamp).fromNow()}</div>
     </div>
   );
 };

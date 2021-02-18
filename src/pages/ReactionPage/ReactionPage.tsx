@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { WithId } from "utils/id";
 import { MessageToTheBandReaction } from "utils/reactions";
@@ -21,11 +21,7 @@ const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const { venueChatMessages } = useVenueChat();
-  const filteredChats = useMemo(
-    () => venueChatMessages?.filter((chat) => chat.deleted !== true) ?? [],
-    [venueChatMessages]
-  );
+  const { messagesToDisplay } = useVenueChat();
 
   const hasPartygoers = recentVenueUsers.length > 0;
 
@@ -54,7 +50,7 @@ const ReactionPage = () => {
             {hasPartygoers && (
               <ReactionList
                 reactions={messagesToTheBand}
-                chats={filteredChats}
+                chats={messagesToDisplay}
               />
             )}
           </div>

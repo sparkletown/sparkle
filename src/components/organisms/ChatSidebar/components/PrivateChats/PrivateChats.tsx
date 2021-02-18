@@ -6,8 +6,8 @@ import { PrivateChatPreview, RecipientChat, OnlineUser } from "./components";
 
 import { OnAvatarClick } from "types/User";
 
-import { usePrivateChatList } from "hooks/usePrivateChats";
-import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+import { usePrivateChatPreviews } from "hooks/privateChats";
+import { useChatSidebarControls } from "hooks/chatSidebar";
 import { useRecentWorldUsers } from "hooks/users";
 
 import "./PrivateChats.scss";
@@ -27,27 +27,25 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
     []
   );
 
-  const { privateChatList } = usePrivateChatList();
-  const { openPrivateRecipientChat } = useChatsSidebarControls();
+  const { privateChatPreviews } = usePrivateChatPreviews();
+  const { selectRecipientChat } = useChatSidebarControls();
   const { recentWorldUsers } = useRecentWorldUsers();
 
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
-      privateChatList.map((chatMessage) => (
+      privateChatPreviews.map((chatMessage) => (
         <PrivateChatPreview
+          key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
           message={chatMessage}
           isOnline={recentWorldUsers.some(
             (user) => user.id === chatMessage.counterPartyUser.id
           )}
-          onClick={() =>
-            openPrivateRecipientChat(chatMessage.counterPartyUser.id)
-          }
-          key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+          onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
         />
       )),
-    [privateChatList, openPrivateRecipientChat, recentWorldUsers]
+    [privateChatPreviews, selectRecipientChat, recentWorldUsers]
   );
 
   const renderedOnlineUsers = useMemo(
@@ -56,10 +54,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
         <OnlineUser
           key={user.id}
           user={user}
-          onClick={() => openPrivateRecipientChat(user.id)}
+          onClick={() => selectRecipientChat(user.id)}
         />
       )),
-    [recentWorldUsers, openPrivateRecipientChat]
+    [recentWorldUsers, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
@@ -72,10 +70,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           <OnlineUser
             key={user.id}
             user={user}
-            onClick={() => openPrivateRecipientChat(user.id)}
+            onClick={() => selectRecipientChat(user.id)}
           />
         )),
-    [recentWorldUsers, openPrivateRecipientChat, userSearchQuery]
+    [recentWorldUsers, selectRecipientChat, userSearchQuery]
   );
 
   const numberOfSearchResults = renderedSearchResults.length;
@@ -88,26 +86,22 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   }
 
   return (
-    <div className="private-chats-container">
-      <div className="private-chats-search-container">
+    <div className="private-chats">
+      <div className="private-chats__search">
         <input
-          className="private-chats-search-input"
+          className="private-chats__search-input"
           placeholder="Search for online people"
           value={userSearchQuery}
           onChange={onInputChage}
         />
-        <div className="private-chats-search-search-icon-container">
-          <FontAwesomeIcon
-            icon={faSearch}
-            className="private-chats-search-search-icon"
-            size="1x"
-          />
+        <div className="private-chats__search-icon">
+          <FontAwesomeIcon icon={faSearch} size="1x" />
         </div>
       </div>
 
       {userSearchQuery ? (
         <>
-          <p className="private-chats-title-text">
+          <p className="private-chats__title-text">
             {numberOfSearchResults} search results
           </p>
 
@@ -116,12 +110,12 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
       ) : (
         <>
           {hasChatPreviews && (
-            <div className="private-chats-chat-previews">
+            <div className="private-chats__previews">
               {renderedPrivateChatPreviews}
             </div>
           )}
 
-          <p className="private-chats-title-text">
+          <p className="private-chats__title-text">
             {numberOfRecentWorldUsers} connected people
           </p>
 

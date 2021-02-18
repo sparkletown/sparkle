@@ -25,34 +25,26 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const timestamp = ts_utc.toMillis();
 
-  const containerStyles = classNames("chat-message-container", {
-    "chat-message-container--isme": isMine,
-  });
-
-  const textStyles = classNames("chat-message-text", {
-    "chat-message-text--isme": isMine,
-  });
-
-  const messageInfoStyles = classNames("chat-message-info", {
-    "chat-message-info--isme": isMine,
+  const containerStyles = classNames("chat-message", {
+    "chat-message--me": isMine,
   });
 
   return (
     <div className={containerStyles}>
-      <div className={textStyles}>{text}</div>
-      <div className={messageInfoStyles}>
+      <div className="chat-message__text">{text}</div>
+      <div className="chat-message__info">
         <UserAvatar onClick={onAuthorClick} avatarSrc={author.pictureUrl} />
-        <span onClick={onAuthorClick} className="chat-message-author-name">
+        <span onClick={onAuthorClick} className="chat-message__author">
           {author.partyName}
         </span>
-        <span className="chat-message-time">
+        <span className="chat-message__time">
           {dayjs(timestamp).format("h:mm A")}
         </span>
         {canBeDeleted && (
           <FontAwesomeIcon
             onClick={deleteMessage}
             icon={faTrash}
-            className="chat-message-delete-icon"
+            className="chat-message__delete-icon"
             size="sm"
           />
         )}

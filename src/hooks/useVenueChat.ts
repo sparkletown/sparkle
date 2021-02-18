@@ -7,7 +7,7 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 import { VenueChatMessage } from "types/chat";
 
 import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
-import { venueChatsSelector } from "utils/selectors";
+import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
 
 import { useSelector } from "./useSelector";
@@ -18,14 +18,14 @@ import { useWorldUsersById } from "./users";
 import { useRoles } from "./useRoles";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
-export const useConnectVenueChat = (venueId?: string) => {
+export const useConnectVenueChatMessages = (venueId?: string) => {
   useFirestoreConnect(
     venueId
       ? {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
-          storeAs: "venueChats",
+          storeAs: "venueChatMessages",
         }
       : undefined
   );
@@ -40,9 +40,9 @@ export const useVenueChat = () => {
 
   const userId = user?.uid;
 
-  useConnectVenueChat(venueId);
+  useConnectVenueChatMessages(venueId);
 
-  const chats = useSelector(venueChatsSelector) ?? [];
+  const chatMessages = useSelector(venueChatMessagesSelector) ?? [];
 
   const isAdmin = !!(
     userRoles?.includes("admin") ||
@@ -51,10 +51,11 @@ export const useVenueChat = () => {
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
-  const filteredMessages = chats
+  const filteredMessages = chatMessages
     .filter(
       (message) =>
-        message.deleted !== true && message.ts_utc.seconds > DAYS_AGO_IN_SECONDS
+        message.deleted !== true &&
+        message.ts_utc.seconds > venueChatAgeThresholdSec
     )
     .sort(chatSort);
 
@@ -80,7 +81,6 @@ export const useVenueChat = () => {
 
   return useMemo(
     () => ({
-      venueChatMessages: filteredMessages,
       messagesToDisplay: filteredMessages.map((message) =>
         getMessageToDisplay({
           message,

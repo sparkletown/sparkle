@@ -18,7 +18,7 @@ import { isVenueWithRooms } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useChatsSidebarControls } from "hooks/useChatsSidebar";
+import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
@@ -44,15 +44,15 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
 
   const chosenUserId = userProfile?.id;
 
-  const { openPrivateRecipientChat } = useChatsSidebarControls();
+  const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
-    openPrivateRecipientChat(chosenUserId);
+    selectRecipientChat(chosenUserId);
     // NOTE: Hide the modal, after the chat is opened;
     onHide();
-  }, [openPrivateRecipientChat, onHide, chosenUserId]);
+  }, [selectRecipientChat, onHide, chosenUserId]);
 
   if (!userProfile || !chosenUserId || !user) {
     return <></>;

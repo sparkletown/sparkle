@@ -10,10 +10,7 @@ import {
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { VenueChat, PrivateChats } from "./components";
 
-import {
-  useChatsSidebarControls,
-  useChatsSidebarInfo,
-} from "hooks/useChatsSidebar";
+import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
 
 import { ChatTypes } from "types/chat";
 import { User } from "types/User";
@@ -33,69 +30,61 @@ export const ChatSidebar: React.FC = () => {
     isExpanded,
     collapseSidebar,
     expandSidebar,
-    
+
     chatSettings,
 
     selectVenueChat,
     selectPrivateChat,
-  } = useChatsSidebarControls();
+  } = useChatSidebarControls();
 
-  const { privateChatTabTitle, venueChatTabTitle } = useChatsSidebarInfo();
+  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
 
-  const containerStyles = classNames("chat-sidebar-component", {
-    "chat-sidebar-component--expanded": isChatSidebarVisible,
+  const containerStyles = classNames("chat-sidebar", {
+    "chat-sidebar--expanded": isExpanded,
   });
 
-  const venueChatTabStyles = classNames("chat-sidebar-tab", {
-    "chat-sidebar-tab--selected":
+  const venueChatTabStyles = classNames("chat-sidebar__tab", {
+    "chat-sidebar__tab--selected":
       chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
   });
 
-  const privateChatTabStyles = classNames("chat-sidebar-tab", {
-    "chat-sidebar-tab--selected":
+  const privateChatTabStyles = classNames("chat-sidebar__tab", {
+    "chat-sidebar__tab--selected":
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
 
   return (
     <>
       <div className={containerStyles}>
-        <div className="chat-sidebar-header">
+        <div className="chat-sidebar__header">
           <div
-            className="chat-sidebar-controller"
-            onClick={isChatSidebarVisible ? closeChat : expandChat}
+            className="chat-sidebar__controller"
+            onClick={isExpanded ? collapseSidebar : expandSidebar}
           >
-            {isChatSidebarVisible ? (
-              <FontAwesomeIcon
-                icon={faChevronRight}
-                className="chatbox-input-button_icon"
-                size="sm"
-              />
+            {isExpanded ? (
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
             ) : (
               <>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
                 <FontAwesomeIcon
-                  icon={faChevronLeft}
-                  className="chatbox-input-button_icon chatbox-input-button_icon-left-chevron"
-                  size="sm"
-                />
-                <FontAwesomeIcon
+                  className="chat-sidebar__controller__second-icon"
                   icon={faCommentDots}
-                  className="chatbox-input-button_icon"
                   size="lg"
                 />
               </>
             )}
           </div>
 
-          <div className="chat-sidebar-tabs">
-            <div className={venueChatTabStyles} onClick={openVenueChat}>
+          <div className="chat-sidebar__tabs">
+            <div className={venueChatTabStyles} onClick={selectVenueChat}>
               {venueChatTabTitle}
             </div>
-            <div className={privateChatTabStyles} onClick={openPrivateChats}>
+            <div className={privateChatTabStyles} onClick={selectPrivateChat}>
               {privateChatTabTitle}
             </div>
           </div>
         </div>
-        <div className="chat-sidebar-content">
+        <div className="chat-sidebar__tab-content">
           {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
             <VenueChat onAvatarClick={setSetSelectedProfile} />
           )}

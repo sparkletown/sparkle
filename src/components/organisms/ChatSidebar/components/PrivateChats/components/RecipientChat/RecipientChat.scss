@@ -1,9 +1,9 @@
-.recipient-chat-container {
+.recipient-chat {
   height: 100%;
   width: 100%;
   position: relative;
 
-  .recipient-chat-back-container {
+  &__breadcrumbs {
     position: absolute;
     top: 0;
     width: 100%;
@@ -14,27 +14,27 @@
     justify-content: flex-start;
     z-index: 10;
     padding: 0 8px;
+  }
 
-    .recipient-chat-back-icon {
-      cursor: pointer;
-      margin-right: 8px;
-      opacity: 0.8;
+  &__back-icon {
+    cursor: pointer;
+    margin-right: 8px;
+    opacity: 0.8;
 
-      &:hover {
-        opacity: 1;
-      }
+    &:hover {
+      opacity: 1;
     }
+  }
 
-    .recipient-chat-back-nickname {
-      cursor: pointer;
-      margin-left: 6px;
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 500;
+  &__nickname {
+    cursor: pointer;
+    margin-left: 6px;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 500;
 
-      &:hover {
-        opacity: 0.8;
-      }
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

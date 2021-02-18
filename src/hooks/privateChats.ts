@@ -6,14 +6,14 @@ import {
   deletePrivateMessage,
 } from "api/chat";
 
-import { myPrivateChatsSelector } from "utils/selectors";
+import { privateChatMessagesSelector } from "utils/selectors";
 import {
   chatSort,
   buildMessage,
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
 } from "utils/chat";
-import { WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 import { PreviewChatMessage, PrivateChatMessage } from "types/chat";
 
@@ -22,9 +22,7 @@ import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
 import { useWorldUsersById } from "./users";
 
-export type ChatToDisplay = {};
-
-export const useMyPrivateChatsConnect = () => {
+export const useConnectPrivateChatMessages = () => {
   const { user } = useUser();
 
   useFirestoreConnect(() => {
@@ -35,36 +33,36 @@ export const useMyPrivateChatsConnect = () => {
         collection: "privatechats",
         doc: user.uid,
         subcollections: [{ collection: "chats" }],
-        storeAs: "myPrivateChats",
+        storeAs: "privateChatMessages",
       },
     ];
   });
 };
 
-export const useMyPrivateMessages = () => {
-  useMyPrivateChatsConnect();
+export const usePrivateChatMessages = () => {
+  useConnectPrivateChatMessages();
 
-  const myPrivateMessages = useSelector(myPrivateChatsSelector);
+  const privateChatMessages = useSelector(privateChatMessagesSelector);
 
   return useMemo(
     () => ({
-      myPrivateMessages: myPrivateMessages ?? [],
-      isUserPrivateChatsLoaded: isLoaded(myPrivateMessages),
+      privateChatMessages: privateChatMessages ?? [],
+      isUserPrivateChatsLoaded: isLoaded(privateChatMessages),
     }),
-    [myPrivateMessages]
+    [privateChatMessages]
   );
 };
 
-export const usePrivateChatList = () => {
+export const usePrivateChatPreviews = () => {
   const { user } = useUser();
   const { worldUsersById } = useWorldUsersById();
-  const { myPrivateMessages } = useMyPrivateMessages();
+  const { privateChatMessages } = usePrivateChatMessages();
 
   const userId = user?.uid;
 
-  const recentPreviewChatMessagesMap = useMemo(
+  const privateChatPreviewsMap = useMemo(
     () =>
-      myPrivateMessages.reduce<{
+      privateChatMessages.reduce<{
         [key: string]: PreviewChatMessage;
       }>((acc, message) => {
         if (!userId) return acc;
@@ -75,8 +73,10 @@ export const usePrivateChatList = () => {
         const counterPartyUserId =
           fromUserId === userId ? toUserId : fromUserId;
 
+        const counterPartyUser = worldUsersById[counterPartyUserId];
+
         // NOTE: Filter out not existent users
-        if (!worldUsersById[counterPartyUserId]) return acc;
+        if (!counterPartyUser) return acc;
 
         if (counterPartyUserId in acc) {
           const previousMessage = acc[counterPartyUserId];
@@ -86,48 +86,54 @@ export const usePrivateChatList = () => {
 
           return {
             ...acc,
-            [counterPartyUserId]: withId(message, counterPartyUserId),
+            [counterPartyUserId]: {
+              ...message,
+              counterPartyUser: withId(counterPartyUser, counterPartyUserId),
+            },
           };
         }
 
         return {
           ...acc,
-          [counterPartyUserId]: { ...message, counterPartyUserId },
+          [counterPartyUserId]: {
+            ...message,
+            counterPartyUser: withId(counterPartyUser, counterPartyUserId),
+          },
         };
       }, {}),
-    [myPrivateMessages, userId, worldUsersById]
+    [privateChatMessages, userId, worldUsersById]
   );
 
   return useMemo(
     () => ({
-      privateChatList: Object.values(recentPreviewChatMessagesMap)
+      privateChatPreviews: Object.values(privateChatPreviewsMap)
         .sort(chatSort)
         .map((message) =>
-          getPreviewChatMessageToDisplay(message, worldUsersById, userId)
+          getPreviewChatMessageToDisplay({ message, myUserId: userId })
         ),
     }),
-    [recentPreviewChatMessagesMap, worldUsersById, userId]
+    [privateChatPreviewsMap, userId]
   );
 };
 
 export const useNumberOfUnreadChats = () => {
   const { user } = useUser();
-  const { privateChatList } = usePrivateChatList();
+  const { privateChatPreviews } = usePrivateChatPreviews();
 
   const userId = user?.uid;
 
   return useMemo(
     () =>
-      privateChatList.filter(
-        (chatMessage) => !chatMessage.isRead && chatMessage.from !== userId
+      privateChatPreviews.filter(
+        (chatPreview) => !chatPreview.isRead && chatPreview.from !== userId
       ).length,
-    [privateChatList, userId]
+    [privateChatPreviews, userId]
   );
 };
 
 export const useRecipientChat = (recipientId: string) => {
   const { worldUsersById } = useWorldUsersById();
-  const { myPrivateMessages } = useMyPrivateMessages();
+  const { privateChatMessages } = usePrivateChatMessages();
   const { user } = useUser();
 
   const userId = user?.uid;
@@ -150,7 +156,7 @@ export const useRecipientChat = (recipientId: string) => {
 
   const messagesToDisplay = useMemo(
     () =>
-      myPrivateMessages
+      privateChatMessages
         .filter(
           (message) =>
             message.deleted !== true &&
@@ -164,7 +170,7 @@ export const useRecipientChat = (recipientId: string) => {
             myUserId: userId,
           })
         ),
-    [myPrivateMessages, recipientId, worldUsersById, userId]
+    [privateChatMessages, recipientId, worldUsersById, userId]
   );
 
   const deleteMessage = useCallback(

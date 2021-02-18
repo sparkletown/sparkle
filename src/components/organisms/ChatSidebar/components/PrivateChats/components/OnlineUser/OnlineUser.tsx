@@ -15,7 +15,7 @@ export const OnlineUser: React.FC<OnlineUserProps> = ({ user, onClick }) => {
   return (
     <div className="online-user" onClick={onClick}>
       <UserAvatar avatarSrc={user.pictureUrl} isOnline />
-      <div className="online-user-name">{user.partyName}</div>
+      <div className="online-user__name">{user.partyName}</div>
     </div>
   );
 };

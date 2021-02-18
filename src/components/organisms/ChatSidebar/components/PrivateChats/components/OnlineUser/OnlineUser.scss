@@ -8,12 +8,12 @@
   &:hover {
     background-color: black;
 
-    .online-user-name {
+    .online-user__name {
       opacity: 1;
     }
   }
 
-  .online-user-name {
+  &__name {
     opacity: 0.75;
     font-size: 14px;
     margin-left: 16px;

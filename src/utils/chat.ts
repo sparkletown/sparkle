@@ -37,16 +37,16 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
   };
 };
 
-export const getPreviewChatMessageToDisplay = (
-  message: PreviewChatMessage,
-  usersById: Record<string, User | undefined>,
-  myUserId?: string
-): PreviewChatMessageToDisplay => ({
+export interface GetPreviewChatMessageToDisplayProps {
+  message: PreviewChatMessage;
+  myUserId?: string;
+}
+
+export const getPreviewChatMessageToDisplay = ({
+  message,
+  myUserId,
+}: GetPreviewChatMessageToDisplayProps): PreviewChatMessageToDisplay => ({
   ...message,
-  counterPartyUser: {
-    ...usersById[message.counterPartyUserId],
-    id: message.counterPartyUserId,
-  },
   isMine: myUserId === message.from,
 });
 

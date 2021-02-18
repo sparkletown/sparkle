@@ -11,51 +11,51 @@ import {
 
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
-import { useNumberOfUnreadChats } from "./usePrivateChats";
+import { useNumberOfUnreadChats } from "./privateChats";
 
-export const useChatsSidebarControls = () => {
+export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
 
-  const expandChat = () => {
+  const expandSidebar = () => {
     dispatch(setChatSidebarVisibility(true));
   };
 
-  const closeChat = () => {
+  const collapseSidebar = () => {
     dispatch(setChatSidebarVisibility(false));
   };
 
-  const openVenueChat = () => {
-    expandChat();
+  const selectVenueChat = () => {
+    expandSidebar();
     dispatch(setVenueChatTabOpened());
   };
 
-  const openPrivateChats = () => {
-    expandChat();
+  const selectPrivateChat = () => {
+    expandSidebar();
     dispatch(setPrivateChatTabOpened());
   };
 
-  const openPrivateRecipientChat = (recipientId: string) => {
-    expandChat();
+  const selectRecipientChat = (recipientId: string) => {
+    expandSidebar();
     dispatch(setPrivateChatTabOpened(recipientId));
   };
 
-  const isChatSidebarVisible = useSelector(chatVisibilitySelector);
+  const isExpanded = useSelector(chatVisibilitySelector);
 
   const chatSettings = useSelector(selectedChatSettingsSelector);
 
   return {
-    isChatSidebarVisible,
+    isExpanded,
     chatSettings,
 
-    expandChat,
-    openVenueChat,
-    openPrivateChats,
-    openPrivateRecipientChat,
-    closeChat,
+    expandSidebar,
+    selectVenueChat,
+    selectPrivateChat,
+    selectRecipientChat,
+    collapseSidebar,
   };
 };
 
-export const useChatsSidebarInfo = () => {
+export const useChatSidebarInfo = () => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
 
   return {

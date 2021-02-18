@@ -7,7 +7,7 @@ import { FriendShipPage } from "pages/FriendShipPage";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { PlayaRouter } from "components/templates/Playa/Router";
-import ChatSidebar from "components/organisms/ChatSidebar";
+import { ChatSidebar } from "components/organisms/ChatSidebar";
 
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";

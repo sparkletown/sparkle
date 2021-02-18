@@ -1,7 +1,6 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
-import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
@@ -18,7 +17,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -141,31 +139,11 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
-const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+export const venueChatMessagesSelector = (state: RootState) =>
+  state.firestore.ordered.venueChatMessages;
 
-export const unreadMessagesSelector = (state: RootState) => {
-  const user = authSelector(state);
-  const privateChats = privateChatsSelector(state) ?? [];
-
-  return privateChats.some(
-    (message) =>
-      message.from !== user?.uid &&
-      message.deleted !== true &&
-      message.type === "private" &&
-      message.ts_utc.seconds > HIDE_BEFORE &&
-      message.isRead === false
-  );
-};
-
-export const venueChatsSelector = (state: RootState) =>
-  state.firestore.ordered.venueChats;
-
-export const privateChatsSelector = (state: RootState) =>
-  state.firestore.ordered.privatechats;
-
-export const myPrivateChatsSelector = (state: RootState) =>
-  state.firestore.ordered.myPrivateChats;
+export const privateChatMessagesSelector = (state: RootState) =>
+  state.firestore.ordered.privateChatMessages;
 
 export const chatUsersByIdSelector = (state: RootState) =>
   state.firestore.data.chatUsers;

@@ -14,19 +14,19 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   avatarSrc,
   isOnline,
 }) => {
-  const imageStyles = classnames("user-avatar-pic", {
-    "user-avatar-pic--hasOnClick": onClick !== undefined,
+  const containerStyles = classNames("user-avatar", {
+    "user-avatar--clickable": onClick !== undefined,
   });
 
   return (
-    <div className="user-avatar-container">
+    <div className={containerStyles}>
       <img
         onClick={onClick}
-        className={imageStyles}
+        className="user-avatar__image"
         src={avatarSrc}
         alt="user avatar"
       />
-      {isOnline && <span className="user-avatar-status-dot" />}
+      {isOnline && <span className="user-avatar__status-dot" />}
     </div>
   );
 };
