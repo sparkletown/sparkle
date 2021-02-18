@@ -68,6 +68,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
+
   const reactions = useReactions(venueId);
 
   const typedReaction = reactions ?? [];
