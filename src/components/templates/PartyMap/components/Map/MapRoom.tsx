@@ -35,8 +35,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const containerClasses = classNames("maproom", {
     "maproom--always-show-label":
-      venue.roomVisibility === RoomVisibility.nameCount,
-    "maproom--always-show-label-count":
+      venue.roomVisibility === RoomVisibility.nameCount ||
       venue.roomVisibility === RoomVisibility.count,
   });
 
@@ -61,7 +60,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       <img className="maproom__image" src={room.image_url} alt={room.title} />
 
       <div className="maproom__label">
-        <span className="maproom__roomtitle">{room.title}</span>
+        {venue.roomVisibility !== RoomVisibility.count && room.title}
         <RoomAttendance venue={venue} room={room} />
       </div>
     </div>
