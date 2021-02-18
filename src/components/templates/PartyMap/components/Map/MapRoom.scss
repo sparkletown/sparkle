@@ -7,6 +7,10 @@ $label-visible: flex;
   position: absolute;
   z-index: z(map-room);
 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
 
   &:hover {
@@ -44,6 +48,7 @@ $label-visible: flex;
     display: $label-hidden;
     flex-direction: column;
     align-items: center;
+    text-align: center;
 
     padding: 6px 10px;
     border-radius: 20px;
