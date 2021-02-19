@@ -33,7 +33,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   setSelectedUserProfile,
   reactionPosition,
   user,
-  showNametags = true,
+  showNametagComponent = true,
 }) => {
   const muteReactions = useSelector((state) => state.room.mute);
 
@@ -77,8 +77,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
   ) as MessageToTheBandReaction | undefined;
 
-  const shouldShowNametags: boolean =
-    showNametags && (currentVenue?.showNametags ?? DEFAULT_SHOW_AVATAR_NAMETAG);
+  const shouldShowNametags =
+    showNametagComponent &&
+    (currentVenue?.showNametags ?? DEFAULT_SHOW_AVATAR_NAMETAG);
 
   const imageErrorHandler = useCallback(
     (
