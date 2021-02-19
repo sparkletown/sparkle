@@ -1,7 +1,12 @@
 notify-on-fail: &notify-on-fail
   when:
-    condition: always
+    condition: on_fail
     steps:
+      - run:
+          command: |
+            if [ -z "$SLACK_ACCESS_TOKEN" ]; then
+              circleci-agent step halt
+            fi
       - slack/notify:
           event: fail
           custom: |
@@ -129,6 +134,12 @@ jobs:
             if [ $CIRCLE_BRANCH = "deloitte" ]; then
               ENV=sparkle-deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              ENV=sparkle-kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              ENV=sparkle-memrise
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -233,6 +244,18 @@ jobs:
               TARGET=sparkle-deloitte
               RELEASE_STAGE=deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              PREFIX=KOTR_
+              ENV=sparkle-kotr
+              TARGET=sparkle-kotr
+              RELEASE_STAGE=kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              PREFIX=MEMRISE_
+              ENV=sparkle-memrise
+              TARGET=sparkle-memrise
+              RELEASE_STAGE=memrise
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -286,6 +309,8 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -307,6 +332,8 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
