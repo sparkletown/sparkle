@@ -21,7 +21,7 @@ import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
-import { useWorldUsersById } from "./users";
+import { useRecentWorldUsers, useWorldUsersById } from "./users";
 
 export const useConnectPrivateChatMessages = () => {
   const { user } = useUser();
@@ -117,6 +117,19 @@ export const usePrivateChatPreviews = () => {
     }),
     [privateChatPreviewsMap, userId, isUserPrivateChatsLoaded]
   );
+};
+
+export const useOnlineUsersToDisplay = () => {
+  const { recentWorldUsers } = useRecentWorldUsers();
+  const { user } = useUser();
+
+  const userId = user?.uid;
+
+  // Filter out self
+  return useMemo(() => recentWorldUsers.filter((user) => user.id !== userId), [
+    recentWorldUsers,
+    userId,
+  ]);
 };
 
 export const useNumberOfUnreadChats = () => {
