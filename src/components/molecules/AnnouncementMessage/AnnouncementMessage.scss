@@ -15,18 +15,23 @@
     left: 50%;
   }
 
-  padding: 15px 30px 15px 20px;
-  border-radius: 0 0 50px 50px;
+  padding: $announcement-container-padding;
+  border-radius: 0 0 20px 20px;
   text-align: center;
 
   .close-button {
     cursor: pointer;
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: 15px;
+    right: 7.5px;
     :hover {
       color: var(--primary-color);
       text-decoration: underline;
     }
+    margin-right: 7.5px;
   }
+}
+
+.announcement-container__text {
+  margin: 0px 30px;
 }
