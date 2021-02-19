@@ -147,7 +147,7 @@ export const unreadMessagesSelector = (state: RootState) => {
   const user = authSelector(state);
   const privateChats = privateChatsSelector(state) ?? [];
 
-  return privateChats.some(
+  return privateChats.filter(
     (message) =>
       message.from !== user?.uid &&
       message.deleted !== true &&

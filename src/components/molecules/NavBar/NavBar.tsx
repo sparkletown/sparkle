@@ -19,6 +19,7 @@ import {
   parentVenueSelector,
   privateChatsSelector,
   radioStationsSelector,
+  unreadMessagesSelector
 } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
@@ -28,12 +29,12 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useNotificationSound } from "hooks/useNotificationSound";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import notificationSound from "assets/sounds/notification.m4a";
 
 import ChatsList from "components/molecules/ChatsList";
 import NavSearchBar from "components/molecules/NavSearchBar";
@@ -104,13 +105,8 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
       : undefined
   );
 
-  const numberOfUnreadMessages = useMemo(() => {
-    if (!user || !privateChats) return 0;
-
-    return privateChats
-      .filter(isChatValid)
-      .filter((chat) => chat.to === user.uid && !chat.isRead).length;
-  }, [privateChats, user]);
+  const numberOfUnreadMessages = useSelector(unreadMessagesSelector).length;
+  useNotificationSound(numberOfUnreadMessages);
 
   const {
     location: { pathname },
@@ -183,11 +179,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     []
   );
 
-  useEffect(() => {
-    if (numberOfUnreadMessages <= 0) return
-    
-    new Audio(notificationSound).play();
-  }, [numberOfUnreadMessages]);
 
   if (!venueId || !venue) return null;
 

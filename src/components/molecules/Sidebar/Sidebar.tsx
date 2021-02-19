@@ -10,12 +10,11 @@ import {
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { isChatValid } from "validation";
+import { useNotificationSound } from "hooks/useNotificationSound";
 
 import VenueChat from "components/molecules/VenueChat";
 import ChatsList from "components/molecules/ChatsList";
 import LiveSchedule from "components/molecules/LiveSchedule";
-import notificationSound from "assets/sounds/notification.m4a";
 
 import "./Sidebar.scss";
 
@@ -34,15 +33,8 @@ const Sidebar = () => {
   const [tab, setTab] = useState(0);
 
   const chatUsers = useSelector(chatUsersSelector) ?? [];
-  const hasUnreadMessages = useSelector(unreadMessagesSelector);
-
-  const numberOfUnreadMessages = useMemo(() => {
-    if (!user || !privateChats) return 0;
-
-    return privateChats
-      .filter(isChatValid)
-      .filter((chat) => chat.to === user.uid && !chat.isRead).length;
-  }, [privateChats, user]);
+  const numberOfUnreadMessages = useSelector(unreadMessagesSelector).length;
+  useNotificationSound(numberOfUnreadMessages);
   const isEnabled = chatUsers;
 
   const currentVenueChatTitle = venue?.chatTitle ?? "Party";
@@ -59,11 +51,6 @@ const Sidebar = () => {
   const selectLiveScheduleTab = useCallback(() => {
     isEnabled && setTab(TABS.LIVE_SCHEDULE);
   }, [isEnabled]);
-
-  const playAudio = useMemo(() => {
-    const audioObj = new Audio(notificationSound);
-    numberOfUnreadMessages && audioObj.play();
-  }, [numberOfUnreadMessages]);
 
   return (
     <div className="sidebar-container">
@@ -88,13 +75,12 @@ const Sidebar = () => {
           }`}
           onClick={selectPrivateChatTab}
         >
-          {hasUnreadMessages && <div className="notification"></div>}
+          {numberOfUnreadMessages > 0 && <div className="notification"></div>}
           <span>Messages</span>
 
           {numberOfUnreadMessages > 0 && (
             <span>
               ({numberOfUnreadMessages}
-              {playAudio})
             </span>
           )}
         </div>
