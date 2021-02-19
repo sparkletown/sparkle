@@ -14,6 +14,8 @@ import {
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
 import { useNumberOfUnreadChats } from "./privateChats";
+import { useVenueId } from "./useVenueId";
+import { useConnectRelatedVenues } from "./useConnectRelatedVenues";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -69,11 +71,16 @@ export const useChatSidebarControls = () => {
 
 export const useChatSidebarInfo = () => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
+  const venueId = useVenueId();
+  const { currentVenue, parentVenue } = useConnectRelatedVenues({ venueId });
+
+  const chatTitle =
+    parentVenue?.chatTitle ?? currentVenue?.chatTitle ?? "Venue";
 
   return {
     privateChatTabTitle: `Direct Messages ${
       numberOfUnreadChats ? `(${numberOfUnreadChats})` : ""
     }`,
-    venueChatTabTitle: "Venue Chat",
+    venueChatTabTitle: `${chatTitle} Chat`,
   };
 };
