@@ -14,7 +14,7 @@ import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
-  SHOW_AVATAR_NAMETAGS,
+  DEFAULT_SHOW_AVATAR_NAMETAG,
 } from "settings";
 
 // Styles
@@ -78,7 +78,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   ) as MessageToTheBandReaction | undefined;
 
   const shouldShowNametags: boolean =
-    showNametags && (currentVenue?.showNametags ?? SHOW_AVATAR_NAMETAGS);
+    showNametags && (currentVenue?.showNametags ?? DEFAULT_SHOW_AVATAR_NAMETAG);
 
   const imageErrorHandler = useCallback(
     (
