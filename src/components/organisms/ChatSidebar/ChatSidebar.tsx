@@ -20,9 +20,9 @@ import { WithId } from "utils/id";
 import "./ChatSidebar.scss";
 
 export const ChatSidebar: React.FC = () => {
-  const [selectedProfile, setSetSelectedProfile] = useState<WithId<User>>();
-  const unselectProfile = useCallback(() => setSetSelectedProfile(undefined), [
-    setSetSelectedProfile,
+  const [selectedProfile, setSelectedProfile] = useState<WithId<User>>();
+  const unselectProfile = useCallback(() => setSelectedProfile(undefined), [
+    setSelectedProfile,
   ]);
   const hasSelectedProfile = selectedProfile !== undefined;
 
@@ -82,12 +82,12 @@ export const ChatSidebar: React.FC = () => {
         </div>
         <div className="chat-sidebar__tab-content">
           {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-            <VenueChat onAvatarClick={setSetSelectedProfile} />
+            <VenueChat onAvatarClick={setSelectedProfile} />
           )}
           {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
             <PrivateChats
               recipientId={chatSettings.recipientId}
-              onAvatarClick={setSetSelectedProfile}
+              onAvatarClick={setSelectedProfile}
             />
           )}
         </div>

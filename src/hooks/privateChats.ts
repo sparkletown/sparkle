@@ -12,10 +12,11 @@ import {
   buildMessage,
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
+  getPreviewChatMessage,
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-import { PreviewChatMessage, PrivateChatMessage } from "types/chat";
+import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -65,9 +66,7 @@ export const usePrivateChatPreviews = () => {
 
   const privateChatPreviewsMap = useMemo(
     () =>
-      privateChatMessages.reduce<{
-        [key: string]: PreviewChatMessage;
-      }>((acc, message) => {
+      privateChatMessages.reduce<PreviewChatMessageMap>((acc, message) => {
         if (!userId) return acc;
 
         const { from: fromUserId, to: toUserId } = message;
@@ -89,19 +88,19 @@ export const usePrivateChatPreviews = () => {
 
           return {
             ...acc,
-            [counterPartyUserId]: {
-              ...message,
-              counterPartyUser: withId(counterPartyUser, counterPartyUserId),
-            },
+            [counterPartyUserId]: getPreviewChatMessage({
+              message,
+              user: withId(counterPartyUser, counterPartyUserId),
+            }),
           };
         }
 
         return {
           ...acc,
-          [counterPartyUserId]: {
-            ...message,
-            counterPartyUser: withId(counterPartyUser, counterPartyUserId),
-          },
+          [counterPartyUserId]: getPreviewChatMessage({
+            message,
+            user: withId(counterPartyUser, counterPartyUserId),
+          }),
         };
       }, {}),
     [privateChatMessages, userId, worldUsersById]

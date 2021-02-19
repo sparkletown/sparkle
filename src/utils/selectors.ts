@@ -6,7 +6,7 @@ import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
-import { ChatSettings } from "types/chat";
+import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -139,14 +139,17 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
-export const venueChatMessagesSelector = (state: RootState) =>
-  state.firestore.ordered.venueChatMessages;
+export const venueChatMessagesSelector: SparkleSelector<
+  WithId<VenueChatMessage>[] | undefined
+> = (state) => state.firestore.ordered.venueChatMessages;
 
-export const privateChatMessagesSelector = (state: RootState) =>
-  state.firestore.ordered.privateChatMessages;
+export const privateChatMessagesSelector: SparkleSelector<
+  WithId<PrivateChatMessage>[] | undefined
+> = (state) => state.firestore.ordered.privateChatMessages;
 
-export const chatUsersByIdSelector = (state: RootState) =>
-  state.firestore.data.chatUsers;
+export const chatUsersByIdSelector: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.chatUsers;
 
 export const experienceSelector = (state: RootState) =>
   state.firestore.data.experience;

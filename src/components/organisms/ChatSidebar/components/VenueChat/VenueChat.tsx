@@ -4,12 +4,12 @@ import { Chatbox } from "components/molecules/Chatbox";
 
 import { useVenueChat } from "hooks/useVenueChat";
 
-import { OnAvatarClick } from "types/User";
+import { SetSelectedProfile } from "types/chat";
 
 import "./VenueChat.scss";
 
 export interface VenueChatProps {
-  onAvatarClick: OnAvatarClick;
+  onAvatarClick: SetSelectedProfile;
 }
 
 export const VenueChat: React.FC<VenueChatProps> = ({ onAvatarClick }) => {

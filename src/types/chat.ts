@@ -27,6 +27,8 @@ export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
+export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
+
 export type PreviewChatMessageToDisplay = PreviewChatMessage & {
   isMine: boolean;
 };
@@ -47,3 +49,6 @@ export type VenueChatSettings = {
 };
 
 export type ChatSettings = PrivateChatSettings | VenueChatSettings;
+
+// @debt Remove it when UserProfileModal is refactored
+export type SetSelectedProfile = (user: WithId<User>) => void;

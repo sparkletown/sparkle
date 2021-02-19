@@ -2,9 +2,9 @@ import React, { useCallback, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { PrivateChatPreview, RecipientChat, OnlineUser } from "./components";
+import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
-import { OnAvatarClick } from "types/User";
+import { SetSelectedProfile } from "types/chat";
 
 import { usePrivateChatPreviews } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
@@ -14,7 +14,7 @@ import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
-  onAvatarClick: OnAvatarClick;
+  onAvatarClick: SetSelectedProfile;
 }
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({

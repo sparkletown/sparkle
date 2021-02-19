@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { withId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 import {
   BaseChatMessage,
@@ -8,6 +8,7 @@ import {
   MessageToDisplay,
   PreviewChatMessageToDisplay,
   PreviewChatMessage,
+  PrivateChatMessage,
 } from "types/chat";
 import { User } from "types/User";
 
@@ -39,6 +40,19 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
   };
 };
 
+export interface GetPreviewChatMessageProps {
+  message: WithId<PrivateChatMessage>;
+  user: WithId<User>;
+}
+
+export const getPreviewChatMessage = ({
+  message,
+  user,
+}: GetPreviewChatMessageProps): PreviewChatMessage => ({
+  ...message,
+  counterPartyUser: user,
+});
+
 export interface GetPreviewChatMessageToDisplayProps {
   message: PreviewChatMessage;
   myUserId?: string;
@@ -56,5 +70,5 @@ export const buildMessage = <T extends ChatMessage>(
   message: Pick<T, Exclude<keyof T, "ts_utc">>
 ) => ({
   ...message,
-  ts_utc: firebase.firestore.Timestamp.fromDate(new Date()),
+  ts_utc: firebase.firestore.Timestamp.now(),
 });

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
-import { OnAvatarClick } from "types/User";
+import { SetSelectedProfile } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -16,7 +16,7 @@ export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: (text: string) => void;
   deleteMessage: (messageId: string) => void;
-  onAvatarClick: OnAvatarClick;
+  onAvatarClick: SetSelectedProfile;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
@@ -27,6 +27,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 }) => {
   const [isSendingMessage, setMessageSending] = useState(false);
 
+  // This logic dissallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
     if (isSendingMessage) {
       setTimeout(() => {

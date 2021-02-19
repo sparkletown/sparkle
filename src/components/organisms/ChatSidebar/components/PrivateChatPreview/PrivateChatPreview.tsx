@@ -1,5 +1,5 @@
 import React from "react";
-import dayjs from "dayjs";
+import { formatDistanceToNow } from "date-fns";
 import classNames from "classnames";
 
 import { PreviewChatMessageToDisplay } from "types/chat";
@@ -36,7 +36,9 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
         </div>
         <div className="chat-preview__text">{text}</div>
       </div>
-      <div className="chat-preview__time">{dayjs(timestamp).fromNow()}</div>
+      <div className="chat-preview__time">
+        {formatDistanceToNow(timestamp, { addSuffix: true })}
+      </div>
     </div>
   );
 };

@@ -1,1 +1,0 @@
-export { RecipientChat } from "./RecipientChat";

@@ -10,13 +10,13 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import { useRecipientChat } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
-import { OnAvatarClick } from "types/User";
+import { SetSelectedProfile } from "types/chat";
 
 import "./RecipientChat.scss";
 
 export interface RecipientChatProps {
   recipientId: string;
-  onAvatarClick: OnAvatarClick;
+  onAvatarClick: SetSelectedProfile;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
