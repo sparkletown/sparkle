@@ -778,7 +778,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderShowNametagsToggle = () => (
     <div className="toggle-room">
-      <h4 className="italic input-header">Show nametags</h4>
+      <h4 className="italic input-header">
+        Display user names on their avatars
+      </h4>
       <label id="showNametags" className="switch">
         <input
           type="checkbox"
