@@ -781,13 +781,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">
         Display user names on their avatars
       </h4>
-      <label id="showNametags" className="switch">
-        <input
-          type="checkbox"
-          id="showNametags"
-          name="showNametags"
-          ref={register}
-        />
+      <label className="switch">
+        <input type="checkbox" name="showNametags" ref={register} />
         <span className="slider round" />
       </label>
     </div>
