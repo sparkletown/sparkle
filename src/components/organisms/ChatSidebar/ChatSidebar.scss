@@ -1,0 +1,91 @@
+@import "scss/constants";
+
+$header-height: 45px;
+
+.chat-sidebar {
+  transform: translateX(100%);
+  transition: transform 0.2s;
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  top: 66px;
+  right: 0;
+  width: 360px;
+  height: calc(100vh - 96px);
+  background-color: $saturated-black;
+  z-index: z(sidebar);
+
+  &--expanded {
+    transform: translateX(0);
+    transition: transform 0.3s;
+  }
+
+  &__header {
+    height: $header-height;
+  }
+
+  &__tabs {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: $black;
+  }
+
+  &__tab {
+    display: flex;
+    flex: 1;
+    font-size: 0.9rem;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: rgba(0, 0, 0, 0) thin solid;
+    color: rgba(255, 255, 255, 0.6);
+
+    &:hover {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    &--selected {
+      border-bottom: $white 2px solid;
+      color: $white;
+
+      &:hover {
+        color: $white;
+        border-bottom: $white 2px solid;
+      }
+    }
+  }
+
+  &__controller {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 13px;
+    height: 45px;
+    background-color: $intermediate-grey;
+    border-radius: 16px 0 0 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: absolute;
+    top: 0;
+    transform: translateX(-100%);
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+    }
+
+    &__second-icon {
+      margin-left: 5px;
+    }
+  }
+
+  &__tab-content {
+    flex: 1 1 auto;
+    height: calc(100% - #{$header-height});
+    width: 100%;
+  }
+}

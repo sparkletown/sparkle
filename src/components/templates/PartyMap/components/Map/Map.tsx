@@ -28,8 +28,6 @@ import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import Sidebar from "components/molecules/Sidebar";
-
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -240,32 +238,26 @@ export const Map: React.FC<MapProps> = ({
   }
 
   return (
-    <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
-            alt=""
-          />
+    <div className="party-map-map-component">
+      <div className="party-map-map-content">
+        <img
+          width="100%"
+          className="party-map-background"
+          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          alt=""
+        />
 
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {mapGrid}
-            {partygoersOverlay}
-            {roomOverlay}
-          </div>
-
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={isUserProfileSelected}
-            onHide={deselectUserProfile}
-          />
+        <div className="party-map-grid-container" style={gridContainerStyles}>
+          {mapGrid}
+          {partygoersOverlay}
+          {roomOverlay}
         </div>
-      </div>
 
-      <div className="sidebar">
-        <Sidebar />
+        <UserProfileModal
+          userProfile={selectedUserProfile}
+          show={isUserProfileSelected}
+          onHide={deselectUserProfile}
+        />
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { FriendShipPage } from "pages/FriendShipPage";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -88,11 +90,9 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     <WithNavigationBar fullscreen={fullscreen}>
-      <AnnouncementMessage
-        message={venue?.bannerMessage}
-        template={venue.template}
-      />
+      <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
+      <ChatSidebar />
     </WithNavigationBar>
   );
 };

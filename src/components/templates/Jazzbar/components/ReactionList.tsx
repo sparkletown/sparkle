@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-import {
-  MessageToTheBandReaction,
-  Reaction,
-  ReactionsTextMap,
-} from "utils/reactions";
-import { User } from "types/User";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { useWorldUsersById } from "hooks/users";
+
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   REACTION_PROFILE_IMAGE_SIZE_LARGE,
   REACTION_PROFILE_IMAGE_SIZE_SMALL,
 } from "settings";
+
+import {
+  MessageToTheBandReaction,
+  Reaction,
+  ReactionsTextMap,
+} from "utils/reactions";
 import { WithId } from "utils/id";
-import { ChatMessage } from "store/actions/Chat";
+
+import { User } from "types/User";
+import { ChatMessage } from "types/chat";
+
+import { useWorldUsersById } from "hooks/users";
+
+import UserProfileModal from "components/organisms/UserProfileModal";
 
 interface ReactionListProps {
   reactions: Reaction[];
