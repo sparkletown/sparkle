@@ -474,7 +474,7 @@ export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
 export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
 
 // Default to display profile name on top of avatar (overriden by venue parameter)
-export const SHOW_AVATAR_NAMETAGS = false;
+export const DEFAULT_SHOW_AVATAR_NAMETAG = false;
 
 export const USE_RANDOM_AVATAR = true;
 export const RANDOM_AVATARS = [
