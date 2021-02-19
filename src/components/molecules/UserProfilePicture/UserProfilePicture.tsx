@@ -33,7 +33,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   setSelectedUserProfile,
   reactionPosition,
   user,
-  showNametags,
+  showNametags = true,
 }) => {
   const muteReactions = useSelector((state) => state.room.mute);
 
