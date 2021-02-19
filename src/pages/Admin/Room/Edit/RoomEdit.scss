@@ -1,0 +1,15 @@
+@import "scss/constants.scss";
+
+.input-wrapper {
+  display: flex;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: space-between;
+}
