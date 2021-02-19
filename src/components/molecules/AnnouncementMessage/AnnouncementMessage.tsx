@@ -40,7 +40,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         center: isBannerCentered,
       })}
     >
-      {getLinkFromText(message)}
+      <div className="announcement-container__text">
+        {getLinkFromText(message)}
+      </div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>
