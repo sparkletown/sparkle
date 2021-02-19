@@ -12,7 +12,7 @@ $header-height: 45px;
   right: 0;
   width: 360px;
   height: calc(100vh - 96px);
-  background-color: $dark-grey;
+  background-color: $saturated-black;
   z-index: z(sidebar);
 
   &--expanded {
