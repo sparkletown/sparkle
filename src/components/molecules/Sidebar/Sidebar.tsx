@@ -5,11 +5,9 @@ import {
   currentVenueSelector,
   parentVenueSelector,
   unreadMessagesSelector,
-  privateChatsSelector,
 } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import { useNotificationSound } from "hooks/useNotificationSound";
 
 import VenueChat from "components/molecules/VenueChat";
@@ -27,8 +25,6 @@ enum TABS {
 const Sidebar = () => {
   const venue = useSelector(currentVenueSelector);
   const parentVenue = useSelector(parentVenueSelector);
-  const { user } = useUser();
-  const privateChats = useSelector(privateChatsSelector);
 
   const [tab, setTab] = useState(0);
 
@@ -78,11 +74,7 @@ const Sidebar = () => {
           {numberOfUnreadMessages > 0 && <div className="notification"></div>}
           <span>Messages</span>
 
-          {numberOfUnreadMessages > 0 && (
-            <span>
-              ({numberOfUnreadMessages}
-            </span>
-          )}
+          {numberOfUnreadMessages > 0 && <span>({numberOfUnreadMessages}</span>}
         </div>
 
         <div

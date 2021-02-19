@@ -9,7 +9,6 @@ import firebase from "firebase/app";
 
 import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
-import { isChatValid } from "validation";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 import { VenueTemplate } from "types/venues";
@@ -17,9 +16,8 @@ import { VenueTemplate } from "types/venues";
 import {
   currentVenueSelectorData,
   parentVenueSelector,
-  privateChatsSelector,
   radioStationsSelector,
-  unreadMessagesSelector
+  unreadMessagesSelector,
 } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
@@ -91,7 +89,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const venueParentId = venue?.parentId;
-  const privateChats = useSelector(privateChatsSelector);
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
@@ -178,7 +175,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     () => setShowRadioPopover((prevState) => !prevState),
     []
   );
-
 
   if (!venueId || !venue) return null;
 
