@@ -24,6 +24,7 @@ import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
+// @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
