@@ -20,14 +20,14 @@ export const sendVenueMessage = async ({
 
 export const sendPrivateMessage = async (message: PrivateChatMessage) => {
   // @debt This is the legacy way of saving private messages. Would be nice to have it saved in one operation
-  for (const messageUser of [message.from, message.to]) {
+  [message.from, message.to].forEach((messageUser) => {
     await firebase
       .firestore()
       .collection("privatechats")
       .doc(messageUser)
       .collection("chats")
       .add(message);
-  }
+  })
 };
 
 export type SetChatMessageIsReadProps = {
