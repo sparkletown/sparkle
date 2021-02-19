@@ -74,7 +74,7 @@ const Sidebar = () => {
           {numberOfUnreadMessages > 0 && <div className="notification"></div>}
           <span>Messages</span>
 
-          {numberOfUnreadMessages > 0 && <span>({numberOfUnreadMessages}</span>}
+          {numberOfUnreadMessages > 0 && <>({numberOfUnreadMessages})</>}
         </div>
 
         <div
