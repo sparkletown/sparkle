@@ -1,9 +1,12 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
 $dark-grey: #1a1d23;
+$intermediate-grey: #333035;
+$lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
 $black: #000000;
+$almost-black: #090909;
 $white: #fff;
 $dark: #1a1d24;
 $red: #bc271a;
@@ -92,6 +95,9 @@ $z-layers: (
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
   global-profile-icon: 1,
+  user-avatar-status-dot: 1,
+  private-chat-input-search-icon: 1,
+  recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   user-profile-picture-heart: 99999,

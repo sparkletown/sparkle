@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 .user-avatar {
   height: 25px;
   width: 25px;
@@ -14,10 +16,10 @@
     bottom: -1px;
     right: -1px;
     border-radius: 50%;
-    background-color: #4bff40;
+    background-color: $green;
     height: 8px;
     width: 8px;
-    z-index: 1;
+    z-index: z(user-avatar-status-dot);
   }
 
   &--clickable {

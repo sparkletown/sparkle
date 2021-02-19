@@ -12,7 +12,7 @@ $header-height: 45px;
   right: 0;
   width: 360px;
   height: calc(100vh - 96px);
-  background-color: #19181a;
+  background-color: $dark-grey;
   z-index: z(sidebar);
 
   &--expanded {
@@ -29,7 +29,7 @@ $header-height: 45px;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background-color: #000;
+    background-color: $black;
   }
 
   &__tab {
@@ -47,12 +47,12 @@ $header-height: 45px;
     }
 
     &--selected {
-      border-bottom: white 2px solid;
-      color: white;
+      border-bottom: $white 2px solid;
+      color: $white;
 
       &:hover {
-        color: white;
-        border-bottom: white 2px solid;
+        color: $white;
+        border-bottom: $white 2px solid;
       }
     }
   }
@@ -63,7 +63,7 @@ $header-height: 45px;
     align-items: center;
     padding: 0 13px;
     height: 45px;
-    background-color: #333035;
+    background-color: $intermediate-grey;
     border-radius: 16px 0 0 16px;
     cursor: pointer;
     display: flex;
@@ -75,7 +75,7 @@ $header-height: 45px;
     transform: translateX(-100%);
 
     &:hover {
-      background-color: #3d3a3f;
+      background-color: $lighter-intermediate-grey;
     }
 
     &__second-icon {

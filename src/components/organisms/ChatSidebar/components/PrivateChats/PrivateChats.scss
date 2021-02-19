@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 .private-chats {
   position: relative;
   overflow: auto;
@@ -13,13 +15,13 @@
   &__search-input {
     text-align: left;
     font-size: 14px;
-    background-color: black;
+    background-color: $black;
     padding-left: 40px;
     height: 100%;
     width: 100%;
 
     &::placeholder {
-      color: white;
+      color: $white;
       opacity: 0.2;
     }
 
@@ -37,7 +39,7 @@
     width: 40px;
     justify-content: center;
     align-items: center;
-    z-index: 1;
+    z-index: z(private-chat-input-search-icon);
     opacity: 0.2;
   }
 

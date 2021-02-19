@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 .chatbox {
   height: 100%;
   display: flex;
@@ -13,7 +15,7 @@
   }
 
   &__form {
-    background-color: #000;
+    background-color: $black;
     height: 74px;
     padding: 10px;
     display: flex;
@@ -24,13 +26,13 @@
     // @debt Workaround to avoid styles set by src/scss/global.scss (fix this when when clean that up)
     all: unset;
     outline: none;
-    background-color: #19181a;
+    background-color: $dark-grey;
     flex: 1;
     cursor: pointer;
     font-size: 0.9em;
     padding: 12px 12px;
     border-radius: 28px;
-    color: #fff;
+    color: $white;
   }
 
   &__submit-button {
@@ -44,14 +46,14 @@
     align-items: center;
     margin-left: 10px;
 
-    background-color: #005ee5;
+    background-color: $primary;
 
     &:disabled {
-      background-color: #19181a;
+      background-color: $dark-grey;
     }
   }
 
   &__submit-button-icon {
-    color: white;
+    color: $white;
   }
 }
