@@ -1,4 +1,5 @@
 @import "scss/constants.scss";
+$announcement-container-padding: 15px 0px;
 
 .announcement-container {
   display: block;
@@ -23,15 +24,14 @@
     cursor: pointer;
     position: absolute;
     top: 15px;
-    right: 7.5px;
+    right: 15px;
     :hover {
       color: var(--primary-color);
       text-decoration: underline;
     }
-    margin-right: 7.5px;
   }
 }
 
-.announcement-container__text {
+.announcement-message {
   margin: 0px 30px;
 }
