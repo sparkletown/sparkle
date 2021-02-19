@@ -3,7 +3,6 @@ import "./ArtPiece.scss";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
-import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -59,14 +58,6 @@ export const ArtPiece = () => {
               setUserList={() => null}
               hasChairs={false}
               defaultMute={true}
-            />
-          </div>
-          <div className="chat-pop-up" style={{ zIndex: 100 }}>
-            <ChatDrawer
-              title={`${venue.name ?? "Art Piece"} Chat`}
-              roomName={venue.name}
-              chatInputPlaceholder="Chat"
-              defaultShow={true}
             />
           </div>
         </div>
