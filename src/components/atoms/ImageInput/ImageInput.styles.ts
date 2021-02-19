@@ -4,16 +4,9 @@ type UploadButtonType = {
   isHidden?: boolean;
 };
 const defaultButtonStyles = css`
-  background-color: #462a87;
+  background-color: rgba(255, 255, 255, 0.2);
 
   cursor: pointer;
-
-  &:hover,
-  &:active,
-  &:focus {
-    transform: translateY(-1px);
-    background-color: rgba(55, 90, 127, 0.18);
-  }
 `;
 const hiddenButtonStyles = css`
   background-color: transparent;
@@ -23,12 +16,10 @@ const hiddenButtonStyles = css`
 export const UploadButton = styled.span<UploadButtonType>`
   ${({ isHidden }) => (isHidden ? hiddenButtonStyles : defaultButtonStyles)};
 
-  padding: 0.7em 4.2em;
+  padding: 0.8em;
   margin: 0;
 
-  border-radius: 22px;
-
-  font-weight: bold;
+  border-radius: 6px;
 
   transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 `;
@@ -40,11 +31,10 @@ type WrapperType = {
 };
 
 const smallWrapperStyles = css`
-  display: inline-block;
-  padding: 2.5em;
-
-  ${UploadButton} {
-    padding: 0.7em 2em;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
   }
 `;
 const defaultWrapperStyles = css`
@@ -61,7 +51,6 @@ export const Wrapper = styled.div<WrapperType>`
   border-radius: 22px;
 
   background-size: cover;
-  background-color: #1a1d24;
   background-image: ${({ backgroundImage }) =>
     backgroundImage ? `url(${backgroundImage})` : "none"};
   background-position: center;
