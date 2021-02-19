@@ -10,5 +10,4 @@ export interface UserProfilePictureProp {
   setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
   reactionPosition?: "right" | "left" | undefined;
-  showNametagComponent?: boolean;
 }
