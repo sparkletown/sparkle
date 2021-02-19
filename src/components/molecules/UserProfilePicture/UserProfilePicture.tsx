@@ -77,6 +77,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
   ) as MessageToTheBandReaction | undefined;
 
+  const shouldShowNametags: boolean =
+    showNametags && (currentVenue?.showNametags ?? SHOW_AVATAR_NAMETAGS);
+
   const imageErrorHandler = useCallback(
     (
       event: HTMLImageElement | React.SyntheticEvent<HTMLImageElement, Event>
@@ -107,10 +110,9 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
         >
-          {showNametags &&
-            (currentVenue?.showNametags ?? SHOW_AVATAR_NAMETAGS) && (
-              <div className="profile-name-avatar">{user.partyName}</div>
-            )}
+          {shouldShowNametags && (
+            <div className="profile-name-avatar">{user.partyName}</div>
+          )}
         </S.Avatar>
         {Reactions.map(
           (reaction, index) =>
@@ -161,15 +163,13 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     reactions,
     muteReactions,
     isAudioEffectDisabled,
-    showNametags,
-    currentVenue,
+    shouldShowNametags,
   ]);
 };
 
 UserProfilePicture.defaultProps = {
   avatarClassName: "profile-icon",
   miniAvatars: false,
-  showNametags: true,
 };
 
 export default UserProfilePicture;
