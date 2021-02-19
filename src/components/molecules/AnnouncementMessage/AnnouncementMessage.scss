@@ -7,7 +7,7 @@
   background: $primary;
   top: 66px;
   // NOTE: Currently, the sidebar takes 20% of the screen, thus 40% is half of map's occupation
-  left: calc((100% - #{$map-sidebar-width}) / 2);
+  left: 50%; // calc((100% - #{$map-sidebar-width}) / 2);
   width: 500px;
   margin: 0 auto 0 -250px;
   transition: left 0.1s linear;
