@@ -16,6 +16,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import BasicInfo from "./BasicInfo";
 import AdminSidebar from "./Sidebar/Sidebar";
@@ -26,7 +27,6 @@ import VenueDetails from "./Venue/Details";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 dayjs.extend(advancedFormat);
 
@@ -140,10 +140,7 @@ const Admin_v2: React.FC = () => {
 
   return (
     <>
-      <S.Wrapper
-        className="no-venue-selected"
-        hasSelectedVenue={!!selectedVenue}
-      >
+      <S.Wrapper hasSelectedVenue={!!selectedVenue}>
         {selectedVenue && (
           <AdminSidebar
             sidebarOptions={sidebarOptions}
