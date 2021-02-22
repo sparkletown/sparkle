@@ -54,6 +54,7 @@ $room-info-bg: #005ee5;
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+$z-layer-footer: 20;
 $z-layers: (
   // Admin
   admin-navbar: 100,
@@ -94,7 +95,7 @@ $z-layers: (
   duststorm-modal-content: 220,
   // Unsorted
   announcement: $z-layer-sidebar,
-  footer: $z-layer-sidebar,
+  footer: $z-layer-footer,
   global-profile-icon: 1,
   user-avatar-status-dot: 1,
   private-chat-input-search-icon: 1,
