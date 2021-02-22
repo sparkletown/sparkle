@@ -1,5 +1,6 @@
 @import "scss/constants.scss";
-$announcement-container-padding: 15px 0px;
+
+$spacing: 15px;
 
 .announcement-container {
   display: block;
@@ -16,15 +17,15 @@ $announcement-container-padding: 15px 0px;
     left: 50%;
   }
 
-  padding: $announcement-container-padding;
+  padding: $spacing 0;
   border-radius: 0 0 20px 20px;
   text-align: center;
 
   .close-button {
     cursor: pointer;
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: $spacing;
+    right: $spacing;
     :hover {
       color: var(--primary-color);
       text-decoration: underline;
