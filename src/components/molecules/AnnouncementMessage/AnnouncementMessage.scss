@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
 $spacing: 15px;
+$close-icon-width: 20px;
+$message-margin: $spacing + $close-icon-width + 5px;
 
 .announcement-container {
   display: block;
@@ -34,5 +36,5 @@ $spacing: 15px;
 }
 
 .announcement-message {
-  margin: 0px 30px;
+  margin: 0 $message-margin;
 }
