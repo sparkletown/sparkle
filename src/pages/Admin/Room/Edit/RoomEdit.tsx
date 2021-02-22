@@ -143,13 +143,15 @@ const EditRoom: React.FC<EditRoomProps> = ({
 
           {renderTemplateSelect()}
 
-          <Button type="submit" disabled={isSubmitting || !dirty}>
-            Save
-          </Button>
+          <S.ButtonsWrapper>
+            <Button variant="danger" onClick={deleteHandler}>
+              Delete room
+            </Button>
 
-          <Button variant="danger" onClick={deleteHandler}>
-            Delete room
-          </Button>
+            <Button type="submit" disabled={isSubmitting || !dirty}>
+              Save room
+            </Button>
+          </S.ButtonsWrapper>
         </Form>
       </Modal.Body>
     </Modal>
