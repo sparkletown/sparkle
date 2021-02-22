@@ -170,7 +170,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       key={reaction.name}
                       className="reaction"
                       onClick={() =>
-                        user && reactionClicked(user, reaction.type)
+                        user &&
+                        !isAudioEffectDisabled &&
+                        reactionClicked(user, reaction.type)
                       }
                       id={`send-reaction-${reaction.type}`}
                     >
