@@ -71,7 +71,6 @@ const Sidebar = () => {
           }`}
           onClick={selectPrivateChatTab}
         >
-          {numberOfUnreadMessages > 0 && <div className="notification"></div>}
           <span>Messages</span>
 
           {numberOfUnreadMessages > 0 && <>({numberOfUnreadMessages})</>}
