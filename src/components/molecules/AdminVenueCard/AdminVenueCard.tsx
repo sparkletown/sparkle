@@ -1,20 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
-import { AnyVenue } from "types/venues";
+import { Venue_v2 } from "types/venues";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
-
-import { WithId } from "utils/id";
 
 import "./AdminVenueCard.scss";
 
 export interface AdminVenueCardProps {
-  venue: WithId<AnyVenue>;
+  venue: Venue_v2;
+  onClickVenue: (venue: Venue_v2) => void;
 }
 
-export const AdminVenueCard: React.FC<AdminVenueCardProps> = ({ venue }) => (
-  <div className="admin-venue-card">
+export const AdminVenueCard: React.FC<AdminVenueCardProps> = ({ venue, onClickVenue }) => (
+  <div className="admin-venue-card" >
     <div
       className="admin-venue-card__bg"
       style={{
@@ -30,8 +29,8 @@ export const AdminVenueCard: React.FC<AdminVenueCardProps> = ({ venue }) => (
       />
       <h3>{venue.name}</h3>
     </div>
-    <Link className="admin-venue-card__button" to={`/admin_v2/${venue.id}`}>
+    <Button className="admin-venue-card__button" onClick={() => onClickVenue(venue)}>
       Manage Party
-    </Link>
+    </Button>
   </div>
 );

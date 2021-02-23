@@ -1,12 +1,11 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Button, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import classNames from "classnames";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
-import BasicInfo from "pages/Admin/BasicInfo";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueDetails from "pages/Admin/Venue/Details";
+import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
 import { Venue_v2 } from "types/venues";
 
@@ -49,22 +48,31 @@ const sidebarOptions: SidebarOption[] = [
   // },
 ];
 
-const DEFAULT_TAB = sidebarOptions.findIndex(
+const DEFAULT_EDIT_TAB = sidebarOptions.findIndex(
   (option) => option.id === SidebarOptions.dashboard
+);
+
+const DEFAULT_CREATE_TAB = sidebarOptions.findIndex(
+  (option) => option.id === SidebarOptions.basicInfo
 );
 
 export interface AdminVenueViewProps {
   venue: Venue_v2;
+  onClickBackButton: () => void;
 }
 
-export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
+export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
+  venue,
+  onClickBackButton,
+}) => {
+  const defaultTab = venue ? DEFAULT_EDIT_TAB : DEFAULT_CREATE_TAB;
   const [selectedOption, setSelectedOption] = useState(
-    sidebarOptions[DEFAULT_TAB].id
+    sidebarOptions[defaultTab].id
   );
 
   const selectDefaultTab = useCallback(() => {
-    setSelectedOption(sidebarOptions[DEFAULT_TAB].id);
-  }, []);
+    setSelectedOption(sidebarOptions[defaultTab].id);
+  }, [defaultTab]);
 
   const renderSidebarOptions = useMemo(() => {
     return sidebarOptions.map((option: SidebarOption) => (
@@ -83,9 +91,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
   return (
     <>
       <div className="AdminVenueView">
-        <Button as={Link} to="/admin_v2/venue">
-          Back
-        </Button>
+       <Button onClick={onClickBackButton}>Back</Button>
 
         <Nav
           className="AdminVenueView__options"
@@ -96,7 +102,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
         </Nav>
       </div>
       {selectedOption === SidebarOptions.basicInfo && (
-        <BasicInfo venue={venue} onSave={selectDefaultTab} />
+        <VenueWizard />
       )}
       {selectedOption === SidebarOptions.entranceExperience && (
         <EntranceExperience venue={venue} onSave={selectDefaultTab} />

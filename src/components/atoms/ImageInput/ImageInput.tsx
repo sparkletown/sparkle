@@ -19,6 +19,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   error,
   small,
   forwardRef,
+  title = "Upload",
   nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
@@ -65,7 +66,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           type="file"
         />
 
-        <S.UploadButton isHidden={!!imageUrl}>Upload</S.UploadButton>
+        <S.UploadButton isHidden={!!imageUrl}>{title}</S.UploadButton>
       </S.Wrapper>
 
       <input

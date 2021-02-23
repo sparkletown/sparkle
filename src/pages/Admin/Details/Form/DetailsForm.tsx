@@ -81,16 +81,14 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const values = watch();
 
-  const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
-    : undefined;
+  const urlSafeName = `${window.location.host}${venueLandingUrl(
+    createUrlSafeName(values?.name ?? "")
+  )}`;
+
   const disable = isSubmitting;
 
   // @debt Should this be hardcoded here like this? At the very least maybe it should reference a constant/be defined outside of this component render
   const templateID = VenueTemplate.partymap;
-  const nameDisabled = isSubmitting || !!venueId;
 
   const defaultVenue = createJazzbar({});
 
@@ -113,22 +111,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderVenueName = () => (
     <S.InputContainer hasError={!!errors?.name}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Name your party
-      </h4>
+      <div>Name</div>
       <input
         disabled={disable || !!venueId}
         name="name"
         ref={register}
         className="align-left"
-        placeholder="My Party Name"
-        style={{ cursor: nameDisabled ? "disabled" : "text" }}
+        placeholder="Sparkle space name"
       />
       {errors.name ? (
-        <span className="input-error">{errors.name.message}</span>
+        <div className="input-error">{errors.name.message}</div>
       ) : urlSafeName ? (
         <S.InputInfo>
-          The URL of your party will be: <b>{urlSafeName}</b>
+          The url of your space will be: <b>{urlSafeName}</b>
         </S.InputInfo>
       ) : null}
     </S.InputContainer>
@@ -136,9 +131,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderSubtitle = () => (
     <S.InputContainer hasError={!!errors?.subtitle}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party subtitle
-      </h4>
+      <div>Subtitle</div>
       <input
         disabled={disable}
         name={"subtitle"}
@@ -147,21 +140,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         placeholder={defaultVenue.config?.landingPageConfig.subtitle}
       />
       {errors.subtitle && (
-        <span className="input-error">{errors.subtitle.message}</span>
+        <div className="input-error">{errors.subtitle.message}</div>
       )}
     </S.InputContainer>
   );
 
   const renderDescription = () => (
     <S.InputContainer hasError={!!errors?.description}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party description
-      </h4>
+      <div>Party description</div>
       <textarea
         disabled={disable}
         name={"description"}
         ref={register}
-        className="wide-input-block input-centered align-left"
+        className="wide-input-block align-left"
         placeholder={defaultVenue.config?.landingPageConfig.description}
       />
       {errors.description && (
@@ -171,34 +162,30 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderBannerUpload = () => (
-    <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload a banner photo
-      </h4>
+    <S.BannerContainer>
       <ImageInput
         onChange={handleBannerUpload}
+        title="Upload a banner photo"
         name="bannerImage"
         error={errors.bannerImageFile || errors.bannerImageUrl}
         forwardRef={register}
         imgUrl={editData?.bannerImageUrl}
       />
-    </S.InputContainer>
+    </S.BannerContainer>
   );
 
   const renderLogoUpload = () => (
-    <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload your logo
-      </h4>
+    <S.LogoContainer>
       <ImageInput
         onChange={handleLogoUpload}
+        title="Upload a logo"
         name="logoImage"
         small
         error={errors.logoImageFile || errors.logoImageUrl}
         forwardRef={register}
         imgUrl={editData?.logoImageUrl}
       />
-    </S.InputContainer>
+    </S.LogoContainer>
   );
 
   const handleOnChange = () => {
@@ -221,14 +208,14 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           value={templateID}
           ref={register}
         />
-        <h4 className="italic" style={{ fontSize: "30px" }}>
-          {venueId ? "Edit your party" : "Create your party"}
+        <h4 style={{ fontSize: "30px" }}>
+          {venueId ? "Edit your Sparkle Space" : "Create your Sparkle Space"}
         </h4>
         <p
           className="small light"
           style={{ marginBottom: "2rem", fontSize: "16px" }}
         >
-          You can change anything except for the name of your venue later
+          You can change everything but the name later
         </p>
 
         {renderVenueName()}

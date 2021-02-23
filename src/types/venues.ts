@@ -71,6 +71,7 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  template: VenueTemplate;
 }
 
 export interface Venue_v2_AdvancedConfig {
@@ -289,7 +290,7 @@ export interface VenueEvent {
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
-export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
+export const isPartyMapVenue = (venue: AnyVenue | Venue_v2): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
 export const urlFromImage = (

@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import classNames from "classnames";
 
-import { AnyVenue, isPartyMapVenue } from "types/venues";
+import { isPartyMapVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -12,16 +11,18 @@ import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 import "./AdminVenues.scss";
 
 export interface AdminVenuesProps {
-  venues: WithId<AnyVenue>[];
+  venues: Venue_v2[];
+  onClickCreateSpace: () => void;
+  onClickVenue: (venue: WithId<Venue_v2>) => void;
 }
 
-export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
+export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues, onClickCreateSpace, onClickVenue }) => {
   const renderedPartyVenues = useMemo(
     () =>
       venues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminVenueCard key={venue.id} venue={venue} />),
-    [venues]
+        .map((venue) => <AdminVenueCard key={venue.id} venue={venue} onClickVenue={onClickVenue} />),
+    [venues, onClickVenue]
   );
 
   const hasVenues = renderedPartyVenues.length > 0;
@@ -30,9 +31,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
     <div className="admin-venue">
       <div className="admin-venue__header">
         <div className="admin-venue__title">Admin Dashboard</div>
-        <Button as={Link} to="/admin_v2/venue/creation">
-          Create a new space
-        </Button>
+        <Button onClick={onClickCreateSpace}>Create a new space</Button>
       </div>
       <div
         className={classNames("admin-venue__cards", {
