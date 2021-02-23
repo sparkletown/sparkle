@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { FieldError } from "react-hook-form";
 import "firebase/functions";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 interface ImageInputProps {
   disabled: boolean;
@@ -55,7 +56,7 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             name={name}
             type="file"
             ref={ref}
-            accept="image/png,image/x-png,image/gif,image/jpeg"
+            accept={ACCEPTED_IMAGE_TYPES}
             className="default-input"
           />
           {remoteUrlInputName && (

@@ -17,7 +17,6 @@ import {
   TextReactionType,
 } from "utils/reactions";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
 import Room from "../components/JazzBarRoom";
 
 import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
@@ -222,15 +221,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           TableComponent={JazzBarTableComponent}
           joinMessage={!venueToUse?.hideVideo ?? true}
           customTables={jazzbarTables}
-        />
-      </div>
-
-      {/* @debt Will be replaced by Chat's refactor */}
-      <div className="chat-drawer">
-        <ChatDrawer
-          title={`${venueToUse.name} Chat`}
-          roomName={venueToUse.name}
-          chatInputPlaceholder="Chat to the bar"
         />
       </div>
     </div>
