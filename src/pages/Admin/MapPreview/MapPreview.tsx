@@ -182,8 +182,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         )}
 
         <S.EditButton disabled={isSaving} onClick={handleEditButton}>
-          {isSaving && <div>Saving...</div>}
-          {!isSaving && <div>{editButtonText}</div>}
+          {isSaving ? <div>Saving...</div> : <div>{editButtonText}</div>}
         </S.EditButton>
       </S.Wrapper>
     </DndProvider>
