@@ -12,21 +12,24 @@
   .music-bar-content {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "empty-left video video empty-right"
+      ".  video video ."
+      ".  video video ."
+      "items items items items";
     padding: 20px 50px;
-    grid-auto-flow: row dense;
+    // grid-auto-flow: row dense;
     justify-content: center;
     grid-gap: 0.5rem;
 
     .music-bar-top-left-grid-cell {
       height: 90px;
-      grid-column: 1;
-      grid-row: 1;
+      grid-area: empty-left;
     }
 
     .music-bar-top-right-grid-cell {
       height: 90px;
-      grid-column: 4;
-      grid-row: 1;
+      grid-area: empty-right;
     }
 
     .video-container {
@@ -36,10 +39,7 @@
       width: 100%;
       padding: 10px;
 
-      grid-column-start: 2;
-      grid-column-end: 4;
-      grid-row-start: 1;
-      grid-row-end: 4;
+      grid-area: video;
 
       .iframe-container {
         width: 100%;
@@ -101,13 +101,9 @@
       }
     }
   }
-  .chat-drawer {
-    position: absolute;
-    right: 0;
-    top: 170px;
-    bottom: auto;
-  }
-  .jazzbar-participant-container {
+  .jazzbar__participant {
+    max-height: 200px;
+
     .participant {
       display: flex;
       height: 100%;
