@@ -100,7 +100,10 @@ const NavSearchBar = () => {
               <div
                 className="row"
                 key={`room-${room.title}-${index}`}
-                onClick={() => setSelectedRoom(room)}
+                onClick={() => {
+                  setSelectedRoom(room);
+                  clearSearchQuery();
+                }}
               >
                 <div
                   className="result-avatar"
@@ -132,7 +135,10 @@ const NavSearchBar = () => {
               <div
                 className="row"
                 key={`user-${user.id}`}
-                onClick={() => setSelectedUserProfile(user)}
+                onClick={() => {
+                  setSelectedUserProfile(user);
+                  clearSearchQuery();
+                }}
               >
                 <div
                   className="result-avatar"
