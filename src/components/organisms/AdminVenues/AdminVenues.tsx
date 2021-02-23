@@ -20,7 +20,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
     [venues]
   );
 
-  const hasVenues = partyVenues.length > 0;
+  const hasVenues = false;
 
   return (
     <div className="admin-venue">
