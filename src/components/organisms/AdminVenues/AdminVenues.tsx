@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
 
@@ -9,15 +10,9 @@ import "./AdminVenues.scss";
 
 interface AdminVenuesProps {
   venues: WithId<Venue_v2>[];
-  onClickCreateSpace: () => void;
-  onClickVenue: (venue: WithId<Venue_v2>) => void;
 }
 
-export const AdminVenues: React.FC<AdminVenuesProps> = ({
-  venues,
-  onClickCreateSpace,
-  onClickVenue,
-}) => {
+export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
   const partyVenues = useMemo(() => {
     return venues?.filter((venue) => venue.template === VenueTemplate.partymap);
   }, [venues]);
@@ -28,7 +23,9 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({
     <div className="admin-venue">
       <div className="admin-venue__create-button">
         <h3>Admin Dashboard</h3>
-        <Button onClick={onClickCreateSpace}>Create a new space</Button>
+        <Button as={Link} to="/admin_v2/venue">
+          Create a new space
+        </Button>
       </div>
       {!hasVenues && (
         <div className="admin-venue__empty-venues">
@@ -57,9 +54,10 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({
                 </div>
                 <Button
                   className="card__button"
-                  onClick={() => onClickVenue(venue)}
+                  as={Link}
+                  to={`/admin_v2/venue/${venue.id}`}
                 >
-                  Manage Party
+                  Manage Space
                 </Button>
               </div>
             );

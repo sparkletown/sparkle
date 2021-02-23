@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -13,15 +13,11 @@ import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
 
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
-import { AdminVenueView } from "components/organisms/AdminVenueView";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";
-import { WithId } from "utils/id";
 
 dayjs.extend(advancedFormat);
 
@@ -29,8 +25,6 @@ const Admin_v2: React.FC = () => {
   const { user } = useUser();
   useAdminVenues(user?.uid);
 
-  const [isCreatingVenue, setCreatingVenue] = useState<boolean>(false);
-  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue_v2> | null>();
   const venues = useSelector(orderedVenuesSelector);
 
   const { roles } = useRoles();
@@ -49,41 +43,10 @@ const Admin_v2: React.FC = () => {
     return <>Forbidden</>;
   }
 
-  const selectVenue = (venue: WithId<Venue_v2>) => {
-    setSelectedVenue(venue);
-  };
-
   return (
-    <>
-      <S.Wrapper
-        className="no-venue-selected"
-        hasSelectedVenue={!!selectedVenue}
-      >
-        <S.ViewWrapper>
-          {selectedVenue || isCreatingVenue ? (
-            <AdminVenueView
-              venue={selectedVenue as Venue_v2}
-              onClickBackButton={() => {
-                setCreatingVenue(false);
-                setSelectedVenue(null);
-              }}
-            />
-          ) : (
-            <AdminVenues
-              venues={venues as Venue_v2[]}
-              onClickVenue={selectVenue}
-              onClickCreateSpace={() => setCreatingVenue(true)}
-            />
-          )}
-        </S.ViewWrapper>
-      </S.Wrapper>
-
-      <AuthenticationModal
-        show={!user}
-        onHide={() => {}}
-        showAuth={AuthOptions.login}
-      />
-    </>
+    <S.Wrapper className="no-venue-selected">
+      <AdminVenues venues={venues as Venue_v2[]} />
+    </S.Wrapper>
   );
 };
 

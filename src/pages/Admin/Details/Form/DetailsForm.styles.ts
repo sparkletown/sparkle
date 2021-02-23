@@ -43,10 +43,9 @@ export const InputContainer = styled.div`
       position: relative;
       cursor: pointer;
       width: 100%;
-      max-width: 360px;
       font-size: 1em;
       padding: 12px;
-      border-radius: 6px;
+      border-radius: 22px;
       text-align: left;
       color: #FFF;
       box-shadow: inset 0 0 0 1px rgb(255 255 255 / 10%);

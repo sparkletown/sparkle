@@ -12,4 +12,5 @@ export interface DetailsFormProps {
   previous: TVenueWizard["previous"];
   dispatch: React.Dispatch<WizardAction>;
   editData?: WizardState;
+  onSave?: () => void;
 }

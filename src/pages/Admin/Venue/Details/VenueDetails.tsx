@@ -165,7 +165,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     closeEditingModal();
   };
 
-  console.log(coverImageUrl);
   return (
     <S.Container>
       <S.Header>

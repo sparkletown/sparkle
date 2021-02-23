@@ -4,4 +4,5 @@ export interface DetailsProps {
   previous?: () => void;
   data?: WizardState;
   dispatch: React.Dispatch<WizardAction>;
+  onSave?: () => void;
 }

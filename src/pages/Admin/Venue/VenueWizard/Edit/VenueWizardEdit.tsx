@@ -2,7 +2,6 @@ import React, { useCallback, useEffect } from "react";
 
 // Components
 import Details from "pages/Admin/Details";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 // Hooks
 import { useFirestore } from "react-redux-firebase";
@@ -49,11 +48,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
     fetchVenueFromAPI();
   }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
 
-  return (
-    <WithNavigationBar>
-      <Details data={state} dispatch={dispatch} />
-    </WithNavigationBar>
-  );
+  return <Details data={state} dispatch={dispatch} />;
 };
 
 export default VenueWizardEdit;

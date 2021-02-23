@@ -18,11 +18,7 @@ export const UploadButton = styled.span<UploadButtonType>`
 
   padding: 0.8em;
   margin: 0;
-
   border-radius: 6px;
-
-  font-weight: bold;
-
   transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
 `;
 
@@ -36,31 +32,37 @@ const smallWrapperStyles = css`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  ${UploadButton} {
-    padding: 0.7em 2em;
-  }
+  border-radius: 100%;
+  width: 180px;
 `;
 const defaultWrapperStyles = css`
   display: flex;
   padding: 2.5em 0;
+  border-radius: 22px;
+  max-width: 360px;
 `;
 export const Wrapper = styled.div<WrapperType>`
   ${({ small }) => (small ? smallWrapperStyles : defaultWrapperStyles)};
 
+  height: 180px;
   align-items: center;
   justify-content: center;
-
   border: ${(props) => (props.hasError ? "2px solid red" : "none")};
-  border-radius: 100%;
-
   background-size: cover;
-  background-color: #1a1d24;
+  background-color: #19181a;
   background-image: ${({ backgroundImage }) =>
     backgroundImage ? `url(${backgroundImage})` : "none"};
   background-position: center;
-
   cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+
+  ${UploadButton} {
+    border-radius: 22px;
+    background-color: rgba(255, 255, 255, 0.12);
+  }
 `;
 
 export const Error = styled.span`
