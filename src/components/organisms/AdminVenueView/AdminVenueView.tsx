@@ -10,6 +10,8 @@ import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { Venue_v2 } from "types/venues";
 
 import "./AdminVenueView.scss";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 export interface SidebarOption {
   id: string;
@@ -57,15 +59,17 @@ const DEFAULT_CREATE_TAB = sidebarOptions.findIndex(
 );
 
 export interface AdminVenueViewProps {
-  venue: Venue_v2;
   onClickBackButton: () => void;
 }
+export const AdminVenueView: React.FC<AdminVenueViewProps> = ({onClickBackButton}) => {
+  const venueId = useVenueId();
 
-export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
-  venue,
-  onClickBackButton,
-}) => {
-  const defaultTab = venue ? DEFAULT_EDIT_TAB : DEFAULT_CREATE_TAB;
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+
+  const defaultTab = useMemo(() => {
+    return venueId ? DEFAULT_EDIT_TAB : DEFAULT_CREATE_TAB;
+  }, [venueId]);
+
   const [selectedOption, setSelectedOption] = useState(
     sidebarOptions[defaultTab].id
   );
@@ -87,6 +91,8 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
       </Nav.Link>
     ));
   }, [selectedOption]);
+
+  const venue = currentVenue as Venue_v2
 
   return (
     <>
@@ -111,7 +117,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
         <AdvancedSettings venue={venue} onSave={selectDefaultTab} />
       )}
       {selectedOption === SidebarOptions.dashboard && (
-        <VenueDetails venue={venue} onSave={selectDefaultTab} />
+        <VenueDetails venue={venue} />
       )}
     </>
   );

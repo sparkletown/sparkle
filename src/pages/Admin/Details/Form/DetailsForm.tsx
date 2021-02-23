@@ -41,7 +41,11 @@ import * as S from "./DetailsForm.styles";
 import { Button, Form } from "react-bootstrap";
 import { useVenueId } from "hooks/useVenueId";
 
-const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
+const DetailsForm: React.FC<DetailsFormProps> = ({
+  dispatch,
+  editData,
+  onSave,
+}) => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user } = useUser();
@@ -55,12 +59,13 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
-        history.push(`/admin_v2/${createUrlSafeName(vals.name!)}`);
+        onSave && onSave();
+        history.push(`/admin_v2/venue/${createUrlSafeName(vals.name!)}`);
       } catch (e) {
         console.error(e);
       }
     },
-    [user, venueId, history]
+    [history, onSave, user, venueId]
   );
 
   const {
@@ -162,30 +167,26 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderBannerUpload = () => (
-    <S.BannerContainer>
-      <ImageInput
-        onChange={handleBannerUpload}
-        title="Upload a banner photo"
-        name="bannerImage"
-        error={errors.bannerImageFile || errors.bannerImageUrl}
-        forwardRef={register}
-        imgUrl={editData?.bannerImageUrl}
-      />
-    </S.BannerContainer>
+    <ImageInput
+      onChange={handleBannerUpload}
+      title="Upload a banner photo"
+      name="bannerImage"
+      error={errors.bannerImageFile || errors.bannerImageUrl}
+      forwardRef={register}
+      imgUrl={editData?.bannerImageUrl}
+    />
   );
 
   const renderLogoUpload = () => (
-    <S.LogoContainer>
-      <ImageInput
-        onChange={handleLogoUpload}
-        title="Upload a logo"
-        name="logoImage"
-        small
-        error={errors.logoImageFile || errors.logoImageUrl}
-        forwardRef={register}
-        imgUrl={editData?.logoImageUrl}
-      />
-    </S.LogoContainer>
+    <ImageInput
+      onChange={handleLogoUpload}
+      title="Upload a logo"
+      name="logoImage"
+      small
+      error={errors.logoImageFile || errors.logoImageUrl}
+      forwardRef={register}
+      imgUrl={editData?.logoImageUrl}
+    />
   );
 
   const handleOnChange = () => {

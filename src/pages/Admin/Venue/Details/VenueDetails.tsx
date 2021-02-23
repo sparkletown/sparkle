@@ -11,7 +11,7 @@ import { venueLandingUrl } from "utils/url";
 import { useUser } from "hooks/useUser";
 
 import { Room, RoomData_v2 } from "types/rooms";
-import { VenueDetailsProps } from "./VenueDetails.types";
+import { Venue_v2 } from "types/venues";
 
 import { VenueHero } from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
@@ -42,6 +42,10 @@ type EditRoomType = RoomData_v2 & {
 };
 
 const noop = () => {};
+
+export interface VenueDetailsProps {
+  venue: Venue_v2;
+}
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   const {

@@ -8,7 +8,11 @@ import VenueWizardCreate from "./Create";
 import { VenueWizardReducer, initialState } from "./redux";
 import { useVenueId } from "hooks/useVenueId";
 
-const VenueWizard: React.FC = () => {
+export interface VenueWizardProps {
+  onSave?: () => void;
+}
+
+const VenueWizard: React.FC<VenueWizardProps> = ({ onSave }) => {
   const venueId = useVenueId();
   const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
@@ -17,7 +21,9 @@ const VenueWizard: React.FC = () => {
       <VenueWizardEdit venueId={venueId} state={state} dispatch={dispatch} />
     );
 
-  return <VenueWizardCreate state={state} dispatch={dispatch} />;
+  return (
+    <VenueWizardCreate state={state} dispatch={dispatch} onSave={onSave} />
+  );
 };
 
 export default VenueWizard;

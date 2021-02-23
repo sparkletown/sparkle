@@ -11,17 +11,12 @@ export const Wrapper = styled.div<WrapperProps>`
   grid-template-columns: auto;
 
   position: relative;
-  overflow-y: scroll;
   scrollbar-width: thin;
 
   input:disabled {
     cursor: not-allowed;
     color: rgba(255, 255, 255, 0.3);
   }
-`;
-
-export const ViewWrapper = styled.div`
-  padding: 2rem;
 `;
 
 export const ItemWrapper = styled.div`

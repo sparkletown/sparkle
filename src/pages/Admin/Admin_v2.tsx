@@ -13,15 +13,12 @@ import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
 
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
-import { AdminVenueView } from "components/organisms/AdminVenueView";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";
-import { WithId } from "utils/id";
+import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 dayjs.extend(advancedFormat);
 
@@ -29,8 +26,9 @@ const Admin_v2: React.FC = () => {
   const { user } = useUser();
   useAdminVenues(user?.uid);
 
-  const [isCreatingVenue, setCreatingVenue] = useState<boolean>(false);
-  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue_v2> | null>();
+  const [selectedVenue, setSelectedVenue] = useState<Venue_v2 | null>()
+  const [isCreatingVenue, setCreatingVenue] = useState<boolean>(false)
+
   const venues = useSelector(orderedVenuesSelector);
 
   const { roles } = useRoles();
@@ -49,17 +47,12 @@ const Admin_v2: React.FC = () => {
     return <>Forbidden</>;
   }
 
-  const selectVenue = (venue: WithId<Venue_v2>) => {
-    setSelectedVenue(venue);
-  };
-
   return (
     <>
       <S.Wrapper className="no-venue-selected">
-        <S.ViewWrapper>
+        <S.ItemWrapper>
           {selectedVenue || isCreatingVenue ? (
             <AdminVenueView
-              venue={selectedVenue as Venue_v2}
               onClickBackButton={() => {
                 setCreatingVenue(false);
                 setSelectedVenue(null);
@@ -68,18 +61,12 @@ const Admin_v2: React.FC = () => {
           ) : (
             <AdminVenues
               venues={venues as Venue_v2[]}
-              onClickVenue={selectVenue}
+              onClickVenue={setSelectedVenue}
               onClickCreateSpace={() => setCreatingVenue(true)}
             />
           )}
-        </S.ViewWrapper>
+        </S.ItemWrapper>
       </S.Wrapper>
-
-      <AuthenticationModal
-        show={!user}
-        onHide={() => {}}
-        showAuth={AuthOptions.login}
-      />
     </>
   );
 };

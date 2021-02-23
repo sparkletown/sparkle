@@ -18,6 +18,7 @@ import { AuthOptions } from "components/organisms/AuthenticationModal/Authentica
 const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   state,
   dispatch,
+  onSave,
 }) => {
   const history = useHistory();
   const { user } = useUser();
@@ -40,9 +41,12 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   }
 
   return (
-    <WithNavigationBar>
-      <Details previous={previous} dispatch={dispatch} data={state} />
-    </WithNavigationBar>
+    <Details
+      previous={previous}
+      dispatch={dispatch}
+      data={state}
+      onSave={onSave}
+    />
   );
 };
 

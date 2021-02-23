@@ -6,7 +6,6 @@ import { Button } from "components/atoms/Button/Button.styles";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
   scrollbar-width: thin;
   background-color: #000000;
 `;
