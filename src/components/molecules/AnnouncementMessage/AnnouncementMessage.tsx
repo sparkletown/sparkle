@@ -37,7 +37,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         centered: !isExpanded,
       })}
     >
-      {getLinkFromText(message)}
+      <div className="announcement-message">{getLinkFromText(message)}</div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>
