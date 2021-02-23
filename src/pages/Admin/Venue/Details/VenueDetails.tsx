@@ -159,13 +159,13 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       y_percent: editingRoom?.y_percent,
       width_percent: editingRoom?.width_percent,
       height_percent: editingRoom?.height_percent,
+      isEnabled: editingRoom?.isEnabled,
     };
 
     await updateRoom(newData, venueId!, user, index);
     closeEditingModal();
   };
 
-  console.log(coverImageUrl);
   return (
     <S.Container>
       <S.Header>
