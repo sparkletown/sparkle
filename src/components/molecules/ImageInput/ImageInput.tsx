@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 import { FieldError } from "react-hook-form";
 import "firebase/functions";
 import { ACCEPTED_IMAGE_TYPES } from "settings";
+
 interface ImageInputProps {
   disabled: boolean;
   name: string;
