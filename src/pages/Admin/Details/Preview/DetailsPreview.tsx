@@ -1,11 +1,11 @@
 import React from "react";
 
-// Typings
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+
 import { DetailsPreviewProps } from "./DetailsPreview.types";
 
-// Styles
+import "./DetailsPreview.scss";
 import * as S from "./DetailsPreview.styles";
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
@@ -31,15 +31,24 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
 
   return (
     <S.Wrapper>
-      <S.PreviewCard
-        backgroundImage={
-          !!bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER
-        }
-      >
-        {renderLogo()}
-        {renderName()}
-        {renderDescription()}
-      </S.PreviewCard>
+      <div className="preview-info">
+        <h3>Preview:</h3>
+        <div className="preview-info__description">
+          This is how the landing page for your Sparkle Space will appear to
+          visitors.
+        </div>
+      </div>
+      <div className="preview-container">
+        <S.PreviewCard
+          backgroundImage={
+            !!bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER
+          }
+        >
+          {renderLogo()}
+          {renderName()}
+          {renderDescription()}
+        </S.PreviewCard>
+      </div>
     </S.Wrapper>
   );
 };

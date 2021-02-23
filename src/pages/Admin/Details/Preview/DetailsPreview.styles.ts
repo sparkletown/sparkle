@@ -2,8 +2,8 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
-  height: 100vh;
-  justify-content: center;
+  flex-direction: column;
+  height: 100%;
   align-items: center;
 
   position: sticky;
@@ -20,6 +20,7 @@ export const PreviewCard = styled.div`
   width: 75%;
   flex-direction: column;
   padding: 6em 2em 2em;
+  max-width: 520px;
 
   border-radius: 1em;
 

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -12,7 +12,6 @@ import { useUser } from "hooks/useUser";
 import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
@@ -22,6 +21,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";
+import { WithId } from "utils/id";
 
 dayjs.extend(advancedFormat);
 
@@ -29,13 +29,9 @@ const Admin_v2: React.FC = () => {
   const { user } = useUser();
   useAdminVenues(user?.uid);
 
+  const [isCreatingVenue, setCreatingVenue] = useState<boolean>(false);
+  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue_v2> | null>();
   const venues = useSelector(orderedVenuesSelector);
-  const venueId = useVenueId();
-
-  const selectedVenue = useMemo(() => venues?.find((v) => v.id === venueId), [
-    venueId,
-    venues,
-  ]);
 
   const { roles } = useRoles();
 
@@ -53,6 +49,10 @@ const Admin_v2: React.FC = () => {
     return <>Forbidden</>;
   }
 
+  const selectVenue = (venue: WithId<Venue_v2>) => {
+    setSelectedVenue(venue);
+  };
+
   return (
     <>
       <S.Wrapper
@@ -60,10 +60,20 @@ const Admin_v2: React.FC = () => {
         hasSelectedVenue={!!selectedVenue}
       >
         <S.ViewWrapper>
-          {selectedVenue ? (
-            <AdminVenueView venue={selectedVenue as Venue_v2} />
+          {selectedVenue || isCreatingVenue ? (
+            <AdminVenueView
+              venue={selectedVenue as Venue_v2}
+              onClickBackButton={() => {
+                setCreatingVenue(false);
+                setSelectedVenue(null);
+              }}
+            />
           ) : (
-            <AdminVenues venues={venues} />
+            <AdminVenues
+              venues={venues as Venue_v2[]}
+              onClickVenue={selectVenue}
+              onClickCreateSpace={() => setCreatingVenue(true)}
+            />
           )}
         </S.ViewWrapper>
       </S.Wrapper>

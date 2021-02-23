@@ -11,5 +11,6 @@ export interface ImageInputProps {
   forwardRef: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
   ) => void;
+  title?: string;
   nameWithUnderscore?: boolean;
 }
