@@ -28,6 +28,7 @@ interface PropsType {
   isAudioEffectDisabled?: boolean;
   isCamp?: boolean;
   attendanceBoost?: number;
+  showEvenWhenNoUsers?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -39,6 +40,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isAudioEffectDisabled,
   isCamp,
   attendanceBoost,
+  showEvenWhenNoUsers = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
@@ -56,7 +58,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
-  if (attendance < 1) return null;
+  if (!showEvenWhenNoUsers && attendance < 1) return null;
 
   return (
     <>
