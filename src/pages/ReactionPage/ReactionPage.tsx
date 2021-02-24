@@ -37,9 +37,10 @@ const ReactionPage = () => {
   );
   const reactions = useSelector(reactionsSelector) ?? [];
 
-  const messagesToTheBand = reactions?.filter(
-    (reaction) => reaction.reaction === "messageToTheBand"
-  ) as Array<WithId<MessageToTheBandReaction>>;
+  const messagesToTheBand = reactions.filter(
+    (reaction): reaction is WithId<MessageToTheBandReaction> =>
+      reaction.reaction === "messageToTheBand"
+  );
 
   return (
     <WithNavigationBar>
