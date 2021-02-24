@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 
-import { useRoom } from "hooks/useRoom";
 import { DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
+
+import { useRoom } from "hooks/useRoom";
 
 import "./RoomAttendance.scss";
 
