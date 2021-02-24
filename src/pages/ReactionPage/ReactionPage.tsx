@@ -2,7 +2,7 @@ import React from "react";
 
 import { WithId } from "utils/id";
 import { MessageToTheBandReaction } from "utils/reactions";
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelectorData, reactionsSelector } from "utils/selectors";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
@@ -20,7 +20,6 @@ import "./ReactionPage.scss";
 const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
-  const reactions = useSelector((state) => state.firestore.ordered.reactions);
   const { messagesToDisplay } = useVenueChat();
 
   const hasPartygoers = recentVenueUsers.length > 0;
@@ -36,6 +35,7 @@ const ReactionPage = () => {
         }
       : undefined
   );
+  const reactions = useSelector(reactionsSelector) ?? [];
 
   const messagesToTheBand = reactions?.filter(
     (reaction) => reaction.reaction === "messageToTheBand"
