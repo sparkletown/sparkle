@@ -1,8 +1,9 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { Venue, VenueTemplate } from "types/venues";
 
+import { ReactionPage } from "pages/ReactionPage";
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -24,12 +25,18 @@ export interface TemplateWrapperProps {
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
+  const match = useRouteMatch();
 
   let template;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <Jazzbar />;
+      template = (
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route component={Jazzbar} />
+        </Switch>
+      );
       break;
     case VenueTemplate.friendship:
       template = <FriendShipPage />;

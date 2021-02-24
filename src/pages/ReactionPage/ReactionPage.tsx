@@ -18,7 +18,7 @@ import UserList from "components/molecules/UserList";
 
 import "./ReactionPage.scss";
 
-const ReactionPage = () => {
+export const ReactionPage = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
   const { messagesToDisplay } = useVenueChat();
@@ -65,5 +65,3 @@ const ReactionPage = () => {
     </WithNavigationBar>
   );
 };
-
-export default ReactionPage;

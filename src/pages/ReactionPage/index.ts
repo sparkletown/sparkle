@@ -1,1 +1,1 @@
-export { default } from "./ReactionPage";
+export { ReactionPage } from "./ReactionPage";
