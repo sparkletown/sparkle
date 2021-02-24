@@ -292,7 +292,7 @@ const Room: React.FC<RoomProps> = ({
   return (
     <>
       {myVideo}
-      <div className="jazzbar__participants--sided">{sidedVideos}</div>
+      {sidedVideos}
       {/* <div className="jazzbar__participants">{sidedVideos}</div> */}
       <div className="jazzbar__participants">{otherVideos}</div>
       {/* <div className="jazzbar__participants">{myVideo}</div> */}
