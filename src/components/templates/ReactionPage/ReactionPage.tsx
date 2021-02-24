@@ -21,7 +21,7 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
   ? reactionsSelector
   : messagesToTheBandSelector;
 
-export const ReactionPage = () => {
+export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
   const { recentVenueUsers } = useRecentVenueUsers();
