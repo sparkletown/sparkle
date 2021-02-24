@@ -82,8 +82,7 @@
         background-color: #19181a;
         overflow: hidden;
         position: relative;
-        // @debt Thomas' magic number. Should result in the best 16-9 ratio for Monday presentation
-        height: 333px;
+        height: 100%;
 
         .iframe-video {
           height: 100%;
