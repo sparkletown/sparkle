@@ -273,7 +273,7 @@ const Room: React.FC<RoomProps> = ({
 
   const myVideo = useMemo(() => {
     return room && profileData ? (
-      <div className={`jazzbar__participant`}>
+      <div className="jazzbar__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -291,8 +291,10 @@ const Room: React.FC<RoomProps> = ({
   return (
     <>
       {myVideo}
-      {sidedVideos}
-      <div className="jazzbar__participants">{otherVideos}</div>
+      {/* {sidedVideos} */}
+      <div className="jazzbar__participants">{sidedVideos}</div>
+      {/* <div className="jazzbar__participants">{otherVideos}</div> */}
+      {/* <div className="jazzbar__participants">{myVideo}</div> */}
 
       <VideoErrorModal
         show={!!videoError}
