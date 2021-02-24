@@ -51,6 +51,7 @@ export const ReactionPage = () => {
             users={recentVenueUsers}
             isAudioEffectDisabled
             imageSize={50}
+            showEvenWhenNoUsers
           />
         </div>
       </div>
