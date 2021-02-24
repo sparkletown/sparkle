@@ -19,6 +19,6 @@ export const getLinkFromText = (text: string) => {
           {word}{" "}
         </a>
       );
-    else return <span key={index}>{word} </span>;
+    else return <React.Fragment key={index}>{word} </React.Fragment>;
   });
 };
