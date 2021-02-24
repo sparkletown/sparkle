@@ -5,7 +5,11 @@ import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
 import "./UserSearchBar.scss";
+import { userProfileModalVisibilitySelector } from "utils/selectors";
 
 interface UserSearchBarProps {
   onSelect: (user: WithId<User>) => void;
@@ -19,6 +23,18 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
   >();
 
   const { worldUsers } = useWorldUsers();
+
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
 
   useEffect(() => {
     if (!searchQuery) {
@@ -39,11 +55,6 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
     setSearchQuery("");
   }, []);
 
-  const clearSelectedUserProfile = useCallback(
-    () => setSelectedUserProfile(undefined),
-    []
-  );
-
   return (
     <div className="user-search-links">
       <div className="user-search-icon" />
@@ -60,7 +71,10 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
             <div
               className="row result-user"
               key={user.id}
-              onClick={() => onSelect(user)}
+              onClick={() => {
+                onSelect(user);
+                setUserProfileModalVisible();
+              }}
             >
               <div
                 className="result-avatar"
@@ -77,11 +91,10 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
       )}
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={!!selectedUserProfile}
-        onHide={clearSelectedUserProfile}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
     </div>
   );
 };
-
 export default UserSearchBar;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 // Components
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -6,10 +6,15 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  userProfileModalVisibilitySelector,
+} from "utils/selectors";
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 import { IS_BURN } from "secrets";
 
@@ -52,6 +57,25 @@ const UserList: React.FunctionComponent<PropsType> = ({
     : usersSanitized?.slice(0, limit);
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
+
+  const onUserProfile = useCallback(
+    (user) => {
+      setSelectedUserProfile(user);
+      setUserProfileModalVisible();
+    },
+    [setSelectedUserProfile, setUserProfileModalVisible]
+  );
 
   if (!usersSanitized || attendance < 1) return <></>;
   return (
@@ -79,7 +103,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
               user && (
                 <UserProfilePicture
                   user={user}
-                  setSelectedUserProfile={setSelectedUserProfile}
+                  setSelectedUserProfile={onUserProfile}
                   isAudioEffectDisabled={isAudioEffectDisabled}
                   key={`${user.id}-${activity}-${imageSize}`}
                 />
@@ -89,9 +113,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
       </div>
 
       <UserProfileModal
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
         userProfile={selectedUserProfile}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
     </>
   );

@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 
 // Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +15,11 @@ import Video from "twilio-video";
 
 // Typings
 import { User } from "types/User";
+
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { userProfileModalVisibilitySelector } from "utils/selectors";
 
 export interface ParticipantProps {
   bartender?: User;
@@ -33,8 +44,16 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
-  const [showProfile, setShowProfile] = useState(false);
   const [muted, setMuted] = useState(defaultMute);
+
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -134,15 +153,15 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <div className="profile-icon">
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
-            setSelectedUserProfile={() => setShowProfile(true)}
+            setSelectedUserProfile={() => setUserProfileModalVisible()}
             reactionPosition="right"
           />
         </div>
       )}
       <UserProfileModal
-        show={showProfile}
-        onHide={() => setShowProfile(false)}
         userProfile={{ ...profileData, id: participant.identity }}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
       {children}
       <div className="mute-other-container">

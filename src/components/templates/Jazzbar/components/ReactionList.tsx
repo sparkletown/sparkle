@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import {
   DEFAULT_PARTY_NAME,
@@ -20,6 +20,11 @@ import { ChatMessage } from "types/chat";
 import { useWorldUsersById } from "hooks/users";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
+
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { userProfileModalVisibilitySelector } from "utils/selectors";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -52,6 +57,26 @@ const ReactionList: React.FC<ReactionListProps> = ({
   const profileImageSize = small
     ? REACTION_PROFILE_IMAGE_SIZE_SMALL
     : REACTION_PROFILE_IMAGE_SIZE_LARGE;
+
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
+
+  const onUserProfile = useCallback(
+    (user) => {
+      setSelectedUserProfile(user);
+      setUserProfileModalVisible();
+    },
+    [setSelectedUserProfile, setUserProfileModalVisible]
+  );
+
   return (
     <>
       <div className={`reaction-list ${small && "small"}`}>
@@ -63,7 +88,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <img
               onClick={() =>
                 worldUsersById[message.created_by] &&
-                setSelectedUserProfile({
+                onUserProfile({
                   ...worldUsersById[message.created_by],
                   id: message.created_by,
                 })
@@ -107,8 +132,8 @@ const ReactionList: React.FC<ReactionListProps> = ({
       </div>
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
     </>
   );

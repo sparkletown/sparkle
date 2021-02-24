@@ -222,6 +222,10 @@ export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
+export const userProfileModalVisibilitySelector: SparkleSelector<boolean> = (
+  state
+) => state.userProfile.isUserProfileVisible;
+
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
 ) => state.chat.settings;

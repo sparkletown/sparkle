@@ -19,12 +19,13 @@ import { WithId } from "utils/id";
 
 import "./ChatSidebar.scss";
 
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
+import { userProfileModalVisibilitySelector } from "utils/selectors";
+
 export const ChatSidebar: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<WithId<User>>();
-  const unselectProfile = useCallback(() => setSelectedProfile(undefined), [
-    setSelectedProfile,
-  ]);
-  const hasSelectedProfile = selectedProfile !== undefined;
 
   const {
     isExpanded,
@@ -51,6 +52,26 @@ export const ChatSidebar: React.FC = () => {
     "chat-sidebar__tab--selected":
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
+
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
+
+  const onUserProfile = useCallback(
+    (user) => {
+      setSelectedProfile(user);
+      setUserProfileModalVisible();
+    },
+    [setSelectedProfile, setUserProfileModalVisible]
+  );
 
   return (
     <>
@@ -82,20 +103,20 @@ export const ChatSidebar: React.FC = () => {
         </div>
         <div className="chat-sidebar__tab-content">
           {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-            <VenueChat onAvatarClick={setSelectedProfile} />
+            <VenueChat onAvatarClick={onUserProfile} />
           )}
           {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
             <PrivateChats
               recipientId={chatSettings.recipientId}
-              onAvatarClick={setSelectedProfile}
+              onAvatarClick={onUserProfile}
             />
           )}
         </div>
       </div>
       <UserProfileModal
         userProfile={selectedProfile}
-        show={hasSelectedProfile}
-        onHide={unselectProfile}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
     </>
   );

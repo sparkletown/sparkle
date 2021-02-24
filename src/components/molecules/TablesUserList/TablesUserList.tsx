@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
@@ -12,7 +12,13 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
-import { experienceSelector } from "utils/selectors";
+import {
+  experienceSelector,
+  userProfileModalVisibilitySelector,
+} from "utils/selectors";
+
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
 
 interface PropsType {
   venueName: string;
@@ -72,6 +78,25 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const { user, profile } = useUser();
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
   const experience = useSelector(experienceSelector);
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
+
+  const onUserProfile = useCallback(
+    (user) => {
+      setSelectedUserProfile(user);
+      setUserProfileModalVisible();
+    },
+    [setSelectedUserProfile, setUserProfileModalVisible]
+  );
 
   useEffect(() => {
     if (!profile) return;
@@ -177,7 +202,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               users={recentVenueUsers}
               table={table}
               tableLocked={tableLocked}
-              setSelectedUserProfile={setSelectedUserProfile}
+              setSelectedUserProfile={onUserProfile}
               onJoinClicked={onJoinClicked}
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />
@@ -185,9 +210,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         </>
       )}
       <UserProfileModal
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
         userProfile={selectedUserProfile}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
       <Modal
         show={showLockedMessage}

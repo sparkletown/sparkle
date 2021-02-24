@@ -23,8 +23,14 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
-import { currentVenueSelectorData } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  userProfileModalVisibilitySelector,
+} from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
+
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -78,6 +84,17 @@ const OnlineStats: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const venueName = venue?.name;
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
 
   useInterval(() => {
     firebase
@@ -304,7 +321,10 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => setSelectedUserProfile(user)}
+                          onClick={() => {
+                            setSelectedUserProfile(user);
+                            setUserProfileModalVisible();
+                          }}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
@@ -336,6 +356,7 @@ const OnlineStats: React.FC = () => {
       allVenues,
       liveVenues,
       peopleByLastSeen,
+      setUserProfileModalVisible,
     ]
   );
 
@@ -358,8 +379,8 @@ const OnlineStats: React.FC = () => {
       <UserProfileModal
         zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
         userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
     </>
   );

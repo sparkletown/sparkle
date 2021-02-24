@@ -9,10 +9,17 @@ import { useSelector } from "hooks/useSelector";
 import { Room } from "types/rooms";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  venueEventsSelector,
+  userProfileModalVisibilitySelector,
+} from "utils/selectors";
 import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
+
+import { setUserProfileModalVisibility } from "store/actions/UserProfile";
+import { useDispatch } from "hooks/useDispatch";
 
 interface SearchResult {
   rooms: Room[];
@@ -37,9 +44,19 @@ const NavSearchBar = () => {
   const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
-
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
+  const dispatch = useDispatch();
+  const isUserProfileModalVisible = useSelector(
+    userProfileModalVisibilitySelector
+  );
+
+  const setUserProfileModalVisible = useCallback(() => {
+    if (isUserProfileModalVisible) {
+      setSelectedUserProfile(undefined);
+    }
+    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
+  }, [dispatch, isUserProfileModalVisible]);
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -137,6 +154,7 @@ const NavSearchBar = () => {
                 key={`user-${user.id}`}
                 onClick={() => {
                   setSelectedUserProfile(user);
+                  setUserProfileModalVisible();
                   clearSearchQuery();
                 }}
               >
@@ -158,8 +176,8 @@ const NavSearchBar = () => {
       {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        show={isUserProfileModalVisible}
+        onHide={setUserProfileModalVisible}
       />
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
