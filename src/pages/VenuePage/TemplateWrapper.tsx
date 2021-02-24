@@ -38,21 +38,26 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         </Switch>
       );
       break;
+
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
       break;
+
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = <PartyMap />;
       break;
+
     case VenueTemplate.artpiece:
       template = <ArtPiece />;
       break;
+
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PlayaRouter />;
       fullscreen = true;
       break;
+
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
@@ -73,10 +78,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         </p>
       );
       break;
+
     case VenueTemplate.audience:
       template = <Audience />;
       fullscreen = true;
       break;
+
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
       break;
