@@ -11,9 +11,9 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useVenueChat } from "hooks/useVenueChat";
 import { useVenueId } from "hooks/useVenueId";
 
-import { ReactionList } from "components/templates/Jazzbar/components/ReactionList";
-
 import UserList from "components/molecules/UserList";
+
+import { ReactionList } from "./ReactionList";
 
 import "./ReactionPage.scss";
 
