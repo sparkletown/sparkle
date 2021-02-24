@@ -6,12 +6,12 @@ import { Venue, VenueTemplate } from "types/venues";
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import { PlayaRouter } from "components/templates/Playa/Router";
-import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
-import { PartyMap } from "components/templates/PartyMap";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
+import { PartyMap } from "components/templates/PartyMap";
+import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
