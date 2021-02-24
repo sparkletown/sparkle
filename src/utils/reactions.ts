@@ -97,3 +97,12 @@ export interface MessageToTheBandReaction extends BaseReaction {
 }
 
 export type Reaction = EmojiReaction | MessageToTheBandReaction;
+
+export const chatMessageAsMessageToTheBand = (
+  chat: ChatMessage
+): MessageToTheBandReaction => ({
+  created_at: chat.ts_utc.toMillis() / 1000,
+  created_by: chat.from,
+  reaction: "messageToTheBand",
+  text: chat.text,
+});

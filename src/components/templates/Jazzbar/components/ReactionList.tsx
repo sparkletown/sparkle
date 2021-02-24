@@ -1,110 +1,102 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import classNames from "classnames";
+
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import {
-  DEFAULT_PARTY_NAME,
-  DEFAULT_PROFILE_IMAGE,
-  REACTION_PROFILE_IMAGE_SIZE_LARGE,
-  REACTION_PROFILE_IMAGE_SIZE_SMALL,
-} from "settings";
-
-import {
-  MessageToTheBandReaction,
+  chatMessageAsMessageToTheBand,
   Reaction,
   ReactionsTextMap,
 } from "utils/reactions";
-import { WithId } from "utils/id";
+import { withId, WithId } from "utils/id";
 
 import { User } from "types/User";
 import { ChatMessage } from "types/chat";
 
-import { useWorldUsersById } from "hooks/users";
+import { useWorldUsersByIdWorkaround } from "hooks/users";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
-interface ReactionListProps {
+export interface ReactionListProps {
   reactions: Reaction[];
   chats: ChatMessage[];
   small?: boolean;
 }
 
-const ReactionList: React.FC<ReactionListProps> = ({
+export const ReactionList: React.FC<ReactionListProps> = ({
   reactions,
   chats,
   small = false,
 }) => {
-  const { worldUsersById } = useWorldUsersById();
+  // @debt see comments in useWorldUsersByIdWorkaround
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
+
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
   >();
 
-  const allReactions = [
-    ...(reactions ?? []),
-    ...(chats ?? []).map(
-      (chat) =>
-        ({
-          created_at: chat.ts_utc.toMillis() / 1000,
-          created_by: chat.from,
-          text: chat.text,
-        } as MessageToTheBandReaction)
-    ),
-  ].sort((a, b) => b.created_at - a.created_at);
+  const allReactions = useMemo(() => {
+    const chatsAsBandMessages = chats?.map(chatMessageAsMessageToTheBand) ?? [];
 
-  const profileImageSize = small
-    ? REACTION_PROFILE_IMAGE_SIZE_SMALL
-    : REACTION_PROFILE_IMAGE_SIZE_LARGE;
+    const allReactionsSorted = [
+      ...(reactions ?? []),
+      ...chatsAsBandMessages,
+    ].sort((a, b) => b.created_at - a.created_at);
+
+    return allReactionsSorted.map((message) => {
+      const messageSender = worldUsersById[message.created_by];
+      const messageSenderWithId =
+        messageSender !== undefined
+          ? withId(messageSender, message.created_by)
+          : undefined;
+
+      const messageSenderImage = messageSender?.anonMode
+        ? DEFAULT_PROFILE_IMAGE
+        : messageSender?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+
+      const messageSenderName = messageSender?.anonMode
+        ? DEFAULT_PARTY_NAME
+        : messageSender?.partyName ?? DEFAULT_PARTY_NAME;
+
+      return (
+        <div
+          className="message"
+          key={`${message.created_by}-${message.created_at}`}
+        >
+          {/* @debt Ideally we would only have one type of 'user avatar' component that would work for all of our needs */}
+          {messageSenderWithId !== undefined ? (
+            <UserProfilePicture
+              user={messageSenderWithId}
+              setSelectedUserProfile={setSelectedUserProfile}
+            />
+          ) : (
+            <UserAvatar avatarSrc={messageSenderImage} />
+          )}
+
+          <div className="partyname-bubble">{messageSenderName}</div>
+
+          <div
+            className={classNames("message-bubble", {
+              emoji: message.reaction !== "messageToTheBand",
+            })}
+          >
+            {message.reaction !== "messageToTheBand"
+              ? ReactionsTextMap[message.reaction]
+              : message.text}
+          </div>
+        </div>
+      );
+    });
+  }, [chats, reactions, worldUsersById]);
+
   return (
     <>
-      <div className={`reaction-list ${small && "small"}`}>
-        {allReactions.map((message) => (
-          <div
-            className="message"
-            key={`${message.created_by}-${message.created_at}`}
-          >
-            <img
-              onClick={() =>
-                worldUsersById[message.created_by] &&
-                setSelectedUserProfile({
-                  ...worldUsersById[message.created_by],
-                  id: message.created_by,
-                })
-              }
-              key={`${message.created_by}-messaging-the-band`}
-              className="profile-icon"
-              src={
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.pictureUrl) ||
-                DEFAULT_PROFILE_IMAGE
-              }
-              title={
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME
-              }
-              alt={`${
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME
-              } profile`}
-              width={profileImageSize}
-              height={profileImageSize}
-            />
-            <div className="partyname-bubble">
-              {(!worldUsersById[message.created_by]?.anonMode &&
-                worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME}
-            </div>
-            <div
-              className={`message-bubble ${
-                message.reaction === "messageToTheBand" ? "" : "emoji"
-              }`}
-            >
-              {!message.reaction || message.reaction === "messageToTheBand"
-                ? message.text
-                : ReactionsTextMap[message.reaction]}
-            </div>
-          </div>
-        ))}
+      <div className={classNames("reaction-list", { small })}>
+        {allReactions}
       </div>
+
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
@@ -113,5 +105,3 @@ const ReactionList: React.FC<ReactionListProps> = ({
     </>
   );
 };
-
-export default ReactionList;
