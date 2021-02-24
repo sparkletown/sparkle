@@ -20,7 +20,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
     [venues]
   );
 
-  const hasVenues = false;
+  const hasVenues = partyVenues.length > 0;
 
   return (
     <div className="admin-venue">
@@ -32,7 +32,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
       </div>
 
       {!hasVenues && (
-        <div className="admin-venue__empty-venues">
+        <div className="admin-venue__cards--empty">
           <h3>Welcome!</h3>
           <h3>Create your first Sparkle space</h3>
         </div>

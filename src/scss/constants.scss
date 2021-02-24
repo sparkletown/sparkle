@@ -3,6 +3,7 @@ $backgroundColor: var(--background-color);
 $dark-grey: #1a1d23;
 $intermediate-grey: #333035;
 $saturated-black: #19181a;
+$saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
@@ -20,7 +21,7 @@ $dark-green: #208a28;
 $stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
 
-$primary: #005ee5;
+$primary: #6f43ff;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba(#6f43ff, 0.35);
@@ -45,7 +46,7 @@ $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
 $profile-image-bg-color: #999999;
-$room-info-bg: #005ee5;
+$room-info-bg: #6f43ff;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
@@ -56,6 +57,8 @@ $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
 $z-layers: (
   // Admin
+  admin-venue-card: 1,
+  admin-venue-card-bg: -1,
   admin-navbar: 100,
   admin-placement: 10,
   admin-venue-header-after: 2,
