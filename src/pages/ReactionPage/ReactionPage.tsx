@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { WithId } from "utils/id";
 import { MessageToTheBandReaction } from "utils/reactions";
@@ -7,8 +7,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
-import { useVenueId } from "hooks/useVenueId";
-import { useVenueChats } from "hooks/useVenueChats";
+import { useVenueChat } from "hooks/useVenueChat";
 
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 
@@ -19,15 +18,10 @@ import UserList from "components/molecules/UserList";
 import "./ReactionPage.scss";
 
 const ReactionPage = () => {
-  const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
   const reactions = useSelector((state) => state.firestore.ordered.reactions);
-  const chats = useVenueChats(venueId);
-  const filteredChats = useMemo(
-    () => chats?.filter((chat) => chat.deleted !== true) ?? [],
-    [chats]
-  );
+  const { messagesToDisplay } = useVenueChat();
 
   const hasPartygoers = recentVenueUsers.length > 0;
 
@@ -56,7 +50,7 @@ const ReactionPage = () => {
             {hasPartygoers && (
               <ReactionList
                 reactions={messagesToTheBand}
-                chats={filteredChats}
+                chats={messagesToDisplay}
               />
             )}
           </div>

@@ -53,7 +53,6 @@ import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -1021,13 +1020,6 @@ const Playa = () => {
                 onChange={(event) => setShoutText(event.target.value)}
               />
             </form>
-          </div>
-          <div className="chat-pop-up">
-            <ChatDrawer
-              roomName={"PLAYA"}
-              title={`${PLAYA_VENUE_NAME} Chat`}
-              chatInputPlaceholder="Chat"
-            />
           </div>
           {IS_BURN && (
             <>
