@@ -2,6 +2,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
 
+import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
@@ -151,7 +152,7 @@ export const chatUsersByIdSelector: SparkleSelector<
   Record<string, User> | undefined
 > = (state) => state.firestore.data.chatUsers;
 
-export const experienceSelector = (state: RootState) =>
+export const experienceSelector: SparkleSelector<Experience> = (state) =>
   state.firestore.data.experience;
 
 export const venueSelector = (state: RootState) =>
