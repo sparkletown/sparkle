@@ -36,7 +36,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     }
   }, [isSendingMessage]);
 
-  const { register, handleSubmit, reset } = useForm<{
+  const { register, handleSubmit, reset, watch } = useForm<{
     message: string;
   }>({
     mode: "onSubmit",
@@ -47,6 +47,8 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     sendMessage(message);
     reset();
   });
+
+  const chatValue = watch("message");
 
   const renderedMessages = useMemo(
     () =>
@@ -74,7 +76,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         <button
           className="chatbox__submit-button"
           type="submit"
-          disabled={isSendingMessage}
+          disabled={!chatValue || isSendingMessage}
         >
           <FontAwesomeIcon
             icon={faPaperPlane}

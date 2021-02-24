@@ -28,6 +28,8 @@ export type PropsType = SubVenueIconMap[string] & {
   isResizable?: boolean;
   rounded: boolean;
   lockAspectRatio?: boolean;
+  isSaving?: boolean;
+  onDragStart?: (id: number) => void;
 };
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
@@ -42,6 +44,8 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     isResizable,
     rounded,
     lockAspectRatio = false,
+    isSaving,
+    onDragStart,
   } = props;
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
@@ -53,6 +57,12 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
   useEffect(() => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
+
+  useEffect(() => {
+    if (isDragging) {
+      onDragStart && onDragStart(parseInt(id));
+    }
+  }, [id, isDragging, onDragStart]);
 
   if (isResizable) {
     return (
@@ -66,35 +76,39 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
         }}
         lockAspectRatio={lockAspectRatio}
       >
-        <div ref={drag} style={styles.dragContainer}>
-          <div
-            style={{
-              ...styles.resizeTab,
-              top: 0,
-              left: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              top: 0,
-              right: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              bottom: 0,
-              left: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              bottom: 0,
-              right: 0,
-            }}
-          />
+        <div ref={!isSaving ? drag : null} style={styles.dragContainer}>
+          {!isSaving && (
+            <>
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  top: 0,
+                  left: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  top: 0,
+                  right: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  bottom: 0,
+                  left: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  bottom: 0,
+                  right: 0,
+                }}
+              />
+            </>
+          )}
           <div
             style={{
               ...styles.resizeableImageContainer,
