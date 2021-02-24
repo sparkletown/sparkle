@@ -51,6 +51,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       url: editValues ? editValues.url : "",
       title: editValues ? editValues.title : "",
       description: editValues ? editValues.description : "",
+      image_url: editValues ? editValues.image_url : "",
     },
   });
 
@@ -63,6 +64,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       const valuesWithTemplate = {
         ...values,
         template,
+        isEnabled: true,
       };
 
       const list = new DataTransfer();
@@ -97,7 +99,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
     }
   }, [editValues, onSubmitHandler, template, useUrl, user, values, venueId]);
 
-  const handleOnChange = (val: string) => setValue("image_url", val, false);
+  const handleOnChange = (val: string) => setValue("image_url", val);
 
   const handleUrlToggle = useCallback(() => {
     setUseUrl((value) => !value);
@@ -197,6 +199,9 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         nameWithUnderscore
         imgUrl={editValues ? editValues.image_url : ""}
       />
+      {errors.image_url && (
+        <span className="input-error">{errors.image_url.message}</span>
+      )}
     </S.InputWrapper>
   );
 

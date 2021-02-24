@@ -145,6 +145,8 @@ if (BUGSNAG_API_KEY) {
     "sparkle10",
     "bigtop",
     "deloitte",
+    "env/kotr",
+    "env/memrise",
   ];
 
   const releaseStage = () => {

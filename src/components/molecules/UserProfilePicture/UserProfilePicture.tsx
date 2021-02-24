@@ -22,6 +22,7 @@ import * as S from "./UserProfilePicture.styles";
 import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
 
+// @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
