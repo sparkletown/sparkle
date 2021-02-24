@@ -18,9 +18,9 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
-type TemplateWrapperProps = {
+export interface TemplateWrapperProps {
   venue: Venue;
-};
+}
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
