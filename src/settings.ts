@@ -56,6 +56,7 @@ export const PLAYA_INFO_NAME = "Playa Info";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
+export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";

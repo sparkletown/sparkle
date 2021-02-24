@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useRoom } from "hooks/useRoom";
+import { DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
@@ -13,12 +14,10 @@ type RoomAttendanceProps = {
   maxVisible?: number;
 };
 
-const MAX_AVATARS_VISIBLE = 2;
-
 export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   venue,
   room,
-  maxVisible = MAX_AVATARS_VISIBLE,
+  maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
   const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
 
