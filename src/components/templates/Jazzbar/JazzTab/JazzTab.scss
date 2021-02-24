@@ -12,9 +12,15 @@
   .music-bar-content {
     display: grid;
 
-    padding: 20px 50px;
+    padding: 20px 70px;
     justify-content: center;
     grid-gap: 0.5rem;
+
+    .jazzbar-table-component-container {
+      .table-item {
+        padding: 50px 15px 10px 15px;
+      }
+    }
 
     @media (max-width: 900px) {
       display: flex;
@@ -40,11 +46,11 @@
     }
 
     @media (min-width: 900px) {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: 260px 1fr 1fr 260px;
+      grid-template-rows: repeat(auto-fill, 195px);
       grid-template-areas:
-        "empty-left video video empty-right"
         ".  video video ."
-        ".  video video ."
+        ".  video video  ."
         "items items items items";
     }
 
@@ -63,7 +69,8 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      padding: 10px;
+      padding: 0 10px;
+      min-height: 395px;
 
       grid-area: video;
 
@@ -89,19 +96,25 @@
         flex-direction: column;
         align-items: center;
         background-color: rgb(25, 24, 26);
-        width: 80%;
+        width: 90%;
         overflow: hidden;
 
-        padding: 0 10px 10px;
+        padding: 0 10px 5px;
         border-radius: 0px 0px 28px 28px;
         .emoji-container {
           display: flex;
           justify-content: space-around;
-          margin: 20px 0;
+          margin: 10px 0;
           font-size: 27px;
           letter-spacing: 0.5rem;
           overflow-x: auto;
           width: 100%;
+
+          .reaction {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
 
           .reaction > span {
             cursor: pointer;
@@ -147,6 +160,7 @@
     height: 44px;
     display: flex;
     justify-content: center;
+    align-items: center;
     align-self: center;
   }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+// import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,7 +19,7 @@ import {
 
 import Room from "../components/JazzBarRoom";
 
-import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
+// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
@@ -41,9 +41,9 @@ interface JazzProps {
   venue?: Venue;
 }
 
-interface ChatOutDataType {
-  messageToTheBand: string;
-}
+// interface ChatOutDataType {
+//   messageToTheBand: string;
+// }
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -93,28 +93,28 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     }
   }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
-  const {
-    register: registerBandMessage,
-    handleSubmit: handleBandMessageSubmit,
-    reset,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
-  });
+  // const {
+  //   register: registerBandMessage,
+  //   handleSubmit: handleBandMessageSubmit,
+  //   reset,
+  // } = useForm<ChatOutDataType>({
+  //   mode: "onSubmit",
+  // });
 
-  const onBandMessageSubmit = async (data: ChatOutDataType) => {
-    setIsMessageToTheBandSent(true);
-    user &&
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createReaction(
-            { reaction: "messageToTheBand", text: data.messageToTheBand },
-            user
-          ),
-        })
-      );
-    reset();
-  };
+  // const onBandMessageSubmit = async (data: ChatOutDataType) => {
+  //   setIsMessageToTheBandSent(true);
+  //   user &&
+  //     dispatch(
+  //       addReaction({
+  //         venueId,
+  //         reaction: createReaction(
+  //           { reaction: "messageToTheBand", text: data.messageToTheBand },
+  //           user
+  //         ),
+  //       })
+  //     );
+  //   reset();
+  // };
 
   if (!venueToUse) return <>Loading...</>;
 
@@ -138,8 +138,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       )}
 
       <div className="music-bar-content">
-        <div className="music-bar-top-left-grid-cell" />
-        <div className="music-bar-top-right-grid-cell" />
+        {/* <div className="music-bar-top-left-grid-cell" />
+        <div className="music-bar-top-right-grid-cell" /> */}
         <div className="video-container">
           {!venueToUse.hideVideo && (
             <>
@@ -185,12 +185,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     />
                   </div>
                 </div>
-                <CallOutMessageForm
+                {/* <CallOutMessageForm
                   onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                   ref={registerBandMessage({ required: true })}
                   isMessageToTheBandSent={isMessageToTheBandSent}
                   placeholder="Shout out..."
-                />
+                /> */}
               </div>
             </>
           )}
