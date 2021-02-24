@@ -1,6 +1,8 @@
 import React from "react";
 
-import { messagesToTheBandSelector } from "utils/selectors";
+import { SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
+
+import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -15,11 +17,15 @@ import UserList from "components/molecules/UserList";
 
 import "./ReactionPage.scss";
 
+const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
+  ? reactionsSelector
+  : messagesToTheBandSelector;
+
 export const ReactionPage = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
   const { recentVenueUsers } = useRecentVenueUsers();
-  const { messagesToDisplay } = useVenueChat();
+  const { messagesToDisplay: venueChatMessages } = useVenueChat();
 
   useFirestoreConnect(
     currentVenue
@@ -32,7 +38,7 @@ export const ReactionPage = () => {
         }
       : undefined
   );
-  const messagesToTheBand = useSelector(messagesToTheBandSelector) ?? [];
+  const reactions = useSelector(wantedReactionsSelector) ?? [];
 
   return (
     <div className="reaction-page-container">
@@ -40,10 +46,7 @@ export const ReactionPage = () => {
 
       <div className="row">
         <div className="col-8">
-          <ReactionList
-            reactions={messagesToTheBand}
-            chats={messagesToDisplay}
-          />
+          <ReactionList reactions={reactions} chats={venueChatMessages} />
         </div>
 
         <div className="col-4">
