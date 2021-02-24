@@ -22,3 +22,5 @@ export type Bounds = Point & Dimensions;
 export type Matrix<T> = T[][];
 
 export type ReactHook<T, U> = (props: T) => U;
+
+export type PartialRecord<K extends keyof never, T> = Record<K, T | undefined>;
