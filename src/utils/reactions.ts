@@ -1,3 +1,5 @@
+import { ChatMessage } from "types/chat";
+
 export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
