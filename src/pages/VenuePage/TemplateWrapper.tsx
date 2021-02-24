@@ -79,6 +79,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       );
       break;
 
+    // Note: This is the template that is used for the Auditorium
     case VenueTemplate.audience:
       template = <Audience />;
       fullscreen = true;
