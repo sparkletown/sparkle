@@ -9,13 +9,16 @@
     }
   }
 
-  @media (max-width: 900px) {
-    .music-bar-content {
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-areas:
-        "video video"
-        "video video"
-        "items items";
+  .music-bar-content {
+    display: grid;
+
+    padding: 20px 50px;
+    justify-content: center;
+    grid-gap: 0.5rem;
+
+    @media (max-width: 900px) {
+      display: flex;
+      flex-flow: wrap;
 
       .music-bar-top-left-grid-cell {
         display: none;
@@ -24,11 +27,19 @@
       .music-bar-top-right-grid-cell {
         display: none;
       }
-    }
-  }
 
-  @media (min-width: 900px) {
-    .music-bar-content {
+      .jazzbar-table-component-container {
+        width: 40%;
+      }
+
+      @media (max-width: 550px) {
+        .jazzbar-table-component-container {
+          width: 100%;
+        }
+      }
+    }
+
+    @media (min-width: 900px) {
       grid-template-columns: repeat(4, 1fr);
       grid-template-areas:
         "empty-left video video empty-right"
@@ -36,14 +47,6 @@
         ".  video video ."
         "items items items items";
     }
-  }
-
-  .music-bar-content {
-    display: grid;
-
-    padding: 20px 50px;
-    justify-content: center;
-    grid-gap: 0.5rem;
 
     .music-bar-top-left-grid-cell {
       height: 90px;

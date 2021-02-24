@@ -14,6 +14,8 @@ import { useWorldUsersById } from "hooks/users";
 
 import "./Room.scss";
 
+const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
+
 interface RoomProps {
   roomName: string;
   venueName: string;
@@ -214,16 +216,15 @@ const Room: React.FC<RoomProps> = ({
     ? worldUsersById[room.localParticipant.identity]
     : undefined;
 
-  const [first, second, third, ...otherParticipants] = participants;
-
-  console.log({
-    participants,
-    first,
-  });
+  const sidedVideoParticipants = participants.slice(
+    0,
+    NUM_OF_SIDED_USERS_MINUS_ONE
+  );
+  const otherParticipants = participants.slice(NUM_OF_SIDED_USERS_MINUS_ONE);
 
   const sidedVideos = useMemo(
     () =>
-      [first, second, third].map((participant) => {
+      sidedVideoParticipants.map((participant) => {
         if (!participant) {
           return null;
         }
@@ -243,7 +244,7 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [first, second, third, meIsBartender, worldUsersById]
+    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
   );
 
   const otherVideos = useMemo(
@@ -268,7 +269,7 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [otherParticipants, meIsBartender, worldUsersById]
+    [otherParticipants, meIsBartender, worldUsersById, roomName]
   );
 
   const myVideo = useMemo(() => {
@@ -284,16 +285,16 @@ const Room: React.FC<RoomProps> = ({
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, ,]);
+  }, [meIsBartender, room, profileData, defaultMute]);
 
   if (!token) return null;
 
   return (
     <>
       {myVideo}
-      {/* {sidedVideos} */}
-      <div className="jazzbar__participants">{sidedVideos}</div>
-      {/* <div className="jazzbar__participants">{otherVideos}</div> */}
+      <div className="jazzbar__participants--sided">{sidedVideos}</div>
+      {/* <div className="jazzbar__participants">{sidedVideos}</div> */}
+      <div className="jazzbar__participants">{otherVideos}</div>
       {/* <div className="jazzbar__participants">{myVideo}</div> */}
 
       <VideoErrorModal
