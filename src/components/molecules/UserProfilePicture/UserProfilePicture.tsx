@@ -34,6 +34,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition,
   user,
 }) => {
+  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment
   const muteReactions = useSelector((state) => state.room.mute);
 
   const [pictureUrl, setPictureUrl] = useState("");
