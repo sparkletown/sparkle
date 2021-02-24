@@ -4,16 +4,18 @@ import { useHistory } from "react-router-dom";
 import { Venue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
+
 import { ArtPiece } from "components/templates/ArtPiece";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { PlayaRouter } from "components/templates/Playa/Router";
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { PartyMap } from "components/templates/PartyMap";
 import { Jazzbar } from "components/templates/Jazzbar";
+
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 type TemplateWrapperProps = {
