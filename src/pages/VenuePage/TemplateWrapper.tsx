@@ -81,7 +81,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     // Note: This is the template that is used for the Auditorium
     case VenueTemplate.audience:
-      template = <Audience />;
+      template = (
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route component={Audience} />
+        </Switch>
+      );
       fullscreen = true;
       break;
 
