@@ -3,7 +3,6 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { Venue, VenueTemplate } from "types/venues";
 
-import { ReactionPage } from "pages/ReactionPage";
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -13,6 +12,7 @@ import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
 import { PartyMap } from "components/templates/PartyMap";
 import { Jazzbar } from "components/templates/Jazzbar";
+import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
