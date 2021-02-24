@@ -1,8 +1,9 @@
 import React from "react";
 
-import { WithId } from "utils/id";
-import { MessageToTheBandReaction } from "utils/reactions";
-import { currentVenueSelectorData, reactionsSelector } from "utils/selectors";
+import {
+  currentVenueSelectorData,
+  messagesToTheBandSelector,
+} from "utils/selectors";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
@@ -35,12 +36,7 @@ const ReactionPage = () => {
         }
       : undefined
   );
-  const reactions = useSelector(reactionsSelector) ?? [];
-
-  const messagesToTheBand = reactions.filter(
-    (reaction): reaction is WithId<MessageToTheBandReaction> =>
-      reaction.reaction === "messageToTheBand"
-  );
+  const messagesToTheBand = useSelector(messagesToTheBandSelector) ?? [];
 
   return (
     <WithNavigationBar>

@@ -18,7 +18,7 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { Reaction } from "./reactions";
+import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -159,6 +159,14 @@ export const experienceSelector: SparkleSelector<Experience> = (state) =>
 export const reactionsSelector: SparkleSelector<
   WithId<Reaction>[] | undefined
 > = (state) => state.firestore.ordered.reactions;
+
+export const messagesToTheBandSelector: SparkleSelector<
+  WithId<MessageToTheBandReaction>[] | undefined
+> = (state) =>
+  reactionsSelector(state)?.filter(
+    (reaction): reaction is WithId<MessageToTheBandReaction> =>
+      reaction.reaction === "messageToTheBand"
+  );
 
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
