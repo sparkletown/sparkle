@@ -1,14 +1,13 @@
 import React from "react";
 
-import {
-  currentVenueSelectorData,
-  messagesToTheBandSelector,
-} from "utils/selectors";
+import { messagesToTheBandSelector } from "utils/selectors";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useVenueChat } from "hooks/useVenueChat";
+import { useVenueId } from "hooks/useVenueId";
 
 import ReactionList from "components/templates/Jazzbar/components/ReactionList";
 
@@ -19,17 +18,18 @@ import UserList from "components/molecules/UserList";
 import "./ReactionPage.scss";
 
 export const ReactionPage = () => {
-  const venue = useSelector(currentVenueSelectorData);
+  const venueId = useVenueId();
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
   const { recentVenueUsers } = useRecentVenueUsers();
   const { messagesToDisplay } = useVenueChat();
 
   const hasPartygoers = recentVenueUsers.length > 0;
 
   useFirestoreConnect(
-    venue
+    currentVenue
       ? {
           collection: "experiences",
-          doc: venue.name,
+          doc: currentVenue.id,
           subcollections: [{ collection: "reactions" }],
           orderBy: ["created_at", "desc"],
           storeAs: "reactions",
