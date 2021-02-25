@@ -2,7 +2,6 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "preinstall": "npx --no-install npm-force-resolutions",
     "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "engines": {
@@ -22,11 +21,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.3",
     "firebase-tools": "^9.2.2",
-    "npm-force-resolutions": "0.0.3",
     "prettier": "^2.2.1"
-  },
-  "resolutions": {
-    "websocket-extensions": "0.1.4"
   },
   "private": true
 }
