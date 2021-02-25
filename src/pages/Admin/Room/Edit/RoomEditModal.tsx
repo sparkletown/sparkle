@@ -16,16 +16,16 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   deleteHandler,
 }) => {
   const [selectedTemplate, setSelectedTemplate] = useState<string>(
-    room.template!
+    room.template
   );
 
   const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | null>(null);
 
   useEffect(() => {
     const template = ROOM_TEMPLATES.find(
-      (i) => i.template === selectedTemplate
+      (roomTemplate) => roomTemplate.template === selectedTemplate
     );
-    setRoomTemplate(template!);
+    setRoomTemplate(template);
   }, [selectedTemplate]);
 
   const {
@@ -169,5 +169,3 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
     </Modal>
   );
 };
-
-export default RoomEditModal;

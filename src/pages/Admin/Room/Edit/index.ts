@@ -1,1 +1,1 @@
-export { default } from "./RoomEditModal";
+export { RoomEditModal } from "./RoomEditModal";
