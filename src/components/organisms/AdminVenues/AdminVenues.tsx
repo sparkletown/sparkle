@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import classNames from "classnames";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -16,7 +17,10 @@ export interface AdminVenuesProps {
 
 export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
   const partyVenues = useMemo(
-    () => venues?.filter((venue) => venue.template === VenueTemplate.partymap),
+    () =>
+      venues
+        ?.filter((venue) => venue.template === VenueTemplate.partymap)
+        .map((venue) => <AdminVenueCard key={venue.id} venue={venue} />),
     [venues]
   );
 
@@ -24,27 +28,28 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
 
   return (
     <div className="admin-venue">
-      <div className="admin-venue__create-button">
-        <h3>Admin Dashboard</h3>
+      <div className="admin-venue__header">
+        <div className="admin-venue__header--title">Admin Dashboard</div>
         <Button as={Link} to="/admin_v2/venue/creation">
           Create a new space
         </Button>
       </div>
 
-      {!hasVenues && (
-        <div className="admin-venue__cards--empty">
-          <h3>Welcome!</h3>
-          <h3>Create your first Sparkle space</h3>
-        </div>
-      )}
-
-      {hasVenues && (
-        <div className="admin-venue__cards">
-          {partyVenues.map((venue) => (
-            <AdminVenueCard key={venue.id} venue={venue} />
-          ))}
-        </div>
-      )}
+      <div
+        className={classNames("admin-venue__cards", {
+          "admin-venue__cards--empty": !hasVenues,
+        })}
+      >
+        {!hasVenues && (
+          <>
+            <div className="admin-venue__cards--welcome-title">Welcome!</div>
+            <div className="admin-venue__cards--welcome-title">
+              Create your first Sparkle space
+            </div>
+          </>
+        )}
+        {hasVenues && partyVenues}
+      </div>
     </div>
   );
 };
