@@ -2,11 +2,19 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Form, Modal, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
+import { RoomData_v2 } from "types/rooms";
 
 import { RoomTemplate, ROOM_TEMPLATES } from "settings";
-import { RoomEditModalProps } from "./RoomEditModal.types";
 
 import "./RoomEditModal.scss";
+
+interface RoomEditModalProps {
+  isVisible: boolean;
+  onClickOutsideHandler: () => void;
+  room: RoomData_v2;
+  submitHandler: (values: RoomData_v2, index: number) => void;
+  deleteHandler: () => void;
+}
 
 export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   isVisible,
@@ -15,11 +23,13 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   submitHandler,
   deleteHandler,
 }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(
+  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(
     room.template
   );
 
-  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | null>(null);
+  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const template = ROOM_TEMPLATES.find(
@@ -52,9 +62,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
     [setValue]
   );
 
-  function onSubmit() {
+  const onSubmit = useCallback(() => {
     return submitHandler(values, room.roomIndex!);
-  }
+  }, [room.roomIndex, submitHandler, values]);
 
   const customInputFields = useMemo(
     () =>
