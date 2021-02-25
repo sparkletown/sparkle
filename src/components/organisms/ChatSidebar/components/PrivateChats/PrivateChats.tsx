@@ -6,9 +6,11 @@ import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
 import { SetSelectedProfile } from "types/chat";
 
-import { usePrivateChatPreviews } from "hooks/privateChats";
+import {
+  usePrivateChatPreviews,
+  useOnlineUsersToDisplay,
+} from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useRecentWorldUsers } from "hooks/users";
 
 import "./PrivateChats.scss";
 
@@ -28,41 +30,44 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   );
 
   const { privateChatPreviews } = usePrivateChatPreviews();
+  const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
-  const { recentWorldUsers } = useRecentWorldUsers();
 
-  const numberOfRecentWorldUsers = recentWorldUsers.length;
+  const numberOfOnline = onlineUsers.length;
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
-      privateChatPreviews.map((chatMessage) => (
-        <PrivateChatPreview
-          key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
-          message={chatMessage}
-          isOnline={recentWorldUsers.some(
-            (user) => user.id === chatMessage.counterPartyUser.id
-          )}
-          onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
-        />
-      )),
-    [privateChatPreviews, selectRecipientChat, recentWorldUsers]
+      privateChatPreviews
+        // Filter out self
+        .filter((chatMessage) => chatMessage.from !== chatMessage.to)
+        .map((chatMessage) => (
+          <PrivateChatPreview
+            key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+            message={chatMessage}
+            isOnline={onlineUsers.some(
+              (user) => user.id === chatMessage.counterPartyUser.id
+            )}
+            onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
+          />
+        )),
+    [privateChatPreviews, selectRecipientChat, onlineUsers]
   );
 
   const renderedOnlineUsers = useMemo(
     () =>
-      recentWorldUsers.map((user) => (
+      onlineUsers.map((user) => (
         <OnlineUser
           key={user.id}
           user={user}
           onClick={() => selectRecipientChat(user.id)}
         />
       )),
-    [recentWorldUsers, selectRecipientChat]
+    [onlineUsers, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
     () =>
-      recentWorldUsers
+      onlineUsers
         .filter((user) =>
           user.partyName?.toLowerCase().includes(userSearchQuery.toLowerCase())
         )
@@ -73,7 +78,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
             onClick={() => selectRecipientChat(user.id)}
           />
         )),
-    [recentWorldUsers, selectRecipientChat, userSearchQuery]
+    [onlineUsers, selectRecipientChat, userSearchQuery]
   );
 
   const numberOfSearchResults = renderedSearchResults.length;
@@ -116,7 +121,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           )}
 
           <p className="private-chats__title-text">
-            {numberOfRecentWorldUsers} connected people
+            {numberOfOnline} connected people
           </p>
 
           {renderedOnlineUsers}

@@ -10,8 +10,8 @@ export const Button = styled.button<ButtonProps>`
   border-radius: 1.375em;
   border: none;
   background-color: #361f6e;
-  background-image: ${({ hasGradient }) =>
-    hasGradient
+  background-image: ${({ hasGradient, disabled }) =>
+    hasGradient && !disabled
       ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
       : "none"};
 

@@ -6,6 +6,7 @@ $my-text-border-radius: 28px 28px 4px 28px;
 .chat-message {
   align-self: flex-start;
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   margin-bottom: 16px;
 
@@ -56,6 +57,7 @@ $my-text-border-radius: 28px 28px 4px 28px;
 
   &--me {
     align-self: flex-end;
+    align-items: flex-end;
 
     .chat-message__text {
       text-align: right;
@@ -64,7 +66,17 @@ $my-text-border-radius: 28px 28px 4px 28px;
     }
 
     .chat-message__info {
+      flex-direction: row-reverse;
       align-self: flex-end;
+    }
+
+    .chat-message__author {
+      margin: 0 4px 0 8px;
+    }
+
+    .chat-message__delete-icon {
+      margin-left: 0;
+      margin-right: 5px;
     }
   }
 }
