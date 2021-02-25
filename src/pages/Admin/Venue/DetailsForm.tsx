@@ -777,15 +777,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderShowNametagsToggle = () => (
-    <div className="toggle-room">
+    <>
       <h4 className="italic input-header">
         Display user names on their avatars
       </h4>
-      <label className="switch">
-        <input type="checkbox" name="showNametags" ref={register} />
-        <span className="slider round" />
+      <label className="input-container">
+        <Form.Control as="select" name="showNametags" ref={register} custom>
+          <option value="none">None</option>
+          <option value="inline">Inline</option>
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
       </label>
-    </div>
+    </>
   );
 
   const renderRadioToggle = () => (

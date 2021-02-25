@@ -174,7 +174,7 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
-    showNametags: Yup.bool().notRequired(),
+    showNametags: Yup.string().notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(5, "Columns must be at least 5"),

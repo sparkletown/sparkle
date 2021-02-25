@@ -77,8 +77,13 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
   ) as MessageToTheBandReaction | undefined;
 
-  const shouldShowNametags =
+  const shouldShowNametags: string =
     currentVenue?.showNametags ?? DEFAULT_SHOW_AVATAR_NAMETAG;
+
+  const nametagClass =
+    shouldShowNametags === "hover"
+      ? "profile-name-avatar profile-name-avatar-hover"
+      : "profile-name-avatar";
 
   const imageErrorHandler = useCallback(
     (
@@ -110,8 +115,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
         >
-          {shouldShowNametags && (
-            <div className="profile-name-avatar">{user.partyName}</div>
+          {shouldShowNametags !== "none" && (
+            <div className={nametagClass}>{user.partyName}</div>
           )}
         </S.Avatar>
         {Reactions.map(
@@ -164,6 +169,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     muteReactions,
     isAudioEffectDisabled,
     shouldShowNametags,
+    nametagClass,
   ]);
 };
 

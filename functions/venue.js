@@ -100,7 +100,7 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     showRadio: data.showRadio || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
-    showNametags: data.showNametags || false,
+    showNametags: data.showNametags || "none",
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -551,7 +551,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
-  if (typeof data.showNametags === "boolean") {
+  if (data.showNametags) {
     updated.showNametags = data.showNametags;
   }
 
@@ -685,6 +685,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   if (data.bannerMessage) {
     updated.bannerMessage = data.bannerMessage;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);

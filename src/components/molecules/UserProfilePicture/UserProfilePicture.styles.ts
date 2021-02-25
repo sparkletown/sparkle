@@ -13,6 +13,14 @@ export const Avatar = styled.div<AvatarProps>`
   height: 4vh;
   background-image: url(${({ backgroundImage }) =>
     backgroundImage ?? DEFAULT_PROFILE_IMAGE});
+
+  &:hover .profile-name-avatar-hover {
+    transform: scale(1.5) translate(-35%, 50%);
+    opacity: 1;
+    box-shadow: 0 0 0 3px lighten(blue, 10%), 0 2px 4px rgba($black, 0.2);
+    background-color: #005ee5;
+    padding: 5px 5px;
+  }
 `;
 
 // --- Reaction
@@ -64,6 +72,7 @@ export const Container = styled.div`
   }
 
   .profile-name-avatar {
+    opacity: 0.8;
     z-index: 1;
     bottom: 10%;
     position: absolute;
@@ -76,11 +85,12 @@ export const Container = styled.div`
     text-align: center;
     font-size: 0.8rem;
     line-height: 0.9;
-    opacity: 1;
     left: 50%;
     margin-right: -50%;
     transform: translate(-50%, 0);
     min-width: 70%;
+    transition: transform 400ms, padding 400ms, opacity 600ms,
+      background-color 600ms;
   }
 `;
 

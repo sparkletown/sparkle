@@ -73,7 +73,7 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
-  showNametags: Yup.bool().notRequired(),
+  showNametags: Yup.string().notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
   showZendesk: Yup.bool().notRequired(),
@@ -175,6 +175,26 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         )}
       </Form.Group>
     </ToggleElement>
+  );
+
+  const renderShowNametags = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Show Nametags</S.ItemTitle>
+        </S.TitleWrapper>
+
+        <S.ItemSubtitle>Display user names on their avatars</S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control as="select" custom name="showNametags" ref={register}>
+          <option value="none">None</option>
+          <option value="inline">Inline</option>
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
+      </S.ItemBody>
+    </S.ItemWrapper>
   );
 
   const renderRoomVisibility = () => (
@@ -293,12 +313,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           title="Show badges"
         />
 
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.showNametags}
-          name="showNametags"
-          title="Show nametags"
-        />
+        {renderShowNametags()}
 
         <ToggleElement
           forwardRef={register}
