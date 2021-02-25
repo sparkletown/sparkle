@@ -32,7 +32,8 @@ export interface RoomSchemaShape {
   title: string;
   venueName?: string;
   url?: string;
-  useUrl: boolean;
+  useUrl?: boolean;
+  image_url: string;
 }
 
 const createFileSchema = (
@@ -119,11 +120,17 @@ export const validationSchema_v2 = Yup.object()
   })
   .required();
 
+const roomTitleSchema = Yup.string()
+  .required("Room name is required")
+  .min(3, ({ min }) => `Name must be at least ${min} characters`);
+const roomUrlSchema = Yup.string()
+  .required("Url is required!")
+  .min(3, ({ min }) => `Url must be at least ${min} characters`);
+const roomImageUrlSchema = Yup.string().required("Room image is required");
+
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   useUrl: Yup.boolean().required(),
-  title: Yup.string()
-    .required("Room name is required")
-    .min(3, ({ min }) => `Name must be at least ${min} characters`),
+  title: roomTitleSchema,
   venueName: Yup.string()
     .when("useUrl", {
       is: false,
@@ -156,10 +163,15 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
     ),
   url: Yup.string().when("useUrl", {
     is: true,
-    then: Yup.string()
-      .required("Url is required!")
-      .min(3, ({ min }) => `Url must be at least ${min} characters`),
+    then: roomUrlSchema,
   }),
+  image_url: roomImageUrlSchema,
+});
+
+export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
+  title: roomTitleSchema,
+  url: roomUrlSchema,
+  image_url: roomImageUrlSchema,
 });
 
 export const venueEditSchema = Yup.object()

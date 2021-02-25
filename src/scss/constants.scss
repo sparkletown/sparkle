@@ -110,8 +110,7 @@ $z-layers: (
 
 @function z($layer) {
   @if not map-has-key($z-layers, $layer) {
-    @warn "No layer found for `#{$layer}` in $z-layers map. Property omitted. Falling back to 1.";
-    @return 1;
+    @error "No layer found for `#{$layer}` in $z-layers map.";
   }
 
   @return map-get($z-layers, $layer);
