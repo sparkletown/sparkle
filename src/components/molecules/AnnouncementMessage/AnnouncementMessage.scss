@@ -1,5 +1,9 @@
 @import "scss/constants.scss";
 
+$spacing: 15px;
+$close-icon-width: 20px;
+$message-margin: $spacing + $close-icon-width + 5px;
+
 .announcement-container {
   display: block;
   z-index: z(announcement);
@@ -15,18 +19,22 @@
     left: 50%;
   }
 
-  padding: 15px;
-  border-radius: 0 0 50px 50px;
+  padding: $spacing 0;
+  border-radius: 0 0 20px 20px;
   text-align: center;
 
   .close-button {
     cursor: pointer;
     position: absolute;
-    top: 10px;
-    right: 15px;
+    top: $spacing;
+    right: $spacing;
     :hover {
       color: var(--primary-color);
       text-decoration: underline;
     }
   }
+}
+
+.announcement-message {
+  margin: 0 $message-margin;
 }
