@@ -47,7 +47,10 @@ export const ReactionPage: React.FC = () => {
 
       <div className="row">
         <div className="col-8">
-          <ReactionList reactions={reactions} chats={venueChatMessages} />
+          <ReactionList
+            reactions={reactions}
+            chatMessages={venueChatMessages}
+          />
         </div>
 
         <div className="col-4">

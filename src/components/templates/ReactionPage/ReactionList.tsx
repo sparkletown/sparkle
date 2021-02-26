@@ -21,13 +21,13 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 export interface ReactionListProps {
   reactions: Reaction[];
-  chats: ChatMessage[];
+  chatMessages: ChatMessage[];
   small?: boolean;
 }
 
 export const ReactionList: React.FC<ReactionListProps> = ({
   reactions,
-  chats,
+  chatMessages,
   small = false,
 }) => {
   // @debt see comments in useWorldUsersByIdWorkaround
@@ -38,7 +38,8 @@ export const ReactionList: React.FC<ReactionListProps> = ({
   >();
 
   const allReactions = useMemo(() => {
-    const chatsAsBandMessages = chats?.map(chatMessageAsMessageToTheBand) ?? [];
+    const chatsAsBandMessages =
+      chatMessages?.map(chatMessageAsMessageToTheBand) ?? [];
 
     const allReactionsSorted = [
       ...(reactions ?? []),
@@ -89,7 +90,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
         </div>
       );
     });
-  }, [chats, reactions, worldUsersById]);
+  }, [chatMessages, reactions, worldUsersById]);
 
   return (
     <>
