@@ -1,23 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-
-// Components
-import { MessageToTheBandReaction, Reactions } from "utils/reactions";
-
-// Hooks
-import { useSelector } from "hooks/useSelector";
-
-// Utils | Settings
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
 } from "settings";
 
-// Styles
-import "./UserProfilePicture.scss";
-import * as S from "./UserProfilePicture.styles";
+import { User } from "types/User";
+
+import { MessageToTheBandReaction, Reactions } from "utils/reactions";
+import { WithId } from "utils/id";
+
 import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
+
+// @debt remove styled-components in favour of using our standard scss patterns
+import * as S from "./UserProfilePicture.styles";
+import "./UserProfilePicture.scss";
 
 export interface UserProfilePictureProp {
   user: WithId<User>;
