@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-// Typings
-import { UserProfilePictureProp } from "./UserProfilePicture.types";
-
 // Components
 import { MessageToTheBandReaction, Reactions } from "utils/reactions";
 
@@ -21,6 +18,18 @@ import "./UserProfilePicture.scss";
 import * as S from "./UserProfilePicture.styles";
 import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
+
+export interface UserProfilePictureProp {
+  user: WithId<User>;
+  setSelectedUserProfile: (user: WithId<User>) => void;
+
+  isAudioEffectDisabled?: boolean;
+  miniAvatars?: boolean;
+  avatarClassName?: string;
+  avatarStyle?: object;
+  containerStyle?: object;
+  reactionPosition?: "right" | "left" | undefined;
+}
 
 // @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
 // @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
