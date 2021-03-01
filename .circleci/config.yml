@@ -140,6 +140,9 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/memrise" ]; then
               ENV=sparkle-memrise
             fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              ENV=sparkle-unesco
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -255,6 +258,11 @@ jobs:
               ENV=sparkle-memrise
               TARGET=sparkle-memrise
               RELEASE_STAGE=memrise
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              PREFIX=UNESCO_
+              ENV=sparkle-unesco
+              TARGET=sparkle-unesco
+              RELEASE_STAGE=env/unesco
             fi
 
             ./scripts/init-env.sh $PREFIX
@@ -311,6 +319,7 @@ workflows:
                 - deloitte
                 - env/kotr
                 - env/memrise
+                - env/unesco
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -334,6 +343,7 @@ workflows:
                 - deloitte
                 - env/kotr
                 - env/memrise
+                - env/unesco
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
