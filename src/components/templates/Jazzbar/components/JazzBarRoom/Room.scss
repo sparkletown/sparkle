@@ -8,8 +8,6 @@
     justify-self: center;
     max-width: 260px;
     max-height: 195px;
-    border-radius: 15px;
-    overflow: hidden;
 
     .participant {
       display: flex;
@@ -20,6 +18,7 @@
       video {
         height: 100%;
         width: 100%;
+        border-radius: 15px;
       }
 
       .mirrored {

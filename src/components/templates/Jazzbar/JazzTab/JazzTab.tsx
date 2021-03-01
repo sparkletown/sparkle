@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -122,10 +122,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
+  const containerClassname = classNames("music-bar-container", {
+    "music-bar-container--tableview": seatedAtTable,
+  });
+
   if (!venueToUse) return <>Loading...</>;
 
   return (
-    <div className="music-bar-container">
+    <div className={containerClassname}>
       {venueToUse.description?.text && (
         <div className="row">
           <div className="col">
@@ -163,40 +167,44 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              <div className="actions-container">
-                <div className="emoji-container">
-                  {Reactions.map((reaction) => (
+              {seatedAtTable && (
+                <div className="actions-container">
+                  <div className="emoji-container">
+                    {Reactions.map((reaction) => (
+                      <div
+                        key={reaction.name}
+                        className="reaction"
+                        onClick={() =>
+                          user && reactionClicked(user, reaction.type)
+                        }
+                        id={`send-reaction-${reaction.type}`}
+                      >
+                        <span role="img" aria-label={reaction.ariaLabel}>
+                          {reaction.text}
+                        </span>
+                      </div>
+                    ))}
                     <div
-                      key={reaction.name}
-                      className="reaction"
+                      className="mute-button"
                       onClick={() =>
-                        user && reactionClicked(user, reaction.type)
+                        setIsAudioEffectDisabled((state) => !state)
                       }
-                      id={`send-reaction-${reaction.type}`}
                     >
-                      <span role="img" aria-label={reaction.ariaLabel}>
-                        {reaction.text}
-                      </span>
+                      <FontAwesomeIcon
+                        className="reaction"
+                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
+                      />
                     </div>
-                  ))}
-                  <div
-                    className="mute-button"
-                    onClick={() => setIsAudioEffectDisabled((state) => !state)}
-                  >
-                    <FontAwesomeIcon
-                      className="reaction"
-                      icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-                    />
                   </div>
-                </div>
-                {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                {/* <CallOutMessageForm
+                  {/* NOTE: This functionality will probably be returned in the nearest future. */}
+                  {/* <CallOutMessageForm
                   onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                   ref={registerBandMessage({ required: true })}
                   isMessageToTheBandSent={isMessageToTheBandSent}
                   placeholder="Shout out..."
                 /> */}
-              </div>
+                </div>
+              )}
             </>
           )}
         </div>

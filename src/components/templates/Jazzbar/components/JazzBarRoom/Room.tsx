@@ -216,11 +216,18 @@ const Room: React.FC<RoomProps> = ({
     ? worldUsersById[room.localParticipant.identity]
     : undefined;
 
-  const sidedVideoParticipants = participants.slice(
-    0,
-    NUM_OF_SIDED_USERS_MINUS_ONE
-  );
-  const otherParticipants = participants.slice(NUM_OF_SIDED_USERS_MINUS_ONE);
+  const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
+    const sidedVideoParticipants = participants.slice(
+      0,
+      NUM_OF_SIDED_USERS_MINUS_ONE
+    );
+
+    const otherVideoParticipants = participants.slice(
+      NUM_OF_SIDED_USERS_MINUS_ONE
+    );
+
+    return [sidedVideoParticipants, otherVideoParticipants];
+  }, [participants]);
 
   const sidedVideos = useMemo(
     () =>
@@ -249,7 +256,7 @@ const Room: React.FC<RoomProps> = ({
 
   const otherVideos = useMemo(
     () =>
-      otherParticipants.map((participant) => {
+      otherVideoParticipants.map((participant) => {
         if (!participant) {
           return null;
         }
@@ -269,7 +276,7 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [otherParticipants, meIsBartender, worldUsersById, roomName]
+    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
   );
 
   const myVideo = useMemo(() => {
@@ -293,9 +300,7 @@ const Room: React.FC<RoomProps> = ({
     <>
       {myVideo}
       {sidedVideos}
-      {/* <div className="jazzbar__participants">{sidedVideos}</div> */}
       <div className="jazzbar__participants">{otherVideos}</div>
-      {/* <div className="jazzbar__participants">{myVideo}</div> */}
 
       <VideoErrorModal
         show={!!videoError}

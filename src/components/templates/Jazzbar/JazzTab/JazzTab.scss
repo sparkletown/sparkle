@@ -1,6 +1,23 @@
 @import "scss/constants";
 
 .music-bar-container {
+  margin-top: 40px;
+
+  &--tableview {
+    margin-top: 0;
+
+    .music-bar-content {
+      @media (min-width: 950px) {
+        grid-template-columns: 260px 1fr 1fr 260px;
+        grid-template-rows: repeat(auto-fill, 195px);
+        grid-template-areas:
+          ".  video video ."
+          ".  video video  ."
+          "items items items items";
+      }
+    }
+  }
+
   .table-header {
     justify-content: center;
 
@@ -16,52 +33,30 @@
     justify-content: center;
     grid-gap: 0.5rem;
 
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+      ".  video video ."
+      ".  video video  .";
+
     .jazzbar-table-component-container {
       .table-item {
-        padding: 50px 15px 10px 15px;
+        padding: 50px 40px 20px 40px;
       }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
       display: flex;
       flex-flow: wrap;
-
-      .music-bar-top-left-grid-cell {
-        display: none;
-      }
-
-      .music-bar-top-right-grid-cell {
-        display: none;
-      }
 
       .jazzbar-table-component-container {
         width: 40%;
       }
+    }
 
-      @media (max-width: 550px) {
-        .jazzbar-table-component-container {
-          width: 100%;
-        }
+    @media (max-width: 550px) {
+      .jazzbar-table-component-container {
+        width: 100%;
       }
-    }
-
-    @media (min-width: 900px) {
-      grid-template-columns: 260px 1fr 1fr 260px;
-      grid-template-rows: repeat(auto-fill, 195px);
-      grid-template-areas:
-        ".  video video ."
-        ".  video video  ."
-        "items items items items";
-    }
-
-    .music-bar-top-left-grid-cell {
-      height: 90px;
-      grid-area: empty-left;
-    }
-
-    .music-bar-top-right-grid-cell {
-      height: 90px;
-      grid-area: empty-right;
     }
 
     .video-container {
