@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React from "react";
 
 import {
   DEFAULT_PARTY_NAME,
@@ -12,19 +12,14 @@ import {
   Reaction,
   ReactionsTextMap,
 } from "utils/reactions";
-import { WithId } from "utils/id";
 
-import { User } from "types/User";
 import { ChatMessage } from "types/chat";
 
 import { useWorldUsersById } from "hooks/users";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { userProfileModalVisibilitySelector } from "utils/selectors";
+import { useProfileModal } from "hooks/useProfileModal";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -38,9 +33,8 @@ const ReactionList: React.FC<ReactionListProps> = ({
   small = false,
 }) => {
   const { worldUsersById } = useWorldUsersById();
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
+
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   const allReactions = [
     ...(reactions ?? []),
@@ -58,25 +52,6 @@ const ReactionList: React.FC<ReactionListProps> = ({
     ? REACTION_PROFILE_IMAGE_SIZE_SMALL
     : REACTION_PROFILE_IMAGE_SIZE_LARGE;
 
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
-
-  const onUserProfile = useCallback(
-    (user) => {
-      setSelectedUserProfile(user);
-      setUserProfileModalVisible();
-    },
-    [setSelectedUserProfile, setUserProfileModalVisible]
-  );
-
   return (
     <>
       <div className={`reaction-list ${small && "small"}`}>
@@ -88,7 +63,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
             <img
               onClick={() =>
                 worldUsersById[message.created_by] &&
-                onUserProfile({
+                setUserProfile({
                   ...worldUsersById[message.created_by],
                   id: message.created_by,
                 })
@@ -132,8 +107,8 @@ const ReactionList: React.FC<ReactionListProps> = ({
       </div>
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
     </>
   );

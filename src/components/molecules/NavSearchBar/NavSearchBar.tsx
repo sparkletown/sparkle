@@ -9,17 +9,12 @@ import { useSelector } from "hooks/useSelector";
 import { Room } from "types/rooms";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  venueEventsSelector,
-  userProfileModalVisibilitySelector,
-} from "utils/selectors";
+import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
+import { useProfileModal } from "hooks/useProfileModal";
 
 interface SearchResult {
   rooms: Room[];
@@ -36,27 +31,14 @@ const NavSearchBar = () => {
     events: [],
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
 
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -153,8 +135,7 @@ const NavSearchBar = () => {
                 className="row"
                 key={`user-${user.id}`}
                 onClick={() => {
-                  setSelectedUserProfile(user);
-                  setUserProfileModalVisible();
+                  setUserProfile(user);
                   clearSearchQuery();
                 }}
               >
@@ -176,8 +157,8 @@ const NavSearchBar = () => {
       {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal

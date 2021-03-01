@@ -16,7 +16,6 @@ import {
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
 
 // Hooks
 import { useDispatch } from "hooks/useDispatch";
@@ -24,15 +23,13 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
+import { useProfileModal } from "hooks/useProfileModal";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  userProfileModalVisibilitySelector,
-} from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 // Typings
 import { User } from "types/User";
@@ -149,9 +146,7 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -167,21 +162,6 @@ export const Audience: React.FunctionComponent = () => {
   }, [venueId]);
 
   const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
-
-  const onUserProfile = useCallback(
-    (user) => {
-      setSelectedUserProfile(user);
-      setUserProfileModalVisible();
-    },
-    [setSelectedUserProfile, setUserProfileModalVisible]
-  );
 
   const createReaction = (reaction: ReactionType, user: UserInfo) => ({
     created_at: new Date().getTime(),
@@ -428,7 +408,7 @@ export const Audience: React.FunctionComponent = () => {
                               seat && seatedPartygoer === null
                                 ? takeSeat(row, column)
                                 : seatedPartygoer !== null
-                                ? onUserProfile(seatedPartygoer)
+                                ? setUserProfile(seatedPartygoer)
                                 : null
                             }
                           >
@@ -440,7 +420,7 @@ export const Audience: React.FunctionComponent = () => {
                                     isOnRight ? "left" : "right"
                                   }
                                   avatarClassName={"profile-avatar"}
-                                  setSelectedUserProfile={onUserProfile}
+                                  setSelectedUserProfile={setUserProfile}
                                   miniAvatars={venue.miniAvatars}
                                   isAudioEffectDisabled={isAudioEffectDisabled}
                                 />
@@ -460,8 +440,8 @@ export const Audience: React.FunctionComponent = () => {
           </div>
           <UserProfileModal
             userProfile={selectedUserProfile}
-            show={isUserProfileModalVisible}
-            onHide={setUserProfileModalVisible}
+            show={selectedUserProfile !== undefined}
+            onHide={() => setUserProfile(undefined)}
           />
         </div>
       </>
@@ -485,8 +465,6 @@ export const Audience: React.FunctionComponent = () => {
     isSeat,
     partygoersBySeat,
     dispatch,
-    setUserProfileModalVisible,
-    isUserProfileModalVisible,
-    onUserProfile,
+    setUserProfile,
   ]);
 };

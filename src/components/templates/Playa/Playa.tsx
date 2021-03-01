@@ -57,9 +57,7 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
-import { userProfileModalVisibilitySelector } from "utils/selectors";
+import { useProfileModal } from "hooks/useProfileModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -135,28 +133,8 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
-
-  const onUserProfile = useCallback(
-    (user) => {
-      setSelectedUserProfile(user);
-      setUserProfileModalVisible();
-    },
-    [setSelectedUserProfile, setUserProfileModalVisible]
-  );
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
@@ -827,7 +805,7 @@ const Playa = () => {
         movingLeft={movingLeft}
         movingRight={movingRight}
         setMyLocation={setMyLocation}
-        setSelectedUserProfile={onUserProfile}
+        setSelectedUserProfile={setUserProfile}
         setShowUserTooltip={setShowUserTooltip}
         setHoveredUser={setHoveredUser}
         setShowMenu={setShowMenu}
@@ -1067,7 +1045,7 @@ const Playa = () => {
           className={`playa-videochat ${inVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
-          <VideoChatLayer setSelectedUserProfile={onUserProfile} />
+          <VideoChatLayer setSelectedUserProfile={setUserProfile} />
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
@@ -1080,8 +1058,8 @@ const Playa = () => {
         </Modal>
         <UserProfileModal
           userProfile={selectedUserProfile}
-          show={isUserProfileModalVisible}
-          onHide={setUserProfileModalVisible}
+          show={selectedUserProfile !== undefined}
+          onHide={() => setUserProfile(undefined)}
         />
         <Modal
           show={showEventSchedule}
@@ -1119,9 +1097,7 @@ const Playa = () => {
     mapContainer,
     venue,
     usersInCurrentVenue,
-    onUserProfile,
-    setUserProfileModalVisible,
-    isUserProfileModalVisible,
+    setUserProfile,
   ]);
 };
 

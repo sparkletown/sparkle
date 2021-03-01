@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 
 // Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -16,10 +10,7 @@ import Video from "twilio-video";
 // Typings
 import { User } from "types/User";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { userProfileModalVisibilitySelector } from "utils/selectors";
+import { useProfileModal } from "hooks/useProfileModal";
 
 export interface ParticipantProps {
   bartender?: User;
@@ -46,14 +37,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
   const [muted, setMuted] = useState(defaultMute);
 
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -153,15 +137,17 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <div className="profile-icon">
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
-            setSelectedUserProfile={() => setUserProfileModalVisible()}
+            setSelectedUserProfile={() =>
+              setUserProfile({ ...profileData, id: participant.identity })
+            }
             reactionPosition="right"
           />
         </div>
       )}
       <UserProfileModal
-        userProfile={{ ...profileData, id: participant.identity }}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
       {children}
       <div className="mute-other-container">

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 
 // Components
 import UserProfileModal from "components/organisms/UserProfileModal";
@@ -6,15 +6,11 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
+import { useProfileModal } from "hooks/useProfileModal";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  userProfileModalVisibilitySelector,
-} from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 import { IS_BURN } from "secrets";
 
@@ -46,9 +42,9 @@ const UserList: React.FunctionComponent<PropsType> = ({
   attendanceBoost,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
+
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
+
   const usersSanitized = _users?.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
@@ -57,25 +53,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
     : usersSanitized?.slice(0, limit);
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
-
-  const onUserProfile = useCallback(
-    (user) => {
-      setSelectedUserProfile(user);
-      setUserProfileModalVisible();
-    },
-    [setSelectedUserProfile, setUserProfileModalVisible]
-  );
 
   if (!usersSanitized || attendance < 1) return <></>;
   return (
@@ -103,7 +80,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
               user && (
                 <UserProfilePicture
                   user={user}
-                  setSelectedUserProfile={onUserProfile}
+                  setSelectedUserProfile={setUserProfile}
                   isAudioEffectDisabled={isAudioEffectDisabled}
                   key={`${user.id}-${activity}-${imageSize}`}
                 />
@@ -114,8 +91,8 @@ const UserList: React.FunctionComponent<PropsType> = ({
 
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
     </>
   );

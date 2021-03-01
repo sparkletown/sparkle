@@ -5,11 +5,8 @@ import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
+import { useProfileModal } from "hooks/useProfileModal";
 import "./UserSearchBar.scss";
-import { userProfileModalVisibilitySelector } from "utils/selectors";
 
 interface UserSearchBarProps {
   onSelect: (user: WithId<User>) => void;
@@ -18,23 +15,10 @@ interface UserSearchBarProps {
 const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<WithId<User>[]>([]);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const { worldUsers } = useWorldUsers();
 
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -72,8 +56,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
               className="row result-user"
               key={user.id}
               onClick={() => {
-                onSelect(user);
-                setUserProfileModalVisible();
+                setUserProfile(user);
               }}
             >
               <div
@@ -91,8 +74,8 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
       )}
       <UserProfileModal
         userProfile={selectedUserProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
     </div>
   );

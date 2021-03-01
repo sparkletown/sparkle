@@ -23,14 +23,10 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
 import { playaAddress } from "utils/address";
-import {
-  currentVenueSelectorData,
-  userProfileModalVisibilitySelector,
-} from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
+import { useProfileModal } from "hooks/useProfileModal";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -76,25 +72,12 @@ const OnlineStats: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const venueName = venue?.name;
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedUserProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   useInterval(() => {
     firebase
@@ -322,8 +305,7 @@ const OnlineStats: React.FC = () => {
                           key={index}
                           className="user-row"
                           onClick={() => {
-                            setSelectedUserProfile(user);
-                            setUserProfileModalVisible();
+                            setUserProfile(user);
                           }}
                         >
                           <div>
@@ -356,7 +338,7 @@ const OnlineStats: React.FC = () => {
       allVenues,
       liveVenues,
       peopleByLastSeen,
-      setUserProfileModalVisible,
+      setUserProfile,
     ]
   );
 
@@ -379,8 +361,8 @@ const OnlineStats: React.FC = () => {
       <UserProfileModal
         zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
         userProfile={selectedUserProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
     </>
   );

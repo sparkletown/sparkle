@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -13,20 +13,12 @@ import { VenueChat, PrivateChats } from "./components";
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
 
 import { ChatTypes } from "types/chat";
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
 
 import "./ChatSidebar.scss";
 
-import { setUserProfileModalVisibility } from "store/actions/UserProfile";
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { userProfileModalVisibilitySelector } from "utils/selectors";
+import { useProfileModal } from "hooks/useProfileModal";
 
 export const ChatSidebar: React.FC = () => {
-  const [selectedProfile, setSelectedProfile] = useState<WithId<User>>();
-
   const {
     isExpanded,
     toggleSidebar,
@@ -53,25 +45,7 @@ export const ChatSidebar: React.FC = () => {
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
 
-  const dispatch = useDispatch();
-  const isUserProfileModalVisible = useSelector(
-    userProfileModalVisibilitySelector
-  );
-
-  const setUserProfileModalVisible = useCallback(() => {
-    if (isUserProfileModalVisible) {
-      setSelectedProfile(undefined);
-    }
-    dispatch(setUserProfileModalVisibility(!isUserProfileModalVisible));
-  }, [dispatch, isUserProfileModalVisible]);
-
-  const onUserProfile = useCallback(
-    (user) => {
-      setSelectedProfile(user);
-      setUserProfileModalVisible();
-    },
-    [setSelectedProfile, setUserProfileModalVisible]
-  );
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   return (
     <>
@@ -103,20 +77,20 @@ export const ChatSidebar: React.FC = () => {
         </div>
         <div className="chat-sidebar__tab-content">
           {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-            <VenueChat onAvatarClick={onUserProfile} />
+            <VenueChat onAvatarClick={setUserProfile} />
           )}
           {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
             <PrivateChats
               recipientId={chatSettings.recipientId}
-              onAvatarClick={onUserProfile}
+              onAvatarClick={setUserProfile}
             />
           )}
         </div>
       </div>
       <UserProfileModal
-        userProfile={selectedProfile}
-        show={isUserProfileModalVisible}
-        onHide={setUserProfileModalVisible}
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
       />
     </>
   );
