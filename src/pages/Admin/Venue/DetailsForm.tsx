@@ -48,8 +48,6 @@ import { ExtractProps } from "types/utility";
 import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
 import { Form } from "react-bootstrap";
-import QuestionInput from "./QuestionInput";
-import EntranceInput from "./EntranceInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -847,7 +845,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
 
-        <QuestionInput
+        {/* <QuestionInput
           title="Code of conduct questions"
           fieldName="code_of_conduct_questions"
           register={register}
@@ -858,9 +856,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
-        />
+        /> */}
 
-        <EntranceInput register={register} fieldName="entrance" />
+        {/* <EntranceInput register={register} fieldName="entrance" /> */}
 
         {renderLiveScheduleToggle()}
         {templateID &&

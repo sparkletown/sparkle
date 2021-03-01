@@ -1,4 +1,3 @@
-import { useDynamicInput } from "hooks/useDynamicInput";
 import React from "react";
 import { Form, Button } from "react-bootstrap";
 import { Question } from "types/venues";
@@ -11,6 +10,11 @@ interface QuestionInputProps {
   editing?: Question[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: any;
+  counter: number;
+  indexes: number[];
+  add: () => void;
+  remove: (index: number) => () => void;
+  clear: () => void;
 }
 
 const QuestionInput: React.FC<QuestionInputProps> = ({
@@ -20,8 +24,12 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   title,
   editing,
   errors,
+  indexes,
+  add,
+  remove,
+  clear,
 }) => {
-  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
+  // const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderFieldset = (index: number) => {
     const baseName = `${fieldName}[${index}]`;

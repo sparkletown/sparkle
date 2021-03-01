@@ -60,8 +60,8 @@ class TimeRange(object):
 class Config():
     # REVISIT: move to command-line args
     # Party start/duration/end
-    START = datetime(2020, 10, 7, 12, 0, 0, 0)
-    END = START + timedelta(hours=12)
+    START = datetime(2021, 2, 12, 0, 0, 0, 0)
+    END = START + timedelta(hours=24)
     SEGMENTS = {
         'Whole time': TimeRange(START, START + timedelta(hours=12)),
         'Main Party': TimeRange(START + timedelta(hours=6), START + timedelta(hours=9)),

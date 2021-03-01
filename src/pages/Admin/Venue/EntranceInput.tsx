@@ -77,6 +77,11 @@ interface EntranceInputProps {
   showTitle?: boolean;
   editing?: EntranceStepConfig[];
   errors?: Record<number, EntranceErrorTypes>;
+  counter: number;
+  indexes: number[];
+  add: () => void;
+  remove: (index: number) => () => void;
+  clear: () => void;
 }
 
 const EntranceInput: React.FC<EntranceInputProps> = ({
@@ -85,8 +90,12 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
   showTitle = true,
   editing,
   errors,
+  indexes,
+  add,
+  remove,
+  clear,
 }) => {
-  const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
+  // const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
   const renderEntranceInput = (index: number) => {
     const baseName = `${fieldName}[${index}]`;

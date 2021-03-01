@@ -1,0 +1,16 @@
+@import "scss/constants.scss";
+
+.entrance {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+
+  &__form {
+    flex: 1;
+  }
+
+  &__preview {
+    flex: 1;
+    background-color: #19181a;
+  }
+}

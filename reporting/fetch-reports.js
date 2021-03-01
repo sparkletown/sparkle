@@ -1,5 +1,3 @@
-"use strict";
-
 const fs = require("fs").promises;
 
 const keypress = async () => {
@@ -15,8 +13,8 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "10/05/2020";
-const to = "10/08/2020";
+const from = "02/11/2021";
+const to = "02/12/2021";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
@@ -26,15 +24,15 @@ const newLogin = true;
 // The correct URL for accessing the reports is different for admin users who can
 // access reports for all accounts under the zoom account. If you are trying to get
 // reports from a standalone, non-admin user, set this to false.
-const isAdmin = true;
+const isAdmin = false;
 
 // If the process crashes halfway through, set this to the page it was on to skip
 // some pages - and hopefully avoid another crash.
 const resumeFromPage = 1;
 
 // Login credentials (only needed if newLogin is true)
-const username = "";
-const password = "";
+const username = "thomas@sparkle.space";
+const password = "hmjV6NGH31mpRfsuC0JA";
 
 // Log in to zoom, and download all participants reports from the above selected dates.
 (async () => {

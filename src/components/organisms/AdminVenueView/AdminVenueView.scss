@@ -17,7 +17,7 @@
 
   .venue-view__options {
     display: flex;
-    width: 80%;
+    width: 100%;
     flex-direction: row;
     justify-content: space-between;
 
@@ -30,6 +30,7 @@
       cursor: pointer;
       color: rgba($white, 0.6);
       text-decoration: none;
+      padding: 15px 0;
 
       @media (max-width: 1024px) {
         width: 50%;
