@@ -55,7 +55,6 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import UserProfileModal from "components/organisms/UserProfileModal";
 
 import { useProfileModal } from "hooks/useProfileModal";
 
@@ -134,7 +133,7 @@ const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
@@ -1056,11 +1055,6 @@ const Playa = () => {
             />
           )}
         </Modal>
-        <UserProfileModal
-          userProfile={selectedUserProfile}
-          show={selectedUserProfile !== undefined}
-          onHide={() => setUserProfile(undefined)}
-        />
         <Modal
           show={showEventSchedule}
           onHide={() => setShowEventSchedule(false)}
@@ -1090,7 +1084,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    selectedUserProfile,
     showEventSchedule,
     inVideoChat,
     videoChatHeight,

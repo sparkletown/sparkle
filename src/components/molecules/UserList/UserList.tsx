@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 // Components
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
@@ -43,7 +42,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   const usersSanitized = _users?.filter(
     (user) => !user.anonMode && user.partyName && user.id
@@ -88,12 +87,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
           )}
         </div>
       </div>
-
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
     </>
   );
 };

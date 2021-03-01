@@ -1,4 +1,3 @@
-import UserProfileModal from "components/organisms/UserProfileModal";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
 import { useWorldUsers } from "hooks/users";
@@ -18,7 +17,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
 
   const { worldUsers } = useWorldUsers();
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -72,11 +71,6 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
           ))}
         </div>
       )}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
     </div>
   );
 };

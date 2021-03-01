@@ -7,7 +7,6 @@ import {
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { VenueChat, PrivateChats } from "./components";
 
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
@@ -45,7 +44,7 @@ export const ChatSidebar: React.FC = () => {
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   return (
     <>
@@ -87,11 +86,6 @@ export const ChatSidebar: React.FC = () => {
           )}
         </div>
       </div>
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
     </>
   );
 };

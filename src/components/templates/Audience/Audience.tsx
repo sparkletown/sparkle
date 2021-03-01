@@ -14,7 +14,6 @@ import {
   TextReactionType,
 } from "utils/reactions";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
@@ -146,7 +145,7 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -438,11 +437,6 @@ export const Audience: React.FunctionComponent = () => {
               }
             )}
           </div>
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={selectedUserProfile !== undefined}
-            onHide={() => setUserProfile(undefined)}
-          />
         </div>
       </>
     );
@@ -456,7 +450,6 @@ export const Audience: React.FunctionComponent = () => {
     register,
     isShoutSent,
     rowsForSizedAuditorium,
-    selectedUserProfile,
     user,
     userUid,
     reset,

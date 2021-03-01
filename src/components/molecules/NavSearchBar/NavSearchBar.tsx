@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { VenueEvent } from "types/venues";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
@@ -38,7 +37,7 @@ const NavSearchBar = () => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -154,12 +153,6 @@ const NavSearchBar = () => {
         </div>
       )}
 
-      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
         show={hasSelectedRoom}

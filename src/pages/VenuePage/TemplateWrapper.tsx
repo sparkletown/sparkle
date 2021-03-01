@@ -15,6 +15,8 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { PartyMap } from "components/templates/PartyMap";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import { useProfileModal } from "hooks/useProfileModal";
 
 type TemplateWrapperProps = {
   venue: Venue;
@@ -22,6 +24,7 @@ type TemplateWrapperProps = {
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
+  const { selectedUserProfile, setUserProfile } = useProfileModal();
 
   let template;
   let fullscreen = false;
@@ -90,6 +93,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     <WithNavigationBar fullscreen={fullscreen}>
+      <UserProfileModal
+        userProfile={selectedUserProfile}
+        show={selectedUserProfile !== undefined}
+        onHide={() => setUserProfile(undefined)}
+      />
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />

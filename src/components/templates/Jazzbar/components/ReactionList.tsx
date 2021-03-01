@@ -17,8 +17,6 @@ import { ChatMessage } from "types/chat";
 
 import { useWorldUsersById } from "hooks/users";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-
 import { useProfileModal } from "hooks/useProfileModal";
 
 interface ReactionListProps {
@@ -34,7 +32,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
 }) => {
   const { worldUsersById } = useWorldUsersById();
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   const allReactions = [
     ...(reactions ?? []),
@@ -105,11 +103,6 @@ const ReactionList: React.FC<ReactionListProps> = ({
           </div>
         ))}
       </div>
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
     </>
   );
 };

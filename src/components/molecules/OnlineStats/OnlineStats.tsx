@@ -13,7 +13,6 @@ import "./OnlineStats.scss";
 import Fuse from "fuse.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { OnlineStatsData } from "types/OnlineStatsData";
@@ -77,7 +76,7 @@ const OnlineStats: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const venueName = venue?.name;
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   useInterval(() => {
     firebase
@@ -358,12 +357,6 @@ const OnlineStats: React.FC = () => {
           </span>
         </OverlayTrigger>
       )}
-      <UserProfileModal
-        zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
     </>
   );
 };

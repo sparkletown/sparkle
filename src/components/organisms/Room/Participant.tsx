@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 // Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 
@@ -37,7 +36,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
   const [muted, setMuted] = useState(defaultMute);
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -144,11 +143,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           />
         </div>
       )}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
       {children}
       <div className="mute-other-container">
         <div onClick={() => setMuted(!muted)} id="mute-myself">

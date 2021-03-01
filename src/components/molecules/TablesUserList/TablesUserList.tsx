@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-
 import "./TablesUserList.scss";
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
@@ -71,7 +69,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
   const experience = useSelector(experienceSelector);
 
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModal();
 
   useEffect(() => {
     if (!profile) return;
@@ -184,11 +182,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
           ))}
         </>
       )}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
-      />
+
       <Modal
         show={showLockedMessage}
         onHide={() => setShowLockedMessage(false)}
