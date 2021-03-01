@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+// NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
@@ -19,6 +21,7 @@ import {
 
 import Room from "../components/JazzBarRoom";
 
+// NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
@@ -41,6 +44,7 @@ interface JazzProps {
   venue?: Venue;
 }
 
+// NOTE: This functionality will probably be returned in the nearest future.
 // interface ChatOutDataType {
 //   messageToTheBand: string;
 // }
@@ -93,6 +97,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     }
   }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
+  // NOTE: This functionality will probably be returned in the nearest future.
+
   // const {
   //   register: registerBandMessage,
   //   handleSubmit: handleBandMessageSubmit,
@@ -138,8 +144,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       )}
 
       <div className="music-bar-content">
-        {/* <div className="music-bar-top-left-grid-cell" />
-        <div className="music-bar-top-right-grid-cell" /> */}
         <div className="video-container">
           {!venueToUse.hideVideo && (
             <>
@@ -185,6 +189,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     />
                   </div>
                 </div>
+                {/* NOTE: This functionality will probably be returned in the nearest future. */}
                 {/* <CallOutMessageForm
                   onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                   ref={registerBandMessage({ required: true })}
