@@ -2,6 +2,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
 
+import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
@@ -17,6 +18,7 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
+import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -151,8 +153,20 @@ export const chatUsersByIdSelector: SparkleSelector<
   Record<string, User> | undefined
 > = (state) => state.firestore.data.chatUsers;
 
-export const experienceSelector = (state: RootState) =>
+export const experienceSelector: SparkleSelector<Experience> = (state) =>
   state.firestore.data.experience;
+
+export const reactionsSelector: SparkleSelector<
+  WithId<Reaction>[] | undefined
+> = (state) => state.firestore.ordered.reactions;
+
+export const messagesToTheBandSelector: SparkleSelector<
+  WithId<MessageToTheBandReaction>[] | undefined
+> = (state) =>
+  reactionsSelector(state)?.filter(
+    (reaction): reaction is WithId<MessageToTheBandReaction> =>
+      reaction.reaction === "messageToTheBand"
+  );
 
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];

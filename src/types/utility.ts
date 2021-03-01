@@ -22,3 +22,8 @@ export type Bounds = Point & Dimensions;
 export type Matrix<T> = T[][];
 
 export type ReactHook<T, U> = (props: T) => U;
+
+/**
+ * @deprecated use Partial<Record<K, T>> directly
+ */
+export type PartialRecord<K extends keyof never, T> = Partial<Record<K, T>>;
