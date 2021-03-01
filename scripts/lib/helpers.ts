@@ -198,6 +198,7 @@ export const findUserByEmail = (app: admin.app.App) => (
  * @param rows how many rows will the seats be displayed across for each table
  * @param columns how many columns will the seats be displayed across for each table
  * @param titlePrefix what should the tables be called (will have the table number appended to it)
+ * @param appendTableNumber whether to append the table number to the title or not
  * @param startFrom what number should we start from when generating table numbers in the title
  */
 export const generateTables: (props: {
@@ -206,6 +207,7 @@ export const generateTables: (props: {
   rows?: number;
   columns?: number;
   titlePrefix?: string;
+  appendTableNumber?: boolean;
   startFrom?: number;
 }) => Table[] = ({
   num,
@@ -214,13 +216,18 @@ export const generateTables: (props: {
   columns = 3,
   titlePrefix = "Table",
   startFrom = 0,
+  appendTableNumber = true,
 }) =>
   Array.from(Array(num)).map((_, idx) => {
     const tableNumber = startFrom + 1 + idx;
 
+    const title = appendTableNumber
+      ? `${titlePrefix} ${tableNumber}`
+      : titlePrefix;
+
     return {
-      title: `${titlePrefix} ${tableNumber}`,
-      reference: `${titlePrefix} ${tableNumber}`,
+      title,
+      reference: title,
       capacity,
       rows,
       columns,
