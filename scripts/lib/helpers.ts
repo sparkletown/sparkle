@@ -215,11 +215,11 @@ export const generateTables: (props: {
   rows = 2,
   columns = 3,
   titlePrefix = "Table",
-  startFrom = 0,
   appendTableNumber = true,
+  startFrom = 1,
 }) =>
   Array.from(Array(num)).map((_, idx) => {
-    const tableNumber = startFrom + 1 + idx;
+    const tableNumber = startFrom + idx;
 
     const title = appendTableNumber
       ? `${titlePrefix} ${tableNumber}`
