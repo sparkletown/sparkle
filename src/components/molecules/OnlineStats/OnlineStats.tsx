@@ -347,8 +347,7 @@ const OnlineStats: React.FC = () => {
         <OverlayTrigger
           trigger="click"
           placement="bottom-end"
-          overlay={popover}
-          rootClose={!selectedUserProfile} // allows modal inside popover
+          overlay={popover} // allows modal inside popover
         >
           <span>
             <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
