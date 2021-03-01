@@ -251,13 +251,14 @@ jobs:
               PREFIX=KOTR_
               ENV=sparkle-kotr
               TARGET=sparkle-kotr
-              RELEASE_STAGE=kotr
+              RELEASE_STAGE=env/kotr
             fi
             if [ $CIRCLE_BRANCH = "env/memrise" ]; then
               PREFIX=MEMRISE_
               ENV=sparkle-memrise
               TARGET=sparkle-memrise
-              RELEASE_STAGE=memrise
+              RELEASE_STAGE=env/memrise
+            fi
             if [ $CIRCLE_BRANCH = "env/unesco" ]; then
               PREFIX=UNESCO_
               ENV=sparkle-unesco
