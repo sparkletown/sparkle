@@ -12,7 +12,7 @@ import { Table } from "./Table";
 import { User } from "./User";
 import { AnyVenue, VenueEvent } from "./venues";
 
-interface Experience {
+export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
