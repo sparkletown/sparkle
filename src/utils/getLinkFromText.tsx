@@ -15,6 +15,7 @@ export const getLinkFromText = (text: string) => {
               : `https://${word}`
           }
           key={index}
+          target="_new"
         >
           {word}{" "}
         </a>
