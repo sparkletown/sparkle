@@ -17,7 +17,8 @@
     "bigtop": "sparkle-bigtop",
     "deloitte": "sparkle-deloitte",
     "kotr": "sparkle-kotr",
-    "memrise": "sparkle-memrise"
+    "memrise": "sparkle-memrise",
+    "unesco": "sparkle-unesco"
   },
   "targets": {
     "co-reality-map": {
@@ -149,6 +150,13 @@
       "hosting": {
         "sparkle-memrise": [
           "sparkle-memrise"
+        ]
+      }
+    },
+    "sparkle-unesco": {
+      "hosting": {
+        "sparkle-unesco": [
+          "sparkle-unesco"
         ]
       }
     }
