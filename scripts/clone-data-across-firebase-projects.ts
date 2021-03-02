@@ -28,17 +28,20 @@ const VENUES_TO_CLONE = ["wayspace"];
 // ---------------------------------------------------------
 
 const CONFIRM_VALUE = "i-have-edited-the-script-and-am-sure";
+const DRY_RUN = "--dry-run";
 
 const usage = makeScriptUsage({
   description: "Clone venue(s) between different firebase projects.",
-  usageParams: CONFIRM_VALUE,
-  exampleParams: CONFIRM_VALUE,
+  usageParams: `${CONFIRM_VALUE} [${DRY_RUN}]`,
+  exampleParams: `${CONFIRM_VALUE} [${DRY_RUN}]`,
 });
 
-const [confirmationCheck] = process.argv.slice(2);
+const [confirmationCheck, dryRun] = process.argv.slice(2);
 if (confirmationCheck !== CONFIRM_VALUE) {
   usage();
 }
+
+const isDryRun = dryRun === DRY_RUN;
 
 const sourceApp = initFirebaseAdminApp(SOURCE_PROJECT_ID, {
   appName: "sourceApp",
@@ -126,6 +129,12 @@ const replaceSourceDomainReferences = (
     console.log("added venue to batch:", venue.name);
   });
 
-  const writeResult = await destAppBatch.commit();
-  console.log(writeResult);
+  if (!isDryRun) {
+    const writeResult = await destAppBatch.commit();
+    console.log(writeResult);
+  } else {
+    console.log(
+      "[DRY-RUN] Not committing transaction. Nothing has been changed."
+    );
+  }
 })();
