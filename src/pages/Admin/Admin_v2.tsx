@@ -99,12 +99,7 @@ const Admin_v2: React.FC = () => {
   const renderVenueView = () => {
     switch (selectedOption) {
       case SidebarOptions.dashboard:
-        return (
-          <VenueDetails
-            venue={selectedVenue as Venue_v2}
-            onSave={() => setSelectedOption(sidebarOptions[0].id)}
-          />
-        ); // Venue_v2 is incomplete with typing (lags behind latest Venue)
+        return <VenueDetails venue={selectedVenue as Venue_v2} />; // Venue_v2 is incomplete with typing (lags behind latest Venue)
 
       case SidebarOptions.basicInfo:
         return (

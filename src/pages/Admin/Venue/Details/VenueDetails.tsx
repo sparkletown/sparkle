@@ -24,11 +24,7 @@ import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 import RoomDeleteModal from "../Rooms/RoomDeleteModal";
 
 import * as S from "./VenueDetails.styles";
-import {
-  DEFAULT_MAP_BACKGROUND,
-  DEFAULT_VENUE_BANNER,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 type Owner = {
   id: string;
@@ -44,13 +40,7 @@ type EditRoomType = RoomData_v2 & {
 const noop = () => {};
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const {
-    name,
-    owners,
-    id: venueId,
-    rooms,
-    mapBackgroundImageUrl = DEFAULT_MAP_BACKGROUND,
-  } = venue;
+  const { name, owners, id: venueId, rooms, mapBackgroundImageUrl } = venue;
   const {
     subtitle,
     description,

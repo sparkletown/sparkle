@@ -650,7 +650,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
-  if (data.mapBackgroundImageUrl) {
+  if (typeof data.mapBackgroundImageUrl === "string") {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 

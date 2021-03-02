@@ -29,6 +29,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
   const [isSaving, setSaving] = useState<boolean>(false);
 
+  console.log(mapBackground);
   useEffect(() => {
     if (
       !mapRooms.length ||
@@ -92,10 +93,10 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     setIsEditing(false);
   };
 
-  const handleBackgroundRemove = () => {
+  const handleBackgroundRemove = async () => {
     if (!user) return;
 
-    return updateVenue_v2(
+    await updateVenue_v2(
       {
         name: venueName,
         mapBackgroundImageUrl: "",
@@ -123,7 +124,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           <Legend
             text="Edit background"
             position="right"
-            onClick={() => handleBackgroundRemove()}
+            onClick={handleBackgroundRemove}
           />
         )}
 
