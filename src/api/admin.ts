@@ -417,9 +417,10 @@ const createFirestoreRoomInput_v2 = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: input.useUrl
-      ? input.url
-      : window.origin + venueInsideUrl(input.venueName!),
+    url:
+      input.useUrl || !input.venueName
+        ? input.url
+        : window.origin + venueInsideUrl(input.venueName!),
     ...imageInputData,
   };
 
