@@ -56,6 +56,7 @@ export const PLAYA_INFO_NAME = "Playa Info";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
+export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
@@ -96,9 +97,6 @@ export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
 export const PLAYA_AVATAR_SIZE = 48;
 export const PLAYA_VENUE_SIZE = 40;
-export const PROFILE_IMAGE_SIZE = 30;
-export const REACTION_PROFILE_IMAGE_SIZE_SMALL = 40;
-export const REACTION_PROFILE_IMAGE_SIZE_LARGE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
 export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
@@ -490,5 +488,6 @@ export const RANDOM_AVATARS = [
 ];
 
 export const REACTION_TIMEOUT = 5000; // time im ms
+export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
