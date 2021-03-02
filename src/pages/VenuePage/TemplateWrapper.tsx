@@ -24,10 +24,13 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
 
   let template;
+  // @debt remove backButton from Navbar
+  let hasBackButton = true;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <Jazzbar />;
+      hasBackButton = false;
       break;
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
@@ -89,7 +92,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   }
 
   return (
-    <WithNavigationBar fullscreen={fullscreen}>
+    // @debt remove backButton from Navbar
+    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />

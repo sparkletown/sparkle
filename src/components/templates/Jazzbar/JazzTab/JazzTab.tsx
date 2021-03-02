@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useCallback } from "react";
 import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
@@ -11,7 +11,8 @@ import { UserInfo } from "firebase/app";
 import { User } from "types/User";
 import { Venue } from "types/venues";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
+import { venueInsideUrl } from "utils/url";
 
 import {
   EmojiReactionType,
@@ -65,6 +66,15 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
 
+  const parentVenueId = venueToUse?.parentId;
+  const parentVenue = useSelector(parentVenueSelector);
+
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    window.location.href = venueInsideUrl(parentVenueId);
+  }, [parentVenueId]);
+
   useExperiences(venueToUse?.name);
 
   const { user } = useUser();
@@ -87,17 +97,17 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
-  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
-
-  useEffect(() => {
-    if (isMessageToTheBandSent) {
-      setTimeout(() => {
-        setIsMessageToTheBandSent(false);
-      }, 2000);
-    }
-  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
-
   // NOTE: This functionality will probably be returned in the nearest future.
+
+  // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+
+  // useEffect(() => {
+  //   if (isMessageToTheBandSent) {
+  //     setTimeout(() => {
+  //       setIsMessageToTheBandSent(false);
+  //     }, 2000);
+  //   }
+  // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
   // const {
   //   register: registerBandMessage,
@@ -135,6 +145,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           <div className="col">
             <div className="description">{venueToUse.description?.text}</div>
           </div>
+        </div>
+      )}
+
+      {/* @debt Move the logic of Back button into a separate reusable hook/component */}
+      {!seatedAtTable && parentVenueId && parentVenue && (
+        <div className="back-map-btn" onClick={backToParentVenue}>
+          <div className="back-icon" />
+          <span className="back-link">Back to {parentVenue.name}</span>
         </div>
       )}
 
