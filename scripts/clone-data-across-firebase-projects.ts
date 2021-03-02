@@ -23,6 +23,10 @@ const DEST_DOMAIN = "staging.sparkle.space";
 
 const VENUES_TO_CLONE = ["wayspace"];
 
+const VENUE_RENAME_MAP: Partial<Record<string, string>> = {
+  foo: "bar",
+};
+
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)
 // ---------------------------------------------------------
@@ -56,6 +60,7 @@ const destApp = initFirebaseAdminApp(DEST_PROJECT_ID, {
 // TODO: do we need to copy roles across?
 // TODO: venues (owners will need to be changed)
 // TODO: check if venue already exists (be safe, don't overwrite!)
+// TODO: use VENUE_RENAME_MAP when rewriting room/etc urls (in case we renamed the venue)
 
 const replaceSourceDomainReferences = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,6 +112,7 @@ const replaceSourceDomainReferences = (
 
   console.log("total venues:", allSourceVenues.length);
   console.log("wanted venues:", wantedSourceVenues.length, VENUES_TO_CLONE);
+  console.log("venue renames:", VENUE_RENAME_MAP);
   console.log();
 
   console.log(
@@ -136,7 +142,14 @@ const replaceSourceDomainReferences = (
 
   wantedSourceVenues.forEach((venue) => {
     const { id, ...venueData } = venue;
-    const destVenueRef = destApp.firestore().collection("venues").doc(id);
+
+    // Rename the destinationVenueId if required
+    const destinationVenueId = VENUE_RENAME_MAP[id] ?? id;
+
+    const destVenueRef = destApp
+      .firestore()
+      .collection("venues")
+      .doc(destinationVenueId);
 
     Object.keys(venue).forEach((key) => {
       replaceSourceDomainReferences(venue, key, "venue", venue.id);
