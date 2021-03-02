@@ -1,13 +1,14 @@
 @import "scss/constants.scss";
+@import "../../jazzbar-constants.scss";
 
-.jazzbar {
+.jazzbar-room {
   &__participant {
     background-color: $light-grey;
     display: flex;
     justify-content: center;
     justify-self: center;
-    max-width: 260px;
-    max-height: 195px;
+    max-width: $video-participant-optimal-width;
+    max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
     .participant {
@@ -61,23 +62,27 @@
     display: flex;
     grid-area: items;
 
-    @media (min-width: 900px) {
+    .jazzbar__participant {
+      margin: 0 0.25rem;
+      width: $video-participant-optimal-width;
+    }
+  }
+
+  @media (min-width: $small-laptop-width) {
+    &__participants {
       justify-content: center;
       .jazzbar__participant {
         max-width: 24%;
       }
     }
+  }
 
-    @media (max-width: 900px) {
+  @media (max-width: $small-laptop-width) {
+    &__participants {
       justify-content: space-around;
       .jazzbar__participant {
         max-width: 49%;
       }
-    }
-
-    .jazzbar__participant {
-      margin: 0 0.25rem;
-      width: 260px;
     }
   }
 }

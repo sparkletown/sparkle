@@ -241,7 +241,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar__participant">
+          <div key={participant.identity} className="jazzbar-room__participant">
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -266,7 +266,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar__participant">
+          <div key={participant.identity} className="jazzbar-room__participant">
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -281,7 +281,7 @@ const Room: React.FC<RoomProps> = ({
 
   const myVideo = useMemo(() => {
     return room && profileData ? (
-      <div className="jazzbar__participant">
+      <div className="jazzbar-room__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -300,7 +300,7 @@ const Room: React.FC<RoomProps> = ({
     <>
       {myVideo}
       {sidedVideos}
-      <div className="jazzbar__participants">{otherVideos}</div>
+      <div className="jazzbar-room__participants">{otherVideos}</div>
 
       <VideoErrorModal
         show={!!videoError}

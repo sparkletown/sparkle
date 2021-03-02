@@ -132,14 +132,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
-  const containerClassname = classNames("music-bar-container", {
-    "music-bar-container--tableview": seatedAtTable,
+  const containerClasses = classNames("music-bar", {
+    "music-bar--tableview": seatedAtTable,
   });
 
   if (!venueToUse) return <>Loading...</>;
 
   return (
-    <div className={containerClassname}>
+    <div className={containerClasses}>
       {venueToUse.description?.text && (
         <div className="row">
           <div className="col">

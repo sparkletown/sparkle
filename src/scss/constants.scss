@@ -48,6 +48,8 @@ $playa-venue-live: rgb(125, 223, 194);
 $profile-image-bg-color: #999999;
 $room-info-bg: #005ee5;
 
+$small-laptop-width: 980px;
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)

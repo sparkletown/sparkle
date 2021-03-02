@@ -1,6 +1,7 @@
 @import "scss/constants";
+@import "../jazzbar-constants.scss";
 
-.music-bar-container {
+.music-bar {
   margin-top: 40px;
 
   .table-header {
@@ -28,25 +29,9 @@
       ".  video video ."
       ".  video video  .";
 
-    .jazzbar-table-component-container {
-      .table-item {
-        padding: 50px 45px 20px;
-      }
-    }
-
-    @media (max-width: 950px) {
+    @media (max-width: $small-laptop-width) {
       display: flex;
       flex-flow: wrap;
-
-      .jazzbar-table-component-container {
-        width: 40%;
-      }
-    }
-
-    @media (max-width: 550px) {
-      .jazzbar-table-component-container {
-        width: 100%;
-      }
     }
 
     .video-container {
@@ -130,9 +115,12 @@
     margin-top: 0;
 
     .music-bar-content {
-      @media (min-width: 950px) {
-        grid-template-columns: 260px 1fr 1fr 260px;
-        grid-template-rows: repeat(auto-fill, 195px);
+      @media (min-width: $small-laptop-width) {
+        grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;
+        grid-template-rows: repeat(
+          auto-fill,
+          $video-participant-optimal-height
+        );
         grid-template-areas:
           ".  video video ."
           ".  video video  ."
