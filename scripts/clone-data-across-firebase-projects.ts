@@ -75,10 +75,16 @@ const replaceSourceDomainReferences = (
     );
 
     console.log(
-      `Found a reference to ${SOURCE_DOMAIN} in ${objectType} ${objectIdentifier}, key ${key}.`,
-      `Value: ${obj[key]}`,
-      `Replacing with: ${replacementValue}`
+      "  Rewriting reference to",
+      SOURCE_DOMAIN,
+      "in",
+      `'${objectType}'`,
+      `'${objectIdentifier}'`,
+      "with key",
+      `'${key}'`
     );
+    console.log("    Before :", obj[key]);
+    console.log("    After  :", replacementValue);
 
     obj[key] = replacementValue;
   }
@@ -101,6 +107,25 @@ const replaceSourceDomainReferences = (
 
   console.log("total venues:", allSourceVenues.length);
   console.log("wanted venues:", wantedSourceVenues.length, VENUES_TO_CLONE);
+  console.log();
+
+  console.log(
+    "Will copy",
+    wantedSourceVenues.length,
+    "venues from",
+    sourceApp.options.projectId,
+    "to",
+    destApp.options.projectId
+  );
+  console.log(
+    "  source venues      :",
+    wantedSourceVenues.map((venue) => venue.id)
+  );
+  console.log(
+    "  destination venues :",
+    wantedSourceVenues.map((venue) => VENUE_RENAME_MAP[venue.id] ?? venue.id)
+  );
+  console.log();
 
   // TODO: we should save backups before we potentially overwrite things..
   // const saveToBackupFile = makeSaveToBackupFile(
@@ -126,7 +151,7 @@ const replaceSourceDomainReferences = (
 
     destAppBatch.set(destVenueRef, venueData);
 
-    console.log("added venue to batch:", venue.name);
+    console.log("added venue to batch:", destinationVenueId, `(${venue.name})`);
   });
 
   if (!isDryRun) {
