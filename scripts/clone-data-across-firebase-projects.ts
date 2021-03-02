@@ -137,4 +137,12 @@ const replaceSourceDomainReferences = (
       "[DRY-RUN] Not committing transaction. Nothing has been changed."
     );
   }
-})();
+})()
+  .then(() => {
+    console.log("Finished!");
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.log("Failed: ", error);
+    process.exit(1);
+  });
