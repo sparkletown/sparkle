@@ -151,9 +151,11 @@ const replaceSourceDomainReferences = (
       .collection("venues")
       .doc(destinationVenueId);
 
+    // @debt will there ever even be any URLs that need rewriting in these 'root venue keys'?
     Object.keys(venue).forEach((key) => {
       replaceSourceDomainReferences(venue, key, "venue", venue.id);
     });
+
     if (venue.rooms) {
       venue.rooms.forEach((room) => {
         Object.keys(room).forEach((key) => {
