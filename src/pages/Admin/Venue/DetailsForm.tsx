@@ -131,11 +131,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue(vals as VenueInput, user);
+        if (!!venueId)
+          await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
         else await createVenue(vals as VenueInput, user);
 
         vals.name
-          ? history.push(`/admin/${createUrlSafeName(vals.name)}`)
+          ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
