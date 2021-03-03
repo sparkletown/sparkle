@@ -12,7 +12,7 @@ import { User } from "types/User";
 import { Venue } from "types/venues";
 
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
-import { venueInsideUrl } from "utils/url";
+import { openUrl, venueInsideUrl } from "utils/url";
 
 import {
   EmojiReactionType,
@@ -69,10 +69,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const parentVenueId = venueToUse?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
 
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
 
-    window.location.href = venueInsideUrl(parentVenueId);
+    openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
 
   useExperiences(venueToUse?.name);
