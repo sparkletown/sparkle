@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$seat-margin: 6px;
+
 .jazzbar-table-component-container {
   display: flex;
   justify-content: center;
@@ -68,7 +70,7 @@
   }
 
   .profile-icon {
-    margin: 6px;
+    margin: $seat-margin;
   }
 
   .add-participant-button {
@@ -82,7 +84,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin: 6px;
+    margin: $seat-margin;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
