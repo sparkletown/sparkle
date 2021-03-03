@@ -121,6 +121,7 @@
           auto-fill,
           $video-participant-optimal-height
         );
+        // Note: "items" grid area is used in Jazzbar room component
         grid-template-areas:
           ".  video video ."
           ".  video video  ."
