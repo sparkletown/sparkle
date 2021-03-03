@@ -135,6 +135,7 @@ const requiredAuditoriumSize = (
   return size;
 };
 
+// Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
