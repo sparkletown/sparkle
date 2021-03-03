@@ -1,4 +1,5 @@
 import React from "react";
+import { isExternalUrl, externalUrlAdditionalProps } from "./url";
 
 export const getLinkFromText = (text: string) => {
   const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
@@ -15,7 +16,10 @@ export const getLinkFromText = (text: string) => {
               : `https://${word}`
           }
           key={index}
-          target="_new"
+          target={
+            isExternalUrl(word) ? externalUrlAdditionalProps.target : undefined
+          }
+          rel={isExternalUrl(word) ? externalUrlAdditionalProps.rel : undefined}
         >
           {word}{" "}
         </a>
