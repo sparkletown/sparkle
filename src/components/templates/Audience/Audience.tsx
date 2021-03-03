@@ -5,38 +5,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import firebase, { UserInfo } from "firebase/app";
 
+import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
+
+import { addReaction } from "store/actions/Reactions";
+
 import { makeUpdateUserGridLocation } from "api/profile";
 
-// Components
+import { User } from "types/User";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 import {
   EmojiReactionType,
   Reactions,
   TextReactionType,
 } from "utils/reactions";
+import { currentVenueSelectorData } from "utils/selectors";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-
-// Hooks
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
-// Utils | Settings | Constants
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
-import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Typings
-import { User } from "types/User";
-
-// Styles
 import "./Audience.scss";
-import { VideoAspectRatio } from "types/VideoAspectRatio";
-import { addReaction } from "store/actions/Reactions";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
