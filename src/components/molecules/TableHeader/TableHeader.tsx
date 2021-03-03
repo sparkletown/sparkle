@@ -164,7 +164,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
             {tableCapacity && (
               <span className="private-table-seats-left">
-                {`${numberOfSeatsLeft} seats left`}
+                {numberOfSeatsLeft} seats left
               </span>
             )}
           </div>
