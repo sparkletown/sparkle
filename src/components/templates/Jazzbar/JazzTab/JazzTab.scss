@@ -1,32 +1,37 @@
 @import "scss/constants";
+@import "../jazzbar-constants.scss";
 
-.music-bar-container {
+.music-bar {
+  margin-top: 40px;
+
   .table-header {
+    grid-area: header;
     justify-content: center;
 
     .header {
-      width: 60%;
+      width: 100%;
+
+      .lock-button-container {
+        justify-content: center;
+      }
     }
   }
 
   .music-bar-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    padding: 20px 50px;
-    grid-auto-flow: row dense;
+
+    padding: 10px 70px;
     justify-content: center;
     grid-gap: 0.5rem;
 
-    .music-bar-top-left-grid-cell {
-      height: 90px;
-      grid-column: 1;
-      grid-row: 1;
-    }
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-areas:
+      ".  video video ."
+      ".  video video  .";
 
-    .music-bar-top-right-grid-cell {
-      height: 90px;
-      grid-column: 4;
-      grid-row: 1;
+    @media (max-width: $small-laptop-width) {
+      display: flex;
+      flex-flow: wrap;
     }
 
     .video-container {
@@ -34,12 +39,10 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      padding: 10px;
+      padding: 0 10px;
+      min-height: 395px;
 
-      grid-column-start: 2;
-      grid-column-end: 4;
-      grid-row-start: 1;
-      grid-row-end: 4;
+      grid-area: video;
 
       .iframe-container {
         width: 100%;
@@ -49,8 +52,7 @@
         background-color: #19181a;
         overflow: hidden;
         position: relative;
-        // @debt Thomas' magic number. Should result in the best 16-9 ratio for Monday presentation
-        height: 333px;
+        height: 100%;
 
         .iframe-video {
           height: 100%;
@@ -63,19 +65,26 @@
         flex-direction: column;
         align-items: center;
         background-color: rgb(25, 24, 26);
-        width: 80%;
+        width: 90%;
         overflow: hidden;
 
-        padding: 0 10px 10px;
+        padding: 0 10px 5px;
         border-radius: 0px 0px 28px 28px;
         .emoji-container {
           display: flex;
           justify-content: space-around;
-          margin: 20px 0;
+          margin: 10px 0;
           font-size: 27px;
           letter-spacing: 0.5rem;
           overflow-x: auto;
+          overflow-y: hidden;
           width: 100%;
+
+          .reaction {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
 
           .reaction > span {
             cursor: pointer;
@@ -101,55 +110,22 @@
       }
     }
   }
-  .chat-drawer {
-    position: absolute;
-    right: 0;
-    top: 170px;
-    bottom: auto;
-  }
-  .jazzbar-participant-container {
-    .participant {
-      display: flex;
-      height: 100%;
-      padding: 0;
-      border-radius: 22px;
 
-      video {
-        height: 100%;
-        width: 100%;
-      }
+  &--tableview {
+    margin-top: 0;
 
-      .mirrored {
-        transform: scale(-1, 1);
-      }
-
-      .profile-icon {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
-        border-radius: 188%;
-        z-index: z(jazzbar-participant-profile-icon);
-      }
-
-      .mute-container {
-        position: absolute;
-        bottom: 10px;
-        left: 0;
-        right: 0;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-      }
-
-      .mute-other-container {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        text-align: center;
-        display: flex;
-        justify-content: center;
+    .music-bar-content {
+      @media (min-width: $small-laptop-width) {
+        grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;
+        grid-template-rows: repeat(
+          auto-fill,
+          $video-participant-optimal-height
+        );
+        // Note: "items" grid area is used in Jazzbar room component
+        grid-template-areas:
+          ".  video video ."
+          ".  video video  ."
+          "items items items items";
       }
     }
   }
@@ -173,333 +149,26 @@
     height: 44px;
     display: flex;
     justify-content: center;
-    align-self: center;
-  }
-}
-
-.container-in-grid {
-  grid-column: 2/7;
-  grid-row: 1/5;
-}
-
-.jazz-container {
-  transition: all 0.2s linear;
-}
-
-.jazz-bar-table {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.container-in-row {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-shrink: 0;
-
-  .table-header {
-    background: $dark;
-    color: $white;
-    padding: 10px 20px;
-    border-radius: 22px 22px 0 0;
-  }
-
-  .jazz-video {
-    .full-height-video {
-      height: 100%;
-    }
-    .form-message {
-      width: 400px;
-    }
-    // .emoji-container {
-    //   width: 300px;
-    // }
-  }
-
-  // .video-wrapper {
-  //   width: 100%;
-  //   height: fit-content;
-  // }
-}
-
-.jazz-container {
-  // min-height: 400px;
-  grid-column: 2/7;
-  grid-row: 1/4;
-  transition: all 0.1s linear;
-  margin-bottom: 15px;
-
-  &.container-in-row {
-    margin-bottom: 75px;
-  }
-
-  // .call-out-band-container-at-table {
-  //   background: $dark;
-  //   padding: 10px;
-  //   margin-top: 15px;
-  //   border-radius: 0px 0px 22px 22px;
-  // }
-}
-
-.content.jazz-bar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin-bottom: 30px;
-}
-
-.scrollable-area {
-  .description {
-    font-weight: 700;
-    text-align: center;
-    width: 100%;
-  }
-
-  .jazz-wrapper {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    align-self: center;
-    margin-left: 0px;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    .participant {
-      width: 100%;
-
-      .mirrored {
-        transform: scale(-1, 1);
-      }
-    }
-  }
-  .table-item {
-    margin-top: 10px;
-  }
-  .full-screen-checkbox {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    align-items: baseline;
-    .switch {
-      margin-left: 30px;
-    }
-  }
-  .focus {
-    display: flex;
-    align-items: baseline;
-  }
-  .focus-option {
-    font-size: 20px;
-    margin-left: 30px;
-  }
-
-  .centered-row {
-    justify-content: center;
-  }
-  .table-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .video {
-    height: 90%;
-    transition: all 0.2s linear;
-
-    &.video-not-focused {
-      height: 374px;
-    }
-  }
-
-  .video-focused {
-    height: 500px;
-  }
-
-  .jazz-bar-table .reaction-bar {
-    flex-direction: column;
-    border-radius: 0 22px 22px 0;
-
-    &.video-not-focused {
-      height: 374px;
-    }
-    &.video-focused {
-      height: 500px;
-    }
-  }
-
-  // .jazz-bar-table .emoji-container {
-  //   flex-direction: column;
-  // }
-
-  .reaction-mute {
-    display: flex;
-    flex-direction: column;
     align-items: center;
-    margin-top: 10px;
+    align-self: center;
+  }
 
-    .reaction-mute-text {
-      font-size: 14px;
+  .table-footer {
+    .switch {
+      margin: 0 30px;
     }
-  }
-
-  // .call-out-band-container {
-  //   display: flex;
-  //   align-items: center;
-  //   flex-direction: column;
-  //   justify-content: space-around;
-  //   border-radius: 0 0 22px 22px;
-  //   padding-top: 4px;
-  //   background: $dark;
-  // }
-
-  // .emoji-container {
-  //   display: flex;
-  //   justify-content: space-evenly;
-  //   margin-right: 10px;
-  //   max-width: 100%;
-  //   min-width: 90%;
-
-  //   .reaction {
-  //     padding: 0 8px;
-  //   }
-  // }
-
-  .reaction {
-    background: inherit;
-    border: none;
-    font-size: 44px;
-    padding: 2px 0;
-    flex-grow: 1;
-    &:focus {
-      outline: none;
-      box-shadow: none;
-      animation: pulse 0.5s ease 2;
-    }
-  }
-
-  .video-participant {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    grid-column: 1 / span 6;
-    grid-row: 1 / span 3;
-
-    .reaction {
-      font-size: 44px;
-    }
-
-    // .call-out-band-container {
-    //   padding: 8px 0 5px 0;
-    //   width: 100%;
-    // }
-    .iframe-container {
-      width: 100%;
-      // min-height: 300px;
-    }
-  }
-}
-
-/************************************************/
-/*              Reaction Component              */
-/************************************************/
-
-.band-reaction-container {
-  background-color: $dark;
-  padding: 10px;
-  border-radius: 0 0 15px 15px;
-  overflow: auto;
-  flex-wrap: wrap;
-  width: 100%;
-
-  .reaction-bar {
-    display: flex;
-    justify-content: space-around;
-    background: $dark;
-    padding: 0 16px;
-    border-radius: 0 0 22px 22px;
-    height: 56px;
-    margin-bottom: 20px;
-  }
-
-  .form-message {
-    display: flex;
-    margin-bottom: 5px;
-    justify-content: space-between;
-
-    input[type="submit"] {
-      margin-bottom: 0px;
-      margin-left: 10px;
-      width: 100px;
-      &[type="submit"]:disabled {
-        color: rgba($white, 0.2);
-        background-color: rgba(green, 0.5);
-      }
-    }
-  }
-}
-
-/************************************************/
-/*              SeatedArea Component            */
-/************************************************/
-
-.participants-container {
-  display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-gap: 1rem;
-}
-
-.seated-area {
-  border: 0px solid white;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  user-select: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  padding-bottom: 150px;
-}
-
-.chat-drawer {
-  position: absolute;
-  right: 0;
-  top: auto;
-  bottom: auto;
-}
-
-.mute-button {
-  width: 44px;
-  height: 44px;
-  display: flex;
-  justify-content: center;
-  align-self: center;
-}
-
-.table-header {
-  .switch {
-    margin: 0 30px;
-  }
-
-  .action {
-    display: flex;
-  }
-}
-
-.table-footer {
-  .switch {
-    margin: 0 30px;
-  }
-  .actions {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-
-    .action {
+    .actions {
       display: flex;
+      justify-content: center;
       align-items: baseline;
 
-      .focus {
-        margin-right: 30px;
+      .action {
+        display: flex;
+        align-items: baseline;
+
+        .focus {
+          margin-right: 30px;
+        }
       }
     }
   }

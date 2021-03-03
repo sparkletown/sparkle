@@ -28,6 +28,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
   let template;
+  // @debt remove backButton from Navbar
+  let hasBackButton = true;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
@@ -37,6 +39,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Jazzbar} />
         </Switch>
       );
+      hasBackButton = false;
       break;
 
     case VenueTemplate.friendship:
@@ -111,7 +114,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   }
 
   return (
-    <WithNavigationBar fullscreen={fullscreen}>
+    // @debt remove backButton from Navbar
+    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />

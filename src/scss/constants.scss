@@ -21,11 +21,12 @@ $stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
 
 $primary: #005ee5;
+$secondary: #6f43ff;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba(#6f43ff, 0.35);
+$chat-busy: rgba($secondary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$gradient: linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%);
+$gradient: linear-gradient(124deg, #00f6d5 0%, $secondary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -46,6 +47,8 @@ $playa-venue-live: rgb(125, 223, 194);
 
 $profile-image-bg-color: #999999;
 $room-info-bg: #005ee5;
+
+$small-laptop-width: 980px;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
