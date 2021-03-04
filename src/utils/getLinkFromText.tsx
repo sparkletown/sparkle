@@ -1,4 +1,5 @@
 import React from "react";
+
 import { isExternalUrl, externalUrlAdditionalProps } from "./url";
 
 export const getLinkFromText = (text: string) => {
@@ -16,10 +17,7 @@ export const getLinkFromText = (text: string) => {
               : `https://${word}`
           }
           key={index}
-          target={
-            isExternalUrl(word) ? externalUrlAdditionalProps.target : undefined
-          }
-          rel={isExternalUrl(word) ? externalUrlAdditionalProps.rel : undefined}
+          {...fooConstNameYouPicked}
         >
           {word}{" "}
         </a>
