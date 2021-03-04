@@ -3,6 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { REACTION_TIMEOUT } from "settings";
 import { Reaction } from "utils/reactions";
 
+// @debt refactor this to use useConnect like in src/components/templates/ReactionPage/ReactionPage.tsx ?
 export const useReactions = (venueId?: string) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const firebase = useFirebase();
@@ -12,7 +13,9 @@ export const useReactions = (venueId?: string) => {
 
     firebase
       .firestore()
-      .collection(`experiences/${venueId}/reactions`)
+      .collection("experiences")
+      .doc(venueId)
+      .collection("reactions")
       .where("created_at", ">", Date.now())
       .onSnapshot((snapshot) => {
         snapshot.docChanges().forEach((change) => {

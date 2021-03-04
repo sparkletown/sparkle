@@ -147,6 +147,7 @@ if (BUGSNAG_API_KEY) {
     "deloitte",
     "env/kotr",
     "env/memrise",
+    "env/unesco",
   ];
 
   const releaseStage = () => {
