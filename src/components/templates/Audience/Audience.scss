@@ -10,16 +10,12 @@ $seat-size: 4vh;
 .audience-container {
   background-attachment: fixed;
   background-position: center 46%;
-  padding: $spacing;
 
   position: relative;
-  display: flex;
-  justify-content: center;
-  flex: 1;
-
   overflow: auto;
-  width: 100%;
   height: 100%;
+  padding: $spacing;
+  min-width: fit-content;
 
   .video-container-wrapper {
     position: absolute;
@@ -157,6 +153,7 @@ $seat-size: 4vh;
     position: relative;
     width: 100%;
     height: fit-content;
+    overflow: auto;
 
     .seat-row {
       display: flex;
