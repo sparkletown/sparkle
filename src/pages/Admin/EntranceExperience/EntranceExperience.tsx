@@ -19,12 +19,14 @@ import { EntranceExperienceProps } from "./EntranceExperience.types";
 import * as S from "../Admin.styles";
 import "./EntranceExperience.scss";
 import { useDynamicInput } from "hooks/useDynamicInput";
+import { AccountQuestion } from "components/molecules/AccountQuestion";
+import { CodeOfConductQuestion } from "components/molecules/CodeOfConductQuestion";
 
 type ProfileQuestion = VenueInput_v2["profile_questions"];
-type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
+type CodeOfConductQuestionType = VenueInput_v2["code_of_conduct_questions"];
 
 const validationSchema = Yup.object().shape({
-  code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
+  code_of_conduct_questions: Yup.array<CodeOfConductQuestionType>()
     .ensure()
     .defined()
     .transform((val) => val.filter((s: Question) => !!s.name && !!s.text)),
@@ -166,19 +168,21 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
       </div>
       <div className="entrance__preview">
         {hasCodeOfConduct &&
-          codeOfConductQuestions.map((question) => (
-            <>
-              <div>{question.name}</div>
-              <div>{question.text}</div>
-            </>
+          codeOfConductQuestions.map((question, index) => (
+            <CodeOfConductQuestion
+              key={question.name + index}
+              disabled={true}
+              question={question}
+            />
           ))}
         {hasProfileQuestions && (
           <>
-            {profileQuestions.map((question) => (
-              <>
-                <div>{question.name}</div>
-                <div>{question.text}</div>
-              </>
+            {profileQuestions.map((question, index) => (
+              <AccountQuestion
+                key={question.name + index}
+                disabled={true}
+                question={question}
+              />
             ))}
           </>
         )}
