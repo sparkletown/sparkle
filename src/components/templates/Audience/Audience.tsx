@@ -5,38 +5,34 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import firebase, { UserInfo } from "firebase/app";
 
+import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
+
+import { addReaction } from "store/actions/Reactions";
+
 import { makeUpdateUserGridLocation } from "api/profile";
 
-// Components
+import { User } from "types/User";
+import { VideoAspectRatio } from "types/VideoAspectRatio";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 import {
   EmojiReactionType,
   Reactions,
   TextReactionType,
 } from "utils/reactions";
+import { currentVenueSelectorData } from "utils/selectors";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-
-// Hooks
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
-// Utils | Settings | Constants
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
-import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
+import UserProfileModal from "components/organisms/UserProfileModal";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Typings
-import { User } from "types/User";
-
-// Styles
 import "./Audience.scss";
-import { VideoAspectRatio } from "types/VideoAspectRatio";
-import { addReaction } from "store/actions/Reactions";
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -45,6 +41,9 @@ type ReactionType =
 interface ChatOutDataType {
   text: string;
 }
+
+// If you change this, make sure to also change it in Audience.scss's $seat-size
+const SEAT_SIZE = "4vh";
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -135,6 +134,7 @@ const requiredAuditoriumSize = (
   return size;
 };
 
+// Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
@@ -151,6 +151,22 @@ export const Audience: React.FunctionComponent = () => {
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
+
+  const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
+  const focusElementOnLoad = useCallback(
+    (ref: HTMLDivElement | null) => {
+      if (ref && !hasAlreadyFocussed) {
+        ref.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+          inline: "center",
+        });
+
+        setAlreadyFocussed(true);
+      }
+    },
+    [hasAlreadyFocussed]
+  );
 
   useEffect(() => {
     firebase
@@ -234,22 +250,51 @@ export const Audience: React.FunctionComponent = () => {
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
+  // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
+  const carvedOutWidthInSeats = Math.ceil(columnsForSizedAuditorium / (3 * 2));
+
+  // Keep a 16:9 ratio
+  const carvedOutHeightInSeats = Math.ceil(carvedOutWidthInSeats * (9 / 16));
+
+  // Calculate the position/size for the central video container
+  const videoContainerWidthInSeats = carvedOutWidthInSeats * 2 + 1;
+  const videoContainerHeightInSeats = carvedOutHeightInSeats * 2 + 1;
+  const videoContainerTopOffsetInSeats = Math.floor(
+    (rowsForSizedAuditorium - carvedOutHeightInSeats * 2) / 2
+  );
+  const videoContainerLeftOffsetInSeats = Math.floor(
+    (columnsForSizedAuditorium - carvedOutWidthInSeats * 2) / 2
+  );
+
+  const videoContainerStyles = useMemo(
+    () => ({
+      top: `calc(${videoContainerTopOffsetInSeats} * ${SEAT_SIZE})`,
+      left: `calc(${videoContainerLeftOffsetInSeats} * ${SEAT_SIZE})`,
+      width: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE})`,
+      height: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE})`,
+    }),
+    [
+      videoContainerHeightInSeats,
+      videoContainerLeftOffsetInSeats,
+      videoContainerTopOffsetInSeats,
+      videoContainerWidthInSeats,
+    ]
+  );
+
   const isSeat = useCallback(
     (translatedRow: number, translatedColumn: number) => {
       const isInFireLaneColumn = translatedColumn === 0;
       if (isInFireLaneColumn) return false;
 
-      const isInVideoRow =
-        Math.abs(translatedRow) <= Math.floor(rowsForSizedAuditorium / 3);
-
+      const isInVideoRow = Math.abs(translatedRow) <= carvedOutHeightInSeats;
       const isInVideoColumn =
-        Math.abs(translatedColumn) <= Math.floor(columnsForSizedAuditorium / 4);
+        Math.abs(translatedColumn) <= carvedOutWidthInSeats;
 
       const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
 
       return !isInVideoCarveOut;
     },
-    [columnsForSizedAuditorium, rowsForSizedAuditorium]
+    [carvedOutWidthInSeats, carvedOutHeightInSeats]
   );
 
   // @debt this return useMemo antipattern should be rewritten
@@ -364,27 +409,34 @@ export const Audience: React.FunctionComponent = () => {
           className="audience-container"
           style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
         >
-          <div className="video-container">
-            <div className="video">
-              <iframe
-                className={videoFrameClasses}
-                src={iframeUrl}
-                title="Video"
-                frameBorder="0"
-                allow={IFRAME_ALLOW}
-                allowFullScreen
-              />
-            </div>
-            {venue.showReactions && (
-              <div
-                className={`reaction-container ${userSeated ? "seated" : ""}`}
-              >
-                {userSeated ? renderReactionsContainer() : renderInstructions()}
-              </div>
-            )}
-          </div>
-
           <div className="audience">
+            <div
+              ref={focusElementOnLoad}
+              className="video-container"
+              style={videoContainerStyles}
+            >
+              <div className="video">
+                <iframe
+                  className={videoFrameClasses}
+                  src={iframeUrl}
+                  title="Video"
+                  frameBorder="0"
+                  allow={IFRAME_ALLOW}
+                  allowFullScreen
+                />
+              </div>
+
+              {venue.showReactions && (
+                <div
+                  className={`reaction-container ${userSeated ? "seated" : ""}`}
+                >
+                  {userSeated
+                    ? renderReactionsContainer()
+                    : renderInstructions()}
+                </div>
+              )}
+            </div>
+
             {Array.from(Array(rowsForSizedAuditorium)).map(
               (_, untranslatedRowIndex) => {
                 const row = translateRow(untranslatedRowIndex);
@@ -453,20 +505,22 @@ export const Audience: React.FunctionComponent = () => {
     venue,
     profile,
     venueId,
+    focusElementOnLoad,
+    videoContainerStyles,
     iframeUrl,
+    rowsForSizedAuditorium,
+    selectedUserProfile,
+    userUid,
+    user,
+    dispatch,
+    reset,
+    columnsForSizedAuditorium,
     isAudioEffectDisabled,
     handleSubmit,
     register,
     isShoutSent,
-    rowsForSizedAuditorium,
-    selectedUserProfile,
-    user,
-    userUid,
-    reset,
     reactionClicked,
-    columnsForSizedAuditorium,
     isSeat,
     partygoersBySeat,
-    dispatch,
   ]);
 };
