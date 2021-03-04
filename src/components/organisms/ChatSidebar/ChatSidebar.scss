@@ -18,6 +18,7 @@ $header-height: 45px;
   &--expanded {
     transform: translateX(0);
     transition: transform 0.3s;
+    opacity: 90%;
   }
 
   &__header {
