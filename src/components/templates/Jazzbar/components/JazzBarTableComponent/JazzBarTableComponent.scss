@@ -1,14 +1,12 @@
 @import "scss/constants.scss";
 
+$seat-margin: 6px;
+
 .jazzbar-table-component-container {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-
-  @media (max-width: $small-laptop-width) {
-    width: 49%;
-  }
 
   .table-title-container {
     margin: 20px 0;
@@ -29,16 +27,18 @@
   }
 
   .table-item {
+    display: flex;
+
     height: 100%;
     width: 100%;
     background: $dark;
     border-radius: 22px;
 
     color: $white;
-    display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
-    padding: 50px 45px 20px;
+    padding: 50px 15px 15px;
     position: relative;
     &:hover {
       background-color: lighten($dark, 10%);
@@ -47,8 +47,8 @@
   }
 
   .table-occupancy-information {
-    top: 5px;
-    right: 7px;
+    top: 11px;
+    right: 11px;
     position: absolute;
     font-size: 10px;
   }
@@ -61,11 +61,6 @@
     background: $black;
   }
 
-  .join-text,
-  .add-participant-button {
-    cursor: pointer;
-  }
-
   .table-number {
     top: 12px;
     position: absolute;
@@ -74,7 +69,13 @@
     font-weight: 600;
   }
 
+  .profile-icon {
+    margin: $seat-margin;
+  }
+
   .add-participant-button {
+    cursor: pointer;
+
     width: 50px;
     height: 50px;
     display: flex;
@@ -83,8 +84,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-bottom: 3px;
-    margin-right: 5px;
+    margin: $seat-margin;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
