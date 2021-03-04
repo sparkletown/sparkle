@@ -12,10 +12,10 @@ export const VenueTemplateReducers: { [key: string]: Reducer } = {};
 
 // Other reducers (room entry/exit, mute reactions, etc.)
 export const MiscReducers = {
-  room: roomReducer,
-  chat: chatReducer,
-  userProfile: userProfileReducer,
-  location: locationReducer,
   attendance: attendanceReducer,
+  chat: chatReducer,
+  location: locationReducer,
+  room: roomReducer,
   sovereignVenue: sovereignVenueReducer,
+  userProfile: userProfileReducer,
 };

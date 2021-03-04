@@ -24,7 +24,7 @@ type TemplateWrapperProps = {
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
-  const { selectedUserProfile, setUserProfile } = useProfileModal();
+  const { selectedUserProfile, unsetUserProfile } = useProfileModal();
 
   let template;
   let fullscreen = false;
@@ -96,7 +96,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
-        onHide={() => setUserProfile(undefined)}
+        onHide={unsetUserProfile}
       />
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}

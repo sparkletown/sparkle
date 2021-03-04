@@ -21,14 +21,13 @@ export const ChatSidebar: React.FC = () => {
   const {
     isExpanded,
     toggleSidebar,
-
     chatSettings,
-
     selectVenueChat,
     selectPrivateChat,
   } = useChatSidebarControls();
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
+  const { setUserProfile } = useProfileModal();
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
@@ -43,8 +42,6 @@ export const ChatSidebar: React.FC = () => {
     "chat-sidebar__tab--selected":
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
-
-  const { setUserProfile } = useProfileModal();
 
   return (
     <>
@@ -76,7 +73,7 @@ export const ChatSidebar: React.FC = () => {
         </div>
         <div className="chat-sidebar__tab-content">
           {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-            <VenueChat onAvatarClick={setUserProfile} />
+            <VenueChat />
           )}
           {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
             <PrivateChats

@@ -9,11 +9,11 @@ export enum UserProfileActionTypes {
 
 export type SetUseProfileDataAction = ReduxAction<
   UserProfileActionTypes.SET_USER_PROFILE_DATA,
-  { userProfile: WithId<User> | undefined }
+  { userProfile?: WithId<User> }
 >;
 
 export const setUserProfileData = (
-  userProfile: WithId<User> | undefined
+  userProfile?: WithId<User>
 ): SetUseProfileDataAction => ({
   type: UserProfileActionTypes.SET_USER_PROFILE_DATA,
   payload: { userProfile },

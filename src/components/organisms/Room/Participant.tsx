@@ -10,6 +10,7 @@ import Video from "twilio-video";
 import { User } from "types/User";
 
 import { useProfileModal } from "hooks/useProfileModal";
+import { withId } from "utils/id";
 
 export interface ParticipantProps {
   bartender?: User;
@@ -137,7 +138,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             setSelectedUserProfile={() =>
-              setUserProfile({ ...profileData, id: participant.identity })
+              setUserProfile(withId(profileData, participant.identity))
             }
             reactionPosition="right"
           />

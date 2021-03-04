@@ -55,6 +55,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
               className="row result-user"
               key={user.id}
               onClick={() => {
+                onSelect(user);
                 setUserProfile(user);
               }}
             >
@@ -74,4 +75,5 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
     </div>
   );
 };
+
 export default UserSearchBar;

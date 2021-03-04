@@ -3,16 +3,12 @@ import React from "react";
 import { Chatbox } from "components/molecules/Chatbox";
 
 import { useVenueChat } from "hooks/useVenueChat";
-
-import { SetSelectedProfile } from "types/chat";
+import { useProfileModal } from "hooks/useProfileModal";
 
 import "./VenueChat.scss";
 
-export interface VenueChatProps {
-  onAvatarClick: SetSelectedProfile;
-}
-
-export const VenueChat: React.FC<VenueChatProps> = ({ onAvatarClick }) => {
+export const VenueChat: React.FC = () => {
+  const { setUserProfile } = useProfileModal();
   const { sendMessage, deleteMessage, messagesToDisplay } = useVenueChat();
 
   return (
@@ -21,7 +17,7 @@ export const VenueChat: React.FC<VenueChatProps> = ({ onAvatarClick }) => {
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         deleteMessage={deleteMessage}
-        onAvatarClick={onAvatarClick}
+        onAvatarClick={setUserProfile}
       />
     </div>
   );

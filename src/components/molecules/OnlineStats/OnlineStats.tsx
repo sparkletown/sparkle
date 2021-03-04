@@ -303,9 +303,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => {
-                            setUserProfile(user);
-                          }}
+                          onClick={() => setUserProfile(user)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
