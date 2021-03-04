@@ -262,23 +262,20 @@ export const Audience: React.FunctionComponent = () => {
   const videoContainerTopOffsetInSeats = Math.floor(
     (rowsForSizedAuditorium - carvedOutHeightInSeats * 2) / 2
   );
-  const videoContainerLeftOffsetInSeats = Math.floor(
-    (columnsForSizedAuditorium - carvedOutWidthInSeats * 2) / 2
+
+  const videoWrapperStyles = useMemo(
+    () => ({
+      top: `calc(${videoContainerTopOffsetInSeats} * ${SEAT_SIZE})`,
+    }),
+    [videoContainerTopOffsetInSeats]
   );
 
   const videoContainerStyles = useMemo(
     () => ({
-      top: `calc(${videoContainerTopOffsetInSeats} * ${SEAT_SIZE})`,
-      left: `calc(${videoContainerLeftOffsetInSeats} * ${SEAT_SIZE})`,
       width: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE})`,
       height: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE})`,
     }),
-    [
-      videoContainerHeightInSeats,
-      videoContainerLeftOffsetInSeats,
-      videoContainerTopOffsetInSeats,
-      videoContainerWidthInSeats,
-    ]
+    [videoContainerHeightInSeats, videoContainerWidthInSeats]
   );
 
   const isSeat = useCallback(
@@ -410,31 +407,35 @@ export const Audience: React.FunctionComponent = () => {
           style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
         >
           <div className="audience">
-            <div
-              ref={focusElementOnLoad}
-              className="video-container"
-              style={videoContainerStyles}
-            >
-              <div className="video">
-                <iframe
-                  className={videoFrameClasses}
-                  src={iframeUrl}
-                  title="Video"
-                  frameBorder="0"
-                  allow={IFRAME_ALLOW}
-                  allowFullScreen
-                />
-              </div>
-
-              {venue.showReactions && (
-                <div
-                  className={`reaction-container ${userSeated ? "seated" : ""}`}
-                >
-                  {userSeated
-                    ? renderReactionsContainer()
-                    : renderInstructions()}
+            <div className="video-container-wrapper" style={videoWrapperStyles}>
+              <div
+                ref={focusElementOnLoad}
+                className="video-container"
+                style={videoContainerStyles}
+              >
+                <div className="video">
+                  <iframe
+                    className={videoFrameClasses}
+                    src={iframeUrl}
+                    title="Video"
+                    frameBorder="0"
+                    allow={IFRAME_ALLOW}
+                    allowFullScreen
+                  />
                 </div>
-              )}
+
+                {venue.showReactions && (
+                  <div
+                    className={`reaction-container ${
+                      userSeated ? "seated" : ""
+                    }`}
+                  >
+                    {userSeated
+                      ? renderReactionsContainer()
+                      : renderInstructions()}
+                  </div>
+                )}
+              </div>
             </div>
 
             {Array.from(Array(rowsForSizedAuditorium)).map(
@@ -507,6 +508,7 @@ export const Audience: React.FunctionComponent = () => {
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
+    videoWrapperStyles,
     iframeUrl,
     rowsForSizedAuditorium,
     selectedUserProfile,
