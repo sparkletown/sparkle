@@ -8,6 +8,7 @@ import { MessageToTheBandReaction, Reactions } from "utils/reactions";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 
 // Utils | Settings
 import {
@@ -29,11 +30,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   avatarClassName,
   avatarStyle,
   containerStyle,
-  setSelectedUserProfile,
   reactionPosition,
   user,
 }) => {
   const muteReactions = useSelector((state) => state.room.mute);
+  const { setUserProfile } = useProfileModalControls();
 
   const [pictureUrl, setPictureUrl] = useState("");
 
@@ -98,7 +99,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
         />
         <S.Avatar
-          onClick={() => setSelectedUserProfile(user)}
+          onClick={() => setUserProfile(user)}
           className={avatarClassName}
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
@@ -149,7 +150,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     messagesToBand,
     reactionPosition,
     imageErrorHandler,
-    setSelectedUserProfile,
+    setUserProfile,
     reactions,
     muteReactions,
     isAudioEffectDisabled,

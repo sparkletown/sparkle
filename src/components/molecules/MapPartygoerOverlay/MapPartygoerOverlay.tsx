@@ -69,7 +69,6 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
       avatarClassName={`${isMe ? "me profile-avatar" : "profile-avatar"}`}
       containerStyle={containerStyle}
       avatarStyle={avatarStyle}
-      setSelectedUserProfile={setSelectedUserProfile}
       miniAvatars={withMiniAvatars}
     />
   );

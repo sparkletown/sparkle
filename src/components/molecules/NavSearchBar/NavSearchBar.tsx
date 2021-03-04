@@ -13,7 +13,7 @@ import { isTruthy } from "utils/types";
 import "./NavSearchBar.scss";
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 
 interface SearchResult {
   rooms: Room[];
@@ -37,7 +37,7 @@ const NavSearchBar = () => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
 
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();

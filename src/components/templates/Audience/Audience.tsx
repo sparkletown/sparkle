@@ -22,7 +22,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 
 // Utils | Settings | Constants
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -145,7 +145,7 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -419,7 +419,6 @@ export const Audience: React.FunctionComponent = () => {
                                     isOnRight ? "left" : "right"
                                   }
                                   avatarClassName={"profile-avatar"}
-                                  setSelectedUserProfile={setUserProfile}
                                   miniAvatars={venue.miniAvatars}
                                   isAudioEffectDisabled={isAudioEffectDisabled}
                                 />

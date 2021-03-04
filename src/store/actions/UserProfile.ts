@@ -12,9 +12,7 @@ export type SetUseProfileDataAction = ReduxAction<
   { userProfile?: WithId<User> }
 >;
 
-export const setUserProfileData = (
-  userProfile?: WithId<User>
-): SetUseProfileDataAction => ({
+export const setUserProfileData = (userProfile?: WithId<User>) => ({
   type: UserProfileActionTypes.SET_USER_PROFILE_DATA,
   payload: { userProfile },
 });

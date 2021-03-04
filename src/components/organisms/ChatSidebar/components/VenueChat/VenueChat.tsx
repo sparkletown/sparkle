@@ -3,12 +3,12 @@ import React from "react";
 import { Chatbox } from "components/molecules/Chatbox";
 
 import { useVenueChat } from "hooks/useVenueChat";
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 
 import "./VenueChat.scss";
 
 export const VenueChat: React.FC = () => {
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
   const { sendMessage, deleteMessage, messagesToDisplay } = useVenueChat();
 
   return (

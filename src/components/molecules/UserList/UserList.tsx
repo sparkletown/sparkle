@@ -5,7 +5,6 @@ import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
-import { useProfileModal } from "hooks/useProfileModal";
 
 // Utils | Settings | Constants
 import { WithId } from "utils/id";
@@ -42,8 +41,6 @@ const UserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
-  const { setUserProfile } = useProfileModal();
-
   const usersSanitized = _users?.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
@@ -55,39 +52,36 @@ const UserList: React.FunctionComponent<PropsType> = ({
 
   if (!usersSanitized || attendance < 1) return <></>;
   return (
-    <>
-      <div className="container userlist-container">
-        <div className="row header no-margin">
-          <p>
-            <span className="bold">{attendance}</span>{" "}
-            {attendance === 1 ? "person" : "people"}{" "}
-            {isCamp && IS_BURN ? "in the camp" : activity}
+    <div className="container userlist-container">
+      <div className="row header no-margin">
+        <p>
+          <span className="bold">{attendance}</span>{" "}
+          {attendance === 1 ? "person" : "people"}{" "}
+          {isCamp && IS_BURN ? "in the camp" : activity}
+        </p>
+        {!disableSeeAll && usersSanitized.length > limit && (
+          <p
+            className="clickable-text"
+            onClick={() => setIsExpanded(!isExpanded)}
+            id={`see-venue-information-${venue?.name}`}
+          >
+            See {isExpanded ? "less" : "all"}
           </p>
-          {!disableSeeAll && usersSanitized.length > limit && (
-            <p
-              className="clickable-text"
-              onClick={() => setIsExpanded(!isExpanded)}
-              id={`see-venue-information-${venue?.name}`}
-            >
-              See {isExpanded ? "less" : "all"}
-            </p>
-          )}
-        </div>
-        <div className="row no-margin">
-          {usersToDisplay.map(
-            (user) =>
-              user && (
-                <UserProfilePicture
-                  user={user}
-                  setSelectedUserProfile={setUserProfile}
-                  isAudioEffectDisabled={isAudioEffectDisabled}
-                  key={`${user.id}-${activity}-${imageSize}`}
-                />
-              )
-          )}
-        </div>
+        )}
       </div>
-    </>
+      <div className="row no-margin">
+        {usersToDisplay.map(
+          (user) =>
+            user && (
+              <UserProfilePicture
+                user={user}
+                isAudioEffectDisabled={isAudioEffectDisabled}
+                key={`${user.id}-${activity}-${imageSize}`}
+              />
+            )
+        )}
+      </div>
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 import "./UserSearchBar.scss";
 
 interface UserSearchBarProps {
@@ -17,7 +17,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
 
   const { worldUsers } = useWorldUsers();
 
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
 
   useEffect(() => {
     if (!searchQuery) {

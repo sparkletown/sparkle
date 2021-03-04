@@ -9,9 +9,6 @@ import Video from "twilio-video";
 // Typings
 import { User } from "types/User";
 
-import { useProfileModal } from "hooks/useProfileModal";
-import { withId } from "utils/id";
-
 export interface ParticipantProps {
   bartender?: User;
   defaultMute?: boolean;
@@ -36,8 +33,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
   const [muted, setMuted] = useState(defaultMute);
-
-  const { setUserProfile } = useProfileModal();
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -137,9 +132,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <div className="profile-icon">
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
-            setSelectedUserProfile={() =>
-              setUserProfile(withId(profileData, participant.identity))
-            }
             reactionPosition="right"
           />
         </div>

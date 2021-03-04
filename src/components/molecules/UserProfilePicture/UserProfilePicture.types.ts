@@ -7,7 +7,6 @@ export interface UserProfilePictureProp {
   avatarClassName?: string;
   avatarStyle?: object;
   containerStyle?: object;
-  setSelectedUserProfile: (user: WithId<User>) => void;
   user: WithId<User>;
   reactionPosition?: "right" | "left" | undefined;
 }

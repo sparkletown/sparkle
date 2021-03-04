@@ -17,7 +17,9 @@ import { ChatMessage } from "types/chat";
 
 import { useWorldUsersById } from "hooks/users";
 
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
+
+import { withId } from "utils/id";
 
 interface ReactionListProps {
   reactions: Reaction[];
@@ -32,7 +34,7 @@ const ReactionList: React.FC<ReactionListProps> = ({
 }) => {
   const { worldUsersById } = useWorldUsersById();
 
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
 
   const allReactions = [
     ...(reactions ?? []),
@@ -51,59 +53,56 @@ const ReactionList: React.FC<ReactionListProps> = ({
     : REACTION_PROFILE_IMAGE_SIZE_LARGE;
 
   return (
-    <>
-      <div className={`reaction-list ${small && "small"}`}>
-        {allReactions.map((message) => (
-          <div
-            className="message"
-            key={`${message.created_by}-${message.created_at}`}
-          >
-            <img
-              onClick={() =>
-                worldUsersById[message.created_by] &&
-                setUserProfile({
-                  ...worldUsersById[message.created_by],
-                  id: message.created_by,
-                })
-              }
-              key={`${message.created_by}-messaging-the-band`}
-              className="profile-icon"
-              src={
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.pictureUrl) ||
-                DEFAULT_PROFILE_IMAGE
-              }
-              title={
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME
-              }
-              alt={`${
-                (!worldUsersById[message.created_by]?.anonMode &&
-                  worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME
-              } profile`}
-              width={profileImageSize}
-              height={profileImageSize}
-            />
-            <div className="partyname-bubble">
-              {(!worldUsersById[message.created_by]?.anonMode &&
+    <div className={`reaction-list ${small && "small"}`}>
+      {allReactions.map((message) => (
+        <div
+          className="message"
+          key={`${message.created_by}-${message.created_at}`}
+        >
+          <img
+            onClick={() =>
+              worldUsersById[message.created_by] &&
+              setUserProfile(
+                withId(worldUsersById[message.created_by], message.created_by)
+              )
+            }
+            key={`${message.created_by}-messaging-the-band`}
+            className="profile-icon"
+            src={
+              (!worldUsersById[message.created_by]?.anonMode &&
+                worldUsersById[message.created_by]?.pictureUrl) ||
+              DEFAULT_PROFILE_IMAGE
+            }
+            title={
+              (!worldUsersById[message.created_by]?.anonMode &&
                 worldUsersById[message.created_by]?.partyName) ||
-                DEFAULT_PARTY_NAME}
-            </div>
-            <div
-              className={`message-bubble ${
-                message.reaction === "messageToTheBand" ? "" : "emoji"
-              }`}
-            >
-              {!message.reaction || message.reaction === "messageToTheBand"
-                ? message.text
-                : ReactionsTextMap[message.reaction]}
-            </div>
+              DEFAULT_PARTY_NAME
+            }
+            alt={`${
+              (!worldUsersById[message.created_by]?.anonMode &&
+                worldUsersById[message.created_by]?.partyName) ||
+              DEFAULT_PARTY_NAME
+            } profile`}
+            width={profileImageSize}
+            height={profileImageSize}
+          />
+          <div className="partyname-bubble">
+            {(!worldUsersById[message.created_by]?.anonMode &&
+              worldUsersById[message.created_by]?.partyName) ||
+              DEFAULT_PARTY_NAME}
           </div>
-        ))}
-      </div>
-    </>
+          <div
+            className={`message-bubble ${
+              message.reaction === "messageToTheBand" ? "" : "emoji"
+            }`}
+          >
+            {!message.reaction || message.reaction === "messageToTheBand"
+              ? message.text
+              : ReactionsTextMap[message.reaction]}
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 

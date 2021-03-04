@@ -10,7 +10,7 @@ import { setUserProfileData } from "store/actions/UserProfile";
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
 
-export const useProfileModal = () => {
+export const useProfileModalControls = () => {
   const dispatch = useDispatch();
   const selectedUserProfile = useSelector(userProfileSelector);
 

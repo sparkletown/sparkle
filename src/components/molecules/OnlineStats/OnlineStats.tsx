@@ -25,7 +25,7 @@ import { playaAddress } from "utils/address";
 import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import { useProfileModal } from "hooks/useProfileModal";
+import { useProfileModalControls } from "hooks/useProfileModalControls ";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -76,7 +76,7 @@ const OnlineStats: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const venueName = venue?.name;
-  const { setUserProfile } = useProfileModal();
+  const { setUserProfile } = useProfileModalControls();
 
   useInterval(() => {
     firebase

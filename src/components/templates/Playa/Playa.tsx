@@ -56,8 +56,6 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
-import { useProfileModal } from "hooks/useProfileModal";
-
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -132,9 +130,6 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-
-  const { setUserProfile } = useProfileModal();
-
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
   const [zoom, setZoom] = useState(minZoom());
@@ -804,7 +799,6 @@ const Playa = () => {
         movingLeft={movingLeft}
         movingRight={movingRight}
         setMyLocation={setMyLocation}
-        setSelectedUserProfile={setUserProfile}
         setShowUserTooltip={setShowUserTooltip}
         setHoveredUser={setHoveredUser}
         setShowMenu={setShowMenu}
@@ -1044,7 +1038,7 @@ const Playa = () => {
           className={`playa-videochat ${inVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
-          <VideoChatLayer setSelectedUserProfile={setUserProfile} />
+          <VideoChatLayer />
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
@@ -1090,7 +1084,6 @@ const Playa = () => {
     mapContainer,
     venue,
     usersInCurrentVenue,
-    setUserProfile,
   ]);
 };
 
