@@ -251,10 +251,16 @@ export const Audience: React.FunctionComponent = () => {
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
   // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
-  const carvedOutWidthInSeats = Math.ceil(columnsForSizedAuditorium / (3 * 2));
+  const carvedOutWidthInSeats = Math.max(
+    Math.ceil(columnsForSizedAuditorium / 5),
+    8
+  );
 
   // Keep a 16:9 ratio
-  const carvedOutHeightInSeats = Math.ceil(carvedOutWidthInSeats * (9 / 16));
+  const carvedOutHeightInSeats = Math.max(
+    Math.ceil(carvedOutWidthInSeats * (9 / 16)),
+    5
+  );
 
   // Calculate the position/size for the central video container
   const videoContainerWidthInSeats = carvedOutWidthInSeats * 2 + 1;

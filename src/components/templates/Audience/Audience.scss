@@ -19,7 +19,7 @@ $seat-size: 4vh;
 
   .video-container-wrapper {
     position: absolute;
-    z-index: 0;
+    z-index: z(audience-video-container);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -172,7 +172,6 @@ $seat-size: 4vh;
       background-color: rgba(255, 255, 255, 0.2);
       color: white;
       user-select: none;
-      z-index: 1;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
@@ -207,6 +206,7 @@ $seat-size: 4vh;
       color: black;
       font-size: calc(#{$seat-size} * 0.75);
       align-self: center;
+      z-index: z(audience-participant-add-button);
     }
   }
 
