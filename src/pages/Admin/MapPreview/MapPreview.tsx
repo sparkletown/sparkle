@@ -29,7 +29,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
   const [isSaving, setSaving] = useState<boolean>(false);
 
-  console.log(mapBackground);
   useEffect(() => {
     if (
       !mapRooms.length ||
