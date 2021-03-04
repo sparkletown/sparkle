@@ -70,9 +70,13 @@ const GiftPopover = (
 
 interface NavBarPropsType {
   redirectionUrl?: string;
+  hasBackButton?: boolean;
 }
 
-const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
+const NavBar: React.FC<NavBarPropsType> = ({
+  redirectionUrl,
+  hasBackButton = true,
+}) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
@@ -80,6 +84,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
+  // @debt Move connect from Navbar to a hook
   useFirestoreConnect(
     venueParentId
       ? {
@@ -313,10 +318,11 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         <SchedulePageModal isVisible={isEventScheduleVisible} />
       </div>
 
-      {venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn">
+      {/* @debt Remove back button from Navbar */}
+      {hasBackButton && venue?.parentId && parentVenue?.name && (
+        <div className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
-          <span onClick={backToParentVenue} className="back-link">
+          <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}
           </span>
         </div>
