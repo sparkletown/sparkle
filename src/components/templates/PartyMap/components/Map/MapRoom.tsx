@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Room } from "types/rooms";
+import { Room, RoomTypes } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -38,7 +38,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--unclickable": true,
+    "maproom--unclickable": room.type === RoomTypes.unclickable,
     "maproom--always-show-label":
       venue.roomVisibility === RoomVisibility.nameCount ||
       (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers),

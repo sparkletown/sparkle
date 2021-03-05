@@ -48,6 +48,10 @@ $label-visible: flex;
       .maproom__label {
         display: $label-hidden;
       }
+
+      .maproom__image {
+        filter: none;
+      }
     }
   }
 
