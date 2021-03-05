@@ -174,7 +174,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       min-width: var(--seat-size-min);
       min-height: var(--seat-size-min);
 
-      font-size: calc(min(#{$seat-size}, #{$seat-size-min}) * 0.75);
+      font-size: calc(0.75 * min(var(--seat-size), var(--seat-size-min)));
 
       border-radius: 100%;
 

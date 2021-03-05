@@ -48,7 +48,7 @@ const SEAT_SIZE_MIN = "var(--seat-size-min)";
 
 const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
-const VIDEO_MIN_HEIGHT_IN_SEATS = (VIDEO_MIN_WIDTH_IN_SEATS * 9) / 16;
+const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -255,7 +255,7 @@ export const Audience: React.FunctionComponent = () => {
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
-  // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
+  // We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
   const carvedOutWidthInSeats = Math.max(
     Math.ceil(columnsForSizedAuditorium / (3 * 2)),
     VIDEO_MIN_WIDTH_IN_SEATS
