@@ -18,11 +18,14 @@ $seat-size: 4vh;
   padding: $spacing;
   min-width: fit-content;
 
-  .video-container-wrapper {
+  .audience-overlay {
     position: absolute;
     width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+    top: 1.5vh;
 
     .video-container {
       display: flex;

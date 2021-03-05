@@ -270,16 +270,6 @@ export const Audience: React.FunctionComponent = () => {
   // Calculate the position/size for the central video container
   const videoContainerWidthInSeats = carvedOutWidthInSeats * 2 + 1;
   const videoContainerHeightInSeats = carvedOutHeightInSeats * 2 + 1;
-  const videoContainerTopOffsetInSeats = Math.floor(
-    (rowsForSizedAuditorium - carvedOutHeightInSeats * 2) / 2
-  );
-
-  const videoWrapperStyles = useMemo(
-    () => ({
-      top: `calc(${videoContainerTopOffsetInSeats} * ${SEAT_SIZE})`,
-    }),
-    [videoContainerTopOffsetInSeats]
-  );
 
   const videoContainerStyles = useMemo(
     () => ({
@@ -422,7 +412,7 @@ export const Audience: React.FunctionComponent = () => {
           style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
         >
           <div className="audience">
-            <div className="video-container-wrapper" style={videoWrapperStyles}>
+            <div className="audience-overlay">
               <div
                 ref={focusElementOnLoad}
                 className="video-container"
@@ -519,7 +509,6 @@ export const Audience: React.FunctionComponent = () => {
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
-    videoWrapperStyles,
     iframeUrl,
     rowsForSizedAuditorium,
     selectedUserProfile,
