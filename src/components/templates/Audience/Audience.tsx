@@ -13,7 +13,6 @@ import { addReaction } from "store/actions/Reactions";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { User } from "types/User";
-import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
@@ -345,10 +344,6 @@ export const Audience: React.FunctionComponent = () => {
     const translateColumn = (untranslatedColumnIndex: number) =>
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
-    const videoFrameClasses = `frame ${
-      venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
-    }`;
-
     const reactionContainerClassnames = classNames("reaction-container", {
       seated: userSeated,
     });
@@ -423,7 +418,7 @@ export const Audience: React.FunctionComponent = () => {
               >
                 <div className="video">
                   <iframe
-                    className={videoFrameClasses}
+                    className="frame"
                     src={iframeUrl}
                     title="Video"
                     frameBorder="0"
