@@ -49,7 +49,7 @@ const SEAT_SIZE_MIN = "var(--seat-size-min)";
 
 const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
-const VIDEO_MIN_HEIGHT_IN_SEATS = (VIDEO_MIN_WIDTH_IN_SEATS * 9) / 16;
+const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
