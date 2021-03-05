@@ -45,10 +45,6 @@ $label-visible: flex;
     &:hover {
       transform: none;
 
-      .maproom__label {
-        display: $label-hidden;
-      }
-
       .maproom__image {
         filter: none;
       }

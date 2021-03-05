@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import noop from "lodash/noop";
 import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
@@ -27,6 +28,8 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
+  const isUnclickable = room.type === RoomTypes.unclickable;
+
   const dispatch = useDispatch();
 
   const handleRoomHovered = useCallback(() => {
@@ -38,14 +41,16 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--unclickable": room.type === RoomTypes.unclickable,
+    "maproom--unclickable": isUnclickable,
     "maproom--always-show-label":
-      venue.roomVisibility === RoomVisibility.nameCount ||
-      (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers),
+      !isUnclickable &&
+      (venue.roomVisibility === RoomVisibility.nameCount ||
+        (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
-    "maproom__title--count": venue.roomVisibility === RoomVisibility.count,
+    "maproom__title--count":
+      !isUnclickable && venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomPositionStyles = useMemo(
@@ -62,16 +67,18 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <div
       className={containerClasses}
       style={roomPositionStyles}
-      onClick={selectRoom}
-      onMouseEnter={handleRoomHovered}
-      onMouseLeave={handleRoomUnhovered}
+      onClick={isUnclickable ? noop : selectRoom}
+      onMouseEnter={isUnclickable ? noop : handleRoomHovered}
+      onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
     >
       <img className="maproom__image" src={room.image_url} alt={room.title} />
 
-      <div className="maproom__label">
-        <span className={titleClasses}>{room.title}</span>
-        <RoomAttendance venue={venue} room={room} />
-      </div>
+      {!isUnclickable && (
+        <div className="maproom__label">
+          <span className={titleClasses}>{room.title}</span>
+          <RoomAttendance venue={venue} room={room} />
+        </div>
+      )}
     </div>
   );
 };
