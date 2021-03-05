@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IS_BURN } from "secrets";
 
 import { useInterval } from "hooks/useInterval";
-// import { useCustomLoaders } from "hooks/useCustomLoaders";
+import { useCustomLoaders } from "hooks/useCustomLoaders";
 
 import "./loading.scss";
 
@@ -30,9 +30,9 @@ const quotes = IS_BURN
 export const LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
 
-  // const loaders = useCustomLoaders();
+  const loaders = useCustomLoaders();
 
-  // console.log({ loaders });
+  console.log({ loaders });
 
   useInterval(
     () => {
