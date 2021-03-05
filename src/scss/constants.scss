@@ -99,6 +99,16 @@ $z-layers: (
   venuepage-preview-indication: 1
 );
 
+@font-face {
+  font-family: "speakTweak";
+  src: url("../assets/fonts/speakTweak.ttf");
+}
+
+@font-face {
+  font-family: "zoinks";
+  src: url("../assets/fonts/zoinks.ttf");
+}
+
 @function z($layer) {
   @if not map-has-key($z-layers, $layer) {
     @warn "No layer found for `#{$layer}` in $z-layers map. Property omitted. Falling back to 1.";

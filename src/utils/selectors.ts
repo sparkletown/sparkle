@@ -18,6 +18,7 @@ import {
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
+import { CustomLoader } from "types/CustomLoader";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -223,6 +224,10 @@ export const radioStationsSelector = (state: RootState) =>
 export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
+
+export const customLoadersSelector: SparkleSelector<
+  CustomLoader[] | undefined
+> = (state) => state.firestore.ordered.loaders;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,

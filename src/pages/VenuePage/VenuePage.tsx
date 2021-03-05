@@ -239,6 +239,8 @@ const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
+  // return <LoadingPage />;
+
   if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
