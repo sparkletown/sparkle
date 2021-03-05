@@ -2,12 +2,11 @@
 
 $light: #ffffff;
 
-$spacing: 30px;
-$video-spacing: 20px;
-
 // If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
 $seat-size: 4vh;
-$seat-size-min: 20px;
+$seat-size-min: 25px;
+
+$spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
 .audience-container {
   --seat-size: #{$seat-size};
@@ -24,7 +23,6 @@ $seat-size-min: 20px;
 
   .audience-overlay {
     position: absolute;
-    top: 1.5vh;
 
     width: 100%;
     height: 100%;
@@ -34,10 +32,12 @@ $seat-size-min: 20px;
     align-items: center;
 
     .video-container {
+      margin-top: calc(1 * min(var(--seat-size), var(--seat-size-min)));
+      padding: calc(1.5 * min(var(--seat-size), var(--seat-size-min)));
+
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: $video-spacing;
 
       .video {
         width: 100%;
