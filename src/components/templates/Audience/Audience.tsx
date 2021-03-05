@@ -481,9 +481,7 @@ export const Audience: React.FunctionComponent = () => {
                                 />
                               </div>
                             )}
-                            {seat && !seatedPartygoer && (
-                              <span className="add-participant-button">+</span>
-                            )}
+                            {seat && !seatedPartygoer && <>+</>}
                           </div>
                         );
                       }
