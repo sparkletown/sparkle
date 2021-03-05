@@ -7,8 +7,12 @@ $video-spacing: 20px;
 
 // If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
 $seat-size: 4vh;
+$seat-size-min: 20px;
 
 .audience-container {
+  --seat-size: #{$seat-size};
+  --seat-size-min: #{$seat-size-min};
+
   background-attachment: fixed;
   background-position: center 46%;
 
@@ -161,16 +165,32 @@ $seat-size: 4vh;
       justify-content: center;
     }
 
-    .seat {
+    .seat,
+    .not-seat,
+    .profile-avatar {
       display: flex;
-      border-radius: 100%;
-      width: $seat-size;
-      height: $seat-size;
       justify-content: center;
-      align-content: center;
-      background-color: rgba(255, 255, 255, 0.2);
-      color: white;
+      align-items: center;
+
+      width: var(--seat-size);
+      height: var(--seat-size);
+      min-width: var(--seat-size-min);
+      min-height: var(--seat-size-min);
+
+      font-size: calc(min(#{$seat-size}, #{$seat-size-min}) * 0.75);
+
+      border-radius: 100%;
+
+      color: $black;
       user-select: none;
+    }
+
+    .seat {
+      background-color: rgba(255, 255, 255, 0.2);
+
+      .add-participant-button {
+        z-index: z(audience-participant-add-button);
+      }
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
@@ -181,52 +201,10 @@ $seat-size: 4vh;
         background-color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
       }
-
-      .user .profile-picture-container {
-        width: 4vh;
-        height: 4vh;
-      }
     }
 
     .not-seat {
-      display: flex;
-      border-radius: 100%;
-      width: $seat-size;
-      height: $seat-size;
-      justify-content: center;
-      align-content: center;
       background-color: rgba(0, 0, 0, 0);
-      user-select: none;
     }
-
-    .add-participant-button {
-      color: black;
-      font-size: calc(#{$seat-size} * 0.75);
-      align-self: center;
-      z-index: z(audience-participant-add-button);
-    }
-  }
-
-  .chat-container {
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 35px;
-  }
-
-  .user {
-    width: $seat-size;
-    height: $seat-size;
-    min-width: $seat-size;
-    min-height: $seat-size;
-  }
-
-  .profile-avatar {
-    width: 100%;
-    height: 100%;
-
-    border-radius: 100%;
-    background-size: cover;
-    background-position: center;
   }
 }

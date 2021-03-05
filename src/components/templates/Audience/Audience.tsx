@@ -44,7 +44,8 @@ interface ChatOutDataType {
 }
 
 // If you change this, make sure to also change it in Audience.scss's $seat-size
-const SEAT_SIZE = "4vh";
+const SEAT_SIZE = "var(--seat-size)";
+const SEAT_SIZE_MIN = "var(--seat-size-min)";
 
 const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
@@ -275,6 +276,8 @@ export const Audience: React.FunctionComponent = () => {
     () => ({
       width: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE})`,
       height: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE})`,
+      minWidth: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE_MIN})`,
+      minHeight: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE_MIN})`,
     }),
     [videoContainerHeightInSeats, videoContainerWidthInSeats]
   );
