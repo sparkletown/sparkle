@@ -13,24 +13,34 @@ $label-visible: flex;
 
   transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
 
-  &--active {
-    cursor: pointer;
+  cursor: pointer;
+
+  &:hover {
+    z-index: z(map-room-hovered);
+    transform: scale(1.1);
+
+    .maproom__label {
+      display: $label-visible;
+
+      background-color: $room-info-bg;
+      opacity: 1;
+      box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
+        0 2px 4px rgba($black, 0.2);
+    }
+
+    .maproom__title--count {
+      display: $label-visible;
+    }
+  }
+
+  &--unclickable {
+    cursor: default;
 
     &:hover {
-      z-index: z(map-room-hovered);
-      transform: scale(1.1);
+      transform: none;
 
       .maproom__label {
-        display: $label-visible;
-
-        background-color: $room-info-bg;
-        opacity: 1;
-        box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
-          0 2px 4px rgba($black, 0.2);
-      }
-
-      .maproom__title--count {
-        display: $label-visible;
+        display: $label-hidden;
       }
     }
   }

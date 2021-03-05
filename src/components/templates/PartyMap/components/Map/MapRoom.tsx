@@ -38,7 +38,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--active": true,
+    "maproom--unclickable": true,
     "maproom--always-show-label":
       venue.roomVisibility === RoomVisibility.nameCount ||
       (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers),
