@@ -3,6 +3,7 @@
 $light: #ffffff;
 
 $spacing: 30px;
+$video-spacing: 20px;
 
 // If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
 $seat-size: 4vh;
@@ -19,7 +20,6 @@ $seat-size: 4vh;
 
   .video-container-wrapper {
     position: absolute;
-    z-index: z(audience-video-container);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -28,7 +28,7 @@ $seat-size: 4vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px;
+      padding: $video-spacing;
 
       .video {
         width: 100%;
@@ -54,9 +54,6 @@ $seat-size: 4vh;
         justify-content: space-around;
         text-align: center;
 
-        // these are fairly arbitrary figures
-        // min-width: 495px;
-        // max-width: 60%;
         width: 90%;
         min-height: 105px;
         padding: 15px;
@@ -166,8 +163,6 @@ $seat-size: 4vh;
       border-radius: 100%;
       width: $seat-size;
       height: $seat-size;
-      min-width: $seat-size;
-      min-height: $seat-size;
       justify-content: center;
       align-content: center;
       background-color: rgba(255, 255, 255, 0.2);
@@ -195,8 +190,6 @@ $seat-size: 4vh;
       border-radius: 100%;
       width: $seat-size;
       height: $seat-size;
-      min-width: $seat-size;
-      min-height: $seat-size;
       justify-content: center;
       align-content: center;
       background-color: rgba(0, 0, 0, 0);

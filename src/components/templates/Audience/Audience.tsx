@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import firebase, { UserInfo } from "firebase/app";
 
@@ -44,6 +45,10 @@ interface ChatOutDataType {
 
 // If you change this, make sure to also change it in Audience.scss's $seat-size
 const SEAT_SIZE = "4vh";
+
+const VIDEO_MIN_WIDTH_IN_SEATS = 8;
+// We should keep the 16/9 ratio
+const VIDEO_MIN_HEIGHT_IN_SEATS = (VIDEO_MIN_WIDTH_IN_SEATS * 9) / 16;
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -252,14 +257,14 @@ export const Audience: React.FunctionComponent = () => {
 
   // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
   const carvedOutWidthInSeats = Math.max(
-    Math.ceil(columnsForSizedAuditorium / 5),
-    8
+    Math.ceil(columnsForSizedAuditorium / (3 * 2)),
+    VIDEO_MIN_WIDTH_IN_SEATS
   );
 
   // Keep a 16:9 ratio
   const carvedOutHeightInSeats = Math.max(
     Math.ceil(carvedOutWidthInSeats * (9 / 16)),
-    5
+    VIDEO_MIN_HEIGHT_IN_SEATS
   );
 
   // Calculate the position/size for the central video container
@@ -351,6 +356,10 @@ export const Audience: React.FunctionComponent = () => {
       venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
     }`;
 
+    const reactionContainerClassnames = classNames("reaction-container", {
+      seated: userSeated,
+    });
+
     const renderReactionsContainer = () => (
       <>
         <div className="emoji-container">
@@ -431,11 +440,7 @@ export const Audience: React.FunctionComponent = () => {
                 </div>
 
                 {venue.showReactions && (
-                  <div
-                    className={`reaction-container ${
-                      userSeated ? "seated" : ""
-                    }`}
-                  >
+                  <div className={reactionContainerClassnames}>
                     {userSeated
                       ? renderReactionsContainer()
                       : renderInstructions()}
