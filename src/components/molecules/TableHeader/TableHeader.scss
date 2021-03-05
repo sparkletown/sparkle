@@ -1,0 +1,56 @@
+@import "scss/constants.scss";
+
+.table-header {
+  .back-button {
+    background-color: $intermediate-grey;
+    font-size: 0.9rem;
+    color: $white;
+    border: none;
+    padding: 15px 15px 15px 25px;
+    border-radius: 0 0 16px 0;
+    font-weight: 500;
+
+    .back-button-icon {
+      margin-right: 8px;
+      color: $concrete;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+
+      .back-button-icon {
+        opacity: 1;
+      }
+    }
+  }
+
+  .table-title-container {
+    .private-table-title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 500;
+
+      .private-table-seats-left {
+        font-size: 11px;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .lock-button-container {
+    .lock-table-icon {
+      margin-right: 5px;
+    }
+    .lock-table-checbox-indication {
+      margin-right: 10px;
+      font-size: 12px;
+    }
+    .switch {
+      margin: 0;
+    }
+  }
+}

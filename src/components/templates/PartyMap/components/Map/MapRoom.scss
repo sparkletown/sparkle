@@ -6,6 +6,7 @@ $label-visible: flex;
 .maproom {
   position: absolute;
   z-index: z(map-room);
+  cursor: pointer;
 
   display: flex;
   flex-direction: column;
@@ -30,6 +31,11 @@ $label-visible: flex;
 
     .maproom__title--count {
       display: $label-visible;
+    }
+
+    .maproom__image {
+      filter: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.4)) contrast(110%)
+        saturate(110%);
     }
   }
 
