@@ -256,7 +256,7 @@ export const Audience: React.FunctionComponent = () => {
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
-  // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
+  // We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
   const carvedOutWidthInSeats = Math.max(
     Math.ceil(columnsForSizedAuditorium / (3 * 2)),
     VIDEO_MIN_WIDTH_IN_SEATS
