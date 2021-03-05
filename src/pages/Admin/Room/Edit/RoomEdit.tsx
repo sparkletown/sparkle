@@ -7,6 +7,7 @@ import * as S from "./RoomEdit.styles";
 import { CustomInputsType, RoomTemplate, ROOM_TEMPLATES } from "settings";
 import { Button } from "react-bootstrap";
 import { EditRoomProps } from "./RoomEdit.types";
+import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 const EditRoom: React.FC<EditRoomProps> = ({
   isVisible,
@@ -32,13 +33,16 @@ const EditRoom: React.FC<EditRoomProps> = ({
     watch,
     handleSubmit,
     setValue,
+    errors,
     formState: { isSubmitting, dirty },
   } = useForm({
+    validationSchema: roomEditSchema,
     defaultValues: {
       title: room.title,
       url: room.url,
       description: room.description,
-      tempalte: room.template,
+      template: room.template,
+      image_url: room.image_url,
     },
   });
 
@@ -57,6 +61,9 @@ const EditRoom: React.FC<EditRoomProps> = ({
           placeholder="Room name"
           custom
         />
+        {errors.title && (
+          <span className="input-error">{errors.title.message}</span>
+        )}
       </S.InputWrapper>
     </Form.Row>
   );
@@ -65,6 +72,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
     <S.InputWrapper>
       <span>The room url</span>
       <input type="text" ref={register} name="url" placeholder="Room url" />
+      {errors.url && <span className="input-error">{errors.url.message}</span>}
     </S.InputWrapper>
   );
 
@@ -92,6 +100,9 @@ const EditRoom: React.FC<EditRoomProps> = ({
         nameWithUnderscore
         imgUrl={room.image_url}
       />
+      {errors.image_url && (
+        <span className="input-error">{errors.image_url.message}</span>
+      )}
     </S.InputWrapper>
   );
 
@@ -110,7 +121,7 @@ const EditRoom: React.FC<EditRoomProps> = ({
         <Form.Control
           as="select"
           custom
-          name="tempalte"
+          name="template"
           ref={register}
           onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
             setSelectedTemplate(e.target.value)
@@ -143,13 +154,15 @@ const EditRoom: React.FC<EditRoomProps> = ({
 
           {renderTemplateSelect()}
 
-          <Button type="submit" disabled={isSubmitting || !dirty}>
-            Save
-          </Button>
+          <S.ButtonsWrapper>
+            <Button variant="danger" onClick={deleteHandler}>
+              Delete room
+            </Button>
 
-          <Button variant="danger" onClick={deleteHandler}>
-            Delete room
-          </Button>
+            <Button type="submit" disabled={isSubmitting || !dirty}>
+              Save room
+            </Button>
+          </S.ButtonsWrapper>
         </Form>
       </Modal.Body>
     </Modal>

@@ -6,7 +6,6 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
 
@@ -98,13 +97,6 @@ export const ConversationSpace: React.FunctionComponent = () => {
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
             disableSeeAll={false}
-          />
-        </div>
-        <div className="chat-drawer">
-          <ChatDrawer
-            title={`${venue.name} Chat`}
-            roomName={venue.name}
-            chatInputPlaceholder="Message..."
           />
         </div>
       </div>

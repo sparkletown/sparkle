@@ -1,6 +1,11 @@
-import { RoomActions } from "../actions/Room";
+import {
+  EXIT_PREVIEW_ROOM,
+  PREVIEW_ROOM,
+  TOGGLE_MUTE_REACTIONS,
+  RoomActions,
+} from "store/actions/Room";
 
-interface RoomState {
+export interface RoomState {
   room: string | null;
   mute: boolean;
 }
@@ -15,12 +20,18 @@ export const roomReducer = (
   action: RoomActions
 ): RoomState => {
   switch (action.type) {
-    case "PREVIEW_ROOM":
+    // @debt is this even used currently?
+    case PREVIEW_ROOM:
       return { ...state, room: action.room };
-    case "EXIT_PREVIEW_ROOM":
+
+    // @debt is this even used currently?
+    case EXIT_PREVIEW_ROOM:
       return { room: null, mute: false };
-    case "TOGGLE_MUTE_REACTIONS":
+
+    // @debt is this even used currently?
+    case TOGGLE_MUTE_REACTIONS:
       return { ...state, mute: !state.mute };
+
     default:
       return state;
   }

@@ -7,6 +7,13 @@
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./constants.scss";
 
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
 body {
   font: 1rem/1.3 "speakTweak", "Rubik", "HelveticaNeue", "Helvetica Neue",
     Helvetica, sans-serif;
@@ -18,9 +25,7 @@ body {
   display: flex;
   justify-content: center;
   font-family: "speakTweak", sans-serif;
-  height: 100vh;
-  overscroll-behavior-x: none;
-  overflow-y: scroll;
+  overflow: auto;
 }
 
 * {
@@ -308,13 +313,6 @@ textarea {
   .attendance-number {
     margin-right: 10px;
   }
-}
-
-#root {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  max-width: 100%;
 }
 
 a {
