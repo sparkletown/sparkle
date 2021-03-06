@@ -13,6 +13,7 @@ import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
+import { Embeddable } from "components/templates/Embeddable";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -99,6 +100,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
+      break;
+
+    case VenueTemplate.embeddable:
+      template = <Embeddable venue={venue} />;
+      fullscreen = true;
+
       break;
 
     case VenueTemplate.avatargrid:

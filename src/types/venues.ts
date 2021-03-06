@@ -25,6 +25,7 @@ export enum VenueTemplate {
   audience = "audience",
   conversationspace = "conversationspace",
   firebarrel = "firebarrel",
+  embeddable = "embeddable",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
@@ -179,6 +180,14 @@ export interface JazzbarVenue extends Venue {
   host: {
     icon: string;
   };
+}
+
+export interface EmbeddableVenue extends Venue {
+  template: VenueTemplate.embeddable;
+  iframeUrl: string;
+  containerStyles: Record<string, string>;
+  iframeStyles: Record<string, string>;
+  iframeOptions: Record<string, string>;
 }
 
 export interface Question {
