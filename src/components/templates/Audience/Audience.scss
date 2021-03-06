@@ -31,6 +31,8 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     justify-content: center;
     align-items: center;
 
+    pointer-events: none;
+
     .video-container {
       margin-top: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       padding: calc(1.5 * min(var(--seat-size), var(--seat-size-min)));
@@ -184,10 +186,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
     .seat {
       background-color: rgba(255, 255, 255, 0.2);
-
-      .add-participant-button {
-        z-index: z(audience-participant-add-button);
-      }
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
