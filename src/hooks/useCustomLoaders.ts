@@ -10,7 +10,5 @@ export const useCustomLoaders = () => {
 
   const customLoaders = useSelector(customLoadersSelector);
 
-  console.log({ customLoaders });
-
   return useMemo(() => customLoaders ?? [], [customLoaders]);
 };
