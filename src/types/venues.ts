@@ -8,9 +8,6 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-// TODO: should JazzBarVenue be added to this?
-export type AnyVenue = Venue | PartyMapVenue;
-
 export enum VenueTemplate {
   jazzbar = "jazzbar",
   friendship = "friendship",
@@ -32,6 +29,19 @@ export enum VenueTemplate {
    */
   avatargrid = "avatargrid",
 }
+
+// This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
+export type GenericVenueTemplates = Exclude<
+  VenueTemplate,
+  VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
+>;
+
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+export type AnyVenue =
+  | GenericVenue
+  | PartyMapVenue
+  | JazzbarVenue
+  | EmbeddableVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -83,9 +93,10 @@ export interface Venue_v2_EntranceConfig {
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
+// @debt should we convert everything to use AnyVenue, GenericVenue, or one of the more specific types rather than Venue? If so, should we not export this type here?
 export interface Venue {
-  parentId?: string;
   template: VenueTemplate;
+  parentId?: string;
   name: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
@@ -145,6 +156,10 @@ export interface Venue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+}
+
+export interface GenericVenue extends Venue {
+  template: GenericVenueTemplates;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
