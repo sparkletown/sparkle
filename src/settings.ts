@@ -138,11 +138,11 @@ export const ZOOM_URL_TEMPLATES = [
 ];
 
 export const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
-  VenueTemplate.audience,
-  VenueTemplate.artpiece,
-  VenueTemplate.firebarrel,
 ];
 
 export const BACKGROUND_IMG_TEMPLATES = [
