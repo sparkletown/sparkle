@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from "react";
 import classNames from "classnames";
+
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +10,7 @@ import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
-import { AnyVenue } from "types/venues";
+import { JazzbarVenue } from "types/venues";
 
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
@@ -29,6 +30,7 @@ import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -38,11 +40,10 @@ import { addReaction } from "store/actions/Reactions";
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
-import { useExperiences } from "hooks/useExperiences";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: AnyVenue;
+  venue?: JazzbarVenue;
 }
 
 // NOTE: This functionality will probably be returned in the nearest future.
