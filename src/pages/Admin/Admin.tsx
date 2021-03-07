@@ -266,10 +266,16 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const editText =
     venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const deleteText =
     venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
 

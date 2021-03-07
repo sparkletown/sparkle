@@ -6,6 +6,7 @@ import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
 import { BURN_VENUE_TEMPLATES, Template } from "settings";
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",
   [VenueTemplate.artpiece]: "/venues/venue-art.jpg",
@@ -26,6 +27,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.avatargrid]: undefined,
 };
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",

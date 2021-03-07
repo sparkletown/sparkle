@@ -16,6 +16,7 @@ interface AdminVenuePreview {
   containerStyle: CSSProperties;
 }
 
+// @debt Refactor this into settings, or types/templates, or similar?
 const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
