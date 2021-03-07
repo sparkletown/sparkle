@@ -159,12 +159,12 @@ export interface BaseVenue {
   showZendesk?: boolean;
 }
 
-export interface GenericVenue extends Venue {
+export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
-export interface PartyMapVenue extends Venue {
+export interface PartyMapVenue extends BaseVenue {
   id: string;
   template: VenueTemplate.partymap;
   host?: {
@@ -189,7 +189,7 @@ export interface PartyMapVenue extends Venue {
   rooms?: Room[];
 }
 
-export interface JazzbarVenue extends Venue {
+export interface JazzbarVenue extends BaseVenue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;
@@ -198,7 +198,7 @@ export interface JazzbarVenue extends Venue {
   };
 }
 
-export interface EmbeddableVenue extends Venue {
+export interface EmbeddableVenue extends BaseVenue {
   template: VenueTemplate.embeddable;
   iframeUrl?: string;
   containerStyles?: CSSProperties;
