@@ -101,7 +101,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.embeddable:
       template = <Embeddable venue={venue} />;
       fullscreen = true;
-
       break;
 
     case VenueTemplate.firebarrel:
