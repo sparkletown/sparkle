@@ -7,7 +7,7 @@ import { useFirestore } from "react-redux-firebase";
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { UserVisit } from "types/Firestore";
-import { AnyVenue, isVenueWithRooms, AnyVenue } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
