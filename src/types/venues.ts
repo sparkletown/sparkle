@@ -93,7 +93,9 @@ export interface Venue_v2_EntranceConfig {
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
-// @debt should we convert everything to use AnyVenue, GenericVenue, or one of the more specific types rather than Venue? If so, should we not export this type here?
+// @debt should we convert everything to use AnyVenue, GenericVenue, or one of the more specific types rather than Venue?
+//   If so, should we not export this type here?
+//   Perhaps we should rename this to BaseVenue
 export interface Venue {
   template: VenueTemplate;
   parentId?: string;
