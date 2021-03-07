@@ -10,6 +10,7 @@ interface AdminVideoProps {
   venue: AnyVenue;
 }
 
+// @debt Cleanup/rename this component + related so that it suggests it will work for updating any Venue with an iframeUrl
 export const AdminVideo: React.FC<AdminVideoProps> = ({ venueId, venue }) => {
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
