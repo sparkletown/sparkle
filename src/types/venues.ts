@@ -203,10 +203,10 @@ export interface JazzbarVenue extends Venue {
 
 export interface EmbeddableVenue extends Venue {
   template: VenueTemplate.embeddable;
-  iframeUrl: string;
-  containerStyles: CSSProperties;
-  iframeStyles: CSSProperties;
-  iframeOptions: Record<string, string>;
+  iframeUrl?: string;
+  containerStyles?: CSSProperties;
+  iframeStyles?: CSSProperties;
+  iframeOptions?: Record<string, string>;
 }
 
 export interface Question {
