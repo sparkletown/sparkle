@@ -1,5 +1,5 @@
 import React, { CSSProperties, useMemo } from "react";
-import { PartyMapVenue, Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -12,10 +12,11 @@ import {
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 interface AdminVenuePreview {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   containerStyle: CSSProperties;
 }
 
+// @debt Refactor this into settings, or types/templates, or similar?
 const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
