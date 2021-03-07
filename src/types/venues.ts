@@ -292,7 +292,7 @@ export interface VenueEvent {
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
-export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
 export const urlFromImage = (

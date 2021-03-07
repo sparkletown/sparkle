@@ -1,10 +1,10 @@
 import React from "react";
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import JazzBarSkeletonPage from "./JazzBarSkeletonPage";
 import JazzTab from "./JazzTab";
 
 interface PropsType {
-  venue?: Venue;
+  venue?: AnyVenue;
 }
 
 // @debt This whole venue component looks ugly. There are a lot of places to improve it, but

@@ -9,7 +9,7 @@ import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
@@ -42,7 +42,7 @@ import { useExperiences } from "hooks/useExperiences";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: Venue;
+  venue?: AnyVenue;
 }
 
 // NOTE: This functionality will probably be returned in the nearest future.
