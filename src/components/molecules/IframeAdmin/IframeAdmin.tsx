@@ -10,6 +10,8 @@ interface IframeAdminProps {
   venue: AnyVenue;
 }
 
+// @debt This component is almost exactly the same as BannerAdmin, we should refactor them both to use the same generic base component
+//   BannerAdmin is the 'canonical example' to follow when we do this
 export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
@@ -28,22 +30,40 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const saveIframeUrl = () => updateIframeUrl(iframeUrl);
 
   return (
-    <div className="admin-video-container">
-      <label htmlFor="bannerMessage">iframe URL for {venue?.name}:</label>
-      <input
-        className="video-input"
-        type="text"
-        value={iframeUrl}
-        onChange={(e) => {
-          setError(null);
-          setIframeUrl(e.target.value);
-        }}
-        placeholder="https://youtube.com/embed/..."
-      />
-      {error && <span className="error">{error}</span>}
-      <button className="btn btn-primary" type="submit" onClick={saveIframeUrl}>
-        Set iframe URL
-      </button>
+    <div className="container IframeAdmin">
+      <div className="row">
+        <div className="col">
+          <form>
+            <div className="form-group">
+              <label htmlFor="bannerMessage">
+                iframe URL for {venue?.name}:
+              </label>
+
+              <input
+                type="text"
+                value={iframeUrl}
+                onChange={(e) => {
+                  setError(null);
+                  setIframeUrl(e.target.value);
+                }}
+                placeholder="https://youtube.com/embed/..."
+              />
+
+              {error && <span className="error">{error}</span>}
+            </div>
+
+            <div className="form-inline justify-content-end">
+              <button
+                className="btn btn-primary"
+                type="submit"
+                onClick={saveIframeUrl}
+              >
+                Set iframe URL
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };
