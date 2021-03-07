@@ -1,26 +1,24 @@
 import React from "react";
 
-import { EmbeddableVenue, Venue } from "types/venues";
+import { EmbeddableVenue } from "types/venues";
 
 import "./Embeddable.scss";
 
 export interface EmbeddableProps {
-  venue: Venue;
+  venue: EmbeddableVenue;
 }
 
 export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
-  const typedVenue = venue as EmbeddableVenue;
-
-  if (!typedVenue?.iframeUrl) return <p>iframeUrl is missing</p>;
+  if (!venue?.iframeUrl) return <p>Error: iframeUrl is missing</p>;
 
   return (
-    <div className="embeddable" style={typedVenue.containerStyles}>
+    <div className="embeddable" style={venue.containerStyles}>
       <iframe
         title="embeddable-iframe"
-        src={typedVenue.iframeUrl}
+        src={venue.iframeUrl}
         className="embeddable__iframe"
-        style={typedVenue.iframeStyles}
-        {...typedVenue.iframeOptions}
+        style={venue.iframeStyles}
+        {...venue.iframeOptions}
       ></iframe>
     </div>
   );
