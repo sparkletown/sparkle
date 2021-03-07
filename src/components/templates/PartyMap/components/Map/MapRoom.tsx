@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import noop from "lodash/noop";
 import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
@@ -14,7 +13,9 @@ import RoomAttendance from "../RoomAttendance";
 
 import "./MapRoom.scss";
 
-interface MapRoomProps {
+const noop = () => {};
+
+export interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
   selectRoom: () => void;
