@@ -5,7 +5,12 @@ import {
 } from "settings";
 
 import { User } from "types/User";
-import { urlFromImage, AnyVenue, VenueTemplate } from "types/venues";
+import {
+  urlFromImage,
+  AnyVenue,
+  VenueTemplate,
+  JazzbarVenue,
+} from "types/venues";
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
@@ -50,7 +55,7 @@ export const peopleAttending = (
   return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
 };
 
-export const createJazzbar = (values: FormValues): AnyVenue => {
+export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
@@ -85,5 +90,8 @@ export const createJazzbar = (values: FormValues): AnyVenue => {
     adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,
+    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
+    iframeUrl: "",
+    logoImageUrl: "",
   };
 };
