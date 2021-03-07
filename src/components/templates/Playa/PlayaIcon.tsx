@@ -1,11 +1,11 @@
 import React from "react";
-import { AnyVenue, PlayaIcon, Venue } from "types/venues";
+import { AnyVenue, PlayaIcon } from "types/venues";
 import { WithId } from "utils/id";
 
 type PropsType = {
   playaIcon?: PlayaIcon;
   venues?: WithId<AnyVenue>[];
-  showVenue: (venue: WithId<Venue>) => void;
+  showVenue: (venue: WithId<AnyVenue>) => void;
 };
 
 export const PlayaIconComponent: React.FunctionComponent<PropsType> = ({
