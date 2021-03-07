@@ -19,7 +19,7 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
         className="embeddable__iframe"
         style={venue.iframeStyles}
         {...venue.iframeOptions}
-      ></iframe>
+      />
     </div>
   );
 };
