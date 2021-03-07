@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -21,7 +21,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: Venue;
+  venue: AnyVenue;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -117,7 +117,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     default:
-      template = <div>Unknown Template: ${venue.template}</div>;
+      // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
+      template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
   return (
