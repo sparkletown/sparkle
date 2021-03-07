@@ -1,3 +1,5 @@
+import { CSSProperties } from "react";
+
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
@@ -202,8 +204,8 @@ export interface JazzbarVenue extends Venue {
 export interface EmbeddableVenue extends Venue {
   template: VenueTemplate.embeddable;
   iframeUrl: string;
-  containerStyles: Record<string, string>;
-  iframeStyles: Record<string, string>;
+  containerStyles: CSSProperties;
+  iframeStyles: CSSProperties;
   iframeOptions: Record<string, string>;
 }
 
