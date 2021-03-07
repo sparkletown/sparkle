@@ -55,6 +55,7 @@ const NavSearchBar = () => {
       });
       return;
     }
+
     const venueUsersResults = worldUsers.filter((user) =>
       user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
@@ -64,11 +65,11 @@ const NavSearchBar = () => {
     );
 
     const roomsResults: Room[] =
-      venue?.rooms
-        ?.filter((room) =>
-          room.title.toLowerCase().includes(normalizedSearchQuery)
-        )
-        .filter((room) => room.type !== RoomTypes.unclickable) ?? [];
+      venue?.rooms?.filter(
+        (room) =>
+          room.title.toLowerCase().includes(normalizedSearchQuery) &&
+          room.type !== RoomTypes.unclickable
+      ) ?? [];
 
     setSearchResult({
       rooms: roomsResults,
