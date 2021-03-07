@@ -3,15 +3,14 @@ import firebase from "firebase/app";
 
 import { AnyVenue } from "types/venues";
 
-import "./AdminVideo.scss";
+import "./IframeAdmin.scss";
 
-interface AdminVideoProps {
+interface IframeAdminProps {
   venueId?: string;
   venue: AnyVenue;
 }
 
-// @debt Cleanup/rename this component + related so that it suggests it will work for updating any Venue with an iframeUrl
-export const AdminVideo: React.FC<AdminVideoProps> = ({ venueId, venue }) => {
+export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
 
