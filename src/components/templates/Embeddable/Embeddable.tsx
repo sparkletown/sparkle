@@ -1,5 +1,7 @@
 import React from "react";
 
+import { IFRAME_ALLOW } from "settings";
+
 import { EmbeddableVenue } from "types/venues";
 
 import "./Embeddable.scss";
@@ -20,6 +22,8 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
         src={iframeUrl}
         className="embeddable__iframe"
         style={iframeStyles}
+        allow={IFRAME_ALLOW}
+        allowFullScreen
         {...iframeOptions}
       />
     </div>
