@@ -34,7 +34,7 @@ import {
 import { ValidStoreAsKeys } from "types/Firestore";
 import {
   isVenueWithRooms,
-  Venue,
+  AnyVenue,
   VenueEvent,
   VenueTemplate,
 } from "types/venues";
@@ -228,7 +228,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 };
 
 export type VenueInfoComponentProps = {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
