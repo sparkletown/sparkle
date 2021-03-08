@@ -206,6 +206,12 @@ export interface EmbeddableVenue extends BaseVenue {
   iframeOptions?: Record<string, string>;
 }
 
+export interface AuditoriumVenue extends BaseVenue {
+  template: VenueTemplate.audience;
+  videoPosition: string;
+  sections: [];
+}
+
 export interface Question {
   name: string;
   text: string;
