@@ -87,6 +87,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       )}`
     : undefined;
   const disable = isSubmitting;
+
+  // @debt Should this be hardcoded here like this? At the very least maybe it should reference a constant/be defined outside of this component render
   const templateID = VenueTemplate.partymap;
   const nameDisabled = isSubmitting || !!venueId;
 
