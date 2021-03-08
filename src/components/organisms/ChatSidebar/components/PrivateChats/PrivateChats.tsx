@@ -34,9 +34,8 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const { selectRecipientChat } = useChatSidebarControls();
 
   const numberOfOnline = onlineUsers.length;
-  const privateChatUsers: String[] = [];
-  privateChatPreviews.forEach((user) =>
-    privateChatUsers.push(user.counterPartyUser.id)
+  const privateChatUsers = privateChatPreviews.map(
+    (chatPreview) => chatPreview.counterPartyUser.id
   );
 
   const renderedPrivateChatPreviews = useMemo(
