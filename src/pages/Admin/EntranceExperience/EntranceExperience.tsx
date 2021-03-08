@@ -21,6 +21,7 @@ import "./EntranceExperience.scss";
 import { useDynamicInput } from "hooks/useDynamicInput";
 import { AccountQuestion } from "components/molecules/AccountQuestion";
 import { CodeOfConductQuestion } from "components/molecules/CodeOfConductQuestion";
+import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 type ProfileQuestion = VenueInput_v2["profile_questions"];
 type CodeOfConductQuestionType = VenueInput_v2["code_of_conduct_questions"];
@@ -107,9 +108,13 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   const profileQuestions = rest.watch("profile_questions") ?? [];
   const entrance = rest.watch("entrance") ?? [];
 
-  const hasCodeOfConduct = !!codeOfConductQuestions.length;
-  const hasProfileQuestions = !!profileQuestions.length;
-  const hasEntrance = !!entrance.length;
+  const hasCodeOfConduct =
+    !!codeOfConductQuestions.length && !!codeOfConductInput.counter;
+  const hasProfileQuestions =
+    !!profileQuestions.length && !!profileQuestionsInput.counter;
+  const hasEntrance = !!entrance.length && !!entranceInput.counter;
+
+  const stepConfig = entrance[0];
 
   return (
     <div className="entrance">
@@ -186,7 +191,13 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
             ))}
           </>
         )}
-        {hasEntrance && <div>Entrance preview</div>}
+        {hasEntrance && (
+          <WelcomeVideo
+            config={stepConfig}
+            venueName={venue.name}
+            proceed={() => {}}
+          />
+        )}
       </div>
     </div>
   );

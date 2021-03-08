@@ -13,8 +13,8 @@ const keypress = async () => {
 const puppeteer = require("puppeteer");
 
 // Set to the dates one day before and one day after the day of reports to extract
-const from = "02/11/2021";
-const to = "02/12/2021";
+const from = "10/05/2020";
+const to = "10/08/2020";
 
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
@@ -31,8 +31,8 @@ const isAdmin = false;
 const resumeFromPage = 1;
 
 // Login credentials (only needed if newLogin is true)
-const username = "thomas@sparkle.space";
-const password = "hmjV6NGH31mpRfsuC0JA";
+const username = "";
+const password = "";
 
 // Log in to zoom, and download all participants reports from the above selected dates.
 (async () => {

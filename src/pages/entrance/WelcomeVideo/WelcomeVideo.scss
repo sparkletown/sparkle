@@ -1,5 +1,12 @@
 .splash-page-container {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+
   .step-container {
+    max-height: 100%;
+    margin: 10% 20%;
+
     .video {
       width: 100%;
       height: 400px;
