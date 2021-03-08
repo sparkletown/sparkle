@@ -34,6 +34,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const { selectRecipientChat } = useChatSidebarControls();
 
   const numberOfOnline = onlineUsers.length;
+  const privateChatUsers: String[] = [];
+  privateChatPreviews.forEach((user) =>
+    privateChatUsers.push(user.counterPartyUser.id)
+  );
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
@@ -55,14 +59,16 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   const renderedOnlineUsers = useMemo(
     () =>
-      onlineUsers.map((user) => (
-        <OnlineUser
-          key={user.id}
-          user={user}
-          onClick={() => selectRecipientChat(user.id)}
-        />
-      )),
-    [onlineUsers, selectRecipientChat]
+      onlineUsers
+        .filter((user) => !privateChatUsers.includes(user.id))
+        .map((user) => (
+          <OnlineUser
+            key={user.id}
+            user={user}
+            onClick={() => selectRecipientChat(user.id)}
+          />
+        )),
+    [onlineUsers, privateChatUsers, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
