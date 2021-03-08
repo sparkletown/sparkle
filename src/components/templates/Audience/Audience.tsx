@@ -50,6 +50,10 @@ const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
 const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
+// Always have an odd number of columns.
+const MIN_COLUMNS = 25;
+const MIN_ROWS = 19;
+
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
 // How the seat grid works:
@@ -57,24 +61,6 @@ const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 // Right-most column is Math.floor(COLUMNS/2)
 // Always have an odd number of columns
 // Column zero has no seats, this is our virtual fire lane.
-
-// Example row:
-// -4 -3 -2 -1  0  1  2  3  4
-// Consumed by video (5/9) = +/- Math.floor(9/4) = [-2,2]
-// -4 -3  V  V  V  V  V  3  4
-
-// The same logic applies to the rows.
-
-// The video window always takes up the middle 50% of seats.
-// Example: if 17 columns, Math.ceil(17/2) = 9 of them are not available to leave room for the video.
-
-// The video window is absolutely positioned at 50%,50%, has width: 50%
-// So anything behind the video should not be a seat
-
-// Hardcode these for now; let's make them dynamic so occupancy cannot exceed 80%
-// Always have an odd number of columns.
-const MIN_COLUMNS = 25;
-const MIN_ROWS = 19;
 
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
