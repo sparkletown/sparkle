@@ -41,6 +41,8 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       flex-direction: column;
       align-items: center;
 
+      pointer-events: all;
+
       .video {
         width: 100%;
         height: 100%;
