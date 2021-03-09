@@ -49,6 +49,7 @@ import "./VenuePage.scss";
 
 import Login from "pages/Account/Login";
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };

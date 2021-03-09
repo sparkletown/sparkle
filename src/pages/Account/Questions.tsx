@@ -8,7 +8,7 @@ import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 
@@ -27,7 +27,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const history = useHistory();
   const { user } = useUser();
-  const venue = useSelector(currentVenueSelectorData) as Venue;
+  const venue = useSelector(currentVenueSelectorData) as AnyVenue;
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });

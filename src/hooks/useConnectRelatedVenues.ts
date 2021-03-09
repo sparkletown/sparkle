@@ -5,7 +5,7 @@ import { RootState } from "index";
 import { ValidStoreAsKeys } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 import { ReactHook } from "types/utility";
-import { AnyVenue, Venue, VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId, withVenueId, WithVenueId } from "utils/id";
@@ -105,7 +105,7 @@ export const useConnectRelatedVenues: ReactHook<
   }, [venueId, withEvents]);
 
   const siblingNotVenueSelector: SparkleSelector<
-    WithId<Venue>[]
+    WithId<AnyVenue>[]
   > = useCallback(
     (state) =>
       siblingVenuesSelector(state)?.filter(

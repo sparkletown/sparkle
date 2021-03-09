@@ -14,7 +14,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { AdminVideo } from "components/molecules/AdminVideo";
+import { IframeAdmin } from "components/molecules/IframeAdmin";
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 
 import "./VenueAdminPage.scss";
@@ -48,13 +48,13 @@ export const VenueAdminPage: React.FC = () => {
     );
   }
 
-  const isVideoVenue = IFRAME_TEMPLATES.includes(venue.template);
+  const isIframeVenue = IFRAME_TEMPLATES.includes(venue.template);
 
   return (
     <>
       <h4 className="admin-page-title">You are editing venue: {venue.name}</h4>
       <BannerAdmin venueId={venueId} venue={venue} />
-      {isVideoVenue && <AdminVideo venueId={venueId} venue={venue} />}
+      {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
     </>
   );
 };
