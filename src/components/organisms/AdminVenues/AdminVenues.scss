@@ -8,11 +8,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
 
-    &--title {
-      font-size: 2em;
-      font-weight: bolder;
-    }
+  &__title {
+    font-size: 2em;
+    font-weight: bolder;
   }
 
   &__cards {
@@ -28,11 +28,6 @@
       justify-content: center;
       align-items: center;
       flex-direction: column;
-    }
-
-    &--welcome-title {
-      font-size: 2em;
-      font-weight: bolder;
     }
 
     @media (max-width: 1024px) {

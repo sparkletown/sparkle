@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue, isPartyMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -16,20 +16,20 @@ export interface AdminVenuesProps {
 }
 
 export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
-  const partyVenues = useMemo(
+  const renderedPartyVenues = useMemo(
     () =>
       venues
-        ?.filter((venue) => venue.template === VenueTemplate.partymap)
+        ?.filter(isPartyMapVenue)
         .map((venue) => <AdminVenueCard key={venue.id} venue={venue} />),
     [venues]
   );
 
-  const hasVenues = partyVenues.length > 0;
+  const hasVenues = renderedPartyVenues.length > 0;
 
   return (
     <div className="admin-venue">
       <div className="admin-venue__header">
-        <div className="admin-venue__header--title">Admin Dashboard</div>
+        <div className="admin-venue__title">Admin Dashboard</div>
         <Button as={Link} to="/admin_v2/venue/creation">
           Create a new space
         </Button>
@@ -42,13 +42,13 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
       >
         {!hasVenues && (
           <>
-            <div className="admin-venue__cards--welcome-title">Welcome!</div>
-            <div className="admin-venue__cards--welcome-title">
+            <div className="admin-venue__title">Welcome!</div>
+            <div className="admin-venue__title">
               Create your first Sparkle space
             </div>
           </>
         )}
-        {hasVenues && partyVenues}
+        {hasVenues && renderedPartyVenues}
       </div>
     </div>
   );
