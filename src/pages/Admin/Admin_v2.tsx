@@ -19,13 +19,6 @@ import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 import AuthenticationModal from "components/organisms/AuthenticationModal";
 import { LoadingPage } from "components/molecules/LoadingPage";
-import BasicInfo from "./BasicInfo";
-import AdminSidebar from "./Sidebar/Sidebar";
-import EntranceExperience from "./EntranceExperience";
-import AdvancedSettings from "./AdvancedSettings";
-import VenueDetails from "./Venue/Details";
-// @debt Introduce this when the ticket concept is to be added.
-// import TicketingAndAccess from "./TicketingAndAccess";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";

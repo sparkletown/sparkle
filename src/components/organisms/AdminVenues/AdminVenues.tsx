@@ -34,40 +34,6 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
           Create a new space
         </Button>
       </div>
-      {!hasVenues && (
-        <div className="admin-venue__empty-venues">
-          <h3>Welcome!</h3>
-          <h3>Create your first Sparkle space</h3>
-        </div>
-      )}
-      {hasVenues && (
-        <div className="admin-venue__cards">
-          {partyVenues.map((venue, index) => {
-            return (
-              <div key={index} className="card">
-                <div
-                  className="card__bg"
-                  style={{
-                    backgroundImage: `url(${venue.mapBackgroundImageUrl})`,
-                    backgroundSize: "cover",
-                  }}
-                ></div>
-                <div className="card__info">
-                  <div
-                    className="card__logo"
-                    style={{ backgroundImage: `url(${venue.host?.icon})` }}
-                  ></div>
-                  <h3>{venue.name}</h3>
-                </div>
-                <Link className="card__button" to={`/admin_v2/${venue.id}`}>
-                  Manage Party
-                </Link>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
       <div
         className={classNames("admin-venue__cards", {
           "admin-venue__cards--empty": !hasVenues,

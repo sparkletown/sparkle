@@ -19,110 +19,111 @@
   }
 
   .admin-venue__cards {
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__title {
-    font-size: 2em;
-    font-weight: bolder;
-  }
-
-  &__cards {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(6, 1fr);
-    grid-gap: 1rem;
-    margin: 1rem 0;
-
-    &--empty {
+    &__header {
       display: flex;
-      height: 100%;
-      justify-content: center;
       align-items: center;
-      flex-direction: column;
+      justify-content: space-between;
     }
 
-    @media (max-width: 1024px) {
-      grid-template-columns: repeat(4, 1fr);
+    &__title {
+      font-size: 2em;
+      font-weight: bolder;
     }
 
-    @media (max-width: 800px) {
-      grid-template-columns: repeat(1, 1fr);
-    }
+    &__cards {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(6, 1fr);
+      grid-gap: 1rem;
+      margin: 1rem 0;
 
-    .card {
-      overflow: hidden;
-      z-index: 1;
-      display: flex;
-      justify-content: flex-end;
-      flex-direction: column;
-      border: none;
-      padding: 1rem;
-      border-radius: 20px;
-
-      .card__bg {
-        position: absolute;
-        z-index: -1;
-        top: 0;
-        left: 0;
-        width: 100%;
+      &--empty {
+        display: flex;
         height: 100%;
-        background-size: cover;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+      }
 
-        &:after {
-          transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-          content: "";
+      @media (max-width: 1024px) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @media (max-width: 800px) {
+        grid-template-columns: repeat(1, 1fr);
+      }
+
+      .card {
+        overflow: hidden;
+        z-index: 1;
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column;
+        border: none;
+        padding: 1rem;
+        border-radius: 20px;
+
+        .card__bg {
           position: absolute;
+          z-index: -1;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
-          background-image: linear-gradient(
-            180deg,
-            rgba(25, 24, 26, 0.6) 0%,
-            #19181a 100%
-          );
-        }
-
-        &:hover {
-          background-image: linear-gradient(
-            180deg,
-            rgba(38, 36, 39, 0.6) 0%,
-            #262427 100%
-          );
-        }
-      }
-
-      .card__info {
-        flex: 1;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: column;
-
-        .card__logo {
-          height: 70px;
-          width: 70px;
-          border-radius: 50%;
           background-size: cover;
-          background-color: #000;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+          &:after {
+            transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(
+              180deg,
+              rgba(25, 24, 26, 0.6) 0%,
+              #19181a 100%
+            );
+          }
+
+          &:hover {
+            background-image: linear-gradient(
+              180deg,
+              rgba(38, 36, 39, 0.6) 0%,
+              #262427 100%
+            );
+          }
         }
-      }
 
-      .card__button {
-        background-color: $primary;
-        padding: 0.5rem;
-        border-radius: 16px;
-        text-align: center;
-        text-decoration: none;
+        .card__info {
+          flex: 1;
+          display: flex;
+          justify-content: space-between;
+          flex-direction: column;
 
-        &:hover {
-          color: $white;
-          background-color: darken($primary, 5%);
-          box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
+          .card__logo {
+            height: 70px;
+            width: 70px;
+            border-radius: 50%;
+            background-size: cover;
+            background-color: #000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+          }
+        }
+
+        .card__button {
+          background-color: $primary;
+          padding: 0.5rem;
+          border-radius: 16px;
+          text-align: center;
+          text-decoration: none;
+
+          &:hover {
+            color: $white;
+            background-color: darken($primary, 5%);
+            box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
+          }
         }
       }
     }
