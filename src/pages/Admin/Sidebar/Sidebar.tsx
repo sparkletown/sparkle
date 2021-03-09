@@ -8,7 +8,7 @@ import { SidebarOption } from "../Admin_v2";
 
 import * as S from "./Sidebar.styles";
 
-// String constants
+// @debt define constants using UPPER_SNAKE_CASE
 const selectVenue = "select_venue";
 
 interface AdminSidebarProps {
@@ -25,9 +25,13 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   const history = useHistory();
 
   const venues = useSelector((state) => state.firestore.ordered.venues);
+
+  // @debt Refactor/extract this concept of 'partyVenues' somewhere more reusable, and/or represented in our type system
+  // @debt Refactor this into settings, or types/venues, or similar?
   const partyVenues = venues?.filter(
     (venue) => venue.template === VenueTemplate.partymap
   );
+
   const handleVenueChange = (event: React.ChangeEvent<HTMLSelectElement>) =>
     history.push(`/admin_v2/${event.target.value}`);
 

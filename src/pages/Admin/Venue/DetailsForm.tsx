@@ -60,6 +60,7 @@ interface DetailsFormProps extends WizardPage {
 
 const iconPositionFieldName = "iconPosition";
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",

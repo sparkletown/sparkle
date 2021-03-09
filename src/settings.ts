@@ -132,29 +132,35 @@ export const IFRAME_ALLOW =
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
   VenueTemplate.artcar,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
-  VenueTemplate.audience,
-  VenueTemplate.artpiece,
-  VenueTemplate.firebarrel,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
@@ -165,14 +171,17 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template {
   template: VenueTemplate;
   name: string;
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template_v2 {
   template?: VenueTemplate;
   name: string;
@@ -180,6 +189,7 @@ export interface Template_v2 {
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
@@ -228,6 +238,8 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
@@ -271,6 +283,7 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -303,6 +316,8 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -330,6 +345,7 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
 ];
 
+// @debt Refactor this into types/???
 export type CustomInputsType = {
   name: string;
   title: string;
@@ -338,6 +354,8 @@ export type CustomInputsType = {
   // ? if we want the field to be a zoom url
   // ? it must include `zoom.com/`
 };
+
+// @debt Refactor this into types/templates or similar?
 export type RoomTemplate = {
   template: VenueTemplate;
   name: string;
@@ -346,6 +364,8 @@ export type RoomTemplate = {
   url?: string;
   customInputs?: CustomInputsType[];
 };
+
+// @debt Refactor this constant into types/templates or similar?
 export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.artpiece,
@@ -423,21 +443,25 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   },
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.playa,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
@@ -445,6 +469,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artpiece,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,

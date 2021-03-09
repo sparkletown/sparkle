@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import firebase, { UserInfo } from "firebase/app";
 
@@ -12,7 +13,6 @@ import { addReaction } from "store/actions/Reactions";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { User } from "types/User";
-import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
@@ -43,7 +43,12 @@ interface ChatOutDataType {
 }
 
 // If you change this, make sure to also change it in Audience.scss's $seat-size
-const SEAT_SIZE = "4vh";
+const SEAT_SIZE = "var(--seat-size)";
+const SEAT_SIZE_MIN = "var(--seat-size-min)";
+
+const VIDEO_MIN_WIDTH_IN_SEATS = 8;
+// We should keep the 16/9 ratio
+const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -250,35 +255,30 @@ export const Audience: React.FunctionComponent = () => {
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
 
-  // 3 because 1/3 of the sie of the auditorium, * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
-  const carvedOutWidthInSeats = Math.ceil(columnsForSizedAuditorium / (3 * 2));
+  // We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
+  const carvedOutWidthInSeats = Math.max(
+    Math.ceil(columnsForSizedAuditorium / (3 * 2)),
+    VIDEO_MIN_WIDTH_IN_SEATS
+  );
 
   // Keep a 16:9 ratio
-  const carvedOutHeightInSeats = Math.ceil(carvedOutWidthInSeats * (9 / 16));
+  const carvedOutHeightInSeats = Math.max(
+    Math.ceil(carvedOutWidthInSeats * (9 / 16)),
+    VIDEO_MIN_HEIGHT_IN_SEATS
+  );
 
   // Calculate the position/size for the central video container
   const videoContainerWidthInSeats = carvedOutWidthInSeats * 2 + 1;
   const videoContainerHeightInSeats = carvedOutHeightInSeats * 2 + 1;
-  const videoContainerTopOffsetInSeats = Math.floor(
-    (rowsForSizedAuditorium - carvedOutHeightInSeats * 2) / 2
-  );
-  const videoContainerLeftOffsetInSeats = Math.floor(
-    (columnsForSizedAuditorium - carvedOutWidthInSeats * 2) / 2
-  );
 
   const videoContainerStyles = useMemo(
     () => ({
-      top: `calc(${videoContainerTopOffsetInSeats} * ${SEAT_SIZE})`,
-      left: `calc(${videoContainerLeftOffsetInSeats} * ${SEAT_SIZE})`,
       width: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE})`,
       height: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE})`,
+      minWidth: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE_MIN})`,
+      minHeight: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE_MIN})`,
     }),
-    [
-      videoContainerHeightInSeats,
-      videoContainerLeftOffsetInSeats,
-      videoContainerTopOffsetInSeats,
-      videoContainerWidthInSeats,
-    ]
+    [videoContainerHeightInSeats, videoContainerWidthInSeats]
   );
 
   const isSeat = useCallback(
@@ -344,9 +344,9 @@ export const Audience: React.FunctionComponent = () => {
     const translateColumn = (untranslatedColumnIndex: number) =>
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
-    const videoFrameClasses = `frame ${
-      venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
-    }`;
+    const reactionContainerClassnames = classNames("reaction-container", {
+      seated: userSeated,
+    });
 
     const renderReactionsContainer = () => (
       <>
@@ -410,31 +410,31 @@ export const Audience: React.FunctionComponent = () => {
           style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
         >
           <div className="audience">
-            <div
-              ref={focusElementOnLoad}
-              className="video-container"
-              style={videoContainerStyles}
-            >
-              <div className="video">
-                <iframe
-                  className={videoFrameClasses}
-                  src={iframeUrl}
-                  title="Video"
-                  frameBorder="0"
-                  allow={IFRAME_ALLOW}
-                  allowFullScreen
-                />
-              </div>
-
-              {venue.showReactions && (
-                <div
-                  className={`reaction-container ${userSeated ? "seated" : ""}`}
-                >
-                  {userSeated
-                    ? renderReactionsContainer()
-                    : renderInstructions()}
+            <div className="audience-overlay">
+              <div
+                ref={focusElementOnLoad}
+                className="video-container"
+                style={videoContainerStyles}
+              >
+                <div className="video">
+                  <iframe
+                    className="frame"
+                    src={iframeUrl}
+                    title="Video"
+                    frameBorder="0"
+                    allow={IFRAME_ALLOW}
+                    allowFullScreen
+                  />
                 </div>
-              )}
+
+                {venue.showReactions && (
+                  <div className={reactionContainerClassnames}>
+                    {userSeated
+                      ? renderReactionsContainer()
+                      : renderInstructions()}
+                  </div>
+                )}
+              </div>
             </div>
 
             {Array.from(Array(rowsForSizedAuditorium)).map(
@@ -481,9 +481,7 @@ export const Audience: React.FunctionComponent = () => {
                                 />
                               </div>
                             )}
-                            {seat && !seatedPartygoer && (
-                              <span className="add-participant-button">+</span>
-                            )}
+                            {seat && !seatedPartygoer && <>+</>}
                           </div>
                         );
                       }

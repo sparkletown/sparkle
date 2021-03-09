@@ -2,134 +2,146 @@
 
 $light: #ffffff;
 
-$spacing: 30px;
-
 // If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
 $seat-size: 4vh;
+$seat-size-min: 25px;
+
+$spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
 .audience-container {
+  --seat-size: #{$seat-size};
+  --seat-size-min: #{$seat-size-min};
+
   background-attachment: fixed;
   background-position: center 46%;
 
   position: relative;
-  display: flex;
-  flex: 1;
-
   overflow: auto;
-  width: 100%;
   height: 100%;
+  padding: $spacing;
+  min-width: fit-content;
 
-  .video-container {
+  .audience-overlay {
     position: absolute;
-    // note: this is positioned using inline styles within the Audience component
 
-    margin: $spacing;
-    padding: $spacing;
+    width: 100%;
+    height: 100%;
 
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
 
-    .video {
-      width: 100%;
-      height: 100%;
+    pointer-events: none;
 
-      .frame {
-        width: 100%;
-        height: 100%;
-        border: 1px black;
-        border-radius: 15px;
-        box-shadow: 2px 2px 20px $light;
-      }
+    .video-container {
+      margin-top: calc(1 * min(var(--seat-size), var(--seat-size-min)));
+      padding: calc(1.5 * min(var(--seat-size), var(--seat-size-min)));
 
-      .aspect-16-9 {
-        max-width: 88.5%;
-        margin-left: 6.5%;
-      }
-    }
-
-    .reaction-container {
       display: flex;
       flex-direction: column;
-      justify-content: space-around;
-      text-align: center;
+      align-items: center;
 
-      // these are fairly arbitrary figures
-      min-width: 495px;
-      max-width: 60%;
-      min-height: 105px;
-      padding: 15px;
+      .video {
+        width: 100%;
+        height: 100%;
 
-      border-bottom-left-radius: 20px;
-      border-bottom-right-radius: 20px;
-      box-shadow: 2px 2px 20px $light;
-      background-color: #1a1d24;
-
-      .emoji-container {
-        display: flex;
-        flex: 1;
-        justify-content: space-around;
-
-        .reaction {
-          background-color: transparent;
-          border-color: transparent;
-          font-size: 33px;
-          width: 50px;
-          animation: sway 2200ms 1200ms ease-in-out;
-        }
-
-        .leave-seat-button {
-          display: inline-block;
-          font-weight: 700;
-          text-decoration: none;
-          border-radius: 8px;
-          text-align: center;
-          font-size: 1em;
-          transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-          line-height: 1.5;
-          border: 1px solid transparent;
-          transform: translateY(0);
-          cursor: pointer;
-          padding: 4px 10px;
-          margin: 6px;
-          background: rgb(0, 0, 0);
-          color: $white;
-
-          &:hover {
-            background-color: rgba(255, 255, 255, 0.5);
-          }
+        .frame {
+          width: 100%;
+          height: 100%;
+          border: 1px black;
+          border-radius: 15px;
+          box-shadow: 2px 2px 20px $light;
         }
       }
 
-      .shout-container {
-        margin: 0 8px 4px 8px;
-        padding-bottom: 4px;
+      .reaction-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        text-align: center;
 
-        .shout-form {
+        width: 90%;
+        min-height: 105px;
+        padding: 15px;
+
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        box-shadow: 2px 2px 20px $light;
+        background-color: #1a1d24;
+
+        .emoji-container {
           display: flex;
+          flex: 1;
+          justify-content: space-around;
+          margin: 5px 0;
 
-          input {
-            margin: 0 8px;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 500;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-            padding: 10px;
+          .reaction {
+            background-color: transparent;
+            border-color: transparent;
+            font-size: 20px;
+            width: 50px;
+            animation: sway 2200ms 1200ms ease-in-out;
           }
 
-          .text {
-            flex: 4;
+          .mute-button {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            cursor: pointer;
+          }
 
-            &:disabled {
-              cursor: not-allowed;
+          .leave-seat-button {
+            display: inline-block;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.7em;
+            transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+            line-height: 1.5;
+            border: 1px solid transparent;
+            transform: translateY(0);
+            cursor: pointer;
+            padding: 4px 10px;
+            background: rgb(0, 0, 0);
+            color: $white;
+
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.5);
             }
           }
+        }
 
-          .shout-button {
-            flex: 1;
+        .shout-container {
+          margin: 0 8px 4px 8px;
+          padding-bottom: 4px;
 
-            &:disabled {
-              cursor: not-allowed;
+          .shout-form {
+            display: flex;
+
+            input {
+              margin: 0 8px;
+              border-radius: 8px;
+              font-size: 1em;
+              font-weight: 500;
+              text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+              padding: 10px;
+            }
+
+            .text {
+              flex: 4;
+
+              &:disabled {
+                cursor: not-allowed;
+              }
+            }
+
+            .shout-button {
+              flex: 1;
+
+              &:disabled {
+                cursor: not-allowed;
+              }
             }
           }
         }
@@ -142,27 +154,38 @@ $seat-size: 4vh;
     flex: 1;
     flex-direction: column;
     justify-content: space-between;
-
-    padding: $spacing;
-
-    width: fit-content;
+    position: relative;
+    width: 100%;
     height: fit-content;
+    overflow: auto;
 
     .seat-row {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
+    }
+
+    .seat,
+    .not-seat,
+    .profile-avatar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      width: var(--seat-size);
+      height: var(--seat-size);
+      min-width: var(--seat-size-min);
+      min-height: var(--seat-size-min);
+
+      font-size: calc(0.75 * min(var(--seat-size), var(--seat-size-min)));
+
+      border-radius: 100%;
+
+      color: $black;
+      user-select: none;
     }
 
     .seat {
-      display: flex;
-      border-radius: 100%;
-      width: $seat-size;
-      height: $seat-size;
-      justify-content: center;
-      align-content: center;
       background-color: rgba(255, 255, 255, 0.2);
-      color: white;
-      user-select: none;
 
       &:hover {
         background-color: rgba(255, 255, 255, 0.4);
@@ -173,49 +196,10 @@ $seat-size: 4vh;
         background-color: rgba(255, 255, 255, 0.6);
         cursor: pointer;
       }
-
-      .user .profile-picture-container {
-        width: 4vh;
-        height: 4vh;
-      }
     }
 
     .not-seat {
-      display: flex;
-      border-radius: 100%;
-      width: $seat-size;
-      height: $seat-size;
-      justify-content: center;
-      align-content: center;
       background-color: rgba(0, 0, 0, 0);
-      user-select: none;
     }
-
-    .add-participant-button {
-      color: black;
-      font-size: 3vh;
-      align-self: center;
-    }
-  }
-
-  .chat-container {
-    display: block;
-    position: absolute;
-    right: 0;
-    top: 35px;
-  }
-
-  .user {
-    width: $seat-size;
-    height: $seat-size;
-  }
-
-  .profile-avatar {
-    width: 100%;
-    height: 100%;
-
-    border-radius: 100%;
-    background-size: cover;
-    background-position: center;
   }
 }
