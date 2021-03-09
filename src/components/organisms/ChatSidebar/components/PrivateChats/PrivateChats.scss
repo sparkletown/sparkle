@@ -1,0 +1,55 @@
+@import "scss/constants";
+
+.private-chats {
+  position: relative;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+
+  &__search {
+    margin: 15px;
+    height: 32px;
+    position: relative;
+  }
+
+  &__search-input {
+    text-align: left;
+    font-size: 14px;
+    background-color: $black;
+    padding-left: 40px;
+    height: 100%;
+    width: 100%;
+
+    &::placeholder {
+      color: $white;
+      opacity: 0.2;
+    }
+
+    &:focus ~ .private-chats__search-icon {
+      opacity: 0.6;
+    }
+  }
+
+  &__search-icon {
+    display: flex;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    justify-content: center;
+    align-items: center;
+    z-index: z(private-chat-input-search-icon);
+    opacity: 0.2;
+  }
+
+  &__previews {
+    margin-bottom: 35px;
+  }
+
+  &__title-text {
+    font-size: 14px;
+    opacity: 0.4;
+    margin: 0 24px 10px;
+  }
+}

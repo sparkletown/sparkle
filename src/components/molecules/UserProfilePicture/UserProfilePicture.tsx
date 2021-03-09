@@ -1,27 +1,37 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-
-// Typings
-import { UserProfilePictureProp } from "./UserProfilePicture.types";
-
-// Components
-import { MessageToTheBandReaction, Reactions } from "utils/reactions";
-
-// Hooks
-import { useSelector } from "hooks/useSelector";
-
-// Utils | Settings
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
 } from "settings";
 
-// Styles
-import "./UserProfilePicture.scss";
-import * as S from "./UserProfilePicture.styles";
+import { User } from "types/User";
+
+import { MessageToTheBandReaction, Reactions } from "utils/reactions";
+import { WithId } from "utils/id";
+
 import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
 
+// @debt remove styled-components in favour of using our standard scss patterns
+import * as S from "./UserProfilePicture.styles";
+import "./UserProfilePicture.scss";
+
+export interface UserProfilePictureProp {
+  user: WithId<User>;
+  setSelectedUserProfile: (user: WithId<User>) => void;
+
+  isAudioEffectDisabled?: boolean;
+  miniAvatars?: boolean;
+  avatarClassName?: string;
+  avatarStyle?: object;
+  containerStyle?: object;
+  reactionPosition?: "right" | "left" | undefined;
+}
+
+// @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
+// @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
@@ -32,6 +42,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition,
   user,
 }) => {
+  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment
   const muteReactions = useSelector((state) => state.room.mute);
 
   const [pictureUrl, setPictureUrl] = useState("");
