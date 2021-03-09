@@ -4,7 +4,7 @@ import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import "./UserSearchBar.scss";
 
 interface UserSearchBarProps {

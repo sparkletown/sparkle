@@ -25,7 +25,7 @@ import { playaAddress } from "utils/address";
 import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;

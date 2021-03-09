@@ -10,7 +10,7 @@ import {
 import { VenueChat, PrivateChats } from "./components";
 
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ChatTypes } from "types/chat";
 

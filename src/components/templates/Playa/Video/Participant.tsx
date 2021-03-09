@@ -3,7 +3,7 @@ import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 export interface ParticipantProps {
   participant: Video.Participant;

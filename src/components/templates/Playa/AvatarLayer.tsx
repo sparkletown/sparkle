@@ -21,7 +21,7 @@ import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";

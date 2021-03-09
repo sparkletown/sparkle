@@ -11,7 +11,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 interface PropsType {
   venueName: string;
