@@ -33,7 +33,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
 
-  const numberOfOnline = onlineUsers.length;
   const privateChatUsers = privateChatPreviews.map(
     (chatPreview) => chatPreview.counterPartyUser.id
   );
@@ -88,6 +87,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   const numberOfSearchResults = renderedSearchResults.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
+  const numberOfOnline = renderedOnlineUsers.length;
 
   if (recipientId) {
     return (
