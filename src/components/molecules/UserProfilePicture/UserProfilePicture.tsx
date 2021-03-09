@@ -8,7 +8,7 @@ import { MessageToTheBandReaction, Reactions } from "utils/reactions";
 
 // Hooks
 import { useSelector } from "hooks/useSelector";
-import { useProfileModalControls } from "hooks/useProfileModalControls ";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 // Utils | Settings
 import {
@@ -17,13 +17,15 @@ import {
   RANDOM_AVATARS,
 } from "settings";
 
-// Styles
-import "./UserProfilePicture.scss";
-import * as S from "./UserProfilePicture.styles";
 import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
 
+// @debt remove styled-components in favour of using our standard scss patterns
+import * as S from "./UserProfilePicture.styles";
+import "./UserProfilePicture.scss";
+
 // @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
+// @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
   miniAvatars,
@@ -33,6 +35,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition,
   user,
 }) => {
+  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment
   const muteReactions = useSelector((state) => state.room.mute);
   const { setUserProfile } = useProfileModalControls();
 

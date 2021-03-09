@@ -27,6 +27,7 @@ interface PropsType {
   isAudioEffectDisabled?: boolean;
   isCamp?: boolean;
   attendanceBoost?: number;
+  showEvenWhenNoUsers?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -38,19 +39,23 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isAudioEffectDisabled,
   isCamp,
   attendanceBoost,
+  showEvenWhenNoUsers = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
   const usersSanitized = _users?.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
+
   const usersToDisplay = isExpanded
     ? usersSanitized
     : usersSanitized?.slice(0, limit);
+
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
-  if (!usersSanitized || attendance < 1) return <></>;
+  if (!showEvenWhenNoUsers && attendance < 1) return null;
+
   return (
     <div className="container userlist-container">
       <div className="row header no-margin">

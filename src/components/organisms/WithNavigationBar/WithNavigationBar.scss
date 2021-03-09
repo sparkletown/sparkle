@@ -5,9 +5,7 @@
   padding-bottom: $footer-height;
 }
 .navbar-margin.fullscreen {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-  flex-flow: column;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
 }

@@ -31,8 +31,8 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import {
+  AnyVenue,
   RoomVisibility,
-  Venue,
   VenuePlacement,
   VenuePlacementState,
 } from "types/venues";
@@ -114,7 +114,7 @@ const PLAYA_MARGIN_TOP = 60;
 const PLAYA_MARGIN_BOTTOM = 180;
 const VIDEO_CHAT_MIN_HEIGHT = 180;
 
-const isPlaced = (venue: Venue) => {
+const isPlaced = (venue: AnyVenue) => {
   return (
     venue &&
     venue.placement &&
@@ -131,7 +131,7 @@ const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
+  const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
   const [centerY, setCenterY] = useState(GATE_Y);
@@ -345,7 +345,7 @@ const Playa = () => {
   const venues = useSelector(orderedVenuesSelector);
 
   const showVenue = useCallback(
-    (venue: WithId<Venue>) => {
+    (venue: WithId<AnyVenue>) => {
       setSelectedVenue(venue);
       setShowModal(true);
     },
@@ -409,7 +409,7 @@ const Playa = () => {
   }, REFETCH_SCHEDULE_MS);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
-  const [hoveredVenue, setHoveredVenue] = useState<Venue>();
+  const [hoveredVenue, setHoveredVenue] = useState<AnyVenue>();
   const venueRef = useRef<HTMLDivElement | null>(null);
   const [showUserTooltip, setShowUserTooltip] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<User | null>();
@@ -541,7 +541,7 @@ const Playa = () => {
   const getNearbyVenue = useCallback(
     (x: number, y: number) => {
       if (!venues) return;
-      let closestVenue: WithId<Venue> | undefined;
+      let closestVenue: WithId<AnyVenue> | undefined;
       let distanceToClosestVenue: number;
       venues.forEach((venue) => {
         const distance = distanceToVenue(x, y, venue.placement);
