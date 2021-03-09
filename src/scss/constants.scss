@@ -22,11 +22,12 @@ $stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
 
 $primary: #6f43ff;
+$secondary: #6f43ff;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba(#6f43ff, 0.35);
+$chat-busy: rgba($secondary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$gradient: linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%);
+$gradient: linear-gradient(124deg, #00f6d5 0%, $secondary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -48,6 +49,8 @@ $playa-venue-live: rgb(125, 223, 194);
 $profile-image-bg-color: #999999;
 $room-info-bg: #6f43ff;
 
+$small-laptop-width: 980px;
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
@@ -62,9 +65,6 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
-  // Audience
-  audience-emoji-reaction: 1000,
-  audience-video: 2,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   // Chat

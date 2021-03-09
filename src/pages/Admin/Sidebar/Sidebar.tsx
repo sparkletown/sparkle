@@ -8,7 +8,7 @@ import { SidebarOption } from "../Admin_v2";
 
 import * as S from "./Sidebar.styles";
 
-// String constants
+// @debt define constants using UPPER_SNAKE_CASE
 const selectVenue = "select_venue";
 
 interface AdminSidebarProps {
@@ -22,7 +22,6 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({
   onClick,
 }) => {
   const venueId = useVenueId();
-
   const initialVenue = venueId ?? selectVenue;
 
   return (

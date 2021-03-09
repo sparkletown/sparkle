@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 import {
-  Venue,
+  AnyVenue,
   VenueEvent,
   VenuePlacementState,
   VenueTemplate,
@@ -29,13 +29,13 @@ import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
   user: FirebaseReducer.AuthState;
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   allowHideVenue: boolean;
 }
 
 const nowSeconds = new Date().getTime() / 1000;
 
-const getLink = (venue: WithId<Venue>) => {
+const getLink = (venue: WithId<AnyVenue>) => {
   let urlLink: string | undefined;
   let targetLink: string = "";
   switch (venue.template) {

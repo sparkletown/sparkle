@@ -5,22 +5,27 @@ import {
 } from "settings";
 
 import { User } from "types/User";
-import { urlFromImage, Venue, VenueTemplate } from "types/venues";
+import {
+  urlFromImage,
+  AnyVenue,
+  VenueTemplate,
+  JazzbarVenue,
+} from "types/venues";
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 import { WithId } from "./id";
 
-export const canHaveEvents = (venue: Venue): boolean =>
+export const canHaveEvents = (venue: AnyVenue): boolean =>
   PLACEABLE_VENUE_TEMPLATES.includes(venue.template);
 
-export const canHaveSubvenues = (venue: Venue): boolean =>
+export const canHaveSubvenues = (venue: AnyVenue): boolean =>
   SUBVENUE_TEMPLATES.includes(venue.template);
 
-export const canBeDeleted = (venue: Venue): boolean =>
+export const canBeDeleted = (venue: AnyVenue): boolean =>
   !PLAYA_TEMPLATES.includes(venue.template);
 
-export const canHavePlacement = (venue: Venue): boolean =>
+export const canHavePlacement = (venue: AnyVenue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
 export const peopleByLastSeenIn = (
@@ -41,7 +46,7 @@ export const peopleByLastSeenIn = (
 
 export const peopleAttending = (
   peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
-  venue: Venue
+  venue: AnyVenue
 ) => {
   const rooms = venue.rooms?.map((room) => room.title) ?? [];
 
@@ -50,7 +55,7 @@ export const peopleAttending = (
   return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
 };
 
-export const createJazzbar = (values: FormValues): Venue => {
+export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
@@ -85,5 +90,8 @@ export const createJazzbar = (values: FormValues): Venue => {
     adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,
+    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
+    iframeUrl: "",
+    logoImageUrl: "",
   };
 };

@@ -1,13 +1,14 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
 import { ConversationSpace } from "components/templates/ConversationSpace";
+import { Embeddable } from "components/templates/Embeddable";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
@@ -20,7 +21,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: Venue;
+  venue: AnyVenue;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -28,6 +29,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
   let template;
+  // @debt remove backButton from Navbar
+  let hasBackButton = true;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
@@ -37,6 +40,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Jazzbar} />
         </Switch>
       );
+      hasBackButton = false;
       break;
 
     case VenueTemplate.friendship:
@@ -94,6 +98,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ConversationSpace />;
       break;
 
+    case VenueTemplate.embeddable:
+      template = <Embeddable venue={venue} />;
+      fullscreen = true;
+      break;
+
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
       break;
@@ -107,11 +116,13 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     default:
-      template = <div>Unknown Template: ${venue.template}</div>;
+      // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
+      template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
   return (
-    <WithNavigationBar fullscreen={fullscreen}>
+    // @debt remove backButton from Navbar
+    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />
