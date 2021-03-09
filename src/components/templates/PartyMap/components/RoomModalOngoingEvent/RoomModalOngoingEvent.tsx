@@ -59,18 +59,6 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           <div className="event-description">{eventToDisplay.description}</div>
         </>
       )}
-      {!eventToDisplay && (
-        <>
-          <div className="event-description">
-            <img
-              src={SPARKLE_ICON}
-              className="sparkle-icon"
-              alt="sparkle-icon"
-            />
-            Please check the Live Schedule for events in this room.
-          </div>
-        </>
-      )}
       <button
         onMouseOver={triggerAttendance}
         onMouseOut={clearAttendance}

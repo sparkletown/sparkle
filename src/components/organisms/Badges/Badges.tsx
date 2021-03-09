@@ -7,7 +7,7 @@ import { useFirestore } from "react-redux-firebase";
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { UserVisit } from "types/Firestore";
-import { AnyVenue, isVenueWithRooms, Venue } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
@@ -18,7 +18,7 @@ import "./Badges.scss";
 
 export const Badges: React.FC<{
   user: WithId<User>;
-  currentVenue: WithId<Venue>;
+  currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);

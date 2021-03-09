@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { useSelector } from "hooks/useSelector";
-import { Venue, VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { WithId } from "utils/id";
 import InformationCard from "components/molecules/InformationCard";
@@ -10,7 +10,7 @@ import AdminDeleteEvent from "./AdminDeleteEvent";
 import VenueEventDetails from "./VenueEventDetails";
 
 export type EventsComponentProps = {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
