@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
 import { RoomData_v2 } from "types/rooms";
 
-import { RoomTemplate, ROOM_TEMPLATES } from "settings";
+import { CustomInputsType, RoomTemplate, ROOM_TEMPLATES } from "settings";
+import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import "./RoomEditModal.scss";
 
@@ -23,11 +24,13 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   submitHandler,
   deleteHandler,
 }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<string>(
+  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(
     room.template
   );
 
-  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate>(undefined);
+  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const template = ROOM_TEMPLATES.find(
@@ -41,13 +44,16 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
     watch,
     handleSubmit,
     setValue,
+    errors,
     formState: { isSubmitting, dirty },
   } = useForm({
+    validationSchema: roomEditSchema,
     defaultValues: {
       title: room.title,
       url: room.url,
       description: room.description,
       template: room.template,
+      image_url: room.image_url,
     },
   });
 
@@ -66,7 +72,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
 
   const customInputFields = useMemo(
     () =>
-      roomTemplate?.customInputs?.map((input) => (
+      roomTemplate?.customInputs?.map((input: CustomInputsType) => (
         <div className="room-edit-modal__input" key={input.name}>
           <span>{input.title}</span>
           <input type="text" name={input.name} ref={register} />
@@ -97,6 +103,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
                 placeholder="Room name"
                 custom
               />
+              {errors.title && (
+                <span className="input-error">{errors.title.message}</span>
+              )}
             </div>
           </Form.Row>
 
@@ -110,6 +119,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
                 placeholder="Room url"
                 custom
               />
+              {errors.url && (
+                <span className="input-error">{errors.url.message}</span>
+              )}
             </div>
           </Form.Row>
 
@@ -139,6 +151,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
                 nameWithUnderscore
                 imgUrl={room.image_url}
               />
+              {errors.image_url && (
+                <span className="input-error">{errors.image_url.message}</span>
+              )}
             </div>
           </Form.Row>
 
