@@ -4,3 +4,8 @@ dependencies:
 - '**/package.json'
 - '**/package-lock.json'
 - '**/yarn.lock'
+
+💎 styles:
+- '**/*.css'
+- '**/*.scss'
+- '**/*.styles.ts'

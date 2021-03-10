@@ -1,3 +1,5 @@
+import { CSSProperties } from "react";
+
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
@@ -7,9 +9,6 @@ import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
-
-// TODO: should JazzBarVenue be added to this?
-export type AnyVenue = Venue | PartyMapVenue;
 
 export enum VenueTemplate {
   jazzbar = "jazzbar",
@@ -25,12 +24,26 @@ export enum VenueTemplate {
   audience = "audience",
   conversationspace = "conversationspace",
   firebarrel = "firebarrel",
+  embeddable = "embeddable",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
 }
+
+// This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
+export type GenericVenueTemplates = Exclude<
+  VenueTemplate,
+  VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
+>;
+
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+export type AnyVenue =
+  | GenericVenue
+  | PartyMapVenue
+  | JazzbarVenue
+  | EmbeddableVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -82,9 +95,9 @@ export interface Venue_v2_EntranceConfig {
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
-export interface Venue {
-  parentId?: string;
+export interface BaseVenue {
   template: VenueTemplate;
+  parentId?: string;
   name: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
@@ -146,8 +159,12 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
+export interface GenericVenue extends BaseVenue {
+  template: GenericVenueTemplates;
+}
+
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
-export interface PartyMapVenue extends Venue {
+export interface PartyMapVenue extends BaseVenue {
   id: string;
   template: VenueTemplate.partymap;
   host?: {
@@ -172,13 +189,21 @@ export interface PartyMapVenue extends Venue {
   rooms?: Room[];
 }
 
-export interface JazzbarVenue extends Venue {
+export interface JazzbarVenue extends BaseVenue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;
   host: {
     icon: string;
   };
+}
+
+export interface EmbeddableVenue extends BaseVenue {
+  template: VenueTemplate.embeddable;
+  iframeUrl?: string;
+  containerStyles?: CSSProperties;
+  iframeStyles?: CSSProperties;
+  iframeOptions?: Record<string, string>;
 }
 
 export interface Question {
@@ -264,7 +289,7 @@ export interface VenueEvent {
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
-export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
 export const urlFromImage = (

@@ -1,6 +1,5 @@
 @import "scss/constants.scss";
 
-$primary: #005ee5;
 $border-radius: 28px;
 
 .navbar-container {
@@ -286,7 +285,7 @@ $border-radius: 28px;
 
 .schedule-dropdown-body {
   position: fixed;
-  z-index: z(schedule);
+  z-index: z(navbar-schedule);
   top: 0;
   left: 0;
   width: 100%;
@@ -412,14 +411,14 @@ $border-radius: 28px;
 
 .back-map-btn {
   position: fixed;
-  top: 60px;
+  top: $navbar-height;
   z-index: z(navbar-map-back-button);
   left: 0px;
-  height: 52px;
+  height: 40px;
   width: auto;
   cursor: pointer;
-  background-color: rgba($dark, 0.5);
-  box-shadow: 0 10px 20px rgba($black, 0.2);
+  background-color: $intermediate-grey;
+  box-shadow: 0 10px 20px rgba($intermediate-grey, 0.2);
   backdrop-filter: blur(8px);
 
   border-radius: 0 0 16px 0;
@@ -430,7 +429,7 @@ $border-radius: 28px;
   font-size: 0.9rem;
 
   &:hover {
-    background-color: rgba($dark, 0.7);
+    background-color: $lighter-intermediate-grey;
     .back-icon {
       opacity: 1;
     }

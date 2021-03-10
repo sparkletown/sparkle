@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
@@ -19,6 +13,8 @@ import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
 
 import "./Room.scss";
+
+const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
 interface RoomProps {
   roomName: string;
@@ -220,19 +216,72 @@ const Room: React.FC<RoomProps> = ({
     ? worldUsersById[room.localParticipant.identity]
     : undefined;
 
-  const participantContainerClassName = useMemo(() => {
-    const attendeeCount = (participants.length ?? 0) + 1; // Include yourself
-    if (attendeeCount <= 4) {
-      return "two-across";
-    }
-    return "three-across";
-  }, [participants.length]);
+  const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
+    const sidedVideoParticipants = participants.slice(
+      0,
+      NUM_OF_SIDED_USERS_MINUS_ONE
+    );
 
-  const meComponent = useMemo(() => {
+    const otherVideoParticipants = participants.slice(
+      NUM_OF_SIDED_USERS_MINUS_ONE
+    );
+
+    return [sidedVideoParticipants, otherVideoParticipants];
+  }, [participants]);
+
+  const sidedVideos = useMemo(
+    () =>
+      sidedVideoParticipants.map((participant) => {
+        if (!participant) {
+          return null;
+        }
+
+        const bartender = !!meIsBartender
+          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
+          : undefined;
+
+        return (
+          <div key={participant.identity} className="jazzbar-room__participant">
+            <Participant
+              participant={participant}
+              profileData={worldUsersById[participant.identity]}
+              profileDataId={participant.identity}
+              bartender={bartender}
+            />
+          </div>
+        );
+      }),
+    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+  );
+
+  const otherVideos = useMemo(
+    () =>
+      otherVideoParticipants.map((participant) => {
+        if (!participant) {
+          return null;
+        }
+
+        const bartender = !!meIsBartender
+          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
+          : undefined;
+
+        return (
+          <div key={participant.identity} className="jazzbar-room__participant">
+            <Participant
+              participant={participant}
+              profileData={worldUsersById[participant.identity]}
+              profileDataId={participant.identity}
+              bartender={bartender}
+            />
+          </div>
+        );
+      }),
+    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+  );
+
+  const myVideo = useMemo(() => {
     return room && profileData ? (
-      <div
-        className={`jazzbar-participant-container ${participantContainerClassName}`}
-      >
+      <div className="jazzbar-room__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -243,77 +292,16 @@ const Room: React.FC<RoomProps> = ({
         />
       </div>
     ) : null;
-  }, [
-    meIsBartender,
-    room,
-    profileData,
-    defaultMute,
-    participantContainerClassName,
-  ]);
+  }, [meIsBartender, room, profileData, defaultMute]);
 
-  const othersComponents = useMemo(
-    () =>
-      participants.map((participant, index) => {
-        if (!participant) {
-          return null;
-        }
-
-        const bartender = !!meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
-        return (
-          <div
-            key={participant.identity}
-            className={`jazzbar-participant-container ${participantContainerClassName}`}
-          >
-            <Participant
-              key={`${participant.sid}-${index}`}
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
-              bartender={bartender}
-            />
-          </div>
-        );
-      }),
-    [
-      meIsBartender,
-      participants,
-      roomName,
-      worldUsersById,
-      participantContainerClassName,
-    ]
-  );
-
-  const emptyComponents = useMemo(
-    () =>
-      hasChairs
-        ? Array(participants.length % 2).map((e, index) => (
-            <div
-              key={`empty-participant-${index}`}
-              className={`jazzbar-participant-container ${participantContainerClassName}`}
-            >
-              <img
-                className="empty-chair-image"
-                src="/empty-chair.png"
-                alt="empty chair"
-              />
-            </div>
-          ))
-        : [],
-    [hasChairs, participants.length, participantContainerClassName]
-  );
-
-  if (!token) {
-    return <></>;
-  }
+  if (!token) return null;
 
   return (
-    <Fragment>
-      {meComponent}
-      {othersComponents}
-      {emptyComponents}
+    <>
+      {myVideo}
+      {sidedVideos}
+      <div className="jazzbar-room__participants">{otherVideos}</div>
+
       <VideoErrorModal
         show={!!videoError}
         onHide={() => setVideoError("")}
@@ -321,7 +309,7 @@ const Room: React.FC<RoomProps> = ({
         onRetry={connectToVideoRoom}
         onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
       />
-    </Fragment>
+    </>
   );
 };
 

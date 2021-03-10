@@ -5,7 +5,7 @@ import { resolve } from "path";
 import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
-import { Venue } from "../src/types/venues";
+import { AnyVenue } from "../src/types/venues";
 
 import {
   generateTables,
@@ -59,7 +59,7 @@ db.runTransaction(async (transaction) => {
   const docRef = db.doc(`venues/${venueId}`);
 
   const doc = await transaction.get(docRef);
-  const venue = doc.data() as Venue;
+  const venue = doc.data() as AnyVenue;
   if (!doc.exists || !venue) {
     console.error(`${venueId} venue does not exist`);
     process.exit(1);

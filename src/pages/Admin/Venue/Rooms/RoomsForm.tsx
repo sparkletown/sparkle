@@ -10,7 +10,7 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { PartyMapVenue, Venue } from "types/venues";
+import { PartyMapVenue, AnyVenue } from "types/venues";
 import { useHistory } from "react-router-dom";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -50,7 +50,7 @@ export const RoomsForm: React.FC = () => {
 
       if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as Venue;
+      const data = venueSnapshot.data() as AnyVenue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
