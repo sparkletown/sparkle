@@ -167,13 +167,17 @@ export const Audience: React.FunctionComponent = () => {
   );
 
   useEffect(() => {
-    firebase
+    const unsubscribeListener = firebase
       .firestore()
       .collection("venues")
       .doc(venueId as string)
       .onSnapshot((doc) =>
         setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
       );
+
+    return () => {
+      unsubscribeListener();
+    };
   }, [venueId]);
 
   const dispatch = useDispatch();
