@@ -1,0 +1,48 @@
+$spacing: 10px;
+
+.auditorium {
+  height: 100%;
+  width: 100%;
+  padding: $spacing;
+
+  display: grid;
+  gap: $spacing;
+
+  grid-auto-rows: 150px;
+  grid-auto-columns: 1fr;
+
+  &--small {
+    grid-template-areas:
+      "left-space video video right-space"
+      "left-space video video right-space"
+      "left-space video video right-space"
+      "left-space   .     .   right-space"
+      "left-space   .     .   right-space";
+  }
+
+  &--medium {
+    grid-template-areas:
+      " left-space video video right-space "
+      " left-space video video right-space "
+      "     .      video video      .      "
+      "     .        .     .        .      ";
+  }
+
+  &--large {
+    grid-template-areas:
+      " left-space left-space video video video video right-space right-space "
+      "     .          .      video video video video      .           .      "
+      "     .          .      video video video video      .           .      "
+      "     .          .        .     .     .     .        .           .      ";
+  }
+
+  &--section-view {
+  }
+
+  &__left-empty-space {
+    grid-area: left-space;
+  }
+  &__right-empty-space {
+    grid-area: right-space;
+  }
+}

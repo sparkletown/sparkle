@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import classNames from "classnames";
 
-import { SectionPreviews } from "./components/SectionPreviews";
+import { SectionPreview } from "./components/SectionPreview";
 import { Section } from "./components/Section";
+import { Video } from "./components/Video";
 
 import { AuditoriumVenue } from "types/venues";
 
-const enum AuditoriumVideoPosition {
+import "./Auditorium.scss";
+
+export enum AuditoriumVideoPosition {
   TOP = "top",
   CENTER = "center",
 }
+
+export enum AuditoriumSizes {
+  SMALL = "small",
+  MEDIUM = "medium",
+  LARGE = "large",
+}
+
+const SECTION_PREVIEWS_PLACEHOLDER = Array(30)
+  .fill({ name: "Section" })
+  .map((section, index) => ({ ...section, id: index }));
+
+const EMPTY_CELLS = Array();
 
 export interface AuditoriumProps {
   venue: AuditoriumVenue;
@@ -25,35 +41,49 @@ export interface AuditoriumProps {
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
   // self-explainatory name. I wonder if I should have this both for FULL and SECTION view?
-  const { videoPosition, sections } = venue;
+  const {
+    videoPosition,
+    sections = SECTION_PREVIEWS_PLACEHOLDER,
+    iframeUrl,
+  } = venue;
 
-  const [chosenSectionId, setChosenSectionId] = useState<string | undefined>();
+  const [chosenSection, setChosenSection] = useState<string | undefined>();
 
-  const renderedVideo = (
-    /* I want to have the same experience as we have in Jazzbar, when we don't unmount the video */
-    <div className="auditorium__video">
-      {/* Reaction bar as a separate component(reusable in JazzBar as well) */}
-    </div>
-  );
+  const hasChosenSection = chosenSection !== undefined;
+
+  const sectionPreviews = SECTION_PREVIEWS_PLACEHOLDER.map((section) => (
+    <SectionPreview onClick={() => setChosenSection(section.id)} />
+  ));
+
+  const auditoriumSize: AuditoriumSizes = useMemo(() => {
+    const sectionsLength = sections.length;
+
+    if (sectionsLength <= 4) return AuditoriumSizes.SMALL;
+
+    if (sectionsLength > 4 && sectionsLength <= 12)
+      return AuditoriumSizes.MEDIUM;
+
+    return AuditoriumSizes.LARGE;
+  }, []);
+
+  const containerClasses = classNames("auditorium", {
+    "auditorium--section-view": hasChosenSection,
+    "auditorium--small": auditoriumSize === AuditoriumSizes.SMALL,
+    "auditorium--medium": auditoriumSize === AuditoriumSizes.MEDIUM,
+    "auditorium--large": auditoriumSize === AuditoriumSizes.LARGE,
+  });
 
   return (
-    <div className="auditorium">
-      <View
-        // [OOS] options?
-        // topLeft
-        // topRight
-        // bottomLeft
-        // bottomRight
-        center={renderedVideo}
-        items={
-          chosenSectionId ? (
-            // This section view will lookalike our Audience template(heavily refactored, but same functionality)
-            <Section sectionId={chosenSectionId} />
-          ) : (
-            <SectionPreviews />
-          )
-        }
-      />
+    <div className={containerClasses}>
+      <Video src={iframeUrl} />
+      {chosenSection ? (
+        // This section view will lookalike our Audience template(heavily refactored, but same functionality)
+        <Section sectionId={chosenSection} />
+      ) : (
+        sectionPreviews
+      )}
+      <div className="auditorium__left-empty-space" />
+      <div className="auditorium__right-empty-space" />
     </div>
   );
 };

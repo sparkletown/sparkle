@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate, AuditoriumVenue } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -14,6 +14,7 @@ import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
+import { Auditorium } from "components/templates/Auditorium";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -119,6 +120,9 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
+
+  // DEVELOPMENT-MODE HACK
+  template = <Auditorium venue={venue as AuditoriumVenue} />;
 
   return (
     // @debt remove backButton from Navbar

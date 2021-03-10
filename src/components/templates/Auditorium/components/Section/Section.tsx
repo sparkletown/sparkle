@@ -5,7 +5,7 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ sectionId }) => {
-  const { takeSeat, seatedUsers } = useSection(sectionId);
+  // const { takeSeat, seatedUsers } = useSection(sectionId);
 
   return <div />;
 };
