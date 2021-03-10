@@ -23,13 +23,11 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   submitHandler,
   deleteHandler,
 }) => {
-  const [selectedTemplate, setSelectedTemplate] = useState<string | undefined>(
+  const [selectedTemplate, setSelectedTemplate] = useState<string>(
     room.template
   );
 
-  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate | undefined>(
-    undefined
-  );
+  const [roomTemplate, setRoomTemplate] = useState<RoomTemplate>(undefined);
 
   useEffect(() => {
     const template = ROOM_TEMPLATES.find(
