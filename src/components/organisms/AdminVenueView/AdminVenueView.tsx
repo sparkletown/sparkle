@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Button, Nav } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
@@ -17,7 +17,7 @@ export interface SidebarOption {
   text: string;
 }
 
-enum SidebarOptions {
+export enum SidebarOptions {
   dashboard = "dashboard",
   basicInfo = "basic_info",
   entranceExperience = "entrance_experience",
@@ -53,7 +53,7 @@ const DEFAULT_TAB = sidebarOptions.findIndex(
   (option) => option.id === SidebarOptions.dashboard
 );
 
-interface AdminVenueViewProps {
+export interface AdminVenueViewProps {
   venue: Venue_v2;
 }
 
@@ -62,46 +62,50 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
     sidebarOptions[DEFAULT_TAB].id
   );
 
-  const selectDashboard = useCallback(() => {
+  const selectDefaultTab = useCallback(() => {
     setSelectedOption(sidebarOptions[DEFAULT_TAB].id);
   }, []);
 
+  const renderSidebarOptions = useMemo(() => {
+    return sidebarOptions.map((option: SidebarOption) => (
+      <Nav.Link
+        key={option.id}
+        className={classNames("AdminVenueView__tab", {
+          selected: selectedOption === option.id,
+        })}
+        eventKey={option.id}
+      >
+        {option.text}
+      </Nav.Link>
+    ));
+  }, [selectedOption]);
+
   return (
     <>
-      <div className="venue-view">
+      <div className="AdminVenueView">
         <Button as={Link} to="/admin_v2/venue">
           Back
         </Button>
 
         <Nav
-          className="venue-view__options"
+          className="AdminVenueView__options"
           activeKey={selectedOption}
           onSelect={setSelectedOption}
         >
-          {sidebarOptions.map((option: SidebarOption) => (
-            <Nav.Link
-              key={option.id}
-              className={classNames("venue-view__options--tab", {
-                selected: selectedOption === option.id,
-              })}
-              eventKey={option.id}
-            >
-              {option.text}
-            </Nav.Link>
-          ))}
+          {renderSidebarOptions}
         </Nav>
       </div>
       {selectedOption === SidebarOptions.basicInfo && (
-        <BasicInfo venue={venue} onSave={selectDashboard} />
+        <BasicInfo venue={venue} onSave={selectDefaultTab} />
       )}
       {selectedOption === SidebarOptions.entranceExperience && (
-        <EntranceExperience venue={venue} onSave={selectDashboard} />
+        <EntranceExperience venue={venue} onSave={selectDefaultTab} />
       )}
       {selectedOption === SidebarOptions.advancedMapSettings && (
-        <AdvancedSettings venue={venue} onSave={selectDashboard} />
+        <AdvancedSettings venue={venue} onSave={selectDefaultTab} />
       )}
       {selectedOption === SidebarOptions.dashboard && (
-        <VenueDetails venue={venue} onSave={selectDashboard} />
+        <VenueDetails venue={venue} onSave={selectDefaultTab} />
       )}
     </>
   );

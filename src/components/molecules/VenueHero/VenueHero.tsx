@@ -1,10 +1,17 @@
 import React from "react";
 
-import { DetailsPreviewProps } from "./VenueHero.types";
-
 import * as S from "./VenueHero.styles";
 
-const VenueHero: React.FC<DetailsPreviewProps> = ({
+export interface DetailsPreviewProps {
+  bannerImageUrl?: string;
+  logoImageUrl?: string;
+  name?: string;
+  subtitle?: string;
+  description?: string;
+  large?: boolean;
+}
+
+export const VenueHero: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
   logoImageUrl,
   name,
@@ -21,5 +28,3 @@ const VenueHero: React.FC<DetailsPreviewProps> = ({
     <S.Description>{description}</S.Description>
   </S.Container>
 );
-
-export default VenueHero;

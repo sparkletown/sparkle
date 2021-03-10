@@ -13,7 +13,7 @@ import { useUser } from "hooks/useUser";
 import { Room, RoomData_v2 } from "types/rooms";
 import { VenueDetailsProps } from "./VenueDetails.types";
 
-import VenueHero from "components/molecules/VenueHero";
+import { VenueHero } from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
 import RoomEdit from "pages/Admin/Room/Edit";
@@ -178,8 +178,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           subtitle={subtitle}
           description={description}
           large
-          showEdit
-          venueId={venue.id!}
         />
 
         <S.HeaderActions>

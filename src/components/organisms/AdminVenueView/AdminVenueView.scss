@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-.venue-view {
+.AdminVenueView {
   display: flex;
   justify-content: space-around;
   padding: 20px 0;
@@ -15,38 +15,38 @@
     width: 100%;
   }
 
-  .venue-view__options {
+  &__options {
     display: flex;
     width: 80%;
     flex-direction: row;
     justify-content: space-between;
+  }
 
-    &--tab {
-      position: relative;
-      display: flex;
-      flex-grow: 1;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      color: rgba($white, 0.6);
-      text-decoration: none;
+  &__tab {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    text-align: center;
+    align-self: center;
+    cursor: pointer;
+    color: rgba($white, 0.6);
+    text-decoration: none;
 
-      @media (max-width: 1024px) {
-        width: 50%;
-      }
+    @media (max-width: 1024px) {
+      width: 50%;
+    }
 
-      @media (max-width: 800px) {
-        width: 100%;
-      }
+    @media (max-width: 800px) {
+      width: 100%;
+    }
 
-      &:hover {
-        color: $white;
-      }
+    &:hover {
+      color: $white;
+    }
 
-      &.selected {
-        color: $white;
-        background-color: #7c46fb;
-      }
+    &.selected {
+      color: $white;
+      background-color: $primary;
     }
   }
 }
