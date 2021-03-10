@@ -62,6 +62,13 @@ const MIN_ROWS = 19;
 // Always have an odd number of columns
 // Column zero has no seats, this is our virtual fire lane.
 
+// Example row:
+// -4 -3 -2 -1  0  1  2  3  4
+// Consumed by video (5/9) = +/- Math.floor(9/4) = [-2,2]
+// -4 -3  V  V  V  V  V  3  4
+
+// The same logic applies to the rows.
+
 // capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
 // The video is 50% x 50% so it takes up 1/4 of the seats.
